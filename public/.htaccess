@@ -1,0 +1,11 @@
+# Habilitar el motor de reescritura de URLs
+RewriteEngine On
+
+# Si la petición no corresponde a un archivo real existente
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# Y tampoco a un directorio real existente
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirigir todo al Front Controller (index.php) pasando los parámetros originales
+RewriteRule ^(.*)$ index.php [QSA,L]

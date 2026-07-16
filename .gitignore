@@ -1,0 +1,25 @@
+# Variables de entorno y llaves privadas
+.env
+.env.local
+.env.*.local
+
+# Logs del sistema
+/logs/
+*.log
+
+# Carpetas de desarrollo y dependencias
+/vendor/
+/node_modules/
+.astro/
+dist/
+
+# Archivos del sistema operativo e IDEs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
