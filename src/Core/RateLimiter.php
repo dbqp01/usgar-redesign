@@ -5,7 +5,8 @@ namespace App\Core;
 
 /**
  * Limitador de Tasa de Peticiones basado en almacenamiento en archivos.
- * Registra marcas de tiempo en archivos JSON para limitar el abuso.
+ * Fix: SHA-256 en vez de MD5 para resistencia a colisiones.
+ * Fix: LOCK_EX en file_put_contents para atomicidad en escritura.
  * Adecuado para servidores compartidos sin Redis ni Memcached.
  */
 class RateLimiter {
@@ -24,24 +25,27 @@ class RateLimiter {
     /**
      * Valida si la IP del cliente no ha excedido la tasa máxima en la ventana de tiempo.
      *
-     * @param string $ip Dirección IP del cliente
-     * @param int $maxRequests Cantidad máxima de peticiones
-     * @param int $timeWindowSeconds Ventana de tiempo en segundos
+     * @param string $ip               Dirección IP del cliente
+     * @param int    $maxRequests       Cantidad máxima de peticiones
+     * @param int    $timeWindowSeconds Ventana de tiempo en segundos
      * @return bool True si la petición está permitida, False si está limitada
      */
     public static function check(string $ip, int $maxRequests = 5, int $timeWindowSeconds = 600): bool {
         self::init();
 
-        $ipHash = md5($ip);
+        // SHA-256 para resistencia a colisiones (md5 es insuficiente)
+        $ipHash = hash('sha256', $ip);
         $limitFile = self::$limitsDir . DIRECTORY_SEPARATOR . "limit_{$ipHash}.json";
         $now = time();
 
         $requests = [];
         if (file_exists($limitFile)) {
             $content = file_get_contents($limitFile);
-            $data = json_decode($content, true);
-            if (is_array($data)) {
-                $requests = $data;
+            if ($content !== false) {
+                $data = json_decode($content, true);
+                if (is_array($data)) {
+                    $requests = $data;
+                }
             }
         }
 
@@ -55,9 +59,9 @@ class RateLimiter {
 
         // Agregar petición actual
         $requests[] = $now;
-        
-        // Guardar cambios en el archivo
-        @file_put_contents($limitFile, json_encode(array_values($requests)));
+
+        // Guardar con LOCK_EX para atomicidad (previene race conditions)
+        @file_put_contents($limitFile, json_encode(array_values($requests)), LOCK_EX);
         return true;
     }
 }

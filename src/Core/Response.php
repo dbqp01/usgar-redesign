@@ -4,30 +4,16 @@ declare(strict_types=1);
 namespace App\Core;
 
 /**
- * Abstracción de la respuesta HTTP. Administra cabeceras, CORS y salidas JSON.
+ * Abstracción de la respuesta HTTP. Administra salidas JSON estandarizadas.
+ * CORS fue movido a Middleware::cors() para cumplir SRP.
  */
 class Response {
     /**
-     * Inicializa y envía las cabeceras CORS necesarias.
-     * Si la petición es OPTIONS (Preflight), detiene el flujo y retorna 200 OK.
-     */
-    public static function initCors(): void {
-        header('Access-Control-Allow-Origin: *');
-        header('Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE, PUT');
-        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, x-signature, x-request-id');
-        
-        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'OPTIONS') {
-            http_response_code(200);
-            exit(0);
-        }
-    }
-
-    /**
-     * Envía una respuesta JSON formateada y finaliza la ejecución de forma limpia.
+     * Envía una respuesta JSON formateada y finaliza la ejecución.
+     * Usa JSON_THROW_ON_ERROR para detección temprana de errores de serialización
+     * (per json-standards skill).
      */
     public static function json(array $data, int $statusCode = 200): void {
-        self::initCors();
-        
         // Limpiar cualquier búfer de salida previo para evitar JSON corrompido
         if (ob_get_length()) {
             ob_clean();
@@ -35,8 +21,14 @@ class Response {
 
         http_response_code($statusCode);
         header('Content-Type: application/json; charset=utf-8');
-        
-        echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+        try {
+            echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            Logger::error('[Response] JSON encode error: ' . $e->getMessage());
+            http_response_code(500);
+            echo '{"success":false,"error":"Internal serialization error"}';
+        }
         exit(0);
     }
 
@@ -46,7 +38,7 @@ class Response {
     public static function error(string $message, int $statusCode = 500, array $details = []): void {
         $payload = [
             'success' => false,
-            'error' => $message
+            'error'   => $message,
         ];
 
         if (!empty($details)) {
@@ -56,9 +48,8 @@ class Response {
         self::json($payload, $statusCode);
     }
 
-    /**
-     * Respuestas comunes estandarizadas.
-     */
+    // --- Respuestas comunes estandarizadas ---
+
     public static function badRequest(string $message = 'Bad Request'): void {
         self::error($message, 400);
     }

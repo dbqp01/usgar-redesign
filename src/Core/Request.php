@@ -5,30 +5,28 @@ namespace App\Core;
 
 /**
  * Abstracción de la petición HTTP. Encapsula parámetros, cuerpo y headers.
+ * Fix: IP spoofing via X-Forwarded-For — ahora solo confía en proxies configurados.
+ * Fix: JSON body parsing con JSON_THROW_ON_ERROR.
  */
 class Request {
-    private string $method;
-    private string $path;
-    private array $queryParams;
-    private array $headers;
-    private ?array $body;
+    private readonly string $method;
+    private readonly string $path;
+    private readonly array $queryParams;
+    private readonly array $headers;
+    private readonly ?array $body;
 
     public function __construct() {
         $this->method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
         $this->queryParams = $_GET;
         $this->headers = $this->extractHeaders();
-        
+
         // Parsear el Path quitando query string y barras finales
         $uri = $_SERVER['REQUEST_URI'] ?? '/';
         $parts = explode('?', $uri, 2);
         $this->path = '/' . trim($parts[0], '/');
-        
+
         // Parsear cuerpo JSON si corresponde
-        $this->body = null;
-        if (in_array($this->method, ['POST', 'PUT', 'PATCH'])) {
-            $input = file_get_contents('php://input');
-            $this->body = json_decode($input, true) ?? [];
-        }
+        $this->body = $this->parseBody();
     }
 
     public function getMethod(): string {
@@ -43,7 +41,7 @@ class Request {
         return $this->queryParams;
     }
 
-    public function getQuery(string $key, $default = null) {
+    public function getQuery(string $key, mixed $default = null): mixed {
         return $this->queryParams[$key] ?? $default;
     }
 
@@ -60,34 +58,54 @@ class Request {
         return $this->body;
     }
 
-    public function get(string $key, $default = null) {
+    public function get(string $key, mixed $default = null): mixed {
         return $this->body[$key] ?? $default;
     }
 
     /**
-     * Obtiene la dirección IP del cliente de forma segura.
+     * Obtiene la dirección IP real del cliente de forma segura.
+     * Solo confía en headers de proxy si REMOTE_ADDR está en la lista de proxies confiables.
      */
     public function getIp(): string {
-        $headers = [
-            'HTTP_CLIENT_IP',
-            'HTTP_X_FORWARDED_FOR',
-            'HTTP_X_FORWARDED',
-            'HTTP_X_CLUSTER_CLIENT_IP',
-            'HTTP_FORWARDED_FOR',
-            'HTTP_FORWARDED',
-            'REMOTE_ADDR'
-        ];
+        $remoteAddr = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+        $trustedProxies = Config::getTrustedProxies();
 
-        foreach ($headers as $header) {
-            if (!empty($_SERVER[$header])) {
-                $ips = explode(',', $_SERVER[$header]);
-                $ip = trim($ips[0]);
-                if (filter_var($ip, FILTER_VALIDATE_IP)) {
-                    return $ip;
+        // Solo leer headers de proxy si la petición viene de un proxy confiable
+        if (!empty($trustedProxies) && in_array($remoteAddr, $trustedProxies, true)) {
+            $proxyHeaders = ['HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP'];
+            foreach ($proxyHeaders as $header) {
+                if (!empty($_SERVER[$header])) {
+                    $ips = explode(',', $_SERVER[$header]);
+                    $ip = trim($ips[0]);
+                    if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                        return $ip;
+                    }
                 }
             }
         }
-        return '127.0.0.1';
+
+        return filter_var($remoteAddr, FILTER_VALIDATE_IP) ? $remoteAddr : '127.0.0.1';
+    }
+
+    /**
+     * Parsea el body JSON con manejo de errores seguro (per json-standards skill).
+     */
+    private function parseBody(): ?array {
+        if (!in_array($this->method, ['POST', 'PUT', 'PATCH'], true)) {
+            return null;
+        }
+
+        $input = file_get_contents('php://input');
+        if ($input === false || $input === '') {
+            return [];
+        }
+
+        try {
+            return json_decode($input, true, 512, JSON_THROW_ON_ERROR) ?? [];
+        } catch (\JsonException $e) {
+            Logger::error('[Request] JSON body parse error: ' . $e->getMessage());
+            return [];
+        }
     }
 
     private function extractHeaders(): array {

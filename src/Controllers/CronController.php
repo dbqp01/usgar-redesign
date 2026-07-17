@@ -6,14 +6,17 @@ namespace App\Controllers;
 use App\Core\Request;
 use App\Core\Response;
 use App\Core\Logger;
+use App\Core\Config;
 use App\Core\Database;
+use App\Core\HttpException;
 use App\Models\ProvisionalBooking;
 use PDO;
 use Exception;
 
 /**
  * Controlador de tareas programadas (Cron Jobs).
- * Ejecuta mantenimiento periódico del sistema como liberar habitaciones expiradas.
+ * Ejecuta mantenimiento periódico como liberar habitaciones expiradas.
+ * Fix: Rechaza cron secret por defecto en producción.
  */
 class CronController {
     private ?PDO $pdo;
@@ -22,7 +25,7 @@ class CronController {
     public function __construct(?PDO $pdo = null) {
         $db = Database::getInstance();
         $this->pdo = $pdo ?? $db->getConnection();
-        
+
         if ($this->pdo) {
             $this->bookingModel = new ProvisionalBooking($this->pdo);
         }
@@ -34,15 +37,22 @@ class CronController {
      */
     public function cleanup(Request $request): void {
         $isCli = PHP_SAPI === 'cli';
-        
-        // Si no es CLI, validar la clave de seguridad para evitar accesos no autorizados por URL
+
+        // Si no es CLI, validar la clave de seguridad
         if (!$isCli) {
-            $db = Database::getInstance();
-            $cronSecret = $db->getEnv('CRON_SECRET', 'usgar_cron_default_secret');
+            $cronSecret = Config::get('CRON_SECRET', '');
             $providedSecret = $request->getQuery('secret', $request->get('secret', ''));
 
-            if (empty($providedSecret) || $providedSecret !== $cronSecret) {
-                Response::forbidden('Acceso denegado. Clave cron inválida.');
+            // En producción, rechazar si no hay secret o si es el valor por defecto
+            if (empty($cronSecret)) {
+                if (Config::isProduction()) {
+                    throw HttpException::forbidden('CRON_SECRET no configurado en producción.');
+                }
+                // En desarrollo, permitir sin secret
+            } else {
+                if (empty($providedSecret) || !hash_equals($cronSecret, $providedSecret)) {
+                    throw HttpException::forbidden('Acceso denegado. Clave cron inválida.');
+                }
             }
         }
 
@@ -53,13 +63,13 @@ class CronController {
                 fwrite(STDERR, $errorMsg . PHP_EOL);
                 exit(1);
             }
-            Response::error($errorMsg, 500);
+            throw HttpException::internal($errorMsg);
         }
 
         try {
-            // Ejecutar limpieza de bloqueos expirados
+            // Ejecutar limpieza de bloqueos expirados (UPDATE a 'expired', no DELETE)
             $releasedCount = $this->bookingModel->cleanupExpiredHolds();
-            
+
             // Borrar archivos de caché de disponibilidad si existieran
             $cacheDir = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'cache';
             if (is_dir($cacheDir)) {
@@ -72,13 +82,13 @@ class CronController {
             }
 
             if ($releasedCount > 0) {
-                Logger::info("Cron Cleanup: Se liberaron {$releasedCount} bloqueos expirados.");
+                Logger::info("Cron Cleanup: Se expiraron {$releasedCount} bloqueos.");
             }
 
             $responsePayload = [
-                'success' => true,
-                'message' => "Limpieza completada con éxito.",
-                'released_count' => $releasedCount
+                'success'        => true,
+                'message'        => 'Limpieza completada con éxito.',
+                'released_count' => $releasedCount,
             ];
 
             if ($isCli) {
@@ -88,13 +98,15 @@ class CronController {
 
             Response::json($responsePayload);
 
+        } catch (HttpException $e) {
+            throw $e;
         } catch (Exception $e) {
-            Logger::error("Cron Cleanup Exception: " . $e->getMessage());
+            Logger::error('Cron Cleanup Exception: ' . $e->getMessage());
             if ($isCli) {
-                fwrite(STDERR, "Error: " . $e->getMessage() . PHP_EOL);
+                fwrite(STDERR, 'Error: ' . $e->getMessage() . PHP_EOL);
                 exit(1);
             }
-            Response::error("Fallo al ejecutar el proceso de limpieza.", 500);
+            throw HttpException::internal('Fallo al ejecutar el proceso de limpieza.');
         }
     }
 }

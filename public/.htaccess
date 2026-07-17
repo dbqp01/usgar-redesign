@@ -1,11 +1,23 @@
-# Habilitar el motor de reescritura de URLs
 RewriteEngine On
 
-# Si la petición no corresponde a un archivo real existente
+# Security: Block direct access to test files in production
+<Files "test_endpoints.php">
+    <IfModule mod_env.c>
+        SetEnvIf ENVIRONMENT ^production$ DENY_ACCESS
+    </IfModule>
+    Order Allow,Deny
+    Allow from all
+    Deny from env=DENY_ACCESS
+</Files>
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Route all requests through index.php (Front Controller Pattern)
 RewriteCond %{REQUEST_FILENAME} !-f
-
-# Y tampoco a un directorio real existente
 RewriteCond %{REQUEST_FILENAME} !-d
-
-# Redirigir todo al Front Controller (index.php) pasando los parámetros originales
 RewriteRule ^(.*)$ index.php [QSA,L]
