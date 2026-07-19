@@ -184,6 +184,29 @@ XML;
     }
 
     /**
+     * Extiende la vida del carrito temporal en la base de datos de QloApps.
+     */
+    public function extendCartSession(string $cartId): bool {
+        if (!$this->pdo) {
+            return false;
+        }
+        try {
+            // 1. Actualizar fecha de modificación en la tabla del carrito
+            $stmt1 = $this->pdo->prepare("UPDATE qlo_cart SET date_upd = NOW() WHERE id_cart = :cartId");
+            $stmt1->execute([':cartId' => $cartId]);
+
+            // 2. Actualizar fecha de actualización en la tabla de hold de reservas
+            $stmt2 = $this->pdo->prepare("UPDATE qlo_htl_cart_booking_data SET date_upd = NOW() WHERE id_cart = :cartId");
+            $stmt2->execute([':cartId' => $cartId]);
+
+            return true;
+        } catch (PDOException $e) {
+            Logger::error("QloAppService: Error al extender sesión de carrito {$cartId}: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Ejecuta una petición HTTP cURL contra la API XML de QloApps.
      * Fix: SSL verification habilitada.
      */

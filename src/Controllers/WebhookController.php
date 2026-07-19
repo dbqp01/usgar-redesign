@@ -65,6 +65,8 @@ class WebhookController {
             Response::json(['success' => true, 'message' => 'Notification ignored.']);
         }
 
+        $webhookSecret = Config::get('MERCADO_PAGO_WEBHOOK_SECRET');
+
         if (empty($webhookSecret)) {
             Logger::error('WebhookController: MERCADO_PAGO_WEBHOOK_SECRET no configurado.');
             Response::error('Webhook security not configured.', 500);

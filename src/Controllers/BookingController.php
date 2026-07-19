@@ -137,7 +137,6 @@ class BookingController {
 
             $preferenceId = $preference['id'] ?? null;
             $initPoint = $preference['init_point'] ?? '';
-            $sandboxInitPoint = $preference['sandbox_init_point'] ?? '';
 
             if (empty($preferenceId)) {
                 throw new Exception('No se pudo obtener el Preference ID desde Mercado Pago.');
@@ -154,7 +153,6 @@ class BookingController {
                 'cart_id'            => $cartId,
                 'preference_id'      => $preferenceId,
                 'init_point'         => $initPoint,
-                'sandbox_init_point' => $sandboxInitPoint,
                 'price'              => $totalPrice,
                 'expires_at'         => $expiresAt,
             ]);
@@ -208,6 +206,9 @@ class BookingController {
         $newExpiration = date('Y-m-d H:i:s', strtotime('+15 minutes'));
 
         if ($this->bookingModel->extend($cartId, $newExpiration)) {
+            // Extender la sesión del carrito en la base de datos de QloApps también
+            $this->qloApp->extendCartSession($cartId);
+
             Response::json([
                 'success'    => true,
                 'expires_at' => $newExpiration,

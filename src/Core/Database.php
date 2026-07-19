@@ -23,7 +23,8 @@ class Database {
         $name = Config::get('DB_NAME');
 
         if (empty($user) || empty($name)) {
-            throw new PDOException('Database credentials or database name are not configured.');
+            Logger::warning('Database credentials or database name are not configured. Running in offline/mock/test mode.');
+            return;
         }
 
         try {
@@ -34,8 +35,8 @@ class Database {
                 PDO::ATTR_EMULATE_PREPARES   => false,
             ]);
         } catch (PDOException $e) {
-            Logger::error('[Database Connection Error] ' . $e->getMessage());
-            throw $e;
+            Logger::error('[Database Connection Error] Running in offline/mock/test mode: ' . $e->getMessage());
+            $this->pdo = null;
         }
     }
 

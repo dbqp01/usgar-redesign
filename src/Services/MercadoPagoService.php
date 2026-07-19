@@ -20,7 +20,12 @@ class MercadoPagoService {
     public function __construct() {
         $this->accessToken = Config::get('MERCADO_PAGO_ACCESS_TOKEN');
         $this->webhookSecret = Config::get('MERCADO_PAGO_WEBHOOK_SECRET');
-        $this->siteUrl = Config::get('SITE_URL', 'http://localhost:8000');
+        
+        $url = Config::get('SITE_URL', 'http://localhost:8000');
+        if (Config::isProduction() && str_starts_with($url, 'http://')) {
+            $url = str_replace('http://', 'https://', $url);
+        }
+        $this->siteUrl = $url;
     }
 
     /**
@@ -64,9 +69,11 @@ class MercadoPagoService {
         ];
 
         try {
+            $idempotencyKey = 'pref_' . $cartId;
             $response = $this->curlPost(
                 'https://api.mercadopago.com/checkout/preferences',
-                $payload
+                $payload,
+                $idempotencyKey
             );
 
             return json_decode($response, true, 512, JSON_THROW_ON_ERROR);
@@ -199,14 +206,20 @@ class MercadoPagoService {
     /**
      * Ejecuta un POST JSON con cURL y retorna el body de respuesta.
      */
-    private function curlPost(string $url, array $payload): string {
+    private function curlPost(string $url, array $payload, ?string $idempotencyKey = null): string {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        
+        $headers = [
             "Authorization: Bearer {$this->accessToken}",
             'Content-Type: application/json',
-        ]);
+        ];
+        if ($idempotencyKey !== null) {
+            $headers[] = "X-Idempotency-Key: {$idempotencyKey}";
+        }
+        
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload, JSON_THROW_ON_ERROR));
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
