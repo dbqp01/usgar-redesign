@@ -42,8 +42,7 @@ class ChannexService {
         int $adults = 2
     ): bool {
         if (empty($this->apiKey) || empty($this->propertyId)) {
-            Logger::info("ChannexService: Modo MOCK. Sincronización simulada para Reserva #{$bookingId}");
-            return true;
+            throw new Exception('Channex API Key or Property ID is not configured.');
         }
 
         try {

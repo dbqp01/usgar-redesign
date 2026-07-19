@@ -38,23 +38,9 @@ class MercadoPagoService {
     ): array {
         $nights = (int)round((strtotime($checkOut) - strtotime($checkIn)) / 86400);
 
-        // Modo mock si no hay token o el token no tiene un prefijo válido
+        // Requiere token válido
         if (empty($this->accessToken) || !$this->isValidToken($this->accessToken)) {
-            $params = http_build_query([
-                'bookingId' => $cartId,
-                'amount'    => $totalPrice,
-                'checkIn'   => $checkIn,
-                'checkOut'  => $checkOut,
-                'guestName' => $guestName,
-                'guestEmail' => $guestEmail,
-            ]);
-            $mockUrl = "{$this->siteUrl}/book/mock-payment?{$params}";
-            Logger::info("MercadoPagoService: Preferencia en modo MOCK para Cart ID: {$cartId}");
-            return [
-                'id'                 => 'MOCK-PREF-' . time(),
-                'init_point'         => $mockUrl,
-                'sandbox_init_point' => $mockUrl,
-            ];
+            throw new Exception('Mercado Pago Access Token is not configured or invalid.');
         }
 
         $payload = [
@@ -100,8 +86,8 @@ class MercadoPagoService {
      */
     public function verifySignature(?string $signatureHeader, ?string $requestId, ?string $dataId): bool {
         if (empty($this->webhookSecret)) {
-            Logger::info('MercadoPagoService: Webhook Secret ausente. Saltando validación en desarrollo.');
-            return true;
+            Logger::error('MercadoPagoService: Webhook Secret is not configured.');
+            return false;
         }
 
         if (empty($signatureHeader) || empty($requestId) || empty($dataId)) {
@@ -158,13 +144,11 @@ class MercadoPagoService {
      * Consulta el estado del pago en la API de Mercado Pago.
      */
     public function getPaymentDetails(string $paymentId): ?array {
-        if (str_contains($paymentId, 'MOCK') || empty($this->accessToken)) {
-            Logger::info("MercadoPagoService: Detalles de pago MOCK para ID: {$paymentId}");
-            return [
-                'status'             => 'approved',
-                'transaction_amount' => 90.0,
-                'external_reference' => 'MOCK-CART-' . time(),
-            ];
+        if (empty($this->accessToken)) {
+            throw new Exception('Mercado Pago Access Token is not configured.');
+        }
+        if (str_contains($paymentId, 'MOCK')) {
+            throw new Exception('Cannot query mock payment.');
         }
 
         try {

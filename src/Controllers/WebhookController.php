@@ -60,53 +60,29 @@ class WebhookController {
         $type = $body['type'] ?? ($body['topic'] ?? null);
         $paymentId = $body['data']['id'] ?? ($body['id'] ?? null);
 
-        // Manejar pruebas locales o simulación sandbox
-        $isMock = $request->getQuery('mock') === 'true';
-
-        if (($type !== 'payment' || !$paymentId) && !$isMock) {
+        if ($type !== 'payment' || !$paymentId) {
             // Retornar 200 OK para notificaciones que no nos interesen
             Response::json(['success' => true, 'message' => 'Notification ignored.']);
         }
 
-        // 1. Validar la firma digital HMAC-SHA256 (Seguridad contra suplantación)
-        $webhookSecret = Config::get('MERCADO_PAGO_WEBHOOK_SECRET', '');
+        if (empty($webhookSecret)) {
+            Logger::error('WebhookController: MERCADO_PAGO_WEBHOOK_SECRET no configurado.');
+            Response::error('Webhook security not configured.', 500);
+        }
 
-        if (!$isMock) {
-            if (empty($webhookSecret)) {
-                if (Config::isProduction()) {
-                    // En producción, RECHAZAR si no hay secret configurado
-                    Logger::error('WebhookController: MERCADO_PAGO_WEBHOOK_SECRET no configurado en producción.');
-                    Response::error('Webhook security not configured.', 500);
-                }
-                // En desarrollo, solo advertir
-                Logger::warning('WebhookController: Webhook Secret ausente. Saltando validación en desarrollo.');
-            } else {
-                $signatureHeader = $request->getHeader('x-signature') ?? '';
-                $requestId = $request->getHeader('x-request-id') ?? '';
+        $signatureHeader = $request->getHeader('x-signature') ?? '';
+        $requestId = $request->getHeader('x-request-id') ?? '';
 
-                if (!$this->mp->verifySignature($signatureHeader, $requestId, (string)$paymentId)) {
-                    Logger::error("WebhookController: Firma inválida detectada para Pago ID {$paymentId}");
-                    Response::unauthorized('Firma de webhook inválida.');
-                }
-            }
+        if (!$this->mp->verifySignature($signatureHeader, $requestId, (string)$paymentId)) {
+            Logger::error("WebhookController: Firma inválida detectada para Pago ID {$paymentId}");
+            Response::unauthorized('Firma de webhook inválida.');
         }
 
         // 2. Enviar respuesta rápida (Flush) a Mercado Pago
-        if (!$isMock) {
-            $this->sendEarlyResponse();
-        }
+        $this->sendEarlyResponse();
 
         // 3. Obtener detalles del pago
-        $paymentDetails = null;
-        if ($isMock && empty($webhookSecret)) {
-            $paymentDetails = [
-                'status'             => 'approved',
-                'transaction_amount' => (float)$request->getQuery('amount', '90.0'),
-                'external_reference' => $request->getQuery('bookingId', 'MOCK-CART-' . time()),
-            ];
-        } else {
-            $paymentDetails = $this->mp->getPaymentDetails((string)$paymentId);
-        }
+        $paymentDetails = $this->mp->getPaymentDetails((string)$paymentId);
 
         if (!$paymentDetails) {
             Logger::error("WebhookController Error: No se pudieron obtener detalles para Pago ID {$paymentId}");

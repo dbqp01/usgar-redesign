@@ -23,8 +23,7 @@ class Database {
         $name = Config::get('DB_NAME');
 
         if (empty($user) || empty($name)) {
-            // Sin credenciales configuradas (útil para pruebas o mocks)
-            return;
+            throw new PDOException('Database credentials or database name are not configured.');
         }
 
         try {
@@ -36,7 +35,7 @@ class Database {
             ]);
         } catch (PDOException $e) {
             Logger::error('[Database Connection Error] ' . $e->getMessage());
-            $this->pdo = null;
+            throw $e;
         }
     }
 

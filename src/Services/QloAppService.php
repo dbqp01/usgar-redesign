@@ -36,8 +36,7 @@ class QloAppService {
      */
     public function getAvailableRooms(string $checkIn, string $checkOut, int $hotelId = 1): array {
         if (!$this->pdo) {
-            Logger::error('QloAppService: Conexión de base de datos offline. Retornando mock.');
-            return $this->getMockRooms();
+            throw new Exception('Database connection is offline.');
         }
 
         try {
@@ -109,7 +108,7 @@ class QloAppService {
 
         } catch (PDOException $e) {
             Logger::error('QloAppService: Error al consultar disponibilidad: ' . $e->getMessage());
-            return $this->getMockRooms();
+            throw $e;
         }
     }
 
@@ -117,11 +116,8 @@ class QloAppService {
      * Crea un Carrito temporal en QloApps mediante la API Web Service (XML).
      */
     public function createCart(int $hotelId, int $idRoomType, string $checkIn, string $checkOut, int $guests): string {
-        $mockCartId = 'MOCK-CART-' . time() . '-' . random_int(100, 999);
-
         if (empty($this->apiKey) || empty($this->apiUrl)) {
-            Logger::info("QloAppService: Creación de Carrito en modo MOCK ({$mockCartId})");
-            return $mockCartId;
+            throw new Exception('QloApps API key or API URL is not configured.');
         }
 
         $xmlData = <<<XML
@@ -147,18 +143,18 @@ XML;
             return (string)$xml->cart->id;
         }
 
-        Logger::error('QloAppService: Error al crear el carrito en QloApps. Retornando Mock.');
-        return $mockCartId;
+        throw new Exception('Error creating cart on QloApps API.');
     }
 
     /**
      * Convierte un Carrito en una Orden confirmada en QloApps.
      */
     public function confirmOrder(string $cartId, float $totalPrice, string $guestName, string $guestEmail): ?string {
-        if (str_contains($cartId, 'MOCK') || empty($this->apiKey) || empty($this->apiUrl)) {
-            $mockOrderId = 'MOCK-ORDER-' . time() . '-' . random_int(100, 999);
-            Logger::info("QloAppService: Confirmación de Orden en modo MOCK ({$mockOrderId}) para Carrito {$cartId}");
-            return $mockOrderId;
+        if (empty($this->apiKey) || empty($this->apiUrl)) {
+            throw new Exception('QloApps API key or API URL is not configured.');
+        }
+        if (str_contains($cartId, 'MOCK')) {
+            throw new Exception('Cannot confirm mock cart.');
         }
 
         $xmlData = <<<XML
@@ -237,41 +233,5 @@ XML;
             Logger::error('QloAppService: Error al parsear XML: ' . $e->getMessage());
             return null;
         }
-    }
-
-    /**
-     * Habitaciones estáticas de respaldo cuando la base de datos está offline.
-     */
-    private function getMockRooms(): array {
-        return [
-            [
-                'id_room_type'  => 1,
-                'room_name'     => 'Habitación Matrimonial Superior',
-                'price'         => 90.0,
-                'max_guests'    => 2,
-                'available_qty' => 5,
-            ],
-            [
-                'id_room_type'  => 2,
-                'room_name'     => 'Habitación Doble Superior',
-                'price'         => 90.0,
-                'max_guests'    => 2,
-                'available_qty' => 5,
-            ],
-            [
-                'id_room_type'  => 3,
-                'room_name'     => 'Habitación Triple Estándar',
-                'price'         => 120.0,
-                'max_guests'    => 3,
-                'available_qty' => 3,
-            ],
-            [
-                'id_room_type'  => 4,
-                'room_name'     => 'Habitación Familiar Superior',
-                'price'         => 150.0,
-                'max_guests'    => 7,
-                'available_qty' => 2,
-            ],
-        ];
     }
 }
