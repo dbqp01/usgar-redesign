@@ -64,4 +64,34 @@ class RateLimiter {
         @file_put_contents($limitFile, json_encode(array_values($requests)), LOCK_EX);
         return true;
     }
+
+    /**
+     * Limpia los archivos de rate limit expirados para evitar saturar el disco.
+     */
+    public static function cleanup(int $windowSeconds = 600): int {
+        self::init();
+        if (!is_dir(self::$limitsDir)) {
+            return 0;
+        }
+
+        $files = glob(self::$limitsDir . DIRECTORY_SEPARATOR . 'limit_*.json');
+        if (!is_array($files)) {
+            return 0;
+        }
+
+        $now = time();
+        $cutoff = $now - $windowSeconds;
+        $deletedCount = 0;
+
+        foreach ($files as $file) {
+            $mtime = filemtime($file);
+            if ($mtime !== false && $mtime < $cutoff) {
+                if (@unlink($file)) {
+                    $deletedCount++;
+                }
+            }
+        }
+
+        return $deletedCount;
+    }
 }

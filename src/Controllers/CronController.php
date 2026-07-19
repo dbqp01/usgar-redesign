@@ -70,6 +70,9 @@ class CronController {
             // Ejecutar limpieza de bloqueos expirados (UPDATE a 'expired', no DELETE)
             $releasedCount = $this->bookingModel->cleanupExpiredHolds();
 
+            // Limpiar archivos de rate limit obsoletos (ej: ventana de 10 min = 600 seg)
+            $cleanedRateLimits = \App\Core\RateLimiter::cleanup(600);
+
             // Borrar archivos de caché de disponibilidad si existieran
             $cacheDir = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'cache';
             if (is_dir($cacheDir)) {
@@ -81,14 +84,15 @@ class CronController {
                 }
             }
 
-            if ($releasedCount > 0) {
-                Logger::info("Cron Cleanup: Se expiraron {$releasedCount} bloqueos.");
+            if ($releasedCount > 0 || $cleanedRateLimits > 0) {
+                Logger::info("Cron Cleanup: Se expiraron {$releasedCount} bloqueos y se limpiaron {$cleanedRateLimits} archivos de rate limit.");
             }
 
             $responsePayload = [
-                'success'        => true,
-                'message'        => 'Limpieza completada con éxito.',
-                'released_count' => $releasedCount,
+                'success'              => true,
+                'message'              => 'Limpieza completada con éxito.',
+                'released_count'       => $releasedCount,
+                'cleaned_rate_limits'  => $cleanedRateLimits,
             ];
 
             if ($isCli) {

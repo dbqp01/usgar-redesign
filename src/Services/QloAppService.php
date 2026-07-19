@@ -231,7 +231,8 @@ XML;
         }
 
         try {
-            return simplexml_load_string($response);
+            $xml = simplexml_load_string($response);
+            return $xml !== false ? $xml : null;
         } catch (Exception $e) {
             Logger::error('QloAppService: Error al parsear XML: ' . $e->getMessage());
             return null;

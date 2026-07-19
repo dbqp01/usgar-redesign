@@ -239,14 +239,19 @@ class BookingController {
         }
 
         Response::json([
-            'success'    => true,
-            'cart_id'    => $hold['cart_id'],
-            'status'     => $hold['status'],
-            'checkin'    => $hold['checkin'],
-            'checkout'   => $hold['checkout'],
-            'guest_name' => $hold['guest_data']['name'] ?? '',
-            'room_name'  => $hold['room_data']['room_name'] ?? '',
-            'price'      => (float)$hold['price_snapshot'],
+            'success'         => true,
+            'cart_id'         => $hold['cart_id'],
+            'status'          => $hold['status'],
+            'checkin'         => $hold['checkin'],
+            'checkout'        => $hold['checkout'],
+            'id_room_type'    => (int)$hold['id_room_type'],
+            'guest_name'      => $hold['guest_data']['name'] ?? '',
+            'guest_email'     => $hold['guest_data']['email'] ?? '',
+            'guest_phone'     => $hold['guest_data']['phone'] ?? '',
+            'room_name'       => $hold['room_data']['room_name'] ?? '',
+            'price_per_night' => (float)($hold['room_data']['price_per_night'] ?? 0),
+            'nights'          => (int)($hold['room_data']['nights'] ?? 1),
+            'price'           => (float)$hold['price_snapshot'],
         ]);
     }
 }
