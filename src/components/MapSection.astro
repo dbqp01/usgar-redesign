@@ -1,0 +1,130 @@
+---
+import { useTranslations } from '../i18n/utils';
+import { siteSettings } from '../data/settings';
+
+const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+const t = useTranslations(lang);
+---
+
+<section id="map-section" class="py-20 px-4">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-10 animate-on-scroll">
+      <span class="text-sm font-semibold text-primary uppercase tracking-widest">{t('map.sectionLabel')}</span>
+      <h2 class="font-display text-4xl md:text-5xl mt-3 mb-4">
+        {t('map.title')}
+      </h2>
+      <p class="text-lg text-text-secondary-light dark:text-text-secondary-dark max-w-2xl mx-auto">
+        {t('map.description')}
+      </p>
+    </div>
+
+    <!-- Map Container -->
+    <div
+      id="hotel-map"
+      class="w-full h-80 md:h-96 rounded-2xl overflow-hidden border border-black/10 dark:border-white/10 bg-surface-card-dark/5 dark:bg-white/5 animate-on-scroll relative z-10"
+      data-lat={String(siteSettings.latitude)}
+      data-lng={String(siteSettings.longitude)}
+      data-hotel-name={siteSettings.hotelName}
+      data-address-es={siteSettings.address.es}
+      data-address-en={siteSettings.address.en}
+    >
+      <div class="w-full h-full flex items-center justify-center text-text-secondary-light dark:text-text-secondary-dark">
+        <div class="text-center">
+          <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <p class="text-sm">{lang === 'es' ? 'Cargando mapa interactivo...' : 'Interactive map loading...'}</p>
+          <p class="text-xs mt-1 opacity-60">{siteSettings.address[lang]}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Track initialized map containers to prevent double-init
+  const initializedMaps = new WeakSet<HTMLElement>();
+
+  async function initMap() {
+    const container = document.getElementById('hotel-map');
+    if (!container || initializedMaps.has(container)) return;
+    initializedMaps.add(container);
+
+    // Read config from data attributes (server → client bridge)
+    const lat = parseFloat(container.dataset.lat || '-13.5226');
+    const lng = parseFloat(container.dataset.lng || '-71.9828');
+    const hotelName = container.dataset.hotelName || 'USGAR Hotels';
+    const addressEs = container.dataset.addressEs || 'San Pedro, Cusco, Perú';
+    const addressEn = container.dataset.addressEn || 'San Pedro, Cusco, Peru';
+
+    // Dynamic import — Leaflet is only loaded when the map becomes visible
+    const L = (await import('leaflet')).default;
+    await import('leaflet/dist/leaflet.css');
+    const logoIsotipo = (await import('../assets/logos/Logo usgar isotipo.png')).default;
+
+    container.innerHTML = '';
+
+    const map = L.map('hotel-map', {
+      scrollWheelZoom: false
+    }).setView([lat, lng], 17);
+
+    const getTileUrl = () => {
+      const isDark = document.documentElement.classList.contains('dark');
+      return isDark
+        ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+        : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+    };
+
+    const tileLayer = L.tileLayer(getTileUrl(), {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      maxZoom: 19
+    }).addTo(map);
+
+    const iconUrl = typeof logoIsotipo === 'string' ? logoIsotipo : logoIsotipo.src;
+    const customIcon = L.icon({
+      iconUrl: iconUrl,
+      iconSize: [42, 42],
+      iconAnchor: [21, 42],
+      popupAnchor: [0, -42]
+    });
+
+    const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
+
+    const isEs = document.documentElement.lang === 'es';
+    const addr = isEs ? addressEs : addressEn;
+    const dirLabel = isEs ? 'Cómo llegar' : 'Directions';
+    const popupContent = `<b>${hotelName}</b><br>${addr}<br><a href="https://maps.openrouteservice.org" target="_blank" class="text-primary hover:underline text-xs">${dirLabel}</a>`;
+
+    marker.bindPopup(popupContent).openPopup();
+
+    const themeObserver = new MutationObserver(() => {
+      tileLayer.setUrl(getTileUrl());
+    });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+    document.addEventListener('astro:before-swap', () => {
+      themeObserver.disconnect();
+      map.remove();
+    }, { once: true });
+  }
+
+  function setupMapObserver() {
+    const container = document.getElementById('hotel-map');
+    if (!container || initializedMaps.has(container)) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          initMap();
+          observer.disconnect();
+        }
+      });
+    }, { rootMargin: '200px' });
+
+    observer.observe(container);
+  }
+
+  setupMapObserver();
+  document.addEventListener('astro:after-swap', setupMapObserver);
+</script>

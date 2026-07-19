@@ -1,0 +1,84 @@
+---
+import faqData from "../content/faq/faq.json";
+import { useTranslations } from '../i18n/utils';
+
+const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+const t = useTranslations(lang);
+---
+
+<section id="faq-section" class="py-20 px-4 bg-gradient-to-b from-transparent via-primary/5 to-transparent">
+  <div class="max-w-4xl mx-auto">
+    <!-- Section Header -->
+    <div class="text-center mb-14 animate-on-scroll">
+      <span class="text-sm font-semibold text-primary uppercase tracking-widest">{t('faq.sectionLabel')}</span>
+      <h2 class="font-display text-4xl md:text-5xl mt-3 mb-4">
+        {t('faq.title')}
+      </h2>
+      <p class="text-lg text-text-secondary-light dark:text-text-secondary-dark max-w-2xl mx-auto font-body font-light">
+        {t('faq.description')}
+      </p>
+    </div>
+
+    <!-- Accordion Items -->
+    <div class="space-y-4" id="faq-accordion">
+      {faqData.questions.map((faq, i) => {
+        const question = lang === 'es' ? faq.question_es : faq.question_en;
+        const answer = lang === 'es' ? faq.answer_es : faq.answer_en;
+        return (
+          <details
+            class="group rounded-2xl bg-surface-card-light dark:bg-surface-card-dark border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md transition-all duration-300 animate-on-scroll"
+            style={`transition-delay: ${i * 0.08}s`}
+            data-faq-id={`faq-${i}`}
+          >
+            <summary class="flex items-center justify-between p-6 cursor-pointer font-display text-lg md:text-xl font-semibold list-none select-none [&::-webkit-details-marker]:hidden text-text-primary-light dark:text-text-primary-dark hover:text-primary dark:hover:text-primary transition-colors">
+              <span>{question}</span>
+              <!-- Animated Icon (Plus/Minus transition) -->
+              <span class="relative flex-shrink-0 ml-4 w-6 h-6 flex items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/20 text-primary transition-colors duration-300">
+                <svg 
+                  class="w-4 h-4 transition-transform duration-300 group-open:rotate-45" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor" 
+                  stroke-width="2.5"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+              </span>
+            </summary>
+            <div class="px-6 pb-6 pt-1 text-sm md:text-base leading-relaxed text-text-secondary-light dark:text-text-secondary-dark font-body border-t border-black/5 dark:border-white/5 transition-all duration-500">
+              {answer}
+            </div>
+          </details>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<script>
+  function initFAQAccordion() {
+    const accordion = document.getElementById('faq-accordion');
+    if (!accordion) return;
+
+    const items = accordion.querySelectorAll('details');
+
+    items.forEach((details) => {
+      details.addEventListener('toggle', () => {
+        // Only run when opening
+        if (details.open) {
+          items.forEach((otherDetails) => {
+            if (otherDetails !== details && otherDetails.open) {
+              otherDetails.open = false;
+            }
+          });
+        }
+      });
+    });
+  }
+
+  // Run on page load
+  initFAQAccordion();
+
+  // Run on page swap (Astro client router transitions)
+  document.addEventListener('astro:after-swap', initFAQAccordion);
+</script>

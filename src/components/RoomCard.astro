@@ -1,0 +1,166 @@
+---
+import { Image } from "astro:assets";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import type { Room } from "../data/rooms";
+import { useTranslations } from "../i18n/utils";
+import { translateBeds } from "../utils/helpers";
+
+interface Props {
+  room: Room;
+  index?: number;
+}
+
+const { room, index = 0 } = Astro.props;
+
+const lang = (Astro.currentLocale || "en") as "en" | "es";
+const t = useTranslations(lang);
+
+// Dynamically import the first photo from the room's folder
+const allImages = import.meta.glob<{ default: ImageMetadata }>(
+  "../assets/rooms/**/*.jpg",
+);
+const roomImages = Object.entries(allImages)
+  .filter(([path]) => path.includes(`/${room.photoFolder}/`))
+  .sort(([a], [b]) => a.localeCompare(b));
+
+// Get the first image or a fallback
+const firstImageEntry = roomImages[0];
+const firstImage = firstImageEntry
+  ? (await firstImageEntry[1]()).default
+  : null;
+
+// Translate bedding info using shared utility
+const translatedBeds = translateBeds(room.beds, lang);
+---
+
+<a
+  href={getRelativeLocaleUrl(lang, `rooms/${room.slug}`)}
+  class:list={[
+    "group block rounded-2xl overflow-hidden bg-surface-card-light dark:bg-surface-card-dark shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 animate-on-scroll stagger-child",
+  ]}
+  style={`transition-delay: ${index * 0.1}s`}
+  data-astro-prefetch
+>
+  <!-- Image -->
+  <div class="relative aspect-[4/3] overflow-hidden">
+    {
+      firstImage ? (
+        <Image
+          src={firstImage}
+          alt={room.name[lang]}
+          width={600}
+          height={450}
+          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          loading="lazy"
+        />
+      ) : (
+        <div class="w-full h-full bg-gradient-to-br from-primary/20 to-tertiary/20 flex items-center justify-center">
+          <svg class="w-12 h-12 text-primary opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 21V8.25A2.25 2.25 0 0017.25 6h-10.5A2.25 2.25 0 004.5 8.25V21m16.5 0h-16.5m16.5 0h-3m-13.5 0h3m3 0h6M9 17h1.5m1.5 0H13.5m-4.5-3h1.5m1.5 0H13.5m-4.5-3h1.5m1.5 0H13.5M9 8h1.5m1.5 0H13.5" />
+          </svg>
+        </div>
+      )
+    }
+
+    <!-- Price Overlay (appears on hover) -->
+    <div
+      class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6"
+    >
+      <span class="text-white text-2xl font-display font-bold">
+        {t("rooms.from")} <span class="text-secondary-light">${room.pricePerNight}</span><span
+          class="text-sm font-body font-normal opacity-80"
+          >/{lang === "es" ? "noche" : "night"}</span
+        >
+      </span>
+    </div>
+
+    <!-- Photo count badge -->
+    {
+      room.images.length > 0 && (
+        <div class="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-full flex items-center gap-1">
+          <svg
+            class="w-3.5 h-3.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+          {room.images.length}
+        </div>
+      )
+    }
+
+    <!-- Video badge -->
+    {
+      room.hasVideoTour && (
+        <div class="absolute top-3 left-3 bg-primary/80 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-full flex items-center gap-1">
+          <svg
+            class="w-3.5 h-3.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+            />
+          </svg>
+          {t("rooms.videoTour")}
+        </div>
+      )
+    }
+  </div>
+
+  <!-- Content -->
+  <div class="p-5">
+    <h3
+      class="font-display text-xl mb-1 group-hover:text-primary transition-colors duration-300"
+    >
+      {room.name[lang]}
+    </h3>
+    <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-3 line-clamp-2">
+      {room.description[lang]}
+    </p>
+    <div class="flex items-center justify-between">
+      <div
+        class="flex items-center gap-3 text-xs text-text-secondary-light dark:text-text-secondary-dark"
+      >
+        <span class="flex items-center gap-1">
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+            ></path>
+          </svg>
+          {t("rooms.upTo")}
+          {room.maxGuests}
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-text-secondary-light dark:text-text-secondary-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 4v16M2 20h20M22 20V12a4 4 0 0 0-4-4H4" />
+            <path d="M6 12h4a2 2 0 0 0 2-2V8H6v4Z" />
+          </svg>
+          {translatedBeds}
+        </span>
+      </div>
+      <span class="text-secondary-dark font-semibold text-lg">
+        ${room.pricePerNight}
+      </span>
+    </div>
+  </div>
+</a>

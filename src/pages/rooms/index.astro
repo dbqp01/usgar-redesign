@@ -1,0 +1,196 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import RoomCard from "../../components/RoomCard.astro";
+import { rooms } from "../../data/rooms";
+import { useTranslations } from "../../i18n/utils";
+
+const lang = (Astro.currentLocale || "en") as "en" | "es";
+const t = useTranslations(lang);
+
+// Unique capacities for filters (2, 3, 4 guests)
+const capacities = ["all", "2", "3", "4"];
+
+const filterLabels: Record<string, { en: string; es: string }> = {
+  all: { en: "All Rooms", es: "Todas las Habitaciones" },
+  "2": { en: "2 Guests", es: "2 Huéspedes" },
+  "3": { en: "3 Guests", es: "3 Huéspedes" },
+  "4": { en: "4+ Guests", es: "4+ Huéspedes" },
+};
+---
+
+<Layout title={`${t("rooms.title")} — USGAR Hotels`} lang={lang}>
+  <!-- Header Banner -->
+  <section
+    class="relative pt-32 pb-16 px-4 bg-gradient-to-b from-primary/10 via-transparent to-transparent overflow-hidden"
+  >
+    <div class="max-w-4xl mx-auto text-center relative z-10">
+      <span class="text-sm font-semibold text-primary uppercase tracking-widest"
+        >{t("rooms.sectionLabel")}</span
+      >
+      <h1
+        class="font-display text-4xl md:text-6xl mt-2 mb-6 leading-tight text-text-primary-light dark:text-text-primary-dark"
+      >
+        {t("rooms.title")}
+      </h1>
+      <p
+        class="text-lg md:text-xl text-text-secondary-light dark:text-text-secondary-dark max-w-2xl mx-auto font-body font-light leading-relaxed"
+      >
+        {t("rooms.description")}
+      </p>
+    </div>
+  </section>
+
+  <!-- Filter & Rooms Grid -->
+  <section class="pb-24 px-4 max-w-7xl mx-auto">
+    <!-- Filter Buttons -->
+    <div
+      class="mb-12 flex flex-wrap justify-center gap-2.5 max-w-2xl mx-auto px-4"
+    >
+      {
+        capacities.map((cap) => (
+          <button
+            class="px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer whitespace-nowrap select-none bg-surface-card-light dark:bg-surface-card-dark border border-stone-200 dark:border-stone-800 text-text-secondary-light dark:text-text-secondary-dark hover:border-primary/50 dark:hover:border-primary/50 hover:text-primary hover:scale-[1.02] shadow-sm"
+            data-capacity-filter={cap}
+          >
+            {filterLabels[cap][lang]}
+          </button>
+        ))
+      }
+    </div>
+
+    <!-- Rooms Grid (Flexbox Centered) -->
+    <div
+      class="flex flex-wrap justify-center gap-6 md:gap-8"
+      id="rooms-grid"
+    >
+      {
+        rooms.map((room, i) => (
+          <div data-guests={room.maxGuests} class="transition-all duration-500 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-22px)] max-w-sm flex">
+            <RoomCard room={room} index={i} />
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- Empty State -->
+    <div
+      id="rooms-empty-state"
+      class="hidden text-center py-20 bg-surface-card-light dark:bg-surface-card-dark border border-black/5 dark:border-white/5 p-8 rounded-3xl mt-6"
+    >
+      <span class="text-5xl block mb-4">🏨</span>
+      <h3 class="font-display text-2xl mb-2 text-text-primary-light dark:text-text-primary-dark">
+        {lang === "es" ? "No se encontraron habitaciones" : "No rooms found"}
+      </h3>
+      <p class="text-text-secondary-light dark:text-text-secondary-dark font-body max-w-sm mx-auto">
+        {
+          lang === "es"
+            ? "Prueba cambiando los filtros de huéspedes."
+            : "Try adjusting your guest capacity filters."
+        }
+      </p>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  function initRoomsFilter() {
+    const filterButtons = document.querySelectorAll("[data-capacity-filter]");
+    const grid = document.getElementById("rooms-grid");
+    const emptyState = document.getElementById("rooms-empty-state");
+
+    if (!grid || !emptyState) return;
+
+    const cards = Array.from(grid.children) as HTMLElement[];
+    let activeFilter = "all";
+
+    // Set 'all' filter as active initially
+    filterButtons.forEach((btn) => {
+      const cap = btn.getAttribute("data-capacity-filter");
+      if (cap === "all") {
+        btn.classList.add("border-primary", "text-primary", "bg-primary/5");
+        btn.classList.remove(
+          "border-stone-200",
+          "dark:border-stone-800",
+          "text-stone-600",
+          "dark:text-stone-400",
+        );
+      }
+    });
+
+    function applyFilter() {
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const guests = parseInt(card.getAttribute("data-guests") || "0", 10);
+
+        let matches = false;
+        if (activeFilter === "all") {
+          matches = true;
+        } else if (activeFilter === "2") {
+          matches = guests === 2;
+        } else if (activeFilter === "3") {
+          matches = guests === 3;
+        } else if (activeFilter === "4") {
+          matches = guests >= 4;
+        }
+
+        if (matches) {
+          card.classList.remove("hidden");
+          card.classList.add("animate-fade-in");
+          visibleCount++;
+        } else {
+          card.classList.add("hidden");
+          card.classList.remove("animate-fade-in");
+        }
+      });
+
+      // Show/hide empty state
+      if (visibleCount === 0) {
+        emptyState!.classList.remove("hidden");
+        grid!.classList.add("hidden");
+      } else {
+        emptyState!.classList.add("hidden");
+        grid!.classList.remove("hidden");
+      }
+    }
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const cap = btn.getAttribute("data-capacity-filter") || "all";
+        activeFilter = cap;
+
+        filterButtons.forEach((b) => {
+          if (b === btn) {
+            b.classList.add("border-primary", "text-primary", "bg-primary/5");
+            b.classList.remove(
+              "border-stone-200",
+              "dark:border-stone-800",
+              "text-stone-600",
+              "dark:text-stone-400",
+            );
+          } else {
+            b.classList.remove(
+              "border-primary",
+              "text-primary",
+              "bg-primary/5",
+            );
+            b.classList.add(
+              "border-stone-200",
+              "dark:border-stone-800",
+              "text-stone-600",
+              "dark:text-stone-400",
+            );
+          }
+        });
+
+        applyFilter();
+      });
+    });
+  }
+
+  // Run on page load
+  initRoomsFilter();
+
+  // Run on Astro View Transitions swap
+  document.addEventListener("astro:after-swap", initRoomsFilter);
+</script>

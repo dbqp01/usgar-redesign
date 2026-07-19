@@ -1,0 +1,110 @@
+- generic [active]:
+  - generic:
+    - generic:
+      - generic [ref=f1e2]:
+        - button "Show editing panel"
+        - generic [ref=f1e3]:
+          - generic [ref=f1e5]:
+            - generic [ref=f1e6]:
+              - button "Open navigation menu" [ref=f1e7] [cursor=pointer]
+              - link "You are in local mode" [ref=f1e17] [cursor=pointer]:
+                - /url: https://tina.io/docs/r/what-is-tinacloud/
+            - button "Hide editing panel" [ref=f1e19] [cursor=pointer]
+          - generic [ref=f1e43]:
+            - paragraph [ref=f1e44]: TinaCMS form fields will appear here.
+            - paragraph [ref=f1e45]:
+              - link "📖 Visual Editing Docs" [ref=f1e46] [cursor=pointer]:
+                - /url: https://tina.io/docs/r/visual-editing-setup
+                - generic [ref=f1e47]: 📖
+                - text: Visual Editing Docs
+      - generic [ref=f1e155]:
+        - generic [ref=f1e157]:
+          - button "Toggle navigation menu" [ref=f1e158] [cursor=pointer]
+          - link "You are in local mode" [ref=f1e168] [cursor=pointer]:
+            - /url: https://tina.io/docs/r/what-is-tinacloud/
+        - navigation "breadcrumb" [ref=f1e171]:
+          - list [ref=f1e172]:
+            - listitem [ref=f1e173]:
+              - button "Back to Configuración del Hotel" [ref=f1e174] [cursor=pointer]:
+                - generic [ref=f1e177]: Configuración del Hotel
+            - listitem [ref=f1e178]: /
+            - listitem [ref=f1e180]:
+              - link "settings" [disabled] [ref=f1e181]
+        - generic [ref=f1e187]:
+          - generic [ref=f1e188]:
+            - generic [ref=f1e189]: Nombre del Hotel
+            - textbox [ref=f1e190]: USGAR Hotels
+          - generic [ref=f1e191]:
+            - generic [ref=f1e192]: "Teléfono (formato display: +51 984 000 000)"
+            - textbox [ref=f1e193]: +51 984 000 000
+          - generic [ref=f1e194]:
+            - generic [ref=f1e195]: "Teléfono (sin espacios: 51984000000)"
+            - textbox [ref=f1e196]: "51984000000"
+          - generic [ref=f1e197]:
+            - generic [ref=f1e198]: Email de Contacto
+            - textbox [ref=f1e199]: info@usgarhotels.com
+          - generic [ref=f1e200]:
+            - generic [ref=f1e201]: "WhatsApp (sin +, ej: 51984000000)"
+            - textbox [ref=f1e202]: "51984000000"
+          - generic [ref=f1e203]:
+            - generic [ref=f1e204]: Dirección (calle)
+            - textbox [ref=f1e205]: San Pedro
+          - generic [ref=f1e206]:
+            - generic [ref=f1e207]: Ciudad
+            - textbox [ref=f1e208]: Cusco
+          - generic [ref=f1e209]:
+            - generic [ref=f1e210]: Región/Estado
+            - textbox [ref=f1e211]: Cusco
+          - generic [ref=f1e212]:
+            - generic [ref=f1e213]: Código Postal
+            - textbox [ref=f1e214]: "08002"
+          - generic [ref=f1e215]:
+            - generic [ref=f1e216]: "País (código ISO, ej: PE)"
+            - textbox [ref=f1e217]: PE
+          - generic [ref=f1e218]:
+            - generic [ref=f1e219]: Dirección completa (Español)
+            - textbox [ref=f1e220]: San Pedro, Cusco, Perú
+          - generic [ref=f1e221]:
+            - generic [ref=f1e222]: Dirección completa (Inglés)
+            - textbox [ref=f1e223]: San Pedro, Cusco, Peru
+          - generic [ref=f1e224]:
+            - generic [ref=f1e225]: Latitud GPS
+            - spinbutton [ref=f1e226]: "-13.5226"
+          - generic [ref=f1e227]:
+            - generic [ref=f1e228]: Longitud GPS
+            - spinbutton [ref=f1e229]: "-71.9828"
+          - generic [ref=f1e230]:
+            - generic [ref=f1e231]: "Hora de Check-in (ej: 12:00)"
+            - textbox [ref=f1e232]: 12:00
+          - generic [ref=f1e233]:
+            - generic [ref=f1e234]: "Hora de Check-out (ej: 10:30)"
+            - textbox [ref=f1e235]: 10:30
+          - generic [ref=f1e236]:
+            - generic [ref=f1e237]: Clasificación por Estrellas
+            - spinbutton [ref=f1e238]: "3"
+          - generic [ref=f1e239]:
+            - generic [ref=f1e240]: "Rango de Precios (ej: $$)"
+            - textbox [ref=f1e241]: $$
+          - generic [ref=f1e242]:
+            - generic [ref=f1e243]: Descripción del Sitio (Español)
+            - textbox [ref=f1e244]: USGAR Hotels — Hotel boutique en San Pedro, Cusco. Tu puerta de entrada a Machu Picchu y el Valle Sagrado.
+          - generic [ref=f1e245]:
+            - generic [ref=f1e246]: Descripción del Sitio (Inglés)
+            - textbox [ref=f1e247]: USGAR Hotels — Boutique hotel in San Pedro, Cusco. Your gateway to Machu Picchu and the Sacred Valley.
+          - generic [ref=f1e248]:
+            - generic [ref=f1e249]:
+              - generic [ref=f1e250]: Redes Sociales
+              - button [ref=f1e251] [cursor=pointer]
+            - generic [ref=f1e257]:
+              - button "Instagram" [ref=f1e258] [cursor=pointer]:
+                - button [ref=f1e271]
+              - button "Facebook" [ref=f1e274] [cursor=pointer]:
+                - button [ref=f1e287]
+              - button "TripAdvisor" [ref=f1e290] [cursor=pointer]:
+                - button [ref=f1e303]
+              - button "Booking.com" [ref=f1e306] [cursor=pointer]:
+                - button [ref=f1e319]
+        - generic [ref=f1e323]:
+          - button "Reset"
+          - button "Save"
+        - status [ref=f1e324]

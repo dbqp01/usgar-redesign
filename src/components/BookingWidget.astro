@@ -1,0 +1,163 @@
+---
+import { rooms } from '../data/rooms';
+import { useTranslations } from '../i18n/utils';
+
+const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+const t = useTranslations(lang);
+
+const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
+---
+
+<section id="booking-widget" class="relative z-10 -mt-24 mb-16">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="glass rounded-2xl p-6 shadow-xl shadow-black/5">
+      <form id="booking-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+        <!-- Check-in -->
+        <div>
+          <label for="checkin" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+            {t('booking.checkin')}
+          </label>
+          <input
+            type="date"
+            id="checkin"
+            name="checkin"
+            class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+          />
+        </div>
+
+        <!-- Check-out -->
+        <div>
+          <label for="checkout" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+            {t('booking.checkout')}
+          </label>
+          <input
+            type="date"
+            id="checkout"
+            name="checkout"
+            class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+          />
+        </div>
+
+        <!-- Guests -->
+        <div>
+          <label for="guests" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+            {t('booking.guests')}
+          </label>
+          <select
+            id="guests"
+            name="guests"
+            class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all appearance-none"
+          >
+            <option value="1">1 {t('booking.guest')}</option>
+            <option value="2" selected>2 {t('booking.guests_plural')}</option>
+            <option value="3">3 {t('booking.guests_plural')}</option>
+            <option value="4">4 {t('booking.guests_plural')}</option>
+            <option value="5">5 {t('booking.guests_plural')}</option>
+            <option value="6">6 {t('booking.guests_plural')}</option>
+            <option value="7">7 {t('booking.guests_plural')}</option>
+          </select>
+        </div>
+
+        <!-- Room Type -->
+        <div>
+          <label for="room-type" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+            {t('booking.roomType')}
+          </label>
+          <select
+            id="room-type"
+            name="room-type"
+            class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all appearance-none"
+          >
+            <option value="">{t('booking.anyRoom')}</option>
+            {roomTypes.map(rt => (
+              <option value={rt.value}>{rt.label}</option>
+            ))}
+          </select>
+        </div>
+
+        <!-- Search Button -->
+        <div>
+          <button
+            type="submit"
+            class="w-full bg-secondary hover:bg-secondary-dark text-text-primary-light font-semibold py-3 px-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-secondary/25 hover:-translate-y-0.5 text-sm uppercase tracking-wider cursor-pointer"
+          >
+            {t('booking.search')}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  let abortController = new AbortController();
+
+  function initBookingWidget() {
+    // Abort previous listeners to avoid duplicates
+    abortController.abort();
+    abortController = new AbortController();
+    const signal = abortController.signal;
+
+    const form = document.getElementById('booking-form') as HTMLFormElement;
+    if (!form) return;
+
+    const checkin = document.getElementById('checkin') as HTMLInputElement;
+    const checkout = document.getElementById('checkout') as HTMLInputElement;
+
+    // Set default dates if empty
+    if (checkin && !checkin.value) {
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      checkin.value = tomorrow.toISOString().split('T')[0];
+      checkin.min = today.toISOString().split('T')[0];
+    }
+    if (checkout && !checkout.value && checkin) {
+      const checkinDate = new Date(checkin.value);
+      const dayAfter = new Date(checkinDate);
+      dayAfter.setDate(checkinDate.getDate() + 1);
+      checkout.value = dayAfter.toISOString().split('T')[0];
+      checkout.min = checkin.value;
+    }
+
+    // Set dynamic min value for checkout date based on checkin changes
+    checkin?.addEventListener('change', () => {
+      if (checkout && checkin.value >= checkout.value) {
+        const nextDay = new Date(checkin.value);
+        nextDay.setDate(nextDay.getDate() + 1);
+        checkout.value = nextDay.toISOString().split('T')[0];
+      }
+      if (checkout) {
+        checkout.min = checkin.value;
+      }
+    }, { signal });
+
+    checkin?.addEventListener('click', () => {
+      try { checkin.showPicker(); } catch (e) {}
+    }, { signal });
+    checkout?.addEventListener('click', () => {
+      try { checkout.showPicker(); } catch (e) {}
+    }, { signal });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const checkinVal = checkin?.value;
+      const checkoutVal = checkout?.value;
+      const guests = (document.getElementById('guests') as HTMLSelectElement)?.value;
+      const roomType = (document.getElementById('room-type') as HTMLSelectElement)?.value;
+
+      const params = new URLSearchParams();
+      if (checkinVal) params.append('checkin', checkinVal);
+      if (checkoutVal) params.append('checkout', checkoutVal);
+      if (guests) params.append('guests', guests);
+      if (roomType) params.append('roomType', roomType);
+
+      const lang = document.documentElement.lang || 'en';
+      const basePath = lang === 'es' ? '/es/book' : '/book';
+      window.location.href = `${basePath}?${params.toString()}`;
+    }, { signal });
+  }
+
+  initBookingWidget();
+  document.addEventListener('astro:after-swap', initBookingWidget);
+</script>

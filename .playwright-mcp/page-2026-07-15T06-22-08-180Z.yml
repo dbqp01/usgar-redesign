@@ -1,0 +1,436 @@
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e3]:
+    - navigation [ref=e4]:
+      - generic [ref=e5]:
+        - link "USGAR Hotels Home" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - img "USGAR Hotels" [ref=e7]
+        - generic [ref=e8]:
+          - link "Rooms" [ref=e9] [cursor=pointer]:
+            - /url: /rooms/
+          - link "Services" [ref=e10] [cursor=pointer]:
+            - /url: /#services
+          - link "Explore Cusco" [ref=e11] [cursor=pointer]:
+            - /url: /explore/
+          - link "Gallery" [ref=e12] [cursor=pointer]:
+            - /url: /gallery/
+          - link "Contact" [ref=e13] [cursor=pointer]:
+            - /url: /contact/
+        - generic [ref=e14]:
+          - link "Toggle language" [ref=e15] [cursor=pointer]:
+            - /url: /es
+            - text: ES
+          - button "Toggle dark mode" [ref=e16]
+          - link "Book Now" [ref=e19] [cursor=pointer]:
+            - /url: /book/
+  - main [ref=e20]:
+    - generic [ref=e21]:
+      - generic:
+        - generic:
+          - img "USGAR Hotels Cusco"
+        - generic:
+          - img "USGAR Hotels Cusco Rooms"
+        - generic:
+          - img "USGAR Hotels Cusco Entrance"
+        - generic:
+          - img "USGAR Hotels Cusco Murals"
+      - generic [ref=e24]:
+        - heading "USGAR Hotels" [level=1] [ref=e25]
+        - paragraph [ref=e26]: San Pedro, Cusco — Your gateway to the Andes
+        - generic [ref=e27]:
+          - link "Book Your Stay" [ref=e28] [cursor=pointer]:
+            - /url: /book/
+          - link "Explore Rooms" [ref=e29] [cursor=pointer]:
+            - /url: "#rooms"
+      - button "Toggle video audio" [ref=e30]
+    - generic [ref=e40]:
+      - generic [ref=e41]:
+        - generic [ref=e42]: Check-in
+        - textbox "Check-in" [ref=e43]: 2026-07-16
+      - generic [ref=e44]:
+        - generic [ref=e45]: Check-out
+        - textbox "Check-out" [ref=e46]: 2026-07-17
+      - generic [ref=e47]:
+        - generic [ref=e48]: Guests
+        - combobox "Guests" [ref=e49]:
+          - option "1 Guest"
+          - option "2 Guests" [selected]
+          - option "3 Guests"
+          - option "4 Guests"
+          - option "5 Guests"
+          - option "6 Guests"
+          - option "7 Guests"
+      - generic [ref=e50]:
+        - generic [ref=e51]: Room Type
+        - combobox "Room Type" [ref=e52]:
+          - option "Any Room" [selected]
+          - option "Double Superior Room"
+          - option "Superior Matrimonial Room"
+          - option "Family Superior Room"
+          - option "Triple Standard Room"
+      - button "Check Availability" [ref=e54] [cursor=pointer]
+    - generic [ref=e55]:
+      - generic [ref=e56]: Guest Reviews
+      - generic [ref=e57]:
+        - generic [ref=e58]:
+          - generic [ref=e59]:
+            - generic [ref=e60]: 🇺🇸 Sarah M.
+            - paragraph [ref=e73]: "\"Absolutely magical! The murals and Andean decor made us feel immersed in local culture. Breakfast was incredible and the staff went above and beyond.\""
+          - generic [ref=e74]:
+            - generic [ref=e75]: 🇩🇪 Thomas K.
+            - paragraph [ref=e88]: "\"Perfect location near San Pedro Market. The rooms are warm and cozy — essential for cold Cusco nights. Will definitely return!\""
+          - generic [ref=e89]:
+            - generic [ref=e90]: 🇧🇷 Ana L.
+            - paragraph [ref=e103]: "\"The airport transfer service was a lifesaver. Hotel is charming, clean, and the staff speaks English fluently. Great value for money.\""
+          - generic [ref=e104]:
+            - generic [ref=e105]: 🇬🇧 James P.
+            - paragraph [ref=e118]: "\"Lovely boutique hotel with character. The spa massage after a long day of hiking was exactly what we needed. Highly recommended!\""
+          - generic [ref=e119]:
+            - generic [ref=e120]: 🇯🇵 Yuki T.
+            - paragraph [ref=e133]: "\"Beautiful hotel with authentic Cusco charm. They helped us arrange our Machu Picchu tour and it was seamless. The breakfast is fresh and delicious.\""
+          - generic [ref=e134]:
+            - generic [ref=e135]: 🇪🇸 Elena R.
+            - paragraph [ref=e148]: "\"A beautiful hidden gem in Cusco. Excellent service, hot water 24h, and heaters that work perfectly. Super close to the historic market.\""
+          - generic [ref=e149]:
+            - generic [ref=e150]: 🇨🇦 Mark B.
+            - paragraph [ref=e163]: "\"Very clean rooms, comfortable beds, and a delicious breakfast buffet. The staff helped us book a safe taxi from the airport. Highly recommended!\""
+          - generic [ref=e164]:
+            - generic [ref=e165]: 🇫🇷 Sophie D.
+            - paragraph [ref=e178]: "\"Outstanding boutique hotel! Hand-painted murals in the room are stunning. Having heaters was amazing for cold nights. 10/10 experience!\""
+        - generic [ref=e179]:
+          - generic [ref=e180]:
+            - generic [ref=e181]: 🇺🇸 Sarah M.
+            - paragraph [ref=e194]: "\"Absolutely magical! The murals and Andean decor made us feel immersed in local culture. Breakfast was incredible and the staff went above and beyond.\""
+          - generic [ref=e195]:
+            - generic [ref=e196]: 🇩🇪 Thomas K.
+            - paragraph [ref=e209]: "\"Perfect location near San Pedro Market. The rooms are warm and cozy — essential for cold Cusco nights. Will definitely return!\""
+          - generic [ref=e210]:
+            - generic [ref=e211]: 🇧🇷 Ana L.
+            - paragraph [ref=e224]: "\"The airport transfer service was a lifesaver. Hotel is charming, clean, and the staff speaks English fluently. Great value for money.\""
+          - generic [ref=e225]:
+            - generic [ref=e226]: 🇬🇧 James P.
+            - paragraph [ref=e239]: "\"Lovely boutique hotel with character. The spa massage after a long day of hiking was exactly what we needed. Highly recommended!\""
+          - generic [ref=e240]:
+            - generic [ref=e241]: 🇯🇵 Yuki T.
+            - paragraph [ref=e254]: "\"Beautiful hotel with authentic Cusco charm. They helped us arrange our Machu Picchu tour and it was seamless. The breakfast is fresh and delicious.\""
+          - generic [ref=e255]:
+            - generic [ref=e256]: 🇪🇸 Elena R.
+            - paragraph [ref=e269]: "\"A beautiful hidden gem in Cusco. Excellent service, hot water 24h, and heaters that work perfectly. Super close to the historic market.\""
+          - generic [ref=e270]:
+            - generic [ref=e271]: 🇨🇦 Mark B.
+            - paragraph [ref=e284]: "\"Very clean rooms, comfortable beds, and a delicious breakfast buffet. The staff helped us book a safe taxi from the airport. Highly recommended!\""
+          - generic [ref=e285]:
+            - generic [ref=e286]: 🇫🇷 Sophie D.
+            - paragraph [ref=e299]: "\"Outstanding boutique hotel! Hand-painted murals in the room are stunning. Having heaters was amazing for cold nights. 10/10 experience!\""
+    - generic [ref=e301]:
+      - generic [ref=e302]:
+        - text: About Us
+        - heading "About Us" [level=2] [ref=e303]
+        - paragraph [ref=e304]: Create memorable experiences that allow each traveler to discover the essence of Cusco, providing a warm, personalized and excellent service that makes each stay an unforgettable memory.
+      - generic [ref=e305]:
+        - generic [ref=e306]:
+          - heading "Our Mission" [level=3] [ref=e310]
+          - paragraph [ref=e311]: Provide a unique lodging experience in the heart of Cusco, offering a personalized, warm and high quality service that combines comfort, hospitality and the richness of local culture. We are committed to exceeding our guests' expectations through exceptional attention, a passionate human team and sustainable tourism practices that generate unforgettable memories.
+        - generic [ref=e312]:
+          - heading "Our Vision" [level=3] [ref=e317]
+          - paragraph [ref=e318]: To be the benchmark hotel in Cusco, maintaining the essence of our culture. We aspire to be the first choice of travelers seeking excellence, warmth and personalized service, distinguishing ourselves by our hospitality, innovation and commitment to sustainability. We seek to create a positive impact on our guests, collaborators and community, promoting responsible tourism that values and preserves the cultural and natural heritage of Cusco.
+      - heading "Our Values" [level=3] [ref=e320]
+      - generic [ref=e321]:
+        - generic [ref=e322]:
+          - heading "Hospitality" [level=4] [ref=e326]
+          - paragraph [ref=e327]: We receive each guest with warmth, kindness and a close treatment, making them feel at home from their arrival.
+        - generic [ref=e328]:
+          - heading "Excellence" [level=4] [ref=e332]
+          - paragraph [ref=e333]: We seek continuous improvement to offer a high-quality service that exceeds our guests' expectations.
+        - generic [ref=e334]:
+          - heading "Authenticity" [level=4] [ref=e338]
+          - paragraph [ref=e339]: We share the cultural richness of Cusco through genuine experiences that connect our visitors with local identity.
+        - generic [ref=e340]:
+          - heading "Respect" [level=4] [ref=e344]
+          - paragraph [ref=e345]: We act with integrity and consideration towards our guests, collaborators, suppliers, the community and the environment.
+        - generic [ref=e346]:
+          - heading "Commitment" [level=4] [ref=e350]
+          - paragraph [ref=e351]: We work with responsibility, dedication and passion to guarantee a memorable experience in each stay.
+        - generic [ref=e352]:
+          - heading "Sustainability" [level=4] [ref=e356]
+          - paragraph [ref=e357]: We promote responsible tourism through practices that contribute to the conservation of the natural environment and cultural heritage.
+        - generic [ref=e358]:
+          - heading "Teamwork" [level=4] [ref=e362]
+          - paragraph [ref=e363]: We foster collaboration, communication and mutual support to provide an efficient and excellent service.
+        - generic [ref=e364]:
+          - heading "Innovation" [level=4] [ref=e368]
+          - paragraph [ref=e369]: We incorporate new ideas and solutions that continuously improve our guests' experience and the quality of our services.
+    - text: n>
+    - generic [ref=e371]:
+      - generic [ref=e372]:
+        - text: Accommodations
+        - heading "Our Rooms" [level=2] [ref=e373]
+        - paragraph [ref=e374]: Each room is uniquely designed with hand-painted Andean murals, warm lighting, and artisan textiles that celebrate Cusco's cultural heritage.
+      - generic [ref=e375]:
+        - link "Double Superior Room From $90/night 4 Video Tour Double Superior Room Spacious room with two comfortable double beds with warm ambient lighting. Perfect for friends or colleagues traveling together. Up to2 2 double beds $90" [ref=e377] [cursor=pointer]:
+          - /url: /rooms/doble-superior/
+          - generic [ref=e378]:
+            - img "Double Superior Room" [ref=e379]
+            - generic [ref=e380]: From $90/night
+            - generic [ref=e382]: "4"
+            - generic [ref=e385]: Video Tour
+          - generic [ref=e388]:
+            - heading "Double Superior Room" [level=3] [ref=e389]
+            - paragraph [ref=e390]: Spacious room with two comfortable double beds with warm ambient lighting. Perfect for friends or colleagues traveling together.
+            - generic [ref=e391]:
+              - generic [ref=e392]:
+                - generic [ref=e393]: Up to2
+                - generic [ref=e396]: 2 double beds
+              - generic [ref=e400]: $90
+        - link "Superior Matrimonial Room From $90/night 4 Video Tour Superior Matrimonial Room Romantic retreat featuring a king-size bed, artisan textiles, and a cozy atmosphere. Ideal for couples exploring the wonders of Cusco. Up to2 1 king bed $90" [ref=e402] [cursor=pointer]:
+          - /url: /rooms/matrimonial/
+          - generic [ref=e403]:
+            - img "Superior Matrimonial Room" [ref=e404]
+            - generic [ref=e405]: From $90/night
+            - generic [ref=e407]: "4"
+            - generic [ref=e410]: Video Tour
+          - generic [ref=e413]:
+            - heading "Superior Matrimonial Room" [level=3] [ref=e414]
+            - paragraph [ref=e415]: Romantic retreat featuring a king-size bed, artisan textiles, and a cozy atmosphere. Ideal for couples exploring the wonders of Cusco.
+            - generic [ref=e416]:
+              - generic [ref=e417]:
+                - generic [ref=e418]: Up to2
+                - generic [ref=e421]: 1 king bed
+              - generic [ref=e425]: $90
+        - link "From $150/night Video Tour Family Superior Room Our most spacious room, designed for families or a group of friends. Features 3 double beds and one single bed, with room for everyone to relax after a day of adventures. Up to7 3 double beds + 1 single bed $150" [ref=e427] [cursor=pointer]:
+          - /url: /rooms/familiar-superior/
+          - generic [ref=e428]:
+            - generic [ref=e432]: From $150/night
+            - generic [ref=e434]: Video Tour
+          - generic [ref=e437]:
+            - heading "Family Superior Room" [level=3] [ref=e438]
+            - paragraph [ref=e439]: Our most spacious room, designed for families or a group of friends. Features 3 double beds and one single bed, with room for everyone to relax after a day of adventures.
+            - generic [ref=e440]:
+              - generic [ref=e441]:
+                - generic [ref=e442]: Up to7
+                - generic [ref=e445]: 3 double beds + 1 single bed
+              - generic [ref=e449]: $150
+        - link "From $120/night Video Tour Triple Standard Room Comfortable and practical room with three single beds. Great value for small groups wanting to explore Cusco on a budget. Up to3 3 single beds $120" [ref=e451] [cursor=pointer]:
+          - /url: /rooms/triple-standar/
+          - generic [ref=e452]:
+            - generic [ref=e456]: From $120/night
+            - generic [ref=e458]: Video Tour
+          - generic [ref=e461]:
+            - heading "Triple Standard Room" [level=3] [ref=e462]
+            - paragraph [ref=e463]: Comfortable and practical room with three single beds. Great value for small groups wanting to explore Cusco on a budget.
+            - generic [ref=e464]:
+              - generic [ref=e465]:
+                - generic [ref=e466]: Up to3
+                - generic [ref=e469]: 3 single beds
+              - generic [ref=e473]: $120
+    - generic [ref=e475]:
+      - generic [ref=e476]:
+        - text: Our Services
+        - heading "Everything You Need" [level=2] [ref=e477]
+        - paragraph [ref=e478]: From the moment you arrive, we take care of every detail to make your stay in Cusco unforgettable.
+      - generic [ref=e479]:
+        - generic [ref=e480]:
+          - generic [ref=e481]:
+            - heading "Essential Comforts" [level=3] [ref=e482]
+            - paragraph [ref=e483]: Primary amenities ensuring a warm, seamless stay.
+          - generic [ref=e484]:
+            - generic [ref=e489]:
+              - heading "Free Wi-Fi" [level=4] [ref=e490]
+              - paragraph [ref=e491]: High-speed internet throughout the hotel
+            - generic [ref=e501]:
+              - heading "Heating" [level=4] [ref=e502]
+              - paragraph [ref=e503]: Central heating for cold Andean nights
+            - generic [ref=e512]:
+              - heading "Hot Water 24h" [level=4] [ref=e513]
+              - paragraph [ref=e514]: Hot water available around the clock
+            - generic [ref=e520]:
+              - heading "Parking" [level=4] [ref=e521]
+              - paragraph [ref=e522]: Free private parking on premises
+            - generic [ref=e527]:
+              - heading "24h Reception" [level=4] [ref=e528]
+              - paragraph [ref=e529]: Always available to assist with your needs and check-in
+            - generic [ref=e534]:
+              - heading "Bilingual Staff" [level=4] [ref=e535]
+              - paragraph [ref=e536]: Warm hospitality from our English and Spanish speaking team
+            - generic [ref=e543]:
+              - heading "Non-Smoking Rooms" [level=4] [ref=e544]
+              - paragraph [ref=e545]: 100% smoke-free environments for healthy breathing
+            - generic [ref=e550]:
+              - heading "Daily Cleaning" [level=4] [ref=e551]
+              - paragraph [ref=e552]: Attentive daily housekeeping in all rooms
+        - generic [ref=e553]:
+          - generic [ref=e554]:
+            - heading "Wellness & Dining" [level=3] [ref=e555]
+            - paragraph [ref=e556]: Indulge in authentic local tastes and relaxing therapies.
+          - generic [ref=e557]:
+            - generic [ref=e562]:
+              - heading "Breakfast Buffet" [level=4] [ref=e563]
+              - paragraph [ref=e564]: Andean and international breakfast daily (6:00 am - 9:00 am)
+            - generic [ref=e569]:
+              - heading "Cafetería & Restaurant" [level=4] [ref=e570]
+              - paragraph [ref=e571]: Delicious local dining and hot beverages (open until 22:00 hrs)
+            - generic [ref=e576]:
+              - heading "Spa & Massages" [level=4] [ref=e577]
+              - paragraph [ref=e578]: Relax with traditional Andean massage therapies
+            - generic [ref=e583]:
+              - heading "Cable TV" [level=4] [ref=e584]
+              - paragraph [ref=e585]: Flat-screen TV with cable channels in room
+            - generic [ref=e590]:
+              - heading "Complimentary Oxygen" [level=4] [ref=e591]
+              - paragraph [ref=e592]: Oxygen cylinders available for altitude sickness acclimatization
+            - generic [ref=e597]:
+              - heading "Hot Drinks Station" [level=4] [ref=e598]
+              - paragraph [ref=e599]: Complimentary traditional mates, coca tea, and coffee in lobby
+        - generic [ref=e600]:
+          - generic [ref=e601]:
+            - heading "Travel & Experience" [level=3] [ref=e602]
+            - paragraph [ref=e603]: Everything you need to discover Cusco and Machu Picchu safely.
+          - generic [ref=e604]:
+            - generic [ref=e609]:
+              - heading "Airport Transfer" [level=4] [ref=e610]
+              - paragraph [ref=e611]: Comfortable pickup from airport or train station (additional cost)
+            - generic [ref=e616]:
+              - heading "Tours & Excursions" [level=4] [ref=e617]
+              - paragraph [ref=e618]: Guided tours to Machu Picchu, Sacred Valley, and Cusco city
+            - generic [ref=e628]:
+              - heading "Laundry Service" [level=4] [ref=e629]
+              - paragraph [ref=e630]: Same-day laundry and dry cleaning (additional cost)
+            - generic [ref=e636]:
+              - heading "Luggage Storage" [level=4] [ref=e637]
+              - paragraph [ref=e638]: Free safe storage for your bags while you visit ruins
+            - generic [ref=e643]:
+              - heading "Tourist Information" [level=4] [ref=e644]
+              - paragraph [ref=e645]: Maps, advice, and tips to explore Cusco like a local
+            - generic [ref=e650]:
+              - heading "Souvenir Shop" [level=4] [ref=e651]
+              - paragraph [ref=e652]: Local crafts and hand-made Andean gifts on site
+            - generic [ref=e657]:
+              - heading "Currency Exchange" [level=4] [ref=e658]
+              - paragraph [ref=e659]: Exchange dollars and soles easily at the reception
+    - generic [ref=e661]:
+      - generic [ref=e662]:
+        - text: Nearby
+        - heading "Explore Cusco" [level=2] [ref=e663]
+        - paragraph [ref=e664]: Discover the wonders that await just outside your door
+      - generic [ref=e665]:
+        - link "historical 112 km Machu Picchu The iconic Inca citadel and UNESCO World Heritage Site. One of the New Seven Wonders of the World. 4h by train" [ref=e666] [cursor=pointer]:
+          - /url: /explore/machu-picchu/
+          - generic [ref=e667]:
+            - generic [ref=e668]:
+              - generic [ref=e669]: historical
+              - generic [ref=e670]: 112 km
+            - heading "Machu Picchu" [level=3] [ref=e674]
+            - paragraph [ref=e675]: The iconic Inca citadel and UNESCO World Heritage Site. One of the New Seven Wonders of the World.
+          - generic [ref=e676]: 4h by train
+        - link "nature 30 km Sacred Valley Stunning valley with ancient Inca ruins, colorful markets, and breathtaking landscapes. 1h by car" [ref=e679] [cursor=pointer]:
+          - /url: /explore/sacred-valley/
+          - generic [ref=e680]:
+            - generic [ref=e681]:
+              - generic [ref=e682]: nature
+              - generic [ref=e683]: 30 km
+            - heading "Sacred Valley" [level=3] [ref=e687]
+            - paragraph [ref=e688]: Stunning valley with ancient Inca ruins, colorful markets, and breathtaking landscapes.
+          - generic [ref=e689]: 1h by car
+        - link "historical 2 km Sacsayhuamán Massive Inca fortress with perfectly fitted stone walls, overlooking Cusco. 10min by car" [ref=e692] [cursor=pointer]:
+          - /url: /explore/sacsayhuaman/
+          - generic [ref=e693]:
+            - generic [ref=e694]:
+              - generic [ref=e695]: historical
+              - generic [ref=e696]: 2 km
+            - heading "Sacsayhuamán" [level=3] [ref=e700]
+            - paragraph [ref=e701]: Massive Inca fortress with perfectly fitted stone walls, overlooking Cusco.
+          - generic [ref=e702]: 10min by car
+        - link "adventure 100 km Rainbow Mountain Vinicunca, the stunning Rainbow Mountain with layers of colorful minerals at 5,200m altitude. 3h by car" [ref=e705] [cursor=pointer]:
+          - /url: /explore/rainbow-mountain/
+          - generic [ref=e706]:
+            - generic [ref=e707]:
+              - generic [ref=e708]: adventure
+              - generic [ref=e709]: 100 km
+            - heading "Rainbow Mountain" [level=3] [ref=e713]
+            - paragraph [ref=e714]: Vinicunca, the stunning Rainbow Mountain with layers of colorful minerals at 5,200m altitude.
+          - generic [ref=e715]: 3h by car
+      - link "View all attractions" [ref=e719] [cursor=pointer]:
+        - /url: /explore/
+    - generic [ref=e723]:
+      - generic [ref=e724]:
+        - text: FAQ
+        - heading "Frequently Asked Questions" [level=2] [ref=e725]
+        - paragraph [ref=e726]: "Everything you need to know about your stay in Cusco: altitude sickness, check-in, transport, and more."
+      - generic [ref=e727]:
+        - group [ref=e728]:
+          - generic "What are the check-in and check-out times?" [ref=e729] [cursor=pointer]
+        - group [ref=e734]:
+          - generic "How can I prevent altitude sickness (soroche)?" [ref=e735] [cursor=pointer]
+        - group [ref=e740]:
+          - generic "Do you offer airport or train station transfers?" [ref=e741] [cursor=pointer]
+        - group [ref=e746]:
+          - generic "Is breakfast included and what time is it served?" [ref=e747] [cursor=pointer]
+        - group [ref=e752]:
+          - generic "Can I leave my luggage at the hotel while visiting Machu Picchu?" [ref=e753] [cursor=pointer]
+        - group [ref=e758]:
+          - generic "Do rooms have heating and 24/7 hot water?" [ref=e759] [cursor=pointer]
+    - generic [ref=e765]:
+      - generic [ref=e766]:
+        - text: Location
+        - heading "Find Us in Cusco" [level=2] [ref=e767]
+        - paragraph [ref=e768]: Located in the heart of San Pedro, steps from the historic market and a short walk to Plaza de Armas.
+      - generic [ref=e771]:
+        - paragraph [ref=e775]: Interactive map loading...
+        - paragraph [ref=e776]: San Pedro, Cusco, Peru
+  - contentinfo [ref=e777]:
+    - generic [ref=e778]:
+      - link "USGAR Hotels Home" [ref=e780] [cursor=pointer]:
+        - /url: /
+        - img "USGAR Hotels" [ref=e781]
+      - generic [ref=e782]:
+        - generic [ref=e783]:
+          - heading "Contact" [level=3] [ref=e784]
+          - generic [ref=e785]:
+            - paragraph [ref=e786]:
+              - generic [ref=e790]: San Pedro, Cusco, Peru
+            - paragraph [ref=e791]:
+              - link "info@usgarhotels.com" [ref=e794] [cursor=pointer]:
+                - /url: mailto:info@usgarhotels.com
+            - paragraph [ref=e795]:
+              - link "+51 984 000 000" [ref=e798] [cursor=pointer]:
+                - /url: tel:+51984000000
+        - generic [ref=e799]:
+          - heading "Quick Links" [level=3] [ref=e800]
+          - navigation [ref=e801]:
+            - link "Home" [ref=e802] [cursor=pointer]:
+              - /url: /
+            - link "Rooms" [ref=e803] [cursor=pointer]:
+              - /url: /rooms/
+            - link "Gallery" [ref=e804] [cursor=pointer]:
+              - /url: /gallery/
+            - link "Services" [ref=e805] [cursor=pointer]:
+              - /url: /#services
+            - link "Explore Cusco" [ref=e806] [cursor=pointer]:
+              - /url: /explore/
+            - link "Book Now" [ref=e807] [cursor=pointer]:
+              - /url: /book/
+        - generic [ref=e808]:
+          - heading "Follow Us" [level=3] [ref=e809]
+          - generic [ref=e810]:
+            - link "Instagram" [ref=e811] [cursor=pointer]:
+              - /url: https://instagram.com/usgarhotels
+            - link "Facebook" [ref=e814] [cursor=pointer]:
+              - /url: https://facebook.com/usgarhotels
+            - link "TripAdvisor" [ref=e817] [cursor=pointer]:
+              - /url: https://tripadvisor.com/usgarhotels
+            - link "Booking.com" [ref=e820] [cursor=pointer]:
+              - /url: https://booking.com/usgarhotels
+          - paragraph [ref=e823]: Find us on your favorite travel platform
+      - generic [ref=e825]:
+        - paragraph [ref=e826]: © 2026 USGAR Hotels. All rights reserved.
+        - paragraph [ref=e827]: Made by MarcaRed
+  - link "Chat on WhatsApp" [ref=e828] [cursor=pointer]:
+    - /url: https://wa.me/51984000000?text=Hello!%20I%20would%20like%20to%20book%20a%20room%20at%20USGAR%20Hotels.
+    - generic: Need help? Chat with us!
+  - generic [ref=e833]:
+    - button [ref=e834]
+    - button [ref=e840]
+    - button [ref=e844]
+    - button [ref=e852]

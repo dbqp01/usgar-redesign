@@ -1,0 +1,76 @@
+{
+  "reviews": [
+    {
+      "name": "Sarah M.",
+      "country": "🇺🇸",
+      "rating": 5,
+      "text_es": "¡Absolutamente mágico! Los murales y la decoración andina nos hicieron sentir sumergidos en la cultura local. El desayuno fue increíble y el personal fue excepcional.",
+      "text_en": "Absolutely magical! The murals and Andean decor made us feel immersed in local culture. Breakfast was incredible and the staff went above and beyond.",
+      "date_es": "Marzo 2025",
+      "date_en": "March 2025"
+    },
+    {
+      "name": "Thomas K.",
+      "country": "🇩🇪",
+      "rating": 5,
+      "text_es": "Ubicación perfecta cerca del Mercado de San Pedro. Las habitaciones son cálidas y acogedoras, algo esencial para las frías noches de Cusco. ¡Definitivamente volveré!",
+      "text_en": "Perfect location near San Pedro Market. The rooms are warm and cozy — essential for cold Cusco nights. Will definitely return!",
+      "date_es": "Febrero 2025",
+      "date_en": "February 2025"
+    },
+    {
+      "name": "Ana L.",
+      "country": "🇧🇷",
+      "rating": 5,
+      "text_es": "El servicio de traslado al aeropuerto fue un salvavidas. El hotel es encantador, limpio y el personal habla inglés con fluidez. Gran relación calidad-precio.",
+      "text_en": "The airport transfer service was a lifesaver. Hotel is charming, clean, and the staff speaks English fluently. Great value for money.",
+      "date_es": "Enero 2025",
+      "date_en": "January 2025"
+    },
+    {
+      "name": "James P.",
+      "country": "🇬🇧",
+      "rating": 4,
+      "text_es": "Hermoso hotel boutique con carácter. El masaje de spa después de un largo día de caminata fue exactamente lo que necesitábamos. ¡Altamente recomendado!",
+      "text_en": "Lovely boutique hotel with character. The spa massage after a long day of hiking was exactly what we needed. Highly recommended!",
+      "date_es": "Diciembre 2024",
+      "date_en": "December 2024"
+    },
+    {
+      "name": "Yuki T.",
+      "country": "🇯🇵",
+      "rating": 5,
+      "text_es": "Hermoso hotel con encanto auténtico de Cusco. Nos ayudaron a organizar nuestro tour a Machu Picchu y todo fue perfecto. El desayuno es fresco y delicioso.",
+      "text_en": "Beautiful hotel with authentic Cusco charm. They helped us arrange our Machu Picchu tour and it was seamless. The breakfast is fresh and delicious.",
+      "date_es": "Noviembre 2024",
+      "date_en": "November 2024"
+    },
+    {
+      "name": "Elena R.",
+      "country": "🇪🇸",
+      "rating": 5,
+      "text_es": "Una hermosa joya escondida en Cusco. Excelente servicio, agua caliente las 24 horas y calefacción que funciona a la perfección. Muy cerca del mercado histórico.",
+      "text_en": "A beautiful hidden gem in Cusco. Excellent service, hot water 24h, and heaters that work perfectly. Super close to the historic market.",
+      "date_es": "Octubre 2024",
+      "date_en": "October 2024"
+    },
+    {
+      "name": "Mark B.",
+      "country": "🇨🇦",
+      "rating": 5,
+      "text_es": "Habitaciones muy limpias, camas cómodas y un delicioso desayuno buffet. El personal nos ayudó a reservar un taxi seguro desde el aeropuerto. ¡Muy recomendado!",
+      "text_en": "Very clean rooms, comfortable beds, and a delicious breakfast buffet. The staff helped us book a safe taxi from the airport. Highly recommended!",
+      "date_es": "Septiembre 2024",
+      "date_en": "September 2024"
+    },
+    {
+      "name": "Sophie D.",
+      "country": "🇫🇷",
+      "rating": 5,
+      "text_es": "¡Destacado hotel boutique! Los murales pintados a mano en la habitación son impresionantes. Tener calefacción fue increíble para las noches frías. ¡Experiencia 10/10!",
+      "text_en": "Outstanding boutique hotel! Hand-painted murals in the room are stunning. Having heaters was amazing for cold nights. 10/10 experience!",
+      "date_es": "Agosto 2024",
+      "date_en": "August 2024"
+    }
+  ]
+}

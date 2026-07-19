@@ -1,0 +1,105 @@
+{
+  "rooms": [
+    {
+      "id": "doble-superior",
+      "slug": "doble-superior",
+      "name_es": "Habitación Doble Superior",
+      "name_en": "Double Superior Room",
+      "description_es": "Amplia habitación con dos cómodas camas dobles con cálida iluminación ambiental. Perfecta para amigos o colegas viajando juntos.",
+      "description_en": "Spacious room with two comfortable double beds with warm ambient lighting. Perfect for friends or colleagues traveling together.",
+      "maxGuests": 2,
+      "beds": "2 double beds",
+      "pricePerNight": 90,
+      "amenities": ["wifi", "breakfast", "hot-water", "heating", "tv", "laundry"],
+      "images": [
+        "/assets/rooms/doble-superior/01-doble-camas.jpg",
+        "/assets/rooms/doble-superior/02-doble-mural.jpg",
+        "/assets/rooms/doble-superior/03-doble-bano.jpg",
+        "/assets/rooms/doble-superior/04-doble-detalle.jpg"
+      ],
+      "photoFolder": "doble-superior",
+      "hasVideoTour": true,
+      "amenityLabels": {
+        "wifi": { "es": "Wi-Fi de alta velocidad gratis", "en": "Free High-Speed Wi-Fi" },
+        "breakfast": { "es": "Desayuno buffet incluido", "en": "Breakfast Included" },
+        "hot_water": { "es": "Agua caliente 24h", "en": "24h Hot Water" },
+        "heating": { "es": "Calefacción central", "en": "Heating System" },
+        "tv": { "es": "TV por cable", "en": "Cable TV" },
+        "laundry": { "es": "Servicio de lavandería", "en": "Laundry Service" }
+      }
+    },
+    {
+      "id": "matrimonial",
+      "slug": "matrimonial",
+      "name_es": "Habitación Matrimonial Superior",
+      "name_en": "Superior Matrimonial Room",
+      "description_es": "Refugio romántico con cama king-size, textiles artesanales y atmósfera acogedora. Ideal para parejas explorando las maravillas de Cusco.",
+      "description_en": "Romantic retreat featuring a king-size bed, artisan textiles, and a cozy atmosphere. Ideal for couples exploring the wonders of Cusco.",
+      "maxGuests": 2,
+      "beds": "1 king bed",
+      "pricePerNight": 90,
+      "amenities": ["wifi", "breakfast", "hot-water", "heating", "tv", "laundry"],
+      "images": [
+        "/assets/rooms/matrimonial/01-matr-cama.jpg",
+        "/assets/rooms/matrimonial/02-matr-mural.jpg",
+        "/assets/rooms/matrimonial/03-matr-bano.jpg",
+        "/assets/rooms/matrimonial/04-matr-escritorio.jpg"
+      ],
+      "photoFolder": "matrimonial",
+      "hasVideoTour": true,
+      "amenityLabels": {
+        "wifi": { "es": "Wi-Fi de alta velocidad gratis", "en": "Free High-Speed Wi-Fi" },
+        "breakfast": { "es": "Desayuno buffet incluido", "en": "Breakfast Included" },
+        "hot_water": { "es": "Agua caliente 24h", "en": "24h Hot Water" },
+        "heating": { "es": "Calefacción central", "en": "Heating System" },
+        "tv": { "es": "TV por cable", "en": "Cable TV" },
+        "laundry": { "es": "Servicio de lavandería", "en": "Laundry Service" }
+      }
+    },
+    {
+      "id": "familiar-superior",
+      "slug": "familiar-superior",
+      "name_es": "Habitación Familiar Superior",
+      "name_en": "Family Superior Room",
+      "description_es": "Nuestra habitación más amplia, diseñada para familias o grupo de amigos. Cuenta con 3 camas dobles y una individual, espacio para todos después de un día de aventuras.",
+      "description_en": "Our most spacious room, designed for families or a group of friends. Features 3 double beds and one single bed, with room for everyone to relax after a day of adventures.",
+      "maxGuests": 7,
+      "beds": "3 double beds + 1 single bed",
+      "pricePerNight": 150,
+      "amenities": ["wifi", "breakfast", "hot-water", "heating", "tv", "laundry"],
+      "images": [],
+      "photoFolder": "familiar-superior",
+      "hasVideoTour": true,
+      "amenityLabels": {
+        "wifi": { "es": "Wi-Fi de alta velocidad gratis", "en": "Free High-Speed Wi-Fi" },
+        "breakfast": { "es": "Desayuno buffet incluido", "en": "Breakfast Included" },
+        "hot_water": { "es": "Agua caliente 24h", "en": "24h Hot Water" },
+        "heating": { "es": "Calefacción central", "en": "Heating System" },
+        "tv": { "es": "TV por cable", "en": "Cable TV" },
+        "laundry": { "es": "Servicio de lavandería", "en": "Laundry Service" }
+      }
+    },
+    {
+      "id": "triple-standar",
+      "slug": "triple-standar",
+      "name_es": "Habitación Triple Estándar",
+      "name_en": "Triple Standard Room",
+      "description_es": "Habitación cómoda y práctica con tres camas individuales. Excelente valor para grupos pequeños que exploran Cusco.",
+      "description_en": "Comfortable and practical room with three single beds. Great value for small groups wanting to explore Cusco on a budget.",
+      "maxGuests": 3,
+      "beds": "3 single beds",
+      "pricePerNight": 120,
+      "amenities": ["wifi", "breakfast", "hot-water", "heating", "tv"],
+      "images": [],
+      "photoFolder": "triple-standar",
+      "hasVideoTour": true,
+      "amenityLabels": {
+        "wifi": { "es": "Wi-Fi de alta velocidad gratis", "en": "Free High-Speed Wi-Fi" },
+        "breakfast": { "es": "Desayuno buffet incluido", "en": "Breakfast Included" },
+        "hot_water": { "es": "Agua caliente 24h", "en": "24h Hot Water" },
+        "heating": { "es": "Calefacción central", "en": "Heating System" },
+        "tv": { "es": "TV por cable", "en": "Cable TV" }
+      }
+    }
+  ]
+}

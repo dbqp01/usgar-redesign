@@ -1,0 +1,28 @@
+{
+  "hotelName": "USGAR Hotels",
+  "phone": "+51 984 000 000",
+  "phoneRaw": "51984000000",
+  "email": "info@usgarhotels.com",
+  "whatsappNumber": "51984000000",
+  "streetAddress": "San Pedro",
+  "city": "Cusco",
+  "region": "Cusco",
+  "postalCode": "08002",
+  "country": "PE",
+  "address_es": "San Pedro, Cusco, Perú",
+  "address_en": "San Pedro, Cusco, Peru",
+  "latitude": -13.5226,
+  "longitude": -71.9828,
+  "checkinTime": "12:00",
+  "checkoutTime": "10:30",
+  "starRating": 3,
+  "priceRange": "$$",
+  "siteDescription_es": "USGAR Hotels — Hotel boutique en San Pedro, Cusco. Tu puerta de entrada a Machu Picchu y el Valle Sagrado.",
+  "siteDescription_en": "USGAR Hotels — Boutique hotel in San Pedro, Cusco. Your gateway to Machu Picchu and the Sacred Valley.",
+  "socialLinks": [
+    { "platform": "instagram", "url": "https://instagram.com/usgarhotels", "label": "Instagram" },
+    { "platform": "facebook", "url": "https://facebook.com/usgarhotels", "label": "Facebook" },
+    { "platform": "tripadvisor", "url": "https://tripadvisor.com/usgarhotels", "label": "TripAdvisor" },
+    { "platform": "booking", "url": "https://booking.com/usgarhotels", "label": "Booking.com" }
+  ]
+}

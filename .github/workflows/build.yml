@@ -1,0 +1,76 @@
+name: CI — Build Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar proyecto
+        env:
+          TINA_PUBLIC_CLIENT_ID: 'mock-client-id'
+          TINA_TOKEN: 'mock-token'
+        run: |
+          npm run build > build.log 2>&1 || (cat build.log && exit 1)
+
+      - name: Reportar error en commit
+        if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMIT_SHA: ${{ github.sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          node -e '
+            const fs = require("fs");
+            const https = require("https");
+            
+            const log = fs.existsSync("build.log") ? fs.readFileSync("build.log", "utf8") : "No build.log found";
+            const tailLog = log.split("\n").slice(-100).join("\n");
+            
+            const body = JSON.stringify({
+              body: `### ❌ Fallo en Compilación CI\n\n\`\`\`\n${tailLog}\n\`\`\``
+            });
+            
+            const req = https.request({
+              hostname: "api.github.com",
+              path: `/repos/${process.env.REPOSITORY}/commits/${process.env.COMMIT_SHA}/comments`,
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${process.env.GITHUB_TOKEN}`,
+                "Accept": "application/vnd.github+json",
+                "User-Agent": "Astro-CI-Reporter",
+                "Content-Type": "application/json",
+                "Content-Length": Buffer.byteLength(body)
+              }
+            }, (res) => {
+              console.log("Response status:", res.statusCode);
+              res.resume();
+            });
+            
+            req.on("error", (e) => {
+              console.error("Request error:", e);
+            });
+            
+            req.write(body);
+            req.end();
+          '

@@ -1,0 +1,172 @@
+{
+  "services": [
+    {
+      "id": "wifi",
+      "name_es": "Wi-Fi Gratuito",
+      "name_en": "Free Wi-Fi",
+      "description_es": "Internet de alta velocidad en todo el hotel",
+      "description_en": "High-speed internet throughout the hotel",
+      "icon": "wifi"
+    },
+    {
+      "id": "breakfast",
+      "name_es": "Desayuno Buffet",
+      "name_en": "Breakfast Buffet",
+      "description_es": "Desayuno andino e internacional diario (6:00 am - 9:00 am)",
+      "description_en": "Andean and international breakfast daily (6:00 am - 9:00 am)",
+      "icon": "breakfast"
+    },
+    {
+      "id": "hot-water",
+      "name_es": "Agua Caliente 24h",
+      "name_en": "Hot Water 24h",
+      "description_es": "Agua caliente disponible las 24 horas",
+      "description_en": "Hot water available around the clock",
+      "icon": "hot-water"
+    },
+    {
+      "id": "heating",
+      "name_es": "Calefacción",
+      "name_en": "Heating",
+      "description_es": "Calefacción para las frías noches andinas",
+      "description_en": "Central heating for cold Andean nights",
+      "icon": "heating"
+    },
+    {
+      "id": "tv",
+      "name_es": "TV Cable",
+      "name_en": "Cable TV",
+      "description_es": "TV pantalla plana con canales por cable en habitación",
+      "description_en": "Flat-screen TV with cable channels in room",
+      "icon": "tv"
+    },
+    {
+      "id": "laundry",
+      "name_es": "Servicio de Lavandería",
+      "name_en": "Laundry Service",
+      "description_es": "Lavandería y limpieza en seco el mismo día (costo adicional)",
+      "description_en": "Same-day laundry and dry cleaning (additional cost)",
+      "icon": "laundry"
+    },
+    {
+      "id": "transfer",
+      "name_es": "Servicio de Traslado",
+      "name_en": "Airport Transfer",
+      "description_es": "Recogida cómoda desde aeropuerto o estación (costo adicional)",
+      "description_en": "Comfortable pickup from airport or train station (additional cost)",
+      "icon": "transfer"
+    },
+    {
+      "id": "tours",
+      "name_es": "Tours y Excursiones",
+      "name_en": "Tours & Excursions",
+      "description_es": "Tours guiados a Machu Picchu, Valle Sagrado y Cusco",
+      "description_en": "Guided tours to Machu Picchu, Sacred Valley, and Cusco city",
+      "icon": "tours"
+    },
+    {
+      "id": "restaurant",
+      "name_es": "Cafetería y Restaurante",
+      "name_en": "Cafetería & Restaurant",
+      "description_es": "Deliciosa comida local y bebidas calientes (abierto hasta las 22:00 hrs)",
+      "description_en": "Delicious local dining and hot beverages (open until 22:00 hrs)",
+      "icon": "restaurant"
+    },
+    {
+      "id": "spa",
+      "name_es": "Spa y Masajes",
+      "name_en": "Spa & Massages",
+      "description_es": "Relájate con terapias de masaje andino tradicional",
+      "description_en": "Relax with traditional Andean massage therapies",
+      "icon": "spa"
+    },
+    {
+      "id": "parking",
+      "name_es": "Estacionamiento",
+      "name_en": "Parking",
+      "description_es": "Estacionamiento privado gratuito en el establecimiento",
+      "description_en": "Free private parking on premises",
+      "icon": "parking"
+    },
+    {
+      "id": "oxigeno",
+      "name_es": "Oxígeno de Cortesía",
+      "name_en": "Complimentary Oxygen",
+      "description_es": "Tanques de oxígeno disponibles para aclimatación al mal de altura",
+      "description_en": "Oxygen cylinders available for altitude sickness acclimatization",
+      "icon": "oxigeno"
+    },
+    {
+      "id": "bebidas-calientes",
+      "name_es": "Estación de Bebidas Calientes",
+      "name_en": "Hot Drinks Station",
+      "description_es": "Mates tradicionales, té de coca y café de cortesía en la recepción",
+      "description_en": "Complimentary traditional mates, coca tea, and coffee in lobby",
+      "icon": "bebidas-calientes"
+    },
+    {
+      "id": "souvenirs",
+      "name_es": "Tienda de Souvenirs",
+      "name_en": "Souvenir Shop",
+      "description_es": "Artesanías locales y regalos andinos hechos a mano en el hotel",
+      "description_en": "Local crafts and hand-made Andean gifts on site",
+      "icon": "souvenirs"
+    },
+    {
+      "id": "no-fumadores",
+      "name_es": "Habitaciones No Fumadores",
+      "name_en": "Non-Smoking Rooms",
+      "description_es": "Ambientes 100% libres de humo para una respiración saludable",
+      "description_en": "100% smoke-free environments for healthy breathing",
+      "icon": "no-fumadores"
+    },
+    {
+      "id": "custodia-maletas",
+      "name_es": "Custodia de Maletas",
+      "name_en": "Luggage Storage",
+      "description_es": "Custodia segura y gratuita de equipaje mientras visitas las ruinas",
+      "description_en": "Free safe storage for your bags while you visit ruins",
+      "icon": "custodia-maletas"
+    },
+    {
+      "id": "recepcion-24h",
+      "name_es": "Recepción 24 Horas",
+      "name_en": "24h Reception",
+      "description_es": "Siempre disponibles para asistirte con tus necesidades e ingresos",
+      "description_en": "Always available to assist with your needs and check-in",
+      "icon": "recepcion-24h"
+    },
+    {
+      "id": "bilingue",
+      "name_es": "Personal Bilingüe",
+      "name_en": "Bilingual Staff",
+      "description_es": "Cálida hospitalidad de nuestro equipo que habla inglés y español",
+      "description_en": "Warm hospitality from our English and Spanish speaking team",
+      "icon": "bilingue"
+    },
+    {
+      "id": "info-turistica",
+      "name_es": "Información Turística",
+      "name_en": "Tourist Information",
+      "description_es": "Mapas, consejos y recomendaciones para explorar Cusco",
+      "description_en": "Maps, advice, and tips to explore Cusco like a local",
+      "icon": "info-turistica"
+    },
+    {
+      "id": "limpieza",
+      "name_es": "Servicio de Limpieza Diario",
+      "name_en": "Daily Cleaning",
+      "description_es": "Servicio de limpieza diario y atento en todas las habitaciones",
+      "description_en": "Attentive daily housekeeping in all rooms",
+      "icon": "limpieza"
+    },
+    {
+      "id": "cambio-moneda",
+      "name_es": "Cambio de Moneda",
+      "name_en": "Currency Exchange",
+      "description_es": "Cambia dólares y soles de forma fácil en recepción",
+      "description_en": "Exchange dollars and soles easily at the reception",
+      "icon": "cambio-moneda"
+    }
+  ]
+}

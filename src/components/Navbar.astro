@@ -1,0 +1,312 @@
+---
+import { Image } from 'astro:assets';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import logoLight from '../assets/logos/Logo usgar morado.png';
+import logoDark from '../assets/logos/Logo usgar.png';
+import { useTranslations } from '../i18n/utils';
+
+const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+const t = useTranslations(lang);
+
+const currentPath = Astro.url.pathname;
+const targetLang = lang === 'en' ? 'es' : 'en';
+const searchParams = Astro.url.search;
+
+// Lógica de URL para cambio de idioma (preservando parámetros de consulta)
+const targetPath = (lang === 'en'
+  ? `/es${currentPath === '/' ? '' : currentPath}`
+  : currentPath.replace(/^\/es/, '') || '/') + searchParams;
+
+const homeUrl = getRelativeLocaleUrl(lang, '');
+const cleanHomeUrl = homeUrl.endsWith('/') ? homeUrl : `${homeUrl}/`;
+
+const navLinks = [
+  { href: getRelativeLocaleUrl(lang, 'rooms'), label: t('nav.rooms') },
+  { href: `${cleanHomeUrl}#services`, label: t('nav.services') },
+  { href: getRelativeLocaleUrl(lang, 'explore'), label: t('nav.explore') },
+  { href: getRelativeLocaleUrl(lang, 'gallery'), label: t('nav.gallery') },
+  { href: getRelativeLocaleUrl(lang, 'contact'), label: t('nav.contact') },
+];
+---
+
+<header
+  id="main-navbar"
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+>
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <!-- Logo -->
+      <a href={getRelativeLocaleUrl(lang, '')} class="flex-shrink-0 relative z-10" aria-label="USGAR Hotels Home">
+        <Image
+          src={logoLight}
+          alt="USGAR Hotels"
+          width={120}
+          class="h-10 w-auto hidden dark:block"
+          loading="eager"
+        />
+        <Image
+          src={logoDark}
+          alt="USGAR Hotels"
+          width={120}
+          class="h-10 w-auto block dark:hidden"
+          loading="eager"
+        />
+      </a>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden lg:flex items-center gap-8">
+        {navLinks.map(link => (
+          <a
+            href={link.href}
+            class:list={[
+              'nav-link text-sm font-medium tracking-wide uppercase transition-colors duration-300 drop-shadow-md',
+              currentPath === link.href ? 'text-primary' : 'text-white'
+            ]}
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+
+      <!-- Right Side: Language, Theme, CTA -->
+      <div class="hidden lg:flex items-center gap-4">
+        <!-- Language Toggle -->
+        <a
+          href={targetPath}
+          class="nav-link text-white text-sm font-medium px-3 py-1.5 rounded-full border border-current/20 hover:border-primary hover:text-primary transition-all duration-300 drop-shadow-md"
+          aria-label="Toggle language"
+        >
+          {targetLang.toUpperCase()}
+        </a>
+
+        <!-- Dark/Light Mode Toggle -->
+        <button
+          id="theme-toggle"
+          class="nav-link text-white relative w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition-colors duration-300 drop-shadow-md"
+          aria-label="Toggle dark mode"
+        >
+          <!-- Sun icon (shown in dark mode) -->
+          <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <!-- Moon icon (shown in light mode) -->
+          <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+        <!-- CTA: Book Now -->
+        <a
+          href={getRelativeLocaleUrl(lang, 'book')}
+          class="bg-primary hover:bg-primary-dark text-white font-semibold text-sm px-6 py-2.5 rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5"
+        >
+          {t('nav.bookNow')}
+        </a>
+      </div>
+
+      <!-- Mobile: Theme + Hamburger -->
+      <div class="flex lg:hidden items-center gap-2">
+        <button
+          id="theme-toggle-mobile"
+          class="nav-link text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition-colors duration-300 drop-shadow-md"
+          aria-label="Toggle dark mode"
+        >
+          <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+        <button
+          id="mobile-menu-btn"
+          class="nav-link text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition-colors duration-300 drop-shadow-md"
+          aria-label="Open menu"
+        >
+          <svg class="w-6 h-6" id="hamburger-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg class="w-6 h-6 hidden" id="close-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu (slide-in) -->
+  <div
+    id="mobile-menu"
+    class="fixed inset-0 z-40 hidden lg:hidden"
+  >
+    <!-- Backdrop -->
+    <div id="mobile-backdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+
+    <!-- Panel -->
+    <div
+      id="mobile-panel"
+      class="absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-surface-card-light dark:bg-surface-card-dark shadow-2xl translate-x-full transition-transform duration-300 ease-out"
+    >
+      <div class="flex flex-col h-full pt-24 pb-8 px-6">
+        <!-- Nav Links -->
+        <nav class="flex flex-col gap-1">
+          {navLinks.map(link => (
+            <a
+              href={link.href}
+              class="text-lg font-medium py-3 px-4 rounded-xl hover:bg-primary/10 hover:text-primary transition-all duration-200"
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        <div class="border-t border-black/10 dark:border-white/10 my-6"></div>
+
+        <!-- Language Switcher Mobile -->
+        <a
+          href={targetPath}
+          class="flex items-center gap-3 py-3 px-4 rounded-xl hover:bg-primary/10 transition-all duration-200"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" />
+          </svg>
+          <span class="text-lg font-medium">{lang === 'en' ? 'Español' : 'English'}</span>
+        </a>
+
+        <!-- Spacer -->
+        <div class="flex-1"></div>
+
+        <!-- CTA -->
+        <a
+          href={getRelativeLocaleUrl(lang, 'book')}
+          class="bg-primary hover:bg-primary-dark text-white font-semibold text-center py-4 rounded-2xl transition-all duration-300 text-lg"
+        >
+          {t('nav.bookNow')}
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  let abortController = new AbortController();
+
+  function initNavbar() {
+    // Abort previous listeners to avoid duplicates
+    abortController.abort();
+    abortController = new AbortController();
+    const signal = abortController.signal;
+
+    const navbar = document.getElementById('main-navbar');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileBackdrop = document.getElementById('mobile-backdrop');
+    const mobilePanel = document.getElementById('mobile-panel');
+    const hamburgerIcon = document.getElementById('hamburger-icon');
+    const closeIcon = document.getElementById('close-icon');
+
+    if (!navbar) return;
+
+    // ---- Scroll: transparent → glassmorphism ----
+    function handleScroll() {
+      const scrollY = window.scrollY;
+      if (scrollY > 50) {
+        navbar?.classList.add('glass', 'shadow-sm', 'navbar-scrolled');
+      } else {
+        navbar?.classList.remove('glass', 'shadow-sm', 'navbar-scrolled');
+      }
+    }
+    
+    window.addEventListener('scroll', handleScroll, { passive: true, signal });
+    handleScroll();
+
+    // ---- Mobile menu toggle ----
+    let isMenuOpen = false;
+
+    function openMenu() {
+      if (!mobileMenu || !mobileBackdrop || !mobilePanel || !hamburgerIcon || !closeIcon) return;
+      isMenuOpen = true;
+      mobileMenu.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      requestAnimationFrame(() => {
+        mobileBackdrop.classList.remove('opacity-0');
+        mobileBackdrop.classList.add('opacity-100');
+        mobilePanel.classList.remove('translate-x-full');
+        mobilePanel.classList.add('translate-x-0');
+      });
+      hamburgerIcon.classList.add('hidden');
+      closeIcon.classList.remove('hidden');
+    }
+
+    function closeMenu() {
+      if (!mobileMenu || !mobileBackdrop || !mobilePanel || !hamburgerIcon || !closeIcon) return;
+      isMenuOpen = false;
+      mobileBackdrop.classList.remove('opacity-100');
+      mobileBackdrop.classList.add('opacity-0');
+      mobilePanel.classList.remove('translate-x-0');
+      mobilePanel.classList.add('translate-x-full');
+      hamburgerIcon.classList.remove('hidden');
+      closeIcon.classList.add('hidden');
+      document.body.style.overflow = '';
+      setTimeout(() => {
+        if (!isMenuOpen) mobileMenu.classList.add('hidden');
+      }, 300);
+    }
+
+    mobileMenuBtn?.addEventListener('click', () => {
+      isMenuOpen ? closeMenu() : openMenu();
+    }, { signal });
+
+    mobileBackdrop?.addEventListener('click', closeMenu, { signal });
+
+    // Close menu on link click
+    mobileMenu?.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeMenu, { signal });
+    });
+
+    // ---- Theme toggles ----
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme, { signal });
+    document.getElementById('theme-toggle-mobile')?.addEventListener('click', toggleTheme, { signal });
+  }
+
+  // Init on load
+  initNavbar();
+
+  // Re-init after View Transition
+  document.addEventListener('astro:after-swap', initNavbar);
+</script>
+
+<style>
+  /* When navbar is scrolled and has the glass effect, adjust text colors */
+  :global(:not(.dark)) #main-navbar.glass .nav-link {
+    color: var(--color-text-primary-light);
+    text-shadow: none;
+  }
+  :global(.dark) #main-navbar.glass .nav-link {
+    color: var(--color-text-primary-dark);
+    text-shadow: none;
+  }
+  
+  /* Drop shadow is only needed when over the video (not scrolled) */
+  #main-navbar.glass .nav-link {
+    filter: none;
+  }
+
+  /* Golden bottom border when scrolled — Inca-Colonial accent */
+  #main-navbar.navbar-scrolled {
+    border-bottom: 1px solid rgba(234, 202, 28, 0.25);
+  }
+  :global(.dark) #main-navbar.navbar-scrolled {
+    border-bottom: 1px solid rgba(234, 202, 28, 0.15);
+  }
+
+  .nav-link:hover {
+    color: var(--color-primary) !important;
+  }
+</style>

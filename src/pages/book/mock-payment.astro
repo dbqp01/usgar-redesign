@@ -1,0 +1,217 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+export const prerender = true;
+
+const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+---
+
+<Layout title={`${lang === 'es' ? 'Simulador de Pago — Mercado Pago' : 'Payment Simulator — Mercado Pago'} — USGAR Hotels`} lang={lang}>
+  <main class="py-24 px-4 max-w-2xl mx-auto flex-1 flex flex-col justify-center">
+    
+    <!-- Glassmorphic MP Simulation Card -->
+    <div class="bg-surface-card-light dark:bg-surface-card-dark rounded-3xl border border-black/5 dark:border-white/5 shadow-2xl overflow-hidden animate-slide-up">
+      
+      <!-- Mercado Pago Header (Blue Header simulation) -->
+      <div class="bg-[#009EE3] p-6 text-white flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#009EE3] font-bold text-lg">
+            mp
+          </div>
+          <div>
+            <h1 class="font-sans font-semibold text-lg tracking-wide">Mercado Pago</h1>
+            <p class="text-xs text-white/80">{lang === 'es' ? 'Entorno Sandbox (Simulador)' : 'Sandbox Environment (Simulator)'}</p>
+          </div>
+        </div>
+        <div class="text-right">
+          <span class="text-xs uppercase tracking-wider text-white/70">{lang === 'es' ? 'Total a Pagar' : 'Total to Pay'}</span>
+          <p class="font-sans font-bold text-2xl">$<span id="mp-amount">0</span> USD</p>
+        </div>
+      </div>
+
+      <!-- Content Panel -->
+      <div class="p-8 space-y-6">
+        
+        <!-- Summary Box -->
+        <div class="bg-stone-50 dark:bg-stone-900/50 p-5 rounded-2xl border border-black/5 dark:border-white/5 space-y-3">
+          <h2 class="font-display text-xl text-primary font-semibold">{lang === 'es' ? 'Detalles de la Compra' : 'Purchase Details'}</h2>
+          
+          <div class="grid grid-cols-2 gap-y-2 text-sm">
+            <span class="text-text-secondary-light dark:text-text-secondary-dark">{lang === 'es' ? 'Establecimiento' : 'Merchant'}</span>
+            <span class="font-semibold text-right">USGAR Hotels</span>
+
+            <span class="text-text-secondary-light dark:text-text-secondary-dark">{lang === 'es' ? 'Concepto' : 'Product'}</span>
+            <span id="mp-room-name" class="font-semibold text-right text-stone-700 dark:text-stone-300">---</span>
+
+            <span class="text-text-secondary-light dark:text-text-secondary-dark">{lang === 'es' ? 'Código Reserva' : 'Booking ID'}</span>
+            <span id="mp-booking-id" class="font-mono text-xs font-semibold text-right bg-stone-100 dark:bg-stone-800 px-2 py-0.5 rounded text-[#9B6CB5]">---</span>
+
+            <span class="text-text-secondary-light dark:text-text-secondary-dark">{lang === 'es' ? 'Huésped' : 'Guest'}</span>
+            <span id="mp-guest-info" class="font-semibold text-right">---</span>
+
+            <span id="mp-dates-label" class="hidden text-text-secondary-light dark:text-text-secondary-dark">{lang === 'es' ? 'Fechas' : 'Dates'}</span>
+            <span id="mp-dates" class="hidden font-semibold text-right text-xs">---</span>
+          </div>
+        </div>
+
+        <!-- Simulation Warning -->
+        <div class="p-4 rounded-xl bg-[#F5B731]/10 dark:bg-[#F5B731]/15 border border-[#F5B731]/20 text-[#D99E1B] dark:text-secondary flex items-start gap-3">
+          <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <div class="text-xs leading-relaxed space-y-1">
+            <p class="font-bold">{lang === 'es' ? 'Modo de Prueba Activado' : 'Demo Test Mode Active'}</p>
+            <p>
+              {lang === 'es' 
+                ? 'Esta es una simulación segura. No se realizará ningún cargo real a ninguna tarjeta de crédito.' 
+                : 'This is a secure simulation. No real money will be charged to any credit card.'}
+            </p>
+          </div>
+        </div>
+
+        <!-- Simulated Card Details -->
+        <div class="space-y-4 border-t border-black/5 dark:border-white/5 pt-5">
+          <h3 class="font-display text-lg">{lang === 'es' ? 'Simular Pago con Tarjeta' : 'Simulate Card Payment'}</h3>
+          <div class="p-4 rounded-xl border border-black/10 dark:border-white/10 bg-white dark:bg-surface-dark flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl">💳</span>
+              <div>
+                <p class="font-mono text-sm font-semibold">Visa **** 4321</p>
+                <p class="text-[10px] text-text-secondary-light dark:text-text-secondary-dark">Expiración 12/30 • CVV ***</p>
+              </div>
+            </div>
+            <span class="bg-green-500/10 text-green-500 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">LISTO</span>
+          </div>
+        </div>
+
+        <!-- CTAs -->
+        <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-black/5 dark:border-white/5">
+          <!-- Decline Button -->
+          <button
+            type="button"
+            id="btn-decline"
+            class="flex-1 bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 font-semibold py-3.5 rounded-xl transition-all duration-200 text-sm cursor-pointer border border-black/5 dark:border-white/5"
+          >
+            {lang === 'es' ? 'Rechazar Pago' : 'Decline Payment'}
+          </button>
+          
+          <!-- Approve Button -->
+          <button
+            type="button"
+            id="btn-approve"
+            class="flex-1 bg-[#009EE3] hover:bg-[#0087c4] text-white font-semibold py-3.5 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-[#009EE3]/25 hover:-translate-y-0.5 text-sm cursor-pointer flex items-center justify-center gap-2"
+          >
+            <span id="approve-text">{lang === 'es' ? 'Aprobar Pago Exitoso' : 'Approve Payment Success'}</span>
+            <!-- Spinner -->
+            <svg id="approve-spinner" class="hidden animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const API_BASE_URL = (import.meta.env.PUBLIC_API_URL || window.location.origin + '/api').replace(/\/$/, '');
+  const lang = (document.documentElement.lang || 'en') as 'en' | 'es';
+
+  function initMockPayment() {
+    const params = new URLSearchParams(window.location.search);
+    const bookingId = params.get('bookingId') || '';
+    const roomName = params.get('roomName') || 'Room Reservation';
+    const amount = params.get('amount') || '0';
+    const guestName = params.get('guestName') || '';
+    const guestEmail = params.get('guestEmail') || '';
+    const checkIn = params.get('checkIn') || '';
+    const checkOut = params.get('checkOut') || '';
+
+    // Populate UI details dynamically from URL query parameters
+    const amountEl = document.getElementById('mp-amount');
+    const roomNameEl = document.getElementById('mp-room-name');
+    const bookingIdEl = document.getElementById('mp-booking-id');
+    const guestInfoEl = document.getElementById('mp-guest-info');
+    const datesLabelEl = document.getElementById('mp-dates-label');
+    const datesEl = document.getElementById('mp-dates');
+
+    if (amountEl) amountEl.textContent = amount;
+    if (roomNameEl) roomNameEl.textContent = roomName;
+    if (bookingIdEl) bookingIdEl.textContent = bookingId || '---';
+    if (guestInfoEl) {
+      guestInfoEl.textContent = guestName 
+        ? `${guestName} (${guestEmail || '---'})`
+        : '---';
+    }
+
+    if (checkIn && checkOut) {
+      if (datesLabelEl) datesLabelEl.classList.remove('hidden');
+      if (datesEl) {
+        datesEl.classList.remove('hidden');
+        datesEl.textContent = `${checkIn} → ${checkOut}`;
+      }
+    }
+
+    // Buttons
+    const btnApprove = document.getElementById('btn-approve');
+    const btnDecline = document.getElementById('btn-decline');
+
+    // Clean previous event listeners by cloning nodes (prevents duplicate bindings)
+    const newBtnApprove = btnApprove?.cloneNode(true) as HTMLButtonElement;
+    const newBtnDecline = btnDecline?.cloneNode(true) as HTMLButtonElement;
+    if (btnApprove && newBtnApprove) btnApprove.parentNode?.replaceChild(newBtnApprove, btnApprove);
+    if (btnDecline && newBtnDecline) btnDecline.parentNode?.replaceChild(newBtnDecline, btnDecline);
+
+    newBtnApprove?.addEventListener('click', async () => {
+      const spinner = newBtnApprove.querySelector('#approve-spinner') || document.getElementById('approve-spinner');
+      const text = newBtnApprove.querySelector('#approve-text') || document.getElementById('approve-text');
+
+      // Show loading spinner
+      spinner?.classList.remove('hidden');
+      if (text) text.textContent = lang === 'es' ? 'Pagando...' : 'Paying...';
+      newBtnApprove.disabled = true;
+      if (newBtnDecline) newBtnDecline.disabled = true;
+
+      try {
+        // Trigger Mercado Pago Webhook post request on background to confirm reservation
+        const response = await fetch(`${API_BASE_URL}/webhook-mercado-pago?bookingId=${bookingId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            status: 'approved',
+            bookingId: bookingId,
+            action: 'payment.created',
+            data: { id: 'MOCK-PAY-' + Date.now() }
+          }),
+        });
+
+        if (!response.ok) throw new Error('Webhook process failed');
+
+        // Redirect to success page on success
+        const successPath = lang === 'es' ? `/es/book/success` : `/book/success`;
+        window.location.href = `${successPath}?bookingId=${bookingId}`;
+      } catch (err) {
+        console.error('Simulation error:', err);
+        alert(lang === 'es' ? 'Error al simular el pago.' : 'Error simulating payment.');
+        
+        // Reset buttons
+        spinner?.classList.add('hidden');
+        if (text) text.textContent = lang === 'es' ? 'Aprobar Pago Exitoso' : 'Approve Payment Success';
+        newBtnApprove.disabled = false;
+        if (newBtnDecline) newBtnDecline.disabled = false;
+      }
+    });
+
+    newBtnDecline?.addEventListener('click', () => {
+      // Redirect back to checkout page with error
+      const bookPath = lang === 'es' ? `/es/book` : `/book`;
+      window.location.href = `${bookPath}?error=payment_declined&bookingId=${bookingId}`;
+    });
+  }
+
+  // Initial and client-router swaps
+  initMockPayment();
+  document.addEventListener('astro:after-swap', initMockPayment);
+</script>

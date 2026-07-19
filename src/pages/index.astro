@@ -1,0 +1,598 @@
+---
+import Layout from "../layouts/Layout.astro";
+import BookingWidget from "../components/BookingWidget.astro";
+import RoomCard from "../components/RoomCard.astro";
+import ServiceGrid from "../components/ServiceGrid.astro";
+import FAQSection from "../components/FAQSection.astro";
+import MapSection from "../components/MapSection.astro";
+import ReviewMarquee from "../components/ReviewMarquee.astro";
+import AboutSection from "../components/AboutSection.astro";
+import { rooms } from "../data/rooms";
+import { attractions } from "../data/attractions";
+import { useTranslations } from "../i18n/utils";
+import faqData from "../content/faq/faq.json";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { Image, getImage } from "astro:assets";
+import { siteSettings } from "../data/settings";
+
+// Hotel slideshow slides
+import slide1 from "../assets/hotel/hero-slide-patio.jpg";
+import slide2 from "../assets/hotel/hero-slide-recepcion.jpg";
+import slide3 from "../assets/hotel/hero-slide-matrimonial.jpg";
+import slide4 from "../assets/hotel/hero-slide-cusco.jpg";
+
+const lang = (Astro.currentLocale || "en") as "en" | "es";
+const optimizedPoster = await getImage({
+  src: slide1,
+  width: 1200,
+  format: "webp",
+});
+const t = useTranslations(lang);
+
+const hotelSchema = {
+  "@context": "https://schema.org",
+  "@type": "Hotel",
+  name: siteSettings.hotelName,
+  description: siteSettings.siteDescription[lang],
+  image: "https://usgarhotels.com/assets/logos/Logo%20usgar%20morado.png",
+  telephone: `+${siteSettings.phoneRaw}`,
+  email: siteSettings.email,
+  url: "https://usgarhotels.com" + (lang === "es" ? "/es" : ""),
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: siteSettings.streetAddress,
+    addressLocality: siteSettings.city,
+    addressRegion: siteSettings.region,
+    postalCode: siteSettings.postalCode,
+    addressCountry: siteSettings.country,
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: siteSettings.latitude,
+    longitude: siteSettings.longitude,
+  },
+  starRating: {
+    "@type": "Rating",
+    ratingValue: String(siteSettings.starRating),
+  },
+  priceRange: siteSettings.priceRange,
+  numberOfRooms: rooms.length,
+  checkinTime: siteSettings.checkinTime,
+  checkoutTime: siteSettings.checkoutTime,
+  amenityFeature: [
+    {
+      "@type": "LocationFeatureSpecification",
+      name: "Free Wi-Fi",
+      value: true,
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      name: "Breakfast Included",
+      value: true,
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      name: "Hot Water 24h",
+      value: true,
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      name: "Central Heating",
+      value: true,
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      name: "Airport Transfer",
+      value: true,
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      name: "Spa & Massage",
+      value: true,
+    },
+    {
+      "@type": "LocationFeatureSpecification",
+      name: "Free Parking",
+      value: true,
+    },
+  ],
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqData.questions.map((faq) => ({
+    "@type": "Question",
+    name: lang === "es" ? faq.question_es : faq.question_en,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: lang === "es" ? faq.answer_es : faq.answer_en,
+    },
+  })),
+};
+
+const schemas = [hotelSchema, faqSchema];
+---
+
+<Layout
+  title={`${t("hero.title")} — ${siteSettings.hotelName}`}
+  lang={lang}
+  schema={schemas}
+  preloadImage={optimizedPoster.src}
+>
+  <!-- ==========================================
+       HERO SECTION — Video Background
+       ========================================== -->
+  <section
+    class="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden"
+    id="hero"
+  >
+    <!-- Video Background -->
+    <video
+      autoplay
+      muted
+      playsinline
+      class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 z-0"
+      poster={optimizedPoster.src}
+      id="hero-video"
+      data-src="/videos/hero-video.mp4"
+    >
+    </video>
+
+    <!-- Slideshow Background (Initially hidden) -->
+    <div
+      id="hero-slideshow"
+      class="absolute inset-0 w-full h-full opacity-0 pointer-events-none transition-opacity duration-1000 z-0"
+    >
+      <div
+        class="absolute inset-0 transition-opacity duration-1000 opacity-0"
+        data-slide="0"
+      >
+        <Image
+          src={slide1}
+          alt="USGAR Hotels Cusco"
+          width={1600}
+          height={900}
+          format="avif"
+          loading="eager"
+          fetchpriority="high"
+          class="w-full h-full object-cover"
+        />
+      </div>
+      <div
+        class="absolute inset-0 transition-opacity duration-1000 opacity-0"
+        data-slide="1"
+      >
+        <Image
+          src={slide2}
+          alt="USGAR Hotels Cusco Rooms"
+          width={1600}
+          height={900}
+          format="avif"
+          loading="lazy"
+          class="w-full h-full object-cover"
+        />
+      </div>
+      <div
+        class="absolute inset-0 transition-opacity duration-1000 opacity-0"
+        data-slide="2"
+      >
+        <Image
+          src={slide3}
+          alt="USGAR Hotels Cusco Entrance"
+          width={1600}
+          height={900}
+          format="avif"
+          loading="lazy"
+          class="w-full h-full object-cover"
+        />
+      </div>
+      <div
+        class="absolute inset-0 transition-opacity duration-1000 opacity-0"
+        data-slide="3"
+      >
+        <Image
+          src={slide4}
+          alt="USGAR Hotels Cusco Murals"
+          width={1600}
+          height={900}
+          format="avif"
+          loading="lazy"
+          class="w-full h-full object-cover"
+        />
+      </div>
+    </div>
+
+    <!-- Dark Overlay -->
+    <div
+      class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/60"
+    >
+    </div>
+
+    <!-- Content -->
+    <div class="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
+      <h1
+        class="font-display text-5xl md:text-7xl lg:text-8xl mb-6 drop-shadow-lg animate-fade-in"
+      >
+        {t("hero.title")}
+      </h1>
+      <p
+        class="text-lg md:text-2xl font-light tracking-wide opacity-90 mb-8 animate-slide-up"
+        style="animation-delay: 0.3s; animation-fill-mode: both;"
+      >
+        {t("hero.subtitle")}
+      </p>
+      <div
+        class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up"
+        style="animation-delay: 0.6s; animation-fill-mode: both;"
+      >
+        <a
+          href={getRelativeLocaleUrl(lang, "book")}
+          class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-3.5 rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 text-lg"
+        >
+          {t("hero.cta")}
+        </a>
+        <a
+          href="#rooms"
+          class="border border-white/40 hover:border-white/80 text-white px-8 py-3.5 rounded-full transition-all duration-300 hover:bg-white/10 text-lg"
+        >
+          {t("hero.ctaSecondary")}
+        </a>
+      </div>
+    </div>
+
+    <!-- Video Audio Toggle -->
+    <button
+      id="video-audio-toggle"
+      class="absolute bottom-28 right-6 z-10 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-all duration-300"
+      aria-label="Toggle video audio"
+    >
+      <!-- Muted icon -->
+      <svg
+        id="muted-icon"
+        class="w-5 h-5 text-white"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+        ></path>
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
+      </svg>
+      <!-- Unmuted icon (hidden by default) -->
+      <svg
+        id="unmuted-icon"
+        class="w-5 h-5 text-white hidden"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+        ></path>
+      </svg>
+    </button>
+
+    <!-- Scroll indicator -->
+    <div
+      class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce"
+    >
+      <svg
+        class="w-6 h-6 text-white/60"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       BOOKING WIDGET
+       ========================================== -->
+  <BookingWidget />
+
+  <!-- ==========================================
+       TRUST MARQUEE — Positive Reviews Ribbon
+       ========================================== -->
+  <ReviewMarquee lang={lang} />
+
+  <!-- ==========================================
+       ABOUT SECTION
+       ========================================== -->
+  <AboutSection />
+
+  <!-- ==========================================
+       ROOMS SECTION
+       ========================================== -->
+  <section id="rooms" class="py-20 px-4">
+    <div class="max-w-7xl mx-auto">
+      <!-- Section Header -->
+      <div class="text-center mb-14 animate-on-scroll">
+        <span
+          class="text-sm font-semibold text-primary uppercase tracking-widest"
+          >{t("rooms.sectionLabel")}</span
+        >
+        <h2 class="font-display text-4xl md:text-5xl mt-3 mb-4">
+          {t("rooms.title")}
+        </h2>
+        <p
+          class="text-lg text-text-secondary-light dark:text-text-secondary-dark max-w-2xl mx-auto"
+        >
+          {t("rooms.description")}
+        </p>
+      </div>
+
+      <!-- Rooms Flex Centered (autoadaptative) -->
+      <div class="flex flex-wrap justify-center gap-6 md:gap-8">
+        {
+          rooms.map((room, i) => (
+            <div class="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-22px)] max-w-sm flex">
+              <RoomCard room={room} index={i} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       SERVICES SECTION
+       ========================================== -->
+  <ServiceGrid />
+
+  <!-- ==========================================
+       EXPLORE CUSCO PREVIEW
+       ========================================== -->
+  <section class="py-20 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-14 animate-on-scroll">
+        <span
+          class="text-sm font-semibold text-primary uppercase tracking-widest"
+          >{t("explore.sectionLabel")}</span
+        >
+        <h2 class="font-display text-4xl md:text-5xl mt-3 mb-4">
+          {t("explore.title")}
+        </h2>
+        <p
+          class="text-lg text-text-secondary-light dark:text-text-secondary-dark max-w-2xl mx-auto"
+        >
+          {t("explore.description")}
+        </p>
+      </div>
+
+      <!-- Attractions Preview (first 4) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {
+          attractions.slice(0, 4).map((attraction, i) => (
+            <a
+              href={getRelativeLocaleUrl(lang, `explore/${attraction.id}`)}
+              class="animate-on-scroll stagger-child p-6 rounded-2xl bg-surface-card-light dark:bg-surface-card-dark border border-black/5 dark:border-white/5 hover:border-tertiary/20 hover:shadow-lg transition-all duration-300 group flex flex-col justify-between"
+              style={`transition-delay: ${i * 0.1}s`}
+            >
+              <div>
+                <div class="flex items-start justify-between mb-3">
+                  <span class="text-xs font-semibold uppercase tracking-wider text-tertiary">
+                    {attraction.category}
+                  </span>
+                  <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark flex items-center gap-1">
+                    <svg
+                      class="w-3.5 h-3.5 text-stone-400 dark:text-stone-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    {attraction.distance}
+                  </span>
+                </div>
+                <h3 class="font-display text-lg mb-2 group-hover:text-tertiary transition-colors">
+                  {attraction.name[lang]}
+                </h3>
+                <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark line-clamp-2 mb-3">
+                  {attraction.description[lang]}
+                </p>
+              </div>
+              <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark flex items-center gap-1 mt-1">
+                <svg
+                  class="w-3.5 h-3.5 text-stone-400 dark:text-stone-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                {attraction.travelTime}
+              </span>
+            </a>
+          ))
+        }
+      </div>
+
+      <!-- View All Link -->
+      <div class="text-center mt-10 animate-on-scroll">
+        <a
+          href={getRelativeLocaleUrl(lang, "explore")}
+          class="inline-flex items-center gap-2 text-primary hover:text-primary-dark font-semibold transition-colors duration-300 group"
+        >
+          {t("explore.viewAll")}
+          <svg
+            class="w-4 h-4 group-hover:translate-x-1 transition-transform"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       FAQ SECTION
+       ========================================== -->
+  <FAQSection />
+
+  <!-- ==========================================
+       MAP SECTION
+       ========================================== -->
+  <MapSection />
+</Layout>
+
+<!-- Hero Video Audio Toggle & Slideshow loop -->
+<script>
+  function initHeroVideo() {
+    const video = document.getElementById("hero-video") as HTMLVideoElement;
+    const toggleBtn = document.getElementById(
+      "video-audio-toggle",
+    ) as HTMLElement;
+    const mutedIcon = document.getElementById("muted-icon") as HTMLElement;
+    const unmutedIcon = document.getElementById("unmuted-icon") as HTMLElement;
+    const slideshow = document.getElementById("hero-slideshow") as HTMLElement;
+
+    if (!video || !toggleBtn || !mutedIcon || !unmutedIcon || !slideshow)
+      return;
+
+    // Lazy load the video source to prevent blocking critical initial load bandwidth
+    const lazyLoadVideo = () => {
+      const src = video.getAttribute("data-src");
+      if (src && !video.src) {
+        video.src = src;
+        video.load();
+        video
+          .play()
+          .catch((err) => console.log("Video play error on lazy load:", err));
+      }
+    };
+
+    if (document.readyState === "complete") {
+      lazyLoadVideo();
+    } else {
+      window.addEventListener("load", lazyLoadVideo, { once: true });
+    }
+
+    // Toggle sound
+    toggleBtn.addEventListener("click", () => {
+      video.muted = !video.muted;
+      mutedIcon.classList.toggle("hidden", !video.muted);
+      unmutedIcon.classList.toggle("hidden", video.muted);
+    });
+
+    const slides = slideshow.querySelectorAll("[data-slide]");
+    let currentSlide = 0;
+    let slideshowInterval: any = null;
+
+    function startSlideshow() {
+      // Fade in slideshow container
+      slideshow.classList.remove("opacity-0");
+      slideshow.classList.add("opacity-100");
+
+      // Hide audio toggle button during slideshow
+      toggleBtn.classList.add("opacity-0", "pointer-events-none");
+
+      // Show first slide
+      currentSlide = 0;
+      slides[currentSlide].classList.remove("opacity-0");
+      slides[currentSlide].classList.add("opacity-100");
+
+      slideshowInterval = setInterval(() => {
+        // Fade out current slide
+        slides[currentSlide].classList.remove("opacity-100");
+        slides[currentSlide].classList.add("opacity-0");
+
+        currentSlide++;
+
+        if (currentSlide < slides.length) {
+          // Fade in next slide
+          slides[currentSlide].classList.remove("opacity-0");
+          slides[currentSlide].classList.add("opacity-100");
+        } else {
+          // End of slideshow: clean up and return to video
+          clearInterval(slideshowInterval);
+
+          // Fade out slideshow container
+          slideshow.classList.remove("opacity-100");
+          slideshow.classList.add("opacity-0");
+
+          // Reset all slides to opacity-0
+          slides.forEach((slide) => {
+            slide.classList.remove("opacity-100");
+            slide.classList.add("opacity-0");
+          });
+
+          // Fade in video
+          video.classList.remove("opacity-0");
+          video.classList.add("opacity-100");
+
+          // Fade in audio toggle
+          toggleBtn.classList.remove("opacity-0", "pointer-events-none");
+
+          // Replay video
+          video.currentTime = 0;
+          video.play().catch((err) => console.log("Replay error:", err));
+        }
+      }, 4000);
+    }
+
+    // When video ends
+    video.addEventListener("ended", () => {
+      // Fade out video
+      video.classList.remove("opacity-100");
+      video.classList.add("opacity-0");
+
+      // Start slideshow
+      startSlideshow();
+    });
+
+    // Cleanup interval on page transition
+    document.addEventListener(
+      "astro:before-swap",
+      () => {
+        if (slideshowInterval) clearInterval(slideshowInterval);
+      },
+      { once: true },
+    );
+  }
+
+  // Init on load
+  initHeroVideo();
+
+  // Re-init after Astro View Transitions page swap
+  document.addEventListener("astro:after-swap", initHeroVideo);
+</script>

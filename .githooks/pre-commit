@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# 1. COMPRESS VIDEOS
+STAGED_VIDEOS=$(git diff --cached --name-only --diff-filter=ACM | grep '\.mp4$')
+
+if [ -n "$STAGED_VIDEOS" ]; then
+    echo "Checking staged video files for compression..."
+    for FILE in $STAGED_VIDEOS; do
+        if [ ! -f "$FILE" ]; then
+            continue
+        fi
+        
+        # Check if video has already been compressed
+        COMMENT=$(ffprobe -v error -show_entries format_tags=comment -of default=noprint_wrappers=1:nokey=1 "$FILE" 2>/dev/null)
+        
+        if [ "$COMMENT" = "USGAR_COMPRESSED" ]; then
+            echo "  - $FILE is already compressed. Skipping."
+        else
+            echo "  - Compressing $FILE..."
+            TEMP_FILE="${FILE%.*}-temp.mp4"
+            ffmpeg -y -i "$FILE" -vcodec libx264 -crf 28 -preset medium -pix_fmt yuv420p -vf "scale='min(1280,iw)':-2" -c:a aac -b:a 128k -metadata comment="USGAR_COMPRESSED" -movflags +faststart "$TEMP_FILE" > /dev/null 2>&1
+            
+            if [ $? -eq 0 ] && [ -f "$TEMP_FILE" ]; then
+                mv "$TEMP_FILE" "$FILE"
+                git add "$FILE"
+                echo "    Compressed successfully!"
+            else
+                echo "    Compression failed for $FILE. Keeping original."
+                if [ -f "$TEMP_FILE" ]; then
+                    rm -f "$TEMP_FILE"
+                fi
+            fi
+        fi
+    done
+fi
+
+# 2. COMPRESS IMAGES
+STAGED_IMAGES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(jpg|jpeg|png|webp)$')
+
+if [ -n "$STAGED_IMAGES" ]; then
+    node scripts/compress-images.js $STAGED_IMAGES
+    
+    # Re-stage optimized images
+    for FILE in $STAGED_IMAGES; do
+        if [ -f "$FILE" ]; then
+            git add "$FILE"
+        fi
+    done
+fi
+
+exit 0

@@ -1,0 +1,183 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "rooms": "Habitaciones",
+    "services": "Servicios",
+    "explore": "Explora Cusco",
+    "gallery": "Galería",
+    "contact": "Contacto",
+    "bookNow": "Reservar",
+    "language": "Español"
+  },
+  "hero": {
+    "title": "USGAR Hotels",
+    "subtitle": "San Pedro, Cusco — Tu puerta a los Andes",
+    "cta": "Reserva Tu Estadía",
+    "ctaSecondary": "Explorar Habitaciones"
+  },
+  "booking": {
+    "checkin": "Llegada",
+    "checkout": "Salida",
+    "guests": "Huéspedes",
+    "roomType": "Tipo de Habitación",
+    "anyRoom": "Cualquier Habitación",
+    "search": "Buscar Disponibilidad",
+    "guest": "Huésped",
+    "guests_plural": "Huéspedes"
+  },
+  "rooms": {
+    "sectionLabel": "Alojamiento",
+    "title": "Nuestras Habitaciones",
+    "description": "Cada habitación está diseñada con murales andinos pintados a mano, iluminación cálida y textiles artesanales que celebran la herencia cultural de Cusco.",
+    "from": "Desde",
+    "perNight": "/noche",
+    "upTo": "Hasta",
+    "videoTour": "Video Tour",
+    "viewAll": "Ver todas las habitaciones"
+  },
+  "services": {
+    "sectionLabel": "Nuestros Servicios",
+    "title": "Todo Lo Que Necesitas",
+    "description": "Desde el momento en que llegas, cuidamos cada detalle para que tu estadía en Cusco sea inolvidable."
+  },
+  "reviews": {
+    "sectionLabel": "Reseñas de Huéspedes",
+    "title": "Lo Que Dicen Nuestros Huéspedes",
+    "description": "Escucha a los viajeros que han experimentado USGAR Hotels"
+  },
+  "explore": {
+    "sectionLabel": "Cercano",
+    "title": "Explora Cusco",
+    "description": "Descubre las maravillas que te esperan justo al salir",
+    "viewAll": "Ver todas las atracciones"
+  },
+  "map": {
+    "sectionLabel": "Ubicación",
+    "title": "Encuéntranos en Cusco",
+    "description": "Ubicado en el corazón de San Pedro, a pasos del mercado histórico y a poca distancia de la Plaza de Armas."
+  },
+  "faq": {
+    "sectionLabel": "FAQ",
+    "title": "Preguntas Frecuentes",
+    "description": "Todo lo que necesitas saber sobre tu estadía en Cusco: soroche (mal de altura), check-in, traslados y más."
+  },
+  "footer": {
+    "contact": "Contacto",
+    "quickLinks": "Enlaces Rápidos",
+    "followUs": "Síguenos",
+    "findUs": "Encuéntranos en tu plataforma de viajes favorita",
+    "rights": "Todos los derechos reservados.",
+    "madeWith": "Hecho por MarcaRed"
+  },
+  "whatsapp": {
+    "tooltip": "¿Necesitas ayuda? ¡Escríbenos!",
+    "message": "¡Hola! Me gustaría reservar una habitación en USGAR Hotels."
+  },
+  "theme": {
+    "toggleDark": "Cambiar modo oscuro"
+  },
+  "contact": {
+    "title": "Contáctanos",
+    "subtitle": "Nos encantaría saber de ti. Ponte en contacto con nuestro equipo para reservas, indicaciones o consejos de viaje.",
+    "getInTouch": "Ponte en Contacto",
+    "formName": "Tu Nombre",
+    "formEmail": "Tu Correo Electrónico",
+    "formMessage": "¿Cómo podemos ayudarte?",
+    "formSubmit": "Enviar Mensaje",
+    "directChannels": "Canales Preferidos",
+    "whatsappText": "Escríbenos por WhatsApp",
+    "emailText": "Envíanos un Correo",
+    "callText": "Llámanos",
+    "internationalCall": "Para soporte internacional:",
+    "tripadvisorText": "Ver opiniones en TripAdvisor",
+    "bookingText": "Ver tarifas en Booking.com",
+    "directionsTitle": "Cómo Llegar",
+    "directionsDesc": "USGAR Hotels se encuentra en San Pedro, Cusco. Ofrecemos traslados privados desde el aeropuerto para garantizar una llegada segura.",
+    "airportPickup": "Servicio de Traslado",
+    "airportPickupDesc": "El aeropuerto está a ~20 minutos en auto. Recomendamos reservar nuestro servicio privado para evitar taxis no autorizados.",
+    "whatsappQuery": "¡Hola! Tengo una consulta sobre USGAR Hotels.",
+    "altitudeTitle": "Soroche (Mal de Altura)",
+    "altitudeDesc": "Cusco se encuentra a 3,400 metros sobre el nivel del mar. Recomendamos descansar el primer día y tomar mate de coca. Tenemos oxígeno concentrado disponible gratis.",
+    "successMessage": "¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.",
+    "messagePlaceholder": "Escribe tu mensaje aquí..."
+  },
+  "gallery": {
+    "title": "Galería de Fotos",
+    "subtitle": "Descubre la belleza y los detalles de USGAR Hotels en San Pedro, Cusco",
+    "filterAll": "Todas las Fotos",
+    "filterHotel": "Hotel y Áreas",
+    "filterRooms": "Habitaciones",
+    "noImages": "No se encontraron imágenes."
+  },
+  "about": {
+    "sectionLabel": "Nosotros",
+    "title": "Descubre Nuestra Esencia",
+    "purpose": "Crear experiencias memorables que permitan a cada viajero descubrir la esencia de Cusco, brindando un servicio cálido, personalizado y de excelencia que haga de cada estadía un recuerdo inolvidable.",
+    "missionTitle": "Nuestra Misión",
+    "missionText": "Brindar una experiencia de hospedaje única en el corazón de Cusco, ofreciendo un servicio personalizado, cálido y de alta calidad que combine confort, hospitalidad y la riqueza de la cultura local. Nos comprometemos a superar las expectativas de nuestros huéspedes mediante una atención excepcional, un equipo humano apasionado y prácticas de turismo sostenible que generen recuerdos inolvidables.",
+    "visionTitle": "Nuestra Visión",
+    "visionText": "Ser el hotel referente de Cusco, manteniendo la esencia de nuestra cultura. Aspiramos a ser la primera elección de los viajeros que buscan excelencia, calidez y un servicio personalizado, distinguiéndonos por nuestra hospitalidad, innovación y compromiso con la sostenibilidad.",
+    "valuesTitle": "Nuestros Valores",
+    "hospitality": {
+      "title": "Hospitalidad",
+      "desc": "Cercanía y calidez"
+    },
+    "excellence": {
+      "title": "Excelence",
+      "desc": "Mejora continua"
+    },
+    "authenticity": {
+      "title": "Autenticidad",
+      "desc": "Cultura local"
+    },
+    "respect": {
+      "title": "Respeto",
+      "desc": "Consideración íntegra"
+    },
+    "commitment": {
+      "title": "Compromiso",
+      "desc": "Pasión y dedicación"
+    },
+    "sustainability": {
+      "title": "Sostenibilidad",
+      "desc": "Turismo responsable"
+    },
+    "teamwork": {
+      "title": "Trabajo en equipo",
+      "desc": "Colaboración"
+    },
+    "innovation": {
+      "title": "Innovación",
+      "desc": "Nuevas ideas"
+    }
+  },
+  "book": {
+    "stepFinal": "Paso Final",
+    "title": "Completa tu Reserva",
+    "subtitle": "Por favor, introduce los datos del huésped principal y confirma las fechas para proceder al pago seguro.",
+    "stayDetails": "Detalles de la Estadía",
+    "selectRoom": "Selecciona tu Habitación",
+    "selected": "Seleccionada",
+    "select": "Seleccionar",
+    "guestDetails": "Datos del Huésped Principal",
+    "fullName": "Nombre Completo",
+    "phoneWhatsApp": "Teléfono / WhatsApp",
+    "airportPickupCheckbox": "¿Necesita traslado privado desde el aeropuerto?",
+    "flightTimeLabel": "Hora aproximada de llegada de su vuelo",
+    "arrivalCalculationTitle": "Cálculo de Llegada Estimada",
+    "arrivalCalculationText": "Tiempo de tránsito: ~20-30 minutos en auto desde el Aeropuerto de Cusco (CUZ).",
+    "estimatedArrivalLabel": "Hora estimada de llegada a USGAR Hotels: ",
+    "estimatedArrivalNote": "* Estimación basada en 45 minutos (recogida de equipaje + control + traslado).",
+    "tripSummary": "Resumen del Viaje",
+    "checkinDate": "Fecha de Entrada",
+    "checkoutDate": "Fecha de Salida",
+    "duration": "Duración",
+    "totalPrice": "Precio Total",
+    "priceNote": "Impuestos y desayuno incluidos",
+    "guaranteedTitle": "Reserva Garantizada",
+    "guaranteedText": "Cancelación gratuita hasta 48 horas antes de tu llegada. Desayuno buffet andino incluido.",
+    "videoTour": "Video Tour de la Habitación",
+    "confirmAndPay": "Confirmar y Pagar con Mercado Pago",
+    "confirmAndPayStripe": "Confirmar y Pagar con Stripe"
+  }
+}

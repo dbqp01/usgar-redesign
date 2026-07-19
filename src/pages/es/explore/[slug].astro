@@ -1,0 +1,223 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { attractions } from "../../../data/attractions";
+import { useTranslations } from "../../../i18n/utils";
+import { getRelativeLocaleUrl } from "astro:i18n";
+
+export async function getStaticPaths() {
+  return attractions.map((attraction) => {
+    return {
+      params: { slug: attraction.id },
+      props: { attraction },
+    };
+  });
+}
+
+const { attraction } = Astro.props;
+const lang = "es";
+const t = useTranslations(lang);
+
+// Category Labels and Icons
+const categoryLabels: Record<string, { en: string; es: string }> = {
+  historical: { en: "Historical Site", es: "Sitio Histórico" },
+  nature: { en: "Nature & Landscape", es: "Naturaleza y Paisaje" },
+  cultural: { en: "Cultural Experience", es: "Experiencia Cultural" },
+  adventure: { en: "Adventure", es: "Aventura" },
+};
+
+const categoryIcons: Record<string, string> = {
+  historical: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 7h18M3 3h18M5 7v14M19 7v14M9 11v6M15 11v6" /></svg>`,
+  nature: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z" /></svg>`,
+  cultural: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" y1="9" x2="9.01" y2="9" /><line x1="15" y1="9" x2="15.01" y2="9" /></svg>`,
+  adventure: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 17 6-6 4 4 8-8" /><path d="M14 7h6v6" /></svg>`,
+};
+
+const blogSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": attraction.name[lang] + " — Guía de Viaje",
+  "description": attraction.description[lang],
+  "author": {
+    "@type": "Organization",
+    "name": "USGAR Hotels",
+    "url": "https://usgarhotels.com"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "USGAR Hotels",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://usgarhotels.com/assets/logos/Logo%20usgar%20morado.png"
+    }
+  },
+  "about": {
+    "@type": "TouristAttraction",
+    "name": attraction.name[lang],
+    "description": attraction.description[lang],
+    "distance": attraction.distance
+  }
+};
+---
+
+<Layout
+  title={`${attraction.name[lang]} — ${t("explore.title")} | USGAR Hotels`}
+  lang={lang}
+  schema={blogSchema}
+>
+  <!-- Header Hero with responsive background image / fallback gradient -->
+  <section class="relative pt-32 pb-20 px-4 overflow-hidden border-b border-black/5 dark:border-white/5 bg-stone-900">
+    <!-- Background Image with auto-fallback -->
+    <div class="absolute inset-0 z-0">
+      <img
+        src={`/images/explore/${attraction.id}.jpg`}
+        alt={attraction.name[lang]}
+        class="w-full h-full object-cover filter brightness-[0.4] transition-all duration-500"
+        onerror="this.style.display='none'; this.nextElementSibling.classList.remove('bg-black/50'); this.nextElementSibling.classList.add('bg-gradient-to-b','from-[#854CA2]/30','via-stone-950/70','to-stone-950')"
+      />
+      <!-- Dark overlay -->
+      <div class="absolute inset-0 bg-black/50 z-10 transition-all duration-300"></div>
+    </div>
+
+    <div class="max-w-4xl mx-auto relative z-10 text-center text-white/90">
+      <!-- Breadcrumbs -->
+      <nav class="flex items-center justify-center gap-2 text-xs text-white/70 mb-4 font-body">
+        <a href={getRelativeLocaleUrl(lang, "")} class="hover:text-secondary transition-colors">Inicio</a>
+        <span>/</span>
+        <a href={getRelativeLocaleUrl(lang, "explore")} class="hover:text-secondary transition-colors">{t("explore.title")}</a>
+        <span>/</span>
+        <span class="text-white font-medium">{attraction.name[lang]}</span>
+      </nav>
+
+      <!-- Category Tag -->
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-tertiary/10 text-tertiary mb-4 border border-tertiary/10">
+        <span class="flex items-center text-current" set:html={categoryIcons[attraction.category]}></span>
+        <span>{categoryLabels[attraction.category][lang]}</span>
+      </span>
+
+      <!-- Title -->
+      <h1 class="font-display text-4xl md:text-6xl mt-2 mb-6 leading-tight text-white drop-shadow-sm">
+        {attraction.name[lang]}
+      </h1>
+      
+      <!-- Summary Desc -->
+      <p class="text-lg md:text-xl text-white/80 font-body font-light max-w-2xl mx-auto leading-relaxed drop-shadow-sm">
+        {attraction.description[lang]}
+      </p>
+    </div>
+  </section>
+
+  <!-- Post Grid Content -->
+  <main class="py-16 px-4 max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+      <!-- Left Column: Story & Guide details -->
+      <article class="lg:col-span-2 space-y-12">
+        <!-- History & Background -->
+        <section class="bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-3xl border border-black/5 dark:border-white/5 shadow-sm space-y-4 animate-on-scroll">
+          <h2 class="font-display text-2xl text-text-primary-light dark:text-text-primary-dark flex items-center gap-3">
+            <svg class="w-6 h-6 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            Historia y Contexto
+          </h2>
+          <p class="text-text-secondary-light dark:text-text-secondary-dark font-body leading-relaxed text-base md:text-lg font-light">
+            {attraction.history[lang]}
+          </p>
+        </section>
+
+        <!-- How to get there -->
+        <section class="bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-3xl border border-black/5 dark:border-white/5 shadow-sm space-y-4 animate-on-scroll">
+          <h2 class="font-display text-2xl text-text-primary-light dark:text-text-primary-dark flex items-center gap-3">
+            <svg class="w-6 h-6 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+            </svg>
+            Cómo Llegar
+          </h2>
+          <p class="text-text-secondary-light dark:text-text-secondary-dark font-body leading-relaxed text-base md:text-lg font-light">
+            {attraction.howToGet[lang]}
+          </p>
+        </section>
+
+        <!-- Travel Tips -->
+        <section class="bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-3xl border border-black/5 dark:border-white/5 shadow-sm space-y-6 animate-on-scroll">
+          <h2 class="font-display text-2xl text-text-primary-light dark:text-text-primary-dark flex items-center gap-3 border-b border-black/5 dark:border-white/5 pb-3">
+            <svg class="w-6 h-6 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+            Consejos Prácticos de Viaje
+          </h2>
+          <ul class="space-y-4 font-body">
+            {attraction.tips[lang].map((tip) => (
+              <li class="flex items-start gap-3 text-text-secondary-light dark:text-text-secondary-dark text-base">
+                <span class="text-tertiary mt-1 flex-shrink-0">
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </span>
+                <span class="font-light">{tip}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </article>
+
+      <!-- Right Column: Sidebar (Quick info & Hotel Booking CTA) -->
+      <aside class="space-y-8 lg:sticky lg:top-24">
+        <!-- Quick Info Box -->
+        <div class="bg-surface-card-light dark:bg-surface-card-dark p-6 rounded-3xl border border-black/5 dark:border-white/5 shadow-sm space-y-4">
+          <h3 class="font-display text-lg text-text-primary-light dark:text-text-primary-dark font-semibold">
+            Detalles Rápidos
+          </h3>
+          <div class="space-y-3.5 text-sm font-body">
+            <!-- Distance -->
+            <div class="flex justify-between items-center py-2 border-b border-black/5 dark:border-white/5">
+              <span class="text-text-secondary-light dark:text-text-secondary-dark flex items-center gap-1.5 font-light">
+                <svg class="w-4 h-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Distancia desde el Hotel
+              </span>
+              <span class="font-semibold text-text-primary-light dark:text-text-primary-dark">{attraction.distance}</span>
+            </div>
+            <!-- Time -->
+            <div class="flex justify-between items-center py-2 border-b border-black/5 dark:border-white/5">
+              <span class="text-text-secondary-light dark:text-text-secondary-dark flex items-center gap-1.5 font-light">
+                <svg class="w-4 h-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Tiempo de Viaje
+              </span>
+              <span class="font-semibold text-text-primary-light dark:text-text-primary-dark">{attraction.travelTime}</span>
+            </div>
+            <!-- Best Season -->
+            <div class="flex justify-between items-center py-2">
+              <span class="text-text-secondary-light dark:text-text-secondary-dark flex items-center gap-1.5 font-light">
+                <svg class="w-4 h-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Mejor Época
+              </span>
+              <span class="font-semibold text-text-primary-light dark:text-text-primary-dark text-right text-xs max-w-[150px]">{attraction.bestTime[lang]}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sticky Hotel Booking CTA -->
+        <div class="bg-gradient-to-br from-primary/10 to-tertiary/10 dark:from-primary/20 dark:to-tertiary/20 p-8 rounded-3xl border border-primary/20 shadow-sm space-y-6 text-center">
+          <h3 class="font-display text-2xl text-text-primary-light dark:text-text-primary-dark leading-tight">
+            ¿Listo para explorar Cusco?
+          </h3>
+          <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark font-body font-light">
+            USGAR Hotels en San Pedro es el punto de partida perfecto para tu aventura andina. Reserva hoy mismo al mejor precio directo.
+          </p>
+          <a
+            href={getRelativeLocaleUrl(lang, "book")}
+            class="block w-full text-center bg-primary hover:bg-primary-dark text-white font-semibold py-3.5 px-6 rounded-full transition-all duration-300 hover:shadow-lg hover:scale-[1.02]"
+          >
+            {t("nav.bookNow")}
+          </a>
+        </div>
+      </aside>
+    </div>
+  </main>
+</Layout>

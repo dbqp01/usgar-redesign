@@ -1,0 +1,249 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { rooms } from '../../data/rooms';
+
+export const prerender = true;
+
+const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+---
+
+<Layout title={`${lang === 'es' ? 'Reserva Confirmada' : 'Booking Confirmed'} — USGAR Hotels`} lang={lang}>
+  <main class="py-24 px-4 max-w-3xl mx-auto flex-1 print:py-10">
+    
+    <!-- 1. Loading State Spinner -->
+    <div id="loading-container" class="py-20 text-center space-y-4">
+      <div class="inline-block animate-spin h-10 w-10 border-4 border-primary border-t-transparent rounded-full"></div>
+      <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm animate-pulse">
+        {lang === 'es' ? 'Recuperando detalles de reserva...' : 'Retrieving booking details...'}
+      </p>
+    </div>
+
+    <!-- 2. Success Details Card (Hidden by default, shown client-side) -->
+    <div id="success-container" class="hidden space-y-8 animate-fade-in">
+      <!-- Success Banner Card -->
+      <div class="bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-3xl border border-black/5 dark:border-white/5 shadow-2xl text-center space-y-4 print:shadow-none print:border-none print:p-0">
+        
+        <!-- Animated success check icon -->
+        <div class="mx-auto w-20 h-20 rounded-full bg-green-500/10 dark:bg-green-500/15 text-green-500 flex items-center justify-center border border-green-500/20 shadow-inner print:w-12 print:h-12">
+          <svg class="w-10 h-10 print:w-6 print:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+
+        <div>
+          <span class="text-xs font-semibold text-green-600 dark:text-green-400 uppercase tracking-widest">
+            {lang === 'es' ? 'Pago Aprobado con Éxito' : 'Payment Approved Successfully'}
+          </span>
+          <h1 class="font-display text-4xl md:text-5xl mt-2 mb-3">
+            {lang === 'es' ? '¡Tu Reserva está Confirmada!' : 'Reservation Confirmed!'}
+          </h1>
+          <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm max-w-md mx-auto print:text-xs">
+            {lang === 'es' 
+              ? '¡Gracias por elegir USGAR Hotels! Hemos enviado los detalles de tu estadía y tu confirmación de pago por email.' 
+              : 'Thank you for choosing USGAR Hotels! We have emailed your stay details and payment receipt.'}
+          </p>
+        </div>
+
+        <!-- Highlighted Confirmation Code -->
+        <div class="inline-block bg-stone-50 dark:bg-stone-900 border border-black/5 dark:border-white/5 px-6 py-4 rounded-2xl print:bg-stone-100">
+          <span class="block text-[10px] uppercase tracking-widest text-text-secondary-light dark:text-text-secondary-dark">
+            {lang === 'es' ? 'Código de Confirmación Channex' : 'Channex Confirmation Code'}
+          </span>
+          <span id="success-conf-code" class="font-mono text-xl md:text-2xl font-bold text-primary select-all">
+            ---
+          </span>
+        </div>
+      </div>
+
+      <!-- Details Receipt Card -->
+      <div class="bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-3xl border border-black/5 dark:border-white/5 shadow-lg space-y-6 print:shadow-none print:border-none print:p-0">
+        <h2 class="font-display text-2xl border-b border-black/5 dark:border-white/5 pb-3">
+          {lang === 'es' ? 'Detalles de la Reserva' : 'Booking Details'}
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+          <!-- Guest details -->
+          <div class="space-y-1">
+            <span class="text-xs uppercase font-semibold text-text-secondary-light dark:text-text-secondary-dark tracking-wider">{lang === 'es' ? 'Huésped Principal' : 'Primary Guest'}</span>
+            <p id="success-guest-name" class="font-bold text-text-primary-light dark:text-text-primary-dark">---</p>
+            <p id="success-guest-email" class="text-text-secondary-light dark:text-text-secondary-dark">---</p>
+            <p id="success-guest-phone" class="text-text-secondary-light dark:text-text-secondary-dark">---</p>
+          </div>
+
+          <!-- Stay Info -->
+          <div class="space-y-1">
+            <span class="text-xs uppercase font-semibold text-text-secondary-light dark:text-text-secondary-dark tracking-wider">{lang === 'es' ? 'Habitación' : 'Room Type'}</span>
+            <p id="success-room-name" class="font-bold text-text-primary-light dark:text-text-primary-dark">---</p>
+            <p id="success-guests-text" class="text-text-secondary-light dark:text-text-secondary-dark">---</p>
+          </div>
+        </div>
+
+        <!-- Calendar Dates Summary Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-b border-black/5 dark:border-white/5 py-5">
+          <div class="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-black/5 dark:border-white/5">
+            <span class="block text-[10px] uppercase font-semibold text-text-secondary-light dark:text-text-secondary-dark tracking-widest mb-1">{lang === 'es' ? 'Fecha de Entrada (Check-In)' : 'Check-In Date'}</span>
+            <p id="success-checkin" class="font-semibold text-sm">---</p>
+            <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5 block">Desde/From 11:00 AM</span>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-black/5 dark:border-white/5">
+            <span class="block text-[10px] uppercase font-semibold text-text-secondary-light dark:text-text-secondary-dark tracking-widest mb-1">{lang === 'es' ? 'Fecha de Salida (Check-Out)' : 'Check-Out Date'}</span>
+            <p id="success-checkout" class="font-semibold text-sm">---</p>
+            <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5 block">Hasta/To 10:00 AM</span>
+          </div>
+        </div>
+
+        <!-- Pricing summary -->
+        <div class="flex items-center justify-between">
+          <div class="space-y-1">
+            <span class="text-xs uppercase font-semibold text-text-secondary-light dark:text-text-secondary-dark tracking-wider">{lang === 'es' ? 'Detalle de Facturación' : 'Billing Detail'}</span>
+            <p id="success-billing-nights" class="text-text-secondary-light dark:text-text-secondary-dark">---</p>
+          </div>
+          <div class="text-right">
+            <span class="block text-xs uppercase font-semibold text-text-secondary-light dark:text-text-secondary-dark tracking-wider">{lang === 'es' ? 'Total Pagado' : 'Total Paid'}</span>
+            <p class="font-display text-3xl font-bold text-primary">$<span id="success-total-price">0</span> USD</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buttons Toolbar (Hidden when printing) -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-between items-center pt-4 print:hidden">
+        <a
+          href={lang === 'es' ? '/es' : '/'}
+          class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary font-semibold text-sm transition-colors duration-200"
+        >
+          &larr; {lang === 'es' ? 'Volver al Inicio' : 'Return to Home'}
+        </a>
+
+        <div class="flex gap-4 w-full sm:w-auto">
+          <!-- Print Button -->
+          <button
+            type="button"
+            onclick="window.print()"
+            class="w-full sm:w-auto bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 font-semibold py-3 px-6 rounded-xl transition-all duration-200 text-sm flex items-center justify-center gap-2 cursor-pointer border border-black/5 dark:border-white/5 shadow-sm"
+          >
+            <span>🖨️ {lang === 'es' ? 'Imprimir Comprobante' : 'Print Receipt'}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Error State Card (Hidden by default, shown client-side) -->
+    <div id="error-container" class="hidden bg-surface-card-light dark:bg-surface-card-dark p-12 rounded-3xl border border-black/5 dark:border-white/5 shadow-2xl text-center space-y-6 animate-fade-in">
+      <div class="mx-auto w-16 h-16 rounded-full bg-red-500/10 dark:bg-red-500/15 text-red-500 flex items-center justify-center border border-red-500/20 shadow-inner">
+        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="font-display text-3xl mb-2">
+          {lang === 'es' ? 'Reserva No Encontrada' : 'Booking Not Found'}
+        </h1>
+        <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm max-w-md mx-auto">
+          {lang === 'es' 
+            ? 'No pudimos recuperar los detalles de esta reserva. Si acabas de realizar el pago, es posible que el sistema esté procesando la transacción.' 
+            : 'We were unable to locate details for this reservation ID. If you just made the payment, the transaction might still be processing.'}
+        </p>
+      </div>
+      <a
+        href={lang === 'es' ? '/es' : '/'}
+        class="inline-block bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 text-sm"
+      >
+        {lang === 'es' ? 'Volver al Inicio' : 'Return to Home'}
+      </a>
+    </div>
+
+  </main>
+</Layout>
+
+<!-- Serialize rooms data into browser context -->
+<script is:inline define:vars={{ serializedRooms: JSON.stringify(rooms.map(r => ({ id: r.id, slug: r.slug, name: r.name, pricePerNight: r.pricePerNight }))) }}>
+  window.__ROOMS_DATA = JSON.parse(serializedRooms);
+</script>
+
+<script>
+  const API_BASE_URL = (import.meta.env.PUBLIC_API_URL || window.location.origin + '/api').replace(/\/$/, '');
+  const ROOMS_DATA = (window as any).__ROOMS_DATA || [];
+  const lang = (document.documentElement.lang || 'en') as 'en' | 'es';
+
+  async function loadSuccessPage() {
+    const loadingContainer = document.getElementById('loading-container');
+    const successContainer = document.getElementById('success-container');
+    const errorContainer = document.getElementById('error-container');
+
+    const params = new URLSearchParams(window.location.search);
+    const bookingId = params.get('bookingId') || params.get('external_reference') || '';
+
+    if (!bookingId) {
+      loadingContainer?.classList.add('hidden');
+      errorContainer?.classList.remove('hidden');
+      return;
+    }
+
+    try {
+      // Fetch booking details from local PHP API
+      const response = await fetch(`${API_BASE_URL}/channex/booking/${bookingId}`);
+      if (!response.ok) throw new Error('Booking not found');
+      
+      const booking = await response.json();
+      const room = ROOMS_DATA.find((r: any) => r.slug === booking.roomId);
+
+      if (!booking || !room) throw new Error('Data mismatch');
+
+      // Helper to format dates nicely
+      const formatDate = (dateStr: string) => {
+        if (!dateStr) return '';
+        const d = new Date(dateStr + 'T00:00:00');
+        const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        return d.toLocaleDateString(lang === 'es' ? 'es-PE' : 'en-US', options);
+      };
+
+      // Populate DOM elements
+      const confCodeEl = document.getElementById('success-conf-code');
+      const guestNameEl = document.getElementById('success-guest-name');
+      const guestEmailEl = document.getElementById('success-guest-email');
+      const guestPhoneEl = document.getElementById('success-guest-phone');
+      const roomNameEl = document.getElementById('success-room-name');
+      const guestsTextEl = document.getElementById('success-guests-text');
+      const checkinEl = document.getElementById('success-checkin');
+      const checkoutEl = document.getElementById('success-checkout');
+      const billingNightsEl = document.getElementById('success-billing-nights');
+      const totalPriceEl = document.getElementById('success-total-price');
+
+      if (confCodeEl) confCodeEl.textContent = booking.confirmationCode || booking.id;
+      if (guestNameEl) guestNameEl.textContent = booking.guestName;
+      if (guestEmailEl) guestEmailEl.textContent = booking.guestEmail;
+      if (guestPhoneEl) guestPhoneEl.textContent = booking.guestPhone;
+      if (roomNameEl) roomNameEl.textContent = room.name[lang];
+      
+      if (guestsTextEl) {
+        guestsTextEl.textContent = booking.guests === 1
+          ? (lang === 'es' ? '1 Huésped' : '1 Guest')
+          : `${booking.guests} ${lang === 'es' ? 'Huéspedes' : 'Guests'}`;
+      }
+
+      if (checkinEl) checkinEl.textContent = formatDate(booking.checkIn);
+      if (checkoutEl) checkoutEl.textContent = formatDate(booking.checkOut);
+      
+      if (billingNightsEl) {
+        billingNightsEl.textContent = booking.nights === 1
+          ? (lang === 'es' ? `1 noche x $${room.pricePerNight} USD` : `1 night x $${room.pricePerNight} USD`)
+          : `${booking.nights} ${lang === 'es' ? 'noches' : 'nights'} x $${room.pricePerNight} USD`;
+      }
+      
+      if (totalPriceEl) totalPriceEl.textContent = booking.totalPrice.toString();
+
+      // Show details card
+      loadingContainer?.classList.add('hidden');
+      successContainer?.classList.remove('hidden');
+    } catch (err) {
+      console.error('[Success Page Error]', err);
+      loadingContainer?.classList.add('hidden');
+      errorContainer?.classList.remove('hidden');
+    }
+  }
+
+  // Load initially and on Astro View Transition swaps
+  loadSuccessPage();
+  document.addEventListener('astro:after-swap', loadSuccessPage);
+</script>

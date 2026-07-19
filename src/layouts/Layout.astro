@@ -1,0 +1,154 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { siteSettings } from '../data/settings';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  lang?: string;
+  ogImage?: string;
+  schema?: Record<string, any> | Record<string, any>[];
+  preloadImage?: string;
+}
+
+const currentLang = (Astro.currentLocale || 'en') as 'en' | 'es';
+const {
+  title,
+  description = siteSettings.siteDescription[currentLang],
+  lang = 'en',
+  ogImage = '/og-image.jpg',
+  schema,
+  preloadImage
+} = Astro.props;
+
+const siteBase = Astro.site ?? new URL('https://usgarhotels.com');
+const canonicalURL = new URL(Astro.url.pathname, siteBase);
+
+// Build correct hreflang alternate URLs
+const pathWithoutLocale = Astro.url.pathname.replace(/^\/es\//, '/').replace(/^\/es$/, '/');
+const enURL = new URL(pathWithoutLocale, siteBase);
+const esURL = new URL(`/es${pathWithoutLocale === '/' ? '' : pathWithoutLocale}`, siteBase);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO -->
+    <title>{title}</title>
+    <link rel="canonical" href={canonicalURL.href} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonicalURL.href} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={lang === 'es' ? 'es_PE' : 'en_US'} />
+    <meta property="og:site_name" content="USGAR Hotels" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Hreflang -->
+    <link rel="alternate" hreflang="en" href={enURL.href} />
+    <link rel="alternate" hreflang="es" href={esURL.href} />
+    <link rel="alternate" hreflang="x-default" href={enURL.href} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- LCP Image Preload -->
+    {preloadImage && (
+      <link rel="preload" href={preloadImage} as="image" type="image/webp" />
+    )}
+
+    <!-- Google Fonts Preconnect (performance) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" />
+    </noscript>
+
+    <!-- Schema.org JSON-LD -->
+    {schema && (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+    )}
+
+    <!-- View Transitions -->
+    <ClientRouter />
+  </head>
+  <body class="bg-surface-light dark:bg-surface-dark text-text-primary-light dark:text-text-primary-dark transition-colors duration-300 min-h-screen flex flex-col">
+    <!-- Skip to content (accessibility) -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold">
+      {lang === 'es' ? 'Ir al contenido principal' : 'Skip to main content'}
+    </a>
+
+    <Navbar />
+
+    <main id="main-content" class="flex-1">
+      <slot />
+    </main>
+
+    <Footer />
+    <WhatsAppButton />
+
+    <!-- Dark mode: detect system preference + persist choice -->
+    <script is:inline>
+      (function() {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = stored || (prefersDark ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+      })();
+    </script>
+
+    <!-- Re-apply theme after View Transition page swap -->
+    <script is:inline>
+      if (!window._themeSwapRegistered) {
+        window._themeSwapRegistered = true;
+        document.addEventListener('astro:after-swap', () => {
+          const stored = localStorage.getItem('theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = stored || (prefersDark ? 'dark' : 'light');
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+        });
+      }
+    </script>
+
+    <!-- Scroll animations with IntersectionObserver -->
+    <script>
+      function initScrollAnimations() {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-on-scroll:not(.visible)').forEach(el => observer.observe(el));
+      }
+
+      // Run on initial load
+      initScrollAnimations();
+
+      // Re-run after View Transition navigation
+      document.addEventListener('astro:after-swap', initScrollAnimations);
+    </script>
+  </body>
+</html>

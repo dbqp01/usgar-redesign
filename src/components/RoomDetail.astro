@@ -1,0 +1,865 @@
+---
+import { Image } from "astro:assets";
+import Layout from "../layouts/Layout.astro";
+import type { Room } from "../data/rooms";
+import { useTranslations } from "../i18n/utils";
+import { translateBeds } from "../utils/helpers";
+import SVGIcons from "./icons/SVGIcons.astro";
+import { siteSettings } from "../data/settings";
+
+interface Props {
+  room: Room;
+  lang: "en" | "es";
+}
+
+const { room, lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Dynamically import all room images and hotel fallback images
+const allRoomImages = import.meta.glob<{ default: ImageMetadata }>(
+  "../assets/rooms/**/*.jpg",
+);
+const allHotelImages = import.meta.glob<{ default: ImageMetadata }>(
+  "../assets/hotel/**/*.jpg",
+);
+
+let roomImages: { default: ImageMetadata }[] = [];
+
+if (room.images.length === 0) {
+  // Room has no photos, load fallback images from src/assets/hotel/
+  const hotelKeys = Object.keys(allHotelImages)
+    .filter((key) => 
+      key.includes('fallback-room-desayuno') ||
+      key.includes('fallback-room-oxigeno') ||
+      key.includes('fallback-room-fachada') ||
+      key.includes('fallback-room-pasillo')
+    )
+    .sort((a, b) => a.localeCompare(b));
+  roomImages = await Promise.all(hotelKeys.map((key) => allHotelImages[key]()));
+} else {
+  // Load photos from specific room folder
+  const roomKeys = Object.keys(allRoomImages)
+    .filter((key) => key.includes(`/${room.photoFolder}/`))
+    .sort((a, b) => a.localeCompare(b));
+  roomImages = await Promise.all(roomKeys.map((key) => allRoomImages[key]()));
+}
+
+const images = roomImages.map((img) => img.default);
+
+// Translate bedding info using shared utility
+const translatedBeds = translateBeds(room.beds, lang);
+
+// Build amenities map from room.amenityLabels (editable via Tina CMS)
+const amenityIconNames: Record<string, "wifi" | "breakfast" | "hot-water" | "heating" | "tv" | "laundry"> = {
+  wifi: "wifi",
+  breakfast: "breakfast",
+  hot_water: "hot-water",
+  heating: "heating",
+  tv: "tv",
+  laundry: "laundry",
+};
+
+const amenitiesMap: Record<string, { label: { en: string; es: string }; iconName: "wifi" | "breakfast" | "hot-water" | "heating" | "tv" | "laundry" }> = {};
+for (const [key, labelObj] of Object.entries(room.amenityLabels || {})) {
+  amenitiesMap[key === 'hot_water' ? 'hot-water' : key] = {
+    label: labelObj as { en: string; es: string },
+    iconName: amenityIconNames[key] || "wifi",
+  };
+}
+const roomSchema = {
+  "@context": "https://schema.org",
+  "@type": "HotelRoom",
+  name: room.name[lang],
+  description: room.description[lang],
+  bed: translatedBeds,
+  occupancy: {
+    "@type": "QuantitativeValue",
+    value: room.maxGuests,
+    unitText: lang === "es" ? "persona" : "person",
+  },
+  offers: {
+    "@type": "Offer",
+    price: room.pricePerNight,
+    priceCurrency: "USD",
+    offeredBy: {
+      "@type": "Hotel",
+      name: siteSettings.hotelName,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: siteSettings.streetAddress,
+        addressLocality: siteSettings.city,
+        addressCountry: siteSettings.country,
+      },
+    },
+  },
+};
+---
+
+<Layout
+  title={`${room.name[lang]} — ${siteSettings.hotelName}`}
+  lang={lang}
+  schema={roomSchema}
+>
+  <!-- Main Container -->
+  <main class="py-24 px-4 max-w-7xl mx-auto flex-1 animate-fade-in">
+    <!-- Breadcrumbs & Back link -->
+    <div class="mb-8 flex items-center justify-between">
+      <nav
+        class="flex text-sm text-text-secondary-light dark:text-text-secondary-dark font-medium gap-2"
+      >
+        <a
+          href={lang === "es" ? "/es" : "/"}
+          class="hover:text-primary transition-colors"
+        >
+          {lang === "es" ? "Inicio" : "Home"}
+        </a>
+        <span>/</span>
+        <span class="text-text-primary-light dark:text-text-primary-dark">{room.name[lang]}</span
+        >
+      </nav>
+
+      <a
+        href={lang === "es" ? "/es/#rooms" : "/#rooms"}
+        class="inline-flex items-center gap-2 text-primary hover:text-primary-dark font-semibold text-sm transition-colors duration-300 group"
+      >
+        <svg
+          class="w-4 h-4 group-hover:-translate-x-1 transition-transform"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+        </svg>
+        {lang === "es" ? "Volver a habitaciones" : "Back to rooms"}
+      </a>
+    </div>
+
+    <!-- Title and Badge -->
+    <div class="mb-10">
+      <span class="text-sm font-semibold text-primary uppercase tracking-widest"
+        >{t("rooms.sectionLabel")}</span
+      >
+      <h1 class="font-display text-4xl md:text-6xl mt-2 mb-4 leading-tight">
+        {room.name[lang]}
+      </h1>
+      <div
+        class="flex items-center gap-4 text-sm text-text-secondary-light dark:text-text-secondary-dark mt-3"
+      >
+        <span class="flex items-center gap-1">
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+            ></path>
+          </svg>
+          {t("rooms.upTo")}
+          {room.maxGuests}
+          {lang === "es" ? "huéspedes" : "guests"}
+        </span>
+        <span>•</span>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-text-primary-light dark:text-text-primary-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 4v16M2 20h20M22 20V12a4 4 0 0 0-4-4H4" />
+            <path d="M6 12h4a2 2 0 0 0 2-2V8H6v4Z" />
+          </svg>
+          {translatedBeds}
+        </span>
+      </div>
+    </div>
+
+    <!-- Interactive Room Slider / Gallery (Hero-style large view with thumbnails below) -->
+    <div
+      id="room-gallery-slider"
+      class="relative w-full mb-12 animate-on-scroll"
+      data-images={JSON.stringify(images.map(img => img.src))}
+    >
+      <!-- Large Active Image Display -->
+      <div class="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-lg border border-black/5 dark:border-white/5 group">
+        <div class="w-full h-full relative">
+          <!-- Active image element -->
+          <Image
+            id="active-gallery-image"
+            src={images[0]}
+            alt={room.name[lang]}
+            width={1200}
+            height={600}
+            format="avif"
+            quality={80}
+            loading="eager"
+            fetchpriority="high"
+            class="w-full h-full object-cover transition-opacity duration-300"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+
+          <!-- Click to Zoom / Expand Indicator -->
+          <button
+            id="gallery-zoom-trigger"
+            class="absolute bottom-6 right-6 bg-black/45 hover:bg-primary/95 text-white backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10 flex items-center gap-2 hover:scale-105 transition-all duration-300 shadow-md text-sm cursor-pointer"
+            aria-label={lang === "es" ? "Expandir foto" : "Zoom photo"}
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+            </svg>
+            <span>{lang === "es" ? "Expandir" : "Zoom"}</span>
+          </button>
+
+          <!-- Navigation Arrows over main image -->
+          <button
+            id="slider-prev-arrow"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/35 hover:bg-primary/90 text-white backdrop-blur-sm flex items-center justify-center border border-white/10 opacity-0 group-hover:opacity-100 transition-all cursor-pointer hover:scale-105"
+            aria-label="Previous image"
+          >
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            id="slider-next-arrow"
+            class="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/35 hover:bg-primary/90 text-white backdrop-blur-sm flex items-center justify-center border border-white/10 opacity-0 group-hover:opacity-100 transition-all cursor-pointer hover:scale-105"
+            aria-label="Next image"
+          >
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Thumbnails Row Below -->
+      <div class="mt-4 flex flex-wrap gap-2 md:gap-3 justify-center">
+        {images.map((img, idx) => (
+          <button
+            class={`gallery-thumb-selector-btn relative aspect-[4/3] w-20 sm:w-28 md:w-32 rounded-xl overflow-hidden border-2 cursor-pointer transition-all duration-300 hover:scale-105 shadow-sm ${idx === 0 ? 'border-primary' : 'border-transparent opacity-60 hover:opacity-100'}`}
+            data-thumb-index={idx}
+            aria-label={`View photo ${idx + 1}`}
+          >
+            <Image
+              src={img}
+              alt={`${room.name[lang]} thumb - ${idx + 1}`}
+              width={200}
+              height={150}
+              format="webp"
+              quality={60}
+              class="w-full h-full object-cover"
+            />
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Room Main Layout Details -->
+    <div
+      class="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-16 mb-20 items-start"
+    >
+      <!-- Left: Description and Amenities (2 columns wide) -->
+      <div class="lg:col-span-2 space-y-12 animate-on-scroll">
+        <!-- Description -->
+        <div>
+          <h2 class="font-display text-2xl md:text-3xl mb-4">
+            {lang === "es" ? "Sobre la habitación" : "About the room"}
+          </h2>
+          <p class="text-lg leading-relaxed text-text-secondary-light dark:text-text-secondary-dark">
+            {room.description[lang]}
+          </p>
+        </div>
+
+        <hr class="border-black/5 dark:border-white/5" />
+
+        <!-- Amenities -->
+        <div>
+          <h2 class="font-display text-2xl md:text-3xl mb-6">
+            {lang === "es" ? "Servicios y comodidades" : "Amenities & Comforts"}
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {
+              room.amenities.map((amenityKey) => {
+                const amenity = amenitiesMap[amenityKey];
+                if (!amenity) return null;
+                return (
+                  <div class="flex items-start gap-4 p-4 rounded-xl bg-surface-card-light dark:bg-surface-card-dark border border-black/5 dark:border-white/5 shadow-sm">
+                    <div class="p-2.5 rounded-lg bg-[#2DB5A0]/10 dark:bg-[#2DB5A0]/15 flex items-center justify-center">
+                      <SVGIcons
+                        name={amenity.iconName}
+                        class="w-5 h-5 text-tertiary"
+                      />
+                    </div>
+                    <div>
+                      <h3 class="font-medium text-sm text-text-primary-light dark:text-text-primary-dark">
+                        {amenity.label[lang]}
+                      </h3>
+                      <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
+                        {lang === "es"
+                          ? "Incluido sin costo extra"
+                          : "Included at no extra cost"}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Sticky Booking Panel (1 column wide) -->
+      <div
+        class="lg:col-span-1 lg:sticky lg:top-24 bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-2xl border border-black/5 dark:border-white/5 shadow-lg space-y-6 animate-on-scroll"
+        style="transition-delay: 0.1s;"
+      >
+        <div>
+          <span
+            class="text-xs font-semibold uppercase tracking-wider text-text-secondary-dark"
+            >{lang === "es" ? "Tarifa base" : "Base rate"}</span
+          >
+          <div class="flex items-baseline gap-1 mt-1">
+            <span class="text-5xl font-bold font-display text-primary"
+              >${room.pricePerNight}</span
+            >
+            <span class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
+              >{t("rooms.perNight")}</span
+            >
+          </div>
+        </div>
+
+        <!-- Room Specs Quickbox -->
+        <div
+          class="border-t border-b border-black/5 dark:border-white/5 py-4 space-y-3"
+        >
+          <div class="flex justify-between text-sm">
+            <span class="text-text-secondary-light dark:text-text-secondary-dark"
+              >{lang === "es" ? "Capacidad máxima" : "Max capacity"}</span
+            >
+            <span class="font-semibold"
+              >{room.maxGuests} {lang === "es" ? "personas" : "guests"}</span
+            >
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-text-secondary-light dark:text-text-secondary-dark"
+              >{lang === "es" ? "Distribución" : "Bed configuration"}</span
+            >
+            <span class="font-semibold">{translatedBeds}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-text-secondary-light dark:text-text-secondary-dark">Check-in</span>
+            <span class="font-semibold">{siteSettings.checkinTime}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-text-secondary-light dark:text-text-secondary-dark">Check-out</span>
+            <span class="font-semibold">{siteSettings.checkoutTime}</span>
+          </div>
+        </div>
+
+        <!-- Booking Call to Action (CTA) -->
+        <a
+          href={`${lang === "es" ? "/es/book" : "/book"}?roomType=${room.slug}`}
+          class="block w-full text-center bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 text-lg cursor-pointer"
+        >
+          {lang === "es" ? "Reservar Habitación" : "Book this Room"}
+        </a>
+
+        <p
+          class="text-[11px] text-center text-text-secondary-light dark:text-text-secondary-dark leading-normal px-2"
+        >
+          {
+            lang === "es"
+              ? "Garantía de mejor tarifa disponible reservando directamente en nuestra web."
+              : "Best rate guarantee when booking directly on our official website."
+          }
+        </p>
+      </div>
+    </div>
+
+    <!-- Interactive Room Video Tour Section -->
+    <section class="mb-20 animate-on-scroll">
+      <div class="text-center mb-8">
+        <span
+          class="text-xs font-semibold text-primary uppercase tracking-widest"
+          >{lang === "es" ? "Experiencia Visual" : "Visual Experience"}</span
+        >
+        <h2 class="font-display text-3xl md:text-4xl mt-2 mb-3">
+          {lang === "es" ? "Video Tour de la Habitación" : "Room Video Tour"}
+        </h2>
+        <p class="text-text-secondary-light dark:text-text-secondary-dark max-w-lg mx-auto text-sm">
+          {
+            lang === "es"
+              ? "Recorre la habitación de forma interactiva y admira sus detalles antes de tu llegada."
+              : "Take a virtual walkthrough of the room and appreciate the details before your stay."
+          }
+        </p>
+      </div>
+
+      <!-- Cinema Video Embed -->
+      <div
+        class="relative max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl bg-black border border-white/5 aspect-video group/video"
+      >
+        <!-- Native Video Element (preload="none" and optimized poster) -->
+        <video
+          id="room-tour-video"
+          src={`/videos/rooms/${room.slug}.mp4`}
+          preload="none"
+          muted
+          playsinline
+          class="w-full h-full object-cover opacity-90 transition-opacity duration-300"
+          style="display: block;"
+        >
+        </video>
+
+        <!-- Initial Poster and Play Overlay -->
+        <div
+          id="video-overlay"
+          class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 group-hover/video:bg-black/50 transition-all duration-300 cursor-pointer"
+        >
+          <!-- Render dynamic poster using optimized image -->
+          <div class="absolute inset-0 -z-10 w-full h-full">
+            <Image
+              src={images[0]}
+              alt={`${room.name[lang]} video poster`}
+              width={1200}
+              height={800}
+              format="avif"
+              quality={70}
+              loading="lazy"
+              class="w-full h-full object-cover opacity-60"
+            />
+          </div>
+
+          <!-- Play Button Ring -->
+          <div
+            class="w-20 h-20 rounded-full border-2 border-white/80 bg-black/25 backdrop-blur-sm flex items-center justify-center text-white scale-90 group-hover/video:scale-100 transition-all duration-300 group-hover/video:border-secondary shadow-lg"
+          >
+            <svg
+              class="w-8 h-8 fill-current ml-1 text-white group-hover/video:text-secondary transition-colors"
+              viewBox="0 0 24 24"
+            >
+              <path d="M8 5v14l11-7z"></path>
+            </svg>
+          </div>
+          <span
+            class="text-white text-sm font-semibold tracking-wider mt-4 uppercase drop-shadow-md"
+          >
+            {lang === "es" ? "Iniciar Video Tour" : "Start Video Tour"}
+          </span>
+        </div>
+
+        <!-- Custom Controls Overlay (Hidden when not playing) -->
+        <div
+          id="video-controls"
+          class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-center justify-between opacity-0 translate-y-2 transition-all duration-300 z-10 pointer-events-none"
+        >
+          <div class="flex items-center gap-4 pointer-events-auto">
+            <!-- Play/Pause toggle -->
+            <button
+              id="video-play-btn"
+              class="text-white hover:text-secondary transition-colors duration-200 cursor-pointer"
+              aria-label="Play or pause"
+            >
+              <!-- Pause icon -->
+              <svg
+                id="pause-icon"
+                class="w-6 h-6 hidden"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path>
+              </svg>
+              <!-- Play icon -->
+              <svg
+                id="play-icon"
+                class="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M8 5v14l11-7z"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-4 pointer-events-auto">
+            <!-- Mute/Unmute audio -->
+            <button
+              id="video-audio-btn"
+              class="flex items-center gap-1.5 bg-black/40 hover:bg-black/60 px-3 py-1.5 rounded-full border border-white/10 text-white text-xs transition-all duration-200 cursor-pointer"
+              aria-label="Toggle audio"
+            >
+              <!-- Muted icon -->
+              <svg
+                id="video-muted-icon"
+                class="w-4 h-4 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
+              </svg>
+              <!-- Unmuted icon -->
+              <svg
+                id="video-unmuted-icon"
+                class="w-4 h-4 text-white hidden"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+                ></path>
+              </svg>
+              <span id="audio-btn-label"
+                >{lang === "es" ? "Sin sonido" : "No sound"}</span
+              >
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Premium Fullscreen Lightbox Element -->
+  <div
+    id="gallery-lightbox"
+    class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex-col items-center justify-center select-none"
+    role="dialog"
+    aria-modal="true"
+    aria-label={lang === 'es' ? 'Galería de fotos' : 'Photo gallery'}
+  >
+    <!-- Top toolbar -->
+    <div
+      class="absolute top-0 inset-x-0 p-5 flex items-center justify-between z-50 bg-gradient-to-b from-black/60 to-transparent"
+    >
+      <!-- Index Counter -->
+      <span
+        id="lightbox-counter"
+        class="text-white/80 text-sm font-semibold tracking-wider font-body"
+        >1 / 1</span
+      >
+
+      <!-- Close Button -->
+      <button
+        id="lightbox-close-btn"
+        class="w-11 h-11 rounded-full bg-white/5 hover:bg-white/15 text-white hover:text-secondary flex items-center justify-center transition-all duration-300 cursor-pointer border border-white/5 focus:outline-none"
+        aria-label="Close gallery"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Slides Container -->
+    <div
+      class="relative w-full max-w-6xl max-h-[85vh] flex items-center justify-center px-6 md:px-24"
+    >
+      {
+        images.map((img, idx) => (
+          <div
+            class="lightbox-slide hidden w-full h-full flex items-center justify-center"
+            data-slide-index={idx}
+          >
+            <Image
+              src={img}
+              alt={`${room.name[lang]} - Lightbox Photo ${idx + 1}`}
+              width={1600}
+              height={1066}
+              format="avif"
+              quality={75}
+              loading="lazy"
+              class="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl transition-all duration-300"
+            />
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- Navigation Arrows -->
+    <!-- Prev Arrow -->
+    <button
+      id="lightbox-prev-btn"
+      class="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/5 hover:bg-white/15 text-white hover:text-secondary flex items-center justify-center transition-all duration-300 cursor-pointer border border-white/5 focus:outline-none"
+      aria-label="Previous slide"
+    >
+      <svg
+        class="w-6 h-6 md:w-8 md:h-8"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"
+        ></path>
+      </svg>
+    </button>
+
+    <!-- Next Arrow -->
+    <button
+      id="lightbox-next-btn"
+      class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/5 hover:bg-white/15 text-white hover:text-secondary flex items-center justify-center transition-all duration-300 cursor-pointer border border-white/5 focus:outline-none"
+      aria-label="Next slide"
+    >
+      <svg
+        class="w-6 h-6 md:w-8 md:h-8"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+          >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"
+        ></path>
+      </svg>
+    </button>
+  </div>
+</Layout>
+
+<script>
+  let abortController = new AbortController();
+
+  // Initialize component interactive elements
+  function initRoomDetail() {
+    // Abort previous listeners to avoid duplicates
+    abortController.abort();
+    abortController = new AbortController();
+    const signal = abortController.signal;
+
+    // ==========================================
+    // SLIDER & LIGHTBOX INTERACTION
+    // ==========================================
+    const sliderContainer = document.getElementById("room-gallery-slider");
+    const activeImg = document.getElementById("active-gallery-image") as HTMLImageElement | null;
+    const thumbBtns = document.querySelectorAll(".gallery-thumb-selector-btn");
+    const zoomTrigger = document.getElementById("gallery-zoom-trigger");
+    const sliderPrev = document.getElementById("slider-prev-arrow");
+    const sliderNext = document.getElementById("slider-next-arrow");
+
+    const lightbox = document.getElementById("gallery-lightbox");
+    const closeBtn = document.getElementById("lightbox-close-btn");
+    const prevBtn = document.getElementById("lightbox-prev-btn");
+    const nextBtn = document.getElementById("lightbox-next-btn");
+    const counter = document.getElementById("lightbox-counter");
+    const slides = document.querySelectorAll(".lightbox-slide");
+
+    if (!sliderContainer || !activeImg || slides.length === 0) return;
+
+    const imageUrls = JSON.parse(sliderContainer.getAttribute("data-images") || "[]");
+    let activeIndex = 0;
+    const totalSlides = slides.length;
+
+    // Actualiza la imagen activa del slider y miniaturas
+    function updateSliderImage(index: number) {
+      if (!activeImg) return;
+      activeIndex = index;
+      
+      // Aplicar transición suave de fade
+      activeImg.style.opacity = "0.2";
+      setTimeout(() => {
+        if (imageUrls[activeIndex]) {
+          activeImg.src = imageUrls[activeIndex];
+        }
+        activeImg.style.opacity = "1";
+      }, 150);
+
+      // Actualizar estilo visual de miniaturas
+      thumbBtns.forEach((btn, idx) => {
+        if (idx === activeIndex) {
+          btn.classList.add("border-primary", "scale-105");
+          btn.classList.remove("border-transparent", "opacity-60");
+        } else {
+          btn.classList.remove("border-primary", "scale-105");
+          btn.classList.add("border-transparent", "opacity-60");
+        }
+      });
+    }
+
+    // Actualiza el visor a pantalla completa (Lightbox)
+    function updateLightbox() {
+      slides.forEach((slide) => slide.classList.add("hidden"));
+      const activeSlide = document.querySelector(
+        `.lightbox-slide[data-slide-index="${activeIndex}"]`,
+      );
+      if (activeSlide) activeSlide.classList.remove("hidden");
+
+      if (counter) {
+        counter.textContent = `${activeIndex + 1} / ${totalSlides}`;
+      }
+    }
+
+    function openLightbox() {
+      if (!lightbox) return;
+      updateLightbox();
+      lightbox.classList.remove("hidden");
+      lightbox.classList.add("flex");
+      document.body.style.overflow = "hidden"; // prevent scroll
+    }
+
+    function closeLightbox() {
+      if (!lightbox) return;
+      lightbox.classList.add("hidden");
+      lightbox.classList.remove("flex");
+      document.body.style.overflow = ""; // restore scroll
+    }
+
+    // Siguiente y anterior del slider y Lightbox
+    function nextSlide() {
+      const nextIdx = (activeIndex + 1) % totalSlides;
+      updateSliderImage(nextIdx);
+      updateLightbox();
+    }
+
+    // Anterior
+    function prevSlide() {
+      const prevIdx = (activeIndex - 1 + totalSlides) % totalSlides;
+      updateSliderImage(prevIdx);
+      updateLightbox();
+    }
+
+    // Clicks en miniaturas para cambiar foto del slider
+    thumbBtns.forEach((thumb) => {
+      thumb.addEventListener("click", () => {
+        const indexStr = thumb.getAttribute("data-thumb-index");
+        if (indexStr) {
+          updateSliderImage(parseInt(indexStr, 10));
+        }
+      }, { signal });
+    });
+
+    // Flechas del slider
+    sliderPrev?.addEventListener("click", () => {
+      const prevIdx = (activeIndex - 1 + totalSlides) % totalSlides;
+      updateSliderImage(prevIdx);
+    }, { signal });
+
+    sliderNext?.addEventListener("click", () => {
+      const nextIdx = (activeIndex + 1) % totalSlides;
+      updateSliderImage(nextIdx);
+    }, { signal });
+
+    // Abrir Lightbox al hacer clic en imagen principal o botón de zoom
+    activeImg.addEventListener("click", openLightbox, { signal });
+    zoomTrigger?.addEventListener("click", openLightbox, { signal });
+
+    // Controles del modal Lightbox
+    closeBtn?.addEventListener("click", closeLightbox, { signal });
+    nextBtn?.addEventListener("click", nextSlide, { signal });
+    prevBtn?.addEventListener("click", prevSlide, { signal });
+
+    // Controles de teclado
+    document.addEventListener("keydown", (e: KeyboardEvent) => {
+      if (!lightbox || lightbox.classList.contains("hidden")) return;
+
+      if (e.key === "Escape") closeLightbox();
+      else if (e.key === "ArrowRight") nextSlide();
+      else if (e.key === "ArrowLeft") prevSlide();
+    }, { signal });
+
+    // ==========================================
+    // LAZY VIDEO PLAYER INTERACTION
+    // ==========================================
+    const video = document.getElementById(
+      "room-tour-video",
+    ) as HTMLVideoElement | null;
+    if (!video) return;
+
+    const overlay = document.getElementById("video-overlay");
+    const controls = document.getElementById("video-controls");
+    const playBtn = document.getElementById("video-play-btn");
+    const playIcon = document.getElementById("play-icon");
+    const pauseIcon = document.getElementById("pause-icon");
+    const audioBtn = document.getElementById("video-audio-btn");
+    const mutedIcon = document.getElementById("video-muted-icon");
+    const unmutedIcon = document.getElementById("video-unmuted-icon");
+    const audioLabel = document.getElementById("audio-btn-label");
+
+    function playVideo() {
+      if (!video) return;
+      video.load(); // triggers download on click (preload="none")
+      video
+        .play()
+        .then(() => {
+          overlay?.classList.add("hidden");
+          controls?.classList.remove(
+            "opacity-0",
+            "translate-y-2",
+            "pointer-events-none",
+          );
+          controls?.classList.add("opacity-100", "translate-y-0");
+          playIcon?.classList.add("hidden");
+          pauseIcon?.classList.remove("hidden");
+        })
+        .catch((err) => {
+          console.error("Error playing video:", err);
+        });
+    }
+
+    function togglePlay() {
+      if (!video) return;
+      if (video.paused) {
+        video.play().catch(() => {});
+        playIcon?.classList.add("hidden");
+        pauseIcon?.classList.remove("hidden");
+      } else {
+        video.pause();
+        playIcon?.classList.remove("hidden");
+        pauseIcon?.classList.add("hidden");
+      }
+    }
+
+    function toggleAudio() {
+      if (!video) return;
+      video.muted = !video.muted;
+      const isMuted = video.muted;
+
+      mutedIcon?.classList.toggle("hidden", !isMuted);
+      unmutedIcon?.classList.toggle("hidden", isMuted);
+
+      if (audioLabel) {
+        const langCode = document.documentElement.lang || "en";
+        if (isMuted) {
+          audioLabel.textContent =
+            langCode === "es" ? "Sin sonido" : "No sound";
+        } else {
+          audioLabel.textContent =
+            langCode === "es" ? "Sonido activo" : "Sound active";
+        }
+      }
+    }
+
+    overlay?.addEventListener("click", playVideo, { signal });
+    playBtn?.addEventListener("click", togglePlay, { signal });
+    audioBtn?.addEventListener("click", toggleAudio, { signal });
+    video.addEventListener("click", togglePlay, { signal });
+  }
+
+  // Initial load
+  initRoomDetail();
+  // View transitions lifecycle
+  document.addEventListener("astro:after-swap", initRoomDetail);
+</script>

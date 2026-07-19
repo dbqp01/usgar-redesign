@@ -1,0 +1,783 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { rooms } from '../data/rooms';
+import { useTranslations } from '../i18n/utils';
+import { translateBeds, daysBetween } from '../utils/helpers';
+import { Image } from 'astro:assets';
+
+export const prerender = true;
+
+const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+const t = useTranslations(lang);
+
+// Dynamically import all room images
+const allImages = import.meta.glob<{ default: ImageMetadata }>('../assets/rooms/**/*.jpg');
+
+// Prepare room list with resolved images
+const roomsWithImages = await Promise.all(
+  rooms.map(async (room) => {
+    const roomImages = Object.entries(allImages)
+      .filter(([path]) => path.includes(`/${room.photoFolder}/`))
+      .sort(([a], [b]) => a.localeCompare(b));
+    const firstImageEntry = roomImages[0];
+    const image = firstImageEntry ? (await firstImageEntry[1]()).default : null;
+    return { ...room, image };
+  })
+);
+
+// Get query parameters
+const url = new URL(Astro.url);
+let checkIn = url.searchParams.get('checkin') || url.searchParams.get('checkIn') || '';
+let checkOut = url.searchParams.get('checkout') || url.searchParams.get('checkOut') || '';
+let roomType = url.searchParams.get('roomType') || url.searchParams.get('room_type') || '';
+let guestsCount = Number(url.searchParams.get('guests')) || 2;
+
+// Set sensible defaults if dates are missing
+const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(today.getDate() + 1);
+const dayAfter = new Date(today);
+dayAfter.setDate(today.getDate() + 2);
+
+const formatDateString = (d: Date) => {
+  return d.toISOString().split('T')[0];
+};
+
+if (!checkIn) checkIn = formatDateString(tomorrow);
+if (!checkOut) checkOut = formatDateString(dayAfter);
+
+const selectedRoom = rooms.find(r => r.slug === roomType) || rooms[0];
+const initialNights = daysBetween(checkIn, checkOut);
+const initialTotalPrice = selectedRoom.pricePerNight * initialNights;
+
+// Translate bedding info using shared utility
+const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
+---
+
+<Layout title={`${t('book.title')} — USGAR Hotels`} lang={lang}>
+  <main class="py-24 px-4 max-w-7xl mx-auto flex-1 animate-fade-in">
+    <!-- Header -->
+    <div class="mb-12 text-center max-w-xl mx-auto">
+      <span class="text-xs font-semibold text-primary uppercase tracking-widest">
+        {t('book.stepFinal')}
+      </span>
+      <h1 class="font-display text-4xl md:text-5xl mt-2 mb-4">
+        {t('book.title')}
+      </h1>
+      <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">
+        {t('book.subtitle')}
+      </p>
+    </div>
+
+    <!-- Error Banner -->
+    <div id="error-banner" class="hidden max-w-4xl mx-auto mb-8 p-4 rounded-xl border border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-medium flex items-center gap-3">
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+      <span id="error-message"></span>
+    </div>
+
+    <!-- Grid Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Left Column: Dates & Guest Form (8 cols) -->
+      <div class="lg:col-span-7 space-y-8">
+        
+        <!-- Section 1: Dates & Room Selection -->
+        <div class="bg-surface-card-light dark:bg-surface-card-dark p-6 md:p-8 rounded-3xl border border-black/5 dark:border-white/5 shadow-sm space-y-6">
+          <h2 class="font-display text-2xl mb-4 flex items-center gap-3 border-b border-black/5 dark:border-white/5 pb-3">
+            <span class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">1</span>
+            {t('book.stayDetails')}
+          </h2>
+
+          <!-- Inputs Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Check-in -->
+            <div>
+              <label for="checkin" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                {t('booking.checkin')}
+              </label>
+              <input
+                type="date"
+                id="checkin"
+                name="checkin"
+                value={checkIn}
+                min={formatDateString(today)}
+                class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all cursor-pointer"
+              />
+            </div>
+
+            <!-- Check-out -->
+            <div>
+              <label for="checkout" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                {t('booking.checkout')}
+              </label>
+              <input
+                type="date"
+                id="checkout"
+                name="checkout"
+                value={checkOut}
+                min={checkIn}
+                class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all cursor-pointer"
+              />
+            </div>
+
+            <!-- Guests -->
+            <div>
+              <label for="guests" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                {t('booking.guests')}
+              </label>
+              <select
+                id="guests"
+                name="guests"
+                class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all appearance-none"
+              >
+                <option value="1" selected={guestsCount === 1}>1 {t('booking.guest')}</option>
+                <option value="2" selected={guestsCount === 2}>2 {t('booking.guests_plural')}</option>
+                <option value="3" selected={guestsCount === 3}>3 {t('booking.guests_plural')}</option>
+                <option value="4" selected={guestsCount === 4}>4 {t('booking.guests_plural')}</option>
+                <option value="5" selected={guestsCount === 5}>5 {t('booking.guests_plural')}</option>
+                <option value="6" selected={guestsCount === 6}>6 {t('booking.guests_plural')}</option>
+                <option value="7" selected={guestsCount === 7}>7 {t('booking.guests_plural')}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Hidden Room Type Select (updated programmatically by visual room cards) -->
+          <select
+            id="room-type"
+            name="roomType"
+            class="hidden"
+          >
+            {rooms.map(r => (
+              <option value={r.slug} selected={r.slug === roomType}>{r.name[lang]}</option>
+            ))}
+          </select>
+
+          <!-- Visual Room Selector Grid -->
+          <div class="space-y-4">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mt-4">
+              {t('book.selectRoom')} *
+            </label>
+            
+            <div class="grid grid-cols-1 gap-4" id="visual-room-selector">
+              {roomsWithImages.map(r => {
+                const isSelected = r.slug === selectedRoom.slug;
+                return (
+                  <div
+                    data-room-slug={r.slug}
+                    class={`cursor-pointer group flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl border transition-all duration-300 ${
+                      isSelected
+                        ? 'border-primary bg-primary/5 shadow-md shadow-primary/5 ring-1 ring-primary'
+                        : 'border-black/10 dark:border-white/10 bg-surface-light dark:bg-surface-dark hover:border-primary/50'
+                    }`}
+                  >
+                    <!-- Room Thumbnail -->
+                    <div class="w-full sm:w-24 aspect-[4/3] sm:aspect-square rounded-xl overflow-hidden flex-shrink-0 bg-stone-100 dark:bg-stone-900 border border-black/5 dark:border-white/5">
+                      {r.image ? (
+                        <Image
+                          src={r.image}
+                          alt={r.name[lang]}
+                          width={120}
+                          height={120}
+                          class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div class="w-full h-full flex items-center justify-center">
+                          <svg class="w-8 h-8 text-text-secondary-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+
+                    <!-- Details -->
+                    <div class="flex-1 text-center sm:text-left min-w-0">
+                      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+                        <h4 class="font-display font-semibold text-base text-text-primary-light dark:text-text-primary-dark group-hover:text-primary transition-colors truncate">
+                          {r.name[lang]}
+                        </h4>
+                        <span class="text-sm font-bold text-primary whitespace-nowrap">
+                          ${r.pricePerNight} <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark font-normal">/{t('rooms.perNight')}</span>
+                        </span>
+                      </div>
+                      <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark line-clamp-2 mt-1 leading-relaxed">
+                        {r.description[lang]}
+                      </p>
+                      <div class="flex items-center justify-center sm:justify-start gap-3 mt-3 text-[10px] text-text-secondary-dark font-semibold uppercase tracking-wider">
+                        <span class="flex items-center gap-1">
+                          <svg class="w-3.5 h-3.5 text-text-secondary-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                          </svg>
+                          Max {r.maxGuests} {r.maxGuests === 1 ? t('booking.guest') : t('booking.guests_plural')}
+                        </span>
+                        <span>•</span>
+                        <span class="flex items-center gap-1">
+                          <svg class="w-3.5 h-3.5 text-text-secondary-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 4v16M2 20h20M22 20V12a4 4 0 0 0-4-4H4" />
+                            <path d="M6 12h4a2 2 0 0 0 2-2V8H6v4Z" />
+                          </svg>
+                          {getTranslatedBeds(r.beds)}
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Select Button indicator -->
+                    <div class="flex-shrink-0 w-full sm:w-auto">
+                      <button
+                        type="button"
+                        class={`w-full sm:w-auto px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all duration-300 cursor-pointer ${
+                          isSelected
+                            ? 'bg-primary text-white shadow-sm'
+                            : 'bg-stone-200 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-primary hover:text-white'
+                        }`}
+                      >
+                        {isSelected
+                          ? t('book.selected')
+                          : t('book.select')}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Guest Details Form -->
+        <form id="checkout-form" class="bg-surface-card-light dark:bg-surface-card-dark p-6 md:p-8 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm space-y-6">
+          <h2 class="font-display text-2xl mb-4 flex items-center gap-3 border-b border-black/5 dark:border-white/5 pb-3">
+            <span class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">2</span>
+            {t('book.guestDetails')}
+          </h2>
+
+          <div class="space-y-4">
+            <!-- Full Name -->
+            <div>
+              <label for="guest-name" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                {t('book.fullName')} *
+              </label>
+              <input
+                type="text"
+                id="guest-name"
+                name="guestName"
+                required
+                placeholder="e.g. John Doe"
+                class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-stone-400"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Email -->
+              <div>
+                <label for="guest-email" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  id="guest-email"
+                  name="guestEmail"
+                  required
+                  placeholder="e.g. john@example.com"
+                  class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-stone-400"
+                />
+              </div>
+
+              <!-- Phone -->
+              <div>
+                <label for="guest-phone" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                  {t('book.phoneWhatsApp')} *
+                </label>
+                <input
+                  type="tel"
+                  id="guest-phone"
+                  name="guestPhone"
+                  required
+                  placeholder="e.g. +51 987 654 321"
+                  class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-stone-400"
+                />
+              </div>
+            </div>
+
+            <!-- Traslado de Aeropuerto / Airport Pickup -->
+            <div class="pt-4 border-t border-black/5 dark:border-white/5 space-y-4">
+              <label class="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="airport-transfer"
+                  name="airportTransfer"
+                  class="w-4 h-4 rounded text-primary focus:ring-primary border-black/10 dark:border-white/10 cursor-pointer"
+                />
+                <span class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
+                  {t('book.airportPickupCheckbox')}
+                </span>
+              </label>
+
+              <!-- Optional Flight/Time details -->
+              <div id="transfer-details" class="hidden pl-7 space-y-4 animate-fade-in">
+                <div>
+                  <label for="flight-time" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                    {t('book.flightTimeLabel')}
+                  </label>
+                  <input
+                    type="time"
+                    id="flight-time"
+                    name="flightTime"
+                    class="px-4 py-3 rounded-xl bg-stone-50 dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all w-full sm:w-48 cursor-pointer"
+                  />
+                </div>
+
+                <!-- Live calculation result banner -->
+                <div id="transfer-calculation" class="hidden p-4 rounded-xl bg-primary/10 border border-primary/20 space-y-1.5 max-w-md">
+                  <h4 class="font-semibold text-xs text-primary uppercase tracking-wider flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {t('book.arrivalCalculationTitle')}
+                  </h4>
+                  <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">
+                    {t('book.arrivalCalculationText')}
+                  </p>
+                  <p class="text-xs font-semibold text-text-primary-light dark:text-text-primary-dark">
+                    {t('book.estimatedArrivalLabel')}
+                    <span id="estimated-arrival-time" class="text-primary font-bold text-sm">--:--</span>
+                  </p>
+                  <p class="text-[10px] text-stone-500 italic">
+                    {t('book.estimatedArrivalNote')}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+      <!-- Right Column: Booking Summary Card (5 cols) -->
+      <div class="lg:col-span-5 lg:sticky lg:top-24 bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-2xl border border-black/5 dark:border-white/5 shadow-lg space-y-6">
+        <h2 class="font-display text-2xl border-b border-black/5 dark:border-white/5 pb-3">
+          {t('book.tripSummary')}
+        </h2>
+
+        <!-- Selected Room Info Box -->
+        <div class="space-y-4">
+          <div>
+            <h3 id="summary-room-name" class="font-display text-xl text-primary font-bold">{selectedRoom.name[lang]}</h3>
+            <p id="summary-room-beds" class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1 flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-text-secondary-light dark:text-text-secondary-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 4v16M2 20h20M22 20V12a4 4 0 0 0-4-4H4" />
+                <path d="M6 12h4a2 2 0 0 0 2-2V8H6v4Z" />
+              </svg>
+              <span id="summary-room-beds-text">{getTranslatedBeds(selectedRoom.beds)}</span>
+            </p>
+          </div>
+
+          <div class="border-t border-b border-black/5 dark:border-white/5 py-4 space-y-3">
+            <div class="flex justify-between text-sm">
+              <span class="text-text-secondary-light dark:text-text-secondary-dark">{t('book.checkinDate')}</span>
+              <span id="summary-checkin" class="font-semibold">{checkIn}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-text-secondary-light dark:text-text-secondary-dark">{t('book.checkoutDate')}</span>
+              <span id="summary-checkout" class="font-semibold">{checkOut}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-text-secondary-light dark:text-text-secondary-dark">{t('book.duration')}</span>
+              <span id="summary-nights" class="font-semibold">{initialNights} {initialNights === 1 ? t('book.night') : t('book.nights')}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-text-secondary-light dark:text-text-secondary-dark">{t('booking.guests')}</span>
+              <span id="summary-guests" class="font-semibold">{guestsCount} {guestsCount === 1 ? t('booking.guest') : t('booking.guests_plural')}</span>
+            </div>
+          </div>
+
+          <!-- Total pricing -->
+          <div class="flex items-center justify-between py-2">
+            <div>
+              <span class="text-sm font-semibold">{t('book.totalPrice')}</span>
+              <p class="text-[11px] text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
+                {t('book.priceNote')}
+              </p>
+            </div>
+            <div class="text-right">
+              <div class="flex items-baseline gap-1 justify-end">
+                <span class="text-3xl font-bold font-display text-primary">$</span>
+                <span id="summary-total-price" class="text-3xl font-bold font-display text-primary">{initialTotalPrice}</span>
+              </div>
+              <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark">
+                $<span id="summary-price-per-night">{selectedRoom.pricePerNight}</span> {t('rooms.perNight')}
+              </span>
+            </div>
+          </div>
+
+          <!-- Cancellation policy / Highlights -->
+          <div class="p-4 rounded-xl bg-[#2DB5A0]/10 dark:bg-[#2DB5A0]/15 border border-[#2DB5A0]/15 space-y-2">
+            <h4 class="font-semibold text-xs text-[#1F9484] dark:text-[#4ECBB8] flex items-center gap-1.5 uppercase tracking-wider">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              {t('book.guaranteedTitle')}
+            </h4>
+            <p class="text-xs text-text-primary-light/80 dark:text-text-primary-dark/80 leading-relaxed">
+              {t('book.guaranteedText')}
+            </p>
+          </div>
+
+          <!-- Room Video Preview Box -->
+          <div id="summary-video-container" class="p-4 rounded-xl border border-black/10 dark:border-white/10 space-y-2">
+            <h4 class="font-semibold text-xs text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wider flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-text-secondary-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              {t('book.videoTour')}
+            </h4>
+            <div class="relative rounded-lg overflow-hidden aspect-video bg-black">
+              <video
+                id="summary-room-video"
+                src={`/videos/rooms/${selectedRoom.slug}.mp4`}
+                preload="none"
+                controls
+                muted
+                playsinline
+                class="w-full h-full object-cover"
+              ></video>
+            </div>
+          </div>
+
+          <!-- Submit CTA -->
+          <button
+            type="button"
+            id="btn-pay"
+            class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 text-lg cursor-pointer flex items-center justify-center gap-3"
+          >
+            <span id="btn-text">{t('book.confirmAndPay')}</span>
+            <!-- Spinner -->
+            <svg id="btn-spinner" class="hidden animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</Layout>
+
+<script is:inline define:vars={{ serializedRooms: JSON.stringify(rooms.map(r => ({ id: r.id, slug: r.slug, name: r.name, pricePerNight: r.pricePerNight, beds: r.beds }))) }}>
+  // Parse server-serialized rooms data (single source of truth)
+  window.__ROOMS_DATA = JSON.parse(serializedRooms);
+</script>
+
+<script>
+  import { translateBeds, daysBetween } from '../utils/helpers';
+  import { bookingService } from '../Services/bookingService';
+
+  // Use rooms data serialized from server (avoids hardcoding duplicates)
+  const ROOMS_DATA = (window as any).__ROOMS_DATA || [];
+  let abortController = new AbortController();
+
+  function initCheckoutPage() {
+    // Abort previous listeners to avoid duplicates
+    abortController.abort();
+    abortController = new AbortController();
+    const signal = abortController.signal;
+
+    const checkinInput = document.getElementById('checkin') as HTMLInputElement;
+    const checkoutInput = document.getElementById('checkout') as HTMLInputElement;
+    const roomSelect = document.getElementById('room-type') as HTMLSelectElement;
+    const guestsSelect = document.getElementById('guests') as HTMLSelectElement;
+
+    const summaryRoomName = document.getElementById('summary-room-name');
+    const summaryRoomBedsText = document.getElementById('summary-room-beds-text');
+    const summaryCheckin = document.getElementById('summary-checkin');
+    const summaryCheckout = document.getElementById('summary-checkout');
+    const summaryNights = document.getElementById('summary-nights');
+    const summaryGuests = document.getElementById('summary-guests');
+    const summaryTotalPrice = document.getElementById('summary-total-price');
+    const summaryPricePerNight = document.getElementById('summary-price-per-night');
+    const summaryRoomVideo = document.getElementById('summary-room-video') as HTMLVideoElement | null;
+
+    const btnPay = document.getElementById('btn-pay') as HTMLButtonElement;
+    const btnText = document.getElementById('btn-text');
+    const btnSpinner = document.getElementById('btn-spinner');
+    
+    const errorBanner = document.getElementById('error-banner');
+    const errorMessage = document.getElementById('error-message');
+
+    const lang = (document.documentElement.lang || 'en') as 'en' | 'es';
+
+    // Dynamic price recalculation
+    function updatePricing() {
+      const checkInDate = checkinInput?.value;
+      const checkOutDate = checkoutInput?.value;
+      const selectedSlug = roomSelect?.value;
+      const guestsCount = guestsSelect?.value;
+
+      if (!checkInDate || !checkOutDate || !selectedSlug) return;
+
+      // Adjust min date for checkout
+      if (checkoutInput) {
+        checkoutInput.min = checkInDate;
+      }
+
+      const room = ROOMS_DATA.find((r: any) => r.slug === selectedSlug);
+      if (!room) return;
+
+      const nights = daysBetween(checkInDate, checkOutDate);
+      const totalPrice = room.pricePerNight * nights;
+
+      // Update summary fields
+      if (summaryRoomName) summaryRoomName.textContent = room.name[lang];
+      if (summaryRoomBedsText) summaryRoomBedsText.textContent = translateBeds(room.beds, lang);
+      if (summaryCheckin) summaryCheckin.textContent = checkInDate;
+      if (summaryCheckout) summaryCheckout.textContent = checkOutDate;
+      if (summaryNights) summaryNights.textContent = `${nights} ${lang === 'es' ? 'noches' : 'nights'}`;
+      if (summaryGuests) {
+        const guestText = guestsCount === '1' 
+          ? (lang === 'es' ? '1 huésped' : '1 guest') 
+          : `${guestsCount} ${lang === 'es' ? 'huéspedes' : 'guests'}`;
+        summaryGuests.textContent = guestText;
+      }
+      if (summaryTotalPrice) summaryTotalPrice.textContent = totalPrice.toString();
+      if (summaryPricePerNight) summaryPricePerNight.textContent = room.pricePerNight.toString();
+    }
+
+    // Visual Room Selection Logic
+    const roomSelector = document.getElementById('visual-room-selector');
+    const roomCards = roomSelector?.querySelectorAll('[data-room-slug]');
+
+    function selectRoomCard(slug: string) {
+      if (!slug || !roomSelect) return;
+
+      // Set the select element's value
+      roomSelect.value = slug;
+
+      // Update active class on card elements
+      roomCards?.forEach(c => {
+        const cardSlug = c.getAttribute('data-room-slug');
+        const btn = c.querySelector('button');
+        if (cardSlug === slug) {
+          c.classList.add('border-primary', 'bg-primary/5', 'shadow-md', 'shadow-primary/5', 'ring-1', 'ring-primary');
+          c.classList.remove('border-black/10', 'dark:border-white/10', 'bg-surface-light', 'dark:bg-surface-dark', 'hover:border-primary/50');
+          if (btn) btn.textContent = lang === 'es' ? 'Seleccionada' : 'Selected';
+          if (btn) {
+            btn.classList.add('bg-primary', 'text-white', 'shadow-sm');
+            btn.classList.remove('bg-stone-200', 'dark:bg-stone-800', 'text-stone-700', 'dark:text-stone-300');
+          }
+        } else {
+          c.classList.remove('border-primary', 'bg-primary/5', 'shadow-md', 'shadow-primary/5', 'ring-1', 'ring-primary');
+          c.classList.add('border-black/10', 'dark:border-white/10', 'bg-surface-light', 'dark:bg-surface-dark', 'hover:border-primary/50');
+          if (btn) btn.textContent = lang === 'es' ? 'Seleccionar' : 'Select';
+          if (btn) {
+            btn.classList.remove('bg-primary', 'text-white', 'shadow-sm');
+            btn.classList.add('bg-stone-200', 'dark:bg-stone-800', 'text-stone-700', 'dark:text-stone-300');
+          }
+        }
+      });
+
+      // Update summary preview video
+      if (summaryRoomVideo) {
+        summaryRoomVideo.src = `/videos/rooms/${slug}.mp4`;
+        summaryRoomVideo.load();
+      }
+
+      updatePricing();
+    }
+
+    // Event listeners
+    checkinInput?.addEventListener('change', () => {
+      // Validate dates
+      if (checkoutInput && checkinInput.value >= checkoutInput.value) {
+        const nextDay = new Date(checkinInput.value);
+        nextDay.setDate(nextDay.getDate() + 1);
+        checkoutInput.value = nextDay.toISOString().split('T')[0];
+      }
+      updatePricing();
+    }, { signal });
+    checkoutInput?.addEventListener('change', updatePricing, { signal });
+    roomSelect?.addEventListener('change', () => {
+      selectRoomCard(roomSelect.value);
+    }, { signal });
+    guestsSelect?.addEventListener('change', updatePricing, { signal });
+
+    // Date pickers click to show calendar picker
+    checkinInput?.addEventListener('click', () => {
+      try { checkinInput.showPicker(); } catch (e) {}
+    }, { signal });
+    checkoutInput?.addEventListener('click', () => {
+      try { checkoutInput.showPicker(); } catch (e) {}
+    }, { signal });
+
+    // Attach card click listeners
+    roomCards?.forEach(card => {
+      card.addEventListener('click', () => {
+        const slug = card.getAttribute('data-room-slug');
+        if (slug) selectRoomCard(slug);
+      }, { signal });
+    });
+
+    // Airport Transfer calculation and panel visibility logic
+    const airportTransferCheckbox = document.getElementById('airport-transfer') as HTMLInputElement;
+    const transferDetails = document.getElementById('transfer-details');
+    const flightTimeInput = document.getElementById('flight-time') as HTMLInputElement;
+    const transferCalculation = document.getElementById('transfer-calculation');
+    const estimatedArrivalSpan = document.getElementById('estimated-arrival-time');
+
+    airportTransferCheckbox?.addEventListener('change', () => {
+      if (airportTransferCheckbox.checked) {
+        transferDetails?.classList.remove('hidden');
+      } else {
+        transferDetails?.classList.add('hidden');
+        if (flightTimeInput) flightTimeInput.value = '';
+        transferCalculation?.classList.add('hidden');
+      }
+    }, { signal });
+
+    flightTimeInput?.addEventListener('input', () => {
+      const timeVal = flightTimeInput.value;
+      if (timeVal && estimatedArrivalSpan && transferCalculation) {
+        const [hoursStr, minutesStr] = timeVal.split(':');
+        const hours = parseInt(hoursStr, 10);
+        const minutes = parseInt(minutesStr, 10);
+        
+        const landingDate = new Date();
+        landingDate.setHours(hours);
+        landingDate.setMinutes(minutes + 45); // Add 45 mins (baggage + customs + transit)
+
+        const estHours = String(landingDate.getHours()).padStart(2, '0');
+        const estMinutes = String(landingDate.getMinutes()).padStart(2, '0');
+
+        estimatedArrivalSpan.textContent = `${estHours}:${estMinutes}`;
+        transferCalculation.classList.remove('hidden');
+      } else {
+        transferCalculation?.classList.add('hidden');
+      }
+    }, { signal });
+
+    // Read query params from URL on load (Astro static page support)
+    const params = new URLSearchParams(window.location.search);
+    const checkinParam = params.get('checkin') || params.get('checkIn');
+    const checkoutParam = params.get('checkout') || params.get('checkOut');
+    const guestsParam = params.get('guests');
+    const roomTypeParam = params.get('roomType') || params.get('room_type');
+
+    if (checkinParam && checkinInput) {
+      checkinInput.value = checkinParam;
+    }
+    if (checkoutParam && checkoutInput) {
+      checkoutInput.value = checkoutParam;
+    }
+    if (guestsParam && guestsSelect) {
+      guestsSelect.value = guestsParam;
+    }
+    if (roomTypeParam) {
+      selectRoomCard(roomTypeParam);
+    } else if (roomSelect && roomSelect.value) {
+      selectRoomCard(roomSelect.value);
+    } else {
+      updatePricing();
+    }
+
+    // Form Submission
+    btnPay?.addEventListener('click', async (e) => {
+      e.preventDefault();
+      
+      // Hide error banner
+      errorBanner?.classList.add('hidden');
+
+      // Manual field validations
+      const guestNameInput = document.getElementById('guest-name') as HTMLInputElement;
+      const guestEmailInput = document.getElementById('guest-email') as HTMLInputElement;
+      const guestPhoneInput = document.getElementById('guest-phone') as HTMLInputElement;
+
+      if (!guestNameInput?.value || !guestEmailInput?.value || !guestPhoneInput?.value) {
+        showError(lang === 'es' ? 'Por favor complete todos los campos obligatorios.' : 'Please fill out all required fields.');
+        return;
+      }
+
+      if (!guestEmailInput.validity.valid) {
+        showError(lang === 'es' ? 'Por favor ingrese un email válido.' : 'Please enter a valid email address.');
+        return;
+      }
+
+      // Show spinner and disable button
+      btnSpinner?.classList.remove('hidden');
+      btnPay.disabled = true;
+      if (btnText) btnText.textContent = lang === 'es' ? 'Procesando...' : 'Processing...';
+
+      try {
+        const checkIn = checkinInput.value;
+        const checkOut = checkoutInput.value;
+        const roomId = roomSelect.value;
+        const guests = Number(guestsSelect.value);
+        const guestName = guestNameInput.value;
+        const guestEmail = guestEmailInput.value;
+        const guestPhone = guestPhoneInput.value;
+        const airportPickup = airportTransferCheckbox?.checked || false;
+        const flightTime = flightTimeInput?.value || '';
+
+        const result = await bookingService.createHoldAndPreference({
+          roomSlug: roomId,
+          checkIn,
+          checkOut,
+          guests,
+          guestDetails: {
+            firstName: guestName.split(' ')[0] || guestName,
+            lastName: guestName.split(' ').slice(1).join(' ') || guestName,
+            email: guestEmail,
+            phone: guestPhone,
+            specialRequests: airportPickup ? `Airport transfer requested at ${flightTime}` : '',
+          },
+        });
+
+        if (!result.success) {
+          showError(result.error.message);
+          btnSpinner?.classList.add('hidden');
+          btnPay.disabled = false;
+          if (btnText) btnText.textContent = lang === 'es' ? 'Confirmar y Pagar con Mercado Pago' : 'Confirm & Pay with Mercado Pago';
+          return;
+        }
+
+        const data = result.data;
+        const redirectUrl = data.preference_url || data.init_point;
+
+        if (redirectUrl) {
+          let url = redirectUrl;
+          if (url.startsWith('/') && lang === 'es') {
+            url = `/es${url}`;
+          }
+          window.location.href = url;
+        } else {
+          showError(lang === 'es' ? 'No se recibió la URL de pago desde el servidor.' : 'No payment URL received from server.');
+          btnSpinner?.classList.add('hidden');
+          btnPay.disabled = false;
+          if (btnText) btnText.textContent = lang === 'es' ? 'Confirmar y Pagar con Mercado Pago' : 'Confirm & Pay with Mercado Pago';
+        }
+      } catch (err: any) {
+        console.error(err);
+        showError(err.message || (lang === 'es' ? 'Ocurrió un error inesperado.' : 'An unexpected error occurred.'));
+        
+        // Reset button state
+        btnSpinner?.classList.add('hidden');
+        btnPay.disabled = false;
+        if (btnText) btnText.textContent = lang === 'es' ? 'Confirmar y Pagar con Mercado Pago' : 'Confirm & Pay with Mercado Pago';
+      }
+    }, { signal });
+
+    function showError(msg: string) {
+      if (errorBanner && errorMessage) {
+        errorMessage.textContent = msg;
+        errorBanner.classList.remove('hidden');
+        errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }
+
+  // Load on initial render and on Astro swaps
+  initCheckoutPage();
+  document.addEventListener('astro:after-swap', initCheckoutPage);
+</script>

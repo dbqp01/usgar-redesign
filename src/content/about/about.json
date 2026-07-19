@@ -1,0 +1,60 @@
+{
+  "title_es": "Sobre Nosotros",
+  "title_en": "About Us",
+  "purpose_es": "Crear experiencias memorables que permitan a cada viajero descubrir la esencia de Cusco, brindando un servicio cálido, personalizado y de excelencia que haga de cada estadía un recuerdo inolvidable.",
+  "purpose_en": "Create memorable experiences that allow each traveler to discover the essence of Cusco, providing a warm, personalized and excellent service that makes each stay an unforgettable memory.",
+  "mission_es": "Brindar una experiencia de hospedaje única en el corazón de Cusco, ofreciendo un servicio personalizado, cálido y de alta calidad que combine confort, hospitalidad y la riqueza de la cultura local. Nos comprometemos a superar las expectativas de nuestros huéspedes mediante una atención excepcional, un equipo humano apasionado y prácticas de turismo sostenible que generen recuerdos inolvidables.",
+  "mission_en": "Provide a unique lodging experience in the heart of Cusco, offering a personalized, warm and high quality service that combines comfort, hospitality and the richness of local culture. We are committed to exceeding our guests' expectations through exceptional attention, a passionate human team and sustainable tourism practices that generate unforgettable memories.",
+  "vision_es": "Ser el hotel referente de Cusco, manteniendo la esencia de nuestra cultura. Aspiramos a ser la primera elección de los viajeros que buscan excelencia, calidez y un servicio personalizado, distinguiéndonos por nuestra hospitalidad, innovación y compromiso con la sostenibilidad. Buscamos crear un impacto positivo en nuestros huéspedes, colaboradores y comunidad, promoviendo un turismo responsable que valore y preserve el patrimonio cultural y natural del Cusco.",
+  "vision_en": "To be the benchmark hotel in Cusco, maintaining the essence of our culture. We aspire to be the first choice of travelers seeking excellence, warmth and personalized service, distinguishing ourselves by our hospitality, innovation and commitment to sustainability. We seek to create a positive impact on our guests, collaborators and community, promoting responsible tourism that values and preserves the cultural and natural heritage of Cusco.",
+  "values": [
+    {
+      "title_es": "Hospitalidad",
+      "title_en": "Hospitality",
+      "description_es": "Recibimos a cada huésped con calidez, amabilidad y un trato cercano, haciendo que se sienta como en casa desde su llegada.",
+      "description_en": "We receive each guest with warmth, kindness and a close treatment, making them feel at home from their arrival."
+    },
+    {
+      "title_es": "Excelencia",
+      "title_en": "Excellence",
+      "description_es": "Buscamos la mejora continua para ofrecer un servicio de alta calidad que supere las expectativas de nuestros huéspedes.",
+      "description_en": "We seek continuous improvement to offer a high-quality service that exceeds our guests' expectations."
+    },
+    {
+      "title_es": "Autenticidad",
+      "title_en": "Authenticity",
+      "description_es": "Compartimos la riqueza cultural de Cusco a través de experiencias genuinas que conectan a nuestros visitantes con la identidad local.",
+      "description_en": "We share the cultural richness of Cusco through genuine experiences that connect our visitors with local identity."
+    },
+    {
+      "title_es": "Respeto",
+      "title_en": "Respect",
+      "description_es": "Actuamos con integridad y consideración hacia nuestros huéspedes, colaboradores, proveedores, la comunidad y el medio ambiente.",
+      "description_en": "We act with integrity and consideration towards our guests, collaborators, suppliers, the community and the environment."
+    },
+    {
+      "title_es": "Compromiso",
+      "title_en": "Commitment",
+      "description_es": "Trabajamos con responsabilidad, dedicación y pasión para garantizar una experiencia memorable en cada estancia.",
+      "description_en": "We work with responsibility, dedication and passion to guarantee a memorable experience in each stay."
+    },
+    {
+      "title_es": "Sostenibilidad",
+      "title_en": "Sustainability",
+      "description_es": "Promovemos un turismo responsable mediante prácticas que contribuyen a la conservación del entorno natural y el patrimonio cultural.",
+      "description_en": "We promote responsible tourism through practices that contribute to the conservation of the natural environment and cultural heritage."
+    },
+    {
+      "title_es": "Trabajo en equipo",
+      "title_en": "Teamwork",
+      "description_es": "Fomentamos la colaboración, la comunicación y el apoyo mutuo para brindar un servicio eficiente y de excelencia.",
+      "description_en": "We foster collaboration, communication and mutual support to provide an efficient and excellent service."
+    },
+    {
+      "title_es": "Innovación",
+      "title_en": "Innovation",
+      "description_es": "Incorporamos nuevas ideas y soluciones que mejoran continuamente la experiencia de nuestros huéspedes y la calidad de nuestros servicios.",
+      "description_en": "We incorporate new ideas and solutions that continuously improve our guests' experience and the quality of our services."
+    }
+  ]
+}
