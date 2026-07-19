@@ -116,9 +116,32 @@ Repositorio oficial del sitio web transaccional de **USGAR Hotels** en Cusco, Pe
 
 ---
 
-## 5. Entorno de Desarrollo Local
+## 5. Entorno de Desarrollo y Variables de Entorno (.env)
 
-### Comandos
+### Variables Mandatorias para Producción
+Asegúrese de configurar las siguientes variables de entorno en su servidor de producción (`.env`):
+
+```ini
+# Seguridad y Webhooks
+CHANNEX_WEBHOOK_SECRET=token_secreto_para_validar_webhooks_de_channex
+CRON_SECRET=token_secreto_para_firma_hmac_y_cron_cleanup
+
+# Integraciones Channex
+CHANNEX_API_KEY=tu_api_key_channex
+CHANNEX_PROPERTY_ID=tu_property_id_channex
+CHANNEX_ROOM_MAP={"MATRIMONIAL":1,"DOBLE":2,"TRIPLE":3,"FAMILIAR":4}
+```
+
+> [!IMPORTANT]
+> **Seguridad de Tokens:** Si `CHANNEX_WEBHOOK_SECRET` o `CRON_SECRET` no están configurados en producción, los controladores rechazarán las peticiones con estado `401 Unauthorized` / `500 Internal Error` para proteger la infraestructura y los datos de clientes (PII).
+
+### Mantenimiento Programado (Cron Cleanup)
+La tarea de limpieza de carritos expirados (`/api/cron/cleanup`) únicamente admite solicitudes HTTP `POST` autenticadas o ejecuciones locales por línea de comandos (CLI):
+```bash
+php public/index.php /api/cron/cleanup
+```
+
+### Comandos de Desarrollo
 
 ```bash
 # 1. Instalar dependencias
@@ -139,3 +162,4 @@ npm run dev:php  # PHP Front Controller (http://localhost:8000)
 1. Compilar el sitio estático Astro: `npm run build`
 2. Subir el directorio `dist/` a la raíz de Hostinger (`public_html`).
 3. El archivo `public/index.php` actuará como Front Controller en PHP nativo para atender la API REST en `/api/*`.
+

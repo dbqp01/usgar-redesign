@@ -262,7 +262,14 @@ class BookingController {
         }
 
         $guestEmail = $hold['guest_data']['email'] ?? '';
-        $secretKey = Config::get('CRON_SECRET', 'USGAR_SECURE_TOKEN_SECRET');
+        $secretKey = Config::get('CRON_SECRET');
+        if (empty($secretKey)) {
+            if (Config::isProduction()) {
+                Logger::error("BookingController: CRON_SECRET no está configurado en entorno de producción.");
+                throw HttpException::internal("Configuración de seguridad de token no disponible.");
+            }
+            $secretKey = 'USGAR_SECURE_TOKEN_SECRET_DEV_ONLY';
+        }
         $expectedToken = hash_hmac('sha256', $cartId . ':' . $guestEmail, $secretKey);
         $isAuthenticated = (!empty($providedToken) && hash_equals($expectedToken, $providedToken));
 

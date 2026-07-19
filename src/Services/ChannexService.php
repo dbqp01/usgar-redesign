@@ -225,9 +225,17 @@ class ChannexService {
     }
 
     /**
-     * Obtiene el slug de habitación (resuelto dinámicamente o por id).
+     * Obtiene el slug de habitación (resuelto dinámicamente desde Config o mapa por defecto).
      */
     private function getSlugByRoomType(int $idRoomType): string {
+        $customMapJson = Config::get('ROOM_TYPE_SLUG_MAP');
+        if (!empty($customMapJson)) {
+            $decoded = json_decode($customMapJson, true);
+            if (is_array($decoded) && isset($decoded[$idRoomType])) {
+                return (string)$decoded[$idRoomType];
+            }
+        }
+
         $slugMap = [
             1 => 'matrimonial',
             2 => 'doble-superior',

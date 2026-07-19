@@ -53,9 +53,8 @@ $router->get('/api/booking-status',  [BookingController::class, 'status']);
 $router->post('/api/webhook',        [WebhookController::class, 'handle']);
 $router->post('/api/webhook/channex', [ChannexWebhookController::class, 'handle']);
 
-// Endpoint de mantenimiento del sistema (Cron)
+// Endpoint de mantenimiento del sistema (Cron - Exclusivo POST y CLI)
 $router->post('/api/cron/cleanup',   [CronController::class, 'cleanup']);
-$router->get('/api/cron/cleanup',    [CronController::class, 'cleanup']);
 
 // 7. Despachar la petición actual
 $router->dispatch($request);

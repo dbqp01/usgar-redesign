@@ -88,23 +88,31 @@ class Request {
     }
 
     /**
-     * Parsea el body JSON con manejo de errores seguro (per json-standards skill).
+     * Parsea el body de la petición (JSON o Form Data) de forma segura (SEC-06).
      */
     private function parseBody(): ?array {
         if (!in_array($this->method, ['POST', 'PUT', 'PATCH'], true)) {
             return null;
         }
 
+        $contentType = strtolower($this->headers['content-type'] ?? '');
+
+        // Si es form-data o urlencoded, retornar $_POST
+        if (str_contains($contentType, 'application/x-www-form-urlencoded') || str_contains($contentType, 'multipart/form-data')) {
+            return $_POST;
+        }
+
         $input = file_get_contents('php://input');
-        if ($input === false || $input === '') {
-            return [];
+        if ($input === false || trim($input) === '') {
+            return $_POST ?: [];
         }
 
         try {
-            return json_decode($input, true, 512, JSON_THROW_ON_ERROR) ?? [];
+            $parsed = json_decode($input, true, 512, JSON_THROW_ON_ERROR);
+            return is_array($parsed) ? $parsed : [];
         } catch (\JsonException $e) {
             Logger::error('[Request] JSON body parse error: ' . $e->getMessage());
-            return [];
+            return $_POST ?: [];
         }
     }
 
