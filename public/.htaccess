@@ -1,23 +1,15 @@
 RewriteEngine On
 
-# Security: Block direct access to test files in production
-<Files "test_endpoints.php">
-    <IfModule mod_env.c>
-        SetEnvIf ENVIRONMENT ^production$ DENY_ACCESS
-    </IfModule>
-    Order Allow,Deny
-    Allow from all
-    Deny from env=DENY_ACCESS
-</Files>
+# Rewrite for /api/channex/booking/[id] -> /api/channex/booking-detail.php?id=[id]
+RewriteRule ^api/channex/booking/([^/]+)$ api/channex/booking-detail.php?id=$1 [L,QSA]
 
-# Security Headers
-<IfModule mod_headers.c>
-    Header always set X-Content-Type-Options "nosniff"
-    Header always set X-Frame-Options "DENY"
-    Header always set Referrer-Policy "strict-origin-when-cross-origin"
-</IfModule>
+# Rewrite for /api/channex/booking -> /api/channex/booking.php
+RewriteRule ^api/channex/booking$ api/channex/booking.php [L,QSA]
 
-# Route all requests through index.php (Front Controller Pattern)
+# Rewrite for /api/channex/availability -> /api/channex/availability.php
+RewriteRule ^api/channex/availability$ api/channex/availability.php [L,QSA]
+
+# Rewrite for other /api/* -> /api/*.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php [QSA,L]
+RewriteRule ^api/([^/]+)$ api/$1.php [L,QSA]

@@ -35,14 +35,17 @@ class Response {
     /**
      * Envía una respuesta de error uniforme.
      */
-    public static function error(string $message, int $statusCode = 500, array $details = []): void {
+    public static function error(string $message, int $statusCode = 500, string $code = 'ERROR', array $details = []): void {
         $payload = [
             'success' => false,
-            'error'   => $message,
+            'error'   => [
+                'code'    => $code,
+                'message' => $message,
+            ],
         ];
 
         if (!empty($details)) {
-            $payload['details'] = $details;
+            $payload['error']['details'] = $details;
         }
 
         self::json($payload, $statusCode);

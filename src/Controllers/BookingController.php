@@ -158,22 +158,27 @@ class BookingController {
             ]);
 
         } catch (HttpException $e) {
-            if ($this->pdo->inTransaction()) {
+            if ($this->pdo && $this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
             throw $e; // Re-lanzar para que el Router la maneje
         } catch (Exception $e) {
-            if ($this->pdo->inTransaction()) {
+            if ($this->pdo && $this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
             Logger::error('BookingController::create Exception: ' . $e->getMessage());
+
+            // Si el mensaje indica credenciales no configuradas, notificar explícitamente
+            if (str_contains($e->getMessage(), 'not configured') || str_contains($e->getMessage(), 'Token')) {
+                throw HttpException::missingCredentials('Faltan credenciales de configuración (Mercado Pago / QloApps) en el backend para procesar la transacción.');
+            }
 
             // No exponer detalles internos al cliente en producción
             $clientMessage = Config::isProduction()
                 ? 'No se pudo procesar la reserva. Intente nuevamente.'
                 : 'Error: ' . $e->getMessage();
 
-            Response::error($clientMessage, 500);
+            Response::error($clientMessage, 500, 'SERVER_ERROR');
         }
     }
 

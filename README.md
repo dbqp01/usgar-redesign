@@ -1,111 +1,249 @@
-# USGAR Hotels - Backend Redesign (usgar-redesign)
+# USGAR Hotels — San Pedro, Cusco
 
-Este repositorio contiene el rediseño estructurado y limpio del backend de reservas para **USGAR Hotels**, implementado en **PHP 8.x** nativo y optimizado para entornos de hosting compartido (como **Hostinger**).
+Repositorio oficial del sitio web transaccional de **USGAR Hotels** en Cusco, Perú. Arquitectura híbrida: **Astro v5** (frontend estático) + **PHP** (backend API) + **QloApps** (PMS) + **Channex** (channel manager).
 
-El sistema actúa como una API intermedia entre el frontend de usuario (Astro), la base de datos centralizada de **QloApps** (CMS hotelero) y los servicios externos de **Mercado Pago** (pasarela de pagos) y **Channex** (channel manager para la distribución OTA).
-
----
-
-## 🛠️ Arquitectura y Principios de Diseño
-
-El código sigue los principios de diseño **SOLID** y mantiene una separación estricta de responsabilidades (Separation of Concerns) sin dependencias externas pesadas, asegurando que la carga y ejecución en servidores compartidos sea rápida, segura y portable.
-
-### Capas del Sistema:
-1. **Core (`src/Core/`)**: Infraestructura básica e independiente de la lógica de negocio (Autocargador PSR-4, Enrutador, Base de Datos, Manejadores de Peticiones y Respuestas, Logger, Limitador de peticiones).
-2. **Controladores (`src/Controllers/`)**: Puntos de entrada HTTP que reciben la petición a través del Router, validan los parámetros de entrada y delegan la lógica a los servicios.
-3. **Servicios (`src/Services/`)**: Contienen la lógica de negocio pura e integraciones con terceros (QloApps, Mercado Pago, Channex).
-4. **Modelos (`src/Models/`)**: Abstracciones del acceso a base de datos utilizando PDO y sentencias preparadas contra tablas locales y de QloApps.
+**Sitio en producción:** [https://sanpedro.hotelesusgar.com](https://sanpedro.hotelesusgar.com)
 
 ---
 
-## 🔄 Flujo General de Reservas
+## 1. Arquitectura General
 
-El backend gestiona el ciclo de vida completo de una reserva de forma transaccional:
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    USUARIO (Browser)                         │
+│                                                              │
+│  Astro Static HTML  ←──  Hostinger (hosting compartido)      │
+│         │                                                    │
+│         ▼                                                    │
+│  fetch('/api/...')  →  PHP Backend (public/api/)             │
+│         │                  │           │          │          │
+│         │                  ▼           ▼          ▼          │
+│         │             QloApps    Channex API   Mercado Pago  │
+│         │          (cms.usgar    (Channel      (Pagos)       │
+│         │           hoteles.com)  Manager)                   │
+│         │                  │           │                     │
+│         │                  ▼           ▼                     │
+│         │            MySQL DB    Booking.com                 │
+│         │                        TripAdvisor                 │
+└─────────────────────────────────────────────────────────────┘
+```
 
-```mermaid
-sequenceDiagram
-    participant F as Frontend (Astro)
-    participant B as API Backend (usgar-redesign)
-    participant Q as DB QloApps (Hostinger)
-    participant MP as API Mercado Pago
-    participant CH as API Channex (OTAs)
+### Roles de cada sistema
 
-    %% 1. Consulta de Habitaciones
-    F->>B: GET /api/rooms (checkIn, checkOut)
-    B->>Q: Consultar habitaciones ocupadas y Holds pendientes
-    Q-->>B: Inventario neto disponible
-    B-->>F: Retornar lista de habitaciones libres con precios
+| Sistema | Rol | URL/Endpoint |
+|---|---|---|
+| **Astro v5** | Frontend estático (HTML, CSS, JS) | `https://sanpedro.hotelesusgar.com` |
+| **PHP Backend** | API proxy segura para integraciones | `public/api/*.php` |
+| **QloApps** | PMS — gestión de habitaciones, reservas, inventario | `cms.hotelesusgar.com` |
+| **Channex** | Channel Manager — Sincroniza disponibilidad con OTAs | API REST |
+| **Mercado Pago** | Pasarela de pagos | API REST |
+| **Hostinger** | Hosting compartido (NO VPS) | Panel hPanel |
 
-    %% 2. Bloqueo Temporal (Hold)
-    F->>B: POST /api/booking (room_type, guest_info)
-    Note over B: Inicia Transacción SQL
-    B->>Q: Verificar disponibilidad en tiempo real (SELECT FOR UPDATE)
-    B->>Q: Crear Carrito temporal en QloApps
-    B->>Q: Guardar Bloqueo Temporal (15 min) en provisional_bookings
-    B->>MP: Crear Preferencia de Pago (Checkout Pro)
-    MP-->>B: Preference ID + URL de pago (init_point)
-    Note over B: Confirma Transacción SQL
-    B-->>F: Retornar Preference ID e init_point
+---
 
-    %% 3. Pago y Confirmación
-    F->>MP: Redirección y pago del usuario
-    MP->>B: POST /api/webhook (IPN Notificación de Pago)
-    Note over B: Valida firma HMAC-SHA256 del Webhook
-    B->>MP: Consultar estado final del pago (approved?)
-    MP-->>B: Pago aprobado
-    Note over B: Inicia Transacción de Confirmación
-    B->>Q: Convertir Carrito en Orden Confirmada (QloApps)
-    B->>Q: Actualizar estado de provisional_bookings a 'paid'
-    B->>CH: Enviar Reserva Confirmada a Channex (Sincronizar OTAs)
-    CH-->>B: Sincronización exitosa
-    Note over B: Confirma Transacción
-    B-->>MP: HTTP 200 OK (Notificación recibida)
+## 2. Estructura de Directorios
+
+```text
+├── .agents/                     # Customizaciones de agentes de IA
+│   ├── AGENTS.md                # Reglas técnicas y especificaciones
+│   ├── BRAND.md                 # Manual de marca canónico (FUENTE DE VERDAD)
+│   └── skills/                  # Skills especializados para agentes
+│       ├── code_auditor/        # Auditoría lógica del codebase
+│       ├── brand_auditor/       # Auditoría visual y de marca
+│       ├── security_auditor/    # Auditoría de seguridad
+│       ├── channex_integration/ # Integración con Channex
+│       ├── hotel_ui_designer/   # Diseño UI premium
+│       ├── image_optimizer/     # Optimización de imágenes
+│       └── mercadopago_checkout/# Checkout con Mercado Pago
+├── .github/
+│   └── workflows/
+│       └── build.yml            # CI: build automático en cada push
+├── public/                      # Archivos estáticos
+│   ├── api/                     # Backend PHP
+│   │   ├── channex/             # Channex: disponibilidad, reservas, sync
+│   │   │   ├── availability.php # GET disponibilidad de habitaciones
+│   │   │   ├── booking.php      # POST crear reserva
+│   │   │   ├── booking-detail.php # GET detalle de reserva
+│   │   │   └── ChannexSync.php  # Clase: push booking a Channex
+│   │   ├── qloapp/              # QloApps: lectura y escritura
+│   │   │   ├── QloAppReader.php # Leer habitaciones/precios de QloApps DB
+│   │   │   └── QloAppWriter.php # Crear carritos y confirmar órdenes
+│   │   ├── db.php               # Conexión MySQL + helpers JSON
+│   │   ├── rooms.php            # Datos de habitaciones (mock/fallback)
+│   │   ├── create-preference.php # Crear preferencia Mercado Pago
+│   │   └── webhook-mercado-pago.php # Webhook de confirmación de pago
+│   ├── fonts/                   # Tipografías corporativas locales
+│   └── videos/                  # Videos del hero y video tours
+├── src/                         # Código fuente Astro
+│   ├── assets/                  # Imágenes procesadas en build time
+│   ├── components/              # Componentes UI (Navbar, Footer, etc.)
+│   ├── data/                    # Datos estáticos TypeScript
+│   ├── i18n/                    # Localización (en.json, es.json)
+│   ├── layouts/                 # Plantillas base con Schema.org
+│   ├── pages/                   # Páginas y enrutamiento
+│   ├── services/                # Servicios TypeScript (helpers)
+│   ├── styles/                  # Estilos globales (global.css)
+│   └── utils/                   # Funciones de utilidad
+├── astro.config.mjs             # Configuración de Astro
+├── router.php                   # Enrutador para PHP dev server local
+├── package.json                 # Dependencias Node.js
+└── tsconfig.json                # Configuración TypeScript
 ```
 
 ---
 
-## 🚀 Requisitos de Instalación
+## 3. Flujo de Reserva
 
-1. **PHP 8.0 o superior** con las extensiones habilitadas:
-   - `pdo` y `pdo_mysql` (Conexiones a base de datos)
-   - `curl` (Llamadas a Mercado Pago y Channex)
-   - `openssl` y `hash` (Para la validación HMAC-SHA256)
-   - `json` (Para parsear las peticiones y respuestas)
-2. **Servidor Web Apache** con módulo `mod_rewrite` habilitado (Hostinger por defecto lo tiene).
+```
+1. Usuario busca disponibilidad
+   → Frontend fetch('/api/channex/availability?checkin=...&checkout=...')
+   → PHP verifica Channex API (o mock si no hay API key)
+   → Retorna habitaciones disponibles con precios
+
+2. Usuario selecciona habitación y llena formulario
+   → Frontend POST '/api/channex/booking' con datos del huésped
+   → PHP crea carrito en QloApps (vía QloAppWriter)
+   → Retorna bookingId (= QloApps cartId)
+
+3. Usuario procede al pago
+   → Frontend POST '/api/create-preference' con bookingId
+   → PHP crea preferencia en Mercado Pago
+   → Redirige al checkout de Mercado Pago
+
+4. Pago completado
+   → Mercado Pago envía webhook a '/api/webhook-mercado-pago'
+   → PHP verifica pago, confirma orden en QloApps
+   → PHP sincroniza con Channex (bloquea inventario en OTAs)
+```
 
 ---
 
-## ⚙️ Configuración y Despliegue en Hostinger
+## 4. Pautas de Desarrollo
 
-1. Sube la carpeta `usgar-redesign` al directorio principal o una carpeta alternativa en tu servidor compartido (ej. `public_html/usgar-redesign`).
-2. Copia el archivo `.env.example` a `.env` y configura tus credenciales reales de base de datos y tokens de APIs:
-   ```bash
-   cp .env.example .env
-   ```
-3. Asegúrate de configurar la base de datos de QloApps y añadir la tabla para bloqueos temporales `provisional_bookings`:
-   ```sql
-   CREATE TABLE IF NOT EXISTS `provisional_bookings` (
-     `id` int(11) NOT NULL AUTO_INCREMENT,
-     `cart_id` varchar(64) NOT NULL,
-     `mercado_pago_preference_id` varchar(64) DEFAULT NULL,
-     `id_hotel` int(11) NOT NULL,
-     `id_room_type` int(11) NOT NULL,
-     `guest_data` text NOT NULL,
-     `room_data` text NOT NULL,
-     `price_snapshot` decimal(10,2) NOT NULL,
-     `checkin` date NOT NULL,
-     `checkout` date NOT NULL,
-     `status` enum('pending','paid','failed','expired') NOT NULL DEFAULT 'pending',
-     `expires_at` datetime NOT NULL,
-     `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-     `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-     PRIMARY KEY (`id`),
-     UNIQUE KEY `cart_id` (`cart_id`),
-     KEY `expires_at` (`expires_at`),
-     KEY `status` (`status`)
-   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-   ```
-4. Configura una tarea programada (Cron Job) en Hostinger para ejecutar el script de limpieza de holds expirados cada 5 minutos:
-   ```bash
-   php -f /home/uXXXXX/public_html/usgar-redesign/public/index.php /api/cron/cleanup
-   ```
+### ⚠️ Fuente de Verdad
+- **Diseño y marca:** [.agents/BRAND.md](.agents/BRAND.md)
+- **Precios y habitaciones:** QloApps en producción, `rooms.php` como fallback mock
+- **Reglas técnicas:** [.agents/AGENTS.md](.agents/AGENTS.md)
+
+### 🏨 Habitaciones (4 tipos oficiales)
+
+| Habitación | Precio | Camas | Max Huéspedes |
+|---|---|---|---|
+| Matrimonial Superior | $90 USD | King/Queen | 2 |
+| Doble Superior | $90 USD | 2 dobles | 2 |
+| Triple Estándar | $120 USD | 3 individuales | 3 |
+| Familiar Superior | $150 USD | 3 dobles + 1 individual | 7 |
+
+> La habitación "Cuádruple Superior" fue **descontinuada**. Si la encuentras en el código, elimínala.
+
+> [!WARNING]
+> Si modificas datos de habitaciones en `src/data/rooms.ts`, sincroniza los mismos datos en `public/api/rooms.php`.
+
+### 🌐 Internacionalización (i18n)
+- Inglés (principal) y Español
+- **NO** usar condicionales inline `{lang === 'es' ? ... : ...}`
+- Usar archivos `src/i18n/en.json` y `src/i18n/es.json` con función `t('clave')`
+- Rutas en español bajo `src/pages/es/`
+
+### 🎨 Estilos
+- **Tailwind CSS v4** con configuración CSS en `src/styles/global.css`
+- Tema dual (Light/Dark) con clase `.dark` en `<html>`
+- Paleta: morados, amarillos, verdes corporativos (ver BRAND.md §3)
+
+### 🔒 Seguridad
+- Toda llamada a APIs externas va por `public/api/` — nunca exponer claves al cliente
+- `.env` contiene credenciales y **nunca se sube al repo** (está en `.gitignore`)
+- Modo mock automático si faltan claves de API
+
+---
+
+## 5. Entorno de Desarrollo Local
+
+### Requisitos
+- Node.js 20+
+- PHP 8.1+ (para el backend local)
+
+### Comandos
+
+```bash
+# 1. Instalar dependencias
+npm install
+
+# 2. Iniciar Astro (puerto 4321)
+npm run dev
+
+# 3. Iniciar PHP dev server (puerto 8000) — en otra terminal
+npm run dev:php
+```
+
+> Astro redirige automáticamente `/api/*` a `localhost:8000` vía proxy en `astro.config.mjs`.
+
+### Compilar para Producción
+
+```bash
+npm run build
+```
+
+El compilado se genera en `dist/`. Los archivos PHP de `public/api/` se copian a `dist/api/` automáticamente.
+
+---
+
+## 6. Deploy (Hostinger)
+
+El sitio está en **Hostinger** (hosting compartido, NO VPS).
+
+### Estructura en Hostinger
+- **Dominio principal:** `hotelesusgar.com` (Subdominio: `sanpedro.hotelesusgar.com` → archivos de Astro `dist/`)
+- **Subdominio:** `cms.hotelesusgar.com` → QloApps (PMS, back-office del cliente)
+
+### Proceso de deploy actual
+1. Ejecutar `npm run build` localmente
+2. Subir `dist/` a Hostinger vía FTP/SFTP o Git deploy
+3. Los archivos PHP (`dist/api/`) se ejecutan directamente en Hostinger (PHP nativo)
+
+### CI (GitHub Actions)
+El workflow en `.github/workflows/build.yml` verifica automáticamente que `npm run build` compile sin errores en cada push. No hace deploy automático (por ahora).
+
+---
+
+## 7. Visión Futura: PMS Dinámico
+
+> [!IMPORTANT]
+> **Nada debe estar hardcodeado.** El cliente necesita poder:
+> - Modificar precios de habitaciones
+> - Agregar o eliminar habitaciones
+> - Editar contenido de páginas
+> - Todo desde el back-office de QloApps sin tocar código
+
+**Plan:**
+1. QloApps será la **fuente de verdad** para habitaciones, precios y disponibilidad
+2. `rooms.php` y `rooms.ts` serán solo **fallback/mock** cuando QloApps no esté disponible
+3. El frontend consumirá datos dinámicos de QloApps vía `QloAppReader.php`
+4. Variables globales en CSS (`global.css`) y datos centralizados en `src/data/` para consistencia
+
+---
+
+## 8. Guía para Agentes de IA
+
+Si eres un agente interactuando con este repositorio:
+
+1. **Lee primero** [.agents/BRAND.md](.agents/BRAND.md) y [.agents/AGENTS.md](.agents/AGENTS.md)
+2. **Usa Context7** para verificar sintaxis de Astro v5, Tailwind CSS v4, o cualquier librería
+3. **Usa Sequential Thinking** para razonar paso a paso en tareas complejas
+4. **No subas cambios a ciegas:** Si encuentras incoherencias, consulta con el usuario
+5. **Mantén los archivos limpios:** Elimina código obsoleto pero preserva comentarios de documentación
+6. **Skills de auditoría disponibles:**
+   - `code_auditor` — Auditoría lógica completa del codebase
+   - `brand_auditor` — Verificación visual contra BRAND.md
+   - `security_auditor` — Búsqueda de vulnerabilidades de seguridad
+
+---
+
+## 9. Integraciones Externas
+
+| Servicio | Estado | API Key en .env | Modo sin key |
+|---|---|---|---|
+| QloApps | ✅ Instalado | `QLOAPP_API_KEY` | Mock (cart IDs ficticios) |
+| Channex | ⚠️ Sin API key | `CHANNEX_API_KEY` | Mock (siempre disponible) |
+| Mercado Pago | ✅ Sandbox activo | `MERCADO_PAGO_ACCESS_TOKEN` | Mock (redirect local) |
+| MySQL (Hostinger) | ✅ Configurado | `DB_HOST/USER/PASS/NAME` | Fallback a JSON file |

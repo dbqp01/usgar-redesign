@@ -2,8 +2,8 @@ import puppeteer from 'puppeteer';
 import fs from 'fs';
 import path from 'path';
 
-const SITE_URL = process.argv[2] || 'http://localhost:8000';
-const SCREENSHOT_DIR = process.argv[3] || './logs/audit-screenshots';
+const SITE_URL = process.argv[2] || 'http://localhost:4321';
+const SCREENSHOT_DIR = process.argv[3] || './dist/audit-screenshots';
 
 async function runAudit() {
   console.log(`Starting automated performance and visual audit for: ${SITE_URL}`);

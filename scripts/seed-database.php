@@ -1,24 +1,17 @@
 <?php
 declare(strict_types=1);
 
-// scripts/seed-database.php - Utility script to populate the database with default USGAR Hotels rooms and settings
+// seed-database.php - Utility script to populate the database with default USGAR Hotels rooms and settings
 
-require_once __DIR__ . '/../src/Core/Autoloader.php';
-\App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src');
+require_once __DIR__ . '/../public/api/db.php';
 
-use App\Core\Config;
-use App\Core\Database;
-
-Config::boot();
-$db = Database::getInstance();
-$pdo = $db->getConnection();
-
+$pdo = getDbConnection();
 if (!$pdo) {
     echo "❌ ERROR: No se pudo conectar a la base de datos.\n";
     exit(1);
 }
 
-echo "=== Sembrador de Base de Datos para USGAR Hotels (Redesign) ===\n\n";
+echo "=== Sembrador de Base de Datos para USGAR Hotels ===\n\n";
 
 try {
     $pdo->beginTransaction();
@@ -43,6 +36,7 @@ try {
     // 2. Clean up old testing products & room types to avoid duplication on rerun
     echo "-> Limpiando datos de prueba anteriores...\n";
     $pdo->exec("DELETE FROM qlo_htl_room_type WHERE id_hotel = 1");
+    // We keep existing catalog products to avoid breaking references, but we will add the 4 standard rooms
 
     // 3. Define the 4 standard room types from BRAND.md
     $roomTypes = [
@@ -126,8 +120,6 @@ try {
     echo "\n✅ BASE DE DATOS SEMBRADA EXITOSAMENTE.\n";
 
 } catch (PDOException $e) {
-    if ($pdo->inTransaction()) {
-        $pdo->rollBack();
-    }
+    $pdo->rollBack();
     echo "\n❌ ERROR durante el sembrado: " . $e->getMessage() . "\n";
 }

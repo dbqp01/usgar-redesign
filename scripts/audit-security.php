@@ -1,16 +1,13 @@
 <?php
 declare(strict_types=1);
 
-// scripts/audit-security.php - Scan PHP backend for basic security patterns in the redesigned app
+// scripts/audit-security.php - Scan PHP backend for basic security patterns
 
-$targetDir = dirname(__DIR__) . '/src';
+$targetDir = __DIR__ . '/../public/api';
 $issuesFound = 0;
 $report = [];
 
 function scanDirectory(string $dir) {
-    if (!is_dir($dir)) {
-        return;
-    }
     $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
     foreach ($files as $file) {
         if ($file->isFile() && $file->getExtension() === 'php') {
@@ -43,6 +40,7 @@ function scanFile(string $filePath) {
 
         // 2. Check for potentially unsafe SQL execution
         if (preg_match('/\$stmt\s*=\s*\$pdo->(query|prepare|exec)\s*\(\s*["\'].*?\$[a-zA-Z0-9_]+.*?["\']\s*\)/i', $line)) {
+            // Check if it is a prepared statement that interpolates variables directly instead of using parameters
             $report[] = [
                 'file' => $relativePath,
                 'line' => $lineNumber,
@@ -82,7 +80,7 @@ function scanFile(string $filePath) {
 echo "Starting static security scan for: $targetDir\n";
 scanDirectory($targetDir);
 
-$outputFile = dirname(__DIR__) . '/logs/security-audit-report.md';
+$outputFile = __DIR__ . '/../dist/audit-screenshots/security-audit-report.md';
 if (!file_exists(dirname($outputFile))) {
     mkdir(dirname($outputFile), 0777, true);
 }
@@ -104,3 +102,4 @@ if ($issuesFound === 0) {
 
 file_put_contents($outputFile, $markdown);
 echo "Security scan complete! Report saved to: " . realpath($outputFile) . "\n";
+?>
