@@ -1,0 +1,2 @@
+[2026-07-19 22:09:03] [ERROR] MercadoPagoService: HTTP 400. Respuesta: {"message":"auto_return invalid. back_url.success must be defined","error":"invalid_auto_return","status":400,"cause":null}
+[2026-07-19 22:09:03] [ERROR] MercadoPagoService Exception: Fallo en la comunicación con la API de Mercado Pago.

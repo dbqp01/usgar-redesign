@@ -50,13 +50,13 @@ class ChannexService {
             $firstName = $nameParts[0];
             $lastName = $nameParts[1] ?? 'Guest';
 
-            // Resolver ID del Room Type de Channex desde variables de entorno mapeadas
+            // Resolver IDs de Room Type y Rate Plan en Channex dinámicamente según la habitación
             $channexRoomId = $this->resolveChannexRoomId($idRoomType);
-            $ratePlanId = Config::get('CHANNEX_RATE_PLAN_ID');
+            $ratePlanId = $this->resolveChannexRatePlanId($idRoomType);
 
             if (empty($channexRoomId) || empty($ratePlanId)) {
                 $slug = $this->getSlugByRoomType($idRoomType);
-                Logger::error("ChannexService: Mapeo de habitación faltante en .env para ID {$idRoomType} (slug: {$slug})");
+                Logger::error("ChannexService: Mapeo de habitación/tarifa faltante en .env para ID {$idRoomType} (slug: {$slug})");
                 return false;
             }
 
@@ -140,6 +140,16 @@ class ChannexService {
         $slug = $this->getSlugByRoomType($idRoomType);
         $envKey = 'CHANNEX_ROOM_' . strtoupper(str_replace('-', '_', $slug));
         return Config::get($envKey);
+    }
+
+    /**
+     * Resuelve el UUID del Rate Plan en Channex específico para la habitación o usa el general.
+     */
+    private function resolveChannexRatePlanId(int $idRoomType): ?string {
+        $slug = $this->getSlugByRoomType($idRoomType);
+        $envKey = 'CHANNEX_RATE_' . strtoupper(str_replace('-', '_', $slug));
+        $specificRate = Config::get($envKey);
+        return !empty($specificRate) ? $specificRate : Config::get('CHANNEX_RATE_PLAN_ID');
     }
 
     /**

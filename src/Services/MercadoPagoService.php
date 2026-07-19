@@ -62,11 +62,15 @@ class MercadoPagoService {
                 'failure' => "{$this->siteUrl}/book?error=payment_failed&bookingId={$cartId}",
                 'pending' => "{$this->siteUrl}/book/success?status=pending&bookingId={$cartId}",
             ],
-            'auto_return'      => 'approved',
-            'notification_url' => "{$this->siteUrl}/api/webhook",
             'expires'          => true,
             'expiration_date_to' => date('Y-m-d\TH:i:s.000P', strtotime('+15 minutes')),
         ];
+
+        // Mercado Pago requiere HTTPS en back_urls para habilitar auto_return
+        if (str_starts_with($this->siteUrl, 'https://')) {
+            $payload['auto_return'] = 'approved';
+            $payload['notification_url'] = "{$this->siteUrl}/api/webhook";
+        }
 
         try {
             $idempotencyKey = 'pref_' . $cartId;

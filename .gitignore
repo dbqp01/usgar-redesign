@@ -8,3 +8,4 @@ original-assets/
 graphify-out/cost.json
 graphify-out/.*
 graphify-out/transcripts/
+scripts/
