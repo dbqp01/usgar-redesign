@@ -17,6 +17,7 @@ use App\Core\Middleware;
 use App\Controllers\RoomController;
 use App\Controllers\BookingController;
 use App\Controllers\WebhookController;
+use App\Controllers\ChannexWebhookController;
 use App\Controllers\CronController;
 use App\Controllers\HealthController;
 
@@ -50,6 +51,7 @@ $router->post('/api/booking',        [BookingController::class, 'create']);
 $router->post('/api/extend-hold',    [BookingController::class, 'extend']);
 $router->get('/api/booking-status',  [BookingController::class, 'status']);
 $router->post('/api/webhook',        [WebhookController::class, 'handle']);
+$router->post('/api/webhook/channex', [ChannexWebhookController::class, 'handle']);
 
 // Endpoint de mantenimiento del sistema (Cron)
 $router->post('/api/cron/cleanup',   [CronController::class, 'cleanup']);

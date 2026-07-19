@@ -50,14 +50,9 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1784492468.176649,
-    "ast_hash": "3eaf95575979abdb523aaa9171d2c79d",
+    "mtime": 1784498397.0222642,
+    "ast_hash": "9184a5bb33f37e801dbb9addac34c61e",
     "semantic_hash": ""
-  },
-  "router.php": {
-    "mtime": 1784492171.5643115,
-    "ast_hash": "1fd70b03e77fb379304d61cd238f1de0",
-    "semantic_hash": "1fd70b03e77fb379304d61cd238f1de0"
   },
   "scripts/audit-performance.js": {
     "mtime": 1784492171.8361351,
@@ -85,9 +80,9 @@
     "semantic_hash": "68e12004b3b9d69099f0a02eeddea8b5"
   },
   "src/components/AboutSection.astro": {
-    "mtime": 1784492180.7499604,
-    "ast_hash": "efb40494e0491a3decfcb34ad53d1ac0",
-    "semantic_hash": "efb40494e0491a3decfcb34ad53d1ac0"
+    "mtime": 1784497207.1082177,
+    "ast_hash": "160f083826febfa121e5d711684ae843",
+    "semantic_hash": ""
   },
   "src/components/BookingWidget.astro": {
     "mtime": 1784492180.9056413,
@@ -95,8 +90,8 @@
     "semantic_hash": ""
   },
   "src/components/FAQSection.astro": {
-    "mtime": 1784492181.0578632,
-    "ast_hash": "92a1e39f45db8c7d6eb121387fe4a4b1",
+    "mtime": 1784492916.3936431,
+    "ast_hash": "472c21b3e8144f74261fce5f918e80a2",
     "semantic_hash": ""
   },
   "src/components/Footer.astro": {
@@ -125,8 +120,8 @@
     "semantic_hash": ""
   },
   "src/components/RoomDetail.astro": {
-    "mtime": 1784492182.1576943,
-    "ast_hash": "38973f8f5371ea4afe3af3756fe4030c",
+    "mtime": 1784492929.3394408,
+    "ast_hash": "84256c7c1d0501cc8677081995ccbc0e",
     "semantic_hash": ""
   },
   "src/components/ServiceGrid.astro": {
@@ -160,13 +155,13 @@
     "semantic_hash": "fd5c5691eba25cd9b93f47a60e44ea76"
   },
   "src/i18n/en.json": {
-    "mtime": 1784492184.893897,
-    "ast_hash": "3672896b54d5264a0b352b6f3036cb15",
+    "mtime": 1784495284.6754014,
+    "ast_hash": "66cd45973ce92967375bb144297bd31e",
     "semantic_hash": ""
   },
   "src/i18n/es.json": {
-    "mtime": 1784492185.0466883,
-    "ast_hash": "9971cd7b42ff4a1a185b060181e6661e",
+    "mtime": 1784495308.6522272,
+    "ast_hash": "113871b7e6836b40923d9a067ba898a8",
     "semantic_hash": ""
   },
   "src/i18n/utils.ts": {
@@ -175,28 +170,28 @@
     "semantic_hash": "e69b1397fc404e2004995ac2e13d09d8"
   },
   "src/layouts/Layout.astro": {
-    "mtime": 1784492185.6239765,
-    "ast_hash": "ffc9329933be87eaea0c9cea454fc48c",
+    "mtime": 1784495153.400073,
+    "ast_hash": "bcf1e63fbc84d5ae9fd4be63fd968af7",
     "semantic_hash": ""
   },
   "src/pages/book.astro": {
-    "mtime": 1784492212.6729007,
-    "ast_hash": "014ba0f305da5a1d6df3711e66fea3a2",
+    "mtime": 1784495344.428299,
+    "ast_hash": "22e34828389be54e53c92e8069f0e457",
     "semantic_hash": ""
   },
   "src/pages/book/mock-payment.astro": {
-    "mtime": 1784492186.10391,
-    "ast_hash": "acaab6a316b79e9a605584e5e3e4f443",
-    "semantic_hash": "acaab6a316b79e9a605584e5e3e4f443"
+    "mtime": 1784492865.0530024,
+    "ast_hash": "dd0868f73231d8f15d76d1c280a89699",
+    "semantic_hash": ""
   },
   "src/pages/book/success.astro": {
-    "mtime": 1784492186.278682,
-    "ast_hash": "cf90fd5e3a0e34172ddedcb61fe8b6d4",
-    "semantic_hash": "cf90fd5e3a0e34172ddedcb61fe8b6d4"
+    "mtime": 1784495609.0559747,
+    "ast_hash": "37305bb0a4b85ec9f3bfa3767c215216",
+    "semantic_hash": ""
   },
   "src/pages/contact.astro": {
-    "mtime": 1784492186.4114723,
-    "ast_hash": "71a6d3c0e68f4d524cebaca202659da2",
+    "mtime": 1784492841.2036679,
+    "ast_hash": "ada96f7a9c52a6a08e73c8ae790ad69b",
     "semantic_hash": ""
   },
   "src/pages/es/book.astro": {
@@ -250,23 +245,23 @@
     "semantic_hash": "a4c571a358d4c893a59d0a0d62c3eecf"
   },
   "src/pages/explore.astro": {
-    "mtime": 1784492188.6436114,
-    "ast_hash": "3473d61f0ffce844112eecd3d4c627d4",
+    "mtime": 1784495594.6386,
+    "ast_hash": "c5ffab6c849b55c5ec16dcb12acd23b3",
     "semantic_hash": ""
   },
   "src/pages/explore/[slug].astro": {
-    "mtime": 1784492188.808047,
-    "ast_hash": "668fca4b75b164d84c18b7764102abf8",
-    "semantic_hash": "668fca4b75b164d84c18b7764102abf8"
+    "mtime": 1784495600.358771,
+    "ast_hash": "f447ebf896d4143d021d98b2dfbd2d73",
+    "semantic_hash": ""
   },
   "src/pages/gallery.astro": {
-    "mtime": 1784492188.9396293,
-    "ast_hash": "d5fee576f165f7f6729079b5efab1147",
-    "semantic_hash": "d5fee576f165f7f6729079b5efab1147"
+    "mtime": 1784492905.942793,
+    "ast_hash": "ff45e27e9a451b259eb7fa3cdcaa8a7a",
+    "semantic_hash": ""
   },
   "src/pages/index.astro": {
-    "mtime": 1784492189.0835204,
-    "ast_hash": "714f6ff114dd3dcaa84361319f7a68fb",
+    "mtime": 1784495170.588105,
+    "ast_hash": "2d15043172da6202bf1b7b7442185aab",
     "semantic_hash": ""
   },
   "src/pages/rooms/[slug].astro": {
@@ -1325,8 +1320,8 @@
     "semantic_hash": ""
   },
   "public/test_endpoints.php": {
-    "mtime": 1784293386.611279,
-    "ast_hash": "96bf841ecd4589a814b2f771954d3a5a",
+    "mtime": 1784495202.3065097,
+    "ast_hash": "26ac28760fd3595346784f29bb3d1a2d",
     "semantic_hash": ""
   },
   "scripts/run-exhaustive-tests.php": {
@@ -1425,13 +1420,13 @@
     "semantic_hash": ""
   },
   "src/Services/ChannexService.php": {
-    "mtime": 1784490719.497821,
-    "ast_hash": "1c9493ec9a809a5107bc0fdf08978171",
+    "mtime": 1784500865.8900862,
+    "ast_hash": "ad06842257f9abef074412c586a4c09c",
     "semantic_hash": ""
   },
   "src/Services/MercadoPagoService.php": {
-    "mtime": 1784490719.4994743,
-    "ast_hash": "e2f5d16cf6185d78fe52dd2a1fd9362b",
+    "mtime": 1784498987.058956,
+    "ast_hash": "21260ceb588191de0214931dfbe6396d",
     "semantic_hash": ""
   },
   "src/Services/QloAppService.php": {
@@ -1440,8 +1435,8 @@
     "semantic_hash": ""
   },
   "src/Services/bookingService.ts": {
-    "mtime": 1784491885.1615112,
-    "ast_hash": "413cd36617a48372e3854e0b16ae997f",
+    "mtime": 1784495144.7313392,
+    "ast_hash": "d99317cb52a745d686df0d8718d08b6a",
     "semantic_hash": ""
   },
   "src/Services/httpClient.ts": {
@@ -1450,8 +1445,8 @@
     "semantic_hash": ""
   },
   "src/Services/interfaces/IBookingService.ts": {
-    "mtime": 1784491878.9871109,
-    "ast_hash": "55b40f161148394a4cbaea7eecd34020",
+    "mtime": 1784492824.0723956,
+    "ast_hash": "219d6347ca0a6b944015cf97f13363c5",
     "semantic_hash": ""
   },
   "src/Services/interfaces/IHttpClient.ts": {
@@ -1485,8 +1480,8 @@
     "semantic_hash": ""
   },
   "src/data/reviews.ts": {
-    "mtime": 1784492184.3252442,
-    "ast_hash": "b695672c73fcd51d227ff2cf0a10aae2",
+    "mtime": 1784492955.9494836,
+    "ast_hash": "56360c65a0f68248f73a522bfacb7bbd",
     "semantic_hash": ""
   },
   "src/data/rooms.ts": {

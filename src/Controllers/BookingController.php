@@ -56,11 +56,12 @@ class BookingController {
 
         $hotelId    = (int)($body['id_hotel'] ?? 1);
         $idRoomType = Validator::positiveInt($body['id_room_type'], 'id_room_type');
+        $guests     = max(1, (int)($body['guests'] ?? 2));
         $checkIn    = $body['checkIn'];
         $checkOut   = $body['checkOut'];
-        $guestName  = trim($body['guestName']);
+        $guestName  = htmlspecialchars(trim($body['guestName']), ENT_QUOTES, 'UTF-8');
         $guestEmail = Validator::email($body['guestEmail']);
-        $guestPhone = trim($body['guestPhone'] ?? '');
+        $guestPhone = htmlspecialchars(trim($body['guestPhone'] ?? ''), ENT_QUOTES, 'UTF-8');
 
         Validator::dateRange($checkIn, $checkOut);
 
@@ -88,13 +89,21 @@ class BookingController {
                 throw HttpException::badRequest('La habitación seleccionada ya no está disponible para estas fechas.');
             }
 
-            // 3. Calcular precios
+            // Validar capacidad dinámica de la habitación (Zero-Hardcoding)
+            $maxGuests = (int)($targetRoom['max_guests'] ?? 2);
+            if ($guests > $maxGuests) {
+                $this->pdo->rollBack();
+                throw HttpException::badRequest("El número de huéspedes ({$guests}) excede la capacidad máxima de esta habitación ({$maxGuests} personas).");
+            }
+
+            // 3. Calcular precios e ID de producto real
+            $idProduct = (int)($targetRoom['id_product'] ?? $idRoomType);
             $nights = (int)round((strtotime($checkOut) - strtotime($checkIn)) / 86400);
             $pricePerNight = (float)$targetRoom['price'];
             $totalPrice = $pricePerNight * $nights;
 
-            // 4. Crear Carrito en QloApps
-            $cartId = $this->qloApp->createCart($hotelId, $idRoomType, $checkIn, $checkOut, 2);
+            // 4. Crear Carrito en QloApps con ID de producto y número real de huéspedes
+            $cartId = $this->qloApp->createCart($hotelId, $idProduct, $checkIn, $checkOut, $guests);
 
             // 5. Registrar Hold en Base de Datos local
             $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
@@ -104,9 +113,10 @@ class BookingController {
                 'id_hotel'      => $hotelId,
                 'id_room_type'  => $idRoomType,
                 'guest_data'    => [
-                    'name'  => $guestName,
-                    'email' => $guestEmail,
-                    'phone' => $guestPhone,
+                    'name'   => $guestName,
+                    'email'  => $guestEmail,
+                    'phone'  => $guestPhone,
+                    'guests' => $guests,
                 ],
                 'room_data'     => [
                     'room_name'       => $targetRoom['room_name'],
@@ -124,7 +134,11 @@ class BookingController {
                 throw new Exception('Fallo al insertar el bloqueo de reserva en DB.');
             }
 
-            // 6. Crear la preferencia de pago en Mercado Pago
+            // 6. Generar token de acceso seguro para la reserva
+            $secretKey = Config::get('CRON_SECRET', 'USGAR_SECURE_TOKEN_SECRET');
+            $accessToken = hash_hmac('sha256', $cartId . ':' . $guestEmail, $secretKey);
+
+            // 7. Crear la preferencia de pago en Mercado Pago
             $preference = $this->mp->createPreference(
                 $cartId,
                 $idRoomType,
@@ -151,6 +165,7 @@ class BookingController {
             Response::json([
                 'success'            => true,
                 'cart_id'            => $cartId,
+                'access_token'       => $accessToken,
                 'preference_id'      => $preferenceId,
                 'init_point'         => $initPoint,
                 'price'              => $totalPrice,
@@ -226,9 +241,11 @@ class BookingController {
     /**
      * Endpoint: GET /api/booking-status
      * Retorna el estado actual de la reserva.
+     * Seguridad: Si no se provee el access_token válido, omite datos personales (PII).
      */
     public function status(Request $request): void {
         $cartId = $request->getQuery('cart_id');
+        $providedToken = $request->getQuery('token', '');
 
         if (!$cartId) {
             throw HttpException::badRequest('Falta el parámetro cart_id.');
@@ -244,20 +261,32 @@ class BookingController {
             throw HttpException::notFound('Reserva no encontrada.');
         }
 
-        Response::json([
+        $guestEmail = $hold['guest_data']['email'] ?? '';
+        $secretKey = Config::get('CRON_SECRET', 'USGAR_SECURE_TOKEN_SECRET');
+        $expectedToken = hash_hmac('sha256', $cartId . ':' . $guestEmail, $secretKey);
+        $isAuthenticated = (!empty($providedToken) && hash_equals($expectedToken, $providedToken));
+
+        $payload = [
             'success'         => true,
             'cart_id'         => $hold['cart_id'],
             'status'          => $hold['status'],
             'checkin'         => $hold['checkin'],
             'checkout'        => $hold['checkout'],
             'id_room_type'    => (int)$hold['id_room_type'],
-            'guest_name'      => $hold['guest_data']['name'] ?? '',
-            'guest_email'     => $hold['guest_data']['email'] ?? '',
-            'guest_phone'     => $hold['guest_data']['phone'] ?? '',
             'room_name'       => $hold['room_data']['room_name'] ?? '',
             'price_per_night' => (float)($hold['room_data']['price_per_night'] ?? 0),
             'nights'          => (int)($hold['room_data']['nights'] ?? 1),
             'price'           => (float)$hold['price_snapshot'],
-        ]);
+            'expires_at'      => $hold['expires_at'] ?? null,
+        ];
+
+        // Retornar PII sensible únicamente si la solicitud posee token válido
+        if ($isAuthenticated) {
+            $payload['guest_name']  = $hold['guest_data']['name'] ?? '';
+            $payload['guest_email'] = $guestEmail;
+            $payload['guest_phone'] = $hold['guest_data']['phone'] ?? '';
+        }
+
+        Response::json($payload);
     }
 }

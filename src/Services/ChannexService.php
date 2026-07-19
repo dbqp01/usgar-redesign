@@ -134,12 +134,84 @@ class ChannexService {
     }
 
     /**
-     * Resuelve el UUID de Channex desde las variables de entorno para un room type.
+     * Consulta dinámicamente los tipos de habitación registrados en Channex (0 costo adicional).
+     * Retorna array con IDs de Channex, títulos y ocupación máxima.
+     *
+     * @return array<int, array{id: string, title: string, occ_adults: int, count: int}>
+     */
+    public function fetchChannexRoomTypes(): array {
+        if (empty($this->apiKey) || empty($this->propertyId)) {
+            return [];
+        }
+
+        try {
+            $endpoint = "{$this->apiUrl}/room_types?filter[property_id]={$this->propertyId}";
+
+            $ch = curl_init($endpoint);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                "api-key: {$this->apiKey}",
+                'Accept: application/json',
+            ]);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            if ($httpCode !== 200 || !$response) {
+                Logger::error("ChannexService fetchChannexRoomTypes Error: HTTP {$httpCode}");
+                return [];
+            }
+
+            $json = json_decode($response, true);
+            $data = $json['data'] ?? [];
+            $result = [];
+
+            foreach ($data as $item) {
+                $attr = $item['attributes'] ?? [];
+                $result[] = [
+                    'id'         => $item['id'] ?? '',
+                    'title'      => $attr['title'] ?? '',
+                    'occ_adults' => (int)($attr['occ_adults'] ?? $attr['default_occupancy'] ?? 2),
+                    'count'      => (int)($attr['count'] ?? 1),
+                ];
+            }
+
+            return $result;
+        } catch (Exception $e) {
+            Logger::error('ChannexService Exception en fetchChannexRoomTypes: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Resuelve el UUID de Channex dinámicamente desde la API o variables de entorno.
      */
     private function resolveChannexRoomId(int $idRoomType): ?string {
         $slug = $this->getSlugByRoomType($idRoomType);
+
+        // 1. Intentar variable de entorno específica
         $envKey = 'CHANNEX_ROOM_' . strtoupper(str_replace('-', '_', $slug));
-        return Config::get($envKey);
+        $envVal = Config::get($envKey);
+        if (!empty($envVal)) {
+            return $envVal;
+        }
+
+        // 2. Fallback: Autodetección vía API de Channex
+        $channexRooms = $this->fetchChannexRoomTypes();
+        $normalizedSlug = strtolower(str_replace(['-', '_'], '', $slug));
+
+        foreach ($channexRooms as $room) {
+            $normalizedTitle = strtolower(str_replace(['-', '_', ' '], '', $room['title']));
+            if (str_contains($normalizedTitle, $normalizedSlug)) {
+                return $room['id'];
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -153,15 +225,15 @@ class ChannexService {
     }
 
     /**
-     * Mapea el ID de tipo de habitación local a un slug.
+     * Obtiene el slug de habitación (resuelto dinámicamente o por id).
      */
     private function getSlugByRoomType(int $idRoomType): string {
-        return match ($idRoomType) {
+        $slugMap = [
             1 => 'matrimonial',
             2 => 'doble-superior',
             3 => 'triple-standar',
             4 => 'familiar-superior',
-            default => 'matrimonial',
-        };
+        ];
+        return $slugMap[$idRoomType] ?? 'matrimonial';
     }
 }

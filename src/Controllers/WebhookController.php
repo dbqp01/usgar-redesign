@@ -88,7 +88,7 @@ class WebhookController {
 
         if (!$paymentDetails) {
             Logger::error("WebhookController Error: No se pudieron obtener detalles para Pago ID {$paymentId}");
-            exit(0);
+            return;
         }
 
         $status = $paymentDetails['status'] ?? 'pending';
@@ -97,12 +97,12 @@ class WebhookController {
 
         if ($status !== 'approved' || !$cartId) {
             Logger::info("WebhookController: Pago ID {$paymentId} tiene estado {$status}. Omitiendo creación de orden.");
-            exit(0);
+            return;
         }
 
         if (!$this->pdo || !$this->bookingModel) {
             Logger::error("WebhookController Error: Base de datos desconectada. No se pudo procesar Cart ID {$cartId}");
-            exit(0);
+            return;
         }
 
         // 4. Confirmar y Procesar Reserva en Base de Datos
@@ -113,14 +113,14 @@ class WebhookController {
             if (!$hold) {
                 Logger::error("WebhookController Error: No se encontró hold para Cart ID {$cartId}");
                 $this->pdo->rollBack();
-                exit(0);
+                return;
             }
 
             $holdStatus = BookingStatus::tryFrom($hold['status']);
             if ($holdStatus === BookingStatus::Paid) {
                 Logger::info("WebhookController: Reserva para Cart ID {$cartId} ya fue procesada anteriormente.");
                 $this->pdo->rollBack();
-                exit(0);
+                return;
             }
 
             // A. Cambiar estado local a 'paid'

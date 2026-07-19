@@ -94,7 +94,13 @@ class Config {
             }
 
             $key = trim($parts[0]);
-            $value = trim($parts[1], " '\"");
+            $value = trim($parts[1]);
+
+            // Remover comillas únicamente si envuelven el valor completo
+            if ((str_starts_with($value, '"') && str_ends_with($value, '"')) ||
+                (str_starts_with($value, "'") && str_ends_with($value, "'"))) {
+                $value = substr($value, 1, -1);
+            }
 
             $this->cache[$key] = $value;
             putenv("{$key}={$value}");

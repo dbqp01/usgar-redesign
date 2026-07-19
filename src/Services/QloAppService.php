@@ -96,6 +96,7 @@ class QloAppService {
                 if ($availableCount > 0) {
                     $availableRooms[] = [
                         'id_room_type'  => (int)$row['id_room_type'],
+                        'id_product'    => (int)$row['id_product'],
                         'room_name'     => $row['room_name'],
                         'price'         => (float)$row['price'],
                         'max_guests'    => (int)$row['max_guests'],
@@ -114,8 +115,9 @@ class QloAppService {
 
     /**
      * Crea un Carrito temporal en QloApps mediante la API Web Service (XML).
+     * Fix: Pasa $idProduct (el ID real de producto en QloApps) en vez de $idRoomType.
      */
-    public function createCart(int $hotelId, int $idRoomType, string $checkIn, string $checkOut, int $guests): string {
+    public function createCart(int $hotelId, int $idProduct, string $checkIn, string $checkOut, int $guests): string {
         if (empty($this->apiKey) || empty($this->apiUrl)) {
             throw new Exception('QloApps API key or API URL is not configured.');
         }
@@ -129,7 +131,7 @@ class QloAppService {
         <associations>
             <cart_rows>
                 <cart_row>
-                    <id_product>{$idRoomType}</id_product>
+                    <id_product>{$idProduct}</id_product>
                     <quantity>1</quantity>
                 </cart_row>
             </cart_rows>

@@ -38,9 +38,22 @@ class RateLimiter {
         $limitFile = self::$limitsDir . DIRECTORY_SEPARATOR . "limit_{$ipHash}.json";
         $now = time();
 
+        $fp = @fopen($limitFile, 'c+');
+        if (!$fp) {
+            // Si el archivo no se puede abrir, permitir la petición como fallback
+            return true;
+        }
+
+        // Bloqueo exclusivo que cubre lectura + filtrado + escritura
+        if (!flock($fp, LOCK_EX)) {
+            fclose($fp);
+            return true;
+        }
+
         $requests = [];
-        if (file_exists($limitFile)) {
-            $content = file_get_contents($limitFile);
+        $fileSize = filesize($limitFile);
+        if ($fileSize > 0) {
+            $content = fread($fp, $fileSize);
             if ($content !== false) {
                 $data = json_decode($content, true);
                 if (is_array($data)) {
@@ -51,17 +64,25 @@ class RateLimiter {
 
         // Filtrar peticiones fuera de la ventana de tiempo
         $cutoff = $now - $timeWindowSeconds;
-        $requests = array_filter($requests, fn(int $timestamp) => $timestamp > $cutoff);
+        $requests = array_values(array_filter($requests, fn(int $timestamp) => $timestamp > $cutoff));
 
         if (count($requests) >= $maxRequests) {
+            flock($fp, LOCK_UN);
+            fclose($fp);
             return false;
         }
 
         // Agregar petición actual
         $requests[] = $now;
 
-        // Guardar con LOCK_EX para atomicidad (previene race conditions)
-        @file_put_contents($limitFile, json_encode(array_values($requests)), LOCK_EX);
+        // Truncar y escribir estado actualizado de forma atómica
+        ftruncate($fp, 0);
+        rewind($fp);
+        fwrite($fp, json_encode($requests));
+        fflush($fp);
+        flock($fp, LOCK_UN);
+        fclose($fp);
+
         return true;
     }
 
