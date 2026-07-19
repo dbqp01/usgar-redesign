@@ -63,6 +63,9 @@ class ChannexService {
             $bookingPayload = [
                 'booking' => [
                     'status'         => 'new',
+                    'provider_code'  => Config::get('CHANNEX_PROVIDER_CODE', 'OpenChannel'),
+                    'hotel_code'     => $this->propertyId,
+                    'ota_name'       => Config::get('CHANNEX_OTA_NAME', 'Direct'),
                     'reservation_id' => 'USG-' . $bookingId,
                     'arrival_date'   => $checkIn,
                     'departure_date' => $checkOut,
