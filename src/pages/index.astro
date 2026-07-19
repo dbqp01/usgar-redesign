@@ -37,7 +37,7 @@ const hotelSchema = {
   image: "https://usgarhotels.com/assets/logos/Logo%20usgar%20morado.png",
   telephone: `+${siteSettings.phoneRaw}`,
   email: siteSettings.email,
-  url: "https://usgarhotels.com" + (lang === "es" ? "/es" : ""),
+  url: "https://sanpedro.hotelesusgar.com" + (lang === "es" ? "/es" : ""),
   address: {
     "@type": "PostalAddress",
     streetAddress: siteSettings.streetAddress,
@@ -82,17 +82,12 @@ const hotelSchema = {
     },
     {
       "@type": "LocationFeatureSpecification",
-      name: "Airport Transfer",
+      name: "24h Reception",
       value: true,
     },
     {
       "@type": "LocationFeatureSpecification",
-      name: "Spa & Massage",
-      value: true,
-    },
-    {
-      "@type": "LocationFeatureSpecification",
-      name: "Free Parking",
+      name: "Luggage Storage",
       value: true,
     },
   ],

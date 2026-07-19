@@ -1,15 +1,11 @@
 RewriteEngine On
 
-# Rewrite for /api/channex/booking/[id] -> /api/channex/booking-detail.php?id=[id]
-RewriteRule ^api/channex/booking/([^/]+)$ api/channex/booking-detail.php?id=$1 [L,QSA]
+# Handle CORS preflight (OPTIONS) at server level
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^api/ index.php [L,QSA]
 
-# Rewrite for /api/channex/booking -> /api/channex/booking.php
-RewriteRule ^api/channex/booking$ api/channex/booking.php [L,QSA]
-
-# Rewrite for /api/channex/availability -> /api/channex/availability.php
-RewriteRule ^api/channex/availability$ api/channex/availability.php [L,QSA]
-
-# Rewrite for other /api/* -> /api/*.php
+# Route ALL /api/* requests through the centralized PHP router (index.php)
+# The Core\Router dispatches to the appropriate Controller
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^api/([^/]+)$ api/$1.php [L,QSA]
+RewriteRule ^api/(.*)$ index.php [L,QSA]

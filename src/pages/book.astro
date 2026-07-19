@@ -467,17 +467,19 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
   </main>
 </Layout>
 
-<script is:inline define:vars={{ serializedRooms: JSON.stringify(rooms.map(r => ({ id: r.id, slug: r.slug, name: r.name, pricePerNight: r.pricePerNight, beds: r.beds }))) }}>
-  // Parse server-serialized rooms data (single source of truth)
+<script is:inline define:vars={{ serializedRooms: JSON.stringify(rooms.map(r => ({ id: r.id, slug: r.slug, name: r.name, pricePerNight: r.pricePerNight, beds: r.beds }))), serializedLabels: JSON.stringify({ nights: t('book.nights'), night: t('book.night'), guest: t('booking.guest'), guests: t('booking.guests_plural'), selected: t('book.selected'), select: t('book.select'), fillAllFields: t('book.fillAllFields'), invalidEmail: t('book.invalidEmail'), processing: t('book.processing'), confirmAndPay: t('book.confirmAndPay'), noPaymentUrl: t('book.noPaymentUrl'), unexpectedError: t('book.unexpectedError') }) }}>
+  // Parse server-serialized data (single source of truth)
   window.__ROOMS_DATA = JSON.parse(serializedRooms);
+  window.__LABELS = JSON.parse(serializedLabels);
 </script>
 
 <script>
   import { translateBeds, daysBetween } from '../utils/helpers';
   import { bookingService } from '../Services/bookingService';
 
-  // Use rooms data serialized from server (avoids hardcoding duplicates)
+  // Use data serialized from server (avoids hardcoding duplicates)
   const ROOMS_DATA = (window as any).__ROOMS_DATA || [];
+  const L = (window as any).__LABELS || {};
   let abortController = new AbortController();
 
   function initCheckoutPage() {
@@ -535,11 +537,11 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
       if (summaryRoomBedsText) summaryRoomBedsText.textContent = translateBeds(room.beds, lang);
       if (summaryCheckin) summaryCheckin.textContent = checkInDate;
       if (summaryCheckout) summaryCheckout.textContent = checkOutDate;
-      if (summaryNights) summaryNights.textContent = `${nights} ${lang === 'es' ? 'noches' : 'nights'}`;
+      if (summaryNights) summaryNights.textContent = `${nights} ${nights === 1 ? L.night : L.nights}`;
       if (summaryGuests) {
         const guestText = guestsCount === '1' 
-          ? (lang === 'es' ? '1 huésped' : '1 guest') 
-          : `${guestsCount} ${lang === 'es' ? 'huéspedes' : 'guests'}`;
+          ? `1 ${L.guest}` 
+          : `${guestsCount} ${L.guests}`;
         summaryGuests.textContent = guestText;
       }
       if (summaryTotalPrice) summaryTotalPrice.textContent = totalPrice.toString();
@@ -563,7 +565,7 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
         if (cardSlug === slug) {
           c.classList.add('border-primary', 'bg-primary/5', 'shadow-md', 'shadow-primary/5', 'ring-1', 'ring-primary');
           c.classList.remove('border-black/10', 'dark:border-white/10', 'bg-surface-light', 'dark:bg-surface-dark', 'hover:border-primary/50');
-          if (btn) btn.textContent = lang === 'es' ? 'Seleccionada' : 'Selected';
+          if (btn) btn.textContent = L.selected;
           if (btn) {
             btn.classList.add('bg-primary', 'text-white', 'shadow-sm');
             btn.classList.remove('bg-stone-200', 'dark:bg-stone-800', 'text-stone-700', 'dark:text-stone-300');
@@ -571,7 +573,7 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
         } else {
           c.classList.remove('border-primary', 'bg-primary/5', 'shadow-md', 'shadow-primary/5', 'ring-1', 'ring-primary');
           c.classList.add('border-black/10', 'dark:border-white/10', 'bg-surface-light', 'dark:bg-surface-dark', 'hover:border-primary/50');
-          if (btn) btn.textContent = lang === 'es' ? 'Seleccionar' : 'Select';
+          if (btn) btn.textContent = L.select;
           if (btn) {
             btn.classList.remove('bg-primary', 'text-white', 'shadow-sm');
             btn.classList.add('bg-stone-200', 'dark:bg-stone-800', 'text-stone-700', 'dark:text-stone-300');
@@ -695,19 +697,19 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
       const guestPhoneInput = document.getElementById('guest-phone') as HTMLInputElement;
 
       if (!guestNameInput?.value || !guestEmailInput?.value || !guestPhoneInput?.value) {
-        showError(lang === 'es' ? 'Por favor complete todos los campos obligatorios.' : 'Please fill out all required fields.');
+        showError(L.fillAllFields);
         return;
       }
 
       if (!guestEmailInput.validity.valid) {
-        showError(lang === 'es' ? 'Por favor ingrese un email válido.' : 'Please enter a valid email address.');
+        showError(L.invalidEmail);
         return;
       }
 
       // Show spinner and disable button
       btnSpinner?.classList.remove('hidden');
       btnPay.disabled = true;
-      if (btnText) btnText.textContent = lang === 'es' ? 'Procesando...' : 'Processing...';
+      if (btnText) btnText.textContent = L.processing;
 
       try {
         const checkIn = checkinInput.value;
@@ -738,7 +740,7 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
           showError(result.error.message);
           btnSpinner?.classList.add('hidden');
           btnPay.disabled = false;
-          if (btnText) btnText.textContent = lang === 'es' ? 'Confirmar y Pagar con Mercado Pago' : 'Confirm & Pay with Mercado Pago';
+          if (btnText) btnText.textContent = L.confirmAndPay;
           return;
         }
 
@@ -752,19 +754,19 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
           }
           window.location.href = url;
         } else {
-          showError(lang === 'es' ? 'No se recibió la URL de pago desde el servidor.' : 'No payment URL received from server.');
+          showError(L.noPaymentUrl);
           btnSpinner?.classList.add('hidden');
           btnPay.disabled = false;
-          if (btnText) btnText.textContent = lang === 'es' ? 'Confirmar y Pagar con Mercado Pago' : 'Confirm & Pay with Mercado Pago';
+          if (btnText) btnText.textContent = L.confirmAndPay;
         }
       } catch (err: any) {
         console.error(err);
-        showError(err.message || (lang === 'es' ? 'Ocurrió un error inesperado.' : 'An unexpected error occurred.'));
+        showError(err.message || L.unexpectedError);
         
         // Reset button state
         btnSpinner?.classList.add('hidden');
         btnPay.disabled = false;
-        if (btnText) btnText.textContent = lang === 'es' ? 'Confirmar y Pagar con Mercado Pago' : 'Confirm & Pay with Mercado Pago';
+        if (btnText) btnText.textContent = L.confirmAndPay;
       }
     }, { signal });
 

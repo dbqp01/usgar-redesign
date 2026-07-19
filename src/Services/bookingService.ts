@@ -26,8 +26,8 @@ export class BookingService implements IBookingService {
 
   async getAvailableRooms(checkIn?: string, checkOut?: string): Promise<ApiResult<RoomAvailability[]>> {
     const query = new URLSearchParams();
-    if (checkIn) query.append('check_in', checkIn);
-    if (checkOut) query.append('check_out', checkOut);
+    if (checkIn) query.append('checkIn', checkIn);
+    if (checkOut) query.append('checkOut', checkOut);
 
     const url = `${this.baseUrl}/rooms${query.toString() ? '?' + query.toString() : ''}`;
     const response = await this.httpClient.get<any>(url);
@@ -84,7 +84,7 @@ export class BookingService implements IBookingService {
 
   async extendHoldSession(bookingId: string): Promise<ApiResult<{ extended: boolean; new_expires_at: string }>> {
     const url = `${this.baseUrl}/extend-hold`;
-    const response = await this.httpClient.post<any>(url, { booking_id: bookingId });
+    const response = await this.httpClient.post<any>(url, { cart_id: bookingId });
 
     if (!response.ok || !response.data?.success) {
       const err = response.data?.error || {};
@@ -105,7 +105,7 @@ export class BookingService implements IBookingService {
   }
 
   async getBookingStatus(bookingId: string): Promise<ApiResult<BookingStatusData>> {
-    const url = `${this.baseUrl}/booking-status?booking_id=${encodeURIComponent(bookingId)}`;
+    const url = `${this.baseUrl}/booking-status?cart_id=${encodeURIComponent(bookingId)}`;
     const response = await this.httpClient.get<any>(url);
 
     if (!response.ok || !response.data?.success) {

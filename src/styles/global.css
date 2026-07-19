@@ -71,6 +71,7 @@
   /* === TIPOGRAFÍA === */
   --font-display: 'A Akhin Tahun', 'Playfair Display', serif;
   --font-body: 'Montserrat', 'Outfit', sans-serif;
+  --font-logo: 'Kravitz Extra Thermal', sans-serif;
 
   /* === ANIMATIONS === */
   --animate-pulse-soft: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;

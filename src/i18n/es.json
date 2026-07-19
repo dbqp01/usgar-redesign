@@ -49,7 +49,13 @@
     "sectionLabel": "Cercano",
     "title": "Explora Cusco",
     "description": "Descubre las maravillas que te esperan justo al salir",
-    "viewAll": "Ver todas las atracciones"
+    "viewAll": "Ver todas las atracciones",
+    "searchPlaceholder": "Buscar atracción...",
+    "viewGuide": "Ver Guía",
+    "noResults": "No se encontraron atracciones",
+    "noResultsHint": "Prueba cambiando los filtros o la palabra de búsqueda.",
+    "schemaName": "Atracciones turísticas cerca de USGAR Hotels",
+    "schemaDescription": "Descubre los mejores destinos históricos, culturales y naturales cerca de USGAR Hotels en Cusco."
   },
   "map": {
     "sectionLabel": "Ubicación",
@@ -123,7 +129,7 @@
       "desc": "Cercanía y calidez"
     },
     "excellence": {
-      "title": "Excelence",
+      "title": "Excelencia",
       "desc": "Mejora continua"
     },
     "authenticity": {
@@ -178,6 +184,44 @@
     "guaranteedText": "Cancelación gratuita hasta 48 horas antes de tu llegada. Desayuno buffet andino incluido.",
     "videoTour": "Video Tour de la Habitación",
     "confirmAndPay": "Confirmar y Pagar con Mercado Pago",
-    "confirmAndPayStripe": "Confirmar y Pagar con Stripe"
+    "confirmAndPayStripe": "Confirmar y Pagar con Stripe",
+    "night": "noche",
+    "nights": "noches",
+    "processing": "Procesando...",
+    "fillAllFields": "Por favor complete todos los campos obligatorios.",
+    "invalidEmail": "Por favor ingrese un email válido.",
+    "noPaymentUrl": "No se recibió la URL de pago desde el servidor.",
+    "unexpectedError": "Ocurrió un error inesperado."
+  },
+  "exploreDetail": {
+    "home": "Inicio",
+    "historyTitle": "Historia y Contexto",
+    "howToArrive": "Cómo Llegar",
+    "travelTips": "Consejos Prácticos de Viaje",
+    "quickFacts": "Detalles Rápidos",
+    "distanceFromHotel": "Distancia desde el Hotel",
+    "travelTime": "Tiempo de Viaje",
+    "bestSeason": "Mejor Época",
+    "readyToExplore": "¿Listo para explorar Cusco?",
+    "readyToExploreText": "Reserva tu estadía en USGAR Hotels y descubre todas las maravillas de Cusco y el Valle Sagrado."
+  },
+  "success": {
+    "title": "Reserva Confirmada",
+    "retrieving": "Recuperando detalles de reserva...",
+    "paymentApproved": "Pago Aprobado con Éxito",
+    "reservationConfirmed": "¡Tu Reserva está Confirmada!",
+    "confirmationMessage": "Gracias por elegir USGAR Hotels. Recibirás un correo de confirmación con todos los detalles de tu estadía.",
+    "channexCode": "Código de Confirmación Channex",
+    "bookingDetails": "Detalles de la Reserva",
+    "primaryGuest": "Huésped Principal",
+    "roomType": "Habitación",
+    "checkinDate": "Fecha de Entrada (Check-In)",
+    "checkoutDate": "Fecha de Salida (Check-Out)",
+    "billingDetail": "Detalle de Facturación",
+    "totalPaid": "Total Pagado",
+    "returnHome": "Volver al Inicio",
+    "printReceipt": "Imprimir Comprobante",
+    "notFound": "Reserva No Encontrada",
+    "notFoundMessage": "No pudimos encontrar los detalles de la reserva. Si completaste un pago, por favor contáctanos."
   }
 }

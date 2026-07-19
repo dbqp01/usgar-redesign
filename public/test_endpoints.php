@@ -8,13 +8,17 @@ declare(strict_types=1);
  * Fix: SQL injection eliminado (prepared statements), acceso web bloqueado.
  */
 
-// Bloquear acceso via web en producción
+// Bloquear acceso via web sin token de autenticación
 if (PHP_SAPI !== 'cli') {
     require_once __DIR__ . '/../src/Core/Autoloader.php';
     \App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src');
     \App\Core\Config::boot();
 
-    if (\App\Core\Config::isProduction()) {
+    // Block in production entirely, in development require CRON_SECRET
+    $cronSecret = \App\Core\Config::get('CRON_SECRET', '');
+    $providedSecret = $_GET['secret'] ?? $_SERVER['HTTP_X_CRON_SECRET'] ?? '';
+
+    if (\App\Core\Config::isProduction() || empty($cronSecret) || !hash_equals($cronSecret, $providedSecret)) {
         http_response_code(403);
         echo '403 Forbidden';
         exit(1);

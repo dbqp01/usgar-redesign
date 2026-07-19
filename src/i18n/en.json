@@ -49,7 +49,13 @@
     "sectionLabel": "Nearby",
     "title": "Explore Cusco",
     "description": "Discover the wonders that await just outside your door",
-    "viewAll": "View all attractions"
+    "viewAll": "View all attractions",
+    "searchPlaceholder": "Search attraction...",
+    "viewGuide": "View Guide",
+    "noResults": "No attractions found",
+    "noResultsHint": "Try adjusting your filters or search keywords.",
+    "schemaName": "Tourist attractions near USGAR Hotels",
+    "schemaDescription": "Discover the best historical, cultural, and natural destinations near USGAR Hotels in Cusco."
   },
   "map": {
     "sectionLabel": "Location",
@@ -178,6 +184,44 @@
     "guaranteedText": "Free cancellation up to 48 hours prior to check-in. Andean buffet breakfast included.",
     "videoTour": "Room Video Tour",
     "confirmAndPay": "Confirm & Pay with Mercado Pago",
-    "confirmAndPayStripe": "Confirm & Pay with Stripe"
+    "confirmAndPayStripe": "Confirm & Pay with Stripe",
+    "night": "night",
+    "nights": "nights",
+    "processing": "Processing...",
+    "fillAllFields": "Please fill out all required fields.",
+    "invalidEmail": "Please enter a valid email address.",
+    "noPaymentUrl": "No payment URL received from server.",
+    "unexpectedError": "An unexpected error occurred."
+  },
+  "exploreDetail": {
+    "home": "Home",
+    "historyTitle": "History & Background",
+    "howToArrive": "How to Arrive",
+    "travelTips": "Practical Travel Tips",
+    "quickFacts": "Quick Facts",
+    "distanceFromHotel": "Distance from Hotel",
+    "travelTime": "Travel Time",
+    "bestSeason": "Best Season",
+    "readyToExplore": "Ready to explore Cusco?",
+    "readyToExploreText": "Book your stay at USGAR Hotels and discover all the wonders of Cusco and the Sacred Valley."
+  },
+  "success": {
+    "title": "Booking Confirmed",
+    "retrieving": "Retrieving booking details...",
+    "paymentApproved": "Payment Approved Successfully",
+    "reservationConfirmed": "Reservation Confirmed!",
+    "confirmationMessage": "Thank you for choosing USGAR Hotels. You will receive a confirmation email shortly with all the details of your stay.",
+    "channexCode": "Channex Confirmation Code",
+    "bookingDetails": "Booking Details",
+    "primaryGuest": "Primary Guest",
+    "roomType": "Room Type",
+    "checkinDate": "Check-In Date",
+    "checkoutDate": "Check-Out Date",
+    "billingDetail": "Billing Detail",
+    "totalPaid": "Total Paid",
+    "returnHome": "Return to Home",
+    "printReceipt": "Print Receipt",
+    "notFound": "Booking Not Found",
+    "notFoundMessage": "We could not find the booking details. If you completed a payment, please contact us."
   }
 }

@@ -81,7 +81,7 @@ const blogSchema = {
     <div class="max-w-4xl mx-auto relative z-10 text-center text-white/90">
       <!-- Breadcrumbs -->
       <nav class="flex items-center justify-center gap-2 text-xs text-white/70 mb-4 font-body">
-        <a href={getRelativeLocaleUrl(lang, "")} class="hover:text-secondary transition-colors">{lang === 'es' ? 'Inicio' : 'Home'}</a>
+        <a href={getRelativeLocaleUrl(lang, "")} class="hover:text-secondary transition-colors">{t('exploreDetail.home')}</a>
         <span>/</span>
         <a href={getRelativeLocaleUrl(lang, "explore")} class="hover:text-secondary transition-colors">{t("explore.title")}</a>
         <span>/</span>
@@ -117,7 +117,7 @@ const blogSchema = {
             <svg class="w-6 h-6 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
-            {lang === 'es' ? 'Historia y Contexto' : 'History & Background'}
+            {t('exploreDetail.historyTitle')}
           </h2>
           <p class="text-text-secondary-light dark:text-text-secondary-dark font-body leading-relaxed text-base md:text-lg font-light">
             {attraction.history[lang]}
@@ -130,7 +130,7 @@ const blogSchema = {
             <svg class="w-6 h-6 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
             </svg>
-            {lang === 'es' ? 'Cómo Llegar' : 'How to Arrive'}
+            {t('exploreDetail.howToArrive')}
           </h2>
           <p class="text-text-secondary-light dark:text-text-secondary-dark font-body leading-relaxed text-base md:text-lg font-light">
             {attraction.howToGet[lang]}
@@ -143,7 +143,7 @@ const blogSchema = {
             <svg class="w-6 h-6 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
-            {lang === 'es' ? 'Consejos Prácticos de Viaje' : 'Practical Travel Tips'}
+            {t('exploreDetail.travelTips')}
           </h2>
           <ul class="space-y-4 font-body">
             {attraction.tips[lang].map((tip) => (
@@ -165,7 +165,7 @@ const blogSchema = {
         <!-- Quick Info Box -->
         <div class="bg-surface-card-light dark:bg-surface-card-dark p-6 rounded-3xl border border-black/5 dark:border-white/5 shadow-sm space-y-4">
           <h3 class="font-display text-lg text-text-primary-light dark:text-text-primary-dark font-semibold">
-            {lang === 'es' ? 'Detalles Rápidos' : 'Quick Facts'}
+            {t('exploreDetail.quickFacts')}
           </h3>
           <div class="space-y-3.5 text-sm font-body">
             <!-- Distance -->
@@ -175,7 +175,7 @@ const blogSchema = {
                   <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                {lang === 'es' ? 'Distancia desde el Hotel' : 'Distance from Hotel'}
+                {t('exploreDetail.distanceFromHotel')}
               </span>
               <span class="font-semibold text-text-primary-light dark:text-text-primary-dark">{attraction.distance}</span>
             </div>
@@ -185,7 +185,7 @@ const blogSchema = {
                 <svg class="w-4 h-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                {lang === 'es' ? 'Tiempo de Viaje' : 'Travel Time'}
+                {t('exploreDetail.travelTime')}
               </span>
               <span class="font-semibold text-text-primary-light dark:text-text-primary-dark">{attraction.travelTime}</span>
             </div>
@@ -195,7 +195,7 @@ const blogSchema = {
                 <svg class="w-4 h-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                {lang === 'es' ? 'Mejor Época' : 'Best Season'}
+                {t('exploreDetail.bestSeason')}
               </span>
               <span class="font-semibold text-text-primary-light dark:text-text-primary-dark text-right text-xs max-w-[150px]">{attraction.bestTime[lang]}</span>
             </div>
@@ -205,12 +205,10 @@ const blogSchema = {
         <!-- Sticky Hotel Booking CTA -->
         <div class="bg-gradient-to-br from-primary/10 to-tertiary/10 dark:from-primary/20 dark:to-tertiary/20 p-8 rounded-3xl border border-primary/20 shadow-sm space-y-6 text-center">
           <h3 class="font-display text-2xl text-text-primary-light dark:text-text-primary-dark leading-tight">
-            {lang === 'es' ? '¿Listo para explorar Cusco?' : 'Ready to explore Cusco?'}
+            {t('exploreDetail.readyToExplore')}
           </h3>
           <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark font-body font-light">
-            {lang === 'es' 
-              ? 'USGAR Hotels en San Pedro es el punto de partida perfecto para tu aventura andina. Reserva hoy mismo al mejor precio directo.'
-              : 'USGAR Hotels in San Pedro is the perfect base camp for your Andean adventure. Book today at the best direct rate.'}
+            {t('exploreDetail.readyToExploreText')}
           </p>
           <a
             href={getRelativeLocaleUrl(lang, "book")}
