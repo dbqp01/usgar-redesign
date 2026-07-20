@@ -1,0 +1,305 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { useTranslations } from '../i18n/utils';
+
+export const prerender = true;
+
+const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+const t = useTranslations(lang);
+
+const url = new URL(Astro.url);
+const redirect = url.searchParams.get('redirect') || '/';
+const errorMessage = url.searchParams.get('error') || '';
+---
+
+<Layout title={`${t('auth.signIn')} — USGAR Hotels`} lang={lang}>
+  <main class="min-h-screen py-28 px-4 flex items-center justify-center animate-fade-in">
+    <div class="w-full max-w-md bg-surface-card-light dark:bg-surface-card-dark p-8 md:p-10 rounded-3xl border border-black/10 dark:border-white/10 shadow-2xl space-y-8">
+      
+      <!-- Header -->
+      <div class="text-center space-y-2">
+        <span class="text-xs font-semibold text-primary uppercase tracking-widest">
+          USGAR Hotels
+        </span>
+        <h1 class="font-display text-3xl md:text-4xl font-bold">
+          {t('auth.welcomeTitle')}
+        </h1>
+        <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">
+          {t('auth.welcomeSubtitle')}
+        </p>
+      </div>
+
+      <!-- Error Alert -->
+      {errorMessage && (
+        <div class="p-4 rounded-xl border border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-medium flex items-center gap-3">
+          <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <span>{errorMessage}</span>
+        </div>
+      )}
+
+      <!-- Dynamic Alert Container (JS) -->
+      <div id="auth-alert" class="hidden p-4 rounded-xl border text-sm font-medium flex items-center gap-3">
+        <span id="auth-alert-text"></span>
+      </div>
+
+      <!-- Social Login Buttons -->
+      <div class="space-y-3">
+        <!-- Google -->
+        <a
+          href={`/api/auth/login?provider=Google&redirect=${encodeURIComponent(redirect)}`}
+          class="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl border border-black/10 dark:border-white/10 bg-white dark:bg-surface-dark hover:bg-stone-50 dark:hover:bg-stone-800 text-text-primary-light dark:text-text-primary-dark font-medium text-sm transition-all duration-300 shadow-sm hover:shadow"
+        >
+          <svg class="w-5 h-5" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.26v3.15C3.24 21.3 7.31 24 12 24z"/>
+            <path fill="#FBBC05" d="M5.28 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.61H1.26C.46 8.23 0 10.06 0 12s.46 3.77 1.26 5.39l4.02-3.15z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.24 2.7 1.26 6.61l4.02 3.15c.95-2.85 3.6-4.96 6.72-4.96z"/>
+          </svg>
+          <span>{t('auth.continueWithGoogle')}</span>
+        </a>
+
+        <!-- Microsoft -->
+        <a
+          href={`/api/auth/login?provider=MicrosoftGraph&redirect=${encodeURIComponent(redirect)}`}
+          class="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl border border-black/10 dark:border-white/10 bg-white dark:bg-surface-dark hover:bg-stone-50 dark:hover:bg-stone-800 text-text-primary-light dark:text-text-primary-dark font-medium text-sm transition-all duration-300 shadow-sm hover:shadow"
+        >
+          <svg class="w-5 h-5" viewBox="0 0 23 23">
+            <path fill="#f35325" d="M1 1h10v10H1z"/>
+            <path fill="#81bc06" d="M12 1h10v10H12z"/>
+            <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+            <path fill="#ffba08" d="M12 12h10v10H12z"/>
+          </svg>
+          <span>{t('auth.continueWithMicrosoft')}</span>
+        </a>
+
+        <!-- Facebook -->
+        <a
+          href={`/api/auth/login?provider=Facebook&redirect=${encodeURIComponent(redirect)}`}
+          class="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl border border-black/10 dark:border-white/10 bg-[#1877F2] hover:bg-[#166fe5] text-white font-medium text-sm transition-all duration-300 shadow-sm hover:shadow"
+        >
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+          <span>{t('auth.continueWithFacebook')}</span>
+        </a>
+      </div>
+
+      <!-- Divider -->
+      <div class="relative flex items-center justify-center">
+        <div class="border-t border-black/10 dark:border-white/10 w-full"></div>
+        <span class="bg-surface-card-light dark:bg-surface-card-dark px-3 text-xs text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wider font-semibold whitespace-nowrap">
+          {t('auth.orUseEmail')}
+        </span>
+        <div class="border-t border-black/10 dark:border-white/10 w-full"></div>
+      </div>
+
+      <!-- Tabs: Sign In / Sign Up -->
+      <div>
+        <div class="flex border-b border-black/10 dark:border-white/10 mb-6">
+          <button
+            id="tab-login-btn"
+            type="button"
+            class="flex-1 py-3 text-center text-sm font-semibold border-b-2 border-primary text-primary transition-all cursor-pointer"
+          >
+            {t('auth.signIn')}
+          </button>
+          <button
+            id="tab-register-btn"
+            type="button"
+            class="flex-1 py-3 text-center text-sm font-semibold border-b-2 border-transparent text-text-secondary-light dark:text-text-secondary-dark hover:text-primary transition-all cursor-pointer"
+          >
+            {t('auth.signUp')}
+          </button>
+        </div>
+
+        <!-- Form: Login -->
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label for="login-email" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+              {t('auth.emailAddress')} *
+            </label>
+            <input
+              type="email"
+              id="login-email"
+              name="email"
+              required
+              placeholder="e.g. john@example.com"
+              class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary outline-none transition-all"
+            />
+          </div>
+
+          <div>
+            <label for="login-password" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+              {t('auth.password')} *
+            </label>
+            <input
+              type="password"
+              id="login-password"
+              name="password"
+              required
+              placeholder="••••••••"
+              class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary outline-none transition-all"
+            />
+          </div>
+
+          <button
+            type="submit"
+            id="login-submit"
+            class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3.5 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer"
+          >
+            {t('auth.signIn')}
+          </button>
+        </form>
+
+        <!-- Form: Register (Hidden by default) -->
+        <form id="register-form" class="space-y-4 hidden">
+          <div>
+            <label for="reg-name" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+              {t('auth.fullName')} *
+            </label>
+            <input
+              type="text"
+              id="reg-name"
+              name="fullName"
+              required
+              placeholder="e.g. John Doe"
+              class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary outline-none transition-all"
+            />
+          </div>
+
+          <div>
+            <label for="reg-email" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+              {t('auth.emailAddress')} *
+            </label>
+            <input
+              type="email"
+              id="reg-email"
+              name="email"
+              required
+              placeholder="e.g. john@example.com"
+              class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary outline-none transition-all"
+            />
+          </div>
+
+          <div>
+            <label for="reg-password" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+              {t('auth.password')} *
+            </label>
+            <input
+              type="password"
+              id="reg-password"
+              name="password"
+              required
+              minlength="8"
+              placeholder="••••••••"
+              class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary outline-none transition-all"
+            />
+          </div>
+
+          <button
+            type="submit"
+            id="register-submit"
+            class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3.5 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer"
+          >
+            {t('auth.signUp')}
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script is:inline define:vars={{ redirect, tErrorLogin: t('auth.loginError'), tEmailExists: t('auth.emailExists') }}>
+    (function() {
+      const tabLoginBtn = document.getElementById('tab-login-btn');
+      const tabRegisterBtn = document.getElementById('tab-register-btn');
+      const loginForm = document.getElementById('login-form');
+      const registerForm = document.getElementById('register-form');
+      const alertBox = document.getElementById('auth-alert');
+      const alertText = document.getElementById('auth-alert-text');
+
+      function showAlert(msg, isSuccess = false) {
+        if (!alertBox || !alertText) return;
+        alertText.textContent = msg;
+        alertBox.className = isSuccess
+          ? 'p-4 rounded-xl border border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400 text-sm font-medium flex items-center gap-3'
+          : 'p-4 rounded-xl border border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-medium flex items-center gap-3';
+      }
+
+      function hideAlert() {
+        if (alertBox) alertBox.classList.add('hidden');
+      }
+
+      // Tab switching
+      tabLoginBtn?.addEventListener('click', () => {
+        hideAlert();
+        tabLoginBtn.className = 'flex-1 py-3 text-center text-sm font-semibold border-b-2 border-primary text-primary transition-all cursor-pointer';
+        tabRegisterBtn.className = 'flex-1 py-3 text-center text-sm font-semibold border-b-2 border-transparent text-text-secondary-light dark:text-text-secondary-dark hover:text-primary transition-all cursor-pointer';
+        loginForm?.classList.remove('hidden');
+        registerForm?.classList.add('hidden');
+      });
+
+      tabRegisterBtn?.addEventListener('click', () => {
+        hideAlert();
+        tabRegisterBtn.className = 'flex-1 py-3 text-center text-sm font-semibold border-b-2 border-primary text-primary transition-all cursor-pointer';
+        tabLoginBtn.className = 'flex-1 py-3 text-center text-sm font-semibold border-b-2 border-transparent text-text-secondary-light dark:text-text-secondary-dark hover:text-primary transition-all cursor-pointer';
+        registerForm?.classList.remove('hidden');
+        loginForm?.classList.add('hidden');
+      });
+
+      // Submit Login
+      loginForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideAlert();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+
+        try {
+          const res = await fetch('/api/auth/login-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await res.json();
+          if (res.ok && data.success) {
+            sessionStorage.removeItem('usgar_auth_user');
+            window.location.href = redirect || '/';
+          } else {
+            showAlert(data.message || tErrorLogin, false);
+          }
+        } catch {
+          showAlert(tErrorLogin, false);
+        }
+      });
+
+      // Submit Register
+      registerForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideAlert();
+        const fullName = document.getElementById('reg-name').value;
+        const email = document.getElementById('reg-email').value;
+        const password = document.getElementById('reg-password').value;
+
+        try {
+          const res = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fullName, email, password }),
+          });
+
+          const data = await res.json();
+          if (res.ok && data.success) {
+            sessionStorage.removeItem('usgar_auth_user');
+            window.location.href = redirect || '/';
+          } else {
+            showAlert(data.message || tEmailExists, false);
+          }
+        } catch {
+          showAlert(tEmailExists, false);
+        }
+      });
+    })();
+  </script>
+</Layout>

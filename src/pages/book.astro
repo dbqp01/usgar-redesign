@@ -249,6 +249,21 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
 
         <!-- Section 2: Guest Details Form -->
         <form id="checkout-form" class="bg-surface-card-light dark:bg-surface-card-dark p-6 md:p-8 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm space-y-6">
+          <div id="auth-prefill-banner" class="p-4 rounded-xl border border-primary/20 bg-primary/5 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <span class="text-xl">✨</span>
+              <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark font-medium">
+                {t('auth.loginToBookFaster')}
+              </p>
+            </div>
+            <a
+              href={`/login?redirect=${encodeURIComponent('/book')}`}
+              class="flex-shrink-0 bg-primary hover:bg-primary-dark text-white text-xs font-semibold px-4 py-2 rounded-full transition-all"
+            >
+              {t('auth.signIn')}
+            </a>
+          </div>
+
           <h2 class="font-display text-2xl mb-4 flex items-center gap-3 border-b border-black/5 dark:border-white/5 pb-3">
             <span class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">2</span>
             {t('book.guestDetails')}
@@ -769,6 +784,35 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
         if (btnText) btnText.textContent = L.confirmAndPay;
       }
     }, { signal });
+
+    // ---- Auto-fill logged-in user data ----
+    async function autoFillUser() {
+      const banner = document.getElementById('auth-prefill-banner');
+      try {
+        const res = await fetch('/api/auth/me', { credentials: 'include' });
+        if (!res.ok) return;
+
+        const data = await res.json();
+        if (data.success && data.user) {
+          const u = data.user;
+          if (banner) banner.classList.add('hidden'); // Ocultar banner si ya está logueado
+
+          const nameInput = document.getElementById('guest-name') as HTMLInputElement | null;
+          const emailInput = document.getElementById('guest-email') as HTMLInputElement | null;
+
+          if (nameInput && u.name && !nameInput.value) {
+            nameInput.value = u.name;
+          }
+          if (emailInput && u.email && !emailInput.value) {
+            emailInput.value = u.email;
+          }
+        }
+      } catch {
+        // Silenciosamente ignorar
+      }
+    }
+
+    autoFillUser();
 
     function showError(msg: string) {
       if (errorBanner && errorMessage) {

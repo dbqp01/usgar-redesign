@@ -7,8 +7,18 @@ if (PHP_SAPI !== 'cli') {
 }
 
 // 1. Cargar el Autoloader personalizado (Compatibilidad nativa con Hostinger sin Composer)
-require_once __DIR__ . '/../src/Core/Autoloader.php';
-\App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src');
+if (file_exists(__DIR__ . '/../src/Core/Autoloader.php')) {
+    require_once __DIR__ . '/../src/Core/Autoloader.php';
+    \App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src');
+} elseif (file_exists(__DIR__ . '/src/Core/Autoloader.php')) {
+    require_once __DIR__ . '/src/Core/Autoloader.php';
+    \App\Core\Autoloader::register(__DIR__ . DIRECTORY_SEPARATOR . 'src');
+} else {
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'Backend src/ folder not found. Please upload src/ directory.']);
+    exit;
+}
 
 use App\Core\Config;
 use App\Core\Request;
@@ -55,6 +65,15 @@ $router->post('/api/webhook/channex', [ChannexWebhookController::class, 'handle'
 
 // Endpoint de mantenimiento del sistema (Cron - Exclusivo POST y CLI)
 $router->post('/api/cron/cleanup',   [CronController::class, 'cleanup']);
+
+// Endpoints de Autenticación y Panel de Huéspedes
+$router->get('/api/auth/login',        [\App\Controllers\AuthController::class, 'login']);
+$router->get('/api/auth/callback',     [\App\Controllers\AuthController::class, 'callback']);
+$router->post('/api/auth/register',    [\App\Controllers\AuthController::class, 'register']);
+$router->post('/api/auth/login-email', [\App\Controllers\AuthController::class, 'loginEmail']);
+$router->get('/api/auth/me',           [\App\Controllers\AuthController::class, 'me']);
+$router->post('/api/auth/logout',      [\App\Controllers\AuthController::class, 'logout']);
+$router->get('/api/user/bookings',     [\App\Controllers\AuthController::class, 'bookings']);
 
 // 7. Despachar la petición actual
 $router->dispatch($request);

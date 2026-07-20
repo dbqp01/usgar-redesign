@@ -1,3 +1,5 @@
+DirectoryIndex index.html index.php
+
 RewriteEngine On
 
 # Handle CORS preflight (OPTIONS) at server level

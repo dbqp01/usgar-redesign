@@ -13,10 +13,10 @@
 
 ## Tech Stack
 
-1. **Framework:** Astro v5 (`output: 'static'`) con `@astrojs/node`. Usar `export const prerender = false` en rutas API.
+1. **Framework:** Astro v7 (`output: 'static'`) con `@astrojs/node`. Usar `export const prerender = false` en rutas API.
 2. **Estilos:** Tailwind CSS v4 para maquetación, animaciones y tema dual (claro/oscuro).
 3. **Imágenes:** Usar `<Image />` de `astro:assets` para comprimir fotos profesionales (~30MB → ~300KB WebP) en build time.
-4. **Transiciones:** Usar `ClientRouter` de `astro:transitions` (NO ViewTransitions, fue renombrado en v5).
+4. **Transiciones:** Usar `ClientRouter` de `astro:transitions` (NO ViewTransitions, fue renombrado en v7).
 5. **Mapa:** OpenStreetMap con Leaflet (NO Google Maps).
 6. **Deploy:** GitHub → **Hostinger** (hosting compartido) → usgarhoteles.com
 

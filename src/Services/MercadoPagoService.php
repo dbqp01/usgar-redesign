@@ -48,6 +48,10 @@ class MercadoPagoService {
             throw new Exception('Mercado Pago Access Token is not configured or invalid.');
         }
 
+        $nameParts = explode(' ', trim($guestName), 2);
+        $firstName = $nameParts[0] ?? $guestName;
+        $lastName = $nameParts[1] ?? '';
+
         $payload = [
             'items' => [[
                 'title'       => "Reserva USGAR Hotels — Habitación " . $idRoomType,
@@ -56,6 +60,11 @@ class MercadoPagoService {
                 'unit_price'  => $totalPrice,
                 'currency_id' => 'USD',
             ]],
+            'payer' => [
+                'name'    => $firstName,
+                'surname' => $lastName,
+                'email'   => $guestEmail,
+            ],
             'external_reference' => $cartId,
             'back_urls' => [
                 'success' => "{$this->siteUrl}/book/success?bookingId={$cartId}",

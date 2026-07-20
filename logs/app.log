@@ -1,2 +1,17 @@
 [2026-07-19 22:09:03] [ERROR] MercadoPagoService: HTTP 400. Respuesta: {"message":"auto_return invalid. back_url.success must be defined","error":"invalid_auto_return","status":400,"cause":null}
 [2026-07-19 22:09:03] [ERROR] MercadoPagoService Exception: Fallo en la comunicación con la API de Mercado Pago.
+[2026-07-20 02:13:45] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
+[2026-07-20 02:13:45] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
+[2026-07-20 02:13:46] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
+[2026-07-20 02:13:46] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
+[2026-07-20 02:13:47] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
+[2026-07-20 02:46:47] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
+[2026-07-20 02:46:48] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
+[2026-07-20 02:46:48] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
+[2026-07-20 02:46:48] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
+[2026-07-20 02:46:49] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
+[2026-07-20 02:51:00] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
+[2026-07-20 02:51:00] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
+[2026-07-20 02:51:01] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
+[2026-07-20 02:51:01] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
+[2026-07-20 02:51:01] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)

@@ -25,13 +25,14 @@ class ProvisionalBooking {
         try {
             $stmt = $this->pdo->prepare("
                 INSERT INTO provisional_bookings 
-                (cart_id, id_hotel, id_room_type, guest_data, room_data, price_snapshot, checkin, checkout, status, expires_at)
+                (cart_id, user_id, id_hotel, id_room_type, guest_data, room_data, price_snapshot, checkin, checkout, status, expires_at)
                 VALUES 
-                (:cart_id, :id_hotel, :id_room_type, :guest_data, :room_data, :price_snapshot, :checkin, :checkout, :status, :expires_at)
+                (:cart_id, :user_id, :id_hotel, :id_room_type, :guest_data, :room_data, :price_snapshot, :checkin, :checkout, :status, :expires_at)
             ");
 
             return $stmt->execute([
                 ':cart_id'        => $data['cart_id'],
+                ':user_id'        => $data['user_id'] ?? null,
                 ':id_hotel'       => $data['id_hotel'],
                 ':id_room_type'   => $data['id_room_type'],
                 ':guest_data'     => json_encode($data['guest_data'], JSON_THROW_ON_ERROR),

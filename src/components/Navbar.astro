@@ -95,6 +95,16 @@ const navLinks = [
           </svg>
         </button>
 
+        <!-- Auth State (Sign In / User Avatar) -->
+        <div id="auth-nav-desktop" class="flex items-center gap-3">
+          <a
+            href={getRelativeLocaleUrl(lang, 'login')}
+            class="nav-link text-white text-sm font-medium px-4 py-2 rounded-full border border-current/20 hover:border-primary hover:text-primary transition-all duration-300 drop-shadow-md"
+          >
+            {t('auth.signIn')}
+          </a>
+        </div>
+
         <!-- CTA: Book Now -->
         <a
           href={getRelativeLocaleUrl(lang, 'book')}
@@ -273,6 +283,38 @@ const navLinks = [
 
     document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme, { signal });
     document.getElementById('theme-toggle-mobile')?.addEventListener('click', toggleTheme, { signal });
+
+    // ---- Auth session check ----
+    async function checkAuthSession() {
+      const authDesktop = document.getElementById('auth-nav-desktop');
+      if (!authDesktop) return;
+
+      try {
+        const res = await fetch('/api/auth/me', { credentials: 'include' });
+        if (!res.ok) return;
+
+        const data = await res.json();
+        if (data.success && data.user) {
+          const user = data.user;
+          const userInitial = (user.name || user.email || 'U').charAt(0).toUpperCase();
+
+          authDesktop.innerHTML = `
+            <a
+              href="/my-bookings"
+              class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/30 hover:border-primary bg-primary/10 text-primary transition-all text-xs font-semibold"
+              title="${user.name || user.email}"
+            >
+              ${user.photo ? `<img src="${user.photo}" class="w-6 h-6 rounded-full object-cover" />` : `<span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs">${userInitial}</span>`}
+              <span class="max-w-[100px] truncate hidden sm:inline">${user.name || 'Account'}</span>
+            </a>
+          `;
+        }
+      } catch {
+        // Silenciosamente fallar a estado no logueado
+      }
+    }
+
+    checkAuthSession();
   }
 
   // Init on load

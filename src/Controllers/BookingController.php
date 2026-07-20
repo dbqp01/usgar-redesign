@@ -108,8 +108,11 @@ class BookingController {
             // 5. Registrar Hold en Base de Datos local
             $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
 
+            $currentUser = \App\Services\SessionService::getUserFromRequest();
+
             $holdData = [
                 'cart_id'       => $cartId,
+                'user_id'       => $currentUser['sub'] ?? null,
                 'id_hotel'      => $hotelId,
                 'id_room_type'  => $idRoomType,
                 'guest_data'    => [
