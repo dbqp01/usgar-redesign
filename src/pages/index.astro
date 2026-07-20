@@ -631,8 +631,13 @@ const schemas = [hotelSchema, faqSchema];
       btns[currentIndex].querySelector('svg')?.classList.remove('opacity-0');
       btns[currentIndex].querySelector('svg')?.classList.add('opacity-100');
       
-      // Auto-scroll the list to keep active item in view gracefully
-      btns[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      // Auto-scroll ONLY the internal list, without scrolling the main window
+      const container = btns[currentIndex].parentElement;
+      if (container) {
+        const btnTop = (btns[currentIndex] as HTMLElement).offsetTop;
+        const containerTop = (container as HTMLElement).offsetTop;
+        container.scrollTo({ top: btnTop - containerTop - 20, behavior: 'smooth' });
+      }
     }
 
     function nextSlide() {
