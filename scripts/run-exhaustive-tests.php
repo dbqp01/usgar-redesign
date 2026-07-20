@@ -92,19 +92,37 @@ echo PHP_EOL . "--- 🌐 SECCIÓN 2: PRUEBAS DE INTEGRACIÓN HTTP ---" . PHP_EOL
 $host = '127.0.0.1';
 $port = 8089;
 
+$nullDevice = PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null';
 $descriptorspec = [
     0 => ["pipe", "r"],
-    1 => ["pipe", "w"],
-    2 => ["pipe", "w"]
+    1 => ["file", $nullDevice, "w"],
+    2 => ["file", $nullDevice, "w"]
 ];
 
 $docRoot = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'index.php';
 $process = proc_open("php -S $host:$port $docRoot", $descriptorspec, $pipes, dirname(__DIR__));
 
-// Darle tiempo al servidor para levantar
-usleep(500000);
+// Esperar activamente a que el servidor responda (máximo 3 segundos)
+$serverReady = false;
+for ($i = 0; $i < 30; $i++) {
+    usleep(100000); // 100ms
+    $healthCheck = @file_get_contents("http://$host:$port/api/health");
+    if ($healthCheck !== false && str_contains($healthCheck, '"success":true')) {
+        $serverReady = true;
+        break;
+    }
+}
 
-echo "   Servidor de pruebas levantado en http://$host:$port" . PHP_EOL;
+if (!$serverReady) {
+    echo "   ❌ ERROR: El servidor de pruebas en http://$host:$port no pudo iniciar." . PHP_EOL;
+    if (is_resource($process)) {
+        proc_terminate($process);
+        proc_close($process);
+    }
+    exit(1);
+}
+
+echo "   Servidor de pruebas listo en http://$host:$port" . PHP_EOL;
 
 function httpGet(string $url): array {
     $ch = curl_init($url);
@@ -148,10 +166,8 @@ assertTest("Endpoint GET /api/booking-status sin cart_id retorna HTTP 400", $boo
 
 // Limpiar proceso del servidor de pruebas
 if (is_resource($process)) {
-    foreach ($pipes as $pipe) {
-        if (is_resource($pipe)) {
-            fclose($pipe);
-        }
+    if (isset($pipes[0]) && is_resource($pipes[0])) {
+        fclose($pipes[0]);
     }
     proc_terminate($process);
     proc_close($process);

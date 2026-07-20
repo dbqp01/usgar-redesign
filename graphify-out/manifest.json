@@ -50,8 +50,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1784504894.884176,
-    "ast_hash": "b45a2585e12b548145d157798482f224",
+    "mtime": 1784506423.4268932,
+    "ast_hash": "d0bad5e0d936407a303340d07ddf66ca",
     "semantic_hash": ""
   },
   "scripts/audit-performance.js": {
@@ -120,8 +120,8 @@
     "semantic_hash": ""
   },
   "src/components/RoomDetail.astro": {
-    "mtime": 1784492929.3394408,
-    "ast_hash": "84256c7c1d0501cc8677081995ccbc0e",
+    "mtime": 1784505934.6738307,
+    "ast_hash": "691a0b44d596075a2d2d6276d6e603de",
     "semantic_hash": ""
   },
   "src/components/ServiceGrid.astro": {
@@ -1155,8 +1155,8 @@
     "semantic_hash": "62891cee2f4fda539afe93b1903972d5"
   },
   ".github/workflows/build.yml": {
-    "mtime": 1784492137.3954308,
-    "ast_hash": "cc764a8a5ab25224a1326d15a93cd9ed",
+    "mtime": 1784506429.2134268,
+    "ast_hash": "a93656dd4782a4f035ab75fcaf43df0a",
     "semantic_hash": ""
   },
   "README.md": {
@@ -1320,8 +1320,8 @@
     "semantic_hash": ""
   },
   "scripts/run-exhaustive-tests.php": {
-    "mtime": 1784490719.4916358,
-    "ast_hash": "d49c07896287b1a7f8620c761a28e431",
+    "mtime": 1784506452.8214767,
+    "ast_hash": "d843870ca6388037da540e2bd8c46d5f",
     "semantic_hash": ""
   },
   "src/Controllers/BookingController.php": {
@@ -1400,8 +1400,8 @@
     "semantic_hash": ""
   },
   "src/Core/Router.php": {
-    "mtime": 1784293074.749762,
-    "ast_hash": "7028cbd0fc8812f7ec9438fdd000e1c5",
+    "mtime": 1784506492.8804283,
+    "ast_hash": "6851f1b6f3ed69d7749dea05e68e5e9a",
     "semantic_hash": ""
   },
   "src/Core/Validator.php": {
