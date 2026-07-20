@@ -71,6 +71,9 @@ const blogSchema = {
       <img
         src={`/images/explore/${attraction.id}.jpg`}
         alt={attraction.name[lang]}
+        fetchpriority="high"
+        loading="eager"
+        decoding="sync"
         class="w-full h-full object-cover filter brightness-[0.4] transition-all duration-500"
         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('bg-black/50'); this.nextElementSibling.classList.add('bg-gradient-to-b','from-[#854CA2]/30','via-stone-950/70','to-stone-950')"
       />

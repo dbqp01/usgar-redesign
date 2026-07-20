@@ -12,10 +12,10 @@
       "pricePerNight": 90,
       "amenities": ["wifi", "breakfast", "hot_water", "heating", "tv", "laundry"],
       "images": [
-        "/assets/rooms/doble-superior/01-doble-camas.jpg",
-        "/assets/rooms/doble-superior/02-doble-mural.jpg",
-        "/assets/rooms/doble-superior/03-doble-bano.jpg",
-        "/assets/rooms/doble-superior/04-doble-detalle.jpg"
+        "/assets/rooms/doble-superior/01-doble.jpg",
+        "/assets/rooms/doble-superior/02-doble.jpg",
+        "/assets/rooms/doble-superior/03-doble.jpg",
+        "/assets/rooms/doble-superior/04-doble.jpg"
       ],
       "photoFolder": "doble-superior",
       "hasVideoTour": true,
@@ -67,7 +67,10 @@
       "beds": "3 double beds + 1 single bed",
       "pricePerNight": 150,
       "amenities": ["wifi", "breakfast", "hot_water", "heating", "tv", "laundry"],
-      "images": [],
+      "images": [
+        "/assets/rooms/familiar-superior/01-familiar.jpg",
+        "/assets/rooms/familiar-superior/02-familiar.jpg"
+      ],
       "photoFolder": "familiar-superior",
       "hasVideoTour": true,
       "amenityLabels": {
@@ -90,7 +93,10 @@
       "beds": "3 single beds",
       "pricePerNight": 120,
       "amenities": ["wifi", "breakfast", "hot_water", "heating", "tv"],
-      "images": [],
+      "images": [
+        "/assets/rooms/triple-standar/01-triple.jpg",
+        "/assets/rooms/triple-standar/02-triple.jpg"
+      ],
       "photoFolder": "triple-standar",
       "hasVideoTour": true,
       "amenityLabels": {

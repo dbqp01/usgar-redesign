@@ -260,8 +260,8 @@
     "semantic_hash": ""
   },
   "src/pages/index.astro": {
-    "mtime": 1784525685.3924155,
-    "ast_hash": "a58137b2f807dd59b81ebe1c40f2c0ad",
+    "mtime": 1784526039.5603068,
+    "ast_hash": "086573571dbef22a9e556681f8a74834",
     "semantic_hash": ""
   },
   "src/pages/rooms/[slug].astro": {

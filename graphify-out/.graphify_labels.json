@@ -488,12 +488,21 @@
   "486": "七、防御建议",
   "487": "From Material-UI (MUI)",
   "488": "../i18n/utils",
+  "489": "Architecture Best Practices",
   "490": "10.8 实战案例深度剖析",
   "491": "10.9 防御体系建设",
+  "492": "Input Escaping",
   "493": "6. Habitaciones (4 tipos)",
+  "494": "Color Customization",
   "495": "QloAppService",
   "496": "attractions.ts",
+  "497": "Feedback Components",
   "498": "gallery.astro",
   "499": "../../utils/helpers",
-  "501": "../content/faq/faq.json"
+  "500": "Component Customization",
+  "501": "../content/faq/faq.json",
+  "502": "Quick Start (New Project)",
+  "503": "Advanced Components",
+  "504": "From Bootstrap",
+  "505": "Migration Strategies"
 }

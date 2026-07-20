@@ -80,8 +80,8 @@
     "semantic_hash": "68e12004b3b9d69099f0a02eeddea8b5"
   },
   "src/components/AboutSection.astro": {
-    "mtime": 1784517598.2843573,
-    "ast_hash": "71074566f1c399334efd7e12ea9b795b",
+    "mtime": 1784524335.5118625,
+    "ast_hash": "b60df2b66d81dab1effb5e8451c2906c",
     "semantic_hash": ""
   },
   "src/components/BookingWidget.astro": {
@@ -90,18 +90,18 @@
     "semantic_hash": ""
   },
   "src/components/FAQSection.astro": {
-    "mtime": 1784517202.2746813,
-    "ast_hash": "170195e7312e32ba25db9feda465e258",
+    "mtime": 1784525173.0804818,
+    "ast_hash": "9db429a88f4a7636d05a769d41f5b227",
     "semantic_hash": ""
   },
   "src/components/Footer.astro": {
-    "mtime": 1784517592.326543,
-    "ast_hash": "589c56bb490083e4b7bf33596e19f309",
+    "mtime": 1784524339.7935107,
+    "ast_hash": "a6d77efd93da5478b0e38a8a39d0ebf4",
     "semantic_hash": ""
   },
   "src/components/MapSection.astro": {
-    "mtime": 1784517197.9535959,
-    "ast_hash": "584d9c659987156f663850dd37eb77fd",
+    "mtime": 1784524321.735497,
+    "ast_hash": "abdfb3111bece7967a351bf3e4e94ce1",
     "semantic_hash": ""
   },
   "src/components/Navbar.astro": {
@@ -110,9 +110,9 @@
     "semantic_hash": ""
   },
   "src/components/ReviewMarquee.astro": {
-    "mtime": 1784492181.8908577,
-    "ast_hash": "729ca36a396341d24b8ab125b18da1a2",
-    "semantic_hash": "729ca36a396341d24b8ab125b18da1a2"
+    "mtime": 1784524117.2079813,
+    "ast_hash": "e352c4b7757cad3a4f3ba110bc1fbc13",
+    "semantic_hash": ""
   },
   "src/components/RoomCard.astro": {
     "mtime": 1784517641.0071769,
@@ -125,8 +125,8 @@
     "semantic_hash": ""
   },
   "src/components/ServiceGrid.astro": {
-    "mtime": 1784517631.5872092,
-    "ast_hash": "333279103015adec6a8dfab73c60200d",
+    "mtime": 1784525525.7145872,
+    "ast_hash": "4c13b01fec036b694f54ca5b75253cb0",
     "semantic_hash": ""
   },
   "src/components/WhatsAppButton.astro": {
@@ -250,8 +250,8 @@
     "semantic_hash": ""
   },
   "src/pages/explore/[slug].astro": {
-    "mtime": 1784517742.6886716,
-    "ast_hash": "7029ea0455ba1f0bb5155cdf4a49dd7b",
+    "mtime": 1784524930.6067686,
+    "ast_hash": "d206077f38f57a802898bfae188d7408",
     "semantic_hash": ""
   },
   "src/pages/gallery.astro": {
@@ -260,8 +260,8 @@
     "semantic_hash": ""
   },
   "src/pages/index.astro": {
-    "mtime": 1784518750.3482857,
-    "ast_hash": "02471a9b617d265934ab90b469055347",
+    "mtime": 1784525685.3924155,
+    "ast_hash": "a58137b2f807dd59b81ebe1c40f2c0ad",
     "semantic_hash": ""
   },
   "src/pages/rooms/[slug].astro": {
@@ -1645,18 +1645,83 @@
     "semantic_hash": ""
   },
   "src/components/GastronomySection.astro": {
-    "mtime": 1784518896.8000357,
-    "ast_hash": "ea5aa61de3b8988057d7ceb062668645",
+    "mtime": 1784524319.6127598,
+    "ast_hash": "3330ae9338bbbbc8a800c9a0687ec27e",
     "semantic_hash": ""
   },
   "src/components/HeritageSection.astro": {
-    "mtime": 1784518870.8169107,
-    "ast_hash": "1e1ced99ee07180989390911cbcf3e2f",
+    "mtime": 1784523332.2540114,
+    "ast_hash": "6af8632cf0be7396409b682acc51e45f",
     "semantic_hash": ""
   },
   "src/components/InteractiveRoomsSection.astro": {
-    "mtime": 1784518948.1533148,
-    "ast_hash": "46001a54e9555f4b5a54845cf7829352",
+    "mtime": 1784524317.3033369,
+    "ast_hash": "764b45b75c717065a144aa00dbc45953",
+    "semantic_hash": ""
+  },
+  "src/assets/explore/barrio-de-san-blas.jpg": {
+    "mtime": 1784525763.1659963,
+    "ast_hash": "696a5422c56ec345bfee0fbf41bd0f16",
+    "semantic_hash": ""
+  },
+  "src/assets/explore/humantay-lake.jpg": {
+    "mtime": 1784525763.3172636,
+    "ast_hash": "1d700f3dcdd815bb464e734ca282d1e4",
+    "semantic_hash": ""
+  },
+  "src/assets/explore/machu-picchu.jpg": {
+    "mtime": 1784525763.4439294,
+    "ast_hash": "268d5c1f8d6dbac7a95b7bee869004a8",
+    "semantic_hash": ""
+  },
+  "src/assets/explore/maras-salineras.jpg": {
+    "mtime": 1784525763.5877035,
+    "ast_hash": "e47c574a23a22e4041e8ed3aba17d293",
+    "semantic_hash": ""
+  },
+  "src/assets/explore/moray.jpg": {
+    "mtime": 1784525763.744072,
+    "ast_hash": "eb0835fcfbe118d1f3bfac08c3371684",
+    "semantic_hash": ""
+  },
+  "src/assets/explore/ollantaytambo.jpg": {
+    "mtime": 1784525763.8682847,
+    "ast_hash": "3f9758d5b5b724528f59270b81c52ca0",
+    "semantic_hash": ""
+  },
+  "src/assets/explore/pisac.jpg": {
+    "mtime": 1784525764.0187783,
+    "ast_hash": "a0f193c01af2665ab9891c899d79c779",
+    "semantic_hash": ""
+  },
+  "src/assets/explore/plaza-de-armas.jpg": {
+    "mtime": 1784525764.1456282,
+    "ast_hash": "7900ecac4bb35311d7ebec427f5617ab",
+    "semantic_hash": ""
+  },
+  "src/assets/explore/qorikancha.jpg": {
+    "mtime": 1784525764.2837312,
+    "ast_hash": "7b4246eb0f4768ff16943223f5a604b8",
+    "semantic_hash": ""
+  },
+  "src/assets/explore/rainbow-mountain.jpg": {
+    "mtime": 1784525764.4052932,
+    "ast_hash": "f8589fde9b74d98570a9cc855cda9480",
+    "semantic_hash": ""
+  },
+  "src/assets/explore/sacred-valley.jpg": {
+    "mtime": 1784525764.5294745,
+    "ast_hash": "4853773963cddc24b335a54681c1ffc2",
+    "semantic_hash": ""
+  },
+  "src/assets/explore/sacsayhuaman.jpg": {
+    "mtime": 1784525764.6573503,
+    "ast_hash": "f5466bd16288780e55251a79286bf8f6",
+    "semantic_hash": ""
+  },
+  "src/assets/explore/san-pedro-market.jpg": {
+    "mtime": 1784525764.8251126,
+    "ast_hash": "b4fb89b7d42ec1fb82341054cdc6e1b9",
     "semantic_hash": ""
   }
 }

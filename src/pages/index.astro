@@ -132,6 +132,7 @@ const schemas = [hotelSchema, faqSchema];
       autoplay
       muted
       playsinline
+      preload="none"
       class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 z-0"
       poster={optimizedPoster.src}
       id="hero-video"
@@ -154,8 +155,7 @@ const schemas = [hotelSchema, faqSchema];
           width={1600}
           height={900}
           format="avif"
-          loading="eager"
-          fetchpriority="high"
+          loading="lazy"
           class="w-full h-full object-cover"
         />
       </div>
