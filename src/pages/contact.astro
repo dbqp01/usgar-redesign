@@ -12,7 +12,7 @@ const t = useTranslations(lang);
   <!-- Header Banner -->
   <section class="relative pt-32 pb-16 px-4 bg-gradient-to-b from-primary/10 via-transparent to-transparent overflow-hidden">
     <div class="max-w-4xl mx-auto text-center relative z-10">
-      <span class="text-sm font-semibold text-primary uppercase tracking-widest">{t('nav.contact')}</span>
+      <span class="text-sm font-semibold text-primary dark:text-purple-pastel uppercase tracking-widest">{t('nav.contact')}</span>
       <h1 class="font-display text-4xl md:text-6xl mt-2 mb-6 leading-tight text-text-primary-light dark:text-text-primary-dark">
         {t('contact.title')}
       </h1>
@@ -28,7 +28,7 @@ const t = useTranslations(lang);
       
       <!-- Left Column: Support Form (5 cols) -->
       <div class="lg:col-span-5 bg-surface-card-light dark:bg-surface-card-dark p-6 md:p-8 rounded-3xl border border-black/5 dark:border-white/5 shadow-sm space-y-6">
-        <h2 class="font-display text-2xl text-primary font-bold border-b border-black/5 dark:border-white/5 pb-3">
+        <h2 class="font-display text-2xl text-primary dark:text-secondary font-bold border-b border-black/5 dark:border-white/5 pb-3">
           {t('contact.getInTouch')}
         </h2>
 
@@ -44,7 +44,7 @@ const t = useTranslations(lang);
               name="name"
               required
               placeholder="e.g. John Doe"
-              class="w-full px-4 py-3 rounded-xl bg-stone-50 dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-stone-400"
+              class="w-full px-4 py-3 rounded-xl bg-stone-50 dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-stone-400"
             />
           </div>
 
@@ -59,7 +59,7 @@ const t = useTranslations(lang);
               name="email"
               required
               placeholder="e.g. john@example.com"
-              class="w-full px-4 py-3 rounded-xl bg-stone-50 dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-stone-400"
+              class="w-full px-4 py-3 rounded-xl bg-stone-50 dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-stone-400"
             />
           </div>
 
@@ -74,7 +74,7 @@ const t = useTranslations(lang);
               required
               rows="4"
               placeholder={t('contact.messagePlaceholder')}
-              class="w-full px-4 py-3 rounded-xl bg-stone-50 dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-stone-400 resize-none"
+              class="w-full px-4 py-3 rounded-xl bg-stone-50 dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-stone-400 resize-none"
             ></textarea>
           </div>
 

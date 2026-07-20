@@ -56,7 +56,7 @@ const attractionsSchema = {
   <!-- Top Banner / Hero -->
   <section class="relative pt-32 pb-20 px-4 bg-gradient-to-b from-primary/10 via-transparent to-transparent overflow-hidden">
     <div class="max-w-4xl mx-auto text-center relative z-10">
-      <span class="text-sm font-semibold text-primary uppercase tracking-widest">{t('explore.sectionLabel')}</span>
+      <span class="text-sm font-semibold text-primary dark:text-purple-pastel uppercase tracking-widest">{t('explore.sectionLabel')}</span>
       <h1 class="font-display text-4xl md:text-6xl mt-2 mb-6 leading-tight text-text-primary-light dark:text-text-primary-dark">
         {t('explore.title')}
       </h1>
@@ -76,7 +76,7 @@ const attractionsSchema = {
       <div class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide snap-x snap-mandatory">
         {categories.map((cat) => (
           <button
-            class="flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all duration-300 cursor-pointer whitespace-nowrap snap-center select-none bg-stone-50 dark:bg-stone-900/40 border-stone-200 dark:border-stone-800 text-text-secondary-light dark:text-text-secondary-dark hover:border-primary/50 dark:hover:border-primary/50 hover:text-primary hover:scale-[1.02]"
+            class="flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all duration-300 cursor-pointer whitespace-nowrap snap-center select-none bg-stone-50 dark:bg-stone-900/40 border-stone-200 dark:border-stone-800 text-text-secondary-light dark:text-text-secondary-dark hover:border-primary/50 dark:hover:border-primary/50 hover:text-primary dark:hover:text-secondary hover:scale-[1.02]"
             data-category-filter={cat}
           >
             <span class="flex items-center text-current" set:html={categoryIcons[cat]}></span>

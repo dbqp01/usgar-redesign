@@ -58,7 +58,7 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
   <main class="py-24 px-4 max-w-7xl mx-auto flex-1 animate-fade-in">
     <!-- Header -->
     <div class="mb-12 text-center max-w-xl mx-auto">
-      <span class="text-xs font-semibold text-primary uppercase tracking-widest">
+      <span class="text-xs font-semibold text-primary dark:text-purple-pastel uppercase tracking-widest">
         {t('book.stepFinal')}
       </span>
       <h1 class="font-display text-4xl md:text-5xl mt-2 mb-4">
@@ -103,7 +103,7 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
                 name="checkin"
                 value={checkIn}
                 min={formatDateString(today)}
-                class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all cursor-pointer"
+                class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all cursor-pointer"
               />
             </div>
 
@@ -118,7 +118,7 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
                 name="checkout"
                 value={checkOut}
                 min={checkIn}
-                class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all cursor-pointer"
+                class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all cursor-pointer"
               />
             </div>
 
@@ -130,15 +130,15 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
               <select
                 id="guests"
                 name="guests"
-                class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all appearance-none"
+                class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all appearance-none"
               >
-                <option value="1" selected={guestsCount === 1}>1 {t('booking.guest')}</option>
-                <option value="2" selected={guestsCount === 2}>2 {t('booking.guests_plural')}</option>
-                <option value="3" selected={guestsCount === 3}>3 {t('booking.guests_plural')}</option>
-                <option value="4" selected={guestsCount === 4}>4 {t('booking.guests_plural')}</option>
-                <option value="5" selected={guestsCount === 5}>5 {t('booking.guests_plural')}</option>
-                <option value="6" selected={guestsCount === 6}>6 {t('booking.guests_plural')}</option>
-                <option value="7" selected={guestsCount === 7}>7 {t('booking.guests_plural')}</option>
+                <option value="1" selected={guestsCount === 1} class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-text-primary-dark">1 {t('booking.guest')}</option>
+                <option value="2" selected={guestsCount === 2} class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-text-primary-dark">2 {t('booking.guests_plural')}</option>
+                <option value="3" selected={guestsCount === 3} class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-text-primary-dark">3 {t('booking.guests_plural')}</option>
+                <option value="4" selected={guestsCount === 4} class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-text-primary-dark">4 {t('booking.guests_plural')}</option>
+                <option value="5" selected={guestsCount === 5} class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-text-primary-dark">5 {t('booking.guests_plural')}</option>
+                <option value="6" selected={guestsCount === 6} class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-text-primary-dark">6 {t('booking.guests_plural')}</option>
+                <option value="7" selected={guestsCount === 7} class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-text-primary-dark">7 {t('booking.guests_plural')}</option>
               </select>
             </div>
           </div>

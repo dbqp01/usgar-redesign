@@ -494,5 +494,11 @@
   "492": "From Bootstrap",
   "493": "6. Habitaciones (4 tipos)",
   "494": "Migration Strategies",
-  "495": "QloAppService"
+  "495": "QloAppService",
+  "496": "attractions.ts",
+  "497": "my-bookings.astro",
+  "498": "gallery.astro",
+  "499": "../../utils/helpers",
+  "500": "../components/ReviewMarquee.astro",
+  "501": "../content/faq/faq.json"
 }

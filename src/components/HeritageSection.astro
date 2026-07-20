@@ -1,0 +1,206 @@
+---
+import { Image } from 'astro:assets';
+import patioImg from '../assets/hotel/hero-slide-patio.jpg';
+import pasilloImg from '../assets/hotel/fallback-room-pasillo.jpg';
+import fachadaImg from '../assets/hotel/fallback-room-fachada.jpg';
+
+const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+
+const storyTabs = [
+  {
+    id: 'fusion',
+    title: { en: 'Inca-Colonial Fusion', es: 'Fusión Inca-Colonial' },
+    subtitle: { en: '500 Years of Living Architecture', es: '500 Años de Arquitectura Viva' },
+    content: {
+      en: 'USGAR Hotels San Pedro rises over ancient Inca foundations and colonial archways. Every stone wall tells a century-old story of Andean culture and Spanish colonial craftsmanship.',
+      es: 'USGAR Hotels San Pedro se erige sobre antiguos cimientos incas y arcos coloniales del siglo XVII. Cada muro de piedra custodia una historia ancestral de cultura andina y misticismo.'
+    },
+    stat: '1650',
+    statLabel: { en: 'Colonial Foundation', es: 'Fundación Colonial' },
+    image: patioImg
+  },
+  {
+    id: 'sanctuary',
+    title: { en: 'Sanctuary of Serenity', es: 'Santuario de Serenidad' },
+    subtitle: { en: 'A Peaceful Retreat in San Pedro', es: 'Un Refugio de Paz en San Pedro' },
+    content: {
+      en: 'Located just steps from the historic San Pedro Market, our hotel provides an oasis of quiet luxury, stone courtyards, and fresh Andean mountain air.',
+      es: 'Ubicado a pasos del histórico Mercado de San Pedro, nuestro hotel ofrece un oasis de lujo sereno, patios de piedra tallada y aire fresco de las montañas andinas.'
+    },
+    stat: '3,400m',
+    statLabel: { en: 'Cusco Altitude Comfort', es: 'Confort a la Altura de Cusco' },
+    image: pasilloImg
+  },
+  {
+    id: 'hospitality',
+    title: { en: 'Human Warmth & Soul', es: 'Calidez Humana & Alma' },
+    subtitle: { en: 'Dedicated to Excellence', es: 'Compromiso de Excelencia' },
+    content: {
+      en: 'Our bilingual team delivers personalized care, complimentary 24/7 coca tea oxygen stations, and tailored excursion advice for your Machu Picchu journey.',
+      es: 'Nuestro equipo bilingüe brinda atención altamente personalizada, estaciones de té de coca de cortesía las 24 horas y asesoría exclusiva para tu viaje a Machu Picchu.'
+    },
+    stat: '4.9 ★',
+    statLabel: { en: 'Guest Excellence Rating', es: 'Excelencia Evaluada por Huéspedes' },
+    image: fachadaImg
+  }
+];
+---
+
+<section id="heritage" class="py-24 px-4 bg-surface-card-dark text-text-primary-dark relative overflow-hidden">
+  <!-- Dynamic Glowing Background Mesh Gradient -->
+  <div class="absolute top-0 right-1/4 w-96 h-96 bg-primary/30 rounded-full blur-[120px] pointer-events-none animate-pulse-soft"></div>
+  <div class="absolute bottom-0 left-10 w-80 h-80 bg-secondary/15 rounded-full blur-[100px] pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto relative z-10">
+    
+    <!-- Section Header -->
+    <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll">
+      <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary/10 border border-secondary/30 text-secondary text-xs font-semibold uppercase tracking-widest mb-4 gold-shimmer">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        {lang === 'es' ? 'Patrimonio Viviente de Cusco' : 'Living Heritage of Cusco'}
+      </span>
+      <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight">
+        {lang === 'es' ? 'LEGADO, HISTORIA Y SERENIDAD' : 'LEGACY, HISTORY & SERENITY'}
+      </h2>
+      <p class="mt-4 text-base sm:text-lg text-text-secondary-dark font-body font-light">
+        {lang === 'es'
+          ? 'Explora las dimensiones de una estadía única donde la arquitectura incaica abraza la hospitalidad contemporánea.'
+          : 'Explore the dimensions of a unique stay where ancient Inca stones embrace modern boutique hospitality.'}
+      </p>
+    </div>
+
+    <!-- Interactive Story Selector Tabs -->
+    <div class="flex justify-center mb-12 animate-on-scroll">
+      <div class="inline-flex p-1.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md gap-2">
+        {storyTabs.map((tab, idx) => (
+          <button
+            class:list={[
+              'heritage-tab-btn px-6 py-3 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-300 cursor-pointer flex items-center gap-2',
+              idx === 0
+                ? 'bg-secondary text-primary-dark shadow-lg shadow-secondary/20 font-bold'
+                : 'text-text-secondary-dark hover:text-white hover:bg-white/5'
+            ]}
+            data-heritage-tab={tab.id}
+          >
+            <span>{tab.title[lang]}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Interactive Story Display Grid -->
+    <div class="relative min-h-[480px]">
+      {storyTabs.map((tab, idx) => (
+        <div
+          class:list={[
+            'heritage-story-panel grid grid-cols-1 lg:grid-cols-12 gap-12 items-center transition-all duration-500',
+            idx === 0 ? 'block opacity-100 translate-y-0' : 'hidden opacity-0 translate-y-4'
+          ]}
+          data-heritage-panel={tab.id}
+        >
+          <!-- Left Column: Storytelling Card -->
+          <div class="lg:col-span-6 space-y-6 bg-surface-dark/80 p-8 sm:p-10 rounded-3xl border border-secondary/20 shadow-2xl backdrop-blur-xl glow-card-hover">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+              <span class="text-xs font-semibold uppercase tracking-widest text-secondary">
+                {tab.subtitle[lang]}
+              </span>
+              <span class="font-display text-3xl font-bold text-secondary">
+                {tab.stat}
+              </span>
+            </div>
+
+            <h3 class="font-display text-3xl sm:text-4xl text-white font-bold leading-tight">
+              {tab.title[lang]}
+            </h3>
+
+            <p class="text-base sm:text-lg text-text-secondary-dark font-body font-light leading-relaxed">
+              {tab.content[lang]}
+            </p>
+
+            <!-- Key Features Micro Ribbon -->
+            <div class="pt-4 grid grid-cols-2 gap-4 border-t border-white/10 text-xs">
+              <div class="flex items-center gap-2 text-white">
+                <span class="w-2 h-2 rounded-full bg-secondary"></span>
+                <span>{tab.statLabel[lang]}</span>
+              </div>
+              <div class="flex items-center gap-2 text-white">
+                <span class="w-2 h-2 rounded-full bg-tertiary-light"></span>
+                <span>{lang === 'es' ? 'Ubicación Insuperable' : 'Prime Location'}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Animated Image Card + Floating Glass Badge -->
+          <div class="lg:col-span-6 relative">
+            <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-white/15 aspect-[4/3] group">
+              <Image
+                src={tab.image}
+                alt={tab.title[lang]}
+                width={800}
+                height={600}
+                format="webp"
+                class="w-full h-full object-cover transform group-hover:scale-108 transition-transform duration-700"
+                loading="lazy"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+
+              <!-- Floating Glass Badge (3D Floating Effect) -->
+              <div class="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-black/50 backdrop-blur-xl border border-white/20 flex items-center justify-between animate-float">
+                <div>
+                  <span class="text-xs uppercase tracking-wider text-secondary font-semibold block">
+                    {lang === 'es' ? 'Monasterio San Pedro' : 'San Pedro Sanctuary'}
+                  </span>
+                  <span class="text-sm font-medium text-white">
+                    {tab.subtitle[lang]}
+                  </span>
+                </div>
+                <span class="w-10 h-10 rounded-full bg-secondary text-primary-dark flex items-center justify-center font-bold text-lg shadow-lg">
+                  ✓
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<script>
+  function initHeritageTabs() {
+    const tabBtns = document.querySelectorAll('.heritage-tab-btn');
+    const panels = document.querySelectorAll('.heritage-story-panel');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-heritage-tab');
+
+        tabBtns.forEach(b => {
+          b.classList.remove('bg-secondary', 'text-primary-dark', 'shadow-lg', 'shadow-secondary/20', 'font-bold');
+          b.classList.add('text-text-secondary-dark');
+        });
+
+        btn.classList.add('bg-secondary', 'text-primary-dark', 'shadow-lg', 'shadow-secondary/20', 'font-bold');
+        btn.classList.remove('text-text-secondary-dark');
+
+        panels.forEach(p => {
+          if (p.getAttribute('data-heritage-panel') === targetId) {
+            p.classList.remove('hidden');
+            requestAnimationFrame(() => {
+              p.classList.add('opacity-100', 'translate-y-0');
+              p.classList.remove('opacity-0', 'translate-y-4');
+            });
+          } else {
+            p.classList.add('hidden', 'opacity-0', 'translate-y-4');
+            p.classList.remove('opacity-100', 'translate-y-0');
+          }
+        });
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initHeritageTabs);
+</script>

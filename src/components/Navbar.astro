@@ -223,7 +223,10 @@ const navLinks = [
     // ---- Scroll: transparent → glassmorphism ----
     function handleScroll() {
       const scrollY = window.scrollY;
-      if (scrollY > 50) {
+      const path = window.location.pathname.replace(/\/$/, '') || '/';
+      const isHome = path === '' || path === '/' || path === '/es';
+
+      if (scrollY > 40 || !isHome) {
         navbar?.classList.add('glass', 'shadow-sm', 'navbar-scrolled');
       } else {
         navbar?.classList.remove('glass', 'shadow-sm', 'navbar-scrolled');
@@ -374,7 +377,10 @@ const navLinks = [
     border-bottom: 1px solid rgba(234, 202, 28, 0.15);
   }
 
-  .nav-link:hover {
+  :global(:not(.dark)) .nav-link:hover {
     color: var(--color-primary) !important;
+  }
+  :global(.dark) .nav-link:hover {
+    color: var(--color-secondary) !important;
   }
 </style>
