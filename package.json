@@ -27,8 +27,11 @@
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.51.0",
     "@types/leaflet": "^1.9.21",
-    "typescript": "^6.0.3"
+    "@types/node": "^22.0.0",
+    "typescript": "^6.0.3",
+    "vitest": "^3.0.0"
   },
   "allowScripts": {
     "sharp@0.35.3": true,

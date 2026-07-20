@@ -16,6 +16,7 @@ test.describe('USGAR Hotels - i18n & Theme E2E', () => {
   test('should toggle dark mode class on html element', async ({ page }) => {
     await page.goto('/');
     const htmlElement = page.locator('html');
+    await expect(htmlElement).toBeVisible();
 
     // Check theme button exists
     const themeButton = page.locator('[aria-label*="theme"], [aria-label*="modo"], button:has-svg').first();
