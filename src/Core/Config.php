@@ -26,12 +26,23 @@ class Config {
         return self::$instance;
     }
 
+    private const DEFAULTS = [
+        'SITE_URL'        => 'https://sanpedro.hotelesusgar.com',
+        'ENVIRONMENT'     => 'development',
+        'DB_HOST'         => '127.0.0.1',
+        'DB_PORT'         => '3306',
+        'DB_NAME'         => 'usgar_hotels',
+        'ALLOWED_ORIGINS' => '*',
+    ];
+
     /**
      * Obtiene una variable de configuración con fallback opcional.
      */
     public static function get(string $key, ?string $default = null): ?string {
         $instance = self::boot();
-        return $instance->cache[$key] ?? (getenv($key) ?: $default);
+        $fallback = $default ?? (self::DEFAULTS[$key] ?? null);
+        $envVal = getenv($key);
+        return $instance->cache[$key] ?? ($envVal !== false && $envVal !== '' ? $envVal : $fallback);
     }
 
     /**
