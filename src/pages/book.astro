@@ -785,27 +785,38 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
       }
     }, { signal });
 
-    // ---- Auto-fill logged-in user data ----
-    async function autoFillUser() {
+    // ---- Auto-fill logged-in user data (Instant 0ms prefill) ----
+    function applyUserData(u: any) {
       const banner = document.getElementById('auth-prefill-banner');
+      if (banner) banner.classList.add('hidden');
+
+      const nameInput = document.getElementById('guest-name') as HTMLInputElement | null;
+      const emailInput = document.getElementById('guest-email') as HTMLInputElement | null;
+
+      if (nameInput && u.name && !nameInput.value) {
+        nameInput.value = u.name;
+      }
+      if (emailInput && u.email && !emailInput.value) {
+        emailInput.value = u.email;
+      }
+    }
+
+    async function autoFillUser() {
+      const cached = sessionStorage.getItem('usgar_auth_user');
+      if (cached) {
+        try {
+          applyUserData(JSON.parse(cached));
+        } catch {}
+      }
+
       try {
         const res = await fetch('/api/auth/me', { credentials: 'include' });
         if (!res.ok) return;
 
         const data = await res.json();
         if (data.success && data.user) {
-          const u = data.user;
-          if (banner) banner.classList.add('hidden'); // Ocultar banner si ya está logueado
-
-          const nameInput = document.getElementById('guest-name') as HTMLInputElement | null;
-          const emailInput = document.getElementById('guest-email') as HTMLInputElement | null;
-
-          if (nameInput && u.name && !nameInput.value) {
-            nameInput.value = u.name;
-          }
-          if (emailInput && u.email && !emailInput.value) {
-            emailInput.value = u.email;
-          }
+          sessionStorage.setItem('usgar_auth_user', JSON.stringify(data.user));
+          applyUserData(data.user);
         }
       } catch {
         // Silenciosamente ignorar
@@ -823,7 +834,5 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
     }
   }
 
-  // Load on initial render and on Astro swaps
-  initCheckoutPage();
-  document.addEventListener('astro:after-swap', initCheckoutPage);
+  document.addEventListener('astro:page-load', initCheckoutPage);
 </script>

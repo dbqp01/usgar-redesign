@@ -300,8 +300,5 @@ const allPhotos = [...hotelPhotos, ...roomPhotos].sort((a, b) =>
     }, { signal });
   }
 
-  // Initial load
-  initGallery();
-  // View transitions support
-  document.addEventListener("astro:after-swap", initGallery);
+  document.addEventListener("astro:page-load", initGallery);
 </script>

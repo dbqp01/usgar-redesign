@@ -211,7 +211,5 @@ const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
     });
   }
 
-  // Initial and client-router swaps
-  initMockPayment();
-  document.addEventListener('astro:after-swap', initMockPayment);
+  document.addEventListener('astro:page-load', initMockPayment);
 </script>

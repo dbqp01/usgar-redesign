@@ -108,6 +108,7 @@ const navLinks = [
         <!-- CTA: Book Now -->
         <a
           href={getRelativeLocaleUrl(lang, 'book')}
+          data-astro-prefetch="tap"
           class="bg-primary hover:bg-primary-dark text-white font-semibold text-sm px-6 py-2.5 rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5"
         >
           {t('nav.bookNow')}
@@ -190,6 +191,7 @@ const navLinks = [
         <!-- CTA -->
         <a
           href={getRelativeLocaleUrl(lang, 'book')}
+          data-astro-prefetch="tap"
           class="bg-primary hover:bg-primary-dark text-white font-semibold text-center py-4 rounded-2xl transition-all duration-300 text-lg"
         >
           {t('nav.bookNow')}
@@ -284,44 +286,68 @@ const navLinks = [
     document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme, { signal });
     document.getElementById('theme-toggle-mobile')?.addEventListener('click', toggleTheme, { signal });
 
-    // ---- Auth session check ----
-    async function checkAuthSession() {
+    // ---- Auth session check (Instant render via sessionStorage + background sync) ----
+    function renderUserAvatar(user: any) {
       const authDesktop = document.getElementById('auth-nav-desktop');
       if (!authDesktop) return;
 
-      try {
-        const res = await fetch('/api/auth/me', { credentials: 'include' });
-        if (!res.ok) return;
+      const userInitial = (user.name || user.email || 'U').charAt(0).toUpperCase();
 
-        const data = await res.json();
-        if (data.success && data.user) {
-          const user = data.user;
-          const userInitial = (user.name || user.email || 'U').charAt(0).toUpperCase();
+      authDesktop.innerHTML = `
+        <a
+          href="/my-bookings"
+          class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/30 hover:border-primary bg-primary/10 text-primary transition-all text-xs font-semibold"
+          title="${user.name || user.email}"
+        >
+          ${user.photo ? `<img src="${user.photo}" class="w-6 h-6 rounded-full object-cover" />` : `<span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs">${userInitial}</span>`}
+          <span class="max-w-[100px] truncate hidden sm:inline">${user.name || 'Account'}</span>
+        </a>
+      `;
+    }
 
-          authDesktop.innerHTML = `
-            <a
-              href="/my-bookings"
-              class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/30 hover:border-primary bg-primary/10 text-primary transition-all text-xs font-semibold"
-              title="${user.name || user.email}"
-            >
-              ${user.photo ? `<img src="${user.photo}" class="w-6 h-6 rounded-full object-cover" />` : `<span class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs">${userInitial}</span>`}
-              <span class="max-w-[100px] truncate hidden sm:inline">${user.name || 'Account'}</span>
-            </a>
-          `;
+    function checkAuthSession() {
+      // 1. Renderizado instantáneo desde cache (0ms latencia)
+      const cached = sessionStorage.getItem('usgar_auth_user');
+      if (cached) {
+        try {
+          renderUserAvatar(JSON.parse(cached));
+        } catch {
+          sessionStorage.removeItem('usgar_auth_user');
         }
-      } catch {
-        // Silenciosamente fallar a estado no logueado
+      }
+
+      // 2. Verificación asíncrona en segundo plano sin bloquear el hilo principal
+      const syncAuth = async () => {
+        try {
+          const res = await fetch('/api/auth/me', { credentials: 'include' });
+          if (!res.ok) {
+            sessionStorage.removeItem('usgar_auth_user');
+            return;
+          }
+          const data = await res.json();
+          if (data.success && data.user) {
+            sessionStorage.setItem('usgar_auth_user', JSON.stringify(data.user));
+            renderUserAvatar(data.user);
+          } else {
+            sessionStorage.removeItem('usgar_auth_user');
+          }
+        } catch {
+          // Silencioso
+        }
+      };
+
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(syncAuth);
+      } else {
+        setTimeout(syncAuth, 50);
       }
     }
 
     checkAuthSession();
   }
 
-  // Init on load
-  initNavbar();
-
-  // Re-init after View Transition
-  document.addEventListener('astro:after-swap', initNavbar);
+  // Init on load & after View Transition
+  document.addEventListener('astro:page-load', initNavbar);
 </script>
 
 <style>

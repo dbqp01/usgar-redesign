@@ -858,8 +858,5 @@ const roomSchema = {
     video.addEventListener("click", togglePlay, { signal });
   }
 
-  // Initial load
-  initRoomDetail();
-  // View transitions lifecycle
-  document.addEventListener("astro:after-swap", initRoomDetail);
+  document.addEventListener("astro:page-load", initRoomDetail);
 </script>

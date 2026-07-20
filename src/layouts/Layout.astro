@@ -144,11 +144,8 @@ const esURL = new URL(`/es${pathWithoutLocale === '/' ? '' : pathWithoutLocale}`
         document.querySelectorAll('.animate-on-scroll:not(.visible)').forEach(el => observer.observe(el));
       }
 
-      // Run on initial load
-      initScrollAnimations();
-
-      // Re-run after View Transition navigation
-      document.addEventListener('astro:after-swap', initScrollAnimations);
+      // Run on initial load and after View Transition navigation
+      document.addEventListener('astro:page-load', initScrollAnimations);
     </script>
   </body>
 </html>

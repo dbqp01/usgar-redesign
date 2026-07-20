@@ -158,6 +158,5 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
     }, { signal });
   }
 
-  initBookingWidget();
-  document.addEventListener('astro:after-swap', initBookingWidget);
+  document.addEventListener('astro:page-load', initBookingWidget);
 </script>

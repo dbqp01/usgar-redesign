@@ -585,9 +585,6 @@ const schemas = [hotelSchema, faqSchema];
     );
   }
 
-  // Init on load
-  initHeroVideo();
-
-  // Re-init after Astro View Transitions page swap
-  document.addEventListener("astro:after-swap", initHeroVideo);
+  // Init on load & after View Transition
+  document.addEventListener("astro:page-load", initHeroVideo);
 </script>

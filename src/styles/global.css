@@ -119,6 +119,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Touch responsiveness: Eliminate 300ms tap delay in mobile browsers */
+a, button, input[type="submit"], [role="button"] {
+  touch-action: manipulation;
+}
+
+/* Instant micro-feedback on tap/click (Native App Feel) */
+button:active, a:active, [role="button"]:active {
+  transform: scale(0.97) translate3d(0, 0, 0);
+  transition: transform 0.04s cubic-bezier(0, 0, 0.2, 1);
+}
+
 h1, h2 {
   font-family: var(--font-display);
 }
@@ -193,13 +204,14 @@ h3, h4 {
    ============================================ */
 .animate-on-scroll {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  transform: translate3d(0, 24px, 0);
+  will-change: transform, opacity;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .animate-on-scroll.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0);
 }
 
 /* Stagger children in grids */
@@ -210,6 +222,17 @@ h3, h4 {
 .stagger-child:nth-child(4) { transition-delay: 0.4s; }
 .stagger-child:nth-child(5) { transition-delay: 0.5s; }
 .stagger-child:nth-child(6) { transition-delay: 0.6s; }
+
+/* ============================================
+   Snappy View Transitions (Perceived Speed Optimization)
+   Reduces transition time to 140ms with GPU acceleration for 120Hz native feel
+   ============================================ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 140ms !important;
+  animation-timing-function: cubic-bezier(0, 0, 0.2, 1) !important;
+  will-change: transform, opacity;
+}
 
 /* ============================================
    Section Divider — Gold accent line

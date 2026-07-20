@@ -76,9 +76,5 @@ const t = useTranslations(lang);
     });
   }
 
-  // Run on page load
-  initFAQAccordion();
-
-  // Run on page swap (Astro client router transitions)
-  document.addEventListener('astro:after-swap', initFAQAccordion);
+  document.addEventListener('astro:page-load', initFAQAccordion);
 </script>

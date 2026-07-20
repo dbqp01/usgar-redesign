@@ -188,9 +188,5 @@ const filterLabels: Record<string, { en: string; es: string }> = {
     });
   }
 
-  // Run on page load
-  initRoomsFilter();
-
-  // Run on Astro View Transitions swap
-  document.addEventListener("astro:after-swap", initRoomsFilter);
+  document.addEventListener("astro:page-load", initRoomsFilter);
 </script>

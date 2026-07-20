@@ -276,8 +276,5 @@ const t = useTranslations(lang);
     }, { signal });
   }
 
-  // Init on load
-  initContactForm();
-  // Re-init after View Transitions page swap
-  document.addEventListener('astro:after-swap', initContactForm);
+  document.addEventListener('astro:page-load', initContactForm);
 </script>

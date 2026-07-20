@@ -241,7 +241,5 @@ const t = useTranslations(lang);
     }
   }
 
-  // Load initially and on Astro View Transition swaps
-  loadSuccessPage();
-  document.addEventListener('astro:after-swap', loadSuccessPage);
+  document.addEventListener('astro:page-load', loadSuccessPage);
 </script>

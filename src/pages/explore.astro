@@ -269,9 +269,5 @@ const attractionsSchema = {
     }
   }
 
-  // Init filter scripts
-  initExploreFilters();
-
-  // Re-run after page swap
-  document.addEventListener('astro:after-swap', initExploreFilters);
+  document.addEventListener('astro:page-load', initExploreFilters);
 </script>

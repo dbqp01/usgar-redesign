@@ -125,6 +125,5 @@ const t = useTranslations(lang);
     observer.observe(container);
   }
 
-  setupMapObserver();
-  document.addEventListener('astro:after-swap', setupMapObserver);
+  document.addEventListener('astro:page-load', setupMapObserver);
 </script>
