@@ -36,15 +36,15 @@ async function runAudit() {
     await page.goto(SITE_URL, { waitUntil: 'networkidle0' });
     const loadTime = Date.now() - startTime;
 
-    // Capture Performance Timing
+    // Capture Performance Timing using modern Navigation Timing API
     const performanceTiming = await page.evaluate(() => {
-      const t = window.performance.timing;
+      const entry = performance.getEntriesByType('navigation')[0] || {};
       return {
-        dnsLookup: t.domainLookupEnd - t.domainLookupStart,
-        tcpConnect: t.connectEnd - t.connectStart,
-        ttfb: t.responseStart - t.requestStart,
-        domInteractive: t.domInteractive - t.navigationStart,
-        domComplete: t.domComplete - t.navigationStart,
+        dnsLookup: Math.round((entry.domainLookupEnd || 0) - (entry.domainLookupStart || 0)),
+        tcpConnect: Math.round((entry.connectEnd || 0) - (entry.connectStart || 0)),
+        ttfb: Math.round((entry.responseStart || 0) - (entry.requestStart || 0)),
+        domInteractive: Math.round(entry.domInteractive || 0),
+        domComplete: Math.round(entry.domComplete || 0),
       };
     });
 

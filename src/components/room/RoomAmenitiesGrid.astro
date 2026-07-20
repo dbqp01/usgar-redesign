@@ -10,7 +10,7 @@ const { amenitiesMap, lang } = Astro.props;
 ---
 
 <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="room-amenities-grid">
-  {Object.entries(amenitiesMap).map(([key, item]) => (
+  {Object.entries(amenitiesMap).map(([_key, item]) => (
     <div class="flex items-center gap-3 p-3 rounded-lg bg-sand-50 dark:bg-purple-900/20 border border-sand-200 dark:border-purple-800/30 transition-colors">
       <div class="p-2 rounded-md bg-purple-100 dark:bg-purple-800/40 text-purple-900 dark:text-purple-200">
         <SVGIcons name={item.iconName} class="w-5 h-5" />
