@@ -120,8 +120,8 @@
     "semantic_hash": ""
   },
   "src/components/RoomDetail.astro": {
-    "mtime": 1784517731.7655392,
-    "ast_hash": "ab43547c336a17cfe6be51381d790a6a",
+    "mtime": 1784526430.2678504,
+    "ast_hash": "23922303ec0699399633a6d3b1cf2b3e",
     "semantic_hash": ""
   },
   "src/components/ServiceGrid.astro": {
@@ -220,8 +220,8 @@
     "semantic_hash": "b6b18c749bf3518ca9fea4a4b0a996c1"
   },
   "src/pages/es/explore/[slug].astro": {
-    "mtime": 1784517762.3193526,
-    "ast_hash": "04c5bff1af3bb2ec2b96b421dc108cff",
+    "mtime": 1784527283.5994043,
+    "ast_hash": "8cafd4254cc2f0a7ed4a6cedf570fbbe",
     "semantic_hash": ""
   },
   "src/pages/es/gallery.astro": {
@@ -260,8 +260,8 @@
     "semantic_hash": ""
   },
   "src/pages/index.astro": {
-    "mtime": 1784526039.5603068,
-    "ast_hash": "086573571dbef22a9e556681f8a74834",
+    "mtime": 1784527321.0097215,
+    "ast_hash": "eee452e138543ca7d87c9e4fa29e3b96",
     "semantic_hash": ""
   },
   "src/pages/rooms/[slug].astro": {
@@ -1290,9 +1290,9 @@
     "semantic_hash": "b8bf93cfe818b91ed9b4db272785e298"
   },
   "public/videos/rooms/matrimonial.mp4": {
-    "mtime": 1784492170.8105748,
-    "ast_hash": "67d97ae2f15de81ca67ada85f88951cd",
-    "semantic_hash": "67d97ae2f15de81ca67ada85f88951cd"
+    "mtime": 1784527411.2486799,
+    "ast_hash": "633fce4196d10b4e576914a7ac234faa",
+    "semantic_hash": ""
   },
   "public/videos/rooms/triple-standar.mp4": {
     "mtime": 1784492171.3105729,
@@ -1455,8 +1455,8 @@
     "semantic_hash": ""
   },
   "src/content/rooms/rooms.json": {
-    "mtime": 1784502856.274792,
-    "ast_hash": "3a3c9e92cca37799cd946ede038d418a",
+    "mtime": 1784526428.0883162,
+    "ast_hash": "01146e0010a66847b20e626e22418d2c",
     "semantic_hash": ""
   },
   "src/content/services/services.json": {
@@ -1722,6 +1722,51 @@
   "src/assets/explore/san-pedro-market.jpg": {
     "mtime": 1784525764.8251126,
     "ast_hash": "b4fb89b7d42ec1fb82341054cdc6e1b9",
+    "semantic_hash": ""
+  },
+  "src/assets/rooms/doble-superior/01-doble.jpg": {
+    "mtime": 1784527412.069414,
+    "ast_hash": "88ac3fdc6f3ff85d899225b55cd943d5",
+    "semantic_hash": ""
+  },
+  "src/assets/rooms/doble-superior/02-doble.jpg": {
+    "mtime": 1784527412.281103,
+    "ast_hash": "2fa5ae33a24b1bcf7537cad668c503e9",
+    "semantic_hash": ""
+  },
+  "src/assets/rooms/doble-superior/03-doble.jpg": {
+    "mtime": 1784527412.448187,
+    "ast_hash": "653801cbc2fd3b22adde68f6b4cea929",
+    "semantic_hash": ""
+  },
+  "src/assets/rooms/doble-superior/04-doble.jpg": {
+    "mtime": 1784527412.6046143,
+    "ast_hash": "bd69e8193943dab1c171f260844286a3",
+    "semantic_hash": ""
+  },
+  "src/assets/rooms/familiar-superior/01-familiar.jpg": {
+    "mtime": 1784527412.9611664,
+    "ast_hash": "f00f6ac0e4920ccdaca39cb0dcca9bb3",
+    "semantic_hash": ""
+  },
+  "src/assets/rooms/familiar-superior/02-familiar.jpg": {
+    "mtime": 1784526364.2015607,
+    "ast_hash": "36206113d8f0316d7aed0911a477cebc",
+    "semantic_hash": ""
+  },
+  "src/assets/rooms/matrimonial/05-matr-share.png": {
+    "mtime": 1784527413.631751,
+    "ast_hash": "dff202e10a47584578e7e9652f2ad467",
+    "semantic_hash": ""
+  },
+  "src/assets/rooms/triple-standar/01-triple.jpg": {
+    "mtime": 1784527414.009658,
+    "ast_hash": "736eb72ca63110c16166273379466a95",
+    "semantic_hash": ""
+  },
+  "src/assets/rooms/triple-standar/02-triple.jpg": {
+    "mtime": 1784527414.1022296,
+    "ast_hash": "4eade79dcaee8b839c96b1bcb259c143",
     "semantic_hash": ""
   }
 }

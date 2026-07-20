@@ -82,10 +82,10 @@ class ChannexRoomMapper {
      */
     private function getDefaultMapping(): array {
         return [
-            'MATRIMONIAL' => 1,
-            'DOBLE'       => 2,
-            'TRIPLE'      => 3,
-            'FAMILIAR'    => 4,
+            Config::get('CHANNEX_ROOM_MATRIMONIAL')       => 1,
+            Config::get('CHANNEX_ROOM_DOBLE_SUPERIOR')    => 2,
+            Config::get('CHANNEX_ROOM_TRIPLE_STANDAR')    => 3,
+            Config::get('CHANNEX_ROOM_FAMILIAR_SUPERIOR') => 4,
         ];
     }
 }
