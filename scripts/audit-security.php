@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 // scripts/audit-security.php - Scan PHP backend for basic security patterns
 
-$targetDir = __DIR__ . '/../public/api';
+$targetDir = __DIR__ . '/../src';
 $issuesFound = 0;
 $report = [];
 

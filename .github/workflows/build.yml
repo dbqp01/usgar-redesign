@@ -39,9 +39,15 @@ jobs:
       - name: Verificación de tipos TypeScript y Astro
         run: npx astro check
 
+      - name: Auditoría de seguridad de código PHP
+        run: php scripts/audit-security.php
+
       - name: Compilar proyecto
         run: |
           npm run build > build.log 2>&1 || (cat build.log && exit 1)
+
+      - name: Auditoría de SEO y Schema.org JSON-LD en Build
+        run: node scripts/audit-seo-schema.js
 
       - name: Reportar error en commit
         if: failure()

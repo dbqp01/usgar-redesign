@@ -13,6 +13,8 @@
     "test:php": "php scripts/run-exhaustive-tests.php",
     "test": "astro check && php scripts/run-exhaustive-tests.php",
     "audit:security": "php scripts/audit-security.php",
+    "audit:seo": "node scripts/audit-seo-schema.js",
+    "audit:all": "npm run check && npm run test:php && npm run audit:security && npm run audit:seo",
     "prepare": "git config core.hooksPath .githooks || true"
   },
   "dependencies": {
