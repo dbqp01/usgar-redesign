@@ -49,7 +49,7 @@ const images = roomImages.map((img) => img.default);
 // Translate bedding info using shared utility
 const translatedBeds = translateBeds(room.beds, lang);
 
-// Build amenities map from room.amenityLabels (editable via Tina CMS)
+// Build amenities map from room.amenityLabels
 const amenityIconNames: Record<string, "wifi" | "breakfast" | "hot-water" | "heating" | "tv" | "laundry"> = {
   wifi: "wifi",
   breakfast: "breakfast",

@@ -82,7 +82,7 @@ class Router {
             Response::notFound("Endpoint {$method} {$path} not found on this server.");
 
         } catch (HttpException $e) {
-            Response::error($e->getMessage(), $e->getStatusCode(), $e->getDetails());
+            Response::error($e->getMessage(), $e->getStatusCode(), $e->getErrorCode(), $e->getDetails());
         }
     }
 

@@ -50,8 +50,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1784498397.0222642,
-    "ast_hash": "9184a5bb33f37e801dbb9addac34c61e",
+    "mtime": 1784504894.884176,
+    "ast_hash": "b45a2585e12b548145d157798482f224",
     "semantic_hash": ""
   },
   "scripts/audit-performance.js": {
@@ -1160,8 +1160,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1784502679.6059115,
-    "ast_hash": "a964daed3da711267ffc0e30fea5512e",
+    "mtime": 1784504997.6171694,
+    "ast_hash": "b954ef2d5f3944a2bf236e3338f99f70",
     "semantic_hash": ""
   },
   "docs/multi-hotel.md": {
@@ -1315,8 +1315,8 @@
     "semantic_hash": ""
   },
   "public/index.php": {
-    "mtime": 1784502832.4688776,
-    "ast_hash": "a6ec889994741216dbf91bd1939c1287",
+    "mtime": 1784504806.2522545,
+    "ast_hash": "fefff10e8365a2705b1a307691347ab4",
     "semantic_hash": ""
   },
   "scripts/run-exhaustive-tests.php": {
@@ -1325,8 +1325,8 @@
     "semantic_hash": ""
   },
   "src/Controllers/BookingController.php": {
-    "mtime": 1784502795.6420224,
-    "ast_hash": "7712b7e3b127cdf09c7365c775f2909c",
+    "mtime": 1784504791.6213763,
+    "ast_hash": "d758a695bc91ef46e8a51ed9945f87e2",
     "semantic_hash": ""
   },
   "src/Controllers/CronController.php": {
@@ -1390,8 +1390,8 @@
     "semantic_hash": ""
   },
   "src/Core/Request.php": {
-    "mtime": 1784293018.637965,
-    "ast_hash": "4fe0353d22f6e62f55b41cd6fbd49cfd",
+    "mtime": 1784504836.3616114,
+    "ast_hash": "c67e07f133fdaf1b95cdf7560ae44e18",
     "semantic_hash": ""
   },
   "src/Core/Response.php": {
@@ -1415,8 +1415,8 @@
     "semantic_hash": ""
   },
   "src/Services/ChannexService.php": {
-    "mtime": 1784502768.2027366,
-    "ast_hash": "e5fbea0cbbec39641081a544b35c5617",
+    "mtime": 1784504956.0841858,
+    "ast_hash": "1985d8f6be218791dad7fa698d764cd1",
     "semantic_hash": ""
   },
   "src/Services/MercadoPagoService.php": {
@@ -1495,8 +1495,8 @@
     "semantic_hash": ""
   },
   ".agents/RULES.md": {
-    "mtime": 1784491756.8791041,
-    "ast_hash": "523e1c972f7933e0026e960258d73746",
+    "mtime": 1784505418.590332,
+    "ast_hash": "44f5c780152d96424b8688749e1da6da",
     "semantic_hash": ""
   },
   ".agents/rules/graphify.md": {
@@ -1545,8 +1545,18 @@
     "semantic_hash": ""
   },
   "src/Controllers/ChannexWebhookController.php": {
-    "mtime": 1784502822.546365,
-    "ast_hash": "05ae19750a0bbfb07d2d0800fe6e182a",
+    "mtime": 1784504776.75854,
+    "ast_hash": "03ba014045714992e9835b4ef880f03e",
+    "semantic_hash": ""
+  },
+  "src/Services/ChannexRoomMapper.php": {
+    "mtime": 1784504758.8663602,
+    "ast_hash": "e10d62c4754957d43c4680a5e943dcf5",
+    "semantic_hash": ""
+  },
+  "src/components/room/RoomAmenitiesGrid.astro": {
+    "mtime": 1784504972.411886,
+    "ast_hash": "0f98c7dc702ab8645dffe498a7f1be37",
     "semantic_hash": ""
   }
 }

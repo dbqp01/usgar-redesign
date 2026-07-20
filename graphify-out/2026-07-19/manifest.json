@@ -1160,9 +1160,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1784492139.147145,
-    "ast_hash": "f15cba3a259271b2a09ac8d791535644",
-    "semantic_hash": "f15cba3a259271b2a09ac8d791535644"
+    "mtime": 1784502679.6059115,
+    "ast_hash": "a964daed3da711267ffc0e30fea5512e",
+    "semantic_hash": ""
   },
   "docs/multi-hotel.md": {
     "mtime": 1784492139.5524025,
@@ -1315,13 +1315,8 @@
     "semantic_hash": ""
   },
   "public/index.php": {
-    "mtime": 1784293356.4590547,
-    "ast_hash": "62b66d8a60e96dbff7905fb96b0144eb",
-    "semantic_hash": ""
-  },
-  "public/test_endpoints.php": {
-    "mtime": 1784495202.3065097,
-    "ast_hash": "26ac28760fd3595346784f29bb3d1a2d",
+    "mtime": 1784502832.4688776,
+    "ast_hash": "a6ec889994741216dbf91bd1939c1287",
     "semantic_hash": ""
   },
   "scripts/run-exhaustive-tests.php": {
@@ -1330,8 +1325,8 @@
     "semantic_hash": ""
   },
   "src/Controllers/BookingController.php": {
-    "mtime": 1784491923.1581652,
-    "ast_hash": "26bbaa868cdb4dbf60782080696e8f84",
+    "mtime": 1784502795.6420224,
+    "ast_hash": "7712b7e3b127cdf09c7365c775f2909c",
     "semantic_hash": ""
   },
   "src/Controllers/CronController.php": {
@@ -1350,8 +1345,8 @@
     "semantic_hash": ""
   },
   "src/Controllers/WebhookController.php": {
-    "mtime": 1784490719.4949343,
-    "ast_hash": "ba7673ce73d0c0cdb9afe03c10547d99",
+    "mtime": 1784502843.842933,
+    "ast_hash": "2783a9ac628c54ea80c1df87588e551b",
     "semantic_hash": ""
   },
   "src/Core/Autoloader.php": {
@@ -1365,8 +1360,8 @@
     "semantic_hash": ""
   },
   "src/Core/Config.php": {
-    "mtime": 1784292886.9516437,
-    "ast_hash": "ac0b22e14aac295cd31f1be1c63d1390",
+    "mtime": 1784502707.1586952,
+    "ast_hash": "aca1e1955c809cf5ad0de5203c5dfbc7",
     "semantic_hash": ""
   },
   "src/Core/Database.php": {
@@ -1385,13 +1380,13 @@
     "semantic_hash": ""
   },
   "src/Core/Middleware.php": {
-    "mtime": 1784292952.615389,
-    "ast_hash": "6c8c8440013b97ef0faa9ed768ed7e51",
+    "mtime": 1784502725.392133,
+    "ast_hash": "e6230828334594a682a3b741df55c527",
     "semantic_hash": ""
   },
   "src/Core/RateLimiter.php": {
-    "mtime": 1784490719.4965346,
-    "ast_hash": "ea17546d2db12ccd5268fec1d1bcbecb",
+    "mtime": 1784502716.57087,
+    "ast_hash": "acfc0e5eb21213836a34bd9de2fce268",
     "semantic_hash": ""
   },
   "src/Core/Request.php": {
@@ -1420,8 +1415,8 @@
     "semantic_hash": ""
   },
   "src/Services/ChannexService.php": {
-    "mtime": 1784500865.8900862,
-    "ast_hash": "ad06842257f9abef074412c586a4c09c",
+    "mtime": 1784502768.2027366,
+    "ast_hash": "e5fbea0cbbec39641081a544b35c5617",
     "semantic_hash": ""
   },
   "src/Services/MercadoPagoService.php": {
@@ -1430,8 +1425,8 @@
     "semantic_hash": ""
   },
   "src/Services/QloAppService.php": {
-    "mtime": 1784490719.5000744,
-    "ast_hash": "2b2e63af020d7eb1829269dc4e6c967e",
+    "mtime": 1784502757.820106,
+    "ast_hash": "a38dc2b64d4c3c9c1a9dcde85b2f8be8",
     "semantic_hash": ""
   },
   "src/Services/bookingService.ts": {
@@ -1460,8 +1455,8 @@
     "semantic_hash": ""
   },
   "src/content/rooms/rooms.json": {
-    "mtime": 1784492183.6316555,
-    "ast_hash": "e54d9f37e3bb94d5dbe845c736d77691",
+    "mtime": 1784502856.274792,
+    "ast_hash": "3a3c9e92cca37799cd946ede038d418a",
     "semantic_hash": ""
   },
   "src/content/services/services.json": {
@@ -1537,6 +1532,21 @@
   ".playwright-mcp/page-2026-07-15T06-24-42-238Z.yml": {
     "mtime": 1784492138.7251568,
     "ast_hash": "f93043aef1f458c73dcdc33457ddb30c",
+    "semantic_hash": ""
+  },
+  "scripts/dev.js": {
+    "mtime": 1784497008.1099076,
+    "ast_hash": "3968aae7878dfcf17b4592183a5b8567",
+    "semantic_hash": ""
+  },
+  "scripts/test_endpoints.php": {
+    "mtime": 1784502689.7687938,
+    "ast_hash": "e48fbfe87352cd1e2f418919e02c0f7f",
+    "semantic_hash": ""
+  },
+  "src/Controllers/ChannexWebhookController.php": {
+    "mtime": 1784502822.546365,
+    "ast_hash": "05ae19750a0bbfb07d2d0800fe6e182a",
     "semantic_hash": ""
   }
 }

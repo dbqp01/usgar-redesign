@@ -9,6 +9,10 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "check": "astro check",
+    "test:php": "php scripts/run-exhaustive-tests.php",
+    "test": "astro check && php scripts/run-exhaustive-tests.php",
+    "audit:security": "php scripts/audit-security.php",
     "prepare": "git config core.hooksPath .githooks || true"
   },
   "dependencies": {

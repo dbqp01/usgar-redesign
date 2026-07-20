@@ -88,22 +88,29 @@ try {
 // --------------------------------------------------------
 echo PHP_EOL . "--- 🌐 SECCIÓN 2: PRUEBAS DE INTEGRACIÓN HTTP ---" . PHP_EOL;
 
-// Iniciar servidor local de prueba en el puerto 8089
+// Iniciar servidor local de prueba en el puerto 8089 de forma multiplataforma (proc_open)
 $host = '127.0.0.1';
 $port = 8089;
-$serverCmd = "php -S $host:$port -t public > /dev/null 2>&1 & echo \$!";
-$pid = exec($serverCmd);
+
+$descriptorspec = [
+    0 => ["pipe", "r"],
+    1 => ["pipe", "w"],
+    2 => ["pipe", "w"]
+];
+
+$docRoot = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'index.php';
+$process = proc_open("php -S $host:$port $docRoot", $descriptorspec, $pipes, dirname(__DIR__));
 
 // Darle tiempo al servidor para levantar
-usleep(250000);
+usleep(500000);
 
-echo "   Servidor de pruebas levantado con PID: $pid en http://$host:$port" . PHP_EOL;
+echo "   Servidor de pruebas levantado en http://$host:$port" . PHP_EOL;
 
 function httpGet(string $url): array {
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HEADER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
@@ -140,8 +147,16 @@ $bookingStatusInvalidRes = httpGet("http://$host:$port/api/booking-status");
 assertTest("Endpoint GET /api/booking-status sin cart_id retorna HTTP 400", $bookingStatusInvalidRes['status'] === 400);
 
 // Limpiar proceso del servidor de pruebas
-exec("kill -9 $pid");
-echo "   Servidor de pruebas apagado (PID $pid)." . PHP_EOL;
+if (is_resource($process)) {
+    foreach ($pipes as $pipe) {
+        if (is_resource($pipe)) {
+            fclose($pipe);
+        }
+    }
+    proc_terminate($process);
+    proc_close($process);
+}
+echo "   Servidor de pruebas apagado." . PHP_EOL;
 
 // --------------------------------------------------------
 // SUMMARY
