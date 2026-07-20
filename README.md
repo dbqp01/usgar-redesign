@@ -141,7 +141,7 @@ La tarea de limpieza de carritos expirados (`/api/cron/cleanup`) únicamente adm
 php public/index.php /api/cron/cleanup
 ```
 
-### Comandos de Desarrollo
+### Comandos de Desarrollo y Pruebas
 
 ```bash
 # 1. Instalar dependencias
@@ -150,9 +150,15 @@ npm install
 # 2. Iniciar entorno completo (Astro en 4321 + PHP API en 8000)
 npm run dev:all
 
-# O ejecutar individualmente:
+# O ejecutar servidores individualmente:
 npm run dev      # Astro dev server (http://localhost:4321)
 npm run dev:php  # PHP Front Controller (http://localhost:8000)
+
+# 3. Comandos de Pruebas y Auditoría Híbrida:
+npm run check           # Verificación de tipos TypeScript y componentes Astro v7
+npm run test:php        # Ejecutar suite de pruebas unitarias e integración de API PHP
+npm run test            # Ejecutar verificación de tipos Astro + Pruebas PHP
+npm run audit:security  # Escáner de auditoría de seguridad y cabeceras HTTP
 ```
 
 ---
