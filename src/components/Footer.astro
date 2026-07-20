@@ -29,56 +29,62 @@ const socialLinks = siteSettings.socialLinks.map(s => ({
 }));
 ---
 
-<footer class="bg-surface-card-dark dark:bg-surface-dark text-text-primary-dark pt-16 pb-8" id="contact">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<footer class="bg-surface-light dark:bg-surface-dark transition-colors duration-500 pt-24 pb-12" id="contact">
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Logo -->
-    <div class="flex justify-center mb-12">
+    <div class="flex justify-center mb-16">
       <a href={getRelativeLocaleUrl(lang, '')} aria-label="USGAR Hotels Home">
         <Image
           src={logo}
           alt="USGAR Hotels"
-          width={144}
-          class="h-12 w-auto opacity-90 hover:opacity-100 transition-opacity"
+          width={180}
+          class="h-14 w-auto opacity-80 hover:opacity-100 transition-opacity drop-shadow-sm dark:hidden"
+        />
+        <Image
+          src={logo}
+          alt="USGAR Hotels"
+          width={180}
+          class="h-14 w-auto opacity-80 hover:opacity-100 transition-opacity drop-shadow-sm hidden dark:block brightness-[100]"
         />
       </a>
     </div>
 
     <!-- 3-Column Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 mb-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-12 mb-16">
       <!-- Contact -->
       <div class="text-center md:text-left">
-        <h3 class="font-display text-lg mb-4 text-secondary">{t('footer.contact')}</h3>
-        <address class="not-italic space-y-3 text-sm text-text-secondary-dark">
-          <p class="flex items-start justify-center md:justify-start gap-2">
-            <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <h3 class="font-display font-bold text-xl mb-6 text-text-primary-light dark:text-white uppercase tracking-wider">{t('footer.contact')}</h3>
+        <address class="not-italic space-y-4 text-sm text-text-secondary-light dark:text-text-secondary-dark font-body font-light">
+          <p class="flex items-start justify-center md:justify-start gap-3">
+            <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
             <span>{siteSettings.address[lang]}</span>
           </p>
-          <p class="flex items-center justify-center md:justify-start gap-2">
-            <svg class="w-4 h-4 flex-shrink-0 text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <p class="flex items-center justify-center md:justify-start gap-3">
+            <svg class="w-4 h-4 flex-shrink-0 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
-            <a href={`mailto:${siteSettings.email}`} class="hover:text-secondary transition-colors">{siteSettings.email}</a>
+            <a href={`mailto:${siteSettings.email}`} class="hover:text-primary-light dark:hover:text-white transition-colors">{siteSettings.email}</a>
           </p>
-          <p class="flex items-center justify-center md:justify-start gap-2">
-            <svg class="w-4 h-4 flex-shrink-0 text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <p class="flex items-center justify-center md:justify-start gap-3">
+            <svg class="w-4 h-4 flex-shrink-0 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
             </svg>
-            <a href={`tel:+${siteSettings.phoneRaw}`} class="hover:text-secondary transition-colors">{siteSettings.phone}</a>
+            <a href={`tel:+${siteSettings.phoneRaw}`} class="hover:text-primary-light dark:hover:text-white transition-colors">{siteSettings.phone}</a>
           </p>
         </address>
       </div>
 
       <!-- Quick Links -->
       <div class="text-center">
-        <h3 class="font-display text-lg mb-4 text-secondary">{t('footer.quickLinks')}</h3>
-        <nav class="space-y-2">
+        <h3 class="font-display font-bold text-xl mb-6 text-text-primary-light dark:text-white uppercase tracking-wider">{t('footer.quickLinks')}</h3>
+        <nav class="space-y-3">
           {quickLinks.map(link => (
             <a
               href={link.href}
-              class="block text-sm text-text-secondary-dark hover:text-secondary transition-colors duration-200"
+              class="block text-sm text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-light dark:hover:text-white transition-colors duration-200"
             >
               {link.label}
             </a>
@@ -88,14 +94,14 @@ const socialLinks = siteSettings.socialLinks.map(s => ({
 
       <!-- Social Media -->
       <div class="text-center md:text-right">
-        <h3 class="font-display text-lg mb-4 text-secondary">{t('footer.followUs')}</h3>
+        <h3 class="font-display font-bold text-xl mb-6 text-text-primary-light dark:text-white uppercase tracking-wider">{t('footer.followUs')}</h3>
         <div class="flex justify-center md:justify-end gap-4 mb-6">
           {socialLinks.map(social => (
             <a
               href={social.href}
               target="_blank"
               rel="noopener noreferrer"
-              class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all duration-300 hover:-translate-y-0.5"
+              class="w-12 h-12 rounded-full border border-black/10 dark:border-white/20 flex items-center justify-center text-text-primary-light dark:text-white hover:bg-secondary hover:text-text-primary-light hover:border-transparent transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-lg"
               aria-label={social.label}
             >
               {social.icon === 'instagram' && (
@@ -121,19 +127,19 @@ const socialLinks = siteSettings.socialLinks.map(s => ({
             </a>
           ))}
         </div>
-        <p class="text-xs text-text-secondary-dark">
+        <p class="text-xs text-text-secondary-light/60 dark:text-text-secondary-dark font-body uppercase tracking-widest">
           {t('footer.findUs')}
         </p>
       </div>
     </div>
 
     <!-- Divider -->
-    <div class="border-t border-white/10 pt-8">
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-xs text-text-secondary-dark">
+    <div class="border-t border-black/10 dark:border-white/10 pt-8 mt-8">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] text-text-secondary-light/70 dark:text-text-secondary-dark/70 uppercase tracking-widest">
+        <p>
           &copy; {currentYear} USGAR Hotels. {t('footer.rights')}
         </p>
-        <p class="text-xs text-text-secondary-dark">
+        <p>
           {t('footer.madeWith')}
         </p>
       </div>

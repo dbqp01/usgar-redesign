@@ -1,113 +1,129 @@
 ---
+import { Image } from 'astro:assets';
 import { services } from '../data/services';
 import { useTranslations } from '../i18n/utils';
-import SVGIcons from './icons/SVGIcons.astro';
+
+// Brand-approved photography for Bento Box
+import patioImg from '../assets/hotel/hero-slide-patio.jpg';
+import oxigenoImg from '../assets/hotel/fallback-room-oxigeno.jpg';
+import cuscoImg from '../assets/hotel/hero-slide-cusco.jpg';
+import matrimonialImg from '../assets/hotel/hero-slide-matrimonial.jpg';
 
 const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
 const t = useTranslations(lang);
 
-// Grouping services for a more premium visual layout
-const categories = [
+// Grouping services for the Bento Box
+const highlights = [
   {
-    title: {
-      en: 'Essential Comforts',
-      es: 'Comodidad Esencial'
-    },
-    desc: {
-      en: 'Primary amenities ensuring a warm, seamless stay.',
-      es: 'Comodidades principales que aseguran una estadía cálida y sin problemas.'
-    },
-    serviceIds: ['wifi', 'heating', 'hot-water', 'parking', 'recepcion-24h', 'bilingue', 'no-fumadores', 'limpieza']
+    id: 'breakfast',
+    title: { en: 'Andean Breakfast', es: 'Desayuno Andino' },
+    desc: { en: 'Local flavors to start your day right.', es: 'Sabores locales para empezar bien tu día.' },
+    img: patioImg,
+    size: 'col-span-1 md:col-span-2 row-span-2',
+    icon: '<svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 19h16M7 19V7a2 2 0 012-2h6a2 2 0 012 2v12M17 9h2a2 2 0 012 2v2a2 2 0 01-2 2h-2" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 2v3M14 2v3" /></svg>'
   },
   {
-    title: {
-      en: 'Wellness & Dining',
-      es: 'Bienestar y Sabores'
-    },
-    desc: {
-      en: 'Indulge in authentic local tastes and relaxing therapies.',
-      es: 'Disfruta de sabores locales auténticos y terapias relajantes.'
-    },
-    serviceIds: ['breakfast', 'restaurant', 'spa', 'tv', 'oxigeno', 'bebidas-calientes']
+    id: 'oxygen',
+    title: { en: 'Oxygen & Acclimatization', es: 'Oxígeno & Aclimatación' },
+    desc: { en: 'Complimentary oxygen to help you adjust to Cusco.', es: 'Oxígeno de cortesía para ayudarte a aclimatarte a Cusco.' },
+    img: oxigenoImg,
+    size: 'col-span-1 md:col-span-1 row-span-1',
+    icon: '<svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>'
   },
   {
-    title: {
-      en: 'Travel & Experience',
-      es: 'Viajes y Asistencia'
-    },
-    desc: {
-      en: 'Everything you need to discover Cusco and Machu Picchu safely.',
-      es: 'Todo lo necesario para descubrir Cusco y Machu Picchu con seguridad.'
-    },
-    serviceIds: ['transfer', 'tours', 'laundry', 'custodia-maletas', 'info-turistica', 'souvenirs', 'cambio-moneda']
+    id: 'tours',
+    title: { en: 'Machu Picchu Tours', es: 'Tours Machu Picchu' },
+    desc: { en: 'Seamless travel assistance.', es: 'Asistencia de viaje sin complicaciones.' },
+    img: cuscoImg,
+    size: 'col-span-1 md:col-span-1 row-span-2',
+    icon: '<svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2L2 22h20L12 2zM12 8l3 6H9l3-6z" /></svg>'
+  },
+  {
+    id: 'comfort',
+    title: { en: '24/7 Comfort', es: 'Confort 24/7' },
+    desc: { en: 'Hot water, heating, and premium bedding.', es: 'Agua caliente, calefacción y ropa de cama premium.' },
+    img: matrimonialImg,
+    size: 'col-span-1 md:col-span-1 row-span-1',
+    icon: '<svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 9h14c1.1 0 2 .9 2 2v7h-2v-2H5v2H3v-7c0-1.1.9-2 2-2zm0 0V5c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v4M9 9V5M15 9V5" /></svg>'
   }
 ];
 ---
 
-<section id="services" class="py-24 px-4 bg-purple-bg/30 dark:bg-surface-dark">
-  <div class="max-w-7xl mx-auto">
+<section id="services" class="py-28 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-500 relative overflow-hidden">
+  
+  <div class="max-w-[1400px] mx-auto relative z-10">
+    
     <!-- Section Header -->
-    <div class="text-center mb-16 animate-on-scroll">
-      <span class="text-sm font-semibold text-primary dark:text-purple-pastel uppercase tracking-widest">{t('services.sectionLabel')}</span>
-      <h2 class="font-display text-4xl md:text-5xl mt-3 mb-4">
-        {t('services.title')}
+    <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll space-y-3">
+      <span class="tag-dash-title block">
+        {t('services.sectionLabel')}
+      </span>
+      <h2 class="font-display text-4xl sm:text-5xl lg:text-7xl text-text-primary-light dark:text-white leading-tight">
+        {lang === 'es' ? 'EXPERIENCIA COMPLETA' : 'ELEVATED EXPERIENCE'}
       </h2>
-      <p class="text-lg text-text-secondary-light dark:text-text-secondary-dark max-w-2xl mx-auto font-body font-light">
-        {t('services.description')}
+      <p class="mt-4 text-base sm:text-lg text-text-secondary-light dark:text-text-secondary-dark font-body font-light">
+        {lang === 'es' 
+          ? 'Más que una habitación. Descubre todo lo que ofrecemos para hacer de tu visita a Cusco algo inolvidable.'
+          : 'More than just a room. Discover everything we offer to make your visit to Cusco unforgettable.'}
       </p>
     </div>
 
-    <!-- Grouped Services Grid (Restored) -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-      {categories.map((cat, i) => (
-        <div 
-          class="animate-on-scroll glass p-8 rounded-3xl shadow-sm hover:shadow-lg transition-all duration-500 flex flex-col h-full group/category relative overflow-hidden"
-          style={`transition-delay: ${i * 0.15}s`}
-        >
-          <!-- Hover gradient overlay -->
-          <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-tertiary-light/5 opacity-0 group-hover/category:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none"></div>
-          <!-- Category Header -->
-          <div class="mb-6 pb-4 border-b border-black/5 dark:border-white/5 text-center">
-            <!-- FIXED CONTRAST HERE: dark:text-primary-light -->
-            <h3 class="text-sm font-bold uppercase tracking-wider text-tertiary-light dark:text-tertiary-light">
-              {cat.title[lang]}
-            </h3>
-            <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark font-body leading-relaxed mt-2 max-w-[280px] mx-auto">
-              {cat.desc[lang]}
-            </p>
-          </div>
-
-          <!-- Service List inside Category -->
-          <div class="space-y-4 flex-1">
-            {cat.serviceIds.map((sId) => {
-              const service = services.find(s => s.id === sId);
-              if (!service) return null;
-              
-              return (
-                <div 
-                   class="flex items-start gap-4 p-4 rounded-2xl bg-white/50 dark:bg-white/5 border border-purple-pastel/10 dark:border-white/5 hover:border-tertiary-light/30 hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 group/item hover:scale-[1.01] relative z-10"
-                >
-                  <!-- Premium Icon Box -->
-                  <div class="w-10 h-10 rounded-xl bg-surface-card-light dark:bg-surface-card-dark border border-black/5 dark:border-white/5 flex items-center justify-center text-lg shadow-sm group-hover/item:border-tertiary/30 group-hover/item:text-tertiary transition-all duration-300 flex-shrink-0">
-                    <!-- FIXED CONTRAST HERE: dark:text-primary-light -->
-                    <SVGIcons name={service.id as any} class="w-5 h-5 text-tertiary-light dark:text-mint group-hover/item:text-tertiary group-hover/item:scale-110 transition-transform duration-300" />
-                  </div>
-                  
-                  <!-- Text -->
-                  <div>
-                    <h4 class="font-semibold text-sm text-text-primary-light dark:text-text-primary-dark group-hover/item:text-tertiary transition-colors">
-                      {service.name[lang]}
-                    </h4>
-                    <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark leading-relaxed mt-1 font-body font-light">
-                      {service.description[lang]}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
+    <!-- Bento Box Grid Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 auto-rows-[250px] gap-4 sm:gap-6 animate-on-scroll">
+      
+      {highlights.map((item, i) => (
+        <div class={`group relative rounded-3xl overflow-hidden shadow-xl border border-black/5 dark:border-white/5 img-hover-zoom ${item.size}`}>
+          <!-- Background Image with Astro Image Optimization -->
+          <Image
+            src={item.img}
+            alt={item.title[lang]}
+            width={800}
+            height={600}
+            format="webp"
+            class="absolute inset-0 w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-105"
+            loading="lazy"
+          />
+          
+          <!-- Gradient Overlay -->
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent transition-opacity duration-500"></div>
+          
+          <!-- Content -->
+          <div class="absolute inset-0 p-6 sm:p-8 flex flex-col justify-end">
+            <div class="transform transition-transform duration-500 group-hover:-translate-y-2">
+              <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-2xl mb-4 shadow-lg text-white" set:html={item.icon}>
+              </div>
+              <h3 class="font-display font-bold text-2xl sm:text-3xl text-white mb-2 drop-shadow-md">
+                {item.title[lang]}
+              </h3>
+              <p class="text-sm text-white/80 font-light opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform translate-y-4 group-hover:translate-y-0 delay-100">
+                {item.desc[lang]}
+              </p>
+            </div>
           </div>
         </div>
       ))}
+      
+      <!-- Minimalist List Card (All Services) -->
+      <div class="col-span-1 md:col-span-3 lg:col-span-4 row-span-1 rounded-3xl bg-white dark:bg-surface-card-dark border border-black/5 dark:border-white/5 shadow-xl p-8 flex flex-col justify-center relative overflow-hidden group">
+        <!-- Decoration -->
+        <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-secondary/10 to-transparent rounded-bl-full transform translate-x-8 -translate-y-8 transition-transform duration-500 group-hover:translate-x-0 group-hover:-translate-y-0"></div>
+        
+        <h3 class="font-display text-2xl font-bold text-text-primary-light dark:text-white mb-6">
+          {lang === 'es' ? 'También incluimos:' : 'Also included:'}
+        </h3>
+        <div class="grid grid-cols-2 lg:grid-cols-6 gap-y-4 gap-x-6 relative z-10">
+          {services.filter(s => !['breakfast', 'oxygen', 'tours'].includes(s.id)).slice(0, 6).map(service => (
+            <div class="flex items-center gap-3 text-sm text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-white transition-colors duration-300">
+              <div class="w-1.5 h-1.5 rounded-full bg-secondary flex-shrink-0 relative">
+                <div class="absolute inset-0 rounded-full bg-secondary animate-ping opacity-50"></div>
+              </div>
+              <span class="truncate font-medium">{service.name[lang]}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      
     </div>
+
   </div>
 </section>

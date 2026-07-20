@@ -3,6 +3,8 @@ import Layout from "../../layouts/Layout.astro";
 import { attractions } from "../../data/attractions";
 import { useTranslations } from "../../i18n/utils";
 import { getRelativeLocaleUrl } from "astro:i18n";
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
 
 export async function getStaticPaths() {
   return attractions.map((attraction) => {
@@ -16,6 +18,8 @@ export async function getStaticPaths() {
 const { attraction } = Astro.props;
 const lang = (Astro.currentLocale || "en") as "en" | "es";
 const t = useTranslations(lang);
+
+const exploreImages = import.meta.glob<{ default: ImageMetadata }>('../../assets/explore/*.jpg', { eager: true });
 
 // Category Labels and Icons
 const categoryLabels: Record<string, { en: string; es: string }> = {
@@ -66,13 +70,15 @@ const blogSchema = {
 >
   <!-- Header Hero with responsive background image / fallback gradient -->
   <section class="relative pt-32 pb-20 px-4 overflow-hidden border-b border-black/5 dark:border-white/5 bg-stone-900">
-    <!-- Background Image with auto-fallback -->
-    <div class="absolute inset-0 z-0">
-      <img
-        src={`/images/explore/${attraction.id}.jpg`}
+    <!-- Background Image -->
+    <div class="absolute inset-0 z-0 bg-stone-950">
+      <Image
+        src={exploreImages[`../../assets/explore/${attraction.id}.jpg`].default}
         alt={attraction.name[lang]}
+        width={1920}
+        height={1080}
+        format="webp"
         class="w-full h-full object-cover filter brightness-[0.4] transition-all duration-500"
-        onerror="this.style.display='none'; this.nextElementSibling.classList.remove('bg-black/50'); this.nextElementSibling.classList.add('bg-gradient-to-b','from-[#854CA2]/30','via-stone-950/70','to-stone-950')"
       />
       <!-- Dark overlay -->
       <div class="absolute inset-0 bg-black/50 z-10 transition-all duration-300"></div>

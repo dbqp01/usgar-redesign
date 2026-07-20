@@ -1,93 +1,91 @@
 ---
+import { Image } from 'astro:assets';
 import { useTranslations } from "../i18n/utils";
 import aboutData from "../content/about/about.json";
+import patioImg from '../assets/hotel/hero-slide-patio.jpg';
+import fachadaImg from '../assets/hotel/fallback-room-fachada.jpg';
 
 const lang = (Astro.currentLocale || "en") as "en" | "es";
 const t = useTranslations(lang);
 
 const title = lang === 'es' ? aboutData.title_es : aboutData.title_en;
 const purpose = lang === 'es' ? aboutData.purpose_es : aboutData.purpose_en;
-const missionText = lang === 'es' ? aboutData.mission_es : aboutData.mission_en;
-const visionText = lang === 'es' ? aboutData.vision_es : aboutData.vision_en;
-
-const valuesIcons = [
-  'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z', // hospitality
-  'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z', // excellence
-  'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9', // authenticity
-  'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', // respect
-  'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', // commitment
-  'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z', // sustainability
-  'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', // teamwork
-  'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z', // innovation
-];
 ---
 
-<section id="about" class="py-20 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-300">
-  <div class="max-w-7xl mx-auto">
-    <!-- Section Header -->
-    <div class="text-center mb-16 animate-on-scroll">
-      <span class="text-sm font-semibold text-primary dark:text-purple-pastel uppercase tracking-widest">
-        {t('about.sectionLabel')}
-      </span>
-      <h2 class="font-display text-4xl md:text-5xl mt-3 mb-6 text-primary-dark dark:text-white">
-        {title}
-      </h2>
-      <p class="text-lg text-text-secondary-light dark:text-text-secondary-dark max-w-3xl mx-auto leading-relaxed">
-        {purpose}
-      </p>
-    </div>
-
-    <!-- Misión & Visión Grid -->
-    <div class="grid md:grid-cols-2 gap-10 mb-20">
-      <div class="bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-2xl shadow-sm border border-black/5 dark:border-white/5 animate-on-scroll">
-        <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-          <svg class="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
+<section id="about" class="py-32 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-500 overflow-hidden relative">
+  <div class="max-w-[1400px] mx-auto relative z-10">
+    
+    <!-- Editorial Layout: Staggered columns -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+      
+      <!-- Text Content (Left on Desktop) -->
+      <div class="lg:col-span-5 space-y-10 animate-on-scroll lg:pr-12">
+        <div class="space-y-6">
+          <span class="tag-dash-title block">
+            {t('about.sectionLabel')}
+          </span>
+          <h2 class="font-display text-5xl sm:text-6xl lg:text-7xl text-text-primary-light dark:text-white leading-[1.1]">
+            {title}
+          </h2>
         </div>
-        <h3 class="font-display text-2xl mb-4 text-primary-dark dark:text-white">{t('about.missionTitle')}</h3>
-        <p class="text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">
-          {missionText}
+        
+        <p class="text-lg sm:text-xl text-text-secondary-light dark:text-text-secondary-dark font-body font-light leading-relaxed">
+          {purpose}
         </p>
+        
+        <!-- Minimalist Values List -->
+        <div class="pt-8 border-t border-black/10 dark:border-white/10">
+          <div class="grid grid-cols-2 gap-y-6 gap-x-4">
+             {aboutData.values.slice(0, 4).map((valor) => {
+               const valTitle = lang === 'es' ? valor.title_es : valor.title_en;
+               return (
+                 <div class="flex items-center gap-3">
+                   <div class="w-8 h-px bg-secondary"></div>
+                   <h4 class="font-display tracking-widest uppercase text-xs font-bold text-primary dark:text-white">
+                     {valTitle}
+                   </h4>
+                 </div>
+               );
+             })}
+          </div>
+        </div>
+        
       </div>
 
-      <div class="bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-2xl shadow-sm border border-black/5 dark:border-white/5 animate-on-scroll" style="transition-delay: 0.2s;">
-        <div class="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-6">
-          <svg class="w-6 h-6 text-secondary-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-          </svg>
+      <!-- Image Composition (Right on Desktop) -->
+      <div class="lg:col-span-7 relative h-[600px] sm:h-[800px] lg:h-[700px] w-full animate-on-scroll">
+        
+        <!-- Main Large Image -->
+        <div class="absolute top-0 right-0 w-4/5 h-[80%] rounded-3xl overflow-hidden shadow-2xl img-hover-zoom z-10 border border-black/5 dark:border-white/5">
+          <Image
+            src={patioImg}
+            alt="Patio Inca Colonial USGAR Hotels"
+            width={800}
+            height={1000}
+            format="webp"
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
         </div>
-        <h3 class="font-display text-2xl mb-4 text-primary-dark dark:text-white">{t('about.visionTitle')}</h3>
-        <p class="text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">
-          {visionText}
-        </p>
-      </div>
-    </div>
 
-    <!-- Valores -->
-    <div class="text-center mb-10 animate-on-scroll">
-      <h3 class="font-display text-3xl mb-4 text-primary-dark dark:text-white">{t('about.valuesTitle')}</h3>
+        <!-- Offset Smaller Image -->
+        <div class="absolute bottom-0 left-0 w-[55%] h-[55%] rounded-3xl overflow-hidden shadow-2xl img-hover-zoom z-20 border-4 border-surface-light dark:border-surface-dark">
+          <Image
+            src={fachadaImg}
+            alt="Fachada USGAR Hotels"
+            width={600}
+            height={600}
+            format="webp"
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+        
+        <!-- Decorative Elements -->
+        <div class="absolute top-1/2 left-1/4 -translate-y-1/2 -translate-x-1/2 w-48 h-48 rounded-full border border-secondary/30 z-0 hidden sm:block animate-pulse-soft"></div>
+      </div>
+      
     </div>
     
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-      {
-        aboutData.values.map((valor, i) => {
-          const valTitle = lang === 'es' ? valor.title_es : valor.title_en;
-          const valDesc = lang === 'es' ? valor.description_es : valor.description_en;
-          return (
-            <div class="flex flex-col items-center text-center animate-on-scroll stagger-child" style={`transition-delay: ${i * 0.1}s;`}>
-              <div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center mb-3">
-                <svg class="w-5 h-5 text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={valuesIcons[i]} />
-                </svg>
-              </div>
-              <h4 class="font-display font-semibold text-lg text-primary-dark dark:text-white">{valTitle}</h4>
-              <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">{valDesc}</p>
-            </div>
-          );
-        })
-      }
-    </div>
   </div>
 </section>

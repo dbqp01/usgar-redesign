@@ -1,16 +1,16 @@
 # Graph Report - usgar-redesign  (2026-07-19)
 
 ## Corpus Check
-- 291 files · ~438,775 words
+- 291 files · ~438,763 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 5742 nodes · 5901 edges · 496 communities (469 shown, 27 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 31 edges (avg confidence: 0.78)
+- 5738 nodes · 5856 edges · 502 communities (475 shown, 27 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 30 edges (avg confidence: 0.79)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6e2d047a`
+- Built from commit: `40c6b28a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -482,15 +482,11 @@
 - graphify.md
 - verify-setup.sh
 - pre-commit
-- explore.astro
-- index.astro
-- index.astro
 - ../../book/success.astro
 - router.php
 - Utility Components
 - dev.js
 - 14. Estructura de Páginas
-- 3.2 空格绕过
 - 3.3 关键字绕过
 - 七、防御建议
 - Navigation
@@ -502,17 +498,21 @@
 - 6. Habitaciones (4 tipos)
 - Migration Strategies
 - QloAppService
+- attractions.ts
+- ../../utils/helpers
+- ../components/ReviewMarquee.astro
+- ../content/faq/faq.json
 
 ## God Nodes (most connected - your core abstractions)
 1. `轨道B: 数据流分析法 (注入类漏洞)` - 39 edges
 2. `轨道B: 数据流分析法 (注入类漏洞)` - 29 edges
 3. `Request` - 21 edges
 4. `Spring Boot Security Audit Guide` - 21 edges
-5. `HttpException` - 19 edges
-6. `Koa Security Audit Guide` - 19 edges
-7. `Laravel Security Audit Guide` - 19 edges
-8. `Config` - 17 edges
-9. `../../layouts/Layout.astro` - 17 edges
+5. `../../layouts/Layout.astro` - 19 edges
+6. `HttpException` - 19 edges
+7. `Koa Security Audit Guide` - 19 edges
+8. `Laravel Security Audit Guide` - 19 edges
+9. `Config` - 17 edges
 10. `USGAR Hotels — Manual de Marca Oficial` - 17 edges
 
 ## Surprising Connections (you probably didn't know these)
@@ -530,15 +530,15 @@
 ## Import Cycles
 - None detected.
 
-## Communities (496 total, 27 thin omitted)
+## Communities (502 total, 27 thin omitted)
 
 ### Community 0 - "python.md"
 Cohesion: 0.02
 Nodes (116): 1. Check-Then-Act (TOCTOU) - 文件操作, 2. 共享状态竞态 (多线程), 3. Django ORM 竞态, 4. Flask 全局状态竞态, 5. asyncio 竞态, AJAX 请求, 🔴 API 密钥, AWS - 使用 IAM 角色或环境变量 (+108 more)
 
 ### Community 1 - "Code Audit - 代码安全审计技能"
-Cohesion: 0.15
-Nodes (17): ../assets/logos/Logo usgar isotipo.png, ../assets/logos/Logo usgar morado.png, ../assets/logos/Logo usgar.png, ../data/settings, ../styles/global.css, leaflet/dist/leaflet.css, ../components/Footer.astro, ../components/MapSection.astro (+9 more)
+Cohesion: 0.27
+Nodes (7): ../assets/logos/Logo usgar morado.png, ../assets/logos/Logo usgar.png, ../components/Footer.astro, ../components/Navbar.astro, ../components/WhatsAppButton.astro, SiteSettings, SocialLink
 
 ### Community 2 - "External Security Tools Integration Guide"
 Cohesion: 0.04
@@ -549,12 +549,12 @@ Cohesion: 0.04
 Nodes (47): 10. CI/CD 集成, 1. Semgrep - 多语言SAST工具, 2. Bandit - Python安全扫描, 3. Gosec - Go安全扫描, 4. npm audit / yarn audit - Node.js依赖扫描, 5. pip-audit / safety - Python依赖扫描, 6. Gitleaks - 密钥泄露检测, 7. Trivy - 容器/依赖扫描 (+39 more)
 
 ### Community 4 - "绕过策略方法论 (Bypass Strategies)"
-Cohesion: 0.13
-Nodes (8): ./icons/SVGIcons.astro, ../content/about/about.json, ../i18n/utils, ../layouts/Layout.astro, ../Services/bookingService, ../utils/helpers, selectRoomCard(), updatePricing()
+Cohesion: 0.19
+Nodes (7): ./icons/SVGIcons.astro, ../content/about/about.json, ../../data/rooms, ../../i18n/utils, ../utils/helpers, ../components/BookingWidget.astro, ../../components/RoomCard.astro
 
 ### Community 5 - "Best practices"
 Cohesion: 0.04
-Nodes (47): astro, @astrojs/check, @astrojs/sitemap, leaflet, allowScripts, esbuild@0.28.1, sharp@0.35.3, dependencies (+39 more)
+Nodes (46): astro, @astrojs/check, @astrojs/sitemap, allowScripts, esbuild@0.28.1, sharp@0.35.3, dependencies, astro (+38 more)
 
 ### Community 6 - "Rust Security Audit"
 Cohesion: 0.04
@@ -563,6 +563,10 @@ Nodes (46): 1.1 根因分析矩阵, 1.2 攻击面映射, 2.1 漏洞模式分类,
 ### Community 7 - "全面审计方法论 - 避免遗漏的系统性框架"
 Cohesion: 0.05
 Nodes (43): Corner Case 思维清单, IP地址表示绕过, JavaScript关键字绕过, SQL注入绕过策略树, SSRF绕过策略树, WAF通用绕过思路, XSS绕过策略树, 事件过滤绕过 (+35 more)
+
+### Community 8 - "Java JNDI Injection - JNDI 注入完整审计规则"
+Cohesion: 0.40
+Nodes (3): btnDecline, newBtnApprove, newBtnDecline
 
 ### Community 9 - "📊 真实案例：若依管理系统依赖漏洞"
 Cohesion: 0.40
@@ -669,12 +673,12 @@ Cohesion: 0.06
 Nodes (32): 1. 读取本地文件, 2. OOB 数据外带, 3. 内网扫描 (SSRF), 4. 拒绝服务, DocumentBuilderFactory, dom4j SAXReader, Java XXE (XML External Entity) - XXE 漏洞完整审计规则, Phase 1: 全面搜索（不可跳过任何模块） (+24 more)
 
 ### Community 40 - "Java Web框架安全检测模块"
-Cohesion: 0.12
-Nodes (10): Code Structure, Coding Conventions & Standards, Coding Standards Checklist, Core Principles, Examples from hotelreservationsystem, File Organization, License Header (MANDATORY), Naming (+2 more)
+Cohesion: 0.06
+Nodes (32): 1. No HTML in PHP Files, 2. No CSS/JS in TPL Files, 3. Yoda Conditions, 4. Comments for Complex Logic, 5. Standard AJAX Response Format, 6. JavaScript Variables from PHP, Calculating Module Prefix, Class Names (+24 more)
 
 ### Community 41 - "危险: 未验证的文档摄入"
-Cohesion: 0.11
-Nodes (18): Assigning JS Variables from PHP, Basic Template Example, Common Template Patterns, Core Principles, CSS File Example, CSS Files, File Organization, File Organization (+10 more)
+Cohesion: 0.06
+Nodes (32): 1. Always Escape Variables, 2. Check Variables Exist, 3. Use Module Translation, 4. Conditional CSS/JS Loading, 5. Standard AJAX Response Handling, Assigning JS Variables from PHP, Basic Template Example, Common Template Patterns (+24 more)
 
 ### Community 42 - "REST API Security Audit"
 Cohesion: 0.06
@@ -821,24 +825,24 @@ Cohesion: 0.09
 Nodes (22): 中危检测项（计划执行）, 修复方案1: 方法调用白名单验证, 修复方案2: 参数内容安全验证, 修复方案3: 业务逻辑权限增强, 🛡️ 安全修复方案, ⚠️ 安全最佳实践, 定时任务安全检测模块, 定时任务接口检测 (+14 more)
 
 ### Community 78 - "Go特定漏洞"
-Cohesion: 0.05
-Nodes (37): 1. Always Use Table Prefix, 2. Always Escape/Cast Inputs, 3. Check Return Values, 4. Use Indexed Columns in WHERE, 5. Limit Results When Appropriate, 6. Use Specific Columns, Aggregation with GROUP BY, bqSQL() for Table/Column Names (+29 more)
+Cohesion: 0.09
+Nodes (23): Aggregation with GROUP BY, bqSQL() for Table/Column Names, Common Mistakes, Complex Query Examples, Core Database Methods, Database Operations & Security, Example with Shop Context, Hotel Permissions (+15 more)
 
 ### Community 79 - "php.md"
 Cohesion: 0.11
-Nodes (18): 1. Always Validate Before Use, 2. Use Static Methods for Queries, 3. Type Cast All Query Variables, 4. Query Only Required Fields, Creating ObjectModel Classes, Custom Methods, Database Class Pattern, Field Options (+10 more)
+Nodes (18): Create (Insert), Creating ObjectModel Classes, CRUD Operations, Custom Methods, Database Class Pattern, Delete, Field Options, Field Types (+10 more)
 
 ### Community 80 - "轨道B: 数据流分析法 (注入类漏洞)"
-Cohesion: 0.19
-Nodes (5): t, ../../data/attractions, ../data/reviews, ../i18n/utils, ../layouts/Layout.astro
+Cohesion: 0.24
+Nodes (4): t, ../../data/attractions, ../data/reviews, ../i18n/utils
 
 ### Community 81 - "文件上传漏洞深度分析"
 Cohesion: 0.09
 Nodes (21): 1. 认证要求 (Authentication Requirement), 2. 请求复杂度 (Request Complexity), 3. 社工依赖度 (Social Engineering Dependency), 4. 利用门槛 (Exploitation Barrier), False Positive, 与False Positive Kill Switch结合, 优先级判定维度, 参考 (+13 more)
 
 ### Community 82 - "WooYun 实战漏洞案例库"
-Cohesion: 0.08
-Nodes (26): Automated Build Script, CHANGELOG.md Format, Creating Distribution Package, Deployment & Distribution, Distribution Checklist, Distribution Platforms, Documentation Requirements, Final Testing Checklist (+18 more)
+Cohesion: 0.09
+Nodes (22): Automated Build Script, CHANGELOG.md Format, Creating Distribution Package, Deployment & Distribution, Distribution Checklist, Distribution Platforms, Documentation Requirements, Final Testing Checklist (+14 more)
 
 ### Community 83 - "ModuleGraph Pattern"
 Cohesion: 0.20
@@ -849,7 +853,7 @@ Cohesion: 0.13
 Nodes (13): 1. Arquitectura General, 2. Estructura de Directorios, 3. Endpoints de la API REST (`public/index.php`), 4. Pautas de Desarrollo, 5. Entorno de Desarrollo y Variables de Entorno (.env), 6. Deploy (Hostinger), Comandos de Desarrollo, ⚠️ Fuente de Verdad (+5 more)
 
 ### Community 85 - "Sinks & Sources Reference"
-Cohesion: 0.38
+Cohesion: 0.33
 Nodes (5): ChannexWebhookController, PDO, ProvisionalBooking, QloAppService, ChannexRoomMapper
 
 ### Community 86 - "Django特定漏洞"
@@ -865,8 +869,8 @@ Cohesion: 0.20
 Nodes (10): Combobox, Command, Command & Search, Component Updates, Date Picker, Date & Time, Further Reading, Installation Shortcuts (+2 more)
 
 ### Community 89 - "Rust Web Framework Security Audit Guide"
-Cohesion: 0.14
-Nodes (4): Middleware, Request, self, RateLimiter
+Cohesion: 0.18
+Nodes (9): ../components/Footer.astro, ../components/WhatsAppButton.astro, ../data/attractions, ../styles/global.css, ../../layouts/Layout.astro, canonicalURL, enURL, esURL (+1 more)
 
 ### Community 90 - "API Gateway / 反向代理安全检测模块"
 Cohesion: 0.10
@@ -985,8 +989,8 @@ Cohesion: 0.12
 Nodes (15): API mode naming, Card tokens, Checkout redirect URL, Credentials, Critical distinction — three types of credentials (never confuse them), Mercado Pago — Terminology Rules, Mode and Orders API availability, Product naming (+7 more)
 
 ### Community 119 - "Complete working app (Node.js + Express)"
-Cohesion: 0.08
-Nodes (25): Additional Resources, Code Quality, Common Pitfalls, Critical Development Principles, Database, Deployment, Development Workflow, Files & Structure (+17 more)
+Cohesion: 0.12
+Nodes (16): Additional Resources, Common Pitfalls, Critical Development Principles, Development Workflow, Hooks-First Architecture, Module Creation Checklist, Module-Only Development (Non-Negotiable), Module Template (+8 more)
 
 ### Community 120 - "Complete working app (Node.js + Express)"
 Cohesion: 0.12
@@ -1045,8 +1049,8 @@ Cohesion: 0.13
 Nodes (14): Accessibility (30% of typical issues), Audit categories, Audit output format, Before every deploy, Best practices (15% of typical issues), How it works, Monthly deep dive, Performance (40% of typical issues) (+6 more)
 
 ### Community 134 - ".NET/C# 安全审计语义提示 (Semantic Hints)"
-Cohesion: 0.19
-Nodes (11): ../assets/hotel/hero-slide-cusco.jpg, ../assets/hotel/hero-slide-matrimonial.jpg, ../assets/hotel/hero-slide-patio.jpg, ../assets/hotel/hero-slide-recepcion.jpg, ../data/attractions, ../components/FAQSection.astro, t, ../components/ReviewMarquee.astro (+3 more)
+Cohesion: 0.20
+Nodes (10): ../assets/hotel/hero-slide-cusco.jpg, ../assets/hotel/hero-slide-matrimonial.jpg, ../assets/hotel/hero-slide-patio.jpg, ../assets/hotel/hero-slide-recepcion.jpg, ../components/AboutSection.astro, ../components/ReviewMarquee.astro, ../components/ServiceGrid.astro, ../content/faq/faq.json (+2 more)
 
 ### Community 135 - "Go 安全审计语义提示 (Semantic Hints)"
 Cohesion: 0.14
@@ -1109,8 +1113,8 @@ Cohesion: 0.23
 Nodes (4): SimpleXMLElement, RoomController, PDO, QloAppService
 
 ### Community 150 - "12.4 文件头检测绕过详解"
-Cohesion: 0.16
-Nodes (6): HealthController, Config, self, Database, PDO, self
+Cohesion: 0.08
+Nodes (10): HealthController, Config, self, Database, PDO, self, Middleware, Request (+2 more)
 
 ### Community 152 - "四、绕过技巧大全"
 Cohesion: 0.17
@@ -1609,8 +1613,8 @@ Cohesion: 0.31
 Nodes (3): Middleware, Request, Router
 
 ### Community 277 - "四、无回显检测方法"
-Cohesion: 0.25
-Nodes (8): Conditions, Including Templates, Links, Loops, Price Formatting, Smarty Syntax Essentials, Translations, Variables & Escaping
+Cohesion: 0.22
+Nodes (9): Code Quality, Database, Deployment, Files & Structure, Functionality, Multilanguage, Security, Testing (+1 more)
 
 ### Community 278 - "12.5 绕过WAF/过滤技巧"
 Cohesion: 0.29
@@ -1727,10 +1731,6 @@ Nodes (6): 1. Data Consistency (Non-Negotiable), 2. No Queries Inside Loops (Non
 ### Community 307 - "SSRF 审计 (增强版)"
 Cohesion: 0.33
 Nodes (6): Accordion, Card, Collapsible, Layout Components, Separator, Tabs
-
-### Community 309 - "文件操作审计"
-Cohesion: 0.22
-Nodes (3): ../../data/rooms, API_BASE_URL, ../../utils/helpers
 
 ### Community 310 - "授权检查缺失审计 (Authorization Gap)"
 Cohesion: 0.33
@@ -1941,8 +1941,8 @@ Cohesion: 0.60
 Nodes (3): analyze_html(), fail(), analyze.sh script
 
 ### Community 363 - "Open Redirect (开放重定向)"
-Cohesion: 0.20
-Nodes (11): ../data/rooms, ../components/BookingWidget.astro, ../../components/RoomCard.astro, Review, reviews, AmenityLabel, Room, rooms (+3 more)
+Cohesion: 0.18
+Nodes (9): ../data/services, ./icons/SVGIcons.astro, ../components/ServiceGrid.astro, categories, t, Review, reviews, Locale (+1 more)
 
 ### Community 364 - "文件包含"
 Cohesion: 0.40
@@ -2129,8 +2129,8 @@ Cohesion: 0.33
 Nodes (6): Advanced Features, Base UI Support, Step 3: Verify Configuration, Step 4: Configure Path Aliases, Step 5: Add Components, Visual Styles
 
 ### Community 410 - "Permission Checks"
-Cohesion: 0.20
-Nodes (10): Class Names, Configuration Variables, Constants, CSS Class Names, CSS/JS File Names, Database Table Names, Naming Conventions, PHP Functions & Methods (+2 more)
+Cohesion: 0.32
+Nodes (5): ../Services/bookingService, applyUserData(), autoFillUser(), selectRoomCard(), updatePricing()
 
 ### Community 411 - "validateOrder() Method"
 Cohesion: 0.40
@@ -2202,7 +2202,7 @@ Nodes (4): 8.1 黑盒测试流程, 8.2 检测清单, 8.3 盲打XSS策略, 八、
 
 ### Community 428 - "audit.sh"
 Cohesion: 0.29
-Nodes (7): 1. No HTML in PHP Files, 2. No CSS/JS in TPL Files, 3. Yoda Conditions, 4. Comments for Complex Logic, 5. Standard AJAX Response Format, 6. JavaScript Variables from PHP, Code Style Standards
+Nodes (7): 1. Always Use Table Prefix, 2. Always Escape/Cast Inputs, 3. Check Return Values, 4. Use Indexed Columns in WHERE, 5. Limit Results When Appropriate, 6. Use Specific Columns, Query Best Practices
 
 ### Community 430 - "Integration with Audit Workflow"
 Cohesion: 0.50
@@ -2321,8 +2321,12 @@ Cohesion: 0.67
 Nodes (3): 1.1 核心原理, 1.2 三层分析模型, 一、元认知框架：XSS漏洞的本质理解
 
 ### Community 461 - "Common Template Patterns"
+Cohesion: 0.29
+Nodes (7): Common Query Patterns, COUNT, DELETE, EXISTS Check, INSERT, SELECT with JOIN, UPDATE
+
+### Community 475 - "../../book/success.astro"
 Cohesion: 0.33
-Nodes (6): 1. Always Escape Variables, 2. Check Variables Exist, 3. Use Module Translation, 4. Conditional CSS/JS Loading, 5. Standard AJAX Response Handling, Template Best Practices
+Nodes (4): ../assets/logos/Logo usgar isotipo.png, ../data/settings, leaflet/dist/leaflet.css, ../components/MapSection.astro
 
 ### Community 481 - "Utility Components"
 Cohesion: 0.50
@@ -2336,17 +2340,13 @@ Nodes (5): astroServer, __dirname, __filename, phpServer, rootDir
 Cohesion: 0.33
 Nodes (6): 14. Estructura de Páginas, Contacto (/contact), Explora Cusco (/explore), Habitación Individual (/rooms/[slug]), Home (/), Reservas (/book)
 
-### Community 484 - "3.2 空格绕过"
-Cohesion: 0.33
-Nodes (5): approveSpinner, approveText, btnDecline, newBtnApprove, newBtnDecline
-
 ### Community 485 - "3.3 关键字绕过"
 Cohesion: 0.40
-Nodes (5): Calculating Module Prefix, Examples in Practice, Module: "QloApps Booking Manager", Prefix Application by Entity Type, PREFIX RULES (CRITICAL)
+Nodes (5): 1. Always Validate Before Use, 2. Use Static Methods for Queries, 3. Type Cast All Query Variables, 4. Query Only Required Fields, ObjectModel Best Practices
 
 ### Community 486 - "七、防御建议"
 Cohesion: 0.40
-Nodes (5): Create (Insert), CRUD Operations, Delete, Read (Select), Update
+Nodes (3): AmenityLabel, Room, rooms
 
 ### Community 487 - "Navigation"
 Cohesion: 0.50
@@ -2357,8 +2357,8 @@ Cohesion: 0.67
 Nodes (3): Advanced Components, Carousel, Drawer
 
 ### Community 489 - "十、PHP命令执行元思考方法论"
-Cohesion: 0.40
-Nodes (5): ../data/services, ./icons/SVGIcons.astro, ../components/ServiceGrid.astro, categories, t
+Cohesion: 0.50
+Nodes (4): Module Upgrades, Upgrade File Naming, Upgrade System, Version Comparison
 
 ### Community 492 - "From Bootstrap"
 Cohesion: 0.67
@@ -2373,20 +2373,16 @@ Cohesion: 0.67
 Nodes (3): Migration Strategies, Strategy 1: Incremental Migration (Recommended), Strategy 2: Big Bang Migration
 
 ## Knowledge Gaps
-- **4015 isolated node(s):** `Hotel`, `Tech Stack`, `Integraciones y Seguridad`, `Infraestructura de Producción y Arquitectura Multi-hotel`, `Tema` (+4010 more)
+- **4015 isolated node(s):** `t`, `leaflet/dist/leaflet.css`, `../assets/logos/Logo usgar isotipo.png`, `../assets/logos/Logo usgar.png`, `canonicalURL` (+4010 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **27 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Database Operations & Security` connect `Go特定漏洞` to `Java Web框架安全检测模块`?**
+- **Why does `Database Operations & Security` connect `Go特定漏洞` to `audit.sh`, `3.2 空格绕过`, `Common Template Patterns`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **Why does `Config` connect `12.4 文件头检测绕过详解` to `Anti-Hallucination Rules Module`, `XXE (XML外部实体注入)`, `Component Composition Patterns`, `6.1 反弹Shell`, `Rust Web Framework Security Audit Guide`, `四、信息利用链（攻击路径）`?**
-  _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **Are the 5 inferred relationships involving `HttpException` (e.g. with `.cleanup()` and `.dateRange()`) actually correct?**
-  _`HttpException` has 5 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `Hotel`, `Tech Stack`, `Integraciones y Seguridad` to the rest of the system?**
+- **What connects `t`, `leaflet/dist/leaflet.css`, `../assets/logos/Logo usgar isotipo.png` to the rest of the system?**
   _4015 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `python.md` be split into smaller, more focused modules?**
   _Cohesion score 0.017094017094017096 - nodes in this community are weakly interconnected._
@@ -2394,3 +2390,7 @@ _Questions this graph is uniquely positioned to answer:_
   _Cohesion score 0.041666666666666664 - nodes in this community are weakly interconnected._
 - **Should `逻辑漏洞深度分析手册` be split into smaller, more focused modules?**
   _Cohesion score 0.041666666666666664 - nodes in this community are weakly interconnected._
+- **Should `Best practices` be split into smaller, more focused modules?**
+  _Cohesion score 0.041666666666666664 - nodes in this community are weakly interconnected._
+- **Should `Rust Security Audit` be split into smaller, more focused modules?**
+  _Cohesion score 0.0425531914893617 - nodes in this community are weakly interconnected._
