@@ -1,11 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { rooms } from '../../data/rooms';
-import { useTranslations } from '../../i18n/utils';
+import { useTranslations, type Locale } from '../../i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
 
 export const prerender = true;
 
-const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
 ---
 
@@ -109,7 +110,7 @@ const t = useTranslations(lang);
       <!-- Buttons Toolbar (Hidden when printing) -->
       <div class="flex flex-col sm:flex-row gap-4 justify-between items-center pt-4 print:hidden">
         <a
-          href={lang === 'es' ? '/es' : '/'}
+          href={getRelativeLocaleUrl(lang, '')}
           class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary font-semibold text-sm transition-colors duration-200"
         >
           &larr; {t('success.returnHome')}
@@ -144,7 +145,7 @@ const t = useTranslations(lang);
         </p>
       </div>
       <a
-        href={lang === 'es' ? '/es' : '/'}
+        href={getRelativeLocaleUrl(lang, '')}
         class="inline-block bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 text-sm"
       >
         {t('success.returnHome')}
@@ -160,9 +161,25 @@ const t = useTranslations(lang);
 </script>
 
 <script>
+  type Locale = 'en' | 'es' | 'fr' | 'pt';
   const API_BASE_URL = (import.meta.env.PUBLIC_API_URL || window.location.origin + '/api').replace(/\/$/, '');
   const ROOMS_DATA = (window as any).__ROOMS_DATA || [];
-  const lang = (document.documentElement.lang || 'en') as 'en' | 'es';
+  const rawLang = (document.documentElement.lang || 'en') as Locale;
+  const lang: Locale = ['en', 'es', 'fr', 'pt'].includes(rawLang) ? rawLang : 'en';
+
+  const dateLocales: Record<Locale, string> = {
+    en: 'en-US',
+    es: 'es-PE',
+    fr: 'fr-FR',
+    pt: 'pt-PT'
+  };
+
+  const labels: Record<Locale, { singleGuest: string; pluralGuest: string; singleNight: string; pluralNight: string }> = {
+    en: { singleGuest: '1 Guest', pluralGuest: 'Guests', singleNight: 'night', pluralNight: 'nights' },
+    es: { singleGuest: '1 Huésped', pluralGuest: 'Huéspedes', singleNight: 'noche', pluralNight: 'noches' },
+    fr: { singleGuest: '1 Voyageur', pluralGuest: 'Voyageurs', singleNight: 'nuit', pluralNight: 'nuits' },
+    pt: { singleGuest: '1 Hóspede', pluralGuest: 'Hóspedes', singleNight: 'noite', pluralNight: 'noites' }
+  };
 
   async function loadSuccessPage() {
     const loadingContainer = document.getElementById('loading-container');
@@ -179,7 +196,6 @@ const t = useTranslations(lang);
     }
 
     try {
-      // Fetch booking details from local PHP API
       const response = await fetch(`${API_BASE_URL}/channex/booking/${bookingId}`);
       if (!response.ok) throw new Error('Booking not found');
       
@@ -188,15 +204,13 @@ const t = useTranslations(lang);
 
       if (!booking || !room) throw new Error('Data mismatch');
 
-      // Helper to format dates nicely
       const formatDate = (dateStr: string) => {
         if (!dateStr) return '';
         const d = new Date(dateStr + 'T00:00:00');
         const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        return d.toLocaleDateString(lang === 'es' ? 'es-PE' : 'en-US', options);
+        return d.toLocaleDateString(dateLocales[lang] || 'en-US', options);
       };
 
-      // Populate DOM elements
       const confCodeEl = document.getElementById('success-conf-code');
       const guestNameEl = document.getElementById('success-guest-name');
       const guestEmailEl = document.getElementById('success-guest-email');
@@ -212,12 +226,13 @@ const t = useTranslations(lang);
       if (guestNameEl) guestNameEl.textContent = booking.guestName;
       if (guestEmailEl) guestEmailEl.textContent = booking.guestEmail;
       if (guestPhoneEl) guestPhoneEl.textContent = booking.guestPhone;
-      if (roomNameEl) roomNameEl.textContent = room.name[lang];
+      if (roomNameEl) roomNameEl.textContent = room.name[lang] || room.name.en;
       
+      const L = labels[lang] || labels.en;
       if (guestsTextEl) {
         guestsTextEl.textContent = booking.guests === 1
-          ? (lang === 'es' ? '1 Huésped' : '1 Guest')
-          : `${booking.guests} ${lang === 'es' ? 'Huéspedes' : 'Guests'}`;
+          ? L.singleGuest
+          : `${booking.guests} ${L.pluralGuest}`;
       }
 
       if (checkinEl) checkinEl.textContent = formatDate(booking.checkIn);
@@ -225,8 +240,8 @@ const t = useTranslations(lang);
       
       if (billingNightsEl) {
         billingNightsEl.textContent = booking.nights === 1
-          ? (lang === 'es' ? `1 noche x $${room.pricePerNight} USD` : `1 night x $${room.pricePerNight} USD`)
-          : `${booking.nights} ${lang === 'es' ? 'noches' : 'nights'} x $${room.pricePerNight} USD`;
+          ? `1 ${L.singleNight} x $${room.pricePerNight} USD`
+          : `${booking.nights} ${L.pluralNight} x $${room.pricePerNight} USD`;
       }
       
       if (totalPriceEl) totalPriceEl.textContent = booking.totalPrice.toString();

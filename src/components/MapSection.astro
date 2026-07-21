@@ -30,8 +30,11 @@ const t = useTranslations(lang);
       data-lat={String(siteSettings.latitude)}
       data-lng={String(siteSettings.longitude)}
       data-hotel-name={siteSettings.hotelName}
+      data-hotel-name={siteSettings.hotelName}
       data-address-es={siteSettings.address.es}
       data-address-en={siteSettings.address.en}
+      data-address-fr={siteSettings.address.fr}
+      data-address-pt={siteSettings.address.pt}
     >
       <div class="w-full h-full flex items-center justify-center text-purple-pastel">
         <div class="text-center">
@@ -39,7 +42,9 @@ const t = useTranslations(lang);
             <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
-          <p class="text-sm">{lang === 'es' ? 'Cargando mapa interactivo...' : 'Interactive map loading...'}</p>
+          <p class="text-sm">
+            {lang === 'es' ? 'Cargando mapa interactivo...' : lang === 'fr' ? 'Chargement de la carte interactive...' : lang === 'pt' ? 'Carregando mapa interativo...' : 'Interactive map loading...'}
+          </p>
           <p class="text-xs mt-1 opacity-60 font-mono">{siteSettings.address[lang]}</p>
         </div>
       </div>
@@ -62,6 +67,8 @@ const t = useTranslations(lang);
     const hotelName = container.dataset.hotelName || 'USGAR Hotels';
     const addressEs = container.dataset.addressEs || 'San Pedro, Cusco, Perú';
     const addressEn = container.dataset.addressEn || 'San Pedro, Cusco, Peru';
+    const addressFr = container.dataset.addressFr || addressEn;
+    const addressPt = container.dataset.addressPt || addressEs;
 
     // Dynamic import — Leaflet is only loaded when the map becomes visible
     const L = (await import('leaflet')).default;
@@ -96,9 +103,9 @@ const t = useTranslations(lang);
 
     const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
 
-    const isEs = document.documentElement.lang === 'es';
-    const addr = isEs ? addressEs : addressEn;
-    const dirLabel = isEs ? 'Cómo llegar' : 'Directions';
+    const lang = document.documentElement.lang || 'en';
+    const addr = lang === 'es' ? addressEs : lang === 'fr' ? addressFr : lang === 'pt' ? addressPt : addressEn;
+    const dirLabel = lang === 'es' ? 'Cómo llegar' : lang === 'fr' ? 'Itinéraire' : lang === 'pt' ? 'Como chegar' : 'Directions';
     const popupContent = `<b>${hotelName}</b><br>${addr}<br><a href="https://maps.openrouteservice.org" target="_blank" class="text-primary hover:underline text-xs">${dirLabel}</a>`;
 
     marker.bindPopup(popupContent).openPopup();

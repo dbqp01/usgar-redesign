@@ -80,7 +80,7 @@ const attractionsSchema = {
             class="flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all duration-300 cursor-pointer whitespace-nowrap snap-center select-none bg-stone-50 dark:bg-stone-900/40 border-stone-200 dark:border-stone-800 text-text-secondary-light dark:text-text-secondary-dark hover:border-primary/50 dark:hover:border-primary/50 hover:text-primary dark:hover:text-secondary hover:scale-[1.02]"
             data-category-filter={cat}
           >
-            <span class="flex items-center text-current" set:html={categoryIcons[cat]}></span>
+            <span class="flex items-center text-current" aria-hidden="true" set:html={categoryIcons[cat]}></span>
             <span>{categoryLabels[cat][lang]}</span>
           </button>
         ))}
@@ -112,15 +112,19 @@ const attractionsSchema = {
           data-category={attraction.category}
           data-name-en={attraction.name.en.toLowerCase()}
           data-name-es={attraction.name.es.toLowerCase()}
+          data-name-fr={attraction.name.fr.toLowerCase()}
+          data-name-pt={attraction.name.pt.toLowerCase()}
           data-desc-en={attraction.description.en.toLowerCase()}
           data-desc-es={attraction.description.es.toLowerCase()}
+          data-desc-fr={attraction.description.fr.toLowerCase()}
+          data-desc-pt={attraction.description.pt.toLowerCase()}
           style={`transition-delay: ${i * 0.05}s`}
         >
           <div>
             <!-- Top badge row -->
             <div class="flex items-center justify-between mb-4">
               <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-tertiary/10 text-tertiary">
-                <span class="flex items-center text-current" set:html={categoryIcons[attraction.category]}></span>
+                <span class="flex items-center text-current" aria-hidden="true" set:html={categoryIcons[attraction.category]}></span>
                 <span>{categoryLabels[attraction.category][lang]}</span>
               </span>
               <span class="text-xs font-medium text-stone-500 dark:text-stone-400 bg-stone-100 dark:bg-stone-900 px-2.5 py-1 rounded-md flex items-center gap-1">
@@ -192,7 +196,7 @@ const attractionsSchema = {
     if (!grid || !emptyState) return;
 
     const cards = Array.from(grid.children) as HTMLElement[];
-    const isEs = document.documentElement.lang === 'es';
+    const lang = document.documentElement.lang || 'en';
 
     let activeFilter = 'all';
     let searchQuery = '';
@@ -211,10 +215,10 @@ const attractionsSchema = {
 
       cards.forEach(card => {
         const category = card.getAttribute('data-category');
-        const nameAttr = isEs ? 'data-name-es' : 'data-name-en';
-        const descAttr = isEs ? 'data-desc-es' : 'data-desc-en';
-        const name = card.getAttribute(nameAttr) || '';
-        const desc = card.getAttribute(descAttr) || '';
+        const nameAttr = `data-name-${lang}`;
+        const descAttr = `data-desc-${lang}`;
+        const name = card.getAttribute(nameAttr) || card.getAttribute('data-name-en') || '';
+        const desc = card.getAttribute(descAttr) || card.getAttribute('data-desc-en') || '';
 
         const matchesCategory = activeFilter === 'all' || category === activeFilter;
         const matchesSearch = name.includes(searchQuery) || desc.includes(searchQuery);

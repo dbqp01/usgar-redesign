@@ -3,8 +3,8 @@ import roomsData from "../content/rooms/rooms.json";
 export interface AmenityLabel {
   en: string;
   es: string;
-  fr?: string;
-  pt?: string;
+  fr: string;
+  pt: string;
 }
 
 export interface Room {
@@ -34,7 +34,17 @@ export const rooms: Room[] = roomsData.rooms.map((r: any) => ({
   images: r.images ?? [],
   photoFolder: r.photoFolder,
   hasVideoTour: r.hasVideoTour,
-  amenityLabels: (r.amenityLabels as Record<string, AmenityLabel>) ?? {},
+  amenityLabels: Object.fromEntries(
+    Object.entries((r.amenityLabels as Record<string, any>) ?? {}).map(([key, val]) => [
+      key,
+      {
+        en: val.en || '',
+        es: val.es || '',
+        fr: val.fr || val.en || val.es || '',
+        pt: val.pt || val.es || val.en || ''
+      }
+    ])
+  ),
 }));
 
 export function getRoomBySlug(slug: string): Room | undefined {

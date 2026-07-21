@@ -3,38 +3,62 @@
     {
       "question_es": "¿Cuáles son los horarios de check-in y check-out?",
       "question_en": "What are the check-in and check-out times?",
+      "question_fr": "Quels sont les horaires d'arrivée et de départ ?",
+      "question_pt": "Quais são os horários de check-in e check-out?",
       "answer_es": "El check-in es a partir de las 12:00 hrs (mediodía) y el check-out es hasta las 10:30 hrs. Si llega antes, guardaremos su equipaje de forma gratuita o registraremos su entrada temprano si la habitación ya está lista.",
-      "answer_en": "Check-in is from 12:00 PM (noon), and check-out is until 10:30 AM. If you arrive earlier, we will gladly store your luggage for free or check you in early if your room is already prepared."
+      "answer_en": "Check-in is from 12:00 PM (noon), and check-out is until 10:30 AM. If you arrive earlier, we will gladly store your luggage for free or check you in early if your room is already prepared.",
+      "answer_fr": "L'enregistrement (check-in) s'effectue à partir de 12h00 (midi) et le départ (check-out) jusqu'à 10h30. Si vous arrivez plus tôt, nous garderons vos bagages gratuitement ou nous vous enregistrerons plus tôt si votre chambre est déjà prête.",
+      "answer_pt": "O check-in é a partir das 12:00 (meio-dia) e o check-out é até às 10:30. Se chegar mais cedo, guardaremos a sua bagagem gratuitamente ou faremos o check-in antecipado se o quarto já estiver pronto."
     },
     {
       "question_es": "¿Cómo puedo prevenir el mal de altura (soroche)?",
       "question_en": "How can I prevent altitude sickness (soroche)?",
+      "question_fr": "Comment prévenir le mal de l'altitude (soroche) ?",
+      "question_pt": "Como posso prevenir o mal da altitude (soroche)?",
       "answer_es": "Cusco se encuentra a 3,400 metros de altitud. Para ayudarle a aclimatarse, ofrecemos mate de Coca caliente de cortesía las 24 horas en nuestro lobby. Recomendamos descansar las primeras horas, beber mucha agua, comer ligero y evitar el alcohol. También contamos con asistencia de oxígeno en recepción si lo requiere.",
-      "answer_en": "Cusco is at 3,400 meters (11,150 feet). To help you acclimatize, we offer complimentary hot Coca tea 24/7 in our lobby. We recommend resting for the first few hours, drinking plenty of water, eating light meals, and avoiding alcohol. We also have oxygen assistance available at the reception if needed."
+      "answer_en": "Cusco is at 3,400 meters (11,150 feet). To help you acclimatize, we offer complimentary hot Coca tea 24/7 in our lobby. We recommend resting for the first few hours, drinking plenty of water, eating light meals, and avoiding alcohol. We also have oxygen assistance available at the reception if needed.",
+      "answer_fr": "Cusco est situé à 3 400 mètres d'altitude. Pour vous aider à vous acclimater, nous offrons de l'infusion de Coca chaude 24h/24 dans notre hall. Nous vous recommandons de vous reposer pendant les premières heures, de boire beaucoup d'eau, de manger léger et d'éviter l'alcool. De l'assistance en oxygène est également disponible à la réception si besoin.",
+      "answer_pt": "Cusco está a 3.400 metros de altitude. Para ajudar a aclimatar-se, oferecemos chá de Coca quente cortesia 24 horas no nosso lobby. Recomendamos descansar nas primeiras horas, beber muita água, comer leve e evitar bebidas alcoólicas. Também dispomos de oxigênio na recepção se necessário."
     },
     {
       "question_es": "¿Ofrecen traslados desde el aeropuerto o la estación de tren?",
       "question_en": "Do you offer airport or train station transfers?",
+      "question_fr": "Proposez-vous des transferts depuis l'aéroport ou la gare ?",
+      "question_pt": "Oferecem traslado do aeroporto ou da estação de trem?",
       "answer_es": "Sí, ofrecemos servicios de traslado privado. Puede coordinar un recojo seguro y cómodo desde el Aeropuerto Alejandro Velasco Astete (CUZ) o las estaciones de tren de Poroy/Wanchaq. Por favor, contáctenos por correo o WhatsApp con los detalles de su viaje al menos 24 horas antes.",
-      "answer_en": "Yes, we offer private transfer services. You can arrange a safe, comfortable pickup from Alejandro Velasco Astete Airport (CUZ) or the Poroy/Wanchaq train stations. Please contact us via email or WhatsApp with your flight/train details at least 24 hours in advance to schedule."
+      "answer_en": "Yes, we offer private transfer services. You can arrange a safe, comfortable pickup from Alejandro Velasco Astete Airport (CUZ) or the Poroy/Wanchaq train stations. Please contact us via email or WhatsApp with your flight/train details at least 24 hours in advance to schedule.",
+      "answer_fr": "Oui, nous proposons des services de transfert privé. Vous pouvez organiser une prise en charge sûre et confortable depuis l'aéroport Alejandro Velasco Astete (CUZ) ou les gares de Poroy/Wanchaq. Veuillez nous contacter par e-mail ou WhatsApp avec les détails de votre voyage au moins 24 heures à l'avance.",
+      "answer_pt": "Sim, oferecemos serviços de traslado privado. Pode agendar um transporte seguro e confortável a partir do Aeroporto Alejandro Velasco Astete (CUZ) ou das estações de trem de Poroy/Wanchaq. Por favor, entre em contato por e-mail ou WhatsApp com os detalhes da viagem com pelo menos 24 horas de antecedência."
     },
     {
       "question_es": "¿El desayuno está incluido y a qué hora se sirve?",
       "question_en": "Is breakfast included and what time is it served?",
+      "question_fr": "Le petit-déjeuner est-il inclus et à quelle heure est-il servi ?",
+      "question_pt": "O café da manhã está incluído e a que horas é servido?",
       "answer_es": "Sí, un desayuno buffet fresco con frutas andinas locales, panes, queso, huevos, café e infusiones tradicionales está incluido en todas nuestras tarifas. Se sirve todos los días de 6:00 AM a 9:00 AM, perfecto para antes de iniciar sus tours tempranos a Machu Picchu o el Valle Sagrado.",
-      "answer_en": "Yes, a fresh buffet breakfast featuring local Andean fruits, breads, cheese, eggs, coffee, and traditional herbal teas is included with all room rates. It is served daily from 6:00 AM to 9:00 AM, allowing plenty of time before you start early day tours to Machu Picchu or the Sacred Valley."
+      "answer_en": "Yes, a fresh buffet breakfast featuring local Andean fruits, breads, cheese, eggs, coffee, and traditional herbal teas is included with all room rates. It is served daily from 6:00 AM to 9:00 AM, allowing plenty of time before you start early day tours to Machu Picchu or the Sacred Valley.",
+      "answer_fr": "Oui, un petit-déjeuner buffet frais composé de fruits andins locaux, pains, fromages, œufs, café et infusions traditionnelles est inclus dans tous nos tarifs. Il est servi tous les jours de 6h00 à 9h00, parfait avant de partir pour vos excursions matinales vers le Machu Picchu ou la Vallée Sacrée.",
+      "answer_pt": "Sim, um café da manhã buffet fresco com frutas andinas locais, pães, queijos, ovos, café e chás tradicionais está incluído em todas as tarifas. É servido diariamente das 06:00 às 09:00, ideal antes de iniciar os seus passeios para Machu Picchu ou o Vale Sagrado."
     },
     {
       "question_es": "¿Puedo dejar mi equipaje en el hotel mientras visito Machu Picchu?",
       "question_en": "Can I leave my luggage at the hotel while visiting Machu Picchu?",
+      "question_fr": "Puis-je laisser mes bagages à l'hôtel pendant ma visite au Machu Picchu ?",
+      "question_pt": "Posso deixar a minha bagagem no hotel enquanto me desloco a Machu Picchu?",
       "answer_es": "¡Por supuesto! Brindamos almacenamiento de equipaje seguro y gratuito para todos nuestros huéspedes. Puede dejar sus maletas grandes con nosotros mientras ya viaja a Machu Picchu o al Valle Sagrado con una mochila pequeña, y recogerlas a su regreso.",
-      "answer_en": "Absolutely! We provide free, secure luggage storage for all our guests. You can leave your large suitcases with us while you travel to Machu Picchu or the Sacred Valley with a smaller daypack, and retrieve them when you return."
+      "answer_en": "Absolutely! We provide free, secure luggage storage for all our guests. You can leave your large suitcases with us while you travel to Machu Picchu or the Sacred Valley with a smaller daypack, and retrieve them when you return.",
+      "answer_fr": "Absolument ! Nous proposons un service de bagagerie sécurisé et gratuit pour tous nos clients. Vous pouvez laisser vos grandes valises chez nous pendant que vous voyagez vers le Machu Picchu ou la Vallée Sacrée avec un petit sac à dos, et les récupérer à votre retour.",
+      "answer_pt": "Com certeza! Oferecemos armazenamento seguro e gratuito de bagagens para todos os nossos hóspedes. Pode deixar as suas malas grandes conosco enquanto viaja para Machu Picchu ou para o Vale Sagrado com uma mochila pequena, e retirá-las ao regressar."
     },
     {
       "question_es": "¿Las habitaciones cuentan con calefacción y agua caliente las 24 horas?",
       "question_en": "Do rooms have heating and 24/7 hot water?",
+      "question_fr": "Les chambres disposent-elles de chauffage et d'eau chaude 24h/24 ?",
+      "question_pt": "Os quartos têm aquecimento e água quente 24 horas?",
       "answer_es": "Sí, todas nuestras habitaciones están equipadas con sistemas de calefacción para mantener una temperatura acogedora durante las frías noches cusqueñas. Además, contamos con un sistema confiable de agua caliente a alta presión las 24 horas en todos los baños privados.",
-      "answer_en": "Yes, all our rooms are equipped with heating units to keep you warm during the chilly Cusco nights. Additionally, we have a reliable high-pressure hot water system available 24 hours a day in all private bathrooms."
+      "answer_en": "Yes, all our rooms are equipped with heating units to keep you warm during the chilly Cusco nights. Additionally, we have a reliable high-pressure hot water system available 24 hours a day in all private bathrooms.",
+      "answer_fr": "Oui, toutes nos chambres sont équipées de systèmes de chauffage pour maintenir une température agréable pendant les fraîches nuits de Cusco. De plus, nous disposons d'un système d'eau chaude haute pression fiable disponible 24h/24 dans toutes les salles de bains privées.",
+      "answer_pt": "Sim, todos os nossos quartos estão equipados com aquecimento para manter uma temperatura acolhedora durante as noites frias de Cusco. Além disso, temos um sistema confiável de água quente de alta pressão 24 horas em todos os banheiros privativos."
     }
   ]
 }

@@ -1,12 +1,90 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import type { Locale } from '../../i18n/utils';
 
 export const prerender = true;
 
-const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+const lang = (Astro.currentLocale || 'en') as Locale;
+
+const mockLabels: Record<Locale, Record<string, string>> = {
+  en: {
+    title: "Payment Simulator — Mercado Pago",
+    sandbox: "Sandbox Environment (Simulator)",
+    totalToPay: "Total to Pay",
+    purchaseDetails: "Purchase Details",
+    merchant: "Merchant",
+    product: "Product",
+    bookingId: "Booking ID",
+    guest: "Guest",
+    dates: "Dates",
+    testModeTitle: "Demo Test Mode Active",
+    testModeDesc: "This is a secure simulation. No real money will be charged to any credit card.",
+    simulateCard: "Simulate Card Payment",
+    decline: "Decline Payment",
+    approve: "Approve Payment Success",
+    paying: "Paying...",
+    simError: "Error simulating payment."
+  },
+  es: {
+    title: "Simulador de Pago — Mercado Pago",
+    sandbox: "Entorno Sandbox (Simulador)",
+    totalToPay: "Total a Pagar",
+    purchaseDetails: "Detalles de la Compra",
+    merchant: "Establecimiento",
+    product: "Concepto",
+    bookingId: "Código Reserva",
+    guest: "Huésped",
+    dates: "Fechas",
+    testModeTitle: "Modo de Prueba Activado",
+    testModeDesc: "Esta es una simulación segura. No se realizará ningún cargo real a ninguna tarjeta de crédito.",
+    simulateCard: "Simular Pago con Tarjeta",
+    decline: "Rechazar Pago",
+    approve: "Aprobar Pago Exitoso",
+    paying: "Pagando...",
+    simError: "Error al simular el pago."
+  },
+  fr: {
+    title: "Simulateur de Paiement — Mercado Pago",
+    sandbox: "Environnement Sandbox (Simulateur)",
+    totalToPay: "Total à Payer",
+    purchaseDetails: "Détails de l'Achat",
+    merchant: "Établissement",
+    product: "Produit",
+    bookingId: "Code de Réservation",
+    guest: "Voyageur",
+    dates: "Dates",
+    testModeTitle: "Mode Test Démo Actif",
+    testModeDesc: "Il s'agit d'une simulation sécurisée. Aucun argent réel ne sera débité.",
+    simulateCard: "Simuler le Paiement par Carte",
+    decline: "Refuser le Paiement",
+    approve: "Approuver el Paiement",
+    paying: "Paiement en cours...",
+    simError: "Erreur lors de la simulation du paiement."
+  },
+  pt: {
+    title: "Simulador de Pagamento — Mercado Pago",
+    sandbox: "Ambiente Sandbox (Simulador)",
+    totalToPay: "Total a Pagar",
+    purchaseDetails: "Detalhes da Compra",
+    merchant: "Estabelecimento",
+    product: "Produto",
+    bookingId: "Código de Reserva",
+    guest: "Hóspede",
+    dates: "Datas",
+    testModeTitle: "Modo de Teste Demo Ativo",
+    testModeDesc: "Esta é uma simulação segura. Nenhum valor real será cobrado no cartão.",
+    simulateCard: "Simular Pagamento com Cartão",
+    decline: "Recusar Pagamento",
+    approve: "Aprovar Pagamento",
+    paying: "Processando pagamento...",
+    simError: "Erro ao simular o pagamento."
+  }
+};
+
+const L = mockLabels[lang] || mockLabels.en;
 ---
 
-<Layout title={`${lang === 'es' ? 'Simulador de Pago — Mercado Pago' : 'Payment Simulator — Mercado Pago'} — USGAR Hotels`} lang={lang}>
+<Layout title={`${L.title} — USGAR Hotels`} lang={lang}>
   <main class="py-24 px-4 max-w-2xl mx-auto flex-1 flex flex-col justify-center">
     
     <!-- Glassmorphic MP Simulation Card -->
@@ -20,11 +98,11 @@ const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
           </div>
           <div>
             <h1 class="font-sans font-semibold text-lg tracking-wide">Mercado Pago</h1>
-            <p class="text-xs text-white/80">{lang === 'es' ? 'Entorno Sandbox (Simulador)' : 'Sandbox Environment (Simulator)'}</p>
+            <p class="text-xs text-white/80">{L.sandbox}</p>
           </div>
         </div>
         <div class="text-right">
-          <span class="text-xs uppercase tracking-wider text-white/70">{lang === 'es' ? 'Total a Pagar' : 'Total to Pay'}</span>
+          <span class="text-xs uppercase tracking-wider text-white/70">{L.totalToPay}</span>
           <p class="font-sans font-bold text-2xl">$<span id="mp-amount">0</span> USD</p>
         </div>
       </div>
@@ -34,22 +112,22 @@ const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
         
         <!-- Summary Box -->
         <div class="bg-stone-50 dark:bg-stone-900/50 p-5 rounded-2xl border border-black/5 dark:border-white/5 space-y-3">
-          <h2 class="font-display text-xl text-primary font-semibold">{lang === 'es' ? 'Detalles de la Compra' : 'Purchase Details'}</h2>
+          <h2 class="font-display text-xl text-primary font-semibold">{L.purchaseDetails}</h2>
           
           <div class="grid grid-cols-2 gap-y-2 text-sm">
-            <span class="text-text-secondary-light dark:text-text-secondary-dark">{lang === 'es' ? 'Establecimiento' : 'Merchant'}</span>
+            <span class="text-text-secondary-light dark:text-text-secondary-dark">{L.merchant}</span>
             <span class="font-semibold text-right">USGAR Hotels</span>
 
-            <span class="text-text-secondary-light dark:text-text-secondary-dark">{lang === 'es' ? 'Concepto' : 'Product'}</span>
+            <span class="text-text-secondary-light dark:text-text-secondary-dark">{L.product}</span>
             <span id="mp-room-name" class="font-semibold text-right text-stone-700 dark:text-stone-300">---</span>
 
-            <span class="text-text-secondary-light dark:text-text-secondary-dark">{lang === 'es' ? 'Código Reserva' : 'Booking ID'}</span>
+            <span class="text-text-secondary-light dark:text-text-secondary-dark">{L.bookingId}</span>
             <span id="mp-booking-id" class="font-mono text-xs font-semibold text-right bg-stone-100 dark:bg-stone-800 px-2 py-0.5 rounded text-[#9B6CB5]">---</span>
 
-            <span class="text-text-secondary-light dark:text-text-secondary-dark">{lang === 'es' ? 'Huésped' : 'Guest'}</span>
+            <span class="text-text-secondary-light dark:text-text-secondary-dark">{L.guest}</span>
             <span id="mp-guest-info" class="font-semibold text-right">---</span>
 
-            <span id="mp-dates-label" class="hidden text-text-secondary-light dark:text-text-secondary-dark">{lang === 'es' ? 'Fechas' : 'Dates'}</span>
+            <span id="mp-dates-label" class="hidden text-text-secondary-light dark:text-text-secondary-dark">{L.dates}</span>
             <span id="mp-dates" class="hidden font-semibold text-right text-xs">---</span>
           </div>
         </div>
@@ -60,18 +138,14 @@ const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           <div class="text-xs leading-relaxed space-y-1">
-            <p class="font-bold">{lang === 'es' ? 'Modo de Prueba Activado' : 'Demo Test Mode Active'}</p>
-            <p>
-              {lang === 'es' 
-                ? 'Esta es una simulación segura. No se realizará ningún cargo real a ninguna tarjeta de crédito.' 
-                : 'This is a secure simulation. No real money will be charged to any credit card.'}
-            </p>
+            <p class="font-bold">{L.testModeTitle}</p>
+            <p>{L.testModeDesc}</p>
           </div>
         </div>
 
         <!-- Simulated Card Details -->
         <div class="space-y-4 border-t border-black/5 dark:border-white/5 pt-5">
-          <h3 class="font-display text-lg">{lang === 'es' ? 'Simular Pago con Tarjeta' : 'Simulate Card Payment'}</h3>
+          <h3 class="font-display text-lg">{L.simulateCard}</h3>
           <div class="p-4 rounded-xl border border-black/10 dark:border-white/10 bg-white dark:bg-surface-dark flex items-center justify-between">
             <div class="flex items-center gap-3">
               <span class="text-2xl">💳</span>
@@ -80,7 +154,7 @@ const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
                 <p class="text-[10px] text-text-secondary-light dark:text-text-secondary-dark">Expiración 12/30 • CVV ***</p>
               </div>
             </div>
-            <span class="bg-green-500/10 text-green-500 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">LISTO</span>
+            <span class="bg-green-500/10 text-green-500 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">OK</span>
           </div>
         </div>
 
@@ -92,7 +166,7 @@ const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
             id="btn-decline"
             class="flex-1 bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 font-semibold py-3.5 rounded-xl transition-all duration-200 text-sm cursor-pointer border border-black/5 dark:border-white/5"
           >
-            {lang === 'es' ? 'Rechazar Pago' : 'Decline Payment'}
+            {L.decline}
           </button>
           
           <!-- Approve Button -->
@@ -101,7 +175,7 @@ const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
             id="btn-approve"
             class="flex-1 bg-[#009EE3] hover:bg-[#0087c4] text-white font-semibold py-3.5 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-[#009EE3]/25 hover:-translate-y-0.5 text-sm cursor-pointer flex items-center justify-center gap-2"
           >
-            <span id="approve-text">{lang === 'es' ? 'Aprobar Pago Exitoso' : 'Approve Payment Success'}</span>
+            <span id="approve-text">{L.approve}</span>
             <!-- Spinner -->
             <svg id="approve-spinner" class="hidden animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -116,8 +190,18 @@ const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
 </Layout>
 
 <script>
+  type Locale = 'en' | 'es' | 'fr' | 'pt';
   const API_BASE_URL = (import.meta.env.PUBLIC_API_URL || window.location.origin + '/api').replace(/\/$/, '');
-  const lang = (document.documentElement.lang || 'en') as 'en' | 'es';
+  const rawLang = (document.documentElement.lang || 'en') as Locale;
+  const lang: Locale = ['en', 'es', 'fr', 'pt'].includes(rawLang) ? rawLang : 'en';
+
+  const scriptLabels: Record<Locale, { paying: string; simError: string; approve: string }> = {
+    en: { paying: 'Paying...', simError: 'Error simulating payment.', approve: 'Approve Payment Success' },
+    es: { paying: 'Pagando...', simError: 'Error al simular el pago.', approve: 'Aprobar Pago Exitoso' },
+    fr: { paying: 'Paiement en cours...', simError: 'Erreur lors de la simulation du paiement.', approve: 'Approuver el Paiement' },
+    pt: { paying: 'Processando pagamento...', simError: 'Erro ao simular o pagamento.', approve: 'Aprovar Pagamento' }
+  };
+  const SL = scriptLabels[lang] || scriptLabels.en;
 
   function initMockPayment() {
     const params = new URLSearchParams(window.location.search);
@@ -129,53 +213,49 @@ const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
     const checkIn = params.get('checkIn') || '';
     const checkOut = params.get('checkOut') || '';
 
-    // Populate UI details dynamically from URL query parameters
-    const amountEl = document.getElementById('mp-amount');
-    const roomNameEl = document.getElementById('mp-room-name');
-    const bookingIdEl = document.getElementById('mp-booking-id');
-    const guestInfoEl = document.getElementById('mp-guest-info');
-    const datesLabelEl = document.getElementById('mp-dates-label');
-    const datesEl = document.getElementById('mp-dates');
+    // Populate interface
+    const elAmount = document.getElementById('mp-amount');
+    const elRoom = document.getElementById('mp-room-name');
+    const elBookingId = document.getElementById('mp-booking-id');
+    const elGuest = document.getElementById('mp-guest-info');
+    const elDatesLabel = document.getElementById('mp-dates-label');
+    const elDates = document.getElementById('mp-dates');
 
-    if (amountEl) amountEl.textContent = amount;
-    if (roomNameEl) roomNameEl.textContent = roomName;
-    if (bookingIdEl) bookingIdEl.textContent = bookingId || '---';
-    if (guestInfoEl) {
-      guestInfoEl.textContent = guestName 
-        ? `${guestName} (${guestEmail || '---'})`
-        : '---';
+    if (elAmount) elAmount.textContent = amount;
+    if (elRoom) elRoom.textContent = roomName;
+    if (elBookingId) elBookingId.textContent = bookingId || 'PENDING';
+    if (elGuest) elGuest.textContent = guestName ? `${guestName} (${guestEmail})` : 'Huésped';
+    if (checkIn && checkOut && elDates && elDatesLabel) {
+      elDates.textContent = `${checkIn} → ${checkOut}`;
+      elDates.classList.remove('hidden');
+      elDatesLabel.classList.remove('hidden');
     }
 
-    if (checkIn && checkOut) {
-      if (datesLabelEl) datesLabelEl.classList.remove('hidden');
-      if (datesEl) {
-        datesEl.classList.remove('hidden');
-        datesEl.textContent = `${checkIn} → ${checkOut}`;
-      }
-    }
-
-    // Buttons
     const btnApprove = document.getElementById('btn-approve');
     const btnDecline = document.getElementById('btn-decline');
+    const spinner = document.getElementById('approve-spinner');
 
-    // Clean previous event listeners by cloning nodes (prevents duplicate bindings)
-    const newBtnApprove = btnApprove?.cloneNode(true) as HTMLButtonElement;
-    const newBtnDecline = btnDecline?.cloneNode(true) as HTMLButtonElement;
-    if (btnApprove && newBtnApprove) btnApprove.parentNode?.replaceChild(newBtnApprove, btnApprove);
-    if (btnDecline && newBtnDecline) btnDecline.parentNode?.replaceChild(newBtnDecline, btnDecline);
+    if (!btnApprove) return;
 
-    newBtnApprove?.addEventListener('click', async () => {
-      const spinner = newBtnApprove.querySelector('#approve-spinner') || document.getElementById('approve-spinner');
+    // Clone button to remove previous listeners
+    const newBtnApprove = btnApprove.cloneNode(true) as HTMLButtonElement;
+    btnApprove.parentNode?.replaceChild(newBtnApprove, btnApprove);
+
+    const newBtnDecline = btnDecline ? (btnDecline.cloneNode(true) as HTMLButtonElement) : null;
+    if (btnDecline && newBtnDecline) {
+      btnDecline.parentNode?.replaceChild(newBtnDecline, btnDecline);
+    }
+
+    newBtnApprove.addEventListener('click', async () => {
       const text = newBtnApprove.querySelector('#approve-text') || document.getElementById('approve-text');
 
       // Show loading spinner
       spinner?.classList.remove('hidden');
-      if (text) text.textContent = lang === 'es' ? 'Pagando...' : 'Paying...';
+      if (text) text.textContent = SL.paying;
       newBtnApprove.disabled = true;
       if (newBtnDecline) newBtnDecline.disabled = true;
 
       try {
-        // Trigger Mercado Pago Webhook post request on background to confirm reservation
         const response = await fetch(`${API_BASE_URL}/webhook-mercado-pago?bookingId=${bookingId}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -189,24 +269,24 @@ const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
 
         if (!response.ok) throw new Error('Webhook process failed');
 
-        // Redirect to success page on success
-        const successPath = lang === 'es' ? `/es/book/success` : `/book/success`;
+        const localePrefix = lang === 'en' ? '' : `/${lang}`;
+        const successPath = `${localePrefix}/book/success`;
         window.location.href = `${successPath}?bookingId=${bookingId}`;
       } catch (err) {
         console.error('Simulation error:', err);
-        alert(lang === 'es' ? 'Error al simular el pago.' : 'Error simulating payment.');
+        alert(SL.simError);
         
         // Reset buttons
         spinner?.classList.add('hidden');
-        if (text) text.textContent = lang === 'es' ? 'Aprobar Pago Exitoso' : 'Approve Payment Success';
+        if (text) text.textContent = SL.approve;
         newBtnApprove.disabled = false;
         if (newBtnDecline) newBtnDecline.disabled = false;
       }
     });
 
     newBtnDecline?.addEventListener('click', () => {
-      // Redirect back to checkout page with error
-      const bookPath = lang === 'es' ? `/es/book` : `/book`;
+      const localePrefix = lang === 'en' ? '' : `/${lang}`;
+      const bookPath = `${localePrefix}/book`;
       window.location.href = `${bookPath}?error=payment_declined&bookingId=${bookingId}`;
     });
   }

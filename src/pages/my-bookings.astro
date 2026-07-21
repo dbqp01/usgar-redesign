@@ -100,7 +100,11 @@ const t = useTranslations(lang);
             logoutBtn.classList.remove('hidden');
             logoutBtn.addEventListener('click', async () => {
               sessionStorage.removeItem('usgar_auth_user');
-              await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+              try {
+                await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+              } catch (e) {
+                console.warn('[Logout Warning]', e);
+              }
               window.location.href = '/';
             });
           }

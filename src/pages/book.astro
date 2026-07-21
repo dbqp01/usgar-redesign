@@ -491,6 +491,7 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
 <script>
   import { translateBeds, daysBetween } from '../utils/helpers';
   import { bookingService } from '../Services/bookingService';
+import type { Locale } from '@/i18n/utils';
 
   // Use data serialized from server (avoids hardcoding duplicates)
   const ROOMS_DATA = (window as any).__ROOMS_DATA || [];
@@ -525,7 +526,7 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
     const errorBanner = document.getElementById('error-banner');
     const errorMessage = document.getElementById('error-message');
 
-    const lang = (document.documentElement.lang || 'en') as 'en' | 'es';
+    const lang = (document.documentElement.lang || 'en') as Locale;
 
     // Dynamic price recalculation
     function updatePricing() {
@@ -764,8 +765,8 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
 
         if (redirectUrl) {
           let url = redirectUrl;
-          if (url.startsWith('/') && lang === 'es') {
-            url = `/es${url}`;
+          if (url.startsWith('/') && lang !== 'en') {
+            url = `/${lang}${url}`;
           }
           window.location.href = url;
         } else {

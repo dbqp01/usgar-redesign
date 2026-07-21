@@ -42,11 +42,15 @@ const roomsWithPhotos = await Promise.all(
         {t('rooms.sectionLabel')}
       </span>
       <h2 class="font-display text-4xl sm:text-5xl lg:text-7xl text-text-primary-light dark:text-white leading-tight">
-        {lang === 'es' ? 'NUESTRO REFUGIO' : 'OUR SANCTUARY'}
+        {lang === 'es' ? 'NUESTRO REFUGIO' : lang === 'fr' ? 'NOTRE REFUGE' : lang === 'pt' ? 'NOSSO REFÚGIO' : 'OUR SANCTUARY'}
       </h2>
       <p class="mt-4 text-base sm:text-lg text-text-secondary-light dark:text-text-secondary-dark font-body font-light">
         {lang === 'es'
           ? 'Explora nuestros espacios diseñados con elegancia y confort, fusionando la herencia colonial con el lujo moderno.'
+          : lang === 'fr'
+          ? 'Explorez nos espaces conçus avec élégance et confort, mêlant héritage colonial et luxe moderne.'
+          : lang === 'pt'
+          ? 'Explore nossos espaços projetados com elegância e conforto, combinando a herança colonial com o luxo moderno.'
           : 'Explore our spaces designed with elegance and comfort, blending colonial heritage with modern luxury.'}
       </p>
     </div>
@@ -91,7 +95,7 @@ const roomsWithPhotos = await Promise.all(
             <div class="opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-500 transform translate-y-4 lg:group-hover:translate-y-0 delay-100 max-w-lg">
                <!-- Price Tag -->
                <div class="inline-block px-4 py-1.5 mb-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-secondary font-mono font-bold text-sm">
-                 ${room.pricePerNight} USD <span class="text-xs font-normal text-white/70">/ {lang === 'es' ? 'noche' : 'night'}</span>
+                 ${room.pricePerNight} USD <span class="text-xs font-normal text-white/70">{t('rooms.perNight')}</span>
                </div>
                
                <h3 class="font-display text-3xl sm:text-5xl text-white mb-2 leading-tight">
@@ -111,7 +115,7 @@ const roomsWithPhotos = await Promise.all(
                
                <!-- CTA -->
                <span class="inline-flex items-center gap-3 text-secondary font-bold text-sm uppercase tracking-widest hover:text-white transition-colors">
-                 {lang === 'es' ? 'VER DETALLES' : 'VIEW DETAILS'}
+                 {lang === 'es' ? 'VER DETALLES' : lang === 'fr' ? 'VOIR DÉTAILS' : lang === 'pt' ? 'VER DETALHES' : 'VIEW DETAILS'}
                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                  </svg>
@@ -125,7 +129,7 @@ const roomsWithPhotos = await Promise.all(
     <!-- Mobile fallback text -->
     <div class="text-center mt-8 lg:hidden animate-on-scroll">
       <p class="text-xs text-text-secondary-light/60 dark:text-text-secondary-dark/60 uppercase tracking-widest">
-         {lang === 'es' ? 'Toca una habitación para ver más' : 'Tap a room to see more'}
+         {lang === 'es' ? 'Toca una habitación para ver más' : lang === 'fr' ? 'Touchez une chambre pour en savoir plus' : lang === 'pt' ? 'Toque em um quarto para ver mais' : 'Tap a room to see more'}
       </p>
     </div>
 

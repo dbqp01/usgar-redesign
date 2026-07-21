@@ -156,7 +156,7 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
       if (roomType) params.append('roomType', roomType);
 
       const lang = document.documentElement.lang || 'en';
-      const basePath = lang === 'es' ? '/es/book' : '/book';
+      const basePath = lang === 'en' ? '/book' : `/${lang}/book`;
       window.location.href = `${basePath}?${params.toString()}`;
     }, { signal });
   }

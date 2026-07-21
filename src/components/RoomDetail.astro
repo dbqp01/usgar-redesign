@@ -550,7 +550,7 @@ const roomSchema = {
     class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex-col items-center justify-center select-none"
     role="dialog"
     aria-modal="true"
-    aria-label={lang === 'es' ? 'Galería de fotos' : 'Photo gallery'}
+    aria-label={lang === 'es' ? 'Galería de fotos' : lang === 'fr' ? 'Galerie de photos' : lang === 'pt' ? 'Galeria de fotos' : 'Photo gallery'}
   >
     <!-- Top toolbar -->
     <div

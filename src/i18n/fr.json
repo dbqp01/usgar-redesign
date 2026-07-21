@@ -65,7 +65,7 @@
   "faq": {
     "sectionLabel": "FAQ",
     "title": "Foire Aux Questions",
-    "description": "Tout ce que vous devez savoir sobre votre séjour à Cusco : mal de l'altitude, enregistrement, transports et plus encore."
+    "description": "Tout ce que vous devez savoir sur votre séjour à Cusco : mal de l'altitude, enregistrement, transports et plus encore."
   },
   "footer": {
     "contact": "Contact",
@@ -171,7 +171,7 @@
     "airportPickupCheckbox": "Avez-vous besoin d'un transfert privé depuis l'aéroport ?",
     "flightTimeLabel": "Heure d'arrivée approximative de votre vol",
     "arrivalCalculationTitle": "Calcul d'Heure d'Arrivée Estimée",
-    "arrivalCalculationText": "Temps de trajet : ~20-30 minutes en voiture desde l'aéroport de Cusco (CUZ).",
+    "arrivalCalculationText": "Temps de trajet : ~20-30 minutes en voiture depuis l'aéroport de Cusco (CUZ).",
     "estimatedArrivalLabel": "Heure d'arrivée estimée à USGAR Hotels : ",
     "estimatedArrivalNote": "* Estimation basée sur 45 minutes (récupération des bagages + douane + transfert).",
     "tripSummary": "Récapitulatif du Voyage",

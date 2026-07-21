@@ -504,5 +504,13 @@
   "502": "Quick Start (New Project)",
   "503": "Advanced Components",
   "504": "From Bootstrap",
-  "505": "Migration Strategies"
+  "505": "Migration Strategies",
+  "506": "AuthService",
+  "507": "十、PHP命令执行元思考方法论",
+  "508": "10.8 实战案例深度剖析",
+  "509": "10.9 防御体系建设",
+  "510": "Common Template Patterns",
+  "511": "../../book/mock-payment.astro",
+  "512": "../../book/success.astro",
+  "513": "Request"
 }

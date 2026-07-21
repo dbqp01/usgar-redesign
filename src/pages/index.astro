@@ -45,7 +45,7 @@ const hotelSchema = {
   image: "https://usgarhotels.com/assets/logos/Logo%20usgar%20morado.png",
   telephone: `+${siteSettings.phoneRaw}`,
   email: siteSettings.email,
-  url: "https://sanpedro.hotelesusgar.com" + (lang === "es" ? "/es" : ""),
+  url: "https://sanpedro.hotelesusgar.com" + (lang !== "en" ? `/${lang}` : ""),
   address: {
     "@type": "PostalAddress",
     streetAddress: siteSettings.streetAddress,
@@ -420,7 +420,7 @@ const schemas = [hotelSchema, faqSchema];
         <div class="w-full lg:w-1/3 h-[300px] lg:h-full bg-surface-card-dark flex flex-col border-t lg:border-t-0 lg:border-l border-white/5 relative z-20">
           <div class="p-6 border-b border-white/10 hidden lg:block">
             <h4 class="font-body text-sm font-bold tracking-widest uppercase text-secondary">
-              {lang === 'es' ? 'Destinos Populares' : 'Popular Destinations'}
+              {lang === 'es' ? 'Destinos Populares' : lang === 'fr' ? 'Destinations Populaires' : lang === 'pt' ? 'Destinos Populares' : 'Popular Destinations'}
             </h4>
           </div>
           <div class="flex-1 overflow-y-auto hide-scrollbar p-2 lg:p-4 space-y-1">

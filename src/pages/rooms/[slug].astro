@@ -1,6 +1,7 @@
 ---
 import { rooms } from '../../data/rooms';
 import RoomDetail from '../../components/RoomDetail.astro';
+import type { Locale } from '../../i18n/utils';
 
 export function getStaticPaths() {
   return rooms.map(room => ({
@@ -10,7 +11,7 @@ export function getStaticPaths() {
 }
 
 const { room } = Astro.props;
-const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+const lang = (Astro.currentLocale || 'en') as Locale;
 ---
 
 <RoomDetail room={room} lang={lang} />

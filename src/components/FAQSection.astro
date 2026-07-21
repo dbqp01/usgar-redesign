@@ -32,11 +32,15 @@ const t = useTranslations(lang);
           
           <div class="absolute bottom-10 left-10 right-10 text-white space-y-4">
             <h3 class="font-display font-bold text-3xl sm:text-4xl text-secondary">
-              {lang === 'es' ? 'Atención 24/7' : '24/7 Assistance'}
+              {lang === 'es' ? 'Atención 24/7' : lang === 'fr' ? 'Assistance 24/7' : lang === 'pt' ? 'Atendimento 24/7' : '24/7 Assistance'}
             </h3>
             <p class="text-sm text-white/80 font-light leading-relaxed">
               {lang === 'es' 
                 ? 'Nuestro equipo bilingüe en recepción está listo las 24 horas para ayudarte con reservas, itinerarios a Machu Picchu y aclimatación.'
+                : lang === 'fr'
+                ? 'Notre équipe bilingue à la réception est disponible 24h/24 pour vous aider dans vos réservations, vos itinéraires vers le Machu Picchu et votre acclimatation.'
+                : lang === 'pt'
+                ? 'Nossa equipe bilíngue na recepção está pronta 24 horas por dia para ajudar com reservas, roteiros para Machu Picchu e aclimatação.'
                 : 'Our 24/7 bilingual front desk team is ready to assist with bookings, Machu Picchu tours, and altitude acclimatization.'}
             </p>
             <a 
@@ -45,7 +49,7 @@ const t = useTranslations(lang);
               rel="noopener noreferrer"
               class="inline-block mt-4 text-xs font-body font-semibold tracking-wide uppercase border-b-2 border-secondary pb-1 hover:text-secondary transition-colors"
             >
-              {lang === 'es' ? 'Contactar por WhatsApp' : 'Contact via WhatsApp'}
+              {lang === 'es' ? 'Contactar por WhatsApp' : lang === 'fr' ? 'Contacter par WhatsApp' : lang === 'pt' ? 'Contato via WhatsApp' : 'Contact via WhatsApp'}
             </a>
           </div>
         </div>
@@ -66,9 +70,9 @@ const t = useTranslations(lang);
 
         <!-- Accordion List (Tailwind v4 open: modifiers) -->
         <div class="space-y-2">
-          {faqData.questions.map((faq, i) => {
-            const question = lang === 'es' ? faq.question_es : faq.question_en;
-            const answer = lang === 'es' ? faq.answer_es : faq.answer_en;
+          {faqData.questions.map((faq: any, i) => {
+            const question = faq[`question_${lang}`] || faq.question_en || faq.question_es;
+            const answer = faq[`answer_${lang}`] || faq.answer_en || faq.answer_es;
             return (
               <details
                 class="group border-b border-black/10 dark:border-white/10 open:border-b-transparent transition-all duration-300"

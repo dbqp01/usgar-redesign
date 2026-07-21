@@ -70,11 +70,15 @@ const highlights: Array<{
         {t('services.sectionLabel')}
       </span>
       <h2 class="font-display text-4xl sm:text-5xl lg:text-7xl text-text-primary-light dark:text-white leading-tight">
-        {lang === 'es' ? 'EXPERIENCIA COMPLETA' : 'ELEVATED EXPERIENCE'}
+        {lang === 'es' ? 'EXPERIENCIA COMPLETA' : lang === 'fr' ? 'EXPÉRIENCE COMPLÈTE' : lang === 'pt' ? 'EXPERIÊNCIA COMPLETA' : 'ELEVATED EXPERIENCE'}
       </h2>
       <p class="mt-4 text-base sm:text-lg text-text-secondary-light dark:text-text-secondary-dark font-body font-light">
         {lang === 'es' 
           ? 'Más que una habitación. Descubre todo lo que ofrecemos para hacer de tu visita a Cusco algo inolvidable.'
+          : lang === 'fr'
+          ? 'Plus qu\'une simple chambre. Découvrez tout ce que nous proposons pour rendre votre séjour à Cusco inoubliable.'
+          : lang === 'pt'
+          ? 'Mais do que um quarto. Descubra tudo o que oferecemos para tornar a sua visita a Cusco inesquecível.'
           : 'More than just a room. Discover everything we offer to make your visit to Cusco unforgettable.'}
       </p>
     </div>
@@ -102,7 +106,7 @@ const highlights: Array<{
           <!-- Content -->
           <div class="absolute inset-0 p-6 sm:p-8 flex flex-col justify-end">
             <div class="transform transition-transform duration-500 group-hover:-translate-y-2">
-              <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-2xl mb-4 shadow-lg text-white" set:html={item.icon}>
+              <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-2xl mb-4 shadow-lg text-white" aria-hidden="true" set:html={item.icon}>
               </div>
               <h3 class="font-display font-bold text-2xl sm:text-3xl text-white mb-2 drop-shadow-md">
                 {item.title[lang]}
@@ -121,7 +125,7 @@ const highlights: Array<{
         <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-secondary/10 to-transparent rounded-bl-full transform translate-x-8 -translate-y-8 transition-transform duration-500 group-hover:translate-x-0 group-hover:-translate-y-0"></div>
         
         <h3 class="font-display text-2xl font-bold text-text-primary-light dark:text-white mb-6">
-          {lang === 'es' ? 'También incluimos:' : 'Also included:'}
+          {lang === 'es' ? 'También incluimos:' : lang === 'fr' ? 'Aussi inclus :' : lang === 'pt' ? 'Também incluído:' : 'Also included:'}
         </h3>
         <div class="grid grid-cols-2 lg:grid-cols-6 gap-y-4 gap-x-6 relative z-10">
           {services.filter(s => !['breakfast', 'oxygen', 'tours'].includes(s.id)).slice(0, 6).map(service => (
