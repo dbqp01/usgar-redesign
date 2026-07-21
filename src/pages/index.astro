@@ -26,7 +26,10 @@ import slide2 from "../assets/hotel/hero-slide-recepcion.jpg";
 import slide3 from "../assets/hotel/hero-slide-matrimonial.jpg";
 import slide4 from "../assets/hotel/hero-slide-cusco.jpg";
 
-const lang = (Astro.currentLocale || "en") as "en" | "es";
+import type { Locale } from "../i18n/utils";
+
+const lang = (Astro.currentLocale || "en") as Locale;
+
 const optimizedPoster = await getImage({
   src: slide1,
   width: 1200,
@@ -155,7 +158,8 @@ const schemas = [hotelSchema, faqSchema];
           width={1600}
           height={900}
           format="avif"
-          loading="lazy"
+          loading="eager"
+          fetchpriority="high"
           class="w-full h-full object-cover"
         />
       </div>
@@ -621,10 +625,10 @@ const schemas = [hotelSchema, faqSchema];
       slides[currentIndex].classList.remove('opacity-0', 'z-0');
       slides[currentIndex].classList.add('opacity-100', 'z-10');
       
-      // trigger reflow for zoom animation
-      void (images[currentIndex] as HTMLElement).offsetWidth;
-      images[currentIndex].classList.remove('scale-105');
-      images[currentIndex].classList.add('scale-100');
+      requestAnimationFrame(() => {
+        images[currentIndex].classList.remove('scale-105');
+        images[currentIndex].classList.add('scale-100');
+      });
 
       btns[currentIndex].classList.remove('text-white/50');
       btns[currentIndex].classList.add('bg-white/10', 'text-white', 'shadow-inner');

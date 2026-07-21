@@ -5,7 +5,10 @@ import { rooms } from '../data/rooms';
 import { useTranslations } from '../i18n/utils';
 import { translateBeds } from '../utils/helpers';
 
-const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+import type { Locale } from '../i18n/utils';
+
+const lang = (Astro.currentLocale || 'en') as Locale;
+
 const t = useTranslations(lang);
 
 // Dynamically import first photo of each room
@@ -60,7 +63,8 @@ const roomsWithPhotos = await Promise.all(
           {room.photo ? (
             <Image
               src={room.photo}
-              alt={room.name[lang]}
+              alt={room.name[lang] || room.name.en || "Room"}
+
               width={1000}
               height={800}
               format="webp"

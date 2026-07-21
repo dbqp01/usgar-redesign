@@ -1,10 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { useTranslations } from '../i18n/utils';
+import { useTranslations, type Locale } from "../i18n/utils";
 
 export const prerender = true;
 
-const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+const lang = (Astro.currentLocale || "en") as Locale;
 const t = useTranslations(lang);
 ---
 

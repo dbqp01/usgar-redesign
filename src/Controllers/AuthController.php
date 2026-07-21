@@ -243,7 +243,7 @@ class AuthController {
             Response::json([
                 'success' => false,
                 'user'    => null,
-            ], 401);
+            ], 200);
             return;
         }
 

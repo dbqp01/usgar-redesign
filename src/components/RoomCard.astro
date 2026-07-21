@@ -2,8 +2,9 @@
 import { Image } from "astro:assets";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import type { Room } from "../data/rooms";
-import { useTranslations } from "../i18n/utils";
+import { useTranslations, type Locale } from "../i18n/utils";
 import { translateBeds } from "../utils/helpers";
+
 
 interface Props {
   room: Room;
@@ -12,7 +13,7 @@ interface Props {
 
 const { room, index = 0 } = Astro.props;
 
-const lang = (Astro.currentLocale || "en") as "en" | "es";
+const lang = (Astro.currentLocale || "en") as Locale;
 const t = useTranslations(lang);
 
 // Dynamically import the first photo from the room's folder
@@ -47,7 +48,8 @@ const translatedBeds = translateBeds(room.beds, lang);
       firstImage ? (
         <Image
           src={firstImage}
-          alt={room.name[lang]}
+          alt={room.name[lang] || room.name.en || "Room"}
+
           width={600}
           height={450}
           class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"

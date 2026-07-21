@@ -3,51 +3,62 @@ import { Image } from 'astro:assets';
 import { services } from '../data/services';
 import { useTranslations } from '../i18n/utils';
 
+import type { Locale } from '../i18n/utils';
+
 // Brand-approved photography for Bento Box
 import patioImg from '../assets/hotel/hero-slide-patio.jpg';
 import oxigenoImg from '../assets/hotel/fallback-room-oxigeno.jpg';
 import cuscoImg from '../assets/hotel/hero-slide-cusco.jpg';
 import matrimonialImg from '../assets/hotel/hero-slide-matrimonial.jpg';
 
-const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
 
 // Grouping services for the Bento Box
-const highlights = [
+const highlights: Array<{
+  id: string;
+  title: Record<string, string>;
+  desc: Record<string, string>;
+  img: ImageMetadata;
+  size: string;
+  icon: string;
+}> = [
   {
     id: 'breakfast',
-    title: { en: 'Andean Breakfast', es: 'Desayuno Andino' },
-    desc: { en: 'Local flavors to start your day right.', es: 'Sabores locales para empezar bien tu día.' },
+    title: { en: 'Andean Breakfast', es: 'Desayuno Andino', fr: 'Petit-Déjeuner Andin', pt: 'Café da Manhã Andino' },
+    desc: { en: 'Local flavors to start your day right.', es: 'Sabores locales para empezar bien tu día.', fr: 'Saveurs locales pour bien démarrer votre journée.', pt: 'Sabores locais para começar bem o seu dia.' },
     img: patioImg,
     size: 'col-span-1 md:col-span-2 row-span-2',
     icon: '<svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 19h16M7 19V7a2 2 0 012-2h6a2 2 0 012 2v12M17 9h2a2 2 0 012 2v2a2 2 0 01-2 2h-2" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 2v3M14 2v3" /></svg>'
   },
   {
     id: 'oxygen',
-    title: { en: 'Oxygen & Acclimatization', es: 'Oxígeno & Aclimatación' },
-    desc: { en: 'Complimentary oxygen to help you adjust to Cusco.', es: 'Oxígeno de cortesía para ayudarte a aclimatarte a Cusco.' },
+    title: { en: 'Oxygen & Acclimatization', es: 'Oxígeno & Aclimatación', fr: 'Oxygène & Acclimatation', pt: 'Oxigênio & Aclimação' },
+    desc: { en: 'Complimentary oxygen to help you adjust to Cusco.', es: 'Oxígeno de cortesía para ayudarte a aclimatarte a Cusco.', fr: 'Oxygène gracieux pour vous aider à vous acclimater.', pt: 'Oxigênio de cortesia para ajudar na aclimação.' },
     img: oxigenoImg,
     size: 'col-span-1 md:col-span-1 row-span-1',
     icon: '<svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>'
   },
   {
     id: 'tours',
-    title: { en: 'Machu Picchu Tours', es: 'Tours Machu Picchu' },
-    desc: { en: 'Seamless travel assistance.', es: 'Asistencia de viaje sin complicaciones.' },
+    title: { en: 'Machu Picchu Tours', es: 'Tours Machu Picchu', fr: 'Tours Machu Picchu', pt: 'Passeios Machu Picchu' },
+    desc: { en: 'Seamless travel assistance.', es: 'Asistencia de viaje sin complicaciones.', fr: 'Assistance voyage personnalisée.', pt: 'Assistência de viagem simplificada.' },
     img: cuscoImg,
     size: 'col-span-1 md:col-span-1 row-span-2',
     icon: '<svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2L2 22h20L12 2zM12 8l3 6H9l3-6z" /></svg>'
   },
   {
     id: 'comfort',
-    title: { en: '24/7 Comfort', es: 'Confort 24/7' },
-    desc: { en: 'Hot water, heating, and premium bedding.', es: 'Agua caliente, calefacción y ropa de cama premium.' },
+    title: { en: 'Boutique Comfort', es: 'Confort Boutique', fr: 'Confort Boutique', pt: 'Conforto Boutique' },
+    desc: { en: 'Crafted spaces for authentic rest.', es: 'Espacios diseñados para un descanso auténtico.', fr: 'Des espaces conçus pour un repos authentique.', pt: 'Espaços projetados para um descanso autêntico.' },
     img: matrimonialImg,
     size: 'col-span-1 md:col-span-1 row-span-1',
-    icon: '<svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 9h14c1.1 0 2 .9 2 2v7h-2v-2H5v2H3v-7c0-1.1.9-2 2-2zm0 0V5c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v4M9 9V5M15 9V5" /></svg>'
+    icon: '<svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>'
   }
 ];
+
 ---
+
 
 <section id="services" class="py-28 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-500 relative overflow-hidden">
   
@@ -76,7 +87,8 @@ const highlights = [
           <!-- Background Image with Astro Image Optimization -->
           <Image
             src={item.img}
-            alt={item.title[lang]}
+            alt={item.title[lang] || item.title.en || item.title.es || 'Service'}
+
             width={800}
             height={600}
             format="webp"

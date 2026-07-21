@@ -11,6 +11,8 @@
   "country": "PE",
   "address_es": "759 Calle Hospital, Centro de Cusco, Cuzco",
   "address_en": "759 Calle Hospital, Centro de Cusco, Cusco",
+  "address_fr": "759 Calle Hospital, Centre de Cusco, Cusco",
+  "address_pt": "759 Calle Hospital, Centro de Cusco, Cusco",
   "latitude": -13.52152811591796,
   "longitude": -71.98488680393618,
   "checkinTime": "12:00",
@@ -19,6 +21,8 @@
   "priceRange": "$$",
   "siteDescription_es": "USGAR Hotels — Hotel boutique en San Pedro, Cusco. Tu puerta de entrada a Machu Picchu y el Valle Sagrado.",
   "siteDescription_en": "USGAR Hotels — Boutique hotel in San Pedro, Cusco. Your gateway to Machu Picchu and the Sacred Valley.",
+  "siteDescription_fr": "USGAR Hotels — Hôtel boutique à San Pedro, Cusco. Votre porte d'entrée vers le Machu Picchu et la Vallée Sacrée.",
+  "siteDescription_pt": "USGAR Hotels — Hotel boutique em San Pedro, Cusco. Sua porta de entrada para Machu Picchu e o Vale Sagrado.",
   "socialLinks": [
     { "platform": "instagram", "url": "https://instagram.com/usgarhotels", "label": "Instagram" },
     { "platform": "facebook", "url": "https://facebook.com/usgarhotels", "label": "Facebook" },

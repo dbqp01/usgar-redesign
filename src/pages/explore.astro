@@ -1,22 +1,23 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { attractions } from '../data/attractions';
-import { useTranslations } from '../i18n/utils';
+import { useTranslations, type Locale } from '../i18n/utils';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 
-const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
 
 // Unique categories in dataset
 const categories = ['all', 'historical', 'nature', 'cultural', 'adventure'];
 
-const categoryLabels: Record<string, { en: string; es: string }> = {
-  all: { en: 'All', es: 'Todos' },
-  historical: { en: 'Historical', es: 'Histórico' },
-  nature: { en: 'Nature', es: 'Naturaleza' },
-  cultural: { en: 'Cultural', es: 'Cultural' },
-  adventure: { en: 'Adventure', es: 'Aventura' }
+const categoryLabels: Record<string, { en: string; es: string; fr: string; pt: string }> = {
+  all: { en: 'All', es: 'Todos', fr: 'Tous', pt: 'Todos' },
+  historical: { en: 'Historical', es: 'Histórico', fr: 'Historique', pt: 'Histórico' },
+  nature: { en: 'Nature', es: 'Naturaleza', fr: 'Nature', pt: 'Natureza' },
+  cultural: { en: 'Cultural', es: 'Cultural', fr: 'Culturel', pt: 'Cultural' },
+  adventure: { en: 'Adventure', es: 'Aventura', fr: 'Aventure', pt: 'Aventura' }
 };
+
 
 const categoryIcons: Record<string, string> = {
   all: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" /><line x1="9" y1="3" x2="9" y2="18" /><line x1="15" y1="6" x2="15" y2="21" /></svg>`,

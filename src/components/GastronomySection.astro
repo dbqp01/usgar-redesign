@@ -4,47 +4,55 @@ import desayunoImg from '../assets/hotel/fallback-room-desayuno.jpg';
 import recepcionImg from '../assets/hotel/hero-slide-recepcion.jpg';
 import patioImg from '../assets/hotel/hero-slide-patio.jpg';
 
-const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+import type { Locale } from '../i18n/utils';
+
+const lang = (Astro.currentLocale || 'en') as Locale;
 
 const culinaryOffers = [
   {
     id: 'buffet',
-    title: { en: 'Daily Buffet Breakfast', es: 'Desayuno Buffet Diario' },
+    title: { en: 'Daily Buffet Breakfast', es: 'Desayuno Buffet Diario', fr: 'Petit-Déjeuner Buffet Quotidien', pt: 'Café da Manhã Buffet Diário' },
     schedule: '06:00 AM - 09:00 AM',
     metric: '100%',
-    metricLabel: { en: 'Included in Stay', es: 'Incluido en tu Estadía' },
+    metricLabel: { en: 'Included in Stay', es: 'Incluido en tu Estadía', fr: 'Inclus dans le Séjour', pt: 'Incluído na Estadia' },
     desc: {
       en: 'Fresh tropical fruits, artisan breads, eggs prepared to order, regional cheeses, coffee, and authentic hot Andean herbal teas.',
-      es: 'Frutas frescas del valle, panes artesanales, huevos al gusto, quesos regionales, café pasado e infusiones andinas calientes.'
+      es: 'Frutas frescas del valle, panes artesanales, huevos al gusto, quesos regionales, café pasado e infusiones andinas calientes.',
+      fr: 'Fruits frais, pains artisanaux, œufs préparés à la commande, fromages régionaux, café et infusions andines chaudes.',
+      pt: 'Frutas frescas, pães artesanais, ovos preparados na hora, queijos regionais, café e infusões andinas quentes.'
     },
     image: desayunoImg,
     size: 'col-span-1 lg:col-span-2 row-span-2'
   },
   {
     id: 'teas',
-    title: { en: 'Coca & Muña Station', es: 'Estación de Mates' },
+    title: { en: 'Coca & Muña Station', es: 'Estación de Mates', fr: 'Station de Boissons Chaudes', pt: 'Estação de Chás' },
     schedule: '24 Hours',
     metric: '24/7',
-    metricLabel: { en: 'Complimentary', es: 'De Cortesía' },
+    metricLabel: { en: 'Complimentary', es: 'De Cortesía', fr: 'Gracieux', pt: 'De Cortesia' },
     desc: {
       en: 'Unlimited hot Coca and Muña leaf infusions to prevent altitude sickness and stay energized.',
-      es: 'Infusiones ilimitadas de hoja de coca y muña caliente para prevenir el soroche y mantener energía.'
-    },
-    image: patioImg,
-    size: 'col-span-1 row-span-1'
-  },
-  {
-    id: 'restobar',
-    title: { en: 'Auka Restobar', es: 'Auka Restobar' },
-    schedule: '12:00 PM - 10:00 PM',
-    metric: '18+',
-    metricLabel: { en: 'Andean Specialties', es: 'Especialidades Andinas' },
-    desc: {
-      en: 'Savor traditional Andean appetizers, hot soups, and refreshing Pisco drinks in a warm historic courtyard atmosphere.',
-      es: 'Saboréate con piqueos andinos, sopas reconfortantes y cócteles a base de Pisco en nuestro acogedor patio.'
+      es: 'Infusiones ilimitadas de hoja de Coca y Muña para prevenir el soroche y mantenerte activo.',
+      fr: 'Infusions illimitées de feuilles de Coca et Muña pour prévenir le mal de l\'altitude.',
+      pt: 'Infusões ilimitadas de folhas de Coca e Muña para prevenir o soroche.'
     },
     image: recepcionImg,
-    size: 'col-span-1 row-span-1'
+    size: 'col-span-1 lg:col-span-1 row-span-1'
+  },
+  {
+    id: 'cafeteria',
+    title: { en: 'Evening Cafeteria', es: 'Cafetería Nocturna', fr: 'Cafétéria du Soir', pt: 'Cafetaria Noturna' },
+    schedule: 'Until 22:00 PM',
+    metric: '22:00',
+    metricLabel: { en: 'Open Daily', es: 'Abierto Diario', fr: 'Ouvert Tous les Jours', pt: 'Aberto Diariamente' },
+    desc: {
+      en: 'Warm beverages, light snacks, and cozy seating after your Machu Picchu tours.',
+      es: 'Bebidas calientes, bocadillos ligeros y ambiente acogedor después de tus tours a Machu Picchu.',
+      fr: 'Boissons chaudes, en-cas légers et ambiance chaleureuse après vos visites.',
+      pt: 'Bebidas quentes, lanches leves e ambiente acolhedor após seus passeios.'
+    },
+    image: patioImg,
+    size: 'col-span-1 lg:col-span-1 row-span-1'
   }
 ];
 ---
@@ -74,7 +82,8 @@ const culinaryOffers = [
           <!-- Background Image -->
           <Image
             src={offer.image}
-            alt={offer.title[lang]}
+            alt={offer.title[lang] || offer.title.en || offer.title.es || 'Gastronomy'}
+
             width={1200}
             height={800}
             format="webp"

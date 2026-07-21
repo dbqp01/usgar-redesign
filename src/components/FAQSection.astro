@@ -4,7 +4,10 @@ import faqData from "../content/faq/faq.json";
 import { useTranslations } from '../i18n/utils';
 import recepcionImg from '../assets/hotel/hero-slide-recepcion.jpg';
 
-const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+import type { Locale } from '../i18n/utils';
+
+const lang = (Astro.currentLocale || 'en') as Locale;
+
 const t = useTranslations(lang);
 ---
 

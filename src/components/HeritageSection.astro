@@ -3,13 +3,16 @@ import { Image } from 'astro:assets';
 import patioImg from '../assets/hotel/hero-slide-patio.jpg';
 import pasilloImg from '../assets/hotel/fallback-room-pasillo.jpg';
 
-const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+import type { Locale } from '../i18n/utils';
+
+const lang = (Astro.currentLocale || 'en') as Locale;
 
 const stats = [
-  { value: '1650', label: { en: 'Colonial Foundation', es: 'Fundación Colonial' } },
-  { value: '3,400m', label: { en: 'Highland Serenity', es: 'Serenidad Andina' } },
-  { value: '24/7', label: { en: 'Oxygen & Tea', es: 'Oxígeno y Té' } }
+  { value: '1650', label: { en: 'Colonial Foundation', es: 'Fundación Colonial', fr: 'Fondation Coloniale', pt: 'Fundação Colonial' } },
+  { value: '3,400m', label: { en: 'Highland Serenity', es: 'Serenidad Andina', fr: 'Sérénité Andine', pt: 'Serenidade Andina' } },
+  { value: '24/7', label: { en: 'Oxygen & Tea', es: 'Oxígeno y Té', fr: 'Oxygène & Infusions', pt: 'Oxigênio & Chás' } }
 ];
+
 ---
 
 <section id="heritage" class="py-32 px-4 bg-surface-card-dark text-white relative overflow-hidden transition-colors duration-500">
@@ -34,9 +37,9 @@ const stats = [
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-80 z-0"></div>
         
         <div class="absolute bottom-8 left-8 right-8 z-20">
-           <h3 class="font-display text-4xl sm:text-5xl text-white tracking-wide">
+           <p class="font-display text-4xl sm:text-5xl text-white tracking-wide font-bold">
              {lang === 'es' ? 'Fusión Inca-Colonial' : 'Inca-Colonial Fusion'}
-           </h3>
+           </p>
            <p class="text-sm font-light text-white/80 mt-2 font-body max-w-sm">
              {lang === 'es' 
                ? '500 años de historia custodiados en arcos coloniales y piedra ancestral.'

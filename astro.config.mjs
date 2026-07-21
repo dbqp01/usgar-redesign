@@ -6,8 +6,8 @@ export default defineConfig({
   site: 'https://sanpedro.hotelesusgar.com',
   output: 'static',
   prefetch: {
-    prefetchAll: true,
-    defaultStrategy: 'viewport',
+    prefetchAll: false,
+    defaultStrategy: 'hover',
   },
   integrations: [sitemap()],
   image: {
@@ -34,9 +34,14 @@ export default defineConfig({
   },
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'es'],
+    locales: ['en', 'es', 'fr', 'pt'],
     routing: {
-      prefixDefaultLocale: false
+      prefixDefaultLocale: false,
+      fallbackType: 'redirect'
+    },
+    fallback: {
+      fr: 'en',
+      pt: 'es'
     }
   }
 });

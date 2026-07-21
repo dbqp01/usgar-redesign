@@ -7,10 +7,13 @@ import { translateBeds } from "../utils/helpers";
 import SVGIcons from "./icons/SVGIcons.astro";
 import { siteSettings } from "../data/settings";
 
+import type { Locale } from "../i18n/utils";
+
 interface Props {
   room: Room;
-  lang: "en" | "es";
+  lang: Locale;
 }
+
 
 const { room, lang } = Astro.props;
 const t = useTranslations(lang);
@@ -59,13 +62,15 @@ const amenityIconNames: Record<string, "wifi" | "breakfast" | "hot-water" | "hea
   laundry: "laundry",
 };
 
-const amenitiesMap: Record<string, { label: { en: string; es: string }; iconName: "wifi" | "breakfast" | "hot-water" | "heating" | "tv" | "laundry" }> = {};
+const amenitiesMap: Record<string, { label: Record<string, string>; iconName: "wifi" | "breakfast" | "hot-water" | "heating" | "tv" | "laundry" }> = {};
 for (const [key, labelObj] of Object.entries(room.amenityLabels || {})) {
   amenitiesMap[key === 'hot_water' ? 'hot-water' : key] = {
-    label: labelObj as { en: string; es: string },
+    label: labelObj as unknown as Record<string, string>,
+
     iconName: amenityIconNames[key] || "wifi",
   };
 }
+
 const roomSchema = {
   "@context": "https://schema.org",
   "@type": "HotelRoom",
@@ -296,8 +301,9 @@ const roomSchema = {
                     </div>
                     <div>
                       <h3 class="font-medium text-sm text-text-primary-light dark:text-text-primary-dark">
-                        {amenity.label[lang]}
+                        {amenity.label[lang] || amenity.label.en || amenity.label.es}
                       </h3>
+
                       <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
                         {lang === "es"
                           ? "Incluido sin costo extra"

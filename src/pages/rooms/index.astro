@@ -2,21 +2,23 @@
 import Layout from "../../layouts/Layout.astro";
 import RoomCard from "../../components/RoomCard.astro";
 import { rooms } from "../../data/rooms";
-import { useTranslations } from "../../i18n/utils";
+import { useTranslations, type Locale } from "../../i18n/utils";
 
-const lang = (Astro.currentLocale || "en") as "en" | "es";
+const lang = (Astro.currentLocale || "en") as Locale;
 const t = useTranslations(lang);
 
-// Unique capacities for filters (2, 3, 4 guests)
-const capacities = ["all", "2", "3", "4"];
+// Unique capacities for filters
+const capacities = ["all", "2", "3", "4", "7"];
 
-const filterLabels: Record<string, { en: string; es: string }> = {
-  all: { en: "All Rooms", es: "Todas las Habitaciones" },
-  "2": { en: "2 Guests", es: "2 Huéspedes" },
-  "3": { en: "3 Guests", es: "3 Huéspedes" },
-  "4": { en: "4+ Guests", es: "4+ Huéspedes" },
+const filterLabels: Record<string, { en: string; es: string; fr: string; pt: string }> = {
+  all: { en: "All Rooms", es: "Todas las Habitaciones", fr: "Toutes les Chambres", pt: "Todos os Quartos" },
+  "2": { en: "2 Guests", es: "2 Huéspedes", fr: "2 Voyageurs", pt: "2 Hóspedes" },
+  "3": { en: "3 Guests", es: "3 Huéspedes", fr: "3 Voyageurs", pt: "3 Hóspedes" },
+  "4": { en: "4 Guests", es: "4 Huéspedes", fr: "4 Voyageurs", pt: "4 Hóspedes" },
+  "7": { en: "7 Guests", es: "7 Huéspedes", fr: "7 Voyageurs", pt: "7 Hóspedes" }
 };
 ---
+
 
 <Layout title={`${t("rooms.title")} — USGAR Hotels`} lang={lang}>
   <!-- Header Banner -->

@@ -17,14 +17,14 @@ export interface SiteSettings {
   region: string;
   postalCode: string;
   country: string;
-  address: { en: string; es: string };
+  address: { en: string; es: string; fr: string; pt: string };
   latitude: number;
   longitude: number;
   checkinTime: string;
   checkoutTime: string;
   starRating: number;
   priceRange: string;
-  siteDescription: { en: string; es: string };
+  siteDescription: { en: string; es: string; fr: string; pt: string };
   socialLinks: SocialLink[];
 }
 
@@ -39,13 +39,23 @@ export const siteSettings: SiteSettings = {
   region: settingsData.region,
   postalCode: settingsData.postalCode,
   country: settingsData.country,
-  address: { en: settingsData.address_en, es: settingsData.address_es },
+  address: {
+    en: settingsData.address_en,
+    es: settingsData.address_es,
+    fr: settingsData.address_fr,
+    pt: settingsData.address_pt
+  },
   latitude: settingsData.latitude,
   longitude: settingsData.longitude,
   checkinTime: settingsData.checkinTime,
   checkoutTime: settingsData.checkoutTime,
   starRating: settingsData.starRating,
   priceRange: settingsData.priceRange,
-  siteDescription: { en: settingsData.siteDescription_en, es: settingsData.siteDescription_es },
+  siteDescription: {
+    en: settingsData.siteDescription_en,
+    es: settingsData.siteDescription_es,
+    fr: settingsData.siteDescription_fr,
+    pt: settingsData.siteDescription_pt
+  },
   socialLinks: settingsData.socialLinks,
 };

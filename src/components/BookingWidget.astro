@@ -2,7 +2,10 @@
 import { rooms } from '../data/rooms';
 import { useTranslations } from '../i18n/utils';
 
-const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+import type { Locale } from '../i18n/utils';
+
+const lang = (Astro.currentLocale || 'en') as Locale;
+
 const t = useTranslations(lang);
 
 const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));

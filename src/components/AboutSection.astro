@@ -5,7 +5,10 @@ import aboutData from "../content/about/about.json";
 import patioImg from '../assets/hotel/hero-slide-patio.jpg';
 import fachadaImg from '../assets/hotel/fallback-room-fachada.jpg';
 
-const lang = (Astro.currentLocale || "en") as "en" | "es";
+import type { Locale } from '../i18n/utils';
+
+const lang = (Astro.currentLocale || 'en') as Locale;
+
 const t = useTranslations(lang);
 
 const title = lang === 'es' ? aboutData.title_es : aboutData.title_en;
@@ -41,9 +44,9 @@ const purpose = lang === 'es' ? aboutData.purpose_es : aboutData.purpose_en;
                return (
                  <div class="flex items-center gap-3">
                    <div class="w-8 h-px bg-secondary"></div>
-                   <h4 class="font-display tracking-widest uppercase text-xs font-bold text-primary dark:text-white">
+                   <h3 class="font-display tracking-widest uppercase text-xs font-bold text-primary dark:text-white">
                      {valTitle}
-                   </h4>
+                   </h3>
                  </div>
                );
              })}

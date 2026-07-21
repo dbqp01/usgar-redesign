@@ -1,10 +1,14 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { attractions } from "../../data/attractions";
+import { attractions, type Attraction } from "../../data/attractions";
 import { useTranslations } from "../../i18n/utils";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
+
+interface Props {
+  attraction?: Attraction;
+}
 
 export async function getStaticPaths() {
   return attractions.map((attraction) => {
@@ -15,18 +19,21 @@ export async function getStaticPaths() {
   });
 }
 
-const { attraction } = Astro.props;
-const lang = (Astro.currentLocale || "en") as "en" | "es";
+const { attraction: propAttraction } = Astro.props;
+const { slug } = Astro.params;
+const attraction = propAttraction || attractions.find(a => a.id === slug) || attractions[0];
+
+const lang = (Astro.currentLocale || "en") as "en" | "es" | "fr" | "pt";
 const t = useTranslations(lang);
 
 const exploreImages = import.meta.glob<{ default: ImageMetadata }>('../../assets/explore/*.jpg', { eager: true });
 
 // Category Labels and Icons
-const categoryLabels: Record<string, { en: string; es: string }> = {
-  historical: { en: "Historical Site", es: "Sitio Histórico" },
-  nature: { en: "Nature & Landscape", es: "Naturaleza y Paisaje" },
-  cultural: { en: "Cultural Experience", es: "Experiencia Cultural" },
-  adventure: { en: "Adventure", es: "Aventura" },
+const categoryLabels: Record<string, { en: string; es: string; fr: string; pt: string }> = {
+  historical: { en: "Historical Site", es: "Sitio Histórico", fr: "Site Historique", pt: "Sítio Histórico" },
+  nature: { en: "Nature & Landscape", es: "Naturaleza y Paisaje", fr: "Nature et Paysage", pt: "Natureza e Paisagem" },
+  cultural: { en: "Cultural Experience", es: "Experiencia Cultural", fr: "Expérience Culturelle", pt: "Experiência Cultural" },
+  adventure: { en: "Adventure", es: "Aventura", fr: "Aventure", pt: "Aventura" },
 };
 
 const categoryIcons: Record<string, string> = {

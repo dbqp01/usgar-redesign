@@ -1,9 +1,9 @@
 ---
 import { reviews } from '../data/reviews';
-import { useTranslations } from '../i18n/utils';
+import { useTranslations, type Locale } from '../i18n/utils';
 
 interface Props {
-  lang: 'en' | 'es';
+  lang: Locale;
 }
 
 const { lang } = Astro.props;
@@ -13,14 +13,19 @@ const t = useTranslations(lang);
 <section class="py-24 bg-surface-light dark:bg-surface-dark transition-colors duration-500">
   <div class="max-w-7xl mx-auto px-4 mb-16 text-center">
     <span class="tag-dash-title block">
-      {t("reviews.sectionLabel")}
+      {t('reviews.sectionLabel')}
     </span>
-    <h2 class="font-display text-4xl sm:text-5xl mt-4 text-text-primary-light dark:text-white">
-      {lang === 'es' ? 'LO QUE DICEN DE NOSOTROS' : 'GUEST VOICES'}
+    <h2 class="font-display text-4xl sm:text-5xl text-text-primary-light dark:text-white mt-3">
+      {t('reviews.title')}
     </h2>
+    <p class="text-text-secondary-light dark:text-text-secondary-dark max-w-xl mx-auto mt-4 text-base sm:text-lg">
+      {t('reviews.description')}
+    </p>
   </div>
-  
-  <div class="marquee-wrapper">
+
+  <!-- Marquee Track -->
+  <div class="marquee-container overflow-hidden relative w-full py-4 select-none">
+    <!-- First track -->
     <div class="marquee-content gap-6 px-3">
       {
         reviews.map((review) => (
@@ -37,7 +42,7 @@ const t = useTranslations(lang);
             </div>
             
             <p class="text-sm sm:text-base text-center text-text-secondary-light dark:text-text-secondary-dark font-body font-light italic leading-relaxed">
-              "{review.text[lang]}"
+              "{review.text[lang] || review.text.en || review.text.es}"
             </p>
             
             <div class="text-center pt-4 border-t border-black/5 dark:border-white/5">
@@ -70,7 +75,7 @@ const t = useTranslations(lang);
             </div>
             
             <p class="text-sm sm:text-base text-center text-text-secondary-light dark:text-text-secondary-dark font-body font-light italic leading-relaxed">
-              "{review.text[lang]}"
+              "{review.text[lang] || review.text.en || review.text.es}"
             </p>
             
             <div class="text-center pt-4 border-t border-black/5 dark:border-white/5">
@@ -87,37 +92,3 @@ const t = useTranslations(lang);
     </div>
   </div>
 </section>
-
-<style>
-  .marquee-wrapper {
-    display: flex;
-    overflow: hidden;
-    /* padding top/bottom so shadows don't clip */
-    padding: 2rem 0; 
-    width: 100%;
-    position: relative;
-    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-  }
-
-  .marquee-content {
-    display: flex;
-    flex: 0 0 auto;
-    min-width: 100%;
-    z-index: 1;
-    animation: scroll 40s linear infinite;
-  }
-  
-  .marquee-wrapper:hover .marquee-content {
-    animation-play-state: paused;
-  }
-
-  @keyframes scroll {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-100%);
-    }
-  }
-</style>
