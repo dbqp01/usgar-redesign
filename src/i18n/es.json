@@ -35,6 +35,36 @@
     "videoTour": "Video Tour",
     "viewAll": "Ver todas las habitaciones"
   },
+  "roomsSection": {
+    "heading": "NUESTRO REFUGIO",
+    "subheading": "Explora nuestros espacios diseñados con elegancia y confort, fusionando la herencia colonial con el lujo moderno.",
+    "viewDetails": "VER DETALLES",
+    "tapHint": "Toca una habitación para ver más"
+  },
+  "room": {
+    "about": "Sobre la habitación",
+    "amenities": "Servicios y comodidades",
+    "includedFree": "Incluido sin costo extra",
+    "baseRate": "Tarifa base",
+    "maxCapacity": "Capacidad máxima",
+    "guests": "huéspedes",
+    "persons": "personas",
+    "bedConfig": "Distribución",
+    "bookThisRoom": "Reservar Habitación",
+    "bestRateGuarantee": "Garantía de mejor tarifa disponible reservando directamente en nuestra web.",
+    "visualExperience": "Experiencia Visual",
+    "videoTourTitle": "Video Tour de la Habitación",
+    "videoTourDesc": "Recorre la habitación de forma interactiva y admira sus detalles antes de tu llegada.",
+    "startVideoTour": "Iniciar Video Tour",
+    "noSound": "Sin sonido",
+    "soundActive": "Sonido activo",
+    "zoom": "Expandir",
+    "expandPhoto": "Expandir foto",
+    "backToRooms": "Volver a habitaciones",
+    "home": "Inicio",
+    "unitText": "persona",
+    "photoGallery": "Galería de fotos"
+  },
   "services": {
     "sectionLabel": "Nuestros Servicios",
     "title": "Todo Lo Que Necesitas",
@@ -52,6 +82,7 @@
     "viewAll": "Ver todas las atracciones",
     "searchPlaceholder": "Buscar atracción...",
     "viewGuide": "Ver Guía",
+    "popularDestinations": "Destinos Populares",
     "noResults": "No se encontraron atracciones",
     "noResultsHint": "Prueba cambiando los filtros o la palabra de búsqueda.",
     "schemaName": "Atracciones turísticas cerca de USGAR Hotels",
@@ -60,12 +91,16 @@
   "map": {
     "sectionLabel": "Ubicación",
     "title": "Encuéntranos en Cusco",
-    "description": "Ubicado en el corazón de San Pedro, a pasos del mercado histórico y a poca distancia de la Plaza de Armas."
+    "description": "Ubicado en el corazón de San Pedro, a pasos del mercado histórico y a poca distancia de la Plaza de Armas.",
+    "loading": "Cargando mapa interactivo..."
   },
   "faq": {
     "sectionLabel": "FAQ",
     "title": "Preguntas Frecuentes",
-    "description": "Todo lo que necesitas saber sobre tu estadía en Cusco: soroche (mal de altura), check-in, traslados y más."
+    "description": "Todo lo que necesitas saber sobre tu estadía en Cusco: soroche (mal de altura), check-in, traslados y más.",
+    "assistanceTitle": "Atención 24/7",
+    "assistanceDesc": "Nuestro equipo bilingüe en recepción está listo las 24 horas para ayudarte con reservas, itinerarios a Machu Picchu y aclimatación.",
+    "whatsappCta": "Contactar por WhatsApp"
   },
   "footer": {
     "contact": "Contacto",
@@ -81,6 +116,20 @@
   },
   "theme": {
     "toggleDark": "Cambiar modo oscuro"
+  },
+  "layout": {
+    "skipToContent": "Ir al contenido principal"
+  },
+  "heritage": {
+    "sectionLabel": "PATRIMONIO & LEGADO",
+    "heading": "UN REFUGIO VIVO",
+    "description": "Ubicado a pasos del histórico Mercado de San Pedro, nuestro hotel ofrece un oasis de lujo sereno. Cada muro cuenta una historia de misticismo andino y calidez humana, diseñado para que descanses antes o después de Machu Picchu.",
+    "fusionTitle": "Fusión Inca-Colonial",
+    "fusionDesc": "500 años de historia custodiados en arcos coloniales y piedra ancestral."
+  },
+  "gastronomy": {
+    "sectionLabel": "GASTRONOMÍA & CAFETERÍA",
+    "description": "Una experiencia gastronómica inolvidable con ingredientes andinos frescos en el corazón del Cusco."
   },
   "contact": {
     "title": "Contáctanos",

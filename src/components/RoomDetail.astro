@@ -6,6 +6,7 @@ import { useTranslations } from "../i18n/utils";
 import { translateBeds } from "../utils/helpers";
 import SVGIcons from "./icons/SVGIcons.astro";
 import { siteSettings } from "../data/settings";
+import { getRelativeLocaleUrl } from "astro:i18n";
 
 import type { Locale } from "../i18n/utils";
 
@@ -80,7 +81,7 @@ const roomSchema = {
   occupancy: {
     "@type": "QuantitativeValue",
     value: room.maxGuests,
-    unitText: lang === "es" ? "persona" : "person",
+    unitText: t('room.unitText'),
   },
   offers: {
     "@type": "Offer",
@@ -113,10 +114,10 @@ const roomSchema = {
         class="flex text-sm text-text-secondary-light dark:text-text-secondary-dark font-medium gap-2"
       >
         <a
-          href={lang === "es" ? "/es" : "/"}
+          href={getRelativeLocaleUrl(lang, '')}
           class="hover:text-primary dark:hover:text-secondary transition-colors"
         >
-          {lang === "es" ? "Inicio" : "Home"}
+          {t('room.home')}
         </a>
         <span>/</span>
         <span class="text-text-primary-light dark:text-text-primary-dark">{room.name[lang]}</span
@@ -124,7 +125,7 @@ const roomSchema = {
       </nav>
 
       <a
-        href={lang === "es" ? "/es/#rooms" : "/#rooms"}
+        href={`${getRelativeLocaleUrl(lang, '')}#rooms`}
         class="inline-flex items-center gap-2 text-primary dark:text-secondary hover:text-primary-dark dark:hover:text-secondary-light font-semibold text-sm transition-colors duration-300 group"
       >
         <svg
@@ -139,7 +140,7 @@ const roomSchema = {
             stroke-linejoin="round"
             d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
         </svg>
-        {lang === "es" ? "Volver a habitaciones" : "Back to rooms"}
+        {t('room.backToRooms')}
       </a>
     </div>
 
@@ -168,9 +169,9 @@ const roomSchema = {
               d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
             ></path>
           </svg>
-          {t("rooms.upTo")}
+          {t('rooms.upTo')}
           {room.maxGuests}
-          {lang === "es" ? "huéspedes" : "guests"}
+          {t('room.guests')}
         </span>
         <span>•</span>
         <span class="flex items-center gap-1.5">
@@ -211,12 +212,12 @@ const roomSchema = {
           <button
             id="gallery-zoom-trigger"
             class="absolute bottom-6 right-6 bg-black/45 hover:bg-primary/95 text-white backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10 flex items-center gap-2 hover:scale-105 transition-all duration-300 shadow-md text-sm cursor-pointer"
-            aria-label={lang === "es" ? "Expandir foto" : "Zoom photo"}
+            aria-label={t('room.expandPhoto')}
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
             </svg>
-            <span>{lang === "es" ? "Expandir" : "Zoom"}</span>
+            <span>{t('room.zoom')}</span>
           </button>
 
           <!-- Navigation Arrows over main image -->
@@ -272,7 +273,7 @@ const roomSchema = {
         <!-- Description -->
         <div>
           <h2 class="font-display text-2xl md:text-3xl mb-4">
-            {lang === "es" ? "Sobre la habitación" : "About the room"}
+            {t('room.about')}
           </h2>
           <p class="text-lg leading-relaxed text-text-secondary-light dark:text-text-secondary-dark">
             {room.description[lang]}
@@ -284,7 +285,7 @@ const roomSchema = {
         <!-- Amenities -->
         <div>
           <h2 class="font-display text-2xl md:text-3xl mb-6">
-            {lang === "es" ? "Servicios y comodidades" : "Amenities & Comforts"}
+            {t('room.amenities')}
           </h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {
@@ -305,9 +306,7 @@ const roomSchema = {
                       </h3>
 
                       <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
-                        {lang === "es"
-                          ? "Incluido sin costo extra"
-                          : "Included at no extra cost"}
+                        {t('room.includedFree')}
                       </p>
                     </div>
                   </div>
@@ -326,7 +325,7 @@ const roomSchema = {
         <div>
           <span
             class="text-xs font-semibold uppercase tracking-wider text-text-secondary-dark"
-            >{lang === "es" ? "Tarifa base" : "Base rate"}</span
+            >{t('room.baseRate')}</span
           >
           <div class="flex items-baseline gap-1 mt-1">
             <span class="text-5xl font-bold font-display text-primary"
@@ -344,15 +343,15 @@ const roomSchema = {
         >
           <div class="flex justify-between text-sm">
             <span class="text-text-secondary-light dark:text-text-secondary-dark"
-              >{lang === "es" ? "Capacidad máxima" : "Max capacity"}</span
+              >{t('room.maxCapacity')}</span
             >
             <span class="font-semibold"
-              >{room.maxGuests} {lang === "es" ? "personas" : "guests"}</span
+              >{room.maxGuests} {t('room.persons')}</span
             >
           </div>
           <div class="flex justify-between text-sm">
             <span class="text-text-secondary-light dark:text-text-secondary-dark"
-              >{lang === "es" ? "Distribución" : "Bed configuration"}</span
+              >{t('room.bedConfig')}</span
             >
             <span class="font-semibold">{translatedBeds}</span>
           </div>
@@ -368,19 +367,17 @@ const roomSchema = {
 
         <!-- Booking Call to Action (CTA) -->
         <a
-          href={`${lang === "es" ? "/es/book" : "/book"}?roomType=${room.slug}`}
+          href={`${getRelativeLocaleUrl(lang, 'book')}?roomType=${room.slug}`}
           class="block w-full text-center bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 text-lg cursor-pointer"
         >
-          {lang === "es" ? "Reservar Habitación" : "Book this Room"}
+          {t('room.bookThisRoom')}
         </a>
 
         <p
           class="text-[11px] text-center text-text-secondary-light dark:text-text-secondary-dark leading-normal px-2"
         >
           {
-            lang === "es"
-              ? "Garantía de mejor tarifa disponible reservando directamente en nuestra web."
-              : "Best rate guarantee when booking directly on our official website."
+            t('room.bestRateGuarantee')
           }
         </p>
       </div>
@@ -392,16 +389,14 @@ const roomSchema = {
         <div class="text-center mb-8">
           <span
             class="text-xs font-semibold text-primary uppercase tracking-widest"
-            >{lang === "es" ? "Experiencia Visual" : "Visual Experience"}</span
+            >{t('room.visualExperience')}</span
           >
           <h2 class="font-display text-3xl md:text-4xl mt-2 mb-3">
-            {lang === "es" ? "Video Tour de la Habitación" : "Room Video Tour"}
+            {t('room.videoTourTitle')}
           </h2>
           <p class="text-text-secondary-light dark:text-text-secondary-dark max-w-lg mx-auto text-sm">
             {
-              lang === "es"
-                ? "Recorre la habitación de forma interactiva y admira sus detalles antes de tu llegada."
-                : "Take a virtual walkthrough of the room and appreciate the details before your stay."
+              t('room.videoTourDesc')
             }
           </p>
         </div>
@@ -409,6 +404,8 @@ const roomSchema = {
         <!-- Cinema Video Embed -->
         <div
           class="relative max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl bg-black border border-white/5 aspect-video group/video"
+          data-i18n-no-sound={t('room.noSound')}
+          data-i18n-sound-active={t('room.soundActive')}
         >
           <!-- Native Video Element (preload="none" and optimized poster) -->
           <video
@@ -455,7 +452,7 @@ const roomSchema = {
             <span
               class="text-white text-sm font-semibold tracking-wider mt-4 uppercase drop-shadow-md"
             >
-              {lang === "es" ? "Iniciar Video Tour" : "Start Video Tour"}
+              {t('room.startVideoTour')}
             </span>
           </div>
 
@@ -534,7 +531,7 @@ const roomSchema = {
                   ></path>
                 </svg>
                 <span id="audio-btn-label"
-                  >{lang === "es" ? "Sin sonido" : "No sound"}</span
+                  >{t('room.noSound')}</span
                 >
               </button>
             </div>
@@ -550,7 +547,7 @@ const roomSchema = {
     class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex-col items-center justify-center select-none"
     role="dialog"
     aria-modal="true"
-    aria-label={lang === 'es' ? 'Galería de fotos' : lang === 'fr' ? 'Galerie de photos' : lang === 'pt' ? 'Galeria de fotos' : 'Photo gallery'}
+    aria-label={t('room.photoGallery')}
   >
     <!-- Top toolbar -->
     <div
@@ -849,13 +846,13 @@ const roomSchema = {
       unmutedIcon?.classList.toggle("hidden", isMuted);
 
       if (audioLabel) {
-        const langCode = document.documentElement.lang || "en";
+        const videoContainer = video.closest('[data-i18n-no-sound]') as HTMLElement | null;
+        const noSoundText = videoContainer?.dataset.i18nNoSound || 'No sound';
+        const soundActiveText = videoContainer?.dataset.i18nSoundActive || 'Sound active';
         if (isMuted) {
-          audioLabel.textContent =
-            langCode === "es" ? "Sin sonido" : "No sound";
+          audioLabel.textContent = noSoundText;
         } else {
-          audioLabel.textContent =
-            langCode === "es" ? "Sonido activo" : "Sound active";
+          audioLabel.textContent = soundActiveText;
         }
       }
     }

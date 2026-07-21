@@ -4,8 +4,10 @@ import patioImg from '../assets/hotel/hero-slide-patio.jpg';
 import pasilloImg from '../assets/hotel/fallback-room-pasillo.jpg';
 
 import type { Locale } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
 
 const lang = (Astro.currentLocale || 'en') as Locale;
+const t = useTranslations(lang);
 
 const stats = [
   { value: '1650', label: { en: 'Colonial Foundation', es: 'Fundación Colonial', fr: 'Fondation Coloniale', pt: 'Fundação Colonial' } },
@@ -38,16 +40,10 @@ const stats = [
         
         <div class="absolute bottom-8 left-8 right-8 z-20">
            <p class="font-display text-4xl sm:text-5xl text-white tracking-wide font-bold">
-             {lang === 'es' ? 'Fusión Inca-Colonial' : lang === 'fr' ? 'Fusion Inca-Coloniale' : lang === 'pt' ? 'Fusão Inca-Colonial' : 'Inca-Colonial Fusion'}
+             {t('heritage.fusionTitle')}
            </p>
            <p class="text-sm font-light text-white/80 mt-2 font-body max-w-sm">
-             {lang === 'es' 
-               ? '500 años de historia custodiados en arcos coloniales y piedra ancestral.'
-               : lang === 'fr'
-               ? '500 ans d\'histoire préservés dans des arches coloniales et des pierres ancestrales.'
-               : lang === 'pt'
-               ? '500 anos de história guardados em arcos coloniais e pedras ancestrais.'
-               : '500 years of history guarded within colonial archways and ancient stone.'}
+             {t('heritage.fusionDesc')}
            </p>
         </div>
       </div>
@@ -57,19 +53,13 @@ const stats = [
         
         <div class="space-y-4">
           <span class="tag-dash-title block text-secondary">
-            {lang === 'es' ? 'PATRIMONIO & LEGADO' : lang === 'fr' ? 'PATRIMOINE & HÉRITAGE' : lang === 'pt' ? 'PATRIMÔNIO & LEGADO' : 'HERITAGE & SOUL'}
+            {t('heritage.sectionLabel')}
           </span>
           <h2 class="font-display text-5xl sm:text-6xl lg:text-7xl leading-none text-white tracking-tight">
-            {lang === 'es' ? 'UN REFUGIO VIVO' : lang === 'fr' ? 'UN REFUGE VIVANT' : lang === 'pt' ? 'UM REFÚGIO VIVO' : 'A LIVING SANCTUARY'}
+            {t('heritage.heading')}
           </h2>
           <p class="text-lg text-text-secondary-dark font-body font-light leading-relaxed pt-6">
-            {lang === 'es'
-              ? 'Ubicado a pasos del histórico Mercado de San Pedro, nuestro hotel ofrece un oasis de lujo sereno. Cada muro cuenta una historia de misticismo andino y calidez humana, diseñado para que descanses antes o después de Machu Picchu.'
-              : lang === 'fr'
-              ? 'Situé à quelques pas du marché historique de San Pedro, notre hôtel offre un havre de paix et de sérénité. Chaque mur raconte une histoire de mysticisme andin et de chaleur humaine, conçu pour vous reposer avant ou après le Machu Picchu.'
-              : lang === 'pt'
-              ? 'Localizado a poucos passos do histórico Mercado de San Pedro, nosso hotel oferece um oásis de luxo sereno. Cada parede conta uma história de misticismo andino e acolhimento humano, projetado para você descansar antes ou depois de Machu Picchu.'
-              : 'Located steps from the historic San Pedro Market, our hotel offers an oasis of serene luxury. Every wall tells a story of Andean mysticism and human warmth, designed for you to rest before or after Machu Picchu.'}
+            {t('heritage.description')}
           </p>
         </div>
 

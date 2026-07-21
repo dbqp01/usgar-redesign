@@ -35,6 +35,36 @@
     "videoTour": "Video Tour",
     "viewAll": "View all rooms"
   },
+  "roomsSection": {
+    "heading": "OUR SANCTUARY",
+    "subheading": "Explore our spaces designed with elegance and comfort, blending colonial heritage with modern luxury.",
+    "viewDetails": "VIEW DETAILS",
+    "tapHint": "Tap a room to see more"
+  },
+  "room": {
+    "about": "About the room",
+    "amenities": "Amenities & Comforts",
+    "includedFree": "Included at no extra cost",
+    "baseRate": "Base rate",
+    "maxCapacity": "Max capacity",
+    "guests": "guests",
+    "persons": "persons",
+    "bedConfig": "Bed configuration",
+    "bookThisRoom": "Book this Room",
+    "bestRateGuarantee": "Best rate guarantee when booking directly on our official website.",
+    "visualExperience": "Visual Experience",
+    "videoTourTitle": "Room Video Tour",
+    "videoTourDesc": "Take a virtual walkthrough of the room and appreciate the details before your stay.",
+    "startVideoTour": "Start Video Tour",
+    "noSound": "No sound",
+    "soundActive": "Sound active",
+    "zoom": "Zoom",
+    "expandPhoto": "Zoom photo",
+    "backToRooms": "Back to rooms",
+    "home": "Home",
+    "unitText": "person",
+    "photoGallery": "Photo gallery"
+  },
   "services": {
     "sectionLabel": "Our Services",
     "title": "Everything You Need",
@@ -52,6 +82,7 @@
     "viewAll": "View all attractions",
     "searchPlaceholder": "Search attraction...",
     "viewGuide": "View Guide",
+    "popularDestinations": "Popular Destinations",
     "noResults": "No attractions found",
     "noResultsHint": "Try adjusting your filters or search keywords.",
     "schemaName": "Tourist attractions near USGAR Hotels",
@@ -60,12 +91,16 @@
   "map": {
     "sectionLabel": "Location",
     "title": "Find Us in Cusco",
-    "description": "Located in the heart of San Pedro, steps from the historic market and a short walk to Plaza de Armas."
+    "description": "Located in the heart of San Pedro, steps from the historic market and a short walk to Plaza de Armas.",
+    "loading": "Interactive map loading..."
   },
   "faq": {
     "sectionLabel": "FAQ",
     "title": "Frequently Asked Questions",
-    "description": "Everything you need to know about your stay in Cusco: altitude sickness, check-in, transport, and more."
+    "description": "Everything you need to know about your stay in Cusco: altitude sickness, check-in, transport, and more.",
+    "assistanceTitle": "24/7 Assistance",
+    "assistanceDesc": "Our 24/7 bilingual front desk team is ready to assist with bookings, Machu Picchu tours, and altitude acclimatization.",
+    "whatsappCta": "Contact via WhatsApp"
   },
   "footer": {
     "contact": "Contact",
@@ -81,6 +116,20 @@
   },
   "theme": {
     "toggleDark": "Toggle dark mode"
+  },
+  "layout": {
+    "skipToContent": "Skip to main content"
+  },
+  "heritage": {
+    "sectionLabel": "HERITAGE & SOUL",
+    "heading": "A LIVING SANCTUARY",
+    "description": "Located steps from the historic San Pedro Market, our hotel offers an oasis of serene luxury. Every wall tells a story of Andean mysticism and human warmth, designed for you to rest before or after Machu Picchu.",
+    "fusionTitle": "Inca-Colonial Fusion",
+    "fusionDesc": "500 years of history guarded within colonial archways and ancient stone."
+  },
+  "gastronomy": {
+    "sectionLabel": "CULINARY & COFFEE",
+    "description": "An unforgettable culinary journey with fresh Andean ingredients in the historic heart of Cusco."
   },
   "contact": {
     "title": "Contact Us",

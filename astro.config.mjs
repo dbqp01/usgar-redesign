@@ -32,6 +32,8 @@ export default defineConfig({
       }
     }
   },
+  // Official Astro v7 i18n Routing & Page Fallback configuration.
+  // Page-level fallback (routing) is defined here; translation key fallback is managed in src/i18n/utils.ts
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'es', 'fr', 'pt'],

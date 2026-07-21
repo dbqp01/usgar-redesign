@@ -130,6 +130,27 @@ const localeMap: Record<Locale, string> = {
 
     <!-- View Transitions -->
     <ClientRouter />
+
+    <!-- Global Scroll Animations Observer -->
+    <script>
+      function initScrollAnimations() {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: "0px 0px -50px 0px"
+        });
+
+        document.querySelectorAll('.animate-on-scroll:not(.visible)').forEach(el => observer.observe(el));
+      }
+
+      document.addEventListener('astro:page-load', initScrollAnimations);
+    </script>
   </head>
   <body class="bg-surface-light dark:bg-surface-dark text-text-primary-light dark:text-text-primary-dark transition-colors duration-300 min-h-screen flex flex-col">
     <!-- Skip to content (accessibility) -->

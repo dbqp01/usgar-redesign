@@ -5,8 +5,10 @@ import recepcionImg from '../assets/hotel/hero-slide-recepcion.jpg';
 import patioImg from '../assets/hotel/hero-slide-patio.jpg';
 
 import type { Locale } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
 
 const lang = (Astro.currentLocale || 'en') as Locale;
+const t = useTranslations(lang);
 
 const culinaryOffers = [
   {
@@ -63,19 +65,13 @@ const culinaryOffers = [
     <!-- Section Header -->
     <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll space-y-3">
       <span class="tag-dash-title block">
-        {lang === 'es' ? 'GASTRONOMÍA & CAFETERÍA' : lang === 'fr' ? 'GASTRONOMIE & CAFÉTÉRIA' : lang === 'pt' ? 'GASTRONOMIA & CAFETARIA' : 'CULINARY & COFFEE'}
+        {t('gastronomy.sectionLabel')}
       </span>
       <h2 class="font-display text-4xl sm:text-5xl lg:text-7xl text-text-primary-light dark:text-white leading-tight">
         AUKA RESTOBAR
       </h2>
       <p class="mt-4 text-base sm:text-lg text-text-secondary-light dark:text-text-secondary-dark font-body font-light">
-        {lang === 'es'
-          ? 'Una experiencia gastronómica inolvidable con ingredientes andinos frescos en el corazón del Cusco.'
-          : lang === 'fr'
-          ? 'Une expérience gastronomique inoubliable avec des ingrédients andins frais au cœur de Cusco.'
-          : lang === 'pt'
-          ? 'Uma experiência gastronômica inesquecível com ingredientes andinos frescos no coração de Cusco.'
-          : 'An unforgettable culinary journey with fresh Andean ingredients in the historic heart of Cusco.'}
+        {t('gastronomy.description')}
       </p>
     </div>
 

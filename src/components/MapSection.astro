@@ -43,7 +43,7 @@ const t = useTranslations(lang);
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
           <p class="text-sm">
-            {lang === 'es' ? 'Cargando mapa interactivo...' : lang === 'fr' ? 'Chargement de la carte interactive...' : lang === 'pt' ? 'Carregando mapa interativo...' : 'Interactive map loading...'}
+            {t('map.loading')}
           </p>
           <p class="text-xs mt-1 opacity-60 font-mono">{siteSettings.address[lang]}</p>
         </div>
