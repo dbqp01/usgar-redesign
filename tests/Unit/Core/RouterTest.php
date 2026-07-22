@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace App\Test\Unit\Core;
 
+if (!class_exists(\PHPUnit\Framework\TestCase::class)) {
+    require_once __DIR__ . '/../TestCase.php';
+}
+
 use PHPUnit\Framework\TestCase;
-use App\Core\Router;
-use App\Core\Request;
-use App\Core\Response;
 use App\Core\HttpException;
 use App\Core\BookingStatus;
 use App\Core\Validator;

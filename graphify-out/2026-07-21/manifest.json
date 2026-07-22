@@ -80,18 +80,18 @@
     "semantic_hash": "68e12004b3b9d69099f0a02eeddea8b5"
   },
   "src/components/AboutSection.astro": {
-    "mtime": 1784613628.9182832,
-    "ast_hash": "522be25ac39aa697be29ba42a9dddd36",
+    "mtime": 1784615430.4111044,
+    "ast_hash": "848bf2f092600c833e3c635ccb1c6b70",
     "semantic_hash": ""
   },
   "src/components/BookingWidget.astro": {
-    "mtime": 1784613621.904503,
-    "ast_hash": "f5d982a52510c040a240088dd4c4e71f",
+    "mtime": 1784615409.3059049,
+    "ast_hash": "bf69f5899402f1575d585a664ffdeb4b",
     "semantic_hash": ""
   },
   "src/components/FAQSection.astro": {
-    "mtime": 1784613615.1081975,
-    "ast_hash": "bebec5fdd85b7cad7c4d60605eb913b9",
+    "mtime": 1784614848.9241178,
+    "ast_hash": "98fb9c8c0e5a1fc4be78db094df22ac3",
     "semantic_hash": ""
   },
   "src/components/Footer.astro": {
@@ -100,8 +100,8 @@
     "semantic_hash": ""
   },
   "src/components/MapSection.astro": {
-    "mtime": 1784613602.7305949,
-    "ast_hash": "aeffd4eef84d77cfe5ed7cc0a3546600",
+    "mtime": 1784614903.0920527,
+    "ast_hash": "fa40dbcb5d0b42d1073e32e590171ce2",
     "semantic_hash": ""
   },
   "src/components/Navbar.astro": {
@@ -120,13 +120,13 @@
     "semantic_hash": ""
   },
   "src/components/RoomDetail.astro": {
-    "mtime": 1784613231.5409272,
-    "ast_hash": "ec6f50cf7531b1586a056932215b711e",
+    "mtime": 1784614914.7801588,
+    "ast_hash": "84d7ac8f2b9e735b394851bca6bdbd1e",
     "semantic_hash": ""
   },
   "src/components/ServiceGrid.astro": {
-    "mtime": 1784613557.516093,
-    "ast_hash": "8b1115aa61de8f5e7786ac656292a89d",
+    "mtime": 1784615471.2509284,
+    "ast_hash": "4eaf965ffde4beace623cd68e5531e6f",
     "semantic_hash": ""
   },
   "src/components/WhatsAppButton.astro": {
@@ -140,19 +140,19 @@
     "semantic_hash": "98a5495cb543ec9848bb2afe2eed7dc2"
   },
   "src/content/about/about.json": {
-    "mtime": 1784492182.896816,
-    "ast_hash": "d486d2a5a932b52316a5cea7a0e124f7",
-    "semantic_hash": "d486d2a5a932b52316a5cea7a0e124f7"
+    "mtime": 1784615418.2579901,
+    "ast_hash": "94695b05622635ebfaa472268e9b26e5",
+    "semantic_hash": ""
   },
   "src/content/explore/explore.json": {
-    "mtime": 1784492183.1885157,
-    "ast_hash": "b4a13f6bc34e5a9908a290905d29605f",
-    "semantic_hash": "b4a13f6bc34e5a9908a290905d29605f"
+    "mtime": 1784614969.6848893,
+    "ast_hash": "87ecb9a441f6be5d2f76a0a25d9cf493",
+    "semantic_hash": ""
   },
   "src/content/faq/faq.json": {
-    "mtime": 1784492183.3281627,
-    "ast_hash": "fd5c5691eba25cd9b93f47a60e44ea76",
-    "semantic_hash": "fd5c5691eba25cd9b93f47a60e44ea76"
+    "mtime": 1784614839.2293603,
+    "ast_hash": "f02cb6b8ca858309e334fe276308fd8e",
+    "semantic_hash": ""
   },
   "src/i18n/en.json": {
     "mtime": 1784514496.0683663,
@@ -175,18 +175,18 @@
     "semantic_hash": ""
   },
   "src/pages/book.astro": {
-    "mtime": 1784613740.8431513,
-    "ast_hash": "000b8f38b2afaa7d91a4fec5772c446f",
+    "mtime": 1784615202.6488228,
+    "ast_hash": "869f914050d75f6d49559693ee3698c2",
     "semantic_hash": ""
   },
   "src/pages/book/mock-payment.astro": {
-    "mtime": 1784517263.2867327,
-    "ast_hash": "be8206a4574ff0967032061c1b2660bd",
+    "mtime": 1784614777.8968287,
+    "ast_hash": "27ac9a3f94f43be11826d69288d88142",
     "semantic_hash": ""
   },
   "src/pages/book/success.astro": {
-    "mtime": 1784517254.657264,
-    "ast_hash": "e8cb4707b79da98bd6d804ec96b9b4a5",
+    "mtime": 1784614797.9577863,
+    "ast_hash": "18ed21fa690aede628f1611cc98baf24",
     "semantic_hash": ""
   },
   "src/pages/contact.astro": {
@@ -245,8 +245,8 @@
     "semantic_hash": "a4c571a358d4c893a59d0a0d62c3eecf"
   },
   "src/pages/explore.astro": {
-    "mtime": 1784613789.7521238,
-    "ast_hash": "cf4483ef95f98b81ab1e5628bef7f0f7",
+    "mtime": 1784615482.8519542,
+    "ast_hash": "ce3cd8650de461f3220a457f49bde36d",
     "semantic_hash": ""
   },
   "src/pages/explore/[slug].astro": {
@@ -260,14 +260,14 @@
     "semantic_hash": ""
   },
   "src/pages/index.astro": {
-    "mtime": 1784613330.153558,
-    "ast_hash": "731689440e453566900df4ba97f420e8",
+    "mtime": 1784614927.847526,
+    "ast_hash": "554b66eb8c8a61b6b7cf6e6ec7dd5b85",
     "semantic_hash": ""
   },
   "src/pages/rooms/[slug].astro": {
-    "mtime": 1784492189.2236035,
-    "ast_hash": "630590ea1808663b0c4a2c11c8b408c8",
-    "semantic_hash": "630590ea1808663b0c4a2c11c8b408c8"
+    "mtime": 1784614723.3124268,
+    "ast_hash": "f85473b3bf09ae902d1eadd5ca2f2495",
+    "semantic_hash": ""
   },
   "src/pages/rooms/index.astro": {
     "mtime": 1784613765.580463,
@@ -275,9 +275,9 @@
     "semantic_hash": ""
   },
   "src/utils/helpers.ts": {
-    "mtime": 1784492190.0068736,
-    "ast_hash": "b2a8f219de00cc7f383b2e2c36e1eed3",
-    "semantic_hash": "b2a8f219de00cc7f383b2e2c36e1eed3"
+    "mtime": 1784615335.9990065,
+    "ast_hash": "6888cfe8069f51ff20b852f1ddc1d930",
+    "semantic_hash": ""
   },
   "tsconfig.json": {
     "mtime": 1784507974.0289638,
@@ -1450,8 +1450,8 @@
     "semantic_hash": ""
   },
   "src/content/reviews/reviews.json": {
-    "mtime": 1784492183.4667037,
-    "ast_hash": "dffe06c7aeab572d00ff13b2f40bea43",
+    "mtime": 1784615103.426245,
+    "ast_hash": "f3328897c7233cdbb729b00d0fde6f95",
     "semantic_hash": ""
   },
   "src/content/rooms/rooms.json": {
@@ -1480,8 +1480,8 @@
     "semantic_hash": ""
   },
   "src/data/rooms.ts": {
-    "mtime": 1784612662.1274128,
-    "ast_hash": "24a24fa0be650a9562c00c4bce3471b1",
+    "mtime": 1784615089.1085727,
+    "ast_hash": "23cb098c233baed54d9ab707f1625edf",
     "semantic_hash": ""
   },
   "src/data/services.ts": {
@@ -1605,8 +1605,8 @@
     "semantic_hash": ""
   },
   "src/pages/my-bookings.astro": {
-    "mtime": 1784613724.8247523,
-    "ast_hash": "64fc178d0277dfbcdce3e434be74fa14",
+    "mtime": 1784615454.8041794,
+    "ast_hash": "e3c7636722f6e1bef96c1c7392bd486c",
     "semantic_hash": ""
   },
   "src/utils/auth-client.ts": {
@@ -1645,18 +1645,18 @@
     "semantic_hash": ""
   },
   "src/components/GastronomySection.astro": {
-    "mtime": 1784613416.9439175,
-    "ast_hash": "838ccf1dce81fff4542a09432c75a97e",
+    "mtime": 1784614891.8365557,
+    "ast_hash": "2bad348aaa3d7950548a2a331a222d11",
     "semantic_hash": ""
   },
   "src/components/HeritageSection.astro": {
-    "mtime": 1784613383.0603683,
-    "ast_hash": "e218f6f8a94177619e6dd8815169c825",
+    "mtime": 1784614871.1276228,
+    "ast_hash": "b9f40776caeee57bc94b9b5a91ba80d9",
     "semantic_hash": ""
   },
   "src/components/InteractiveRoomsSection.astro": {
-    "mtime": 1784613590.365785,
-    "ast_hash": "1cc26f7d98c4ff6f8e93baf740f0cd39",
+    "mtime": 1784614860.06257,
+    "ast_hash": "c0ff381c37c16b195bdb545172000807",
     "semantic_hash": ""
   },
   "src/assets/explore/barrio-de-san-blas.jpg": {
@@ -1770,8 +1770,8 @@
     "semantic_hash": ""
   },
   "src/i18n/fr.json": {
-    "mtime": 1784612596.012674,
-    "ast_hash": "b290f8de1e4ede31ce9b5198fa991161",
+    "mtime": 1784614828.1171575,
+    "ast_hash": "6bedd6d98f52d7dde27869c679b4f445",
     "semantic_hash": ""
   },
   "src/i18n/pt.json": {
@@ -1795,13 +1795,13 @@
     "semantic_hash": ""
   },
   "src/pages/fr/contact.astro": {
-    "mtime": 1784612933.6946633,
-    "ast_hash": "63f6a312f025228910cd13f19e79e312",
+    "mtime": 1784615027.9547462,
+    "ast_hash": "40f066ecc33061567f2ef8e3ae9b41af",
     "semantic_hash": ""
   },
   "src/pages/fr/explore.astro": {
-    "mtime": 1784612939.085031,
-    "ast_hash": "b6b18c749bf3518ca9fea4a4b0a996c1",
+    "mtime": 1784615039.789893,
+    "ast_hash": "bb89d48bb83ff36e3797062ec99af041",
     "semantic_hash": ""
   },
   "src/pages/fr/explore/[slug].astro": {
@@ -1810,23 +1810,23 @@
     "semantic_hash": ""
   },
   "src/pages/fr/gallery.astro": {
-    "mtime": 1784612944.7850862,
-    "ast_hash": "c8af175b7b8319c015211e8e62286f90",
+    "mtime": 1784615015.8556228,
+    "ast_hash": "8a19341818331953dd17aee1e726b6d6",
     "semantic_hash": ""
   },
   "src/pages/fr/index.astro": {
-    "mtime": 1784612927.044563,
-    "ast_hash": "3022d5357452bd023fd618d089736dab",
+    "mtime": 1784615052.1923614,
+    "ast_hash": "c24d45ba6c66385535691d148f32c214",
     "semantic_hash": ""
   },
   "src/pages/fr/login.astro": {
-    "mtime": 1784612950.5813603,
-    "ast_hash": "cf46d044ebc2d3322b0edc24b4b086c8",
+    "mtime": 1784614991.4433806,
+    "ast_hash": "93b777a4cef4205cb1360cb5701231bf",
     "semantic_hash": ""
   },
   "src/pages/fr/my-bookings.astro": {
-    "mtime": 1784612956.0842888,
-    "ast_hash": "2c66f25e3bae2a07802e0aa3f9d86c3f",
+    "mtime": 1784615003.2249103,
+    "ast_hash": "267743ff65ec9d85970e621f46f5a900",
     "semantic_hash": ""
   },
   "src/pages/fr/rooms/[slug].astro": {
@@ -1835,8 +1835,8 @@
     "semantic_hash": ""
   },
   "src/pages/fr/rooms/index.astro": {
-    "mtime": 1784613006.2725694,
-    "ast_hash": "a4c571a358d4c893a59d0a0d62c3eecf",
+    "mtime": 1784615064.2707052,
+    "ast_hash": "e13f374dff91f04d2520d4688a359567",
     "semantic_hash": ""
   },
   "src/pages/pt/book.astro": {
@@ -1855,13 +1855,13 @@
     "semantic_hash": ""
   },
   "src/pages/pt/contact.astro": {
-    "mtime": 1784613048.7211647,
-    "ast_hash": "63f6a312f025228910cd13f19e79e312",
+    "mtime": 1784615033.8296542,
+    "ast_hash": "40f066ecc33061567f2ef8e3ae9b41af",
     "semantic_hash": ""
   },
   "src/pages/pt/explore.astro": {
-    "mtime": 1784613053.782055,
-    "ast_hash": "b6b18c749bf3518ca9fea4a4b0a996c1",
+    "mtime": 1784615045.9494605,
+    "ast_hash": "bb89d48bb83ff36e3797062ec99af041",
     "semantic_hash": ""
   },
   "src/pages/pt/explore/[slug].astro": {
@@ -1870,23 +1870,23 @@
     "semantic_hash": ""
   },
   "src/pages/pt/gallery.astro": {
-    "mtime": 1784613064.6866949,
-    "ast_hash": "c8af175b7b8319c015211e8e62286f90",
+    "mtime": 1784615021.834954,
+    "ast_hash": "8a19341818331953dd17aee1e726b6d6",
     "semantic_hash": ""
   },
   "src/pages/pt/index.astro": {
-    "mtime": 1784613042.4878037,
-    "ast_hash": "3022d5357452bd023fd618d089736dab",
+    "mtime": 1784615058.1790204,
+    "ast_hash": "c24d45ba6c66385535691d148f32c214",
     "semantic_hash": ""
   },
   "src/pages/pt/login.astro": {
-    "mtime": 1784613070.8396232,
-    "ast_hash": "cf46d044ebc2d3322b0edc24b4b086c8",
+    "mtime": 1784614997.447963,
+    "ast_hash": "93b777a4cef4205cb1360cb5701231bf",
     "semantic_hash": ""
   },
   "src/pages/pt/my-bookings.astro": {
-    "mtime": 1784613076.357102,
-    "ast_hash": "2c66f25e3bae2a07802e0aa3f9d86c3f",
+    "mtime": 1784615009.4290109,
+    "ast_hash": "267743ff65ec9d85970e621f46f5a900",
     "semantic_hash": ""
   },
   "src/pages/pt/rooms/[slug].astro": {
@@ -1895,8 +1895,8 @@
     "semantic_hash": ""
   },
   "src/pages/pt/rooms/index.astro": {
-    "mtime": 1784613098.0315454,
-    "ast_hash": "a4c571a358d4c893a59d0a0d62c3eecf",
+    "mtime": 1784615070.4227195,
+    "ast_hash": "e13f374dff91f04d2520d4688a359567",
     "semantic_hash": ""
   }
 }

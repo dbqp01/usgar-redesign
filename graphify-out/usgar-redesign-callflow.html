@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>usgar-redesign — 完整调用流程与架构文档</h1>
-<p class="subtitle">由 graphify 知识图谱生成：5783 个节点、6001 条边、500 个社区。Commit: 8c62aac</p>
+<p class="subtitle">由 graphify 知识图谱生成：5786 个节点、5980 条边、507 个社区。Commit: e80fec0</p>
 
 <div class="nav">
     <a href="#overview">架构总览</a>
@@ -90,21 +90,21 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 flowchart LR
     EXTRACT_PIPELINE_5F350230("提取管线<br/><small>1198 nodes</small>")
     class EXTRACT_PIPELINE_5F350230 module;
-    BUILD_GRAPH_321CBB04("图谱构建<br/><small>147 nodes</small>")
+    BUILD_GRAPH_321CBB04("图谱构建<br/><small>160 nodes</small>")
     class BUILD_GRAPH_321CBB04 module;
     ANALYSIS_CLUSTERING_C79796DA("分析聚类<br/><small>66 nodes</small>")
     class ANALYSIS_CLUSTERING_C79796DA module;
     OUTPUTS_DOCS_ED82387C("输出文档<br/><small>15 nodes</small>")
     class OUTPUTS_DOCS_ED82387C module;
-    CLI_SKILLS_9964CBB8("CLI 与技能安装<br/><small>906 nodes</small>")
+    CLI_SKILLS_9964CBB8("CLI 与技能安装<br/><small>892 nodes</small>")
     class CLI_SKILLS_9964CBB8 module;
-    INGEST_CACHE_UPDATE_FF457338("摄取与增量更新<br/><small>46 nodes</small>")
+    INGEST_CACHE_UPDATE_FF457338("摄取与增量更新<br/><small>21 nodes</small>")
     class INGEST_CACHE_UPDATE_FF457338 module;
-    SERVE_API_35EC8E86("服务 API<br/><small>424 nodes</small>")
+    SERVE_API_35EC8E86("服务 API<br/><small>423 nodes</small>")
     class SERVE_API_35EC8E86 module;
-    SECURITY_GLOBAL_5B9C6A04("安全与全局图<br/><small>1346 nodes</small>")
+    SECURITY_GLOBAL_5B9C6A04("安全与全局图<br/><small>1359 nodes</small>")
     class SECURITY_GLOBAL_5B9C6A04 module;
-    TESTS_FIXTURES_B84B1DCC("测试与样例<br/><small>92 nodes</small>")
+    TESTS_FIXTURES_B84B1DCC("测试与样例<br/><small>87 nodes</small>")
     class TESTS_FIXTURES_B84B1DCC module;
     RUST_SECURITY_AUDIT_CB3475E2("Rust Security Audit<br/><small>47 nodes</small>")
     class RUST_SECURITY_AUDIT_CB3475E2 module;
@@ -116,20 +116,20 @@ flowchart LR
     class AUDIT_7876153A module;
     CRYPTOGRAPHY_SECURITY_AUDIT_D05BD5F1("Cryptography Security Audit<br/><small>35 nodes</small>")
     class CRYPTOGRAPHY_SECURITY_AUDIT_D05BD5F1 module;
-    OTHER_D0941E68("其他<br/><small>1344 nodes</small>")
+    OTHER_D0941E68("其他<br/><small>1366 nodes</small>")
     class OTHER_D0941E68 module;
-    TESTS_FIXTURES_B84B1DCC -->|包含 x42| OTHER_D0941E68
-    OTHER_D0941E68 -->|导入 x23| TESTS_FIXTURES_B84B1DCC
-    BUILD_GRAPH_321CBB04 -->|导入 x13| OTHER_D0941E68
+    TESTS_FIXTURES_B84B1DCC -->|导入 x49| OTHER_D0941E68
+    OTHER_D0941E68 -->|导入 x15| TESTS_FIXTURES_B84B1DCC
+    TESTS_FIXTURES_B84B1DCC -->|导入 x13| BUILD_GRAPH_321CBB04
+    BUILD_GRAPH_321CBB04 -->|导入 x12| TESTS_FIXTURES_B84B1DCC
     SERVE_API_35EC8E86 -->|references x10| OTHER_D0941E68
     INGEST_CACHE_UPDATE_FF457338 -->|包含 x10| OTHER_D0941E68
     OUTPUTS_DOCS_ED82387C -->|包含 x10| OTHER_D0941E68
     CLI_SKILLS_9964CBB8 -->|包含 x10| OTHER_D0941E68
-    BUILD_GRAPH_321CBB04 -->|导入 x9| TESTS_FIXTURES_B84B1DCC
-    TESTS_FIXTURES_B84B1DCC -->|导入 x9| BUILD_GRAPH_321CBB04
-    OTHER_D0941E68 -->|导入 x9| BUILD_GRAPH_321CBB04
     TESTS_FIXTURES_B84B1DCC -->|导入 x9| SERVE_API_35EC8E86
-    OTHER_D0941E68 -->|references x4| SERVE_API_35EC8E86
+    BUILD_GRAPH_321CBB04 -->|导入 x7| OTHER_D0941E68
+    SECURITY_GLOBAL_5B9C6A04 -->|导入 x5| TESTS_FIXTURES_B84B1DCC
+    SECURITY_GLOBAL_5B9C6A04 -->|导入 x4| OTHER_D0941E68
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -146,24 +146,24 @@ flowchart LR
     <h4>架构层次</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>层</th><th>节点</th><th>社区</th></tr>
-      <tr><td>提取管线</td><td>1198</td><td><code>0, 3, 14, 16, 19, 25, 26, 27, 28, 31, 36, 39, 42, 53, 69, 76, 41, 96, 99, 102, 108, 112, 125, 126, 136, 138, 154, 155, 156, 158, 164, 165, 176, 190, 193, 194, 195, 196, 197, 198, 216, 217, 218, 219, 239, 240, 241, 242, 243, 257, 258, 259, 285, 286, 289, 290, 291, 292, 293, 317, 318, 319, 320, 321, 322, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 392, 446, 447, 448, 467, 468</code></td></tr><tr><td>图谱构建</td><td>147</td><td><code>5, 134, 107, 128, 140, 143, 11, 354</code></td></tr><tr><td>分析聚类</td><td>66</td><td><code>78, 185, 237, 362, 409</code></td></tr><tr><td>输出文档</td><td>15</td><td><code>122</code></td></tr><tr><td>CLI 与技能安装</td><td>906</td><td><code>2, 10, 30, 35, 47, 50, 51, 58, 82, 72, 74, 88, 93, 101, 247, 79, 339, 119, 120, 130, 131, 133, 203, 135, 144, 148, 152, 168, 173, 174, 183, 186, 188, 209, 212, 227, 234, 277, 235, 245, 246, 251, 253, 210, 265, 266, 267, 275, 281, 282, 283, 284, 296, 303, 304, 305, 306, 315, 340, 359, 367, 407, 408, 431, 433, 437, 438, 440</code></td></tr><tr><td>摄取与增量更新</td><td>46</td><td><code>98, 86, 223</code></td></tr><tr><td>服务 API</td><td>424</td><td><code>24, 37, 92, 94, 97, 100, 105, 113, 117, 118, 121, 129, 151, 341, 84, 141, 142, 169, 180, 228, 276, 248, 308, 270, 271, 344, 345, 357, 416, 417, 418, 432, 455, 513</code></td></tr><tr><td>安全与全局图</td><td>1346</td><td><code>7, 18, 29, 38, 40, 43, 44, 48, 49, 54, 59, 55, 56, 57, 60, 61, 62, 66, 67, 68, 70, 71, 75, 77, 81, 90, 91, 95, 103, 109, 110, 111, 114, 115, 116, 123, 127, 139, 226, 145, 146, 161, 167, 171, 179, 182, 191, 199, 200, 201, 202, 204, 222, 224, 225, 244, 250, 263, 264, 268, 269, 294, 295, 297, 298, 302, 327, 332, 333, 334, 335, 336, 337, 352, 353, 355, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 412, 413, 414, 424, 425, 426, 427, 454, 459, 460, 463</code></td></tr><tr><td>测试与样例</td><td>92</td><td><code>475, 254, 172, 4, 465, 479, 511</code></td></tr><tr><td>Rust Security Audit</td><td>47</td><td><code>6</code></td></tr><tr><td>动态代码审计指南 (Dynamic Code Audit Guide)</td><td>42</td><td><code>15</code></td></tr><tr><td>Real World Vulnerabilities Case Study</td><td>40</td><td><code>21</code></td></tr><tr><td>.audit</td><td>35</td><td><code>32</code></td></tr><tr><td>Cryptography Security Audit</td><td>35</td><td><code>33</code></td></tr><tr><td>其他</td><td>1344</td><td><code>34, 150, 45, 46, 52, 8, 63, 73, 87, 64, 496, 104, 106, 124, 132, 83, 1, 137, 147, 149, 153, 157, 159, 160, 162, 163, 166, 170, 175, 177, 178, 181, 184, 187, 338, 189, 192, 205, 206, 207, 208, 232, 65, 85, 211, 213, 214, 215, 220, 221, 229, 230, 231, 233, 307, 236, 238, 249, 252, 343, 255, 256, 260, 261, 262, 272, 273, 274, 278, 452, 482, 280, 287, 288, 299, 300, 301, 310, 428, 483, 89, 12, 311, 312, 313, 314, 316, 323, 324, 325, 326, 328, 329, 330, 331, 342, 346, 347, 348, 349, 350, 351, 356, 358, 360, 364, 410, 494, 506, 9, 13, 361, 365, 366, 368, 369, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 393, 394, 395, 419, 420, 421, 422, 423, 430, 439, 497, 500, 502, 309, 363, 411, 415, 434, 435, 436, 441, 442, 443, 444, 445, 449, 450, 451, 453, 456, 457, 458, 461, 462, 464, 493, 17, 20, 466, 469, 470, 471, 22, 23, 279, 429, 472, 473, 474, 476, 478, 480, 481, 485, 488, 490, 491, 495, 498, 499, 512, 80</code></td></tr>
+      <tr><td>提取管线</td><td>1198</td><td><code>0, 3, 14, 16, 19, 25, 26, 27, 28, 31, 36, 39, 42, 53, 69, 76, 41, 96, 99, 102, 108, 112, 125, 126, 136, 138, 154, 155, 156, 158, 164, 165, 176, 190, 193, 194, 195, 196, 197, 198, 216, 217, 218, 219, 239, 240, 241, 242, 243, 257, 258, 259, 285, 286, 289, 290, 291, 292, 293, 317, 318, 319, 320, 321, 322, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 392, 446, 447, 448, 467, 468</code></td></tr><tr><td>图谱构建</td><td>160</td><td><code>5, 134, 107, 128, 140, 143, 486, 11, 354</code></td></tr><tr><td>分析聚类</td><td>66</td><td><code>78, 185, 237, 362, 409</code></td></tr><tr><td>输出文档</td><td>15</td><td><code>122</code></td></tr><tr><td>CLI 与技能安装</td><td>892</td><td><code>2, 10, 30, 35, 47, 50, 51, 58, 82, 72, 74, 88, 101, 247, 79, 339, 119, 120, 130, 131, 133, 203, 135, 144, 148, 152, 168, 173, 174, 183, 186, 188, 209, 212, 227, 234, 277, 235, 245, 246, 251, 253, 210, 265, 266, 267, 275, 281, 282, 283, 284, 296, 303, 304, 305, 306, 315, 340, 359, 501, 367, 407, 408, 431, 433, 437, 438, 440</code></td></tr><tr><td>摄取与增量更新</td><td>21</td><td><code>86, 223</code></td></tr><tr><td>服务 API</td><td>423</td><td><code>24, 37, 92, 94, 97, 100, 105, 113, 117, 118, 121, 129, 151, 341, 141, 142, 84, 169, 180, 228, 276, 248, 308, 270, 271, 344, 345, 357, 416, 417, 418, 432, 455, 513</code></td></tr><tr><td>安全与全局图</td><td>1359</td><td><code>7, 18, 29, 38, 40, 43, 44, 48, 49, 54, 59, 55, 56, 57, 60, 61, 62, 66, 67, 68, 70, 71, 75, 77, 81, 90, 91, 95, 103, 109, 110, 111, 114, 115, 116, 123, 127, 139, 226, 145, 146, 484, 161, 167, 171, 179, 182, 191, 199, 200, 201, 202, 204, 222, 224, 225, 244, 250, 263, 264, 268, 269, 294, 295, 297, 298, 302, 327, 332, 333, 334, 335, 336, 337, 352, 353, 355, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 412, 413, 414, 424, 425, 426, 427, 454, 459, 460, 463</code></td></tr><tr><td>测试与样例</td><td>87</td><td><code>475, 254, 477, 172, 465, 479, 511</code></td></tr><tr><td>Rust Security Audit</td><td>47</td><td><code>6</code></td></tr><tr><td>动态代码审计指南 (Dynamic Code Audit Guide)</td><td>42</td><td><code>15</code></td></tr><tr><td>Real World Vulnerabilities Case Study</td><td>40</td><td><code>21</code></td></tr><tr><td>.audit</td><td>35</td><td><code>32</code></td></tr><tr><td>Cryptography Security Audit</td><td>35</td><td><code>33</code></td></tr><tr><td>其他</td><td>1366</td><td><code>34, 150, 46, 52, 63, 73, 87, 64, 93, 104, 106, 45, 342, 124, 132, 83, 1, 137, 147, 149, 496, 8, 153, 157, 159, 160, 162, 163, 166, 170, 175, 177, 178, 181, 184, 187, 338, 189, 192, 205, 206, 207, 208, 232, 487, 65, 85, 211, 213, 214, 215, 220, 221, 229, 230, 231, 233, 307, 236, 238, 249, 252, 343, 489, 255, 256, 260, 261, 262, 272, 273, 274, 278, 452, 482, 280, 287, 288, 299, 300, 301, 310, 428, 483, 492, 89, 12, 311, 312, 313, 314, 316, 323, 324, 325, 326, 328, 329, 330, 331, 346, 347, 348, 349, 350, 351, 356, 358, 360, 364, 4, 410, 494, 506, 9, 13, 361, 365, 366, 368, 369, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 393, 394, 395, 419, 420, 421, 422, 423, 430, 439, 497, 500, 502, 309, 363, 411, 415, 434, 435, 436, 441, 442, 443, 444, 445, 449, 450, 451, 453, 456, 457, 458, 461, 462, 464, 493, 17, 20, 466, 469, 470, 471, 22, 23, 279, 429, 472, 473, 474, 476, 478, 480, 481, 485, 488, 490, 491, 495, 498, 499, 512, 80, 98</code></td></tr>
     </table>
   </div>
   <div class="card">
     <h4>核心数据流</h4>
-    <div class="arrow-chain">输出文档 -&gt; 其他 -&gt; 测试与样例 -&gt; 服务 API -&gt; 提取管线 -&gt; 安全与全局图 -&gt; 图谱构建</div>
+    <div class="arrow-chain">输出文档 -&gt; 其他 -&gt; 测试与样例 -&gt; 图谱构建 -&gt; CLI 与技能安装 -&gt; 服务 API -&gt; 提取管线</div>
   </div>
 </div>
 <div class="grid">
   <div class="card">
     <h4>图谱报告摘要</h4>
     <ul>
-      <li>5783 nodes · 6001 edges · 500 communities (462 shown, 38 thin omitted)</li>
+      <li>5786 nodes · 5980 edges · 507 communities (468 shown, 39 thin omitted)</li>
       <li>Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 22 edges (avg confidence: 0.79)</li>
       <li>Token cost: 0 input · 0 output</li>
       <li>1. `轨道B: 数据流分析法 (注入类漏洞)` - 39 edges</li>
       <li>2. `轨道B: 数据流分析法 (注入类漏洞)` - 29 edges</li>
-      <li>3. `../index.astro` - 28 edges</li>
+      <li>3. `../layouts/Layout.astro` - 23 edges</li>
     </ul>
   </div>
 </div>
@@ -509,72 +509,74 @@ flowchart LR
 
 <!-- ====== 3. 图谱构建 ====== -->
 <h2 id="build-graph">3. 图谱构建</h2>
-<p>图谱构建 汇集了与 agents、skills、packagejson、mercadopago 相关的实现，主要分布在 package.json、references/guides/webhooks.md、references/guides/marketplace.md。本节覆盖 147 个节点、162 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>图谱构建 汇集了与 agents、skills、packagejson、mercadopago 相关的实现，主要分布在 package.json、references/guides/webhooks.md、references/guides/marketplace.md。本节覆盖 160 个节点、163 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 图谱构建 (147 nodes, 162 edges)
+    %% Section: 图谱构建 (160 nodes, 163 edges)
+    subgraph build_graph_src_components_AboutSection_astro_5ab1d9d8["src/components/AboutSection.astro"]
+        src_components_aboutsection_cd8d0c2c("../components/AboutSection.astro")
+        c_users_akim_desktop_usgar_redesign_src_componen_0882f3e9("../components/AboutSection.astro")
+    end
     c_users_akim_desktop_usgar_redesign_src_assets_h_a19703a7("../assets/hotel/fallback-room-desayuno.jpg")
-    c_users_akim_desktop_usgar_redesign_src_assets_h_5b0a23d4("../assets/hotel/fallback-room-fachada.jpg")
     c_users_akim_desktop_usgar_redesign_src_assets_h_1e56ed94("../assets/hotel/fallback-room-pasillo.jpg")
+    c_users_akim_desktop_usgar_redesign_src_assets_h_6630b329("../assets/hotel/hero-slide-cusco.jpg")
+    c_users_akim_desktop_usgar_redesign_src_assets_h_912f3851("../assets/hotel/hero-slide-matrimonial.jpg")
     c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b("../assets/hotel/hero-slide-patio.jpg")
     c_users_akim_desktop_usgar_redesign_src_assets_h_74a30e7b("../assets/hotel/hero-slide-recepcion.jpg")
+    astro_90c9d7bd("astro")
     astro_assets_b0866f09("astro:assets")
-    src_content_about_about_20a4970c("../content/about/about.json")
-    src_content_faq_faq_fe66dd2b("../content/faq/faq.json")
     leaflet_5f5555f4("leaflet")
-    src_components_aboutsection_cd8d0c2c("../components/AboutSection.astro")
-    src_components_bookingwidget_1cb79b45("../components/BookingWidget.astro")
+    package_dependencies_leaflet_e1b9b00b("leaflet<br/><small>package.json</small>")
+    src_pages_fr_index_8bc7f49d("index.astro")
     src_components_faqsection_47911ff2("../components/FAQSection.astro")
     src_components_gastronomysection_c6b45f50("../components/GastronomySection.astro")
     src_components_heritagesection_0a94b2d8("../components/HeritageSection.astro")
-    src_components_mapsection_08babf10("../components/MapSection.astro")
     src_components_servicegrid_70ff2fdc("../components/ServiceGrid.astro")
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_4ff39835("@/i18n/utils<br/><small>src/i18n/utils.ts</small>")
-    src_pages_index_5f5e2633("../index.astro")
-    src_components_aboutsection_cd8d0c2c -->|导入| astro_assets_b0866f09
-    src_components_aboutsection_cd8d0c2c -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_5b0a23d4
-    src_components_aboutsection_cd8d0c2c -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b
-    src_components_aboutsection_cd8d0c2c -->|导入| c_users_akim_desktop_usgar_redesign_src_i18n_uti_4ff39835
-    src_components_aboutsection_cd8d0c2c -->|导入| src_content_about_about_20a4970c
-    src_components_aboutsection_cd8d0c2c -->|导入| src_pages_index_5f5e2633
+    src_pages_index_5f5e2633("index.astro")
+    src_components_gastronomysection_c6b45f50 -->|导入| astro_assets_b0866f09
+    src_components_gastronomysection_c6b45f50 -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_a19703a7
+    src_components_gastronomysection_c6b45f50 -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b
+    src_components_gastronomysection_c6b45f50 -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_74a30e7b
+    src_components_gastronomysection_c6b45f50 -->|导入| src_pages_index_5f5e2633
+    astro_assets_b0866f09 -->|导入| src_components_aboutsection_cd8d0c2c
     astro_assets_b0866f09 -->|导入| src_components_faqsection_47911ff2
-    astro_assets_b0866f09 -->|导入| src_components_gastronomysection_c6b45f50
     astro_assets_b0866f09 -->|导入| src_components_heritagesection_0a94b2d8
     astro_assets_b0866f09 -->|导入| src_components_servicegrid_70ff2fdc
     astro_assets_b0866f09 -->|导入| src_pages_index_5f5e2633
-    c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b -->|导入| src_components_gastronomysection_c6b45f50
+    c_users_akim_desktop_usgar_redesign_src_assets_h_74a30e7b -->|导入| src_components_faqsection_47911ff2
+    c_users_akim_desktop_usgar_redesign_src_assets_h_74a30e7b -->|导入| src_pages_index_5f5e2633
+    c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b -->|导入| src_components_aboutsection_cd8d0c2c
     c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b -->|导入| src_components_heritagesection_0a94b2d8
     c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b -->|导入| src_components_servicegrid_70ff2fdc
     c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b -->|导入| src_pages_index_5f5e2633
-    src_components_bookingwidget_1cb79b45 -->|导入| c_users_akim_desktop_usgar_redesign_src_i18n_uti_4ff39835
-    src_components_bookingwidget_1cb79b45 -->|导入| src_pages_index_5f5e2633
-    src_components_faqsection_47911ff2 -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_74a30e7b
-    src_components_faqsection_47911ff2 -->|导入| c_users_akim_desktop_usgar_redesign_src_i18n_uti_4ff39835
-    src_components_faqsection_47911ff2 -->|导入| src_content_faq_faq_fe66dd2b
-    src_components_faqsection_47911ff2 -->|导入| src_pages_index_5f5e2633
-    src_content_faq_faq_fe66dd2b -->|导入| src_pages_index_5f5e2633
-    c_users_akim_desktop_usgar_redesign_src_assets_h_74a30e7b -->|导入| src_components_gastronomysection_c6b45f50
-    c_users_akim_desktop_usgar_redesign_src_assets_h_74a30e7b -->|导入| src_pages_index_5f5e2633
-    %% Omitted for readability: 129 nodes, 11 edges
+    src_components_heritagesection_0a94b2d8 -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_1e56ed94
+    src_components_heritagesection_0a94b2d8 -->|导入| src_pages_index_5f5e2633
+    leaflet_5f5555f4 -->|导入| package_dependencies_leaflet_e1b9b00b
+    src_pages_index_5f5e2633 -->|导入| src_pages_fr_index_8bc7f49d
+    src_pages_index_5f5e2633 -->|导入| astro_90c9d7bd
+    src_pages_index_5f5e2633 -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_6630b329
+    src_pages_index_5f5e2633 -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_912f3851
+    src_pages_index_5f5e2633 -->|导入| c_users_akim_desktop_usgar_redesign_src_componen_0882f3e9
+    %% Omitted for readability: 142 nodes, 2 edges
+    class src_components_aboutsection_cd8d0c2c ui;
+    class c_users_akim_desktop_usgar_redesign_src_componen_0882f3e9 ui;
     class c_users_akim_desktop_usgar_redesign_src_assets_h_a19703a7 async;
-    class c_users_akim_desktop_usgar_redesign_src_assets_h_5b0a23d4 async;
     class c_users_akim_desktop_usgar_redesign_src_assets_h_1e56ed94 async;
+    class c_users_akim_desktop_usgar_redesign_src_assets_h_6630b329 async;
+    class c_users_akim_desktop_usgar_redesign_src_assets_h_912f3851 async;
     class c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b async;
     class c_users_akim_desktop_usgar_redesign_src_assets_h_74a30e7b async;
+    class astro_90c9d7bd function;
     class astro_assets_b0866f09 async;
-    class src_content_about_about_20a4970c function;
-    class src_content_faq_faq_fe66dd2b function;
     class leaflet_5f5555f4 function;
-    class src_components_aboutsection_cd8d0c2c ui;
-    class src_components_bookingwidget_1cb79b45 ui;
+    class package_dependencies_leaflet_e1b9b00b function;
+    class src_pages_fr_index_8bc7f49d function;
     class src_components_faqsection_47911ff2 ui;
     class src_components_gastronomysection_c6b45f50 ui;
     class src_components_heritagesection_0a94b2d8 ui;
-    class src_components_mapsection_08babf10 ui;
     class src_components_servicegrid_70ff2fdc ui;
-    class c_users_akim_desktop_usgar_redesign_src_i18n_uti_4ff39835 function;
     class src_pages_index_5f5e2633 function;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
@@ -844,19 +846,19 @@ flowchart LR
     <h4>关键文件</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>覆盖节点</th></tr>
-      <tr><td><code>package.json</code></td><td>45 个节点</td></tr>
+      <tr><td><code>package.json</code></td><td>46 个节点</td></tr>
 <tr><td><code>references/guides/webhooks.md</code></td><td>15 个节点</td></tr>
 <tr><td><code>references/guides/marketplace.md</code></td><td>14 个节点</td></tr>
 <tr><td><code>references/guides/subscriptions.md</code></td><td>14 个节点</td></tr>
 <tr><td><code>qloapps-stats-module-development/reference/module-graph-pattern.md</code></td><td>13 个节点</td></tr>
+<tr><td><code>[eliminame] rev1.md</code></td><td>11 个节点</td></tr>
 <tr><td><code>skills/json-standards/SKILL.md</code></td><td>5 个节点</td></tr>
 <tr><td><code>tsconfig.json</code></td><td>5 个节点</td></tr>
-<tr><td><code>src/components/AboutSection.astro</code></td><td>2 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x98, 导入 x44, 导入 x11, references x5。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x109, 导入 x36, 导入 x12, references x5。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -1406,12 +1408,12 @@ flowchart LR
 
 <!-- ====== 6. CLI 与技能安装 ====== -->
 <h2 id="cli-skills">6. CLI 与技能安装</h2>
-<p>CLI 与技能安装 汇集了与 agents、skills、skillmd、code 相关的实现，主要分布在 references/wooyun/command-execution.md、skills/code-audit/agent.md、skills/web-quality-best-practices/SKILL.md。本节覆盖 906 个节点、879 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>CLI 与技能安装 汇集了与 agents、skills、skillmd、code 相关的实现，主要分布在 references/wooyun/command-execution.md、skills/code-audit/agent.md、skills/web-quality-best-practices/SKILL.md。本节覆盖 892 个节点、865 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: CLI 与技能安装 (906 nodes, 879 edges)
+    %% Section: CLI 与技能安装 (892 nodes, 865 edges)
     subgraph cli_skills_references_wooyun_command_execution_m_653cd375["references/wooyun/command-execution.md"]
         agents_skills_code_audit_references_wooyun_comma_319e7bb2("命令执行漏洞分析手册<br/><small>references/wooyun/command-execution.md</small>")
         agents_skills_code_audit_references_wooyun_comma_1ba40014("十、PHP命令执行元思考方法论<br/><small>references/wooyun/command-execution.md</small>")
@@ -1436,7 +1438,7 @@ flowchart LR
     agents_skills_web_quality_performance_skill_perf_883d58b3("Performance optimization<br/><small>skills/web-quality-performance/SKILL.md</small>")
     agents_skills_code_audit_references_wooyun_comma_319e7bb2 -->|包含| agents_skills_code_audit_references_wooyun_comma_1ba40014
     agents_skills_mercadopago_mp_integrate_skill_mp_7a7f6f2e -->|包含| agents_skills_mercadopago_mp_integrate_skill_got_2f2abb79
-    %% Omitted for readability: 888 nodes, 0 edges
+    %% Omitted for readability: 874 nodes, 0 edges
     class agents_skills_code_audit_references_wooyun_comma_319e7bb2 concept;
     class agents_skills_code_audit_references_wooyun_comma_1ba40014 concept;
     class agents_skills_mercadopago_mp_integrate_skill_got_2f2abb79 concept;
@@ -1735,75 +1737,76 @@ flowchart LR
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x865, references x14。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x851, references x14。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 7. 摄取与增量更新 ====== -->
 <h2 id="ingest-cache-update">7. 摄取与增量更新</h2>
-<p>摄取与增量更新 汇集了与 agents、agentsmd、brandmd、host 相关的实现，主要分布在 .agents/AGENTS.md、.agents/BRAND.md、references/security/cache_host_header.md。本节覆盖 46 个节点、43 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>摄取与增量更新 汇集了与 agents、brandmd、host、cache 相关的实现，主要分布在 .agents/BRAND.md、references/security/cache_host_header.md。本节覆盖 21 个节点、19 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 摄取与增量更新 (46 nodes, 43 edges)
-    subgraph ingest_cache_update_agents_AGENTS_md_86fc2293[".agents/AGENTS.md"]
-        agents_agents_usgar_hotels_san_pedro_cusco_per_0e875721("USGAR Hotels — San Pedro, Cusco, Perú<br/><small>.agents/AGENTS.md</small>")
-        agents_agents_estructura_de_p_ginas_a60e0924("Estructura de Páginas<br/><small>.agents/AGENTS.md</small>")
-        agents_agents_dise_o_y_est_tica_b512d8f6("Diseño y Estética<br/><small>.agents/AGENTS.md</small>")
-        agents_agents_53009217("AGENTS.md")
-        agents_agents_animaciones_f825982e("Animaciones<br/><small>.agents/AGENTS.md</small>")
-        agents_agents_assets_rutas_en_el_proyecto_f5208bb5("Assets (Rutas en el proyecto)<br/><small>.agents/AGENTS.md</small>")
-        agents_agents_audio_video_910d076f("Audio/Video<br/><small>.agents/AGENTS.md</small>")
-        agents_agents_contacto_contact_dcd0ec87("Contacto (/contact)<br/><small>.agents/AGENTS.md</small>")
-        agents_agents_explora_cusco_explore_4894791d("Explora Cusco (/explore)<br/><small>.agents/AGENTS.md</small>")
-        agents_agents_habitaciones_4_tipos_ab58f328("Habitaciones (4 tipos)<br/><small>.agents/AGENTS.md</small>")
-        agents_agents_habitaci_n_individual_rooms_slug_756e686d("Habitación Individual (/rooms/[slug])<br/><small>.agents/AGENTS.md</small>")
-        agents_agents_home_3d14d187("Home (/)<br/><small>.agents/AGENTS.md</small>")
-        agents_agents_hotel_a725f9e4("Hotel<br/><small>.agents/AGENTS.md</small>")
-    end
+    %% Section: 摄取与增量更新 (21 nodes, 19 edges)
     subgraph ingest_cache_update_agents_BRAND_md_b3bcf5b4[".agents/BRAND.md"]
         agents_brand_usgar_hotels_manual_de_marca_oficia_d54cda29("USGAR Hotels — Manual de Marca Oficial<br/><small>.agents/BRAND.md</small>")
         agents_brand_7_servicios_e09d8eb8("7. Servicios<br/><small>.agents/BRAND.md</small>")
         agents_brand_8_video_del_hero_p_gina_principal_23ecc0f7("8. Video del Hero (Página Principal)<br/><small>.agents/BRAND.md</small>")
         agents_brand_12_seo_a77cc9bb("12. SEO<br/><small>.agents/BRAND.md</small>")
+        agents_brand_1_identidad_del_hotel_115f5c0a("1. Identidad del Hotel<br/><small>.agents/BRAND.md</small>")
+        agents_brand_13_pagos_58ae42ce("13. Pagos<br/><small>.agents/BRAND.md</small>")
+        agents_brand_16_tokens_css_tailwind_v4_referenci_fce623f9("16. Tokens CSS / Tailwind v4 — Referenc...<br/><small>.agents/BRAND.md</small>")
+        agents_brand_amenidades_en_la_habitaci_n_11_42565079("Amenidades en la Habitación (11)<br/><small>.agents/BRAND.md</small>")
+        agents_brand_reglas_de_audio_video_a36a2276("Reglas de Audio/Video<br/><small>.agents/BRAND.md</small>")
+        agents_brand_schema_org_valores_correctos_3ddd2cec("Schema.org — Valores Correctos<br/><small>.agents/BRAND.md</small>")
+        agents_brand_secuencia_obligatoria_del_video_sli_853e7236("Secuencia Obligatoria del Video/Slideshow<br/><small>.agents/BRAND.md</small>")
+        agents_brand_servicios_generales_del_hotel_18_693d4aa1("Servicios Generales del Hotel (18)<br/><small>.agents/BRAND.md</small>")
     end
-    agents_skills_code_audit_references_security_cac_0426eaa4("缓存与 Host Header 安全<br/><small>references/security/cache_host_header.md</small>")
-    agents_agents_53009217 -->|包含| agents_agents_usgar_hotels_san_pedro_cusco_per_0e875721
-    agents_agents_usgar_hotels_san_pedro_cusco_per_0e875721 -->|包含| agents_agents_assets_rutas_en_el_proyecto_f5208bb5
-    agents_agents_usgar_hotels_san_pedro_cusco_per_0e875721 -->|包含| agents_agents_audio_video_910d076f
-    agents_agents_usgar_hotels_san_pedro_cusco_per_0e875721 -->|包含| agents_agents_dise_o_y_est_tica_b512d8f6
-    agents_agents_usgar_hotels_san_pedro_cusco_per_0e875721 -->|包含| agents_agents_estructura_de_p_ginas_a60e0924
-    agents_agents_usgar_hotels_san_pedro_cusco_per_0e875721 -->|包含| agents_agents_habitaciones_4_tipos_ab58f328
-    agents_agents_usgar_hotels_san_pedro_cusco_per_0e875721 -->|包含| agents_agents_hotel_a725f9e4
-    agents_agents_dise_o_y_est_tica_b512d8f6 -->|包含| agents_agents_animaciones_f825982e
-    agents_agents_estructura_de_p_ginas_a60e0924 -->|包含| agents_agents_contacto_contact_dcd0ec87
-    agents_agents_estructura_de_p_ginas_a60e0924 -->|包含| agents_agents_explora_cusco_explore_4894791d
-    agents_agents_estructura_de_p_ginas_a60e0924 -->|包含| agents_agents_habitaci_n_individual_rooms_slug_756e686d
-    agents_agents_estructura_de_p_ginas_a60e0924 -->|包含| agents_agents_home_3d14d187
+    subgraph ingest_cache_update_references_security_cache_ho_427af504["references/security/cache_host_header.md"]
+        agents_skills_code_audit_references_security_cac_0426eaa4("缓存与 Host Header 安全<br/><small>references/security/cache_host_header.md</small>")
+        agents_skills_code_audit_references_security_cac_e45a5aec("cache_host_header.md")
+        agents_skills_code_audit_references_security_cac_59312706("危险模式<br/><small>references/security/cache_host_header.md</small>")
+        agents_skills_code_audit_references_security_cac_1a8fceaa("安全基线<br/><small>references/security/cache_host_header.md</small>")
+        agents_skills_code_audit_references_security_cac_90089367("最小 PoC 示例<br/><small>references/security/cache_host_header.md</small>")
+        agents_skills_code_audit_references_security_cac_5d861be5("检测命令<br/><small>references/security/cache_host_header.md</small>")
+    end
     agents_brand_usgar_hotels_manual_de_marca_oficia_d54cda29 -->|包含| agents_brand_12_seo_a77cc9bb
+    agents_brand_usgar_hotels_manual_de_marca_oficia_d54cda29 -->|包含| agents_brand_13_pagos_58ae42ce
+    agents_brand_usgar_hotels_manual_de_marca_oficia_d54cda29 -->|包含| agents_brand_16_tokens_css_tailwind_v4_referenci_fce623f9
+    agents_brand_usgar_hotels_manual_de_marca_oficia_d54cda29 -->|包含| agents_brand_1_identidad_del_hotel_115f5c0a
     agents_brand_usgar_hotels_manual_de_marca_oficia_d54cda29 -->|包含| agents_brand_7_servicios_e09d8eb8
     agents_brand_usgar_hotels_manual_de_marca_oficia_d54cda29 -->|包含| agents_brand_8_video_del_hero_p_gina_principal_23ecc0f7
-    %% Omitted for readability: 28 nodes, 0 edges
-    class agents_agents_usgar_hotels_san_pedro_cusco_per_0e875721 concept;
-    class agents_agents_estructura_de_p_ginas_a60e0924 concept;
-    class agents_agents_dise_o_y_est_tica_b512d8f6 concept;
-    class agents_agents_53009217 concept;
-    class agents_agents_animaciones_f825982e concept;
-    class agents_agents_assets_rutas_en_el_proyecto_f5208bb5 concept;
-    class agents_agents_audio_video_910d076f concept;
-    class agents_agents_contacto_contact_dcd0ec87 concept;
-    class agents_agents_explora_cusco_explore_4894791d concept;
-    class agents_agents_habitaciones_4_tipos_ab58f328 concept;
-    class agents_agents_habitaci_n_individual_rooms_slug_756e686d concept;
-    class agents_agents_home_3d14d187 concept;
-    class agents_agents_hotel_a725f9e4 concept;
+    agents_brand_7_servicios_e09d8eb8 -->|包含| agents_brand_amenidades_en_la_habitaci_n_11_42565079
+    agents_brand_7_servicios_e09d8eb8 -->|包含| agents_brand_servicios_generales_del_hotel_18_693d4aa1
+    agents_brand_8_video_del_hero_p_gina_principal_23ecc0f7 -->|包含| agents_brand_reglas_de_audio_video_a36a2276
+    agents_brand_8_video_del_hero_p_gina_principal_23ecc0f7 -->|包含| agents_brand_secuencia_obligatoria_del_video_sli_853e7236
+    agents_brand_12_seo_a77cc9bb -->|包含| agents_brand_schema_org_valores_correctos_3ddd2cec
+    agents_skills_code_audit_references_security_cac_e45a5aec -->|包含| agents_skills_code_audit_references_security_cac_0426eaa4
+    agents_skills_code_audit_references_security_cac_0426eaa4 -->|包含| agents_skills_code_audit_references_security_cac_59312706
+    agents_skills_code_audit_references_security_cac_0426eaa4 -->|包含| agents_skills_code_audit_references_security_cac_1a8fceaa
+    agents_skills_code_audit_references_security_cac_0426eaa4 -->|包含| agents_skills_code_audit_references_security_cac_90089367
+    agents_skills_code_audit_references_security_cac_0426eaa4 -->|包含| agents_skills_code_audit_references_security_cac_5d861be5
+    %% Omitted for readability: 3 nodes, 0 edges
     class agents_brand_usgar_hotels_manual_de_marca_oficia_d54cda29 concept;
     class agents_brand_7_servicios_e09d8eb8 concept;
     class agents_brand_8_video_del_hero_p_gina_principal_23ecc0f7 concept;
     class agents_brand_12_seo_a77cc9bb concept;
+    class agents_brand_1_identidad_del_hotel_115f5c0a concept;
+    class agents_brand_13_pagos_58ae42ce concept;
+    class agents_brand_16_tokens_css_tailwind_v4_referenci_fce623f9 concept;
+    class agents_brand_amenidades_en_la_habitaci_n_11_42565079 concept;
+    class agents_brand_reglas_de_audio_video_a36a2276 concept;
+    class agents_brand_schema_org_valores_correctos_3ddd2cec concept;
+    class agents_brand_secuencia_obligatoria_del_video_sli_853e7236 concept;
+    class agents_brand_servicios_generales_del_hotel_18_693d4aa1 concept;
     class agents_skills_code_audit_references_security_cac_0426eaa4 concept;
+    class agents_skills_code_audit_references_security_cac_e45a5aec concept;
+    class agents_skills_code_audit_references_security_cac_59312706 concept;
+    class agents_skills_code_audit_references_security_cac_1a8fceaa concept;
+    class agents_skills_code_audit_references_security_cac_90089367 concept;
+    class agents_skills_code_audit_references_security_cac_5d861be5 concept;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -1827,206 +1830,6 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>AGENTS.md</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 AGENTS.md 相关能力。</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>USGAR Hotels — San Pedro, Cusco, Perú</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 USGAR Hotels — San Pedro, Cusco, Perú 相关能力。</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>Hotel</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Hotel 相关能力。</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>Tech Stack</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Tech Stack 相关能力。</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>Integraciones y Seguridad</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Integraciones y Seguridad 相关能力。</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>Infraestructura de Producción y Arquitectura Multi-hotel</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Infraestructura de Producción y Arquitectura Multi-hotel 相关能力。</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>Diseño y Estética</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Diseño y Estética 相关能力。</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>Tema</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Tema 相关能力。</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>Paleta de Colores (Opción 3 — del logo)</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Paleta de Colores (Opción 3 — del logo) 相关能力。</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>Tipografía</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Tipografía 相关能力。</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>Animaciones</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Animaciones 相关能力。</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>Estructura de Páginas</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Estructura de Páginas 相关能力。</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>Home (/)</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Home (/) 相关能力。</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>Habitación Individual (/rooms/[slug])</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Habitación Individual (/rooms/[slug]) 相关能力。</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>Reservas/Checkout (/book)</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Reservas/Checkout (/book) 相关能力。</td>
-</tr>
-<tr>
-  <td>16</td>
-  <td><code>Explora Cusco (/explore)</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Explora Cusco (/explore) 相关能力。</td>
-</tr>
-<tr>
-  <td>17</td>
-  <td><code>Contacto (/contact)</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Contacto (/contact) 相关能力。</td>
-</tr>
-<tr>
-  <td>18</td>
-  <td><code>Habitaciones (4 tipos)</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Habitaciones (4 tipos) 相关能力。</td>
-</tr>
-<tr>
-  <td>19</td>
-  <td><code>Servicios Confirmados (18 del hotel + 11 amenidades)</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Servicios Confirmados (18 del hotel + 11 amenidades) 相关能力。</td>
-</tr>
-<tr>
-  <td>20</td>
-  <td><code>UI Components</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 UI Components 相关能力。</td>
-</tr>
-<tr>
-  <td>21</td>
-  <td><code>Audio/Video</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Audio/Video 相关能力。</td>
-</tr>
-<tr>
-  <td>22</td>
-  <td><code>Rendimiento (Prioridad Alta)</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Rendimiento (Prioridad Alta) 相关能力。</td>
-</tr>
-<tr>
-  <td>23</td>
-  <td><code>SEO (Prioridad Alta)</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 SEO (Prioridad Alta) 相关能力。</td>
-</tr>
-<tr>
-  <td>24</td>
-  <td><code>Assets (Rutas en el proyecto)</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Assets (Rutas en el proyecto) 相关能力。</td>
-</tr>
-<tr>
-  <td>25</td>
-  <td><code>Pipeline de Desarrollo</code><br><small style="color:var(--muted)">.agents/AGENTS.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Pipeline de Desarrollo 相关能力。</td>
-</tr>
-<tr>
-  <td>26</td>
   <td><code>USGAR Hotels — Manual de Marca Oficial</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
   <td><span class="tag tag-func">概念</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -2034,7 +1837,7 @@ flowchart LR
   <td>文档入口，描述 USGAR Hotels — Manual de Marca Oficial 相关能力。</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>2</td>
   <td><code>1. Identidad del Hotel</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
   <td><span class="tag tag-func">概念</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -2042,7 +1845,7 @@ flowchart LR
   <td>文档入口，描述 1. Identidad del Hotel 相关能力。</td>
 </tr>
 <tr>
-  <td>28</td>
+  <td>3</td>
   <td><code>7. Servicios</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
   <td><span class="tag tag-func">概念</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -2050,7 +1853,7 @@ flowchart LR
   <td>文档入口，描述 7. Servicios 相关能力。</td>
 </tr>
 <tr>
-  <td>29</td>
+  <td>4</td>
   <td><code>Servicios Generales del Hotel (18)</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
   <td><span class="tag tag-func">概念</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -2058,12 +1861,140 @@ flowchart LR
   <td>文档入口，描述 Servicios Generales del Hotel (18) 相关能力。</td>
 </tr>
 <tr>
-  <td>30</td>
+  <td>5</td>
   <td><code>Amenidades en la Habitación (11)</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
   <td><span class="tag tag-func">概念</span></td>
   <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
   <td>文档入口，描述 Amenidades en la Habitación (11) 相关能力。</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>8. Video del Hero (Página Principal)</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 8. Video del Hero (Página Principal) 相关能力。</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>Secuencia Obligatoria del Video/Slideshow</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 Secuencia Obligatoria del Video/Slideshow 相关能力。</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>Reglas de Audio/Video</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 Reglas de Audio/Video 相关能力。</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>12. SEO</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 12. SEO 相关能力。</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>Schema.org — Valores Correctos</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 Schema.org — Valores Correctos 相关能力。</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>13. Pagos</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 13. Pagos 相关能力。</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>16. Tokens CSS / Tailwind v4 — Referencia Completa</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 16. Tokens CSS / Tailwind v4 — Referencia Completa 相关能力。</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>cache_host_header.md</code><br><small style="color:var(--muted)">references/security/cache_host_header.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 cache_host_header.md 相关能力。</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>缓存与 Host Header 安全</code><br><small style="color:var(--muted)">references/security/cache_host_header.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 缓存与 Host Header 安全 相关能力。</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>高危攻击面</code><br><small style="color:var(--muted)">references/security/cache_host_header.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 高危攻击面 相关能力。</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>检测清单</code><br><small style="color:var(--muted)">references/security/cache_host_header.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 检测清单 相关能力。</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>危险模式</code><br><small style="color:var(--muted)">references/security/cache_host_header.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 危险模式 相关能力。</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>检测命令</code><br><small style="color:var(--muted)">references/security/cache_host_header.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 检测命令 相关能力。</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>安全基线</code><br><small style="color:var(--muted)">references/security/cache_host_header.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 安全基线 相关能力。</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>验证步骤</code><br><small style="color:var(--muted)">references/security/cache_host_header.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 验证步骤 相关能力。</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>最小 PoC 示例</code><br><small style="color:var(--muted)">references/security/cache_host_header.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 最小 PoC 示例 相关能力。</td>
 </tr>
 </table>
 
@@ -2072,26 +2003,25 @@ flowchart LR
     <h4>关键文件</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>覆盖节点</th></tr>
-      <tr><td><code>.agents/AGENTS.md</code></td><td>25 个节点</td></tr>
-<tr><td><code>.agents/BRAND.md</code></td><td>12 个节点</td></tr>
+      <tr><td><code>.agents/BRAND.md</code></td><td>12 个节点</td></tr>
 <tr><td><code>references/security/cache_host_header.md</code></td><td>9 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x43。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x19。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 8. 服务 API ====== -->
 <h2 id="serve-api">8. 服务 API</h2>
-<p>服务 API 汇集了与 agents、skills、references、code 相关的实现，主要分布在 references/wooyun/file-upload.md、mercadopago-mp-integrate/references/products.md、references/core/semantic_search_guide.md。本节覆盖 424 个节点、421 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>服务 API 汇集了与 agents、skills、references、code 相关的实现，主要分布在 references/wooyun/file-upload.md、mercadopago-mp-integrate/references/products.md、references/core/semantic_search_guide.md。本节覆盖 423 个节点、420 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 服务 API (424 nodes, 421 edges)
+    %% Section: 服务 API (423 nodes, 420 edges)
     subgraph serve_api_src_Core_Request_php_856f6935["src/Core/Request.php"]
         src_core_request_request_4e91bc72("Request<br/><small>src/Core/Request.php</small>")
         src_core_request_request_construct_db52c497("__construct()<br/><small>src/Core/Request.php</small>")
@@ -2134,7 +2064,7 @@ flowchart LR
     src_core_request_request_4e91bc72 -->|方法| src_core_request_request_getheaders_3c9317f3
     src_core_request_request_construct_db52c497 -->|调用| src_core_request_request_extractheaders_c0957961
     src_services_channexservice_channexservice_ac244d9f -->|方法| src_services_channexservice_channexservice_creat_0237768e
-    %% Omitted for readability: 406 nodes, 0 edges
+    %% Omitted for readability: 405 nodes, 0 edges
     class src_core_request_request_4e91bc72 klass;
     class src_core_request_request_construct_db52c497 function;
     class src_core_request_request_extractheaders_c0957961 function;
@@ -2433,37 +2363,39 @@ flowchart LR
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x362, 方法 x34, 调用 x13, references x12。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x362, 方法 x34, 调用 x13, references x11。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 9. 安全与全局图 ====== -->
 <h2 id="security-global">9. 安全与全局图</h2>
-<p>安全与全局图 汇集了与 agents、skills、audit、code 相关的实现，主要分布在 references/security/mobile_security.md、references/wooyun/file-traversal.md、references/wooyun/xss.md。本节覆盖 1346 个节点、1333 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>安全与全局图 汇集了与 agents、skills、audit、code 相关的实现，主要分布在 references/security/mobile_security.md、references/wooyun/file-traversal.md、references/wooyun/xss.md。本节覆盖 1359 个节点、1345 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 安全与全局图 (1346 nodes, 1333 edges)
-    c_users_akim_desktop_migracion_a_php_agents_skil_cd1645e7("ConfigLoader<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_c01d525d("ReportGenerator<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_880ce420("CodeScanner<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_c16f2d84("ControlDetector<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_6682bf08("generate_report()<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_58e606b6("SecurityControlsEngine<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_82b7f817("SecurityControl<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_5ad556b6("_generate_markdown_report()<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_edde04ad("audit()<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_f1618f84("get_security_controls()<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_96c0033f("get_sensitive_operations()<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_736c2382("__init__()<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_146ce3ba("load_adapter()<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_3546fc8b("load_matrix()<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_3803c279("__init__()<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_31f0453c("main()<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_fe0319f4("_extract_method_name()<br/><small>references/core/security_controls_engine.py</small>")
-    c_users_akim_desktop_migracion_a_php_agents_skil_a7cf76c3("__init__()<br/><small>references/core/security_controls_engine.py</small>")
+    %% Section: 安全与全局图 (1359 nodes, 1345 edges)
+    subgraph security_global_references_core_security_control_cec45fc7["references/core/security_controls_engine.py"]
+        c_users_akim_desktop_migracion_a_php_agents_skil_cd1645e7("ConfigLoader<br/><small>references/core/security_controls_engine.py</small>")
+        c_users_akim_desktop_migracion_a_php_agents_skil_c01d525d("ReportGenerator<br/><small>references/core/security_controls_engine.py</small>")
+        c_users_akim_desktop_migracion_a_php_agents_skil_880ce420("CodeScanner<br/><small>references/core/security_controls_engine.py</small>")
+        c_users_akim_desktop_migracion_a_php_agents_skil_c16f2d84("ControlDetector<br/><small>references/core/security_controls_engine.py</small>")
+        c_users_akim_desktop_migracion_a_php_agents_skil_6682bf08("generate_report()<br/><small>references/core/security_controls_engine.py</small>")
+        c_users_akim_desktop_migracion_a_php_agents_skil_82b7f817("SecurityControl<br/><small>references/core/security_controls_engine.py</small>")
+        c_users_akim_desktop_migracion_a_php_agents_skil_5ad556b6("_generate_markdown_report()<br/><small>references/core/security_controls_engine.py</small>")
+        c_users_akim_desktop_migracion_a_php_agents_skil_edde04ad("audit()<br/><small>references/core/security_controls_engine.py</small>")
+        c_users_akim_desktop_migracion_a_php_agents_skil_f1618f84("get_security_controls()<br/><small>references/core/security_controls_engine.py</small>")
+        c_users_akim_desktop_migracion_a_php_agents_skil_96c0033f("get_sensitive_operations()<br/><small>references/core/security_controls_engine.py</small>")
+        c_users_akim_desktop_migracion_a_php_agents_skil_736c2382("__init__()<br/><small>references/core/security_controls_engine.py</small>")
+        c_users_akim_desktop_migracion_a_php_agents_skil_146ce3ba("load_adapter()<br/><small>references/core/security_controls_engine.py</small>")
+        c_users_akim_desktop_migracion_a_php_agents_skil_3546fc8b("load_matrix()<br/><small>references/core/security_controls_engine.py</small>")
+        c_users_akim_desktop_migracion_a_php_agents_skil_3803c279("__init__()<br/><small>references/core/security_controls_engine.py</small>")
+        c_users_akim_desktop_migracion_a_php_agents_skil_31f0453c("main()<br/><small>references/core/security_controls_engine.py</small>")
+        c_users_akim_desktop_migracion_a_php_agents_skil_fe0319f4("_extract_method_name()<br/><small>references/core/security_controls_engine.py</small>")
+        c_users_akim_desktop_migracion_a_php_agents_skil_a7cf76c3("__init__()<br/><small>references/core/security_controls_engine.py</small>")
+    end
+    src_layouts_layout_acfa0c20("../layouts/Layout.astro")
     c_users_akim_desktop_migracion_a_php_agents_skil_82b7f817 -->|调用| c_users_akim_desktop_migracion_a_php_agents_skil_5ad556b6
     c_users_akim_desktop_migracion_a_php_agents_skil_82b7f817 -->|调用| c_users_akim_desktop_migracion_a_php_agents_skil_edde04ad
     c_users_akim_desktop_migracion_a_php_agents_skil_cd1645e7 -->|方法| c_users_akim_desktop_migracion_a_php_agents_skil_f1618f84
@@ -2486,15 +2418,13 @@ flowchart LR
     c_users_akim_desktop_migracion_a_php_agents_skil_c01d525d -->|方法| c_users_akim_desktop_migracion_a_php_agents_skil_6682bf08
     c_users_akim_desktop_migracion_a_php_agents_skil_6682bf08 -->|调用| c_users_akim_desktop_migracion_a_php_agents_skil_31f0453c
     c_users_akim_desktop_migracion_a_php_agents_skil_6682bf08 -->|调用| c_users_akim_desktop_migracion_a_php_agents_skil_5ad556b6
-    c_users_akim_desktop_migracion_a_php_agents_skil_58e606b6 -->|调用| c_users_akim_desktop_migracion_a_php_agents_skil_31f0453c
-    c_users_akim_desktop_migracion_a_php_agents_skil_58e606b6 -->|方法| c_users_akim_desktop_migracion_a_php_agents_skil_edde04ad
-    %% Omitted for readability: 1328 nodes, 2 edges
+    c_users_akim_desktop_migracion_a_php_agents_skil_edde04ad -->|调用| c_users_akim_desktop_migracion_a_php_agents_skil_31f0453c
+    %% Omitted for readability: 1341 nodes, 0 edges
     class c_users_akim_desktop_migracion_a_php_agents_skil_cd1645e7 klass;
     class c_users_akim_desktop_migracion_a_php_agents_skil_c01d525d klass;
     class c_users_akim_desktop_migracion_a_php_agents_skil_880ce420 klass;
     class c_users_akim_desktop_migracion_a_php_agents_skil_c16f2d84 klass;
     class c_users_akim_desktop_migracion_a_php_agents_skil_6682bf08 function;
-    class c_users_akim_desktop_migracion_a_php_agents_skil_58e606b6 klass;
     class c_users_akim_desktop_migracion_a_php_agents_skil_82b7f817 klass;
     class c_users_akim_desktop_migracion_a_php_agents_skil_5ad556b6 function;
     class c_users_akim_desktop_migracion_a_php_agents_skil_edde04ad function;
@@ -2507,6 +2437,7 @@ flowchart LR
     class c_users_akim_desktop_migracion_a_php_agents_skil_31f0453c function;
     class c_users_akim_desktop_migracion_a_php_agents_skil_fe0319f4 function;
     class c_users_akim_desktop_migracion_a_php_agents_skil_a7cf76c3 function;
+    class src_layouts_layout_acfa0c20 function;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -2787,82 +2718,82 @@ flowchart LR
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x1275, 调用 x24, 方法 x20, references x13。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x1282, 调用 x24, 方法 x20, references x13。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 10. 测试与样例 ====== -->
 <h2 id="tests-fixtures">10. 测试与样例</h2>
-<p>测试与样例 汇集了与 test、pages、skillmd、setup 相关的实现，主要分布在 skills/mercadopago-mp-test-setup/SKILL.md、src/layouts/Layout.astro、src/i18n/utils.ts。本节覆盖 92 个节点、177 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>测试与样例 汇集了与 test、components、pages、skillmd 相关的实现，主要分布在 skills/mercadopago-mp-test-setup/SKILL.md、src/i18n/utils.ts、src/data/settings.ts。本节覆盖 87 个节点、170 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 测试与样例 (92 nodes, 177 edges)
+    %% Section: 测试与样例 (87 nodes, 170 edges)
     subgraph tests_fixtures_src_i18n_utils_ts_daac2006["src/i18n/utils.ts"]
+        src_i18n_utils_b3012147("utils.ts")
         src_i18n_utils_usetranslations_2f58b7a0("useTranslations()<br/><small>src/i18n/utils.ts</small>")
         src_i18n_utils_resolvekey_2cb70d3d("resolveKey()<br/><small>src/i18n/utils.ts</small>")
     end
     src_components_room_roomamenitiesgrid_16f6de07("RoomAmenitiesGrid.astro")
     src_pages_book_mock_payment_49537246("mock-payment.astro")
-    public_index_c7d833a6("index.php")
     src_controllers_authcontroller_3a495209("AuthController.php")
     src_controllers_bookingcontroller_974e6e85("BookingController.php")
     src_controllers_webhookcontroller_11c3631a("WebhookController.php")
+    src_components_bookingwidget_1cb79b45("../components/BookingWidget.astro")
     src_components_footer_d54b5924("../components/Footer.astro")
+    src_components_interactiveroomssection_ef37413f("../components/InteractiveRoomsSection.a...<br/><small>src/components/InteractiveRoomsSection.astro</small>")
+    src_components_mapsection_08babf10("../components/MapSection.astro")
     src_components_navbar_844f5f16("../components/Navbar.astro")
     src_components_reviewmarquee_2328398c("../components/ReviewMarquee.astro")
-    src_components_roomcard_7ef6c339("../../components/RoomCard.astro")
+    src_components_roomdetail_f7b01c55("RoomDetail.astro")
     src_components_whatsappbutton_31fa6c12("../components/WhatsAppButton.astro")
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901("../../i18n/utils")
-    src_layouts_layout_acfa0c20("../../layouts/Layout.astro")
+    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901("../i18n/utils")
     src_pages_contact_38def28b("../contact.astro")
-    src_pages_gallery_f438ff4e("../gallery.astro")
-    src_pages_login_aaf4bf31("../login.astro")
     src_i18n_utils_usetranslations_2f58b7a0 -->|调用| src_i18n_utils_resolvekey_2cb70d3d
+    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_bookingwidget_1cb79b45
     c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_footer_d54b5924
+    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_interactiveroomssection_ef37413f
+    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_mapsection_08babf10
     c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_navbar_844f5f16
     c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_reviewmarquee_2328398c
     c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_room_roomamenitiesgrid_16f6de07
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_roomcard_7ef6c339
+    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_roomdetail_f7b01c55
     c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_whatsappbutton_31fa6c12
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_layouts_layout_acfa0c20
     c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_pages_book_mock_payment_49537246
     c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_pages_contact_38def28b
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_pages_gallery_f438ff4e
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_pages_login_aaf4bf31
-    src_components_footer_d54b5924 -->|导入| src_i18n_utils_usetranslations_2f58b7a0
-    src_components_footer_d54b5924 -->|导入| src_layouts_layout_acfa0c20
-    src_components_navbar_844f5f16 -->|导入| src_i18n_utils_usetranslations_2f58b7a0
-    src_components_navbar_844f5f16 -->|导入| src_layouts_layout_acfa0c20
-    src_components_reviewmarquee_2328398c -->|导入| src_i18n_utils_usetranslations_2f58b7a0
-    src_components_roomcard_7ef6c339 -->|导入| src_i18n_utils_usetranslations_2f58b7a0
-    src_layouts_layout_acfa0c20 -->|导入| src_components_whatsappbutton_31fa6c12
-    src_layouts_layout_acfa0c20 -->|导入| src_pages_contact_38def28b
-    src_layouts_layout_acfa0c20 -->|导入| src_pages_gallery_f438ff4e
-    src_layouts_layout_acfa0c20 -->|导入| src_pages_login_aaf4bf31
-    src_i18n_utils_usetranslations_2f58b7a0 -->|导入| src_pages_contact_38def28b
-    src_i18n_utils_usetranslations_2f58b7a0 -->|导入| src_pages_gallery_f438ff4e
-    %% Omitted for readability: 74 nodes, 3 edges
+    src_components_interactiveroomssection_ef37413f -->|导入| src_i18n_utils_b3012147
+    src_components_interactiveroomssection_ef37413f -->|导入| src_i18n_utils_usetranslations_2f58b7a0
+    src_components_mapsection_08babf10 -->|导入| src_i18n_utils_b3012147
+    src_components_mapsection_08babf10 -->|导入| src_pages_contact_38def28b
+    src_components_roomdetail_f7b01c55 -->|导入| src_i18n_utils_b3012147
+    src_components_roomdetail_f7b01c55 -->|导入| src_i18n_utils_usetranslations_2f58b7a0
+    src_i18n_utils_b3012147 -->|导入| src_components_footer_d54b5924
+    src_i18n_utils_b3012147 -->|导入| src_components_navbar_844f5f16
+    src_i18n_utils_b3012147 -->|导入| src_components_reviewmarquee_2328398c
+    src_i18n_utils_b3012147 -->|导入| src_components_room_roomamenitiesgrid_16f6de07
+    src_i18n_utils_b3012147 -->|导入| src_components_whatsappbutton_31fa6c12
+    src_i18n_utils_b3012147 -->|导入| src_pages_contact_38def28b
+    %% Omitted for readability: 69 nodes, 4 edges
+    class src_i18n_utils_b3012147 module;
     class src_i18n_utils_usetranslations_2f58b7a0 ui;
     class src_i18n_utils_resolvekey_2cb70d3d function;
     class src_components_room_roomamenitiesgrid_16f6de07 klass;
     class src_pages_book_mock_payment_49537246 function;
-    class public_index_c7d833a6 module;
     class src_controllers_authcontroller_3a495209 klass;
     class src_controllers_bookingcontroller_974e6e85 klass;
     class src_controllers_webhookcontroller_11c3631a ui;
+    class src_components_bookingwidget_1cb79b45 ui;
     class src_components_footer_d54b5924 ui;
+    class src_components_interactiveroomssection_ef37413f async;
+    class src_components_mapsection_08babf10 ui;
     class src_components_navbar_844f5f16 ui;
     class src_components_reviewmarquee_2328398c ui;
-    class src_components_roomcard_7ef6c339 ui;
+    class src_components_roomdetail_f7b01c55 klass;
     class src_components_whatsappbutton_31fa6c12 ui;
     class c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 function;
-    class src_layouts_layout_acfa0c20 function;
     class src_pages_contact_38def28b function;
-    class src_pages_gallery_f438ff4e function;
-    class src_pages_login_aaf4bf31 function;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -2886,158 +2817,70 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>../../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>../../components/RoomCard.astro</code><br><small style="color:var(--muted)">src/components/RoomCard.astro</small><br><code>../../layouts/Layout.astro</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small><br><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small><br>+10 个更多</td>
-  <td>src/i18n/utils 中的 ../../i18n/utils 节点。</td>
+  <td><code>../components/InteractiveRoomsSection.astro</code><br><small style="color:var(--muted)">src/components/InteractiveRoomsSection.astro</small></td>
+  <td><span class="tag tag-async">异步</span></td>
+  <td><code>../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small></td>
+  <td><code>../data/rooms</code><br><small style="color:var(--muted)">src/data/rooms</small><br><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br><code>useTranslations()</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br>+1 个更多</td>
+  <td>src/components/InteractiveRoomsSection.astro 中的 ../components/InteractiveRoomsSection.astro 节点。</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>../data/settings</code><br><small style="color:var(--muted)">src/data/settings</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>../../layouts/Layout.astro</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small><br><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small><br><code>../components/WhatsAppButton.astro</code><br><small style="color:var(--muted)">src/components/WhatsAppButton.astro</small><br>+1 个更多</td>
-  <td>src/data/settings 中的 ../data/settings 节点。</td>
+  <td><code>../components/MapSection.astro</code><br><small style="color:var(--muted)">src/components/MapSection.astro</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small></td>
+  <td><code>../contact.astro</code><br><small style="color:var(--muted)">src/pages/contact.astro</small><br><code>../data/settings</code><br><small style="color:var(--muted)">src/data/settings</small><br><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br>+1 个更多</td>
+  <td>src/components/MapSection.astro 中的 ../components/MapSection.astro 节点。</td>
 </tr>
 <tr>
   <td>3</td>
-  <td><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>../../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small><br><code>../data/settings</code><br><small style="color:var(--muted)">src/data/settings</small></td>
-  <td><code>../../layouts/Layout.astro</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small><br><code>../assets/logos/Logo usgar morado.png</code><br><small style="color:var(--muted)">assets/logos/Logo usgar morado.png</small><br><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br>+4 个更多</td>
-  <td>src/components/Footer.astro 中的 ../components/Footer.astro 节点。</td>
+  <td><code>String()</code><br><small style="color:var(--muted)">src/components/MapSection.astro</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>src/components/MapSection.astro 中的 String() 节点。</td>
 </tr>
 <tr>
   <td>4</td>
-  <td><code>../assets/logos/Logo usgar morado.png</code><br><small style="color:var(--muted)">assets/logos/Logo usgar morado.png</small></td>
-  <td><span class="tag tag-async">异步</span></td>
-  <td><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small></td>
-  <td><code>../components/Navbar.astro</code><br><small style="color:var(--muted)">src/components/Navbar.astro</small></td>
-  <td>assets/logos/Logo usgar morado.png 中的 ../assets/logos/Logo usgar morado.png 节点。</td>
+  <td><code>leaflet/dist/leaflet.css</code><br><small style="color:var(--muted)">leaflet/dist/leaflet.css</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>leaflet/dist/leaflet.css 中的 leaflet/dist/leaflet.css 节点。</td>
 </tr>
 <tr>
   <td>5</td>
-  <td><code>../components/Navbar.astro</code><br><small style="color:var(--muted)">src/components/Navbar.astro</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>../../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small><br><code>../assets/logos/Logo usgar morado.png</code><br><small style="color:var(--muted)">assets/logos/Logo usgar morado.png</small></td>
-  <td><code>../../layouts/Layout.astro</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small><br><code>../assets/logos/Logo usgar.png</code><br><small style="color:var(--muted)">assets/logos/Logo usgar.png</small><br><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br>+2 个更多</td>
-  <td>src/components/Navbar.astro 中的 ../components/Navbar.astro 节点。</td>
+  <td><code>../assets/logos/Logo usgar isotipo.png</code><br><small style="color:var(--muted)">assets/logos/Logo usgar isotipo.png</small></td>
+  <td><span class="tag tag-async">异步</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>assets/logos/Logo usgar isotipo.png 中的 ../assets/logos/Logo usgar isotipo.png 节点。</td>
 </tr>
 <tr>
   <td>6</td>
-  <td><code>getLocaleUrl()</code><br><small style="color:var(--muted)">src/components/Navbar.astro</small></td>
+  <td><code>../data/settings</code><br><small style="color:var(--muted)">src/data/settings</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>src/components/Navbar.astro 中的 getLocaleUrl() 节点。</td>
+  <td><code>../components/MapSection.astro</code><br><small style="color:var(--muted)">src/components/MapSection.astro</small></td>
+  <td><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small><br><code>../components/WhatsAppButton.astro</code><br><small style="color:var(--muted)">src/components/WhatsAppButton.astro</small><br><code>../contact.astro</code><br><small style="color:var(--muted)">src/pages/contact.astro</small><br>+1 个更多</td>
+  <td>src/data/settings 中的 ../data/settings 节点。</td>
 </tr>
 <tr>
   <td>7</td>
-  <td><code>../assets/logos/Logo usgar.png</code><br><small style="color:var(--muted)">assets/logos/Logo usgar.png</small></td>
-  <td><span class="tag tag-async">异步</span></td>
-  <td><code>../components/Navbar.astro</code><br><small style="color:var(--muted)">src/components/Navbar.astro</small></td>
-  <td>无直接出边</td>
-  <td>assets/logos/Logo usgar.png 中的 ../assets/logos/Logo usgar.png 节点。</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>../components/ReviewMarquee.astro</code><br><small style="color:var(--muted)">src/components/ReviewMarquee.astro</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>../../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small></td>
-  <td><code>../data/reviews</code><br><small style="color:var(--muted)">src/data/reviews</small><br><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br><code>useTranslations()</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br>+1 个更多</td>
-  <td>src/components/ReviewMarquee.astro 中的 ../components/ReviewMarquee.astro 节点。</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>../data/reviews</code><br><small style="color:var(--muted)">src/data/reviews</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>../components/ReviewMarquee.astro</code><br><small style="color:var(--muted)">src/components/ReviewMarquee.astro</small></td>
-  <td>无直接出边</td>
-  <td>src/data/reviews 中的 ../data/reviews 节点。</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>../../components/RoomCard.astro</code><br><small style="color:var(--muted)">src/components/RoomCard.astro</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>../../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small></td>
-  <td><code>index.astro</code><br><small style="color:var(--muted)">pages/rooms/index.astro</small><br><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br><code>useTranslations()</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br>+1 个更多</td>
-  <td>src/components/RoomCard.astro 中的 ../../components/RoomCard.astro 节点。</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>../../layouts/Layout.astro</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>../../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small><br><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small><br><code>../components/Navbar.astro</code><br><small style="color:var(--muted)">src/components/Navbar.astro</small><br>+1 个更多</td>
-  <td><code>../components/WhatsAppButton.astro</code><br><small style="color:var(--muted)">src/components/WhatsAppButton.astro</small><br><code>../contact.astro</code><br><small style="color:var(--muted)">src/pages/contact.astro</small><br><code>../gallery.astro</code><br><small style="color:var(--muted)">src/pages/gallery.astro</small><br>+8 个更多</td>
-  <td>src/layouts/Layout.astro 中的 ../../layouts/Layout.astro 节点。</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>../components/WhatsAppButton.astro</code><br><small style="color:var(--muted)">src/components/WhatsAppButton.astro</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>../../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small><br><code>../../layouts/Layout.astro</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small><br><code>../data/settings</code><br><small style="color:var(--muted)">src/data/settings</small></td>
-  <td><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br><code>settings.ts</code><br><small style="color:var(--muted)">src/data/settings.ts</small><br><code>SiteSettings</code><br><small style="color:var(--muted)">src/data/settings.ts</small><br>+1 个更多</td>
-  <td>src/components/WhatsAppButton.astro 中的 ../components/WhatsAppButton.astro 节点。</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>RoomAmenitiesGrid.astro</code><br><small style="color:var(--muted)">components/room/RoomAmenitiesGrid.astro</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>../../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small></td>
-  <td><code>astro/types</code><br><small style="color:var(--muted)">astro/types</small><br><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br><code>utils.ts</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small></td>
-  <td>components/room/RoomAmenitiesGrid.astro 中的 RoomAmenitiesGrid.astro 节点。</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>astro/types</code><br><small style="color:var(--muted)">astro/types</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>RoomAmenitiesGrid.astro</code><br><small style="color:var(--muted)">components/room/RoomAmenitiesGrid.astro</small></td>
-  <td>无直接出边</td>
-  <td>astro/types 中的 astro/types 节点。</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>settings.ts</code><br><small style="color:var(--muted)">src/data/settings.ts</small></td>
-  <td><span class="tag tag-class">模块</span></td>
-  <td><code>../../layouts/Layout.astro</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small><br><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small><br><code>../components/WhatsAppButton.astro</code><br><small style="color:var(--muted)">src/components/WhatsAppButton.astro</small></td>
-  <td><code>../contact.astro</code><br><small style="color:var(--muted)">src/pages/contact.astro</small></td>
-  <td>src/data/settings.ts 中的模块文件，承载该层主要实现。</td>
-</tr>
-<tr>
-  <td>16</td>
-  <td><code>SocialLink</code><br><small style="color:var(--muted)">src/data/settings.ts</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>src/data/settings.ts 中的 SocialLink 节点。</td>
-</tr>
-<tr>
-  <td>17</td>
-  <td><code>SiteSettings</code><br><small style="color:var(--muted)">src/data/settings.ts</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>../../layouts/Layout.astro</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small><br><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small><br><code>../components/WhatsAppButton.astro</code><br><small style="color:var(--muted)">src/components/WhatsAppButton.astro</small></td>
-  <td><code>../contact.astro</code><br><small style="color:var(--muted)">src/pages/contact.astro</small></td>
-  <td>src/data/settings.ts 中的 SiteSettings 节点。</td>
-</tr>
-<tr>
-  <td>18</td>
   <td><code>utils.ts</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small></td>
   <td><span class="tag tag-class">模块</span></td>
-  <td><code>../../components/RoomCard.astro</code><br><small style="color:var(--muted)">src/components/RoomCard.astro</small><br><code>../../layouts/Layout.astro</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small><br><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small><br>+4 个更多</td>
-  <td><code>../contact.astro</code><br><small style="color:var(--muted)">src/pages/contact.astro</small><br><code>../gallery.astro</code><br><small style="color:var(--muted)">src/pages/gallery.astro</small><br><code>../login.astro</code><br><small style="color:var(--muted)">src/pages/login.astro</small><br>+2 个更多</td>
+  <td><code>../components/InteractiveRoomsSection.a...</code><br><small style="color:var(--muted)">src/components/InteractiveRoomsSection.astro</small><br><code>../components/MapSection.astro</code><br><small style="color:var(--muted)">src/components/MapSection.astro</small><br><code>RoomDetail.astro</code><br><small style="color:var(--muted)">src/components/RoomDetail.astro</small></td>
+  <td><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small><br><code>../components/Navbar.astro</code><br><small style="color:var(--muted)">src/components/Navbar.astro</small><br><code>../components/ReviewMarquee.astro</code><br><small style="color:var(--muted)">src/components/ReviewMarquee.astro</small><br>+6 个更多</td>
   <td>src/i18n/utils.ts 中的模块文件，承载该层主要实现。</td>
 </tr>
 <tr>
-  <td>19</td>
+  <td>8</td>
   <td><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small></td>
   <td><span class="tag tag-class">类</span></td>
-  <td><code>../../components/RoomCard.astro</code><br><small style="color:var(--muted)">src/components/RoomCard.astro</small><br><code>../../layouts/Layout.astro</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small><br><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small><br>+4 个更多</td>
-  <td><code>../contact.astro</code><br><small style="color:var(--muted)">src/pages/contact.astro</small><br><code>../gallery.astro</code><br><small style="color:var(--muted)">src/pages/gallery.astro</small><br><code>../login.astro</code><br><small style="color:var(--muted)">src/pages/login.astro</small><br>+1 个更多</td>
+  <td><code>../components/InteractiveRoomsSection.a...</code><br><small style="color:var(--muted)">src/components/InteractiveRoomsSection.astro</small><br><code>../components/MapSection.astro</code><br><small style="color:var(--muted)">src/components/MapSection.astro</small><br><code>RoomDetail.astro</code><br><small style="color:var(--muted)">src/components/RoomDetail.astro</small></td>
+  <td><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small><br><code>../components/Navbar.astro</code><br><small style="color:var(--muted)">src/components/Navbar.astro</small><br><code>../components/ReviewMarquee.astro</code><br><small style="color:var(--muted)">src/components/ReviewMarquee.astro</small><br>+5 个更多</td>
   <td>src/i18n/utils.ts 中的 Locale 节点。</td>
 </tr>
 <tr>
-  <td>20</td>
+  <td>9</td>
   <td><code>dictionaries</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -3045,7 +2888,7 @@ flowchart LR
   <td>src/i18n/utils.ts 中的 dictionaries 节点。</td>
 </tr>
 <tr>
-  <td>21</td>
+  <td>10</td>
   <td><code>fallbackChain</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -3053,15 +2896,15 @@ flowchart LR
   <td>src/i18n/utils.ts 中的 fallbackChain 节点。</td>
 </tr>
 <tr>
-  <td>22</td>
+  <td>11</td>
   <td><code>useTranslations()</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>../../components/RoomCard.astro</code><br><small style="color:var(--muted)">src/components/RoomCard.astro</small><br><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small><br><code>../components/Navbar.astro</code><br><small style="color:var(--muted)">src/components/Navbar.astro</small><br>+1 个更多</td>
-  <td><code>../contact.astro</code><br><small style="color:var(--muted)">src/pages/contact.astro</small><br><code>../gallery.astro</code><br><small style="color:var(--muted)">src/pages/gallery.astro</small><br><code>../login.astro</code><br><small style="color:var(--muted)">src/pages/login.astro</small><br>+3 个更多</td>
+  <td><code>../components/InteractiveRoomsSection.a...</code><br><small style="color:var(--muted)">src/components/InteractiveRoomsSection.astro</small><br><code>RoomDetail.astro</code><br><small style="color:var(--muted)">src/components/RoomDetail.astro</small></td>
+  <td><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small><br><code>../components/Navbar.astro</code><br><small style="color:var(--muted)">src/components/Navbar.astro</small><br><code>../components/ReviewMarquee.astro</code><br><small style="color:var(--muted)">src/components/ReviewMarquee.astro</small><br>+5 个更多</td>
   <td>src/i18n/utils.ts 中的 useTranslations() 节点。</td>
 </tr>
 <tr>
-  <td>23</td>
+  <td>12</td>
   <td><code>resolveKey()</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>useTranslations()</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small></td>
@@ -3069,60 +2912,148 @@ flowchart LR
   <td>src/i18n/utils.ts 中的 resolveKey() 节点。</td>
 </tr>
 <tr>
-  <td>24</td>
-  <td><code>canonicalURL</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small></td>
+  <td>13</td>
+  <td><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>../data/settings</code><br><small style="color:var(--muted)">src/data/settings</small><br><code>../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small><br><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br>+2 个更多</td>
+  <td><code>../assets/logos/Logo usgar morado.png</code><br><small style="color:var(--muted)">assets/logos/Logo usgar morado.png</small><br><code>settings.ts</code><br><small style="color:var(--muted)">src/data/settings.ts</small><br><code>SiteSettings</code><br><small style="color:var(--muted)">src/data/settings.ts</small></td>
+  <td>src/components/Footer.astro 中的 ../components/Footer.astro 节点。</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>../assets/logos/Logo usgar morado.png</code><br><small style="color:var(--muted)">assets/logos/Logo usgar morado.png</small></td>
+  <td><span class="tag tag-async">异步</span></td>
+  <td><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small></td>
+  <td><code>../components/Navbar.astro</code><br><small style="color:var(--muted)">src/components/Navbar.astro</small></td>
+  <td>assets/logos/Logo usgar morado.png 中的 ../assets/logos/Logo usgar morado.png 节点。</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>../components/Navbar.astro</code><br><small style="color:var(--muted)">src/components/Navbar.astro</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>../assets/logos/Logo usgar morado.png</code><br><small style="color:var(--muted)">assets/logos/Logo usgar morado.png</small><br><code>../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small><br><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br>+2 个更多</td>
+  <td><code>../assets/logos/Logo usgar.png</code><br><small style="color:var(--muted)">assets/logos/Logo usgar.png</small></td>
+  <td>src/components/Navbar.astro 中的 ../components/Navbar.astro 节点。</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>getLocaleUrl()</code><br><small style="color:var(--muted)">src/components/Navbar.astro</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>src/layouts/Layout.astro 中的 canonicalURL 节点。</td>
+  <td>src/components/Navbar.astro 中的 getLocaleUrl() 节点。</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>../assets/logos/Logo usgar.png</code><br><small style="color:var(--muted)">assets/logos/Logo usgar.png</small></td>
+  <td><span class="tag tag-async">异步</span></td>
+  <td><code>../components/Navbar.astro</code><br><small style="color:var(--muted)">src/components/Navbar.astro</small></td>
+  <td>无直接出边</td>
+  <td>assets/logos/Logo usgar.png 中的 ../assets/logos/Logo usgar.png 节点。</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>../components/ReviewMarquee.astro</code><br><small style="color:var(--muted)">src/components/ReviewMarquee.astro</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small><br><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br><code>useTranslations()</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br>+1 个更多</td>
+  <td><code>../data/reviews</code><br><small style="color:var(--muted)">src/data/reviews</small></td>
+  <td>src/components/ReviewMarquee.astro 中的 ../components/ReviewMarquee.astro 节点。</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>../data/reviews</code><br><small style="color:var(--muted)">src/data/reviews</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>../components/ReviewMarquee.astro</code><br><small style="color:var(--muted)">src/components/ReviewMarquee.astro</small></td>
+  <td>无直接出边</td>
+  <td>src/data/reviews 中的 ../data/reviews 节点。</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>../components/WhatsAppButton.astro</code><br><small style="color:var(--muted)">src/components/WhatsAppButton.astro</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>../data/settings</code><br><small style="color:var(--muted)">src/data/settings</small><br><code>../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small><br><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br>+1 个更多</td>
+  <td><code>settings.ts</code><br><small style="color:var(--muted)">src/data/settings.ts</small><br><code>SiteSettings</code><br><small style="color:var(--muted)">src/data/settings.ts</small></td>
+  <td>src/components/WhatsAppButton.astro 中的 ../components/WhatsAppButton.astro 节点。</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>settings.ts</code><br><small style="color:var(--muted)">src/data/settings.ts</small></td>
+  <td><span class="tag tag-class">模块</span></td>
+  <td><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small><br><code>../components/WhatsAppButton.astro</code><br><small style="color:var(--muted)">src/components/WhatsAppButton.astro</small></td>
+  <td><code>../contact.astro</code><br><small style="color:var(--muted)">src/pages/contact.astro</small></td>
+  <td>src/data/settings.ts 中的模块文件，承载该层主要实现。</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>SocialLink</code><br><small style="color:var(--muted)">src/data/settings.ts</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>src/data/settings.ts 中的 SocialLink 节点。</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>SiteSettings</code><br><small style="color:var(--muted)">src/data/settings.ts</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small><br><code>../components/WhatsAppButton.astro</code><br><small style="color:var(--muted)">src/components/WhatsAppButton.astro</small></td>
+  <td><code>../contact.astro</code><br><small style="color:var(--muted)">src/pages/contact.astro</small></td>
+  <td>src/data/settings.ts 中的 SiteSettings 节点。</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>../contact.astro</code><br><small style="color:var(--muted)">src/pages/contact.astro</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>../components/MapSection.astro</code><br><small style="color:var(--muted)">src/components/MapSection.astro</small><br><code>../data/settings</code><br><small style="color:var(--muted)">src/data/settings</small><br><code>../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small><br>+5 个更多</td>
+  <td><code>contact.astro</code><br><small style="color:var(--muted)">pages/es/contact.astro</small></td>
+  <td>src/pages/contact.astro 中的 ../contact.astro 节点。</td>
 </tr>
 <tr>
   <td>25</td>
-  <td><code>pathWithoutLocale</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small></td>
+  <td><code>../gallery.astro</code><br><small style="color:var(--muted)">src/pages/gallery.astro</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small><br><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br><code>useTranslations()</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br>+1 个更多</td>
   <td>无直接出边</td>
-  <td>src/layouts/Layout.astro 中的 pathWithoutLocale 节点。</td>
+  <td>src/pages/gallery.astro 中的 ../gallery.astro 节点。</td>
 </tr>
 <tr>
   <td>26</td>
-  <td><code>enURL</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small></td>
+  <td><code>../login.astro</code><br><small style="color:var(--muted)">src/pages/login.astro</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>src/layouts/Layout.astro 中的 enURL 节点。</td>
+  <td><code>../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small><br><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br><code>useTranslations()</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br>+1 个更多</td>
+  <td><code>login.astro</code><br><small style="color:var(--muted)">pages/es/login.astro</small></td>
+  <td>src/pages/login.astro 中的 ../login.astro 节点。</td>
 </tr>
 <tr>
   <td>27</td>
-  <td><code>esURL</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>i18n.test.ts</code><br><small style="color:var(--muted)">tests/Unit/i18n.test.ts</small></td>
+  <td><span class="tag tag-func">测试</span></td>
+  <td><code>useTranslations()</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br><code>utils.ts</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small></td>
   <td>无直接出边</td>
-  <td>src/layouts/Layout.astro 中的 esURL 节点。</td>
+  <td>tests/Unit/i18n.test.ts 中的模块文件，承载该层主要实现。</td>
 </tr>
 <tr>
   <td>28</td>
-  <td><code>frURL</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small></td>
+  <td><code>login.astro</code><br><small style="color:var(--muted)">pages/es/login.astro</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>../login.astro</code><br><small style="color:var(--muted)">src/pages/login.astro</small></td>
   <td>无直接出边</td>
-  <td>src/layouts/Layout.astro 中的 frURL 节点。</td>
+  <td>pages/es/login.astro 中的 login.astro 节点。</td>
 </tr>
 <tr>
   <td>29</td>
-  <td><code>ptURL</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small></td>
+  <td><code>contact.astro</code><br><small style="color:var(--muted)">pages/es/contact.astro</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>../contact.astro</code><br><small style="color:var(--muted)">src/pages/contact.astro</small></td>
   <td>无直接出边</td>
-  <td>src/layouts/Layout.astro 中的 ptURL 节点。</td>
+  <td>pages/es/contact.astro 中的 contact.astro 节点。</td>
 </tr>
 <tr>
   <td>30</td>
-  <td><code>string</code><br><small style="color:var(--muted)">src/layouts/Layout.astro</small></td>
-  <td><span class="tag tag-func">函数</span></td>
+  <td><code>AuthController.php</code><br><small style="color:var(--muted)">src/Controllers/AuthController.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>src/layouts/Layout.astro 中的 string 节点。</td>
+  <td><code>AuthService.php</code><br><small style="color:var(--muted)">src/Services/AuthService.php</small><br><code>Config.php</code><br><small style="color:var(--muted)">src/Core/Config.php</small><br><code>Database.php</code><br><small style="color:var(--muted)">src/Core/Database.php</small><br>+4 个更多</td>
+  <td>src/Controllers/AuthController.php 中的 AuthController.php 节点。</td>
 </tr>
 </table>
 
@@ -3132,18 +3063,18 @@ flowchart LR
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>覆盖节点</th></tr>
       <tr><td><code>skills/mercadopago-mp-test-setup/SKILL.md</code></td><td>12 个节点</td></tr>
-<tr><td><code>src/layouts/Layout.astro</code></td><td>9 个节点</td></tr>
 <tr><td><code>src/i18n/utils.ts</code></td><td>6 个节点</td></tr>
 <tr><td><code>scripts/run-exhaustive-tests.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>src/Core/BookingStatus.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>src/data/settings.ts</code></td><td>3 个节点</td></tr>
-<tr><td><code>pages/rooms/index.astro</code></td><td>3 个节点</td></tr>
+<tr><td><code>src/components/MapSection.astro</code></td><td>2 个节点</td></tr>
 <tr><td><code>src/components/Navbar.astro</code></td><td>2 个节点</td></tr>
+<tr><td><code>pages/book/mock-payment.astro</code></td><td>2 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：导入 x86, 导入 x56, 包含 x34, 调用 x1。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：导入 x85, 导入 x54, 包含 x28, dynamic import x2。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -4850,12 +4781,12 @@ flowchart LR
 
 <!-- ====== 16. 其他 ====== -->
 <h2 id="other">16. 其他</h2>
-<p>其他 汇集了与 agents、skills、references、audit 相关的实现，主要分布在 references/languages/php.md、references/wooyun/sql-injection.md、references/core/taint_analysis.md。本节覆盖 1344 个节点、1364 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>其他 汇集了与 agents、skills、references、audit 相关的实现，主要分布在 references/languages/php.md、references/wooyun/sql-injection.md、references/core/taint_analysis.md。本节覆盖 1366 个节点、1373 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 其他 (1344 nodes, 1364 edges)
+    %% Section: 其他 (1366 nodes, 1373 edges)
     subgraph other_src_Controllers_AuthController_php_c0063f40["src/Controllers/AuthController.php"]
         src_controllers_authcontroller_authcontroller_107c490d("AuthController<br/><small>src/Controllers/AuthController.php</small>")
         src_controllers_authcontroller_authcontroller_bo_3012b970("bookings()<br/><small>src/Controllers/AuthController.php</small>")
@@ -4893,7 +4824,7 @@ flowchart LR
     src_controllers_authcontroller_authcontroller_ge_6b566a4d -->|调用| src_controllers_authcontroller_authcontroller_bo_3012b970
     src_controllers_authcontroller_authcontroller_ge_6b566a4d -->|调用| src_controllers_authcontroller_authcontroller_ca_00f271ec
     src_controllers_authcontroller_authcontroller_ge_6b566a4d -->|调用| src_controllers_authcontroller_authcontroller_lo_2c6c901f
-    %% Omitted for readability: 1326 nodes, 0 edges
+    %% Omitted for readability: 1348 nodes, 0 edges
     class src_controllers_authcontroller_authcontroller_107c490d klass;
     class src_controllers_authcontroller_authcontroller_bo_3012b970 function;
     class src_controllers_authcontroller_authcontroller_ca_00f271ec function;
@@ -5192,7 +5123,7 @@ flowchart LR
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x1028, 方法 x122, references x65, 导入 x58。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x1051, 方法 x122, references x65, 导入 x47。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -5203,17 +5134,17 @@ flowchart LR
   <div class="card">
     <h4>Graph</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>Nodes</td><td>5783</td></tr>
-      <tr><td>Edges</td><td>6001</td></tr>
+      <tr><td>Nodes</td><td>5786</td></tr>
+      <tr><td>Edges</td><td>5980</td></tr>
       <tr><td>Hyperedges</td><td>0</td></tr>
-      <tr><td>Communities</td><td>500</td></tr>
+      <tr><td>Communities</td><td>507</td></tr>
       <tr><td>Documented Sections</td><td>15</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Edge Confidence</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>EXTRACTED</td><td>5979</td></tr>
+      <tr><td>EXTRACTED</td><td>5958</td></tr>
       <tr><td>INFERRED</td><td>22</td></tr>
       <tr><td>AMBIGUOUS</td><td>0</td></tr>
     </table>
@@ -5222,7 +5153,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>usgar-redesign — Architecture Documentation</p>
-  <p>Generated: 2026-07-21 06:33 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-07-21 15:02 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

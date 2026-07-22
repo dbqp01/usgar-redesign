@@ -24,12 +24,23 @@ use App\Core\Config;
 use App\Core\Request;
 use App\Core\Router;
 use App\Core\Middleware;
-use App\Controllers\RoomController;
-use App\Controllers\BookingController;
-use App\Controllers\WebhookController;
-use App\Controllers\ChannexWebhookController;
-use App\Controllers\CronController;
-use App\Controllers\HealthController;
+
+// Importar Clases-Acción ADR (Action-Domain-Responder)
+use App\Features\Health\Actions\HealthCheckAction;
+use App\Features\Rooms\Actions\GetRoomsAction;
+use App\Features\Booking\Actions\CreateBookingAction;
+use App\Features\Booking\Actions\ExtendHoldAction;
+use App\Features\Booking\Actions\GetBookingStatusAction;
+use App\Features\Webhooks\Actions\HandleMercadoPagoWebhookAction;
+use App\Features\Webhooks\Actions\HandleChannexWebhookAction;
+use App\Features\Cron\Actions\CleanExpiredCartsAction;
+use App\Features\Auth\Actions\AuthLoginAction;
+use App\Features\Auth\Actions\AuthCallbackAction;
+use App\Features\Auth\Actions\AuthRegisterAction;
+use App\Features\Auth\Actions\AuthLoginEmailAction;
+use App\Features\Auth\Actions\AuthMeAction;
+use App\Features\Auth\Actions\AuthLogoutAction;
+use App\Features\Auth\Actions\GetUserBookingsAction;
 
 // 2. Inicializar configuración centralizada
 Config::boot();
@@ -54,26 +65,26 @@ $middleware
 
 $router->setMiddleware($middleware);
 
-// 6. Registrar endpoints de la API REST de USGAR Hotels
-$router->get('/api/health',          [HealthController::class, 'index']);
-$router->get('/api/rooms',           [RoomController::class, 'index']);
-$router->post('/api/booking',        [BookingController::class, 'create']);
-$router->post('/api/extend-hold',    [BookingController::class, 'extend']);
-$router->get('/api/booking-status',  [BookingController::class, 'status']);
-$router->post('/api/webhook',        [WebhookController::class, 'handle']);
-$router->post('/api/webhook/channex', [ChannexWebhookController::class, 'handle']);
+// 6. Registrar endpoints mapeados a Clases-Acción ADR (SRP extremo)
+$router->get('/api/health',           HealthCheckAction::class);
+$router->get('/api/rooms',            GetRoomsAction::class);
+$router->post('/api/booking',         CreateBookingAction::class);
+$router->post('/api/extend-hold',     ExtendHoldAction::class);
+$router->get('/api/booking-status',   GetBookingStatusAction::class);
+$router->post('/api/webhook',         HandleMercadoPagoWebhookAction::class);
+$router->post('/api/webhook/channex', HandleChannexWebhookAction::class);
 
-// Endpoint de mantenimiento del sistema (Cron - Exclusivo POST y CLI)
-$router->post('/api/cron/cleanup',   [CronController::class, 'cleanup']);
+// Endpoint de mantenimiento del sistema (Cron)
+$router->post('/api/cron/cleanup',    CleanExpiredCartsAction::class);
 
 // Endpoints de Autenticación y Panel de Huéspedes
-$router->get('/api/auth/login',        [\App\Controllers\AuthController::class, 'login']);
-$router->get('/api/auth/callback',     [\App\Controllers\AuthController::class, 'callback']);
-$router->post('/api/auth/register',    [\App\Controllers\AuthController::class, 'register']);
-$router->post('/api/auth/login-email', [\App\Controllers\AuthController::class, 'loginEmail']);
-$router->get('/api/auth/me',           [\App\Controllers\AuthController::class, 'me']);
-$router->post('/api/auth/logout',      [\App\Controllers\AuthController::class, 'logout']);
-$router->get('/api/user/bookings',     [\App\Controllers\AuthController::class, 'bookings']);
+$router->get('/api/auth/login',        AuthLoginAction::class);
+$router->get('/api/auth/callback',     AuthCallbackAction::class);
+$router->post('/api/auth/register',    AuthRegisterAction::class);
+$router->post('/api/auth/login-email', AuthLoginEmailAction::class);
+$router->get('/api/auth/me',           AuthMeAction::class);
+$router->post('/api/auth/logout',      AuthLogoutAction::class);
+$router->get('/api/user/bookings',     GetUserBookingsAction::class);
 
 // 7. Despachar la petición actual
 $router->dispatch($request);

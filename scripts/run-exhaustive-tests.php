@@ -11,6 +11,11 @@ use App\Core\Database;
 use App\Core\BookingStatus;
 use App\Core\Validator;
 use App\Core\HttpException;
+use App\Features\Rooms\Actions\GetRoomsAction;
+use App\Features\Shared\Ports\PmsPortInterface;
+use App\Features\Shared\Ports\PaymentGatewayPortInterface;
+use App\Features\Shared\Ports\ChannelManagerPortInterface;
+use App\Features\Shared\Adapters\QloAppAdapter;
 
 echo "==========================================================" . PHP_EOL;
 echo "🧪 USGAR REDESIGN - AUDITORÍA Y PRUEBAS EXHAUSTIVAS" . PHP_EOL;
@@ -36,25 +41,32 @@ function assertTest(string $description, bool $condition, ?string $errorMessage 
 // --------------------------------------------------------
 // SECTION 1: Unit & Core Tests
 // --------------------------------------------------------
-echo PHP_EOL . "--- 📦 SECCIÓN 1: PRUEBAS UNITARIAS DE CORE ---" . PHP_EOL;
+echo PHP_EOL . "--- 📦 SECCIÓN 1: PRUEBAS UNITARIAS DE CORE & ADR ---" . PHP_EOL;
 
-// 1.1 Autoloader
+// 1.1 Autoloader PSR-4
 assertTest("El Autoloader PSR-4 está cargando las clases de Core", class_exists('App\Core\Router'));
-assertTest("El Autoloader PSR-4 está cargando los Controladores", class_exists('App\Controllers\RoomController'));
+assertTest("El Autoloader PSR-4 está cargando las Clases-Acción ADR (Vertical Slicing)", class_exists(GetRoomsAction::class));
+assertTest("El Autoloader PSR-4 está cargando los Puertos Hexagonales", interface_exists(PmsPortInterface::class));
+assertTest("El Autoloader PSR-4 está cargando los Adaptadores Hexagonales", class_exists(QloAppAdapter::class));
 
-// 1.2 Config
+// 1.2 Verificación de Contratos Hexagonales (verifySignature, getPaymentDetails, createBooking)
+assertTest("PaymentGatewayPortInterface declara 'verifySignature'", method_exists(PaymentGatewayPortInterface::class, 'verifySignature'));
+assertTest("PaymentGatewayPortInterface declara 'getPaymentDetails'", method_exists(PaymentGatewayPortInterface::class, 'getPaymentDetails'));
+assertTest("ChannelManagerPortInterface declara 'createBooking'", method_exists(ChannelManagerPortInterface::class, 'createBooking'));
+
+// 1.3 Config
 Config::boot();
 assertTest("Config carga valores por defecto", Config::get('SITE_URL') !== null);
 assertTest("Config detecta modo desarrollo por defecto", Config::isProduction() === false);
 
-// 1.3 BookingStatus Enum
+// 1.4 BookingStatus Enum
 $status = BookingStatus::Pending;
 assertTest("BookingStatus::Pending es extendible", $status->isExtendable() === true);
 assertTest("BookingStatus::Pending no es terminal", $status->isTerminal() === false);
 assertTest("BookingStatus::Paid no es extendible", BookingStatus::Paid->isExtendable() === false);
 assertTest("BookingStatus::Paid es terminal", BookingStatus::Paid->isTerminal() === true);
 
-// 1.4 Validator
+// 1.5 Validator
 try {
     Validator::requireFields(['name' => 'John'], ['name']);
     assertTest("Validator::requireFields pasa con parámetros válidos", true);
@@ -88,7 +100,6 @@ try {
 // --------------------------------------------------------
 echo PHP_EOL . "--- 🌐 SECCIÓN 2: PRUEBAS DE INTEGRACIÓN HTTP ---" . PHP_EOL;
 
-// Iniciar servidor local de prueba en el puerto 8089 de forma multiplataforma (proc_open)
 $host = '127.0.0.1';
 $port = 8089;
 
@@ -102,10 +113,9 @@ $descriptorspec = [
 $docRoot = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'index.php';
 $process = proc_open("php -S $host:$port $docRoot", $descriptorspec, $pipes, dirname(__DIR__));
 
-// Esperar activamente a que el servidor responda (máximo 3 segundos)
 $serverReady = false;
 for ($i = 0; $i < 30; $i++) {
-    usleep(100000); // 100ms
+    usleep(100000);
     $healthCheck = @file_get_contents("http://$host:$port/api/health");
     if ($healthCheck !== false && str_contains($healthCheck, '"success":true')) {
         $serverReady = true;
@@ -164,7 +174,6 @@ assertTest("Endpoint GET /api/rooms con rango de fechas invertido retorna HTTP 4
 $bookingStatusInvalidRes = httpGet("http://$host:$port/api/booking-status");
 assertTest("Endpoint GET /api/booking-status sin cart_id retorna HTTP 400", $bookingStatusInvalidRes['status'] === 400);
 
-// Limpiar proceso del servidor de pruebas
 if (is_resource($process)) {
     if (isset($pipes[0]) && is_resource($pipes[0])) {
         fclose($pipes[0]);
@@ -174,9 +183,6 @@ if (is_resource($process)) {
 }
 echo "   Servidor de pruebas apagado." . PHP_EOL;
 
-// --------------------------------------------------------
-// SUMMARY
-// --------------------------------------------------------
 echo PHP_EOL . "==========================================================" . PHP_EOL;
 echo "📊 RESUMEN DE AUDITORÍA:" . PHP_EOL;
 echo "   Pasados: $passedTests" . PHP_EOL;

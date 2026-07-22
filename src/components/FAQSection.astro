@@ -4,6 +4,7 @@ import faqData from "../content/faq/faq.json";
 import { useTranslations } from '../i18n/utils';
 import recepcionImg from '../assets/hotel/hero-slide-recepcion.jpg';
 
+import { siteSettings } from '../data/settings';
 import type { Locale } from '../i18n/utils';
 
 const lang = (Astro.currentLocale || 'en') as Locale;
@@ -44,7 +45,7 @@ const t = useTranslations(lang);
                 : 'Our 24/7 bilingual front desk team is ready to assist with bookings, Machu Picchu tours, and altitude acclimatization.'}
             </p>
             <a 
-              href="https://wa.me/51984000000" 
+              href={`https://wa.me/${siteSettings.whatsappNumber}`} 
               target="_blank" 
               rel="noopener noreferrer"
               class="inline-block mt-4 text-xs font-body font-semibold tracking-wide uppercase border-b-2 border-secondary pb-1 hover:text-secondary transition-colors"

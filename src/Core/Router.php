@@ -4,9 +4,8 @@ declare(strict_types=1);
 namespace App\Core;
 
 /**
- * Enrutador HTTP con soporte de middleware pipeline y parámetros dinámicos.
- * Integra el Middleware pipeline para CORS, rate limiting, y security headers.
- * Captura HttpException para respuestas de error uniformes.
+ * Enrutador HTTP con soporte de middleware pipeline y Clases-Acción (ADR) o controladores.
+ * Soporta registación mediante arrays [Clase, Método] o Nombres de Clase Invocable.
  */
 class Router {
     private array $routes = [];
@@ -21,32 +20,35 @@ class Router {
 
     /**
      * Registra una ruta para el método GET.
+     *
+     * @param string $path Ruta HTTP
+     * @param array|string $handler Array [Clase, Método] o Nombre de Clase Invocable
      */
-    public function get(string $path, array $handler): void {
+    public function get(string $path, array|string $handler): void {
         $this->routes['GET'][$this->normalizePath($path)] = $handler;
     }
 
     /**
      * Registra una ruta para el método POST.
+     *
+     * @param string $path Ruta HTTP
+     * @param array|string $handler Array [Clase, Método] o Nombre de Clase Invocable
      */
-    public function post(string $path, array $handler): void {
+    public function post(string $path, array|string $handler): void {
         $this->routes['POST'][$this->normalizePath($path)] = $handler;
     }
 
     /**
-     * Procesa la petición actual: middleware → resolve route → dispatch controller.
-     * Captura HttpException para respuestas uniformes sin exit() en controllers.
+     * Procesa la petición actual: middleware → resolve route → dispatch action/controller.
      */
     public function dispatch(Request $request): void {
         $method = $request->getMethod();
         $path = $this->normalizePath($request->getPath());
 
-        // Manejar Preflight de CORS antes de cualquier otra lógica
         if ($method === 'OPTIONS') {
             try {
                 $this->middleware?->run($request);
             } catch (HttpException $e) {
-                // Aun en OPTIONS, si CORS rechaza, retornar error
                 Response::error($e->getMessage(), $e->getStatusCode());
             }
             http_response_code(204);
@@ -55,28 +57,53 @@ class Router {
         }
 
         try {
-            // Ejecutar middleware pipeline (CORS, rate limit, security headers)
             $this->middleware?->run($request);
 
-            // Resolver ruta estática
             $handler = $this->resolveRoute($method, $path);
 
             if ($handler !== null) {
-                $controllerClass = $handler[0];
-                $action = $handler[1];
+                if (is_array($handler)) {
+                    $controllerClass = $handler[0];
+                    $action = $handler[1];
 
-                if (!class_exists($controllerClass)) {
-                    throw HttpException::internal("Controller class {$controllerClass} not found.");
+                    if (!class_exists($controllerClass)) {
+                        throw HttpException::internal("Controller class {$controllerClass} not found.");
+                    }
+
+                    $controller = new $controllerClass();
+
+                    if (!method_exists($controller, $action)) {
+                        throw HttpException::internal("Action {$action} not found in {$controllerClass}.");
+                    }
+
+                    $controller->$action($request);
+                    return;
                 }
 
-                $controller = new $controllerClass();
+                if (is_string($handler)) {
+                    if (!class_exists($handler)) {
+                        throw HttpException::internal("Action class {$handler} not found.");
+                    }
 
-                if (!method_exists($controller, $action)) {
-                    throw HttpException::internal("Action {$action} not found in {$controllerClass}.");
+                    $actionInstance = new $handler();
+
+                    if (is_callable($actionInstance)) {
+                        $actionInstance($request);
+                        return;
+                    }
+
+                    if (method_exists($actionInstance, 'handle')) {
+                        $actionInstance->handle($request);
+                        return;
+                    }
+
+                    if (method_exists($actionInstance, 'execute')) {
+                        $actionInstance->execute($request);
+                        return;
+                    }
+
+                    throw HttpException::internal("Action class {$handler} is not invocable and has no handle/execute method.");
                 }
-
-                $controller->$action($request);
-                return;
             }
 
             Response::notFound("Endpoint {$method} {$path} not found on this server.");
@@ -89,7 +116,7 @@ class Router {
     /**
      * Resuelve una ruta registrada. Retorna el handler o null.
      */
-    private function resolveRoute(string $method, string $path): ?array {
+    private function resolveRoute(string $method, string $path): array|string|null {
         return $this->routes[$method][$path] ?? null;
     }
 
