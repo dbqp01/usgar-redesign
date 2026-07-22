@@ -526,5 +526,11 @@
   "524": "From Bootstrap",
   "525": "Migration Strategies",
   "526": "handle",
-  "527": "../content/faq/faq.json"
+  "527": "../content/faq/faq.json",
+  "528": "Request",
+  "529": "ChannelManagerPortInterface",
+  "530": "PaymentGatewayPortInterface",
+  "531": "PDO",
+  "532": "PmsPortInterface",
+  "533": "Request"
 }
