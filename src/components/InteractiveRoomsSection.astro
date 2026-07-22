@@ -51,7 +51,7 @@ const roomsWithPhotos = await Promise.all(
 
     <!-- Accordion Layout -->
     <div class="flex flex-col lg:flex-row h-[800px] lg:h-[650px] w-full gap-2 lg:gap-4 animate-on-scroll">
-      {roomsWithPhotos.map((room, index) => (
+      {roomsWithPhotos.map((room) => (
         <a
           href={getRelativeLocaleUrl(lang, `rooms/${room.slug}`)}
           data-astro-prefetch="tap"

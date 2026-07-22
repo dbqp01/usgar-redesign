@@ -86,7 +86,7 @@ const highlights: Array<{
     <!-- Bento Box Grid Layout -->
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 auto-rows-[250px] gap-4 sm:gap-6 animate-on-scroll">
       
-      {highlights.map((item, i) => (
+      {highlights.map((item) => (
         <div class={`group relative rounded-3xl overflow-hidden shadow-xl border border-black/5 dark:border-white/5 img-hover-zoom ${item.size}`}>
           <!-- Background Image with Astro Image Optimization -->
           <Image

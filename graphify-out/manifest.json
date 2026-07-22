@@ -90,8 +90,8 @@
     "semantic_hash": ""
   },
   "src/components/FAQSection.astro": {
-    "mtime": 1784614848.9241178,
-    "ast_hash": "98fb9c8c0e5a1fc4be78db094df22ac3",
+    "mtime": 1784683405.131359,
+    "ast_hash": "9f838347019633e1f414c07ba94f6d31",
     "semantic_hash": ""
   },
   "src/components/Footer.astro": {
@@ -285,8 +285,8 @@
     "semantic_hash": ""
   },
   ".agents/AGENTS.md": {
-    "mtime": 1784642868.9504597,
-    "ast_hash": "f3082cd71039c165801f2b8d46e08329",
+    "mtime": 1784680804.6798575,
+    "ast_hash": "af391ebef5f67d0b5fd8471f6c1b7206",
     "semantic_hash": ""
   },
   ".agents/BRAND.md": {
@@ -1315,13 +1315,13 @@
     "semantic_hash": ""
   },
   "public/index.php": {
-    "mtime": 1784515481.1741805,
-    "ast_hash": "5915ad6d16e7905e97c8e3c6790e0f02",
+    "mtime": 1784681752.8524609,
+    "ast_hash": "b77bd76adf67bd8818f30234eb2ee8f0",
     "semantic_hash": ""
   },
   "scripts/run-exhaustive-tests.php": {
-    "mtime": 1784506820.9265518,
-    "ast_hash": "5223d51fd1f7b4d388cd3d4f7067674a",
+    "mtime": 1784682094.3444462,
+    "ast_hash": "bb5ff195b5bb4f1e465aeb6f6b98bd18",
     "semantic_hash": ""
   },
   "src/Controllers/BookingController.php": {
@@ -1400,8 +1400,8 @@
     "semantic_hash": ""
   },
   "src/Core/Router.php": {
-    "mtime": 1784506492.8804283,
-    "ast_hash": "6851f1b6f3ed69d7749dea05e68e5e9a",
+    "mtime": 1784681760.4560633,
+    "ast_hash": "ec20b7878fe79e64e3ed6d3d4b2a25dc",
     "semantic_hash": ""
   },
   "src/Core/Validator.php": {
@@ -1615,8 +1615,8 @@
     "semantic_hash": ""
   },
   "tests/Unit/Core/RouterTest.php": {
-    "mtime": 1784507726.2071614,
-    "ast_hash": "daac1ebecf984b3affda746d079fe06b",
+    "mtime": 1784682736.361887,
+    "ast_hash": "50c5f208f7503e4f2e0f481ee3bb8a29",
     "semantic_hash": ""
   },
   "tests/Unit/i18n.test.ts": {
@@ -1902,6 +1902,146 @@
   "[eliminame] rev2.md": {
     "mtime": 1784642999.4185307,
     "ast_hash": "6091a2f608eb05632092849608040c03",
+    "semantic_hash": ""
+  },
+  "src/Core/Events/EventDispatcher.php": {
+    "mtime": 1784681596.6411798,
+    "ast_hash": "eafc4ea34cd536f0aaed199f5e5959e7",
+    "semantic_hash": ""
+  },
+  "src/Core/Events/EventInterface.php": {
+    "mtime": 1784681586.5486782,
+    "ast_hash": "efe00518fabb022c4eced54e7297bbcf",
+    "semantic_hash": ""
+  },
+  "src/Core/Events/ListenerInterface.php": {
+    "mtime": 1784681591.586315,
+    "ast_hash": "5ca0011e233c28dc9652f20698dff65f",
+    "semantic_hash": ""
+  },
+  "src/Features/Auth/Actions/AuthCallbackAction.php": {
+    "mtime": 1784681716.4359987,
+    "ast_hash": "421d417235083a7b45b58d4de1b1b1f2",
+    "semantic_hash": ""
+  },
+  "src/Features/Auth/Actions/AuthLoginAction.php": {
+    "mtime": 1784681711.9739747,
+    "ast_hash": "2ab1cb52843ff07f3f742429478c0a16",
+    "semantic_hash": ""
+  },
+  "src/Features/Auth/Actions/AuthLoginEmailAction.php": {
+    "mtime": 1784681726.178372,
+    "ast_hash": "a3e5115bdb39aed0c0a612b751ba03e2",
+    "semantic_hash": ""
+  },
+  "src/Features/Auth/Actions/AuthLogoutAction.php": {
+    "mtime": 1784681736.914175,
+    "ast_hash": "bd27e2683cba0df34bd01ca6fcec7a46",
+    "semantic_hash": ""
+  },
+  "src/Features/Auth/Actions/AuthMeAction.php": {
+    "mtime": 1784681731.5398827,
+    "ast_hash": "6fb57e3ce220338416803abcc1f36796",
+    "semantic_hash": ""
+  },
+  "src/Features/Auth/Actions/AuthRegisterAction.php": {
+    "mtime": 1784681720.5930474,
+    "ast_hash": "b608329ebf642e6b40b23fa553474f9a",
+    "semantic_hash": ""
+  },
+  "src/Features/Auth/Actions/GetUserBookingsAction.php": {
+    "mtime": 1784681742.172484,
+    "ast_hash": "1d8ddfe5cb06e9ca645d3d37962dac67",
+    "semantic_hash": ""
+  },
+  "src/Features/Booking/Actions/CreateBookingAction.php": {
+    "mtime": 1784681662.5105076,
+    "ast_hash": "acf9d8a0eb5d2d0ef9fd073404b5b956",
+    "semantic_hash": ""
+  },
+  "src/Features/Booking/Actions/ExtendHoldAction.php": {
+    "mtime": 1784681667.7308035,
+    "ast_hash": "ad18706471408e09f3fbdffec2370e4c",
+    "semantic_hash": ""
+  },
+  "src/Features/Booking/Actions/GetBookingStatusAction.php": {
+    "mtime": 1784681674.8241348,
+    "ast_hash": "329870f7080c9a491784f075c950ecb5",
+    "semantic_hash": ""
+  },
+  "src/Features/Booking/Domain/ProvisionalBookingRepository.php": {
+    "mtime": 1784681656.513319,
+    "ast_hash": "422673829dbed6c86f3f5c655be6b6b9",
+    "semantic_hash": ""
+  },
+  "src/Features/Cron/Actions/CleanExpiredCartsAction.php": {
+    "mtime": 1784681703.3723667,
+    "ast_hash": "b7bab691d1aef19022614a2dad6d73b2",
+    "semantic_hash": ""
+  },
+  "src/Features/Health/Actions/HealthCheckAction.php": {
+    "mtime": 1784681644.770419,
+    "ast_hash": "e74fae65431650855d99c15b97e6be3c",
+    "semantic_hash": ""
+  },
+  "src/Features/Rooms/Actions/GetRoomsAction.php": {
+    "mtime": 1784681650.7184556,
+    "ast_hash": "932f00ee70eb8a6732b177720f7483d2",
+    "semantic_hash": ""
+  },
+  "src/Features/Shared/Adapters/ChannexAdapter.php": {
+    "mtime": 1784681636.9538753,
+    "ast_hash": "ef95359c29d97b208bf75b2352d879e3",
+    "semantic_hash": ""
+  },
+  "src/Features/Shared/Adapters/MercadoPagoAdapter.php": {
+    "mtime": 1784681627.7782784,
+    "ast_hash": "9d02abc2db50286f67256bd909a6ce61",
+    "semantic_hash": ""
+  },
+  "src/Features/Shared/Adapters/QloAppAdapter.php": {
+    "mtime": 1784681619.134496,
+    "ast_hash": "6123237bdc99ca8a5c6f3b9e8fe007b6",
+    "semantic_hash": ""
+  },
+  "src/Features/Shared/Ports/ChannelManagerPortInterface.php": {
+    "mtime": 1784682059.8469894,
+    "ast_hash": "824c702823de8bb24253fba0ca7e7f26",
+    "semantic_hash": ""
+  },
+  "src/Features/Shared/Ports/PaymentGatewayPortInterface.php": {
+    "mtime": 1784682053.7199807,
+    "ast_hash": "6a642be5a3abd368910add14237c1302",
+    "semantic_hash": ""
+  },
+  "src/Features/Shared/Ports/PmsPortInterface.php": {
+    "mtime": 1784681601.2277203,
+    "ast_hash": "0b78086138d67565d52d9343174b779a",
+    "semantic_hash": ""
+  },
+  "src/Features/Webhooks/Actions/HandleChannexWebhookAction.php": {
+    "mtime": 1784683416.7385983,
+    "ast_hash": "5d6c57552587028d7e4031574ec7ac18",
+    "semantic_hash": ""
+  },
+  "src/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php": {
+    "mtime": 1784681685.796744,
+    "ast_hash": "ee62d39abe5937a21d0924252a4cf30a",
+    "semantic_hash": ""
+  },
+  "tests/Unit/Features/GetRoomsActionTest.php": {
+    "mtime": 1784682729.797714,
+    "ast_hash": "6000ebe1cb1973d8f97eac68a316cd18",
+    "semantic_hash": ""
+  },
+  "tests/Unit/Features/HandleMercadoPagoWebhookActionTest.php": {
+    "mtime": 1784682719.332683,
+    "ast_hash": "09515591ca633fcdb7a4d67a1a4345eb",
+    "semantic_hash": ""
+  },
+  "tests/Unit/TestCase.php": {
+    "mtime": 1784682712.7766206,
+    "ast_hash": "a76c5a444682033ab6e9760115598ecc",
     "semantic_hash": ""
   }
 }

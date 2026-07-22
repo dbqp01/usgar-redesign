@@ -139,7 +139,7 @@ const schemas = [hotelSchema, faqSchema];
       class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 z-0"
       poster={optimizedPoster.src}
       id="hero-video"
-      data-src="/videos/hero-video.mp4"
+      src="/videos/hero-video.mp4"
     >
     </video>
 
@@ -493,24 +493,7 @@ const schemas = [hotelSchema, faqSchema];
     if (!video || !toggleBtn || !mutedIcon || !unmutedIcon || !slideshow)
       return;
 
-    // Lazy load the video source to prevent blocking critical initial load bandwidth
-    const lazyLoadVideo = () => {
-      const src = video.getAttribute("data-src");
-      if (src && !video.src) {
-        video.src = src;
-        video.load();
-        video
-          .play()
-          .catch((err) => console.log("Video play error on lazy load:", err));
-      }
-    };
-
-    if (document.readyState === "complete") {
-      lazyLoadVideo();
-    } else {
-      window.addEventListener("load", lazyLoadVideo, { once: true });
-    }
-
+    // Video is loaded natively via src attribute for faster LCP
     // Toggle sound
     toggleBtn.addEventListener("click", () => {
       video.muted = !video.muted;

@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>usgar-redesign — 完整调用流程与架构文档</h1>
-<p class="subtitle">由 graphify 知识图谱生成：5786 个节点、5980 条边、507 个社区。Commit: e80fec0</p>
+<p class="subtitle">由 graphify 知识图谱生成：5968 个节点、6327 条边、528 个社区。Commit: 1f97839</p>
 
 <div class="nav">
     <a href="#overview">架构总览</a>
@@ -90,21 +90,21 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 flowchart LR
     EXTRACT_PIPELINE_5F350230("提取管线<br/><small>1198 nodes</small>")
     class EXTRACT_PIPELINE_5F350230 module;
-    BUILD_GRAPH_321CBB04("图谱构建<br/><small>160 nodes</small>")
+    BUILD_GRAPH_321CBB04("图谱构建<br/><small>157 nodes</small>")
     class BUILD_GRAPH_321CBB04 module;
-    ANALYSIS_CLUSTERING_C79796DA("分析聚类<br/><small>66 nodes</small>")
+    ANALYSIS_CLUSTERING_C79796DA("分析聚类<br/><small>79 nodes</small>")
     class ANALYSIS_CLUSTERING_C79796DA module;
     OUTPUTS_DOCS_ED82387C("输出文档<br/><small>15 nodes</small>")
     class OUTPUTS_DOCS_ED82387C module;
-    CLI_SKILLS_9964CBB8("CLI 与技能安装<br/><small>892 nodes</small>")
+    CLI_SKILLS_9964CBB8("CLI 与技能安装<br/><small>863 nodes</small>")
     class CLI_SKILLS_9964CBB8 module;
     INGEST_CACHE_UPDATE_FF457338("摄取与增量更新<br/><small>21 nodes</small>")
     class INGEST_CACHE_UPDATE_FF457338 module;
-    SERVE_API_35EC8E86("服务 API<br/><small>423 nodes</small>")
+    SERVE_API_35EC8E86("服务 API<br/><small>506 nodes</small>")
     class SERVE_API_35EC8E86 module;
     SECURITY_GLOBAL_5B9C6A04("安全与全局图<br/><small>1359 nodes</small>")
     class SECURITY_GLOBAL_5B9C6A04 module;
-    TESTS_FIXTURES_B84B1DCC("测试与样例<br/><small>87 nodes</small>")
+    TESTS_FIXTURES_B84B1DCC("测试与样例<br/><small>96 nodes</small>")
     class TESTS_FIXTURES_B84B1DCC module;
     RUST_SECURITY_AUDIT_CB3475E2("Rust Security Audit<br/><small>47 nodes</small>")
     class RUST_SECURITY_AUDIT_CB3475E2 module;
@@ -116,20 +116,20 @@ flowchart LR
     class AUDIT_7876153A module;
     CRYPTOGRAPHY_SECURITY_AUDIT_D05BD5F1("Cryptography Security Audit<br/><small>35 nodes</small>")
     class CRYPTOGRAPHY_SECURITY_AUDIT_D05BD5F1 module;
-    OTHER_D0941E68("其他<br/><small>1366 nodes</small>")
+    OTHER_D0941E68("其他<br/><small>1475 nodes</small>")
     class OTHER_D0941E68 module;
-    TESTS_FIXTURES_B84B1DCC -->|导入 x49| OTHER_D0941E68
-    OTHER_D0941E68 -->|导入 x15| TESTS_FIXTURES_B84B1DCC
+    SERVE_API_35EC8E86 -->|导入 x52| OTHER_D0941E68
+    TESTS_FIXTURES_B84B1DCC -->|导入 x27| OTHER_D0941E68
+    OTHER_D0941E68 -->|导入 x26| SERVE_API_35EC8E86
+    BUILD_GRAPH_321CBB04 -->|导入 x13| TESTS_FIXTURES_B84B1DCC
     TESTS_FIXTURES_B84B1DCC -->|导入 x13| BUILD_GRAPH_321CBB04
-    BUILD_GRAPH_321CBB04 -->|导入 x12| TESTS_FIXTURES_B84B1DCC
-    SERVE_API_35EC8E86 -->|references x10| OTHER_D0941E68
+    CLI_SKILLS_9964CBB8 -->|包含 x13| OTHER_D0941E68
     INGEST_CACHE_UPDATE_FF457338 -->|包含 x10| OTHER_D0941E68
     OUTPUTS_DOCS_ED82387C -->|包含 x10| OTHER_D0941E68
-    CLI_SKILLS_9964CBB8 -->|包含 x10| OTHER_D0941E68
-    TESTS_FIXTURES_B84B1DCC -->|导入 x9| SERVE_API_35EC8E86
-    BUILD_GRAPH_321CBB04 -->|导入 x7| OTHER_D0941E68
+    BUILD_GRAPH_321CBB04 -->|导入 x8| OTHER_D0941E68
+    OTHER_D0941E68 -->|导入 x7| TESTS_FIXTURES_B84B1DCC
+    TESTS_FIXTURES_B84B1DCC -->|导入 x6| SERVE_API_35EC8E86
     SECURITY_GLOBAL_5B9C6A04 -->|导入 x5| TESTS_FIXTURES_B84B1DCC
-    SECURITY_GLOBAL_5B9C6A04 -->|导入 x4| OTHER_D0941E68
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -146,24 +146,24 @@ flowchart LR
     <h4>架构层次</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>层</th><th>节点</th><th>社区</th></tr>
-      <tr><td>提取管线</td><td>1198</td><td><code>0, 3, 14, 16, 19, 25, 26, 27, 28, 31, 36, 39, 42, 53, 69, 76, 41, 96, 99, 102, 108, 112, 125, 126, 136, 138, 154, 155, 156, 158, 164, 165, 176, 190, 193, 194, 195, 196, 197, 198, 216, 217, 218, 219, 239, 240, 241, 242, 243, 257, 258, 259, 285, 286, 289, 290, 291, 292, 293, 317, 318, 319, 320, 321, 322, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 392, 446, 447, 448, 467, 468</code></td></tr><tr><td>图谱构建</td><td>160</td><td><code>5, 134, 107, 128, 140, 143, 486, 11, 354</code></td></tr><tr><td>分析聚类</td><td>66</td><td><code>78, 185, 237, 362, 409</code></td></tr><tr><td>输出文档</td><td>15</td><td><code>122</code></td></tr><tr><td>CLI 与技能安装</td><td>892</td><td><code>2, 10, 30, 35, 47, 50, 51, 58, 82, 72, 74, 88, 101, 247, 79, 339, 119, 120, 130, 131, 133, 203, 135, 144, 148, 152, 168, 173, 174, 183, 186, 188, 209, 212, 227, 234, 277, 235, 245, 246, 251, 253, 210, 265, 266, 267, 275, 281, 282, 283, 284, 296, 303, 304, 305, 306, 315, 340, 359, 501, 367, 407, 408, 431, 433, 437, 438, 440</code></td></tr><tr><td>摄取与增量更新</td><td>21</td><td><code>86, 223</code></td></tr><tr><td>服务 API</td><td>423</td><td><code>24, 37, 92, 94, 97, 100, 105, 113, 117, 118, 121, 129, 151, 341, 141, 142, 84, 169, 180, 228, 276, 248, 308, 270, 271, 344, 345, 357, 416, 417, 418, 432, 455, 513</code></td></tr><tr><td>安全与全局图</td><td>1359</td><td><code>7, 18, 29, 38, 40, 43, 44, 48, 49, 54, 59, 55, 56, 57, 60, 61, 62, 66, 67, 68, 70, 71, 75, 77, 81, 90, 91, 95, 103, 109, 110, 111, 114, 115, 116, 123, 127, 139, 226, 145, 146, 484, 161, 167, 171, 179, 182, 191, 199, 200, 201, 202, 204, 222, 224, 225, 244, 250, 263, 264, 268, 269, 294, 295, 297, 298, 302, 327, 332, 333, 334, 335, 336, 337, 352, 353, 355, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 412, 413, 414, 424, 425, 426, 427, 454, 459, 460, 463</code></td></tr><tr><td>测试与样例</td><td>87</td><td><code>475, 254, 477, 172, 465, 479, 511</code></td></tr><tr><td>Rust Security Audit</td><td>47</td><td><code>6</code></td></tr><tr><td>动态代码审计指南 (Dynamic Code Audit Guide)</td><td>42</td><td><code>15</code></td></tr><tr><td>Real World Vulnerabilities Case Study</td><td>40</td><td><code>21</code></td></tr><tr><td>.audit</td><td>35</td><td><code>32</code></td></tr><tr><td>Cryptography Security Audit</td><td>35</td><td><code>33</code></td></tr><tr><td>其他</td><td>1366</td><td><code>34, 150, 46, 52, 63, 73, 87, 64, 93, 104, 106, 45, 342, 124, 132, 83, 1, 137, 147, 149, 496, 8, 153, 157, 159, 160, 162, 163, 166, 170, 175, 177, 178, 181, 184, 187, 338, 189, 192, 205, 206, 207, 208, 232, 487, 65, 85, 211, 213, 214, 215, 220, 221, 229, 230, 231, 233, 307, 236, 238, 249, 252, 343, 489, 255, 256, 260, 261, 262, 272, 273, 274, 278, 452, 482, 280, 287, 288, 299, 300, 301, 310, 428, 483, 492, 89, 12, 311, 312, 313, 314, 316, 323, 324, 325, 326, 328, 329, 330, 331, 346, 347, 348, 349, 350, 351, 356, 358, 360, 364, 4, 410, 494, 506, 9, 13, 361, 365, 366, 368, 369, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 393, 394, 395, 419, 420, 421, 422, 423, 430, 439, 497, 500, 502, 309, 363, 411, 415, 434, 435, 436, 441, 442, 443, 444, 445, 449, 450, 451, 453, 456, 457, 458, 461, 462, 464, 493, 17, 20, 466, 469, 470, 471, 22, 23, 279, 429, 472, 473, 474, 476, 478, 480, 481, 485, 488, 490, 491, 495, 498, 499, 512, 80, 98</code></td></tr>
+      <tr><td>提取管线</td><td>1198</td><td><code>0, 3, 14, 16, 19, 25, 26, 27, 28, 31, 36, 39, 42, 53, 69, 76, 41, 96, 99, 102, 108, 112, 125, 126, 136, 138, 154, 155, 156, 158, 164, 165, 176, 190, 193, 194, 195, 196, 197, 198, 216, 217, 218, 219, 239, 240, 241, 242, 243, 257, 258, 259, 285, 286, 289, 290, 291, 292, 293, 317, 318, 319, 320, 321, 322, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 392, 446, 447, 448, 467, 468</code></td></tr><tr><td>图谱构建</td><td>157</td><td><code>5, 134, 107, 128, 140, 143, 486, 11, 354, 527</code></td></tr><tr><td>分析聚类</td><td>79</td><td><code>78, 79, 185, 237, 362</code></td></tr><tr><td>输出文档</td><td>15</td><td><code>122</code></td></tr><tr><td>CLI 与技能安装</td><td>863</td><td><code>2, 10, 30, 35, 47, 50, 51, 58, 82, 119, 72, 74, 101, 247, 339, 120, 130, 131, 133, 203, 135, 144, 148, 152, 168, 173, 174, 183, 186, 188, 209, 88, 212, 227, 234, 235, 245, 246, 251, 253, 210, 265, 266, 267, 275, 281, 282, 283, 284, 296, 303, 304, 305, 306, 315, 340, 359, 501, 367, 407, 408, 431, 433, 437, 438, 440</code></td></tr><tr><td>摄取与增量更新</td><td>21</td><td><code>86, 223</code></td></tr><tr><td>服务 API</td><td>506</td><td><code>254, 24, 37, 65, 151, 92, 94, 100, 105, 113, 117, 118, 341, 121, 129, 141, 142, 84, 169, 180, 276, 228, 248, 308, 270, 271, 344, 345, 357, 510, 416, 417, 418, 432, 455, 526, 513</code></td></tr><tr><td>安全与全局图</td><td>1359</td><td><code>7, 18, 29, 38, 40, 43, 44, 48, 49, 54, 59, 55, 56, 57, 60, 61, 62, 66, 67, 68, 70, 71, 75, 77, 81, 90, 91, 95, 103, 109, 110, 111, 114, 115, 116, 123, 127, 139, 226, 145, 146, 484, 161, 167, 171, 179, 182, 191, 199, 200, 201, 202, 204, 222, 224, 225, 244, 250, 263, 264, 268, 269, 294, 295, 297, 298, 302, 327, 332, 333, 334, 335, 336, 337, 352, 353, 355, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 412, 413, 414, 424, 425, 426, 427, 454, 459, 460, 463</code></td></tr><tr><td>测试与样例</td><td>96</td><td><code>475, 85, 277, 477, 172, 465, 479, 511</code></td></tr><tr><td>Rust Security Audit</td><td>47</td><td><code>6</code></td></tr><tr><td>动态代码审计指南 (Dynamic Code Audit Guide)</td><td>42</td><td><code>15</code></td></tr><tr><td>Real World Vulnerabilities Case Study</td><td>40</td><td><code>21</code></td></tr><tr><td>.audit</td><td>35</td><td><code>32</code></td></tr><tr><td>Cryptography Security Audit</td><td>35</td><td><code>33</code></td></tr><tr><td>其他</td><td>1475</td><td><code>34, 150, 52, 83, 63, 87, 46, 64, 93, 73, 45, 104, 106, 342, 124, 132, 496, 1, 137, 149, 147, 8, 97, 153, 157, 159, 160, 162, 163, 166, 170, 175, 177, 178, 181, 184, 187, 409, 98, 189, 192, 205, 206, 207, 208, 232, 338, 410, 487, 211, 213, 214, 215, 220, 221, 229, 230, 231, 233, 307, 236, 238, 249, 252, 343, 489, 492, 503, 255, 256, 260, 261, 262, 272, 273, 274, 278, 452, 482, 504, 280, 287, 288, 299, 300, 301, 310, 428, 483, 505, 507, 89, 12, 311, 312, 313, 314, 316, 323, 324, 325, 326, 328, 329, 330, 331, 346, 347, 348, 349, 350, 351, 356, 358, 360, 364, 4, 494, 506, 508, 509, 514, 515, 516, 517, 9, 13, 361, 365, 366, 368, 369, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 393, 394, 395, 419, 420, 421, 422, 423, 430, 439, 497, 500, 502, 518, 519, 520, 521, 522, 309, 363, 411, 415, 434, 435, 436, 441, 442, 443, 444, 445, 449, 450, 451, 453, 456, 457, 458, 461, 462, 464, 493, 523, 524, 525, 17, 20, 466, 469, 470, 471, 22, 23, 279, 429, 472, 473, 474, 476, 478, 480, 481, 485, 488, 490, 491, 495, 498, 499, 512, 80</code></td></tr>
     </table>
   </div>
   <div class="card">
     <h4>核心数据流</h4>
-    <div class="arrow-chain">输出文档 -&gt; 其他 -&gt; 测试与样例 -&gt; 图谱构建 -&gt; CLI 与技能安装 -&gt; 服务 API -&gt; 提取管线</div>
+    <div class="arrow-chain">输出文档 -&gt; 其他 -&gt; 服务 API -&gt; 测试与样例 -&gt; 图谱构建 -&gt; CLI 与技能安装 -&gt; 安全与全局图</div>
   </div>
 </div>
 <div class="grid">
   <div class="card">
     <h4>图谱报告摘要</h4>
     <ul>
-      <li>5786 nodes · 5980 edges · 507 communities (468 shown, 39 thin omitted)</li>
+      <li>5968 nodes · 6327 edges · 528 communities (488 shown, 40 thin omitted)</li>
       <li>Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 22 edges (avg confidence: 0.79)</li>
       <li>Token cost: 0 input · 0 output</li>
       <li>1. `轨道B: 数据流分析法 (注入类漏洞)` - 39 edges</li>
       <li>2. `轨道B: 数据流分析法 (注入类漏洞)` - 29 edges</li>
-      <li>3. `../layouts/Layout.astro` - 23 edges</li>
+      <li>3. `ProvisionalBookingRepository` - 25 edges</li>
     </ul>
   </div>
 </div>
@@ -509,12 +509,12 @@ flowchart LR
 
 <!-- ====== 3. 图谱构建 ====== -->
 <h2 id="build-graph">3. 图谱构建</h2>
-<p>图谱构建 汇集了与 agents、skills、packagejson、mercadopago 相关的实现，主要分布在 package.json、references/guides/webhooks.md、references/guides/marketplace.md。本节覆盖 160 个节点、163 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>图谱构建 汇集了与 agents、skills、packagejson、mercadopago 相关的实现，主要分布在 package.json、references/guides/webhooks.md、references/guides/marketplace.md。本节覆盖 157 个节点、159 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 图谱构建 (160 nodes, 163 edges)
+    %% Section: 图谱构建 (157 nodes, 159 edges)
     subgraph build_graph_src_components_AboutSection_astro_5ab1d9d8["src/components/AboutSection.astro"]
         src_components_aboutsection_cd8d0c2c("../components/AboutSection.astro")
         c_users_akim_desktop_usgar_redesign_src_componen_0882f3e9("../components/AboutSection.astro")
@@ -525,28 +525,30 @@ flowchart LR
     c_users_akim_desktop_usgar_redesign_src_assets_h_912f3851("../assets/hotel/hero-slide-matrimonial.jpg")
     c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b("../assets/hotel/hero-slide-patio.jpg")
     c_users_akim_desktop_usgar_redesign_src_assets_h_74a30e7b("../assets/hotel/hero-slide-recepcion.jpg")
-    astro_90c9d7bd("astro")
     astro_assets_b0866f09("astro:assets")
+    c_users_akim_desktop_usgar_redesign_src_content_bb90dfcd("../content/faq/faq.json")
     leaflet_5f5555f4("leaflet")
     package_dependencies_leaflet_e1b9b00b("leaflet<br/><small>package.json</small>")
     src_pages_fr_index_8bc7f49d("index.astro")
-    src_components_faqsection_47911ff2("../components/FAQSection.astro")
+    src_components_faqsection_47911ff2("FAQSection.astro")
     src_components_gastronomysection_c6b45f50("../components/GastronomySection.astro")
     src_components_heritagesection_0a94b2d8("../components/HeritageSection.astro")
     src_components_servicegrid_70ff2fdc("../components/ServiceGrid.astro")
     src_pages_index_5f5e2633("index.astro")
-    src_components_gastronomysection_c6b45f50 -->|导入| astro_assets_b0866f09
-    src_components_gastronomysection_c6b45f50 -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_a19703a7
-    src_components_gastronomysection_c6b45f50 -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b
-    src_components_gastronomysection_c6b45f50 -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_74a30e7b
-    src_components_gastronomysection_c6b45f50 -->|导入| src_pages_index_5f5e2633
+    src_components_faqsection_47911ff2 -->|导入| astro_assets_b0866f09
+    src_components_faqsection_47911ff2 -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_74a30e7b
+    src_components_faqsection_47911ff2 -->|导入| c_users_akim_desktop_usgar_redesign_src_content_bb90dfcd
     astro_assets_b0866f09 -->|导入| src_components_aboutsection_cd8d0c2c
-    astro_assets_b0866f09 -->|导入| src_components_faqsection_47911ff2
+    astro_assets_b0866f09 -->|导入| src_components_gastronomysection_c6b45f50
     astro_assets_b0866f09 -->|导入| src_components_heritagesection_0a94b2d8
     astro_assets_b0866f09 -->|导入| src_components_servicegrid_70ff2fdc
     astro_assets_b0866f09 -->|导入| src_pages_index_5f5e2633
-    c_users_akim_desktop_usgar_redesign_src_assets_h_74a30e7b -->|导入| src_components_faqsection_47911ff2
+    c_users_akim_desktop_usgar_redesign_src_content_bb90dfcd -->|导入| src_pages_index_5f5e2633
+    c_users_akim_desktop_usgar_redesign_src_assets_h_74a30e7b -->|导入| src_components_gastronomysection_c6b45f50
     c_users_akim_desktop_usgar_redesign_src_assets_h_74a30e7b -->|导入| src_pages_index_5f5e2633
+    src_components_gastronomysection_c6b45f50 -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_a19703a7
+    src_components_gastronomysection_c6b45f50 -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b
+    src_components_gastronomysection_c6b45f50 -->|导入| src_pages_index_5f5e2633
     c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b -->|导入| src_components_aboutsection_cd8d0c2c
     c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b -->|导入| src_components_heritagesection_0a94b2d8
     c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b -->|导入| src_components_servicegrid_70ff2fdc
@@ -555,11 +557,9 @@ flowchart LR
     src_components_heritagesection_0a94b2d8 -->|导入| src_pages_index_5f5e2633
     leaflet_5f5555f4 -->|导入| package_dependencies_leaflet_e1b9b00b
     src_pages_index_5f5e2633 -->|导入| src_pages_fr_index_8bc7f49d
-    src_pages_index_5f5e2633 -->|导入| astro_90c9d7bd
     src_pages_index_5f5e2633 -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_6630b329
     src_pages_index_5f5e2633 -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_912f3851
-    src_pages_index_5f5e2633 -->|导入| c_users_akim_desktop_usgar_redesign_src_componen_0882f3e9
-    %% Omitted for readability: 142 nodes, 2 edges
+    %% Omitted for readability: 139 nodes, 3 edges
     class src_components_aboutsection_cd8d0c2c ui;
     class c_users_akim_desktop_usgar_redesign_src_componen_0882f3e9 ui;
     class c_users_akim_desktop_usgar_redesign_src_assets_h_a19703a7 async;
@@ -568,12 +568,12 @@ flowchart LR
     class c_users_akim_desktop_usgar_redesign_src_assets_h_912f3851 async;
     class c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b async;
     class c_users_akim_desktop_usgar_redesign_src_assets_h_74a30e7b async;
-    class astro_90c9d7bd function;
     class astro_assets_b0866f09 async;
+    class c_users_akim_desktop_usgar_redesign_src_content_bb90dfcd function;
     class leaflet_5f5555f4 function;
     class package_dependencies_leaflet_e1b9b00b function;
     class src_pages_fr_index_8bc7f49d function;
-    class src_components_faqsection_47911ff2 ui;
+    class src_components_faqsection_47911ff2 klass;
     class src_components_gastronomysection_c6b45f50 ui;
     class src_components_heritagesection_0a94b2d8 ui;
     class src_components_servicegrid_70ff2fdc ui;
@@ -846,7 +846,7 @@ flowchart LR
     <h4>关键文件</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>覆盖节点</th></tr>
-      <tr><td><code>package.json</code></td><td>46 个节点</td></tr>
+      <tr><td><code>package.json</code></td><td>45 个节点</td></tr>
 <tr><td><code>references/guides/webhooks.md</code></td><td>15 个节点</td></tr>
 <tr><td><code>references/guides/marketplace.md</code></td><td>14 个节点</td></tr>
 <tr><td><code>references/guides/subscriptions.md</code></td><td>14 个节点</td></tr>
@@ -858,19 +858,19 @@ flowchart LR
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x109, 导入 x36, 导入 x12, references x5。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x108, 导入 x34, 导入 x11, references x5。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 4. 分析聚类 ====== -->
 <h2 id="analysis-clustering">4. 分析聚类</h2>
-<p>分析聚类 汇集了与 agents、skills、qloapps、module 相关的实现，主要分布在 qloapps-module-development/reference/database-operations.md、qloapps-stats-module-development/reference/query-patterns.md、references/core/benchmark_methodology.md。本节覆盖 66 个节点、63 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>分析聚类 汇集了与 agents、skills、qloapps、module 相关的实现，主要分布在 qloapps-module-development/reference/database-operations.md、qloapps-module-development/reference/models-repositories.md、qloapps-stats-module-development/reference/query-patterns.md。本节覆盖 79 个节点、76 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 分析聚类 (66 nodes, 63 edges)
+    %% Section: 分析聚类 (79 nodes, 76 edges)
     subgraph analysis_clustering_qloapps_module_development_r_e8c48dc9["qloapps-module-development/reference/database-operations.md"]
         agents_skills_qloapps_module_development_referen_9ec07745("1. Always Use Table Prefix<br/><small>qloapps-module-development/reference/database-operations.md</small>")
         agents_skills_qloapps_module_development_referen_cfb1477e("2. Always Escape/Cast Inputs<br/><small>qloapps-module-development/reference/database-operations.md</small>")
@@ -895,7 +895,7 @@ flowchart LR
     end
     c_users_akim_desktop_migracion_a_php_agents_skil_4a432481 -->|调用| c_users_akim_desktop_migracion_a_php_agents_skil_9264a041
     c_users_akim_desktop_migracion_a_php_agents_skil_4a432481 -->|调用| c_users_akim_desktop_migracion_a_php_agents_skil_8ffaf6af
-    %% Omitted for readability: 48 nodes, 0 edges
+    %% Omitted for readability: 61 nodes, 0 edges
     class agents_skills_qloapps_module_development_referen_9ec07745 concept;
     class agents_skills_qloapps_module_development_referen_cfb1477e concept;
     class agents_skills_qloapps_module_development_referen_5cd4cd30 concept;
@@ -1183,15 +1183,15 @@ flowchart LR
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>覆盖节点</th></tr>
       <tr><td><code>qloapps-module-development/reference/database-operations.md</code></td><td>37 个节点</td></tr>
+<tr><td><code>qloapps-module-development/reference/models-repositories.md</code></td><td>18 个节点</td></tr>
 <tr><td><code>qloapps-stats-module-development/reference/query-patterns.md</code></td><td>11 个节点</td></tr>
 <tr><td><code>references/core/benchmark_methodology.md</code></td><td>8 个节点</td></tr>
-<tr><td><code>qloapps-module-development/reference/models-repositories.md</code></td><td>5 个节点</td></tr>
 <tr><td><code>web-quality-web-quality-audit/scripts/analyze.sh</code></td><td>5 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x58, defines x3, 调用 x2。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x71, defines x3, 调用 x2。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -1408,12 +1408,12 @@ flowchart LR
 
 <!-- ====== 6. CLI 与技能安装 ====== -->
 <h2 id="cli-skills">6. CLI 与技能安装</h2>
-<p>CLI 与技能安装 汇集了与 agents、skills、skillmd、code 相关的实现，主要分布在 references/wooyun/command-execution.md、skills/code-audit/agent.md、skills/web-quality-best-practices/SKILL.md。本节覆盖 892 个节点、865 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>CLI 与技能安装 汇集了与 agents、skills、skillmd、code 相关的实现，主要分布在 references/wooyun/command-execution.md、skills/code-audit/agent.md、skills/web-quality-best-practices/SKILL.md。本节覆盖 863 个节点、836 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: CLI 与技能安装 (892 nodes, 865 edges)
+    %% Section: CLI 与技能安装 (863 nodes, 836 edges)
     subgraph cli_skills_references_wooyun_command_execution_m_653cd375["references/wooyun/command-execution.md"]
         agents_skills_code_audit_references_wooyun_comma_319e7bb2("命令执行漏洞分析手册<br/><small>references/wooyun/command-execution.md</small>")
         agents_skills_code_audit_references_wooyun_comma_1ba40014("十、PHP命令执行元思考方法论<br/><small>references/wooyun/command-execution.md</small>")
@@ -1438,7 +1438,7 @@ flowchart LR
     agents_skills_web_quality_performance_skill_perf_883d58b3("Performance optimization<br/><small>skills/web-quality-performance/SKILL.md</small>")
     agents_skills_code_audit_references_wooyun_comma_319e7bb2 -->|包含| agents_skills_code_audit_references_wooyun_comma_1ba40014
     agents_skills_mercadopago_mp_integrate_skill_mp_7a7f6f2e -->|包含| agents_skills_mercadopago_mp_integrate_skill_got_2f2abb79
-    %% Omitted for readability: 874 nodes, 0 edges
+    %% Omitted for readability: 845 nodes, 0 edges
     class agents_skills_code_audit_references_wooyun_comma_319e7bb2 concept;
     class agents_skills_code_audit_references_wooyun_comma_1ba40014 concept;
     class agents_skills_mercadopago_mp_integrate_skill_got_2f2abb79 concept;
@@ -1737,7 +1737,7 @@ flowchart LR
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x851, references x14。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x822, references x14。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -2016,21 +2016,12 @@ flowchart LR
 
 <!-- ====== 8. 服务 API ====== -->
 <h2 id="serve-api">8. 服务 API</h2>
-<p>服务 API 汇集了与 agents、skills、references、code 相关的实现，主要分布在 references/wooyun/file-upload.md、mercadopago-mp-integrate/references/products.md、references/core/semantic_search_guide.md。本节覆盖 423 个节点、420 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>服务 API 汇集了与 agents、skills、references、code 相关的实现，主要分布在 references/wooyun/file-upload.md、mercadopago-mp-integrate/references/products.md、references/core/semantic_search_guide.md。本节覆盖 506 个节点、643 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 服务 API (423 nodes, 420 edges)
-    subgraph serve_api_src_Core_Request_php_856f6935["src/Core/Request.php"]
-        src_core_request_request_4e91bc72("Request<br/><small>src/Core/Request.php</small>")
-        src_core_request_request_construct_db52c497("__construct()<br/><small>src/Core/Request.php</small>")
-        src_core_request_request_extractheaders_c0957961("extractHeaders()<br/><small>src/Core/Request.php</small>")
-        src_core_request_request_get_120846a8("get()<br/><small>src/Core/Request.php</small>")
-        src_core_request_request_getbody_93745842("getBody()<br/><small>src/Core/Request.php</small>")
-        src_core_request_request_getheader_c0afb84c("getHeader()<br/><small>src/Core/Request.php</small>")
-        src_core_request_request_getheaders_3c9317f3("getHeaders()<br/><small>src/Core/Request.php</small>")
-    end
+    %% Section: 服务 API (506 nodes, 643 edges)
     subgraph serve_api_src_Core_Router_php_cc2b546b["src/Core/Router.php"]
         src_core_router_router_3fc8ac43("Router<br/><small>src/Core/Router.php</small>")
         src_core_router_router_dispatch_3ec4597f("dispatch()<br/><small>src/Core/Router.php</small>")
@@ -2040,12 +2031,21 @@ flowchart LR
         src_core_router_router_resolveroute_dae0b975("resolveRoute()<br/><small>src/Core/Router.php</small>")
         src_core_router_router_setmiddleware_d2390e88("setMiddleware()<br/><small>src/Core/Router.php</small>")
     end
-    subgraph serve_api_src_Services_ChannexService_php_1859c66c["src/Services/ChannexService.php"]
-        src_services_channexservice_channexservice_ac244d9f("ChannexService<br/><small>src/Services/ChannexService.php</small>")
-        src_services_channexservice_channexservice_creat_0237768e("createBooking()<br/><small>src/Services/ChannexService.php</small>")
+    subgraph serve_api_Auth_Actions_AuthCallbackAction_php_496b554f["Auth/Actions/AuthCallbackAction.php"]
+        src_features_auth_actions_authcallbackaction_aut_3969a955("AuthCallbackAction<br/><small>Auth/Actions/AuthCallbackAction.php</small>")
+        src_features_auth_actions_authcallbackaction_aut_90a1816e("__invoke()<br/><small>Auth/Actions/AuthCallbackAction.php</small>")
     end
-    src_controllers_webhookcontroller_webhookcontrol_fbe20369("WebhookController<br/><small>src/Controllers/WebhookController.php</small>")
-    src_core_response_response_2441f6f9("Response<br/><small>src/Core/Response.php</small>")
+    subgraph serve_api_Auth_Actions_AuthLoginAction_php_3258f0b3["Auth/Actions/AuthLoginAction.php"]
+        src_features_auth_actions_authloginaction_authlo_e9673a6e("AuthLoginAction<br/><small>Auth/Actions/AuthLoginAction.php</small>")
+        src_features_auth_actions_authloginaction_authlo_5c93747a("__invoke()<br/><small>Auth/Actions/AuthLoginAction.php</small>")
+    end
+    src_features_auth_actions_authloginemailaction_a_b1ceea80("AuthLoginEmailAction<br/><small>Auth/Actions/AuthLoginEmailAction.php</small>")
+    src_features_booking_actions_createbookingaction_3bd722a4("CreateBookingAction.php")
+    public_index_c7d833a6("index.php")
+    src_controllers_authcontroller_3a495209("AuthController.php")
+    src_controllers_channexwebhookcontroller_cb4cddba("ChannexWebhookController.php")
+    src_controllers_webhookcontroller_11c3631a("WebhookController.php")
+    src_core_request_request_4e91bc72("Request<br/><small>src/Core/Request.php</small>")
     src_core_router_router_3fc8ac43 -->|方法| src_core_router_router_dispatch_3ec4597f
     src_core_router_router_3fc8ac43 -->|方法| src_core_router_router_get_5da8a083
     src_core_router_router_3fc8ac43 -->|方法| src_core_router_router_normalizepath_7b1e849d
@@ -2056,22 +2056,11 @@ flowchart LR
     src_core_router_router_post_a0bafbb9 -->|调用| src_core_router_router_normalizepath_7b1e849d
     src_core_router_router_dispatch_3ec4597f -->|调用| src_core_router_router_normalizepath_7b1e849d
     src_core_router_router_dispatch_3ec4597f -->|调用| src_core_router_router_resolveroute_dae0b975
-    src_core_request_request_4e91bc72 -->|方法| src_core_request_request_construct_db52c497
-    src_core_request_request_4e91bc72 -->|方法| src_core_request_request_extractheaders_c0957961
-    src_core_request_request_4e91bc72 -->|方法| src_core_request_request_get_120846a8
-    src_core_request_request_4e91bc72 -->|方法| src_core_request_request_getbody_93745842
-    src_core_request_request_4e91bc72 -->|方法| src_core_request_request_getheader_c0afb84c
-    src_core_request_request_4e91bc72 -->|方法| src_core_request_request_getheaders_3c9317f3
-    src_core_request_request_construct_db52c497 -->|调用| src_core_request_request_extractheaders_c0957961
-    src_services_channexservice_channexservice_ac244d9f -->|方法| src_services_channexservice_channexservice_creat_0237768e
-    %% Omitted for readability: 405 nodes, 0 edges
-    class src_core_request_request_4e91bc72 klass;
-    class src_core_request_request_construct_db52c497 function;
-    class src_core_request_request_extractheaders_c0957961 function;
-    class src_core_request_request_get_120846a8 function;
-    class src_core_request_request_getbody_93745842 function;
-    class src_core_request_request_getheader_c0afb84c function;
-    class src_core_request_request_getheaders_3c9317f3 function;
+    src_features_auth_actions_authcallbackaction_aut_3969a955 -->|方法| src_features_auth_actions_authcallbackaction_aut_90a1816e
+    src_features_auth_actions_authloginaction_authlo_e9673a6e -->|方法| src_features_auth_actions_authloginaction_authlo_5c93747a
+    public_index_c7d833a6 -->|导入| src_features_booking_actions_createbookingaction_3bd722a4
+    src_controllers_channexwebhookcontroller_cb4cddba -->|导入| src_core_request_request_4e91bc72
+    %% Omitted for readability: 488 nodes, 0 edges
     class src_core_router_router_3fc8ac43 api;
     class src_core_router_router_dispatch_3ec4597f function;
     class src_core_router_router_get_5da8a083 function;
@@ -2079,10 +2068,17 @@ flowchart LR
     class src_core_router_router_post_a0bafbb9 function;
     class src_core_router_router_resolveroute_dae0b975 api;
     class src_core_router_router_setmiddleware_d2390e88 function;
-    class src_services_channexservice_channexservice_ac244d9f klass;
-    class src_services_channexservice_channexservice_creat_0237768e function;
-    class src_controllers_webhookcontroller_webhookcontrol_fbe20369 ui;
-    class src_core_response_response_2441f6f9 klass;
+    class src_features_auth_actions_authcallbackaction_aut_3969a955 klass;
+    class src_features_auth_actions_authcallbackaction_aut_90a1816e function;
+    class src_features_auth_actions_authloginaction_authlo_e9673a6e klass;
+    class src_features_auth_actions_authloginaction_authlo_5c93747a function;
+    class src_features_auth_actions_authloginemailaction_a_b1ceea80 klass;
+    class src_features_booking_actions_createbookingaction_3bd722a4 klass;
+    class public_index_c7d833a6 module;
+    class src_controllers_authcontroller_3a495209 klass;
+    class src_controllers_channexwebhookcontroller_cb4cddba ui;
+    class src_controllers_webhookcontroller_11c3631a ui;
+    class src_core_request_request_4e91bc72 klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -2106,243 +2102,243 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>products.md</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
+  <td><code>index.php</code><br><small style="color:var(--muted)">public/index.php</small></td>
+  <td><span class="tag tag-class">模块</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 products.md 相关能力。</td>
+  <td><code>AuthCallbackAction.php</code><br><small style="color:var(--muted)">Auth/Actions/AuthCallbackAction.php</small><br><code>AuthLoginAction.php</code><br><small style="color:var(--muted)">Auth/Actions/AuthLoginAction.php</small><br><code>AuthLoginEmailAction.php</code><br><small style="color:var(--muted)">Auth/Actions/AuthLoginEmailAction.php</small><br>+13 个更多</td>
+  <td>public/index.php 中的 index.php 节点。</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>Mercado Pago — Product Reference</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Mercado Pago — Product Reference 相关能力。</td>
+  <td><code>AuthCallbackAction.php</code><br><small style="color:var(--muted)">Auth/Actions/AuthCallbackAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>index.php</code><br><small style="color:var(--muted)">public/index.php</small></td>
+  <td><code>AuthService.php</code><br><small style="color:var(--muted)">src/Services/AuthService.php</small><br><code>Database.php</code><br><small style="color:var(--muted)">src/Core/Database.php</small><br><code>HttpException.php</code><br><small style="color:var(--muted)">src/Core/HttpException.php</small><br>+4 个更多</td>
+  <td>Auth/Actions/AuthCallbackAction.php 中的 AuthCallbackAction.php 节点。</td>
 </tr>
 <tr>
   <td>3</td>
-  <td><code>Version: 4.2.0 | Updated: 2026-06-10</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
+  <td><code>AuthCallbackAction</code><br><small style="color:var(--muted)">Auth/Actions/AuthCallbackAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Version: 4.2.0 | Updated: 2026-06-10 相关能力。</td>
+  <td><code>__invoke()</code><br><small style="color:var(--muted)">Auth/Actions/AuthCallbackAction.php</small></td>
+  <td>Auth/Actions/AuthCallbackAction.php 中的 AuthCallbackAction 节点。</td>
 </tr>
 <tr>
   <td>4</td>
-  <td><code>Source: Official Mercado Pago developer documentation</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.__invoke()</code><br><small style="color:var(--muted)">Auth/Actions/AuthCallbackAction.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>AuthCallbackAction</code><br><small style="color:var(--muted)">Auth/Actions/AuthCallbackAction.php</small></td>
   <td>无直接出边</td>
-  <td>文档入口，描述 Source: Official Mercado Pago developer documentation 相关能力。</td>
+  <td>Auth/Actions/AuthCallbackAction.php 中的 .__invoke() 节点。</td>
 </tr>
 <tr>
   <td>5</td>
-  <td><code>This file is tier-2 in the documentation hierarchy:</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>Request</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>AuthCallbackAction.php</code><br><small style="color:var(--muted)">Auth/Actions/AuthCallbackAction.php</small></td>
   <td>无直接出边</td>
-  <td>文档入口，描述 This file is tier-2 in the documentation hierarchy: 相关能力。</td>
+  <td>项目 中的 Request 节点。</td>
 </tr>
 <tr>
   <td>6</td>
-  <td><code>(1) WebFetch official llms.txt per country → (2) this file → (3) MCP search_documentation</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 (1) WebFetch official llms.txt per country → (2) this file → (3) MCP search_documentation 相关能力。</td>
+  <td><code>AuthLoginAction.php</code><br><small style="color:var(--muted)">Auth/Actions/AuthLoginAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>index.php</code><br><small style="color:var(--muted)">public/index.php</small></td>
+  <td><code>AuthService.php</code><br><small style="color:var(--muted)">src/Services/AuthService.php</small><br><code>Config.php</code><br><small style="color:var(--muted)">src/Core/Config.php</small><br><code>HttpException.php</code><br><small style="color:var(--muted)">src/Core/HttpException.php</small><br>+3 个更多</td>
+  <td>Auth/Actions/AuthLoginAction.php 中的 AuthLoginAction.php 节点。</td>
 </tr>
 <tr>
   <td>7</td>
-  <td><code>Contains: product descriptions, when to use each, best practices, key payload fields,</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
+  <td><code>AuthLoginAction</code><br><small style="color:var(--muted)">Auth/Actions/AuthLoginAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Contains: product descriptions, when to use each, best practices, key payload fields, 相关能力。</td>
+  <td><code>__invoke()</code><br><small style="color:var(--muted)">Auth/Actions/AuthLoginAction.php</small></td>
+  <td>Auth/Actions/AuthLoginAction.php 中的 AuthLoginAction 节点。</td>
 </tr>
 <tr>
   <td>8</td>
-  <td><code>SDK component map, and test card data per country.</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.__invoke()</code><br><small style="color:var(--muted)">Auth/Actions/AuthLoginAction.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>AuthLoginAction</code><br><small style="color:var(--muted)">Auth/Actions/AuthLoginAction.php</small></td>
   <td>无直接出边</td>
-  <td>文档入口，描述 SDK component map, and test card data per country. 相关能力。</td>
+  <td>Auth/Actions/AuthLoginAction.php 中的 .__invoke() 节点。</td>
 </tr>
 <tr>
   <td>9</td>
-  <td><code>@mercadopago/sdk-react — Component Map</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>Request</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>AuthLoginAction.php</code><br><small style="color:var(--muted)">Auth/Actions/AuthLoginAction.php</small></td>
   <td>无直接出边</td>
-  <td>文档入口，描述 @mercadopago/sdk-react — Component Map 相关能力。</td>
+  <td>项目 中的 Request 节点。</td>
 </tr>
 <tr>
   <td>10</td>
-  <td><code>Products</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Products 相关能力。</td>
+  <td><code>AuthLoginEmailAction.php</code><br><small style="color:var(--muted)">Auth/Actions/AuthLoginEmailAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>index.php</code><br><small style="color:var(--muted)">public/index.php</small></td>
+  <td><code>Database.php</code><br><small style="color:var(--muted)">src/Core/Database.php</small><br><code>Request</code><br><code>Response.php</code><br><small style="color:var(--muted)">src/Core/Response.php</small><br>+2 个更多</td>
+  <td>Auth/Actions/AuthLoginEmailAction.php 中的 AuthLoginEmailAction.php 节点。</td>
 </tr>
 <tr>
   <td>11</td>
-  <td><code>Checkout Pro</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
+  <td><code>AuthLoginEmailAction</code><br><small style="color:var(--muted)">Auth/Actions/AuthLoginEmailAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Checkout Pro 相关能力。</td>
+  <td><code>__invoke()</code><br><small style="color:var(--muted)">Auth/Actions/AuthLoginEmailAction.php</small></td>
+  <td>Auth/Actions/AuthLoginEmailAction.php 中的 AuthLoginEmailAction 节点。</td>
 </tr>
 <tr>
   <td>12</td>
-  <td><code>Checkout API (Orders mode)</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.__invoke()</code><br><small style="color:var(--muted)">Auth/Actions/AuthLoginEmailAction.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>AuthLoginEmailAction</code><br><small style="color:var(--muted)">Auth/Actions/AuthLoginEmailAction.php</small></td>
   <td>无直接出边</td>
-  <td>文档入口，描述 Checkout API (Orders mode) 相关能力。</td>
+  <td>Auth/Actions/AuthLoginEmailAction.php 中的 .__invoke() 节点。</td>
 </tr>
 <tr>
   <td>13</td>
-  <td><code>Checkout Bricks</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>Request</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>AuthLoginEmailAction.php</code><br><small style="color:var(--muted)">Auth/Actions/AuthLoginEmailAction.php</small></td>
   <td>无直接出边</td>
-  <td>文档入口，描述 Checkout Bricks 相关能力。</td>
+  <td>项目 中的 Request 节点。</td>
 </tr>
 <tr>
   <td>14</td>
-  <td><code>CardPayment Brick</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 CardPayment Brick 相关能力。</td>
+  <td><code>AuthMeAction.php</code><br><small style="color:var(--muted)">Auth/Actions/AuthMeAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>index.php</code><br><small style="color:var(--muted)">public/index.php</small></td>
+  <td><code>Request</code><br><code>Response.php</code><br><small style="color:var(--muted)">src/Core/Response.php</small><br><code>SessionService.php</code><br><small style="color:var(--muted)">src/Services/SessionService.php</small></td>
+  <td>Auth/Actions/AuthMeAction.php 中的 AuthMeAction.php 节点。</td>
 </tr>
 <tr>
   <td>15</td>
-  <td><code>Payment Brick</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
+  <td><code>AuthMeAction</code><br><small style="color:var(--muted)">Auth/Actions/AuthMeAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Payment Brick 相关能力。</td>
+  <td><code>__invoke()</code><br><small style="color:var(--muted)">Auth/Actions/AuthMeAction.php</small></td>
+  <td>Auth/Actions/AuthMeAction.php 中的 AuthMeAction 节点。</td>
 </tr>
 <tr>
   <td>16</td>
-  <td><code>Wallet Brick</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.__invoke()</code><br><small style="color:var(--muted)">Auth/Actions/AuthMeAction.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>AuthMeAction</code><br><small style="color:var(--muted)">Auth/Actions/AuthMeAction.php</small></td>
   <td>无直接出边</td>
-  <td>文档入口，描述 Wallet Brick 相关能力。</td>
+  <td>Auth/Actions/AuthMeAction.php 中的 .__invoke() 节点。</td>
 </tr>
 <tr>
   <td>17</td>
-  <td><code>StatusScreen Brick</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>Request</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>AuthMeAction.php</code><br><small style="color:var(--muted)">Auth/Actions/AuthMeAction.php</small></td>
   <td>无直接出边</td>
-  <td>文档入口，描述 StatusScreen Brick 相关能力。</td>
+  <td>项目 中的 Request 节点。</td>
 </tr>
 <tr>
   <td>18</td>
-  <td><code>QR Code</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 QR Code 相关能力。</td>
+  <td><code>AuthRegisterAction.php</code><br><small style="color:var(--muted)">Auth/Actions/AuthRegisterAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>index.php</code><br><small style="color:var(--muted)">public/index.php</small></td>
+  <td><code>Database.php</code><br><small style="color:var(--muted)">src/Core/Database.php</small><br><code>Request</code><br><code>Response.php</code><br><small style="color:var(--muted)">src/Core/Response.php</small><br>+2 个更多</td>
+  <td>Auth/Actions/AuthRegisterAction.php 中的 AuthRegisterAction.php 节点。</td>
 </tr>
 <tr>
   <td>19</td>
-  <td><code>MP Point</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
+  <td><code>AuthRegisterAction</code><br><small style="color:var(--muted)">Auth/Actions/AuthRegisterAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 MP Point 相关能力。</td>
+  <td><code>__invoke()</code><br><small style="color:var(--muted)">Auth/Actions/AuthRegisterAction.php</small></td>
+  <td>Auth/Actions/AuthRegisterAction.php 中的 AuthRegisterAction 节点。</td>
 </tr>
 <tr>
   <td>20</td>
-  <td><code>Subscriptions</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.__invoke()</code><br><small style="color:var(--muted)">Auth/Actions/AuthRegisterAction.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>AuthRegisterAction</code><br><small style="color:var(--muted)">Auth/Actions/AuthRegisterAction.php</small></td>
   <td>无直接出边</td>
-  <td>文档入口，描述 Subscriptions 相关能力。</td>
+  <td>Auth/Actions/AuthRegisterAction.php 中的 .__invoke() 节点。</td>
 </tr>
 <tr>
   <td>21</td>
-  <td><code>Marketplace</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>Request</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>AuthRegisterAction.php</code><br><small style="color:var(--muted)">Auth/Actions/AuthRegisterAction.php</small></td>
   <td>无直接出边</td>
-  <td>文档入口，描述 Marketplace 相关能力。</td>
+  <td>项目 中的 Request 节点。</td>
 </tr>
 <tr>
   <td>22</td>
-  <td><code>Wallet Connect</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Wallet Connect 相关能力。</td>
+  <td><code>GetUserBookingsAction.php</code><br><small style="color:var(--muted)">Auth/Actions/GetUserBookingsAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>index.php</code><br><small style="color:var(--muted)">public/index.php</small></td>
+  <td><code>Database.php</code><br><small style="color:var(--muted)">src/Core/Database.php</small><br><code>Request</code><br><code>Response.php</code><br><small style="color:var(--muted)">src/Core/Response.php</small><br>+2 个更多</td>
+  <td>Auth/Actions/GetUserBookingsAction.php 中的 GetUserBookingsAction.php 节点。</td>
 </tr>
 <tr>
   <td>23</td>
-  <td><code>Test Cards per Country</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
+  <td><code>GetUserBookingsAction</code><br><small style="color:var(--muted)">Auth/Actions/GetUserBookingsAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Test Cards per Country 相关能力。</td>
+  <td><code>__invoke()</code><br><small style="color:var(--muted)">Auth/Actions/GetUserBookingsAction.php</small></td>
+  <td>Auth/Actions/GetUserBookingsAction.php 中的 GetUserBookingsAction 节点。</td>
 </tr>
 <tr>
   <td>24</td>
-  <td><code>Argentina (MLA)</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.__invoke()</code><br><small style="color:var(--muted)">Auth/Actions/GetUserBookingsAction.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>GetUserBookingsAction</code><br><small style="color:var(--muted)">Auth/Actions/GetUserBookingsAction.php</small></td>
   <td>无直接出边</td>
-  <td>文档入口，描述 Argentina (MLA) 相关能力。</td>
+  <td>Auth/Actions/GetUserBookingsAction.php 中的 .__invoke() 节点。</td>
 </tr>
 <tr>
   <td>25</td>
-  <td><code>Brazil (MLB)</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>Request</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>GetUserBookingsAction.php</code><br><small style="color:var(--muted)">Auth/Actions/GetUserBookingsAction.php</small></td>
   <td>无直接出边</td>
-  <td>文档入口，描述 Brazil (MLB) 相关能力。</td>
+  <td>项目 中的 Request 节点。</td>
 </tr>
 <tr>
   <td>26</td>
-  <td><code>Mexico (MLM)</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Mexico (MLM) 相关能力。</td>
+  <td><code>CreateBookingAction.php</code><br><small style="color:var(--muted)">Booking/Actions/CreateBookingAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>index.php</code><br><small style="color:var(--muted)">public/index.php</small></td>
+  <td><code>Config.php</code><br><small style="color:var(--muted)">src/Core/Config.php</small><br><code>Database.php</code><br><small style="color:var(--muted)">src/Core/Database.php</small><br><code>Exception</code><br>+6 个更多</td>
+  <td>Booking/Actions/CreateBookingAction.php 中的 CreateBookingAction.php 节点。</td>
 </tr>
 <tr>
   <td>27</td>
-  <td><code>Colombia (MCO)</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Colombia (MCO) 相关能力。</td>
+  <td><code>GetBookingStatusAction.php</code><br><small style="color:var(--muted)">Booking/Actions/GetBookingStatusAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>index.php</code><br><small style="color:var(--muted)">public/index.php</small></td>
+  <td><code>Config.php</code><br><small style="color:var(--muted)">src/Core/Config.php</small><br><code>HttpException.php</code><br><small style="color:var(--muted)">src/Core/HttpException.php</small><br><code>Logger.php</code><br><small style="color:var(--muted)">src/Core/Logger.php</small><br>+3 个更多</td>
+  <td>Booking/Actions/GetBookingStatusAction.php 中的 GetBookingStatusAction.php 节点。</td>
 </tr>
 <tr>
   <td>28</td>
-  <td><code>Chile (MLC)</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Chile (MLC) 相关能力。</td>
+  <td><code>CleanExpiredCartsAction.php</code><br><small style="color:var(--muted)">Cron/Actions/CleanExpiredCartsAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>index.php</code><br><small style="color:var(--muted)">public/index.php</small><br><code>ProvisionalBookingRepository</code><br><small style="color:var(--muted)">Booking/Domain/ProvisionalBookingRepository.php</small></td>
+  <td><code>Config.php</code><br><small style="color:var(--muted)">src/Core/Config.php</small><br><code>Logger.php</code><br><small style="color:var(--muted)">src/Core/Logger.php</small><br><code>Request</code><br>+1 个更多</td>
+  <td>Cron/Actions/CleanExpiredCartsAction.php 中的 CleanExpiredCartsAction.php 节点。</td>
 </tr>
 <tr>
   <td>29</td>
-  <td><code>Peru (MPE)</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Peru (MPE) 相关能力。</td>
+  <td><code>HealthCheckAction.php</code><br><small style="color:var(--muted)">Health/Actions/HealthCheckAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>index.php</code><br><small style="color:var(--muted)">public/index.php</small></td>
+  <td><code>Config.php</code><br><small style="color:var(--muted)">src/Core/Config.php</small><br><code>Database.php</code><br><small style="color:var(--muted)">src/Core/Database.php</small><br><code>Exception</code><br>+2 个更多</td>
+  <td>Health/Actions/HealthCheckAction.php 中的 HealthCheckAction.php 节点。</td>
 </tr>
 <tr>
   <td>30</td>
-  <td><code>Uruguay (MLU)</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
+  <td><code>HealthCheckAction</code><br><small style="color:var(--muted)">Health/Actions/HealthCheckAction.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Uruguay (MLU) 相关能力。</td>
+  <td><code>__invoke()</code><br><small style="color:var(--muted)">Health/Actions/HealthCheckAction.php</small></td>
+  <td>Health/Actions/HealthCheckAction.php 中的 HealthCheckAction 节点。</td>
 </tr>
 </table>
 
@@ -2357,13 +2353,13 @@ flowchart LR
 <tr><td><code>qloapps-payment-module-development/reference/integration-api.md</code></td><td>24 个节点</td></tr>
 <tr><td><code>references/guides/bricks.md</code></td><td>20 个节点</td></tr>
 <tr><td><code>qloapps-payment-module-development/reference/controllers-transactions.md</code></td><td>20 个节点</td></tr>
-<tr><td><code>shadcn-ui/resources/setup-guide.md</code></td><td>19 个节点</td></tr>
 <tr><td><code>references/guides/checkout-api.md</code></td><td>18 个节点</td></tr>
+<tr><td><code>references/security/api_gateway_proxy.md</code></td><td>16 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x362, 方法 x34, 调用 x13, references x11。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x366, 导入 x154, 方法 x61, references x47。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -2725,75 +2721,73 @@ flowchart LR
 
 <!-- ====== 10. 测试与样例 ====== -->
 <h2 id="tests-fixtures">10. 测试与样例</h2>
-<p>测试与样例 汇集了与 test、components、pages、skillmd 相关的实现，主要分布在 skills/mercadopago-mp-test-setup/SKILL.md、src/i18n/utils.ts、src/data/settings.ts。本节覆盖 87 个节点、170 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>测试与样例 汇集了与 tests、unit、components、test 相关的实现，主要分布在 skills/mercadopago-mp-test-setup/SKILL.md、tests/Unit/TestCase.php、Shared/Adapters/ChannexAdapter.php。本节覆盖 96 个节点、150 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 测试与样例 (87 nodes, 170 edges)
+    %% Section: 测试与样例 (96 nodes, 150 edges)
+    subgraph tests_fixtures_Shared_Adapters_ChannexAdapter_ph_37345e80["Shared/Adapters/ChannexAdapter.php"]
+        src_features_shared_adapters_channexadapter_chan_2e8eafb8("ChannexAdapter<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
+        src_features_shared_adapters_channexadapter_chan_93a3e707("__construct()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
+        src_features_shared_adapters_channexadapter_chan_7bb38392("createBooking()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
+        src_features_shared_adapters_channexadapter_chan_195d5585("getSlugByRoomType()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
+        src_features_shared_adapters_channexadapter_chan_826cb273("processChannelBooking()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
+        src_features_shared_adapters_channexadapter_chan_f9a59ab3("pushAvailability()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
+        src_features_shared_adapters_channexadapter_chan_13c119bb("resolveChannexRatePlanId()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
+        src_features_shared_adapters_channexadapter_chan_b14927d1("resolveChannexRoomId()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
+    end
+    subgraph tests_fixtures_Unit_Core_RouterTest_php_3c5a5c18["Unit/Core/RouterTest.php"]
+        tests_unit_core_routertest_routertest_40ea7b7a("RouterTest<br/><small>Unit/Core/RouterTest.php</small>")
+        tests_unit_core_routertest_routertest_testbookin_4502b309("testBookingStatusEnumValues()<br/><small>Unit/Core/RouterTest.php</small>")
+        tests_unit_core_routertest_routertest_testvalida_abf283f6("testValidatorDateRangeThrowsOnInvertedDates()<br/><small>Unit/Core/RouterTest.php</small>")
+        tests_unit_core_routertest_routertest_testvalida_f6459417("testValidatorRequireFieldsSuccess()<br/><small>Unit/Core/RouterTest.php</small>")
+        tests_unit_core_routertest_routertest_testvalida_ab0cc1c9("testValidatorRequireFieldsThrowsOnMissing()<br/><small>Unit/Core/RouterTest.php</small>")
+    end
     subgraph tests_fixtures_src_i18n_utils_ts_daac2006["src/i18n/utils.ts"]
         src_i18n_utils_b3012147("utils.ts")
         src_i18n_utils_usetranslations_2f58b7a0("useTranslations()<br/><small>src/i18n/utils.ts</small>")
-        src_i18n_utils_resolvekey_2cb70d3d("resolveKey()<br/><small>src/i18n/utils.ts</small>")
+        src_i18n_utils_locale_f6c5a2a9("Locale<br/><small>src/i18n/utils.ts</small>")
     end
-    src_components_room_roomamenitiesgrid_16f6de07("RoomAmenitiesGrid.astro")
-    src_pages_book_mock_payment_49537246("mock-payment.astro")
-    src_controllers_authcontroller_3a495209("AuthController.php")
-    src_controllers_bookingcontroller_974e6e85("BookingController.php")
-    src_controllers_webhookcontroller_11c3631a("WebhookController.php")
-    src_components_bookingwidget_1cb79b45("../components/BookingWidget.astro")
-    src_components_footer_d54b5924("../components/Footer.astro")
-    src_components_interactiveroomssection_ef37413f("../components/InteractiveRoomsSection.a...<br/><small>src/components/InteractiveRoomsSection.astro</small>")
-    src_components_mapsection_08babf10("../components/MapSection.astro")
-    src_components_navbar_844f5f16("../components/Navbar.astro")
-    src_components_reviewmarquee_2328398c("../components/ReviewMarquee.astro")
-    src_components_roomdetail_f7b01c55("RoomDetail.astro")
-    src_components_whatsappbutton_31fa6c12("../components/WhatsAppButton.astro")
     c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901("../i18n/utils")
-    src_pages_contact_38def28b("../contact.astro")
-    src_i18n_utils_usetranslations_2f58b7a0 -->|调用| src_i18n_utils_resolvekey_2cb70d3d
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_bookingwidget_1cb79b45
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_footer_d54b5924
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_interactiveroomssection_ef37413f
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_mapsection_08babf10
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_navbar_844f5f16
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_reviewmarquee_2328398c
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_room_roomamenitiesgrid_16f6de07
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_roomdetail_f7b01c55
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_components_whatsappbutton_31fa6c12
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_pages_book_mock_payment_49537246
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 -->|导入| src_pages_contact_38def28b
-    src_components_interactiveroomssection_ef37413f -->|导入| src_i18n_utils_b3012147
-    src_components_interactiveroomssection_ef37413f -->|导入| src_i18n_utils_usetranslations_2f58b7a0
-    src_components_mapsection_08babf10 -->|导入| src_i18n_utils_b3012147
-    src_components_mapsection_08babf10 -->|导入| src_pages_contact_38def28b
-    src_components_roomdetail_f7b01c55 -->|导入| src_i18n_utils_b3012147
-    src_components_roomdetail_f7b01c55 -->|导入| src_i18n_utils_usetranslations_2f58b7a0
-    src_i18n_utils_b3012147 -->|导入| src_components_footer_d54b5924
-    src_i18n_utils_b3012147 -->|导入| src_components_navbar_844f5f16
-    src_i18n_utils_b3012147 -->|导入| src_components_reviewmarquee_2328398c
-    src_i18n_utils_b3012147 -->|导入| src_components_room_roomamenitiesgrid_16f6de07
-    src_i18n_utils_b3012147 -->|导入| src_components_whatsappbutton_31fa6c12
-    src_i18n_utils_b3012147 -->|导入| src_pages_contact_38def28b
-    %% Omitted for readability: 69 nodes, 4 edges
+    tests_unit_testcase_testcase_f2ea97b9("TestCase<br/><small>tests/Unit/TestCase.php</small>")
+    src_features_shared_adapters_channexadapter_chan_2e8eafb8 -->|方法| src_features_shared_adapters_channexadapter_chan_93a3e707
+    src_features_shared_adapters_channexadapter_chan_2e8eafb8 -->|方法| src_features_shared_adapters_channexadapter_chan_7bb38392
+    src_features_shared_adapters_channexadapter_chan_2e8eafb8 -->|方法| src_features_shared_adapters_channexadapter_chan_195d5585
+    src_features_shared_adapters_channexadapter_chan_2e8eafb8 -->|方法| src_features_shared_adapters_channexadapter_chan_826cb273
+    src_features_shared_adapters_channexadapter_chan_2e8eafb8 -->|方法| src_features_shared_adapters_channexadapter_chan_f9a59ab3
+    src_features_shared_adapters_channexadapter_chan_2e8eafb8 -->|方法| src_features_shared_adapters_channexadapter_chan_13c119bb
+    src_features_shared_adapters_channexadapter_chan_2e8eafb8 -->|方法| src_features_shared_adapters_channexadapter_chan_b14927d1
+    src_features_shared_adapters_channexadapter_chan_f9a59ab3 -->|调用| src_features_shared_adapters_channexadapter_chan_b14927d1
+    src_features_shared_adapters_channexadapter_chan_826cb273 -->|调用| src_features_shared_adapters_channexadapter_chan_7bb38392
+    src_features_shared_adapters_channexadapter_chan_7bb38392 -->|调用| src_features_shared_adapters_channexadapter_chan_195d5585
+    src_features_shared_adapters_channexadapter_chan_7bb38392 -->|调用| src_features_shared_adapters_channexadapter_chan_13c119bb
+    src_features_shared_adapters_channexadapter_chan_7bb38392 -->|调用| src_features_shared_adapters_channexadapter_chan_b14927d1
+    src_features_shared_adapters_channexadapter_chan_b14927d1 -->|调用| src_features_shared_adapters_channexadapter_chan_195d5585
+    src_features_shared_adapters_channexadapter_chan_13c119bb -->|调用| src_features_shared_adapters_channexadapter_chan_195d5585
+    tests_unit_core_routertest_routertest_40ea7b7a -->|方法| tests_unit_core_routertest_routertest_testbookin_4502b309
+    tests_unit_core_routertest_routertest_40ea7b7a -->|方法| tests_unit_core_routertest_routertest_testvalida_abf283f6
+    tests_unit_core_routertest_routertest_40ea7b7a -->|方法| tests_unit_core_routertest_routertest_testvalida_f6459417
+    tests_unit_core_routertest_routertest_40ea7b7a -->|方法| tests_unit_core_routertest_routertest_testvalida_ab0cc1c9
+    %% Omitted for readability: 78 nodes, 0 edges
+    class src_features_shared_adapters_channexadapter_chan_2e8eafb8 klass;
+    class src_features_shared_adapters_channexadapter_chan_93a3e707 function;
+    class src_features_shared_adapters_channexadapter_chan_7bb38392 function;
+    class src_features_shared_adapters_channexadapter_chan_195d5585 function;
+    class src_features_shared_adapters_channexadapter_chan_826cb273 function;
+    class src_features_shared_adapters_channexadapter_chan_f9a59ab3 function;
+    class src_features_shared_adapters_channexadapter_chan_13c119bb function;
+    class src_features_shared_adapters_channexadapter_chan_b14927d1 function;
+    class tests_unit_core_routertest_routertest_40ea7b7a test;
+    class tests_unit_core_routertest_routertest_testbookin_4502b309 test;
+    class tests_unit_core_routertest_routertest_testvalida_abf283f6 test;
+    class tests_unit_core_routertest_routertest_testvalida_f6459417 test;
+    class tests_unit_core_routertest_routertest_testvalida_ab0cc1c9 test;
     class src_i18n_utils_b3012147 module;
     class src_i18n_utils_usetranslations_2f58b7a0 ui;
-    class src_i18n_utils_resolvekey_2cb70d3d function;
-    class src_components_room_roomamenitiesgrid_16f6de07 klass;
-    class src_pages_book_mock_payment_49537246 function;
-    class src_controllers_authcontroller_3a495209 klass;
-    class src_controllers_bookingcontroller_974e6e85 klass;
-    class src_controllers_webhookcontroller_11c3631a ui;
-    class src_components_bookingwidget_1cb79b45 ui;
-    class src_components_footer_d54b5924 ui;
-    class src_components_interactiveroomssection_ef37413f async;
-    class src_components_mapsection_08babf10 ui;
-    class src_components_navbar_844f5f16 ui;
-    class src_components_reviewmarquee_2328398c ui;
-    class src_components_roomdetail_f7b01c55 klass;
-    class src_components_whatsappbutton_31fa6c12 ui;
+    class src_i18n_utils_locale_f6c5a2a9 klass;
     class c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 function;
-    class src_pages_contact_38def28b function;
+    class tests_unit_testcase_testcase_f2ea97b9 test;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -2817,6 +2811,14 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
+  <td><code>../data/settings</code><br><small style="color:var(--muted)">src/data/settings</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small><br><code>../components/MapSection.astro</code><br><small style="color:var(--muted)">src/components/MapSection.astro</small><br><code>../components/WhatsAppButton.astro</code><br><small style="color:var(--muted)">src/components/WhatsAppButton.astro</small><br>+2 个更多</td>
+  <td>src/data/settings 中的 ../data/settings 节点。</td>
+</tr>
+<tr>
+  <td>2</td>
   <td><code>../components/InteractiveRoomsSection.astro</code><br><small style="color:var(--muted)">src/components/InteractiveRoomsSection.astro</small></td>
   <td><span class="tag tag-async">异步</span></td>
   <td><code>../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small></td>
@@ -2824,15 +2826,15 @@ flowchart LR
   <td>src/components/InteractiveRoomsSection.astro 中的 ../components/InteractiveRoomsSection.astro 节点。</td>
 </tr>
 <tr>
-  <td>2</td>
+  <td>3</td>
   <td><code>../components/MapSection.astro</code><br><small style="color:var(--muted)">src/components/MapSection.astro</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small></td>
-  <td><code>../contact.astro</code><br><small style="color:var(--muted)">src/pages/contact.astro</small><br><code>../data/settings</code><br><small style="color:var(--muted)">src/data/settings</small><br><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br>+1 个更多</td>
+  <td><code>../data/settings</code><br><small style="color:var(--muted)">src/data/settings</small><br><code>../i18n/utils</code><br><small style="color:var(--muted)">src/i18n/utils</small></td>
+  <td><code>../contact.astro</code><br><small style="color:var(--muted)">src/pages/contact.astro</small><br><code>Locale</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small><br><code>utils.ts</code><br><small style="color:var(--muted)">src/i18n/utils.ts</small></td>
   <td>src/components/MapSection.astro 中的 ../components/MapSection.astro 节点。</td>
 </tr>
 <tr>
-  <td>3</td>
+  <td>4</td>
   <td><code>String()</code><br><small style="color:var(--muted)">src/components/MapSection.astro</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -2840,7 +2842,7 @@ flowchart LR
   <td>src/components/MapSection.astro 中的 String() 节点。</td>
 </tr>
 <tr>
-  <td>4</td>
+  <td>5</td>
   <td><code>leaflet/dist/leaflet.css</code><br><small style="color:var(--muted)">leaflet/dist/leaflet.css</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -2848,20 +2850,12 @@ flowchart LR
   <td>leaflet/dist/leaflet.css 中的 leaflet/dist/leaflet.css 节点。</td>
 </tr>
 <tr>
-  <td>5</td>
+  <td>6</td>
   <td><code>../assets/logos/Logo usgar isotipo.png</code><br><small style="color:var(--muted)">assets/logos/Logo usgar isotipo.png</small></td>
   <td><span class="tag tag-async">异步</span></td>
   <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
   <td>assets/logos/Logo usgar isotipo.png 中的 ../assets/logos/Logo usgar isotipo.png 节点。</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>../data/settings</code><br><small style="color:var(--muted)">src/data/settings</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>../components/MapSection.astro</code><br><small style="color:var(--muted)">src/components/MapSection.astro</small></td>
-  <td><code>../components/Footer.astro</code><br><small style="color:var(--muted)">src/components/Footer.astro</small><br><code>../components/WhatsAppButton.astro</code><br><small style="color:var(--muted)">src/components/WhatsAppButton.astro</small><br><code>../contact.astro</code><br><small style="color:var(--muted)">src/pages/contact.astro</small><br>+1 个更多</td>
-  <td>src/data/settings 中的 ../data/settings 节点。</td>
 </tr>
 <tr>
   <td>7</td>
@@ -3049,11 +3043,11 @@ flowchart LR
 </tr>
 <tr>
   <td>30</td>
-  <td><code>AuthController.php</code><br><small style="color:var(--muted)">src/Controllers/AuthController.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
+  <td><code>RouterTest.php</code><br><small style="color:var(--muted)">Unit/Core/RouterTest.php</small></td>
+  <td><span class="tag tag-func">测试</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>AuthService.php</code><br><small style="color:var(--muted)">src/Services/AuthService.php</small><br><code>Config.php</code><br><small style="color:var(--muted)">src/Core/Config.php</small><br><code>Database.php</code><br><small style="color:var(--muted)">src/Core/Database.php</small><br>+4 个更多</td>
-  <td>src/Controllers/AuthController.php 中的 AuthController.php 节点。</td>
+  <td><code>TestCase</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
+  <td>验证导入、入口点或版本等基础行为。</td>
 </tr>
 </table>
 
@@ -3063,18 +3057,18 @@ flowchart LR
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>覆盖节点</th></tr>
       <tr><td><code>skills/mercadopago-mp-test-setup/SKILL.md</code></td><td>12 个节点</td></tr>
+<tr><td><code>tests/Unit/TestCase.php</code></td><td>10 个节点</td></tr>
+<tr><td><code>Shared/Adapters/ChannexAdapter.php</code></td><td>8 个节点</td></tr>
 <tr><td><code>src/i18n/utils.ts</code></td><td>6 个节点</td></tr>
+<tr><td><code>Unit/Core/RouterTest.php</code></td><td>6 个节点</td></tr>
+<tr><td><code>Unit/Features/HandleMercadoPagoWebhookActionTest.php</code></td><td>4 个节点</td></tr>
 <tr><td><code>scripts/run-exhaustive-tests.php</code></td><td>3 个节点</td></tr>
-<tr><td><code>src/Core/BookingStatus.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>src/data/settings.ts</code></td><td>3 个节点</td></tr>
-<tr><td><code>src/components/MapSection.astro</code></td><td>2 个节点</td></tr>
-<tr><td><code>src/components/Navbar.astro</code></td><td>2 个节点</td></tr>
-<tr><td><code>pages/book/mock-payment.astro</code></td><td>2 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：导入 x85, 导入 x54, 包含 x28, dynamic import x2。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：导入 x54, 导入 x30, 包含 x30, 方法 x22。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -4781,67 +4775,64 @@ flowchart LR
 
 <!-- ====== 16. 其他 ====== -->
 <h2 id="other">16. 其他</h2>
-<p>其他 汇集了与 agents、skills、references、audit 相关的实现，主要分布在 references/languages/php.md、references/wooyun/sql-injection.md、references/core/taint_analysis.md。本节覆盖 1366 个节点、1373 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>其他 汇集了与 agents、skills、references、audit 相关的实现，主要分布在 references/languages/php.md、references/wooyun/sql-injection.md、references/core/taint_analysis.md。本节覆盖 1475 个节点、1500 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 其他 (1366 nodes, 1373 edges)
-    subgraph other_src_Controllers_AuthController_php_c0063f40["src/Controllers/AuthController.php"]
-        src_controllers_authcontroller_authcontroller_107c490d("AuthController<br/><small>src/Controllers/AuthController.php</small>")
-        src_controllers_authcontroller_authcontroller_bo_3012b970("bookings()<br/><small>src/Controllers/AuthController.php</small>")
-        src_controllers_authcontroller_authcontroller_ca_00f271ec("callback()<br/><small>src/Controllers/AuthController.php</small>")
-        src_controllers_authcontroller_authcontroller_ge_6b566a4d("getPdo()<br/><small>src/Controllers/AuthController.php</small>")
-        src_controllers_authcontroller_authcontroller_lo_f9469068("login()<br/><small>src/Controllers/AuthController.php</small>")
-        src_controllers_authcontroller_authcontroller_lo_2c6c901f("loginEmail()<br/><small>src/Controllers/AuthController.php</small>")
-        src_controllers_authcontroller_authcontroller_lo_0080438f("logout()<br/><small>src/Controllers/AuthController.php</small>")
+    %% Section: 其他 (1475 nodes, 1500 edges)
+    subgraph other_Core_Events_EventDispatcher_php_71ab8095["Core/Events/EventDispatcher.php"]
+        src_core_events_eventdispatcher_eventdispatcher_5cc94ba7("EventDispatcher<br/><small>Core/Events/EventDispatcher.php</small>")
+        src_core_events_eventdispatcher_eventdispatcher_beeee754("dispatch()<br/><small>Core/Events/EventDispatcher.php</small>")
+        src_core_events_eventdispatcher_eventdispatcher_720cfb93("getInstance()<br/><small>Core/Events/EventDispatcher.php</small>")
+        src_core_events_eventdispatcher_eventdispatcher_c2df0f96("subscribe()<br/><small>Core/Events/EventDispatcher.php</small>")
     end
-    subgraph other_src_pages_book_astro_eacc7b7a["src/pages/book.astro"]
-        src_pages_book_updatepricing_3ba0ac7a("updatePricing()<br/><small>src/pages/book.astro</small>")
-        src_pages_book_selectroomcard_d53a9f19("selectRoomCard()<br/><small>src/pages/book.astro</small>")
-        src_pages_book_applyuserdata_0b753a4b("applyUserData()<br/><small>src/pages/book.astro</small>")
-        src_pages_book_autofilluser_27b42b8f("autoFillUser()<br/><small>src/pages/book.astro</small>")
+    subgraph other_Booking_Actions_CreateBookingAction_php_8d585eb5["Booking/Actions/CreateBookingAction.php"]
+        src_features_booking_actions_createbookingaction_6f00e7ca("CreateBookingAction<br/><small>Booking/Actions/CreateBookingAction.php</small>")
+        src_features_booking_actions_createbookingaction_82a1637d("__construct()<br/><small>Booking/Actions/CreateBookingAction.php</small>")
+        src_features_booking_actions_createbookingaction_36dafd36("__invoke()<br/><small>Booking/Actions/CreateBookingAction.php</small>")
     end
-    subgraph other_src_utils_helpers_ts_6f6b6660["src/utils/helpers.ts"]
-        src_utils_helpers_daysbetween_14a5bfff("daysBetween()<br/><small>src/utils/helpers.ts</small>")
-        src_utils_helpers_translatebeds_729f453b("translateBeds()<br/><small>src/utils/helpers.ts</small>")
+    subgraph other_Rooms_Actions_GetRoomsAction_php_6120e614["Rooms/Actions/GetRoomsAction.php"]
+        src_features_rooms_actions_getroomsaction_getroo_2e8b82bf("GetRoomsAction<br/><small>Rooms/Actions/GetRoomsAction.php</small>")
+        src_features_rooms_actions_getroomsaction_getroo_67e0677f("__construct()<br/><small>Rooms/Actions/GetRoomsAction.php</small>")
+        src_features_rooms_actions_getroomsaction_getroo_72851f51("__invoke()<br/><small>Rooms/Actions/GetRoomsAction.php</small>")
     end
+    subgraph other_Auth_Actions_AuthLogoutAction_php_949f0d0b["Auth/Actions/AuthLogoutAction.php"]
+        src_features_auth_actions_authlogoutaction_authl_e8d89976("AuthLogoutAction<br/><small>Auth/Actions/AuthLogoutAction.php</small>")
+        src_features_auth_actions_authlogoutaction_authl_dec1b452("__invoke()<br/><small>Auth/Actions/AuthLogoutAction.php</small>")
+    end
+    src_controllers_authcontroller_authcontroller_107c490d("AuthController<br/><small>src/Controllers/AuthController.php</small>")
     src_core_httpexception_httpexception_d2a58ea0("HttpException<br/><small>src/Core/HttpException.php</small>")
     src_core_logger_logger_924578fe("Logger<br/><small>src/Core/Logger.php</small>")
-    src_models_provisionalbooking_provisionalbooking_4e7bb66e("ProvisionalBooking<br/><small>src/Models/ProvisionalBooking.php</small>")
     src_models_user_user_65b36526("User<br/><small>src/Models/User.php</small>")
+    src_services_sessionservice_sessionservice_8d982b3a("SessionService<br/><small>src/Services/SessionService.php</small>")
     src_services_bookingservice_d18feb5f("bookingService.ts")
-    src_pages_book_updatepricing_3ba0ac7a -->|调用| src_pages_book_selectroomcard_d53a9f19
-    src_pages_book_updatepricing_3ba0ac7a -->|调用| src_utils_helpers_daysbetween_14a5bfff
-    src_pages_book_updatepricing_3ba0ac7a -->|调用| src_utils_helpers_translatebeds_729f453b
-    src_pages_book_applyuserdata_0b753a4b -->|调用| src_pages_book_autofilluser_27b42b8f
-    src_controllers_authcontroller_authcontroller_107c490d -->|方法| src_controllers_authcontroller_authcontroller_bo_3012b970
-    src_controllers_authcontroller_authcontroller_107c490d -->|方法| src_controllers_authcontroller_authcontroller_ca_00f271ec
-    src_controllers_authcontroller_authcontroller_107c490d -->|方法| src_controllers_authcontroller_authcontroller_ge_6b566a4d
-    src_controllers_authcontroller_authcontroller_107c490d -->|方法| src_controllers_authcontroller_authcontroller_lo_f9469068
-    src_controllers_authcontroller_authcontroller_107c490d -->|方法| src_controllers_authcontroller_authcontroller_lo_2c6c901f
-    src_controllers_authcontroller_authcontroller_107c490d -->|方法| src_controllers_authcontroller_authcontroller_lo_0080438f
-    src_controllers_authcontroller_authcontroller_ge_6b566a4d -->|调用| src_controllers_authcontroller_authcontroller_bo_3012b970
-    src_controllers_authcontroller_authcontroller_ge_6b566a4d -->|调用| src_controllers_authcontroller_authcontroller_ca_00f271ec
-    src_controllers_authcontroller_authcontroller_ge_6b566a4d -->|调用| src_controllers_authcontroller_authcontroller_lo_2c6c901f
-    %% Omitted for readability: 1348 nodes, 0 edges
+    src_core_events_eventdispatcher_eventdispatcher_5cc94ba7 -->|方法| src_core_events_eventdispatcher_eventdispatcher_beeee754
+    src_core_events_eventdispatcher_eventdispatcher_5cc94ba7 -->|方法| src_core_events_eventdispatcher_eventdispatcher_720cfb93
+    src_core_events_eventdispatcher_eventdispatcher_5cc94ba7 -->|方法| src_core_events_eventdispatcher_eventdispatcher_c2df0f96
+    src_features_auth_actions_authlogoutaction_authl_e8d89976 -->|方法| src_features_auth_actions_authlogoutaction_authl_dec1b452
+    src_features_booking_actions_createbookingaction_6f00e7ca -->|方法| src_features_booking_actions_createbookingaction_82a1637d
+    src_features_booking_actions_createbookingaction_6f00e7ca -->|方法| src_features_booking_actions_createbookingaction_36dafd36
+    src_features_rooms_actions_getroomsaction_getroo_2e8b82bf -->|方法| src_features_rooms_actions_getroomsaction_getroo_67e0677f
+    src_features_rooms_actions_getroomsaction_getroo_2e8b82bf -->|方法| src_features_rooms_actions_getroomsaction_getroo_72851f51
+    %% Omitted for readability: 1457 nodes, 0 edges
+    class src_core_events_eventdispatcher_eventdispatcher_5cc94ba7 klass;
+    class src_core_events_eventdispatcher_eventdispatcher_beeee754 function;
+    class src_core_events_eventdispatcher_eventdispatcher_720cfb93 function;
+    class src_core_events_eventdispatcher_eventdispatcher_c2df0f96 function;
+    class src_features_booking_actions_createbookingaction_6f00e7ca klass;
+    class src_features_booking_actions_createbookingaction_82a1637d function;
+    class src_features_booking_actions_createbookingaction_36dafd36 function;
+    class src_features_rooms_actions_getroomsaction_getroo_2e8b82bf klass;
+    class src_features_rooms_actions_getroomsaction_getroo_67e0677f function;
+    class src_features_rooms_actions_getroomsaction_getroo_72851f51 function;
+    class src_features_auth_actions_authlogoutaction_authl_e8d89976 klass;
+    class src_features_auth_actions_authlogoutaction_authl_dec1b452 function;
     class src_controllers_authcontroller_authcontroller_107c490d klass;
-    class src_controllers_authcontroller_authcontroller_bo_3012b970 function;
-    class src_controllers_authcontroller_authcontroller_ca_00f271ec function;
-    class src_controllers_authcontroller_authcontroller_ge_6b566a4d function;
-    class src_controllers_authcontroller_authcontroller_lo_f9469068 function;
-    class src_controllers_authcontroller_authcontroller_lo_2c6c901f function;
-    class src_controllers_authcontroller_authcontroller_lo_0080438f function;
-    class src_pages_book_updatepricing_3ba0ac7a function;
-    class src_pages_book_selectroomcard_d53a9f19 function;
-    class src_pages_book_applyuserdata_0b753a4b function;
-    class src_pages_book_autofilluser_27b42b8f function;
-    class src_utils_helpers_daysbetween_14a5bfff function;
-    class src_utils_helpers_translatebeds_729f453b function;
     class src_core_httpexception_httpexception_d2a58ea0 klass;
     class src_core_logger_logger_924578fe klass;
-    class src_models_provisionalbooking_provisionalbooking_4e7bb66e klass;
     class src_models_user_user_65b36526 klass;
+    class src_services_sessionservice_sessionservice_8d982b3a klass;
     class src_services_bookingservice_d18feb5f module;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
@@ -5116,14 +5107,14 @@ flowchart LR
 <tr><td><code>references/core/taint_analysis.md</code></td><td>70 个节点</td></tr>
 <tr><td><code>references/languages/ruby.md</code></td><td>68 个节点</td></tr>
 <tr><td><code>references/languages/dotnet.md</code></td><td>57 个节点</td></tr>
+<tr><td><code>shadcn-ui/resources/component-catalog.md</code></td><td>55 个节点</td></tr>
 <tr><td><code>references/wooyun/info-disclosure.md</code></td><td>53 个节点</td></tr>
 <tr><td><code>.agents/BRAND.md</code></td><td>52 个节点</td></tr>
-<tr><td><code>references/wooyun/unauthorized-access.md</code></td><td>51 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x1051, 方法 x122, references x65, 导入 x47。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x1111, 方法 x142, references x85, 导入 x48。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -5134,17 +5125,17 @@ flowchart LR
   <div class="card">
     <h4>Graph</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>Nodes</td><td>5786</td></tr>
-      <tr><td>Edges</td><td>5980</td></tr>
+      <tr><td>Nodes</td><td>5968</td></tr>
+      <tr><td>Edges</td><td>6327</td></tr>
       <tr><td>Hyperedges</td><td>0</td></tr>
-      <tr><td>Communities</td><td>507</td></tr>
+      <tr><td>Communities</td><td>528</td></tr>
       <tr><td>Documented Sections</td><td>15</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Edge Confidence</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>EXTRACTED</td><td>5958</td></tr>
+      <tr><td>EXTRACTED</td><td>6305</td></tr>
       <tr><td>INFERRED</td><td>22</td></tr>
       <tr><td>AMBIGUOUS</td><td>0</td></tr>
     </table>
@@ -5153,7 +5144,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>usgar-redesign — Architecture Documentation</p>
-  <p>Generated: 2026-07-21 15:02 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-07-22 01:25 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->
