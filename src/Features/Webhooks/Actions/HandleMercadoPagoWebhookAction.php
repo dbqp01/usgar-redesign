@@ -142,8 +142,6 @@ class HandleMercadoPagoWebhookAction {
             }
             Logger::error('HandleMercadoPagoWebhookAction Exception al confirmar reserva: ' . $e->getMessage());
         }
-
-        exit(0);
     }
 
     private function sendEarlyResponse(): void {

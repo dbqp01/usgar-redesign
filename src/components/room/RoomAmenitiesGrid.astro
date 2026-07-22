@@ -1,6 +1,7 @@
 ---
 import type { ComponentProps } from "astro/types";
 import SVGIcons from "../icons/SVGIcons.astro";
+import { useTranslations } from "../../i18n/utils";
 import type { Locale } from "../../i18n/utils";
 
 type IconName = ComponentProps<typeof SVGIcons>["name"];
@@ -16,6 +17,7 @@ interface Props {
 }
 
 const { amenitiesMap, lang } = Astro.props;
+const t = useTranslations(lang);
 ---
 
 <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="room-amenities-grid">
@@ -30,7 +32,7 @@ const { amenitiesMap, lang } = Astro.props;
             {amenity.label[lang] || amenity.label.en || amenity.label.es}
           </h3>
           <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
-            {lang === "es" ? "Incluido sin costo extra" : lang === "fr" ? "Inclus sans frais" : lang === "pt" ? "Incluído sem custo extra" : "Included at no extra cost"}
+            {t('global.includedFree')}
           </p>
         </div>
       </div>

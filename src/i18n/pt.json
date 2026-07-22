@@ -313,5 +313,15 @@
     "loginError": "E-mail ou senha incorretos.",
     "emailExists": "Já existe uma conta com este e-mail.",
     "passwordTooShort": "A senha deve ter pelo menos 8 caracteres."
+  },
+  "global": {
+    "skipToContent": "Ir para o conteúdo principal",
+    "directions": "Como chegar",
+    "contactWhatsApp": "Contato via WhatsApp",
+    "assistance247": "Atendimento 24/7",
+    "elevatedExperience": "EXPERIÊNCIA COMPLETA",
+    "alsoIncluded": "Também incluído:",
+    "night": "noite",
+    "includedFree": "Incluído sem custo extra"
   }
 }

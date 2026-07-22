@@ -7,8 +7,11 @@ import recepcionImg from '../assets/hotel/hero-slide-recepcion.jpg';
 import { siteSettings } from '../data/settings';
 import type { Locale } from '../i18n/utils';
 
-const lang = (Astro.currentLocale || 'en') as Locale;
+interface Props {
+  lang: Locale;
+}
 
+const { lang } = Astro.props;
 const t = useTranslations(lang);
 ---
 
@@ -32,9 +35,7 @@ const t = useTranslations(lang);
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
           
           <div class="absolute bottom-10 left-10 right-10 text-white space-y-4">
-            <h3 class="font-display font-bold text-3xl sm:text-4xl text-secondary">
-              {lang === 'es' ? 'Atención 24/7' : lang === 'fr' ? 'Assistance 24/7' : lang === 'pt' ? 'Atendimento 24/7' : '24/7 Assistance'}
-            </h3>
+              {t('global.assistance247')}
             <p class="text-sm text-white/80 font-light leading-relaxed">
               {lang === 'es' 
                 ? 'Nuestro equipo bilingüe en recepción está listo las 24 horas para ayudarte con reservas, itinerarios a Machu Picchu y aclimatación.'
@@ -50,7 +51,7 @@ const t = useTranslations(lang);
               rel="noopener noreferrer"
               class="inline-block mt-4 text-xs font-body font-semibold tracking-wide uppercase border-b-2 border-secondary pb-1 hover:text-secondary transition-colors"
             >
-              {lang === 'es' ? 'Contactar por WhatsApp' : lang === 'fr' ? 'Contacter par WhatsApp' : lang === 'pt' ? 'Contato via WhatsApp' : 'Contact via WhatsApp'}
+              {t('global.contactWhatsApp')}
             </a>
           </div>
         </div>

@@ -15,3 +15,13 @@
 [2026-07-20 02:51:01] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
 [2026-07-20 02:51:01] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
 [2026-07-20 02:51:01] [ERROR] [Database Connection Error] Running in offline/mock/test mode: SQLSTATE[HY000] [1045] Access denied for user 'u941268346_usgar'@'179.6.34.181' (using password: YES)
+[2026-07-22 01:47:29] [WARNING] Database credentials or database name are not configured. Running in offline/mock/test mode.
+[2026-07-22 01:47:29] [WARNING] Database credentials or database name are not configured. Running in offline/mock/test mode.
+[2026-07-22 01:47:29] [WARNING] Database credentials or database name are not configured. Running in offline/mock/test mode.
+[2026-07-22 01:47:29] [WARNING] Database credentials or database name are not configured. Running in offline/mock/test mode.
+[2026-07-22 01:47:29] [WARNING] Database credentials or database name are not configured. Running in offline/mock/test mode.
+[2026-07-22 01:48:12] [WARNING] Database credentials or database name are not configured. Running in offline/mock/test mode.
+[2026-07-22 01:48:12] [WARNING] Database credentials or database name are not configured. Running in offline/mock/test mode.
+[2026-07-22 01:48:12] [WARNING] Database credentials or database name are not configured. Running in offline/mock/test mode.
+[2026-07-22 01:48:12] [WARNING] Database credentials or database name are not configured. Running in offline/mock/test mode.
+[2026-07-22 01:48:12] [WARNING] Database credentials or database name are not configured. Running in offline/mock/test mode.

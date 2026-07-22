@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import { siteSettings } from '../data/settings';
 import '../styles/global.css';
+import { useTranslations } from '../i18n/utils';
 import type { Locale } from '../i18n/utils';
 
 interface Props {
@@ -17,6 +18,7 @@ interface Props {
 }
 
 const currentLang = (Astro.currentLocale || 'en') as Locale;
+const t = useTranslations(currentLang);
 const {
   title,
   description = (siteSettings.siteDescription as Record<string, string>)[currentLang] || siteSettings.siteDescription.en,
@@ -26,7 +28,7 @@ const {
   preloadImage
 } = Astro.props;
 
-const siteBase = Astro.site ?? new URL('https://sanpedro.hotelesusgar.com');
+const siteBase = Astro.site ?? new URL('https://usgarhoteles.com');
 const canonicalURL = new URL(Astro.url.pathname, siteBase);
 
 // Build correct hreflang alternate URLs for all 4 supported locales
@@ -134,16 +136,33 @@ const localeMap: Record<Locale, string> = {
     <!-- Global Scroll Animations Observer -->
     <script>
       function initScrollAnimations() {
+        let delayCount = 0;
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
+              const target = entry.target as HTMLElement;
+              if (delayCount > 0) {
+                target.style.transitionDelay = `${delayCount * 0.15}s`;
+              }
+              
+              // Force browser repaint to ensure transition delay applies
+              void target.offsetWidth;
+              
+              target.classList.add('visible');
               observer.unobserve(entry.target);
+              
+              delayCount++;
             }
           });
+          
+          // Reset delay counter after a short grouping window
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(() => { delayCount = 0; }, 100);
         }, {
           threshold: 0.1,
-          rootMargin: "0px 0px 50px 0px"
+          rootMargin: "0px 0px -50px 0px"
         });
 
         document.querySelectorAll('.animate-on-scroll:not(.visible)').forEach(el => observer.observe(el));
@@ -155,7 +174,7 @@ const localeMap: Record<Locale, string> = {
   <body class="bg-surface-light dark:bg-surface-dark text-text-primary-light dark:text-text-primary-dark transition-colors duration-300 min-h-screen flex flex-col">
     <!-- Skip to content (accessibility) -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold">
-      {lang === 'es' ? 'Ir al contenido principal' : lang === 'fr' ? 'Aller au contenu principal' : lang === 'pt' ? 'Ir para o conteúdo principal' : 'Skip to main content'}
+      {t('global.skipToContent')}
     </a>
 
     <Navbar />

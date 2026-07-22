@@ -313,5 +313,15 @@
     "loginError": "Invalid email or password.",
     "emailExists": "An account with this email already exists.",
     "passwordTooShort": "Password must be at least 8 characters."
+  },
+  "global": {
+    "skipToContent": "Skip to main content",
+    "directions": "Directions",
+    "contactWhatsApp": "Contact via WhatsApp",
+    "assistance247": "24/7 Assistance",
+    "elevatedExperience": "ELEVATED EXPERIENCE",
+    "alsoIncluded": "Also included:",
+    "night": "night",
+    "includedFree": "Included at no extra cost"
   }
 }

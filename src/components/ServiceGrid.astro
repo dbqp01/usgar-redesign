@@ -70,7 +70,7 @@ const highlights: Array<{
         {t('services.sectionLabel')}
       </span>
       <h2 class="font-display text-4xl sm:text-5xl lg:text-7xl text-text-primary-light dark:text-white leading-tight">
-        {lang === 'es' ? 'EXPERIENCIA COMPLETA' : lang === 'fr' ? 'EXPÉRIENCE COMPLÈTE' : lang === 'pt' ? 'EXPERIÊNCIA COMPLETA' : 'ELEVATED EXPERIENCE'}
+        {t('global.elevatedExperience')}
       </h2>
       <p class="mt-4 text-base sm:text-lg text-text-secondary-light dark:text-text-secondary-dark font-body font-light">
         {lang === 'es' 
@@ -125,7 +125,7 @@ const highlights: Array<{
         <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-secondary/10 to-transparent rounded-bl-full transform translate-x-8 -translate-y-8 transition-transform duration-500 group-hover:translate-x-0 group-hover:-translate-y-0"></div>
         
         <h3 class="font-display text-2xl font-bold text-text-primary-light dark:text-white mb-6">
-          {lang === 'es' ? 'También incluimos:' : lang === 'fr' ? 'Aussi inclus :' : lang === 'pt' ? 'Também incluído:' : 'Also included:'}
+          {t('global.alsoIncluded')}
         </h3>
         <div class="grid grid-cols-2 lg:grid-cols-6 gap-y-4 gap-x-6 relative z-10">
           {services.filter(s => !['breakfast', 'oxygen', 'tours'].includes(s.id)).slice(0, 6).map(service => (
