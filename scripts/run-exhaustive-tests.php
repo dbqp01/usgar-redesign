@@ -24,15 +24,15 @@ echo "==========================================================" . PHP_EOL;
 $failedTests = 0;
 $passedTests = 0;
 
-function assertTest(string $description, bool $condition, ?string $errorMessage = null) {
-    global $failedTests, $passedTests;
+function assertTest(string $description, bool $condition, $debugData = null): void {
+    global $passedTests, $failedTests;
     if ($condition) {
         echo "   ✅ PASS: $description" . PHP_EOL;
         $passedTests++;
     } else {
         echo "   ❌ FAIL: $description" . PHP_EOL;
-        if ($errorMessage) {
-            echo "      👉 $errorMessage" . PHP_EOL;
+        if ($debugData !== null) {
+            echo "      DEBUG DATA: " . print_r($debugData, true) . PHP_EOL;
         }
         $failedTests++;
     }
@@ -172,7 +172,7 @@ assertTest("Endpoint GET /api/rooms con rango de fechas invertido retorna HTTP 4
 
 // Test /api/booking-status sin cart_id (debe fallar)
 $bookingStatusInvalidRes = httpGet("http://$host:$port/api/booking-status");
-assertTest("Endpoint GET /api/booking-status sin cart_id retorna HTTP 400", $bookingStatusInvalidRes['status'] === 400);
+assertTest("Endpoint GET /api/booking-status sin cart_id retorna HTTP 400", $bookingStatusInvalidRes['status'] === 400, $bookingStatusInvalidRes);
 
 if (is_resource($process)) {
     if (isset($pipes[0]) && is_resource($pipes[0])) {

@@ -12,7 +12,7 @@ use App\Core\Database;
  * Repositorio de reservas provisionales (Holds temporales de 15 minutos).
  */
 class ProvisionalBookingRepository {
-    private PDO $pdo;
+    private ?PDO $pdo;
 
     public function __construct(?PDO $pdo = null) {
         $this->pdo = $pdo ?? Database::getInstance()->getConnection();
