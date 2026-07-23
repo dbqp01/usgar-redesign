@@ -21,12 +21,28 @@
   "priceRange": "$$",
   "siteDescription_es": "USGAR Hotels — Hotel boutique en San Pedro, Cusco. Tu puerta de entrada a Machu Picchu y el Valle Sagrado.",
   "siteDescription_en": "USGAR Hotels — Boutique hotel in San Pedro, Cusco. Your gateway to Machu Picchu and the Sacred Valley.",
-  "siteDescription_fr": "USGAR Hotels — Hôtel boutique à San Pedro, Cusco. Votre porte d'entrée vers le Machu Picchu et la Vallée Sacrée.",
+  "siteDescription_fr": "USGAR Hotels — Hotel boutique a San Pedro, Cusco. Votre porte d'entree vers le Machu Picchu et la Vallee Sacree.",
   "siteDescription_pt": "USGAR Hotels — Hotel boutique em San Pedro, Cusco. Sua porta de entrada para Machu Picchu e o Vale Sagrado.",
   "socialLinks": [
-    { "platform": "instagram", "url": "https://instagram.com/usgarhotels", "label": "Instagram" },
-    { "platform": "facebook", "url": "https://facebook.com/usgarhotels", "label": "Facebook" },
-    { "platform": "tripadvisor", "url": "https://tripadvisor.com/usgarhotels", "label": "TripAdvisor" },
-    { "platform": "booking", "url": "https://booking.com/usgarhotels", "label": "Booking.com" }
+    {
+      "platform": "instagram",
+      "url": "https://instagram.com/usgarhotels",
+      "label": "Instagram"
+    },
+    {
+      "platform": "facebook",
+      "url": "https://facebook.com/usgarhotels",
+      "label": "Facebook"
+    },
+    {
+      "platform": "tripadvisor",
+      "url": "https://tripadvisor.com/usgarhotels",
+      "label": "TripAdvisor"
+    },
+    {
+      "platform": "booking",
+      "url": "https://booking.com/usgarhotels",
+      "label": "Booking.com"
+    }
   ]
 }

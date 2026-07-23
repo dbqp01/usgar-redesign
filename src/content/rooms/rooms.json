@@ -3,18 +3,25 @@
     {
       "id": "doble-superior",
       "slug": "doble-superior",
-      "name_es": "Habitación Doble Superior",
+      "name_es": "Habitacion Doble Superior",
       "name_en": "Double Superior Room",
-      "name_fr": "Chambre Double Supérieure",
+      "name_fr": "Chambre Double Superieure",
       "name_pt": "Quarto Duplo Superior",
-      "description_es": "Amplia habitación con dos cómodas camas dobles con cálida iluminación ambiental. Perfecta para amigos o familias viajando juntos.",
+      "description_es": "Amplia habitacion con dos comodas camas dobles con calida iluminacion ambiental. Perfecta para amigos o familias viajando juntos.",
       "description_en": "Spacious room with two comfortable double beds with warm ambient lighting. Perfect for friends or families traveling together.",
-      "description_fr": "Chambre spacieuse avec deux lits doubles confortables et un éclairage d'ambiance chaleureux. Parfaite pour des amis ou des familles voyageant ensemble.",
-      "description_pt": "Quarto amplo com duas confortáveis camas de casal e iluminação ambiente acolhedora. Perfeito para amigos ou famílias viajando juntos.",
+      "description_fr": "Chambre spacieuse avec deux lits doubles confortables et un eclairage d'ambiance chaleureux. Parfaite pour des amis ou des familles voyageant ensemble.",
+      "description_pt": "Quarto amplo com duas confortaveis camas de casal e iluminacao ambiente acolhedora. Perfeito para amigos ou familias viajando juntos.",
       "maxGuests": 4,
       "beds": "2 double beds",
       "pricePerNight": 90,
-      "amenities": ["wifi", "breakfast", "hot_water", "heating", "tv", "laundry"],
+      "amenities": [
+        "wifi",
+        "breakfast",
+        "hot_water",
+        "heating",
+        "tv",
+        "laundry"
+      ],
       "images": [
         "/assets/rooms/doble-superior/01-doble.jpg",
         "/assets/rooms/doble-superior/02-doble.jpg",
@@ -24,29 +31,66 @@
       "photoFolder": "doble-superior",
       "hasVideoTour": true,
       "amenityLabels": {
-        "wifi": { "es": "Wi-Fi de alta velocidad gratis", "en": "Free High-Speed Wi-Fi", "fr": "Wi-Fi haut débit gratuit", "pt": "Wi-Fi de alta velocidade grátis" },
-        "breakfast": { "es": "Desayuno buffet incluido", "en": "Breakfast Included", "fr": "Petit-déjeuner buffet inclus", "pt": "Café da manhã buffet incluído" },
-        "hot_water": { "es": "Agua caliente 24h", "en": "24h Hot Water", "fr": "Eau chaude 24h/24", "pt": "Água quente 24h" },
-        "heating": { "es": "Calefacción central", "en": "Heating System", "fr": "Chauffage", "pt": "Aquecimento central" },
-        "tv": { "es": "TV por cable", "en": "Cable TV", "fr": "TV par câble", "pt": "TV a cabo" },
-        "laundry": { "es": "Servicio de lavandería", "en": "Laundry Service", "fr": "Service de blanchisserie", "pt": "Serviço de lavanderia" }
+        "wifi": {
+          "es": "Wi-Fi de alta velocidad gratis",
+          "en": "Free High-Speed Wi-Fi",
+          "fr": "Wi-Fi haut debit gratuit",
+          "pt": "Wi-Fi de alta velocidade gratis"
+        },
+        "breakfast": {
+          "es": "Desayuno buffet incluido",
+          "en": "Breakfast Included",
+          "fr": "Petit-dejeuner buffet inclus",
+          "pt": "Cafe da manha buffet incluido"
+        },
+        "hot_water": {
+          "es": "Agua caliente 24h",
+          "en": "24h Hot Water",
+          "fr": "Eau chaude 24h/24",
+          "pt": "Agua quente 24h"
+        },
+        "heating": {
+          "es": "Calefaccion central",
+          "en": "Heating System",
+          "fr": "Chauffage",
+          "pt": "Aquecimento central"
+        },
+        "tv": {
+          "es": "TV por cable",
+          "en": "Cable TV",
+          "fr": "TV par cable",
+          "pt": "TV a cabo"
+        },
+        "laundry": {
+          "es": "Servicio de lavanderia",
+          "en": "Laundry Service",
+          "fr": "Service de blanchisserie",
+          "pt": "Servico de lavanderia"
+        }
       }
     },
     {
       "id": "matrimonial",
       "slug": "matrimonial",
-      "name_es": "Habitación Matrimonial Superior",
+      "name_es": "Habitacion Matrimonial Superior",
       "name_en": "Superior Matrimonial Room",
-      "name_fr": "Chambre Matrimoniale Supérieure",
+      "name_fr": "Chambre Matrimoniale Superieure",
       "name_pt": "Quarto Matrimonial Superior",
-      "description_es": "Refugio romántico con cama king-size, textiles artesanales y atmósfera acogedora. Ideal para parejas explorando las maravillas de Cusco.",
+      "description_es": "Refugio romantico con cama king-size, textiles artesanales y atmosfera acogedora. Ideal para parejas explorando las maravillas de Cusco.",
       "description_en": "Romantic retreat featuring a king-size bed, artisan textiles, and a cozy atmosphere. Ideal for couples exploring the wonders of Cusco.",
-      "description_fr": "Refuge romantique doté d'un lit king-size, de textiles artisanaux et d'une atmosphère chaleureuse. Idéal pour les couples explorant Cusco.",
-      "description_pt": "Refúgio romântico com cama king-size, tecidos artesanais e atmosfera acolhedora. Ideal para casais explorando as maravilhas de Cusco.",
+      "description_fr": "Refuge romantique dote d'un lit king-size, de textiles artisanaux et d'une atmosphere chaleureuse. Ideal pour les couples explorant Cusco.",
+      "description_pt": "Refugio romantico com cama king-size, tecidos artesanais e atmosfera acolhedora. Ideal para casais explorando as maravilhas de Cusco.",
       "maxGuests": 3,
       "beds": "1 king bed",
       "pricePerNight": 90,
-      "amenities": ["wifi", "breakfast", "hot_water", "heating", "tv", "laundry"],
+      "amenities": [
+        "wifi",
+        "breakfast",
+        "hot_water",
+        "heating",
+        "tv",
+        "laundry"
+      ],
       "images": [
         "/assets/rooms/matrimonial/01-matr-cama.jpg",
         "/assets/rooms/matrimonial/02-matr-mural.jpg",
@@ -56,29 +100,66 @@
       "photoFolder": "matrimonial",
       "hasVideoTour": true,
       "amenityLabels": {
-        "wifi": { "es": "Wi-Fi de alta velocidad gratis", "en": "Free High-Speed Wi-Fi", "fr": "Wi-Fi haut débit gratuit", "pt": "Wi-Fi de alta velocidade grátis" },
-        "breakfast": { "es": "Desayuno buffet incluido", "en": "Breakfast Included", "fr": "Petit-déjeuner buffet inclus", "pt": "Café da manhã buffet incluído" },
-        "hot_water": { "es": "Agua caliente 24h", "en": "24h Hot Water", "fr": "Eau chaude 24h/24", "pt": "Água quente 24h" },
-        "heating": { "es": "Calefacción central", "en": "Heating System", "fr": "Chauffage", "pt": "Aquecimento central" },
-        "tv": { "es": "TV por cable", "en": "Cable TV", "fr": "TV par câble", "pt": "TV a cabo" },
-        "laundry": { "es": "Servicio de lavandería", "en": "Laundry Service", "fr": "Service de blanchisserie", "pt": "Serviço de lavanderia" }
+        "wifi": {
+          "es": "Wi-Fi de alta velocidad gratis",
+          "en": "Free High-Speed Wi-Fi",
+          "fr": "Wi-Fi haut debit gratuit",
+          "pt": "Wi-Fi de alta velocidade gratis"
+        },
+        "breakfast": {
+          "es": "Desayuno buffet incluido",
+          "en": "Breakfast Included",
+          "fr": "Petit-dejeuner buffet inclus",
+          "pt": "Cafe da manha buffet incluido"
+        },
+        "hot_water": {
+          "es": "Agua caliente 24h",
+          "en": "24h Hot Water",
+          "fr": "Eau chaude 24h/24",
+          "pt": "Agua quente 24h"
+        },
+        "heating": {
+          "es": "Calefaccion central",
+          "en": "Heating System",
+          "fr": "Chauffage",
+          "pt": "Aquecimento central"
+        },
+        "tv": {
+          "es": "TV por cable",
+          "en": "Cable TV",
+          "fr": "TV par cable",
+          "pt": "TV a cabo"
+        },
+        "laundry": {
+          "es": "Servicio de lavanderia",
+          "en": "Laundry Service",
+          "fr": "Service de blanchisserie",
+          "pt": "Servico de lavanderia"
+        }
       }
     },
     {
       "id": "familiar-superior",
       "slug": "familiar-superior",
-      "name_es": "Habitación Familiar Superior",
+      "name_es": "Habitacion Familiar Superior",
       "name_en": "Family Superior Room",
-      "name_fr": "Chambre Familiale Supérieure",
+      "name_fr": "Chambre Familiale Superieure",
       "name_pt": "Quarto Familiar Superior",
-      "description_es": "Nuestra habitación más amplia, diseñada para familias o grupo de amigos. Cuenta con 3 camas dobles y una individual, espacio para todos después de un día de aventuras.",
+      "description_es": "Nuestra habitacion mas amplia, disenada para familias o grupo de amigos. Cuenta con 3 camas dobles y una individual, espacio para todos despues de un dia de aventuras.",
       "description_en": "Our most spacious room, designed for families or a group of friends. Features 3 double beds and one single bed, with room for everyone to relax after a day of adventures.",
-      "description_fr": "Notre chambre la plus spacieuse, conçue pour les familles ou groupes d'amis. Elle comprend 3 lits doubles et 1 lit simple pour se détendre après une journée d'aventures.",
-      "description_pt": "Nosso quarto mais amplo, projetado para famílias ou grupos de amigos. Possui 3 camas de casal e 1 cama de solteiro, com espaço para todos relaxarem após um dia de aventuras.",
+      "description_fr": "Notre chambre la plus spacieuse, concue pour les familles ou groupes d'amis. Elle comprend 3 lits doubles et 1 lit simple pour se detendre apres une journee d'aventures.",
+      "description_pt": "Nosso quarto mais amplo, projetado para familias ou grupos de amigos. Possui 3 camas de casal e 1 cama de solteiro, com espaco para todos relaxarem apos um dia de aventuras.",
       "maxGuests": 7,
       "beds": "3 double beds + 1 single bed",
       "pricePerNight": 150,
-      "amenities": ["wifi", "breakfast", "hot_water", "heating", "tv", "laundry"],
+      "amenities": [
+        "wifi",
+        "breakfast",
+        "hot_water",
+        "heating",
+        "tv",
+        "laundry"
+      ],
       "images": [
         "/assets/rooms/familiar-superior/01-familiar.jpg",
         "/assets/rooms/familiar-superior/02-familiar.jpg"
@@ -86,29 +167,65 @@
       "photoFolder": "familiar-superior",
       "hasVideoTour": true,
       "amenityLabels": {
-        "wifi": { "es": "Wi-Fi de alta velocidad gratis", "en": "Free High-Speed Wi-Fi", "fr": "Wi-Fi haut débit gratuit", "pt": "Wi-Fi de alta velocidade grátis" },
-        "breakfast": { "es": "Desayuno buffet incluido", "en": "Breakfast Included", "fr": "Petit-déjeuner buffet inclus", "pt": "Café da manhã buffet incluído" },
-        "hot_water": { "es": "Agua caliente 24h", "en": "24h Hot Water", "fr": "Eau chaude 24h/24", "pt": "Água quente 24h" },
-        "heating": { "es": "Calefacción central", "en": "Heating System", "fr": "Chauffage", "pt": "Aquecimento central" },
-        "tv": { "es": "TV por cable", "en": "Cable TV", "fr": "TV par câble", "pt": "TV a cabo" },
-        "laundry": { "es": "Servicio de lavandería", "en": "Laundry Service", "fr": "Service de blanchisserie", "pt": "Serviço de lavanderia" }
+        "wifi": {
+          "es": "Wi-Fi de alta velocidad gratis",
+          "en": "Free High-Speed Wi-Fi",
+          "fr": "Wi-Fi haut debit gratuit",
+          "pt": "Wi-Fi de alta velocidade gratis"
+        },
+        "breakfast": {
+          "es": "Desayuno buffet incluido",
+          "en": "Breakfast Included",
+          "fr": "Petit-dejeuner buffet inclus",
+          "pt": "Cafe da manha buffet incluido"
+        },
+        "hot_water": {
+          "es": "Agua caliente 24h",
+          "en": "24h Hot Water",
+          "fr": "Eau chaude 24h/24",
+          "pt": "Agua quente 24h"
+        },
+        "heating": {
+          "es": "Calefaccion central",
+          "en": "Heating System",
+          "fr": "Chauffage",
+          "pt": "Aquecimento central"
+        },
+        "tv": {
+          "es": "TV por cable",
+          "en": "Cable TV",
+          "fr": "TV par cable",
+          "pt": "TV a cabo"
+        },
+        "laundry": {
+          "es": "Servicio de lavanderia",
+          "en": "Laundry Service",
+          "fr": "Service de blanchisserie",
+          "pt": "Servico de lavanderia"
+        }
       }
     },
     {
       "id": "triple-standar",
       "slug": "triple-standar",
-      "name_es": "Habitación Triple Estándar",
+      "name_es": "Habitacion Triple Estandar",
       "name_en": "Triple Standard Room",
       "name_fr": "Chambre Triple Standard",
-      "name_pt": "Quarto Triplo Padrão",
-      "description_es": "Habitación cómoda y práctica con tres camas individuales. Excelente valor para grupos pequeños que exploran Cusco.",
+      "name_pt": "Quarto Triplo Padrao",
+      "description_es": "Habitacion comoda y practica con tres camas individuales. Excelente valor para grupos pequenos que exploran Cusco.",
       "description_en": "Comfortable and practical room with three single beds. Great value for small groups wanting to explore Cusco on a budget.",
-      "description_fr": "Chambre confortable et pratique avec trois lits simples. Excellent rapport qualité-prix pour les petits groupes explorant Cusco.",
-      "description_pt": "Quarto confortável e prático com três camas de solteiro. Excelente custo-benefício para pequenos grupos explorando Cusco.",
+      "description_fr": "Chambre confortable et pratique avec trois lits simples. Excellent rapport qualite-prix pour les petits groupes explorant Cusco.",
+      "description_pt": "Quarto confortavel e pratico com tres camas de solteiro. Excelente custo-beneficio para pequenos grupos explorando Cusco.",
       "maxGuests": 3,
       "beds": "3 single beds",
       "pricePerNight": 120,
-      "amenities": ["wifi", "breakfast", "hot_water", "heating", "tv"],
+      "amenities": [
+        "wifi",
+        "breakfast",
+        "hot_water",
+        "heating",
+        "tv"
+      ],
       "images": [
         "/assets/rooms/triple-standar/01-triple.jpg",
         "/assets/rooms/triple-standar/02-triple.jpg"
@@ -116,11 +233,36 @@
       "photoFolder": "triple-standar",
       "hasVideoTour": true,
       "amenityLabels": {
-        "wifi": { "es": "Wi-Fi de alta velocidad gratis", "en": "Free High-Speed Wi-Fi", "fr": "Wi-Fi haut débit gratuit", "pt": "Wi-Fi de alta velocidade grátis" },
-        "breakfast": { "es": "Desayuno buffet incluido", "en": "Breakfast Included", "fr": "Petit-déjeuner buffet inclus", "pt": "Café da manhã buffet incluído" },
-        "hot_water": { "es": "Agua caliente 24h", "en": "24h Hot Water", "fr": "Eau chaude 24h/24", "pt": "Água quente 24h" },
-        "heating": { "es": "Calefacción central", "en": "Heating System", "fr": "Chauffage", "pt": "Aquecimento central" },
-        "tv": { "es": "TV por cable", "en": "Cable TV", "fr": "TV par câble", "pt": "TV a cabo" }
+        "wifi": {
+          "es": "Wi-Fi de alta velocidad gratis",
+          "en": "Free High-Speed Wi-Fi",
+          "fr": "Wi-Fi haut debit gratuit",
+          "pt": "Wi-Fi de alta velocidade gratis"
+        },
+        "breakfast": {
+          "es": "Desayuno buffet incluido",
+          "en": "Breakfast Included",
+          "fr": "Petit-dejeuner buffet inclus",
+          "pt": "Cafe da manha buffet incluido"
+        },
+        "hot_water": {
+          "es": "Agua caliente 24h",
+          "en": "24h Hot Water",
+          "fr": "Eau chaude 24h/24",
+          "pt": "Agua quente 24h"
+        },
+        "heating": {
+          "es": "Calefaccion central",
+          "en": "Heating System",
+          "fr": "Chauffage",
+          "pt": "Aquecimento central"
+        },
+        "tv": {
+          "es": "TV por cable",
+          "en": "Cable TV",
+          "fr": "TV par cable",
+          "pt": "TV a cabo"
+        }
       }
     }
   ]

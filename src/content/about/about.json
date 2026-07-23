@@ -1,100 +1,100 @@
 {
   "title_es": "Sobre Nosotros",
   "title_en": "About Us",
-  "title_fr": "À Propos de Nous",
-  "title_pt": "Sobre Nós",
-  "purpose_es": "Crear experiencias memorables que permitan a cada viajero descubrir la esencia de Cusco, brindando un servicio cálido, personalizado y de excelencia que haga de cada estadía un recuerdo inolvidable.",
+  "title_fr": "A Propos de Nous",
+  "title_pt": "Sobre Nos",
+  "purpose_es": "Crear experiencias memorables que permitan a cada viajero descubrir la esencia de Cusco, brindando un servicio calido, personalizado y de excelencia que haga de cada estadia un recuerdo inolvidable.",
   "purpose_en": "Create memorable experiences that allow each traveler to discover the essence of Cusco, providing a warm, personalized and excellent service that makes each stay an unforgettable memory.",
-  "purpose_fr": "Créer des expériences mémorables qui permettent à chaque voyageur de découvrir l'essence de Cusco, en offrant un service chaleureux, personnalisé et d'excellence qui fait de chaque séjour un souvenir inoubliable.",
-  "purpose_pt": "Criar experiências memoráveis que permitam a cada viajante descobrir a essência de Cusco, oferecendo um serviço acolhedor, personalizado e de excelência que torne cada estadia uma lembrança inesquecível.",
-  "mission_es": "Brindar una experiencia de hospedaje única en el corazón de Cusco, ofreciendo un servicio personalizado, cálido y de alta calidad que combine confort, hospitalidad y la riqueza de la cultura local. Nos comprometemos a superar las expectativas de nuestros huéspedes mediante una atención excepcional, un equipo humano apasionado y prácticas de turismo sostenible que generen recuerdos inolvidables.",
+  "purpose_fr": "Creer des experiences memorables qui permettent a chaque voyageur de decouvrir l'essence de Cusco, en offrant un service chaleureux, personnalise et d'excellence qui fait de chaque sejour un souvenir inoubliable.",
+  "purpose_pt": "Criar experiencias memoraveis que permitam a cada viajante descobrir a essencia de Cusco, oferecendo um servico acolhedor, personalizado e de excelencia que torne cada estadia uma lembranca inesquecivel.",
+  "mission_es": "Brindar una experiencia de hospedaje unica en el corazon de Cusco, ofreciendo un servicio personalizado, calido y de alta calidad que combine confort, hospitalidad y la riqueza de la cultura local. Nos comprometemos a superar las expectativas de nuestros huespedes mediante una atencion excepcional, un equipo humano apasionado y practicas de turismo sostenible que generen recuerdos inolvidables.",
   "mission_en": "Provide a unique lodging experience in the heart of Cusco, offering a personalized, warm and high quality service that combines comfort, hospitality and the richness of local culture. We are committed to exceeding our guests' expectations through exceptional attention, a passionate human team and sustainable tourism practices that generate unforgettable memories.",
-  "mission_fr": "Offrir une expérience d'hébergement unique au cœur de Cusco, en proposant un service personnalisé, chaleureux et de haute qualité qui associe confort, hospitalité et richesse de la culture locale. Nous nous engageons à dépasser les attentes de nos clients par une attention exceptionnelle, une équipe passionnée et des pratiques de tourisme durable qui créent des souvenirs inoubliables.",
-  "mission_pt": "Proporcionar uma experiência de hospedagem única no coração de Cusco, oferecendo um serviço personalizado, acolhedor e de alta qualidade que combina conforto, hospitalidade e a riqueza da cultura local. Comprometemo-nos a superar as expectativas dos nossos hóspedes através de um atendimento excepcional, uma equipe apaixonada e práticas de turismo sustentável que gerem memórias inesquecíveis.",
-  "vision_es": "Ser el hotel referente de Cusco, manteniendo la esencia de nuestra cultura. Aspiramos a ser la primera elección de los viajeros que buscan excelencia, calidez y un servicio personalizado, distinguiéndonos por nuestra hospitalidad, innovación y compromiso con la sostenibilidad.",
+  "mission_fr": "Offrir une experience d'hebergement unique au cœur de Cusco, en proposant un service personnalise, chaleureux et de haute qualite qui associe confort, hospitalite et richesse de la culture locale. Nous nous engageons a depasser les attentes de nos clients par une attention exceptionnelle, une equipe passionnee et des pratiques de tourisme durable qui creent des souvenirs inoubliables.",
+  "mission_pt": "Proporcionar uma experiencia de hospedagem unica no coracao de Cusco, oferecendo um servico personalizado, acolhedor e de alta qualidade que combina conforto, hospitalidade e a riqueza da cultura local. Comprometemo-nos a superar as expectativas dos nossos hospedes atraves de um atendimento excepcional, uma equipe apaixonada e praticas de turismo sustentavel que gerem memorias inesqueciveis.",
+  "vision_es": "Ser el hotel referente de Cusco, manteniendo la esencia de nuestra cultura. Aspiramos a ser la primera eleccion de los viajeros que buscan excelencia, calidez y un servicio personalizado, distinguiendonos por nuestra hospitalidad, innovacion y compromiso con la sostenibilidad.",
   "vision_en": "To be the benchmark hotel in Cusco, maintaining the essence of our culture. We aspire to be the first choice of travelers seeking excellence, warmth and personalized service, distinguishing ourselves by our hospitality, innovation and commitment to sustainability.",
-  "vision_fr": "Être l'hôtel de référence à Cusco, en préservant l'essence de notre culture. Nous aspirons à être le premier choix des voyageurs en quête d'excellence, de chaleur et d'un service personnalisé, en nous distinguant par notre hospitalité, notre innovation et notre engagement envers la durabilité.",
-  "vision_pt": "Ser o hotel de referência em Cusco, mantendo a essência da nossa cultura. Aspiramos ser a primeira escolha dos viajantes que buscam excelência, acolhimento e serviço personalizado, destacando-nos pela nossa hospitalidade, inovação e compromisso com a sustentabilidade.",
+  "vision_fr": "Etre l'hotel de reference a Cusco, en preservant l'essence de notre culture. Nous aspirons a etre le premier choix des voyageurs en quete d'excellence, de chaleur et d'un service personnalise, en nous distinguant par notre hospitalite, notre innovation et notre engagement envers la durabilite.",
+  "vision_pt": "Ser o hotel de referencia em Cusco, mantendo a essencia da nossa cultura. Aspiramos ser a primeira escolha dos viajantes que buscam excelencia, acolhimento e servico personalizado, destacando-nos pela nossa hospitalidade, inovacao e compromisso com a sustentabilidade.",
   "values": [
     {
       "title_es": "Hospitalidad",
       "title_en": "Hospitality",
-      "title_fr": "Hospitalité",
+      "title_fr": "Hospitalite",
       "title_pt": "Hospitalidade",
-      "description_es": "Recibimos a cada huésped con calidez, amabilidad y un trato cercano, haciendo que se sienta como en casa desde su llegada.",
+      "description_es": "Recibimos a cada huesped con calidez, amabilidad y un trato cercano, haciendo que se sienta como en casa desde su llegada.",
       "description_en": "We receive each guest with warmth, kindness and a close treatment, making them feel at home from their arrival.",
-      "description_fr": "Nous accueillons chaque client avec chaleur et bienveillance pour qu'il se sente chez lui dès son arrivée.",
-      "description_pt": "Recebemos cada hóspede com carinho, gentileza e proximidade, fazendo com que se sinta em casa desde a sua chegada."
+      "description_fr": "Nous accueillons chaque client avec chaleur et bienveillance pour qu'il se sente chez lui des son arrivee.",
+      "description_pt": "Recebemos cada hospede com carinho, gentileza e proximidade, fazendo com que se sinta em casa desde a sua chegada."
     },
     {
       "title_es": "Excelencia",
       "title_en": "Excellence",
       "title_fr": "Excellence",
-      "title_pt": "Excelência",
-      "description_es": "Buscamos la mejora continua para ofrecer un servicio de alta calidad que supere las expectativas de nuestros huéspedes.",
+      "title_pt": "Excelencia",
+      "description_es": "Buscamos la mejora continua para ofrecer un servicio de alta calidad que supere las expectativas de nuestros huespedes.",
       "description_en": "We seek continuous improvement to offer a high-quality service that exceeds our guests' expectations.",
-      "description_fr": "Nous visons l'amélioration continue afin d'offrir un service haut de gamme qui dépasse les attentes de nos clients.",
-      "description_pt": "Buscamos a melhoria contínua para oferecer um serviço de alta qualidade que supere as expectativas dos nossos hóspedes."
+      "description_fr": "Nous visons l'amelioration continue afin d'offrir un service haut de gamme qui depasse les attentes de nos clients.",
+      "description_pt": "Buscamos a melhoria continua para oferecer um servico de alta qualidade que supere as expectativas dos nossos hospedes."
     },
     {
       "title_es": "Autenticidad",
       "title_en": "Authenticity",
-      "title_fr": "Authenticité",
+      "title_fr": "Authenticite",
       "title_pt": "Autenticidade",
-      "description_es": "Compartimos la riqueza cultural de Cusco a través de experiencias genuinas que conectan a nuestros visitantes con la identidad local.",
+      "description_es": "Compartimos la riqueza cultural de Cusco a traves de experiencias genuinas que conectan a nuestros visitantes con la identidad local.",
       "description_en": "We share the cultural richness of Cusco through genuine experiences that connect our visitors with local identity.",
-      "description_fr": "Nous partageons la richesse culturelle de Cusco à travers des expériences authentiques reliant nos visiteurs à l'identité locale.",
-      "description_pt": "Compartilhamos a riqueza cultural de Cusco por meio de experiências genuínas que conectam nossos visitantes à identidade local."
+      "description_fr": "Nous partageons la richesse culturelle de Cusco a travers des experiences authentiques reliant nos visiteurs a l'identite locale.",
+      "description_pt": "Compartilhamos a riqueza cultural de Cusco por meio de experiencias genuinas que conectam nossos visitantes a identidade local."
     },
     {
       "title_es": "Respeto",
       "title_en": "Respect",
       "title_fr": "Respect",
       "title_pt": "Respeito",
-      "description_es": "Actuamos con integridad y consideración hacia nuestros huéspedes, colaboradores, proveedores, la comunidad y el medio ambiente.",
+      "description_es": "Actuamos con integridad y consideracion hacia nuestros huespedes, colaboradores, proveedores, la comunidad y el medio ambiente.",
       "description_en": "We act with integrity and consideration towards our guests, collaborators, suppliers, the community and the environment.",
-      "description_fr": "Nous agissons avec intégrité et considération envers nos clients, collaborateurs, partenaires, la communauté et l'environnement.",
-      "description_pt": "Atuamos com integridade e consideração com nossos hóspedes, colaboradores, fornecedores, a comunidade e o meio ambiente."
+      "description_fr": "Nous agissons avec integrite et consideration envers nos clients, collaborateurs, partenaires, la communaute et l'environnement.",
+      "description_pt": "Atuamos com integridade e consideracao com nossos hospedes, colaboradores, fornecedores, a comunidade e o meio ambiente."
     },
     {
       "title_es": "Compromiso",
       "title_en": "Commitment",
       "title_fr": "Engagement",
       "title_pt": "Compromisso",
-      "description_es": "Trabajamos con responsabilidad, dedicación y pasión para garantizar una experiencia memorable en cada estancia.",
+      "description_es": "Trabajamos con responsabilidad, dedicacion y pasion para garantizar una experiencia memorable en cada estancia.",
       "description_en": "We work with responsibility, dedication and passion to guarantee a memorable experience in each stay.",
-      "description_fr": "Nous travaillons avec responsabilité, dévouement et passion pour garantir un séjour mémorable.",
-      "description_pt": "Trabalhamos com responsabilidade, dedicação e paixão para garantir uma experiência memorável em cada estadia."
+      "description_fr": "Nous travaillons avec responsabilite, devouement et passion pour garantir un sejour memorable.",
+      "description_pt": "Trabalhamos com responsabilidade, dedicacao e paixao para garantir uma experiencia memoravel em cada estadia."
     },
     {
       "title_es": "Sostenibilidad",
       "title_en": "Sustainability",
-      "title_fr": "Durabilité",
+      "title_fr": "Durabilite",
       "title_pt": "Sustentabilidade",
-      "description_es": "Promovemos un turismo responsable mediante prácticas que contribuyen a la conservación del entorno natural y el patrimonio cultural.",
+      "description_es": "Promovemos un turismo responsable mediante practicas que contribuyen a la conservacion del entorno natural y el patrimonio cultural.",
       "description_en": "We promote responsible tourism through practices that contribute to the conservation of the natural environment and cultural heritage.",
-      "description_fr": "Nous promouvons un tourisme responsable grâce à des pratiques contribuant à la préservation de l'environnement et du patrimoine.",
-      "description_pt": "Promovemos um turismo responsável por meio de práticas que contribuem para a conservação do meio ambiente e do patrimônio cultural."
+      "description_fr": "Nous promouvons un tourisme responsable grace a des pratiques contribuant a la preservation de l'environnement et du patrimoine.",
+      "description_pt": "Promovemos um turismo responsavel por meio de praticas que contribuem para a conservacao do meio ambiente e do patrimonio cultural."
     },
     {
       "title_es": "Trabajo en equipo",
       "title_en": "Teamwork",
-      "title_fr": "Travail d'équipe",
+      "title_fr": "Travail d'equipe",
       "title_pt": "Trabalho em equipe",
-      "description_es": "Fomentamos la colaboración, la comunicación y el apoyo mutuo para brindar un servicio eficiente y de excelencia.",
+      "description_es": "Fomentamos la colaboracion, la comunicacion y el apoyo mutuo para brindar un servicio eficiente y de excelencia.",
       "description_en": "We foster collaboration, communication and mutual support to provide an efficient and excellent service.",
       "description_fr": "Nous encourageons la collaboration et la communication pour offrir un service d'excellence.",
-      "description_pt": "Incentivamos a colaboração, a comunicação e o apoio mútuo para oferecer um serviço eficiente e de excelência."
+      "description_pt": "Incentivamos a colaboracao, a comunicacao e o apoio mutuo para oferecer um servico eficiente e de excelencia."
     },
     {
-      "title_es": "Innovación",
+      "title_es": "Innovacion",
       "title_en": "Innovation",
       "title_fr": "Innovation",
-      "title_pt": "Inovação",
-      "description_es": "Incorporamos nuevas ideas y soluciones que mejoran continuamente la experiencia de nuestros huéspedes y la calidad de nuestros servicios.",
+      "title_pt": "Inovacao",
+      "description_es": "Incorporamos nuevas ideas y soluciones que mejoran continuamente la experiencia de nuestros huespedes y la calidad de nuestros servicios.",
       "description_en": "We incorporate new ideas and solutions that continuously improve our guests' experience and the quality of our services.",
-      "description_fr": "Nous intégrons de nouvelles idées et solutions pour améliorer continuellement l'expérience de nos clients.",
-      "description_pt": "Incorporamos novas ideias e soluções que melhoram continuamente a experiência dos nossos hóspedes."
+      "description_fr": "Nous integrons de nouvelles idees et solutions pour ameliorer continuellement l'experience de nos clients.",
+      "description_pt": "Incorporamos novas ideias e solucoes que melhoram continuamente a experiencia dos nossos hospedes."
     }
   ]
 }

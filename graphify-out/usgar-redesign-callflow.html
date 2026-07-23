@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>usgar-redesign — 完整调用流程与架构文档</h1>
-<p class="subtitle">由 graphify 知识图谱生成：6678 个节点、7307 条边、613 个社区。Commit: 6d8a6c9</p>
+<p class="subtitle">由 graphify 知识图谱生成：6677 个节点、7307 条边、612 个社区。Commit: 916c23c</p>
 
 <div class="nav">
     <a href="#overview">架构总览</a>
@@ -116,7 +116,7 @@ flowchart LR
     class DYNAMIC_CODE_AUDIT_GUIDE_2E88F8B1 module;
     REAL_WORLD_VULNERABILITIES_CASE_STUDY_77B42543("Real World Vulnerabilities Case Study<br/><small>40 nodes</small>")
     class REAL_WORLD_VULNERABILITIES_CASE_STUDY_77B42543 module;
-    OTHER_D0941E68("其他<br/><small>1845 nodes</small>")
+    OTHER_D0941E68("其他<br/><small>1844 nodes</small>")
     class OTHER_D0941E68 module;
     SECTION_3_1_3EAD601F -->|导入 x44| OTHER_D0941E68
     SERVE_API_35EC8E86 -->|包含 x33| OTHER_D0941E68
@@ -146,7 +146,7 @@ flowchart LR
     <h4>架构层次</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>层</th><th>节点</th><th>社区</th></tr>
-      <tr><td>提取管线</td><td>1206</td><td><code>0, 3, 14, 16, 19, 25, 26, 27, 28, 31, 36, 39, 42, 53, 69, 76, 41, 96, 99, 102, 108, 112, 125, 126, 136, 138, 154, 155, 156, 158, 164, 165, 176, 190, 193, 194, 195, 196, 197, 198, 216, 217, 218, 219, 239, 240, 241, 242, 243, 257, 258, 259, 285, 286, 289, 290, 291, 292, 293, 571, 317, 318, 319, 320, 321, 322, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 392, 446, 447, 448, 467, 468</code></td></tr><tr><td>图谱构建</td><td>161</td><td><code>5, 134, 107, 128, 544, 140, 143, 428, 557, 11, 354, 595, 527</code></td></tr><tr><td>分析聚类</td><td>69</td><td><code>79, 78, 185, 237, 362, 590</code></td></tr><tr><td>输出文档</td><td>19</td><td><code>122, 589</code></td></tr><tr><td>CLI 与技能安装</td><td>875</td><td><code>2, 10, 30, 35, 47, 50, 51, 58, 82, 72, 74, 88, 101, 247, 339, 119, 120, 130, 131, 133, 203, 135, 144, 148, 152, 168, 173, 174, 183, 186, 188, 209, 212, 227, 234, 89, 235, 245, 246, 251, 253, 210, 265, 266, 267, 275, 281, 282, 283, 284, 296, 303, 304, 305, 306, 315, 340, 359, 367, 407, 408, 431, 433, 437, 438, 538, 440</code></td></tr><tr><td>摄取与增量更新</td><td>47</td><td><code>543, 86, 223, 502, 343</code></td></tr><tr><td>服务 API</td><td>635</td><td><code>410, 338, 486, 24, 150, 37, 508, 97, 92, 94, 100, 105, 113, 117, 118, 121, 129, 141, 142, 151, 84, 169, 180, 228, 248, 270, 271, 344, 345, 357, 416, 417, 418, 432, 455, 526, 513, 528, 533, 616</code></td></tr><tr><td>安全与全局图</td><td>1346</td><td><code>7, 18, 29, 38, 40, 43, 44, 48, 49, 54, 59, 55, 56, 57, 60, 61, 62, 66, 67, 68, 70, 71, 75, 77, 81, 90, 91, 95, 103, 109, 110, 111, 114, 115, 116, 123, 127, 139, 226, 145, 146, 161, 167, 171, 179, 182, 191, 199, 200, 201, 202, 204, 222, 224, 225, 244, 250, 263, 264, 268, 269, 294, 295, 297, 298, 302, 327, 332, 333, 334, 335, 336, 337, 352, 353, 355, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 412, 413, 414, 424, 425, 426, 427, 454, 459, 460, 463</code></td></tr><tr><td>测试与样例</td><td>168</td><td><code>535, 475, 85, 546, 547, 4, 172, 552, 553, 570, 576, 584, 465, 479, 511</code></td></tr><tr><td>3.1 上下文类型识别</td><td>125</td><td><code>232</code></td></tr><tr><td>Color Customization</td><td>53</td><td><code>342</code></td></tr><tr><td>Rust Security Audit</td><td>47</td><td><code>6</code></td></tr><tr><td>动态代码审计指南 (Dynamic Code Audit Guide)</td><td>42</td><td><code>15</code></td></tr><tr><td>Real World Vulnerabilities Case Study</td><td>40</td><td><code>21</code></td></tr><tr><td>其他</td><td>1845</td><td><code>32, 33, 34, 489, 45, 46, 534, 539, 63, 540, 541, 73, 496, 87, 542, 64, 93, 104, 106, 124, 132, 65, 137, 545, 548, 147, 477, 153, 157, 159, 160, 162, 163, 166, 170, 484, 52, 549, 550, 175, 177, 178, 181, 184, 187, 98, 189, 192, 205, 206, 207, 208, 254, 8, 83, 211, 213, 214, 215, 220, 221, 229, 230, 231, 233, 307, 409, 551, 554, 555, 556, 236, 238, 249, 252, 277, 487, 503, 558, 559, 560, 561, 562, 1, 255, 256, 260, 261, 262, 272, 273, 274, 278, 452, 482, 492, 500, 501, 563, 564, 280, 287, 288, 299, 300, 301, 310, 483, 568, 569, 572, 573, 574, 575, 12, 311, 312, 313, 314, 316, 323, 324, 325, 326, 328, 329, 330, 331, 346, 347, 348, 349, 350, 351, 356, 358, 360, 364, 494, 505, 506, 509, 514, 515, 516, 517, 536, 537, 581, 582, 9, 13, 308, 361, 365, 366, 368, 369, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 393, 394, 395, 419, 420, 421, 422, 423, 430, 439, 497, 522, 565, 566, 585, 586, 588, 591, 309, 363, 411, 415, 434, 435, 436, 441, 442, 443, 444, 445, 449, 450, 451, 453, 456, 457, 458, 461, 462, 464, 493, 567, 596, 597, 17, 20, 466, 469, 470, 471, 598, 599, 149, 22, 23, 276, 279, 341, 429, 472, 473, 474, 476, 478, 480, 481, 485, 488, 490, 491, 495, 498, 499, 504, 507, 510, 512, 518, 519, 520, 521, 523, 524, 525, 529, 530, 531, 532, 577, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 610, 611, 612, 613, 614, 615, 617, 618, 619, 620, 80</code></td></tr>
+      <tr><td>提取管线</td><td>1206</td><td><code>0, 3, 14, 16, 19, 25, 26, 27, 28, 31, 36, 39, 42, 53, 69, 76, 41, 96, 99, 102, 108, 112, 125, 126, 136, 138, 154, 155, 156, 158, 164, 165, 176, 190, 193, 194, 195, 196, 197, 198, 216, 217, 218, 219, 239, 240, 241, 242, 243, 257, 258, 259, 285, 286, 289, 290, 291, 292, 293, 571, 317, 318, 319, 320, 321, 322, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 392, 446, 447, 448, 467, 468</code></td></tr><tr><td>图谱构建</td><td>161</td><td><code>5, 134, 107, 128, 544, 140, 143, 428, 557, 11, 354, 595, 527</code></td></tr><tr><td>分析聚类</td><td>69</td><td><code>79, 78, 185, 237, 362, 590</code></td></tr><tr><td>输出文档</td><td>19</td><td><code>122, 589</code></td></tr><tr><td>CLI 与技能安装</td><td>875</td><td><code>2, 10, 30, 35, 47, 50, 51, 58, 82, 72, 74, 88, 101, 247, 339, 119, 120, 130, 131, 133, 203, 135, 144, 148, 152, 168, 173, 174, 183, 186, 188, 209, 212, 227, 234, 89, 235, 245, 246, 251, 253, 210, 265, 266, 267, 275, 281, 282, 283, 284, 296, 303, 304, 305, 306, 315, 340, 359, 367, 407, 408, 431, 433, 437, 438, 538, 440</code></td></tr><tr><td>摄取与增量更新</td><td>47</td><td><code>543, 86, 223, 502, 343</code></td></tr><tr><td>服务 API</td><td>635</td><td><code>410, 338, 486, 24, 150, 37, 508, 97, 92, 94, 100, 105, 113, 117, 118, 121, 129, 141, 142, 151, 84, 169, 180, 228, 248, 270, 271, 344, 345, 357, 416, 417, 418, 432, 455, 526, 513, 528, 533, 616</code></td></tr><tr><td>安全与全局图</td><td>1346</td><td><code>7, 18, 29, 38, 40, 43, 44, 48, 49, 54, 59, 55, 56, 57, 60, 61, 62, 66, 67, 68, 70, 71, 75, 77, 81, 90, 91, 95, 103, 109, 110, 111, 114, 115, 116, 123, 127, 139, 226, 145, 146, 161, 167, 171, 179, 182, 191, 199, 200, 201, 202, 204, 222, 224, 225, 244, 250, 263, 264, 268, 269, 294, 295, 297, 298, 302, 327, 332, 333, 334, 335, 336, 337, 352, 353, 355, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 412, 413, 414, 424, 425, 426, 427, 454, 459, 460, 463</code></td></tr><tr><td>测试与样例</td><td>168</td><td><code>535, 475, 85, 546, 547, 4, 172, 552, 553, 570, 576, 584, 465, 479, 511</code></td></tr><tr><td>3.1 上下文类型识别</td><td>125</td><td><code>232</code></td></tr><tr><td>Color Customization</td><td>53</td><td><code>342</code></td></tr><tr><td>Rust Security Audit</td><td>47</td><td><code>6</code></td></tr><tr><td>动态代码审计指南 (Dynamic Code Audit Guide)</td><td>42</td><td><code>15</code></td></tr><tr><td>Real World Vulnerabilities Case Study</td><td>40</td><td><code>21</code></td></tr><tr><td>其他</td><td>1844</td><td><code>32, 33, 34, 489, 45, 46, 534, 539, 63, 540, 541, 73, 496, 87, 542, 64, 93, 104, 106, 124, 132, 65, 137, 545, 548, 147, 477, 153, 157, 159, 160, 162, 163, 166, 170, 484, 52, 549, 550, 175, 177, 178, 181, 184, 187, 98, 189, 192, 205, 206, 207, 208, 254, 8, 83, 211, 213, 214, 215, 220, 221, 229, 230, 231, 233, 307, 409, 551, 554, 555, 556, 236, 238, 249, 252, 277, 487, 503, 558, 559, 560, 561, 562, 1, 255, 256, 260, 261, 262, 272, 273, 274, 278, 452, 482, 492, 500, 501, 563, 564, 280, 287, 288, 299, 300, 301, 310, 483, 568, 569, 572, 573, 574, 575, 12, 311, 312, 313, 314, 316, 323, 324, 325, 326, 328, 329, 330, 331, 346, 347, 348, 349, 350, 351, 356, 358, 360, 364, 494, 505, 506, 509, 514, 515, 516, 517, 536, 537, 581, 582, 9, 13, 308, 361, 365, 366, 368, 369, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 393, 394, 395, 419, 420, 421, 422, 423, 430, 439, 497, 522, 565, 566, 585, 586, 588, 591, 309, 363, 411, 415, 434, 435, 436, 441, 442, 443, 444, 445, 449, 450, 451, 453, 456, 457, 458, 461, 462, 464, 493, 567, 596, 597, 17, 20, 466, 469, 470, 471, 598, 599, 149, 22, 23, 276, 279, 341, 429, 472, 473, 474, 476, 478, 480, 481, 485, 488, 490, 491, 495, 498, 499, 504, 507, 510, 512, 518, 519, 520, 521, 523, 524, 525, 529, 530, 531, 532, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 610, 611, 612, 613, 614, 615, 617, 618, 619, 620, 80</code></td></tr>
     </table>
   </div>
   <div class="card">
@@ -158,7 +158,7 @@ flowchart LR
   <div class="card">
     <h4>图谱报告摘要</h4>
     <ul>
-      <li>6678 nodes · 7307 edges · 613 communities (518 shown, 95 thin omitted)</li>
+      <li>6677 nodes · 7307 edges · 612 communities (517 shown, 95 thin omitted)</li>
       <li>Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 56 edges (avg confidence: 0.79)</li>
       <li>Token cost: 0 input · 0 output</li>
       <li>1. `OAuth2` - 104 edges</li>
@@ -4924,12 +4924,12 @@ flowchart LR
 
 <!-- ====== 16. 其他 ====== -->
 <h2 id="other">16. 其他</h2>
-<p>其他 汇集了与 agents、skills、references、code 相关的实现，主要分布在 references/languages/php.md、references/wooyun/sql-injection.md、references/core/taint_analysis.md。本节覆盖 1845 个节点、1898 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>其他 汇集了与 agents、skills、references、code 相关的实现，主要分布在 references/languages/php.md、references/wooyun/sql-injection.md、references/core/taint_analysis.md。本节覆盖 1844 个节点、1898 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 其他 (1845 nodes, 1898 edges)
+    %% Section: 其他 (1844 nodes, 1898 edges)
     subgraph other_src_pages_book_astro_eacc7b7a["src/pages/book.astro"]
         src_pages_book_updatepricing_3ba0ac7a("updatePricing()<br/><small>src/pages/book.astro</small>")
         src_pages_book_selectroomcard_d53a9f19("selectRoomCard()<br/><small>src/pages/book.astro</small>")
@@ -4963,7 +4963,7 @@ flowchart LR
     src_features_booking_actions_getbookingstatusact_9a466e94 -->|方法| src_features_booking_actions_getbookingstatusact_9257536e
     src_features_booking_actions_getbookingstatusact_9a466e94 -->|方法| src_features_booking_actions_getbookingstatusact_acd1268d
     src_services_bookingservice_bookingservice_7c29e5ad -->|方法| src_services_bookingservice_bookingservice_const_beaec510
-    %% Omitted for readability: 1827 nodes, 0 edges
+    %% Omitted for readability: 1826 nodes, 0 edges
     class src_pages_book_updatepricing_3ba0ac7a function;
     class src_pages_book_selectroomcard_d53a9f19 function;
     class src_pages_book_applyuserdata_0b753a4b function;
@@ -5273,10 +5273,10 @@ flowchart LR
   <div class="card">
     <h4>Graph</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>Nodes</td><td>6678</td></tr>
+      <tr><td>Nodes</td><td>6677</td></tr>
       <tr><td>Edges</td><td>7307</td></tr>
       <tr><td>Hyperedges</td><td>0</td></tr>
-      <tr><td>Communities</td><td>613</td></tr>
+      <tr><td>Communities</td><td>612</td></tr>
       <tr><td>Documented Sections</td><td>15</td></tr>
     </table>
   </div>
@@ -5292,7 +5292,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>usgar-redesign — Architecture Documentation</p>
-  <p>Generated: 2026-07-23 16:22 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-07-23 16:24 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

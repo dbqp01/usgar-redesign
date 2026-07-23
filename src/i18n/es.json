@@ -4,31 +4,31 @@
     "rooms": "Habitaciones",
     "services": "Servicios",
     "explore": "Explora Cusco",
-    "gallery": "Galería",
+    "gallery": "Galeria",
     "contact": "Contacto",
     "bookNow": "Reservar",
-    "language": "Español"
+    "language": "Espanol"
   },
   "hero": {
     "title": "USGAR Hotels",
     "subtitle": "San Pedro, Cusco — Tu puerta a los Andes",
-    "cta": "Reserva Tu Estadía",
+    "cta": "Reserva Tu Estadia",
     "ctaSecondary": "Explorar Habitaciones"
   },
   "booking": {
     "checkin": "Llegada",
     "checkout": "Salida",
-    "guests": "Huéspedes",
-    "roomType": "Tipo de Habitación",
-    "anyRoom": "Cualquier Habitación",
+    "guests": "Huespedes",
+    "roomType": "Tipo de Habitacion",
+    "anyRoom": "Cualquier Habitacion",
     "search": "Buscar Disponibilidad",
-    "guest": "Huésped",
-    "guests_plural": "Huéspedes"
+    "guest": "Huesped",
+    "guests_plural": "Huespedes"
   },
   "rooms": {
     "sectionLabel": "Alojamiento",
     "title": "Nuestras Habitaciones",
-    "description": "Cada habitación está diseñada con murales andinos pintados a mano, iluminación cálida y textiles artesanales que celebran la herencia cultural de Cusco.",
+    "description": "Cada habitacion esta disenada con murales andinos pintados a mano, iluminacion calida y textiles artesanales que celebran la herencia cultural de Cusco.",
     "from": "Desde",
     "perNight": "/noche",
     "upTo": "Hasta",
@@ -37,24 +37,24 @@
   },
   "roomsSection": {
     "heading": "NUESTRO REFUGIO",
-    "subheading": "Explora nuestros espacios diseñados con elegancia y confort, fusionando la herencia colonial con el lujo moderno.",
+    "subheading": "Explora nuestros espacios disenados con elegancia y confort, fusionando la herencia colonial con el lujo moderno.",
     "viewDetails": "VER DETALLES",
-    "tapHint": "Toca una habitación para ver más"
+    "tapHint": "Toca una habitacion para ver mas"
   },
   "room": {
-    "about": "Sobre la habitación",
+    "about": "Sobre la habitacion",
     "amenities": "Servicios y comodidades",
     "includedFree": "Incluido sin costo extra",
     "baseRate": "Tarifa base",
-    "maxCapacity": "Capacidad máxima",
-    "guests": "huéspedes",
+    "maxCapacity": "Capacidad maxima",
+    "guests": "huespedes",
     "persons": "personas",
-    "bedConfig": "Distribución",
-    "bookThisRoom": "Reservar Habitación",
-    "bestRateGuarantee": "Garantía de mejor tarifa disponible reservando directamente en nuestra web.",
+    "bedConfig": "Distribucion",
+    "bookThisRoom": "Reservar Habitacion",
+    "bestRateGuarantee": "Garantia de mejor tarifa disponible reservando directamente en nuestra web.",
     "visualExperience": "Experiencia Visual",
-    "videoTourTitle": "Video Tour de la Habitación",
-    "videoTourDesc": "Recorre la habitación de forma interactiva y admira sus detalles antes de tu llegada.",
+    "videoTourTitle": "Video Tour de la Habitacion",
+    "videoTourDesc": "Recorre la habitacion de forma interactiva y admira sus detalles antes de tu llegada.",
     "startVideoTour": "Iniciar Video Tour",
     "noSound": "Sin sonido",
     "soundActive": "Sonido activo",
@@ -63,16 +63,16 @@
     "backToRooms": "Volver a habitaciones",
     "home": "Inicio",
     "unitText": "persona",
-    "photoGallery": "Galería de fotos"
+    "photoGallery": "Galeria de fotos"
   },
   "services": {
     "sectionLabel": "Nuestros Servicios",
     "title": "Todo Lo Que Necesitas",
-    "description": "Desde el momento en que llegas, cuidamos cada detalle para que tu estadía en Cusco sea inolvidable."
+    "description": "Desde el momento en que llegas, cuidamos cada detalle para que tu estadia en Cusco sea inolvidable."
   },
   "reviews": {
-    "sectionLabel": "Reseñas de Huéspedes",
-    "title": "Lo Que Dicen Nuestros Huéspedes",
+    "sectionLabel": "Resenas de Huespedes",
+    "title": "Lo Que Dicen Nuestros Huespedes",
     "description": "Escucha a los viajeros que han experimentado USGAR Hotels"
   },
   "explore": {
@@ -80,39 +80,39 @@
     "title": "Explora Cusco",
     "description": "Descubre las maravillas que te esperan justo al salir",
     "viewAll": "Ver todas las atracciones",
-    "searchPlaceholder": "Buscar atracción...",
-    "viewGuide": "Ver Guía",
+    "searchPlaceholder": "Buscar atraccion...",
+    "viewGuide": "Ver Guia",
     "popularDestinations": "Destinos Populares",
     "noResults": "No se encontraron atracciones",
-    "noResultsHint": "Prueba cambiando los filtros o la palabra de búsqueda.",
-    "schemaName": "Atracciones turísticas cerca de USGAR Hotels",
-    "schemaDescription": "Descubre los mejores destinos históricos, culturales y naturales cerca de USGAR Hotels en Cusco."
+    "noResultsHint": "Prueba cambiando los filtros o la palabra de busqueda.",
+    "schemaName": "Atracciones turisticas cerca de USGAR Hotels",
+    "schemaDescription": "Descubre los mejores destinos historicos, culturales y naturales cerca de USGAR Hotels en Cusco."
   },
   "map": {
-    "sectionLabel": "Ubicación",
-    "title": "Encuéntranos en Cusco",
-    "description": "Ubicado en el corazón de San Pedro, a pasos del mercado histórico y a poca distancia de la Plaza de Armas.",
+    "sectionLabel": "Ubicacion",
+    "title": "Encuentranos en Cusco",
+    "description": "Ubicado en el corazon de San Pedro, a pasos del mercado historico y a poca distancia de la Plaza de Armas.",
     "loading": "Cargando mapa interactivo..."
   },
   "faq": {
     "sectionLabel": "FAQ",
     "title": "Preguntas Frecuentes",
-    "description": "Todo lo que necesitas saber sobre tu estadía en Cusco: soroche (mal de altura), check-in, traslados y más.",
-    "assistanceTitle": "Atención 24/7",
-    "assistanceDesc": "Nuestro equipo bilingüe en recepción está listo las 24 horas para ayudarte con reservas, itinerarios a Machu Picchu y aclimatación.",
+    "description": "Todo lo que necesitas saber sobre tu estadia en Cusco: soroche (mal de altura), check-in, traslados y mas.",
+    "assistanceTitle": "Atencion 24/7",
+    "assistanceDesc": "Nuestro equipo bilingue en recepcion esta listo las 24 horas para ayudarte con reservas, itinerarios a Machu Picchu y aclimatacion.",
     "whatsappCta": "Contactar por WhatsApp"
   },
   "footer": {
     "contact": "Contacto",
-    "quickLinks": "Enlaces Rápidos",
-    "followUs": "Síguenos",
-    "findUs": "Encuéntranos en tu plataforma de viajes favorita",
+    "quickLinks": "Enlaces Rapidos",
+    "followUs": "Siguenos",
+    "findUs": "Encuentranos en tu plataforma de viajes favorita",
     "rights": "Todos los derechos reservados.",
     "madeWith": "Hecho por MarcaRed"
   },
   "whatsapp": {
-    "tooltip": "¿Necesitas ayuda? ¡Escríbenos!",
-    "message": "¡Hola! Me gustaría reservar una habitación en USGAR Hotels."
+    "tooltip": "¿Necesitas ayuda? ¡Escribenos!",
+    "message": "¡Hola! Me gustaria reservar una habitacion en USGAR Hotels."
   },
   "theme": {
     "toggleDark": "Cambiar modo oscuro"
@@ -123,59 +123,59 @@
   "heritage": {
     "sectionLabel": "PATRIMONIO & LEGADO",
     "heading": "UN REFUGIO VIVO",
-    "description": "Ubicado a pasos del histórico Mercado de San Pedro, nuestro hotel ofrece un oasis de lujo sereno. Cada muro cuenta una historia de misticismo andino y calidez humana, diseñado para que descanses antes o después de Machu Picchu.",
-    "fusionTitle": "Fusión Inca-Colonial",
-    "fusionDesc": "500 años de historia custodiados en arcos coloniales y piedra ancestral."
+    "description": "Ubicado a pasos del historico Mercado de San Pedro, nuestro hotel ofrece un oasis de lujo sereno. Cada muro cuenta una historia de misticismo andino y calidez humana, disenado para que descanses antes o despues de Machu Picchu.",
+    "fusionTitle": "Fusion Inca-Colonial",
+    "fusionDesc": "500 anos de historia custodiados en arcos coloniales y piedra ancestral."
   },
   "gastronomy": {
-    "sectionLabel": "GASTRONOMÍA & CAFETERÍA",
-    "description": "Una experiencia gastronómica inolvidable con ingredientes andinos frescos en el corazón del Cusco."
+    "sectionLabel": "GASTRONOMIA & CAFETERIA",
+    "description": "Una experiencia gastronomica inolvidable con ingredientes andinos frescos en el corazon del Cusco."
   },
   "contact": {
-    "title": "Contáctanos",
-    "subtitle": "Nos encantaría saber de ti. Ponte en contacto con nuestro equipo para reservas, indicaciones o consejos de viaje.",
+    "title": "Contactanos",
+    "subtitle": "Nos encantaria saber de ti. Ponte en contacto con nuestro equipo para reservas, indicaciones o consejos de viaje.",
     "getInTouch": "Ponte en Contacto",
     "formName": "Tu Nombre",
-    "formEmail": "Tu Correo Electrónico",
-    "formMessage": "¿Cómo podemos ayudarte?",
+    "formEmail": "Tu Correo Electronico",
+    "formMessage": "¿Como podemos ayudarte?",
     "formSubmit": "Enviar Mensaje",
     "directChannels": "Canales Preferidos",
-    "whatsappText": "Escríbenos por WhatsApp",
-    "emailText": "Envíanos un Correo",
-    "callText": "Llámanos",
+    "whatsappText": "Escribenos por WhatsApp",
+    "emailText": "Envianos un Correo",
+    "callText": "Llamanos",
     "internationalCall": "Para soporte internacional:",
     "tripadvisorText": "Ver opiniones en TripAdvisor",
     "bookingText": "Ver tarifas en Booking.com",
-    "directionsTitle": "Cómo Llegar",
+    "directionsTitle": "Como Llegar",
     "directionsDesc": "USGAR Hotels se encuentra en San Pedro, Cusco. Ofrecemos traslados privados desde el aeropuerto para garantizar una llegada segura.",
     "airportPickup": "Servicio de Traslado",
-    "airportPickupDesc": "El aeropuerto está a ~20 minutos en auto. Recomendamos reservar nuestro servicio privado para evitar taxis no autorizados.",
+    "airportPickupDesc": "El aeropuerto esta a ~20 minutos en auto. Recomendamos reservar nuestro servicio privado para evitar taxis no autorizados.",
     "whatsappQuery": "¡Hola! Tengo una consulta sobre USGAR Hotels.",
     "altitudeTitle": "Soroche (Mal de Altura)",
-    "altitudeDesc": "Cusco se encuentra a 3,400 metros sobre el nivel del mar. Recomendamos descansar el primer día y tomar mate de coca. Tenemos oxígeno concentrado disponible gratis.",
-    "successMessage": "¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.",
-    "messagePlaceholder": "Escribe tu mensaje aquí..."
+    "altitudeDesc": "Cusco se encuentra a 3,400 metros sobre el nivel del mar. Recomendamos descansar el primer dia y tomar mate de coca. Tenemos oxigeno concentrado disponible gratis.",
+    "successMessage": "¡Mensaje enviado con exito! Nos pondremos en contacto contigo pronto.",
+    "messagePlaceholder": "Escribe tu mensaje aqui..."
   },
   "gallery": {
-    "title": "Galería de Fotos",
+    "title": "Galeria de Fotos",
     "subtitle": "Descubre la belleza y los detalles de USGAR Hotels en San Pedro, Cusco",
     "filterAll": "Todas las Fotos",
-    "filterHotel": "Hotel y Áreas",
+    "filterHotel": "Hotel y Areas",
     "filterRooms": "Habitaciones",
-    "noImages": "No se encontraron imágenes."
+    "noImages": "No se encontraron imagenes."
   },
   "about": {
     "sectionLabel": "Nosotros",
     "title": "Descubre Nuestra Esencia",
-    "purpose": "Crear experiencias memorables que permitan a cada viajero descubrir la esencia de Cusco, brindando un servicio cálido, personalizado y de excelencia que haga de cada estadía un recuerdo inolvidable.",
-    "missionTitle": "Nuestra Misión",
-    "missionText": "Brindar una experiencia de hospedaje única en el corazón de Cusco, ofreciendo un servicio personalizado, cálido y de alta calidad que combine confort, hospitalidad y la riqueza de la cultura local. Nos comprometemos a superar las expectativas de nuestros huéspedes mediante una atención excepcional, un equipo humano apasionado y prácticas de turismo sostenible que generen recuerdos inolvidables.",
-    "visionTitle": "Nuestra Visión",
-    "visionText": "Ser el hotel referente de Cusco, manteniendo la esencia de nuestra cultura. Aspiramos a ser la primera elección de los viajeros que buscan excelencia, calidez y un servicio personalizado, distinguiéndonos por nuestra hospitalidad, innovación y compromiso con la sostenibilidad.",
+    "purpose": "Crear experiencias memorables que permitan a cada viajero descubrir la esencia de Cusco, brindando un servicio calido, personalizado y de excelencia que haga de cada estadia un recuerdo inolvidable.",
+    "missionTitle": "Nuestra Mision",
+    "missionText": "Brindar una experiencia de hospedaje unica en el corazon de Cusco, ofreciendo un servicio personalizado, calido y de alta calidad que combine confort, hospitalidad y la riqueza de la cultura local. Nos comprometemos a superar las expectativas de nuestros huespedes mediante una atencion excepcional, un equipo humano apasionado y practicas de turismo sostenible que generen recuerdos inolvidables.",
+    "visionTitle": "Nuestra Vision",
+    "visionText": "Ser el hotel referente de Cusco, manteniendo la esencia de nuestra cultura. Aspiramos a ser la primera eleccion de los viajeros que buscan excelencia, calidez y un servicio personalizado, distinguiendonos por nuestra hospitalidad, innovacion y compromiso con la sostenibilidad.",
     "valuesTitle": "Nuestros Valores",
     "hospitality": {
       "title": "Hospitalidad",
-      "desc": "Cercanía y calidez"
+      "desc": "Cercania y calidez"
     },
     "excellence": {
       "title": "Excelencia",
@@ -187,11 +187,11 @@
     },
     "respect": {
       "title": "Respeto",
-      "desc": "Consideración íntegra"
+      "desc": "Consideracion integra"
     },
     "commitment": {
       "title": "Compromiso",
-      "desc": "Pasión y dedicación"
+      "desc": "Pasion y dedicacion"
     },
     "sustainability": {
       "title": "Sostenibilidad",
@@ -199,106 +199,106 @@
     },
     "teamwork": {
       "title": "Trabajo en equipo",
-      "desc": "Colaboración"
+      "desc": "Colaboracion"
     },
     "innovation": {
-      "title": "Innovación",
+      "title": "Innovacion",
       "desc": "Nuevas ideas"
     }
   },
   "book": {
     "stepFinal": "Paso Final",
     "title": "Completa tu Reserva",
-    "subtitle": "Por favor, introduce los datos del huésped principal y confirma las fechas para proceder al pago seguro.",
-    "stayDetails": "Detalles de la Estadía",
-    "selectRoom": "Selecciona tu Habitación",
+    "subtitle": "Por favor, introduce los datos del huesped principal y confirma las fechas para proceder al pago seguro.",
+    "stayDetails": "Detalles de la Estadia",
+    "selectRoom": "Selecciona tu Habitacion",
     "selected": "Seleccionada",
     "select": "Seleccionar",
-    "guestDetails": "Datos del Huésped Principal",
+    "guestDetails": "Datos del Huesped Principal",
     "fullName": "Nombre Completo",
-    "phoneWhatsApp": "Teléfono / WhatsApp",
+    "phoneWhatsApp": "Telefono / WhatsApp",
     "airportPickupCheckbox": "¿Necesita traslado privado desde el aeropuerto?",
     "flightTimeLabel": "Hora aproximada de llegada de su vuelo",
-    "arrivalCalculationTitle": "Cálculo de Llegada Estimada",
-    "arrivalCalculationText": "Tiempo de tránsito: ~20-30 minutos en auto desde el Aeropuerto de Cusco (CUZ).",
+    "arrivalCalculationTitle": "Calculo de Llegada Estimada",
+    "arrivalCalculationText": "Tiempo de transito: ~20-30 minutos en auto desde el Aeropuerto de Cusco (CUZ).",
     "estimatedArrivalLabel": "Hora estimada de llegada a USGAR Hotels: ",
-    "estimatedArrivalNote": "* Estimación basada en 45 minutos (recogida de equipaje + control + traslado).",
+    "estimatedArrivalNote": "* Estimacion basada en 45 minutos (recogida de equipaje + control + traslado).",
     "tripSummary": "Resumen del Viaje",
     "checkinDate": "Fecha de Entrada",
     "checkoutDate": "Fecha de Salida",
-    "duration": "Duración",
+    "duration": "Duracion",
     "totalPrice": "Precio Total",
     "priceNote": "Impuestos y desayuno incluidos",
     "guaranteedTitle": "Reserva Garantizada",
-    "guaranteedText": "Cancelación gratuita hasta 48 horas antes de tu llegada. Desayuno buffet andino incluido.",
-    "videoTour": "Video Tour de la Habitación",
+    "guaranteedText": "Cancelacion gratuita hasta 48 horas antes de tu llegada. Desayuno buffet andino incluido.",
+    "videoTour": "Video Tour de la Habitacion",
     "confirmAndPay": "Confirmar y Pagar con Mercado Pago",
     "confirmAndPayStripe": "Confirmar y Pagar con Stripe",
     "night": "noche",
     "nights": "noches",
     "processing": "Procesando...",
     "fillAllFields": "Por favor complete todos los campos obligatorios.",
-    "invalidEmail": "Por favor ingrese un email válido.",
-    "noPaymentUrl": "No se recibió la URL de pago desde el servidor.",
-    "unexpectedError": "Ocurrió un error inesperado."
+    "invalidEmail": "Por favor ingrese un email valido.",
+    "noPaymentUrl": "No se recibio la URL de pago desde el servidor.",
+    "unexpectedError": "Ocurrio un error inesperado."
   },
   "exploreDetail": {
     "home": "Inicio",
     "historyTitle": "Historia y Contexto",
-    "howToArrive": "Cómo Llegar",
-    "travelTips": "Consejos Prácticos de Viaje",
-    "quickFacts": "Detalles Rápidos",
+    "howToArrive": "Como Llegar",
+    "travelTips": "Consejos Practicos de Viaje",
+    "quickFacts": "Detalles Rapidos",
     "distanceFromHotel": "Distancia desde el Hotel",
     "travelTime": "Tiempo de Viaje",
-    "bestSeason": "Mejor Época",
+    "bestSeason": "Mejor Epoca",
     "readyToExplore": "¿Listo para explorar Cusco?",
-    "readyToExploreText": "Reserva tu estadía en USGAR Hotels y descubre todas las maravillas de Cusco y el Valle Sagrado."
+    "readyToExploreText": "Reserva tu estadia en USGAR Hotels y descubre todas las maravillas de Cusco y el Valle Sagrado."
   },
   "success": {
     "title": "Reserva Confirmada",
     "retrieving": "Recuperando detalles de reserva...",
-    "paymentApproved": "Pago Aprobado con Éxito",
-    "reservationConfirmed": "¡Tu Reserva está Confirmada!",
-    "confirmationMessage": "Gracias por elegir USGAR Hotels. Recibirás un correo de confirmación con todos los detalles de tu estadía.",
-    "channexCode": "Código de Confirmación Channex",
+    "paymentApproved": "Pago Aprobado con Exito",
+    "reservationConfirmed": "¡Tu Reserva esta Confirmada!",
+    "confirmationMessage": "Gracias por elegir USGAR Hotels. Recibiras un correo de confirmacion con todos los detalles de tu estadia.",
+    "channexCode": "Codigo de Confirmacion Channex",
     "bookingDetails": "Detalles de la Reserva",
-    "primaryGuest": "Huésped Principal",
-    "roomType": "Habitación",
+    "primaryGuest": "Huesped Principal",
+    "roomType": "Habitacion",
     "checkinDate": "Fecha de Entrada (Check-In)",
     "checkoutDate": "Fecha de Salida (Check-Out)",
-    "billingDetail": "Detalle de Facturación",
+    "billingDetail": "Detalle de Facturacion",
     "totalPaid": "Total Pagado",
     "returnHome": "Volver al Inicio",
     "printReceipt": "Imprimir Comprobante",
     "notFound": "Reserva No Encontrada",
-    "notFoundMessage": "No pudimos encontrar los detalles de la reserva. Si completaste un pago, por favor contáctanos."
+    "notFoundMessage": "No pudimos encontrar los detalles de la reserva. Si completaste un pago, por favor contactanos."
   },
   "auth": {
-    "signIn": "Iniciar Sesión",
+    "signIn": "Iniciar Sesion",
     "signUp": "Crear Cuenta",
-    "signOut": "Cerrar Sesión",
+    "signOut": "Cerrar Sesion",
     "myBookings": "Mis Reservas",
     "welcomeTitle": "Bienvenido a USGAR Hotels",
-    "welcomeSubtitle": "Inicia sesión para reservar más rápido y gestionar tus reservas",
+    "welcomeSubtitle": "Inicia sesion para reservar mas rapido y gestionar tus reservas",
     "continueWith": "Continuar con",
     "continueWithGoogle": "Continuar con Google",
     "continueWithMicrosoft": "Continuar con Microsoft",
     "continueWithFacebook": "Continuar con Facebook",
     "orUseEmail": "O usa tu correo",
-    "emailAddress": "Correo electrónico",
-    "password": "Contraseña",
-    "confirmPassword": "Confirmar contraseña",
+    "emailAddress": "Correo electronico",
+    "password": "Contrasena",
+    "confirmPassword": "Confirmar contrasena",
     "fullName": "Nombre completo",
     "firstName": "Nombre",
     "lastName": "Apellido",
     "alreadyHaveAccount": "¿Ya tienes una cuenta?",
     "dontHaveAccount": "¿No tienes cuenta?",
-    "loginToBookFaster": "Inicia sesión para reservar más rápido con tus datos guardados",
+    "loginToBookFaster": "Inicia sesion para reservar mas rapido con tus datos guardados",
     "welcomeBack": "Bienvenido de vuelta",
-    "noBookingsYet": "Aún no tienes reservas.",
-    "startBooking": "Reserva tu primera estadía",
+    "noBookingsYet": "Aun no tienes reservas.",
+    "startBooking": "Reserva tu primera estadia",
     "bookingHistory": "Historial de Reservas",
-    "loginRequired": "Inicia sesión para ver tus reservas.",
+    "loginRequired": "Inicia sesion para ver tus reservas.",
     "statusConfirmed": "Confirmada",
     "statusPending": "Pendiente",
     "statusExpired": "Expirada",
@@ -310,17 +310,17 @@
     "checkoutDate": "Salida",
     "totalPaid": "Total",
     "registrationSuccess": "¡Cuenta creada exitosamente!",
-    "loginError": "Correo o contraseña incorrectos.",
+    "loginError": "Correo o contrasena incorrectos.",
     "emailExists": "Ya existe una cuenta con este correo.",
-    "passwordTooShort": "La contraseña debe tener al menos 8 caracteres."
+    "passwordTooShort": "La contrasena debe tener al menos 8 caracteres."
   },
   "global": {
     "skipToContent": "Ir al contenido principal",
-    "directions": "Cómo llegar",
+    "directions": "Como llegar",
     "contactWhatsApp": "Contactar por WhatsApp",
-    "assistance247": "Atención 24/7",
+    "assistance247": "Atencion 24/7",
     "elevatedExperience": "EXPERIENCIA COMPLETA",
-    "alsoIncluded": "También incluimos:",
+    "alsoIncluded": "Tambien incluimos:",
     "night": "noche",
     "includedFree": "Incluido sin costo extra"
   }

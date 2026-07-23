@@ -2708,35 +2708,5 @@
     "mtime": 1775157086.0,
     "ast_hash": "bdce9efad9a163201b1c9275af6aa07f",
     "semantic_hash": ""
-  },
-  "anotaciones.md": {
-    "mtime": 1784823278.473475,
-    "ast_hash": "bc22deccffea73002b6b752066625ce7",
-    "semantic_hash": ""
-  },
-  "image-1.png": {
-    "mtime": 1784823759.7986193,
-    "ast_hash": "2dcf4691ab9f85d76d98881ff65a657f",
-    "semantic_hash": ""
-  },
-  "image-2.png": {
-    "mtime": 1784770014.5227537,
-    "ast_hash": "efad8aa7eb8ddeb8fb6bd39851919f5e",
-    "semantic_hash": ""
-  },
-  "image-3.png": {
-    "mtime": 1784770058.7651956,
-    "ast_hash": "4d5d546db11faed9ee8fa458cc0d6f80",
-    "semantic_hash": ""
-  },
-  "image-4.png": {
-    "mtime": 1784770094.39101,
-    "ast_hash": "2f7f5d30ea42c5144d62d0ce52fcad21",
-    "semantic_hash": ""
-  },
-  "image.png": {
-    "mtime": 1784823760.0252795,
-    "ast_hash": "1194d4a9777433550423aad20cc9a47b",
-    "semantic_hash": ""
   }
 }

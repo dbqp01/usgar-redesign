@@ -1,16 +1,16 @@
 # Graph Report - usgar-redesign  (2026-07-23)
 
 ## Corpus Check
-- 481 files · ~816,293 words
+- 480 files · ~764,980 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 6678 nodes · 7307 edges · 613 communities (518 shown, 95 thin omitted)
+- 6677 nodes · 7307 edges · 612 communities (517 shown, 95 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 56 edges (avg confidence: 0.79)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6d8a6c91`
+- Built from commit: `916c23c6`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -610,7 +610,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (613 total, 95 thin omitted)
+## Communities (612 total, 95 thin omitted)
 
 ### Community 0 - "python.md"
 Cohesion: 0.02
@@ -2511,9 +2511,9 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `OAuth2` connect `3.1 上下文类型识别` to `ObjectModel Best Practices`, `UnexpectedValueException`, `Required Files (MANDATORY)`, `十、PHP命令执行元思考方法论`, `Apple`, `LinkedIn`, `X`, `WeChat`, `Color Customization`, `File Creation Checklist`, `Quick Start (New Project)`, `10.8 实战案例深度剖析`, `Common Pitfalls`, `Foursquare`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **Why does `Exception` connect `File Creation Checklist` to `Permission Checks`, `Hybridauth.php`, `OAuth1.php`, `UnexpectedValueException`?**
-  _High betweenness centrality (0.005) - this node is a cross-community bridge._
-- **Why does `AbstractAdapter` connect `Required Files (MANDATORY)` to `OAuth1`, `3.1 上下文类型识别`, `Color Customization`, `File Creation Checklist`, `Telegram`?**
   _High betweenness centrality (0.004) - this node is a cross-community bridge._
+- **Why does `AbstractAdapter` connect `Required Files (MANDATORY)` to `OAuth1`, `3.1 上下文类型识别`, `Color Customization`, `File Creation Checklist`, `Telegram`?**
+  _High betweenness centrality (0.003) - this node is a cross-community bridge._
 - **What connects `../assets/logos/Logo usgar.png`, `../components/BookingWidget.astro`, `../components/ServiceGrid.astro` to the rest of the system?**
   _4035 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `python.md` be split into smaller, more focused modules?**

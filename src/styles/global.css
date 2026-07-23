@@ -31,23 +31,36 @@
 /* Dark mode: class-based toggle (NOT media query) */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Navbar Scrolled Contrast Rules for Light and Dark mode */
-.navbar-scrolled .nav-link-text {
+/* ============================================
+   Navbar Contrast & Visibility Rules
+   ============================================ */
+#main-navbar .nav-link-text {
+  color: #ffffff;
+}
+
+#main-navbar.navbar-scrolled .nav-link-text {
   color: var(--color-primary-dark) !important;
 }
 
-.dark .navbar-scrolled .nav-link-text {
-  color: var(--color-text-primary-dark) !important;
+.dark #main-navbar .nav-link-text,
+.dark #main-navbar.navbar-scrolled .nav-link-text {
+  color: #ffffff !important;
 }
 
-.navbar-scrolled .nav-btn-border {
+#main-navbar .nav-btn-border {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+}
+
+#main-navbar.navbar-scrolled .nav-btn-border {
   border-color: rgba(74, 48, 86, 0.3) !important;
   color: var(--color-primary-dark) !important;
 }
 
-.dark .navbar-scrolled .nav-btn-border {
+.dark #main-navbar .nav-btn-border,
+.dark #main-navbar.navbar-scrolled .nav-btn-border {
   border-color: rgba(255, 255, 255, 0.2) !important;
-  color: var(--color-text-primary-dark) !important;
+  color: #ffffff !important;
 }
 
 
