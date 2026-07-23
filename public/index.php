@@ -6,7 +6,13 @@ if (PHP_SAPI !== 'cli') {
     ob_start();
 }
 
-// 1. Cargar el Autoloader personalizado (Compatibilidad nativa con Hostinger sin Composer)
+// 1. Cargar el Autoloader de Composer si existe
+$vendorAutoload = dirname(__DIR__) . '/vendor/autoload.php';
+if (file_exists($vendorAutoload)) {
+    require_once $vendorAutoload;
+}
+
+// Cargar el Autoloader personalizado (Compatibilidad nativa con Hostinger sin Composer)
 if (file_exists(__DIR__ . '/../src/Core/Autoloader.php')) {
     require_once __DIR__ . '/../src/Core/Autoloader.php';
     \App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src');

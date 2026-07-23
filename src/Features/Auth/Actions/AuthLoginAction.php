@@ -36,6 +36,10 @@ class AuthLoginAction {
         }
 
         try {
+            $vendorAutoload = dirname(__DIR__, 4) . '/vendor/autoload.php';
+            if (file_exists($vendorAutoload)) {
+                require_once $vendorAutoload;
+            }
             $hybridAuthAutoload = dirname(__DIR__, 4) . '/vendor/hybridauth/autoload.php';
             if (file_exists($hybridAuthAutoload)) {
                 require_once $hybridAuthAutoload;

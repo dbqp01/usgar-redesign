@@ -110,6 +110,13 @@ class Router {
 
         } catch (HttpException $e) {
             Response::error($e->getMessage(), $e->getStatusCode(), $e->getErrorCode(), $e->getDetails());
+        } catch (\Throwable $e) {
+            Logger::error('Unhandled exception in Router: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+            $msg = Config::isProduction() ? 'Internal Server Error' : $e->getMessage();
+            Response::error($msg, 500, 'UNHANDLED_EXCEPTION');
         }
     }
 

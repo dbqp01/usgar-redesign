@@ -118,7 +118,13 @@ class CreateBookingAction {
                 throw new Exception('Fallo al insertar el bloqueo de reserva en DB.');
             }
 
-            $secretKey = Config::get('CRON_SECRET', 'USGAR_SECURE_TOKEN_SECRET');
+            $secretKey = Config::get('BOOKING_TOKEN_SECRET', Config::get('CRON_SECRET'));
+            if (empty($secretKey)) {
+                if (Config::isProduction()) {
+                    throw HttpException::internal('Falta configuración de BOOKING_TOKEN_SECRET en servidor.');
+                }
+                $secretKey = 'USGAR_SECURE_TOKEN_SECRET_DEV_ONLY';
+            }
             $accessToken = hash_hmac('sha256', $cartId . ':' . $guestEmail, $secretKey);
 
             $preference = $this->paymentGateway->createPreference(

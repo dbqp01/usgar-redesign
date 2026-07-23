@@ -51,7 +51,7 @@ export class BookingService implements IBookingService {
 
     return {
       success: true,
-      data: response.data.data as RoomAvailability[],
+      data: (response.data.rooms ?? response.data.data) as RoomAvailability[],
     };
   }
 
@@ -78,7 +78,7 @@ export class BookingService implements IBookingService {
 
     return {
       success: true,
-      data: response.data.data as BookingResponseData,
+      data: (response.data.data ?? response.data) as BookingResponseData,
     };
   }
 
@@ -100,7 +100,10 @@ export class BookingService implements IBookingService {
 
     return {
       success: true,
-      data: response.data.data,
+      data: {
+        extended: true,
+        new_expires_at: response.data.expires_at ?? response.data.data?.expires_at,
+      },
     };
   }
 
@@ -122,7 +125,7 @@ export class BookingService implements IBookingService {
 
     return {
       success: true,
-      data: response.data.data as BookingStatusData,
+      data: (response.data.data ?? response.data) as BookingStatusData,
     };
   }
 }

@@ -26,7 +26,15 @@ class CleanExpiredCartsAction {
             $cronSecret = Config::get('CRON_SECRET');
             $providedSecret = $request->getHeader('x-cron-secret') ?? $request->getQuery('secret', '');
 
-            if (!empty($cronSecret) && !hash_equals($cronSecret, $providedSecret)) {
+            if (empty($cronSecret)) {
+                if (Config::isProduction()) {
+                    Logger::error("CleanExpiredCartsAction: CRON_SECRET no está configurado en entorno de producción.");
+                    Response::error('Cron secret non-configured.', 500);
+                }
+                $cronSecret = 'USGAR_CRON_SECRET_DEV_ONLY';
+            }
+
+            if (!hash_equals($cronSecret, $providedSecret)) {
                 Logger::error("CleanExpiredCartsAction: Petición no autorizada al endpoint de cron.");
                 Response::unauthorized('Invalid cron secret token.');
             }

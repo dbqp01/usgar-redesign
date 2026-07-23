@@ -26,7 +26,7 @@ enum BookingStatus: string {
      */
     public function isTerminal(): bool {
         return match ($this) {
-            self::Paid, self::Expired => true,
+            self::Paid, self::Expired, self::Failed => true,
             default => false,
         };
     }

@@ -21,6 +21,10 @@ class AuthCallbackAction {
         $config = AuthService::getConfig();
 
         try {
+            $vendorAutoload = dirname(__DIR__, 4) . '/vendor/autoload.php';
+            if (file_exists($vendorAutoload)) {
+                require_once $vendorAutoload;
+            }
             $hybridAuthAutoload = dirname(__DIR__, 4) . '/vendor/hybridauth/autoload.php';
             if (file_exists($hybridAuthAutoload)) {
                 require_once $hybridAuthAutoload;
@@ -61,12 +65,16 @@ class AuthCallbackAction {
             $redirect = $_COOKIE['usgar_auth_redirect'] ?? '/';
             setcookie('usgar_auth_redirect', '', time() - 3600, '/');
 
+            if (!str_starts_with($redirect, '/') || str_starts_with($redirect, '//')) {
+                $redirect = '/';
+            }
+
             header('Location: ' . $redirect);
             exit(0);
 
         } catch (Throwable $e) {
             Logger::error("OAuth callback failed: " . $e->getMessage());
-            header('Location: /login?error=' . urlencode("Error de autenticación: " . $e->getMessage()));
+            header('Location: /login?error=' . urlencode("No se pudo completar la autenticación. Intente nuevamente."));
             exit(0);
         }
     }

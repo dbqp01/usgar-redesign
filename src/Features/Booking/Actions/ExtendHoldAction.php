@@ -29,6 +29,7 @@ class ExtendHoldAction {
 
     public function __invoke(Request $request): void {
         $cartId = $request->get('cart_id');
+        $providedToken = $request->get('access_token') ?? $request->getHeader('x-access-token');
 
         if (!$cartId) {
             throw HttpException::badRequest('Falta el parámetro cart_id.');
@@ -38,6 +39,20 @@ class ExtendHoldAction {
 
         if (!$hold) {
             throw HttpException::notFound('No se encontró ningún bloqueo para el cart_id especificado.');
+        }
+
+        $guestEmail = $hold['guest_data']['email'] ?? '';
+        $secretKey = \App\Core\Config::get('BOOKING_TOKEN_SECRET', \App\Core\Config::get('CRON_SECRET'));
+        if (empty($secretKey)) {
+            if (\App\Core\Config::isProduction()) {
+                throw HttpException::internal('Falta configuración de seguridad de token en el servidor.');
+            }
+            $secretKey = 'USGAR_SECURE_TOKEN_SECRET_DEV_ONLY';
+        }
+
+        $expectedToken = hash_hmac('sha256', $cartId . ':' . $guestEmail, $secretKey);
+        if (empty($providedToken) || !hash_equals($expectedToken, $providedToken)) {
+            throw HttpException::unauthorized('Token de autorización inválido o ausente para extender el bloqueo.');
         }
 
         $status = BookingStatus::tryFrom($hold['status']);

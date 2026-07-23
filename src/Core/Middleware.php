@@ -61,6 +61,7 @@ class Middleware {
 
             if ($allowOrigin !== '*') {
                 header('Vary: Origin');
+                header('Access-Control-Allow-Credentials: true');
             }
         };
     }

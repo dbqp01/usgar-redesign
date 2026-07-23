@@ -81,7 +81,10 @@ class User {
             $existing = $this->findByEmail($profile['email']);
 
             if ($existing !== null) {
-                // Actualizar proveedor y foto si venía vacío
+                // Si el usuario ya tiene un provider asignado y no coincide con el actual, no sobrescribir a ciegas
+                $newProvider = $existing['provider'] === 'email' ? $profile['provider'] : $existing['provider'];
+                $newProviderId = $existing['provider'] === 'email' ? $profile['provider_id'] : $existing['provider_id'];
+
                 $stmt = $this->pdo->prepare('
                     UPDATE users SET
                         provider = :provider,
@@ -93,8 +96,8 @@ class User {
                     WHERE id = :id
                 ');
                 $stmt->execute([
-                    ':provider'    => $profile['provider'],
-                    ':provider_id' => $profile['provider_id'],
+                    ':provider'    => $newProvider,
+                    ':provider_id' => $newProviderId,
                     ':photo_url'   => $profile['photo_url'] ?? null,
                     ':first_name'  => $profile['first_name'] ?? null,
                     ':last_name'   => $profile['last_name'] ?? null,

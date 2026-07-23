@@ -90,8 +90,8 @@
     "semantic_hash": ""
   },
   "src/components/FAQSection.astro": {
-    "mtime": 1784683405.131359,
-    "ast_hash": "9f838347019633e1f414c07ba94f6d31",
+    "mtime": 1784737434.578083,
+    "ast_hash": "7815c5349f47155944c67a7f2e772236",
     "semantic_hash": ""
   },
   "src/components/Footer.astro": {
@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "src/components/RoomCard.astro": {
-    "mtime": 1784613291.8550742,
-    "ast_hash": "7d9325686a8296a9537c0ae99c06d289",
+    "mtime": 1784737454.3851502,
+    "ast_hash": "a6ec0c12ef14bcfece89b56ee88030b4",
     "semantic_hash": ""
   },
   "src/components/RoomDetail.astro": {
@@ -125,8 +125,8 @@
     "semantic_hash": ""
   },
   "src/components/ServiceGrid.astro": {
-    "mtime": 1784615471.2509284,
-    "ast_hash": "4eaf965ffde4beace623cd68e5531e6f",
+    "mtime": 1784737397.8769934,
+    "ast_hash": "c69e9a240f9e4598d2eb194b9df457bc",
     "semantic_hash": ""
   },
   "src/components/WhatsAppButton.astro": {
@@ -155,13 +155,13 @@
     "semantic_hash": ""
   },
   "src/i18n/en.json": {
-    "mtime": 1784643728.628014,
-    "ast_hash": "4dec34cb067ec479e52673ceb7c8608b",
+    "mtime": 1784737374.9536228,
+    "ast_hash": "f02c08dae0e0f4c8b3cd3d8f56eb9c67",
     "semantic_hash": ""
   },
   "src/i18n/es.json": {
-    "mtime": 1784643757.3787577,
-    "ast_hash": "c8f8f174aef999856b48df0e5b75e9cd",
+    "mtime": 1784737374.9559636,
+    "ast_hash": "6577b3b7b1f8babd7c7b52624ad5f999",
     "semantic_hash": ""
   },
   "src/i18n/utils.ts": {
@@ -170,8 +170,8 @@
     "semantic_hash": ""
   },
   "src/layouts/Layout.astro": {
-    "mtime": 1784645831.4278536,
-    "ast_hash": "43cc4f1ea70eb727442a300fa5fd2aff",
+    "mtime": 1784737733.2705047,
+    "ast_hash": "562e985fae88854f47bc01e364df30e0",
     "semantic_hash": ""
   },
   "src/pages/book.astro": {
@@ -260,8 +260,8 @@
     "semantic_hash": ""
   },
   "src/pages/index.astro": {
-    "mtime": 1784643974.104994,
-    "ast_hash": "78acae522903ddf9e055d3a1d350433f",
+    "mtime": 1784737534.6912105,
+    "ast_hash": "908b09571f99684b393658c37d16edf0",
     "semantic_hash": ""
   },
   "src/pages/rooms/[slug].astro": {
@@ -1320,33 +1320,8 @@
     "semantic_hash": ""
   },
   "scripts/run-exhaustive-tests.php": {
-    "mtime": 1784682094.3444462,
-    "ast_hash": "bb5ff195b5bb4f1e465aeb6f6b98bd18",
-    "semantic_hash": ""
-  },
-  "src/Controllers/BookingController.php": {
-    "mtime": 1784515587.269597,
-    "ast_hash": "e3218998f47a9f52635fe001ac07a702",
-    "semantic_hash": ""
-  },
-  "src/Controllers/CronController.php": {
-    "mtime": 1784490719.4942586,
-    "ast_hash": "e6569db07d85662e7c2e7de0608f46eb",
-    "semantic_hash": ""
-  },
-  "src/Controllers/HealthController.php": {
-    "mtime": 1784292963.7901084,
-    "ast_hash": "8e715c1023f32fb6712734dcbb905529",
-    "semantic_hash": ""
-  },
-  "src/Controllers/RoomController.php": {
-    "mtime": 1784293088.887203,
-    "ast_hash": "399331a811918bf921adbe3da43ab154",
-    "semantic_hash": ""
-  },
-  "src/Controllers/WebhookController.php": {
-    "mtime": 1784502843.842933,
-    "ast_hash": "2783a9ac628c54ea80c1df87588e551b",
+    "mtime": 1784684825.962579,
+    "ast_hash": "db2f61d0c48001a9b4b026ba2bd637fc",
     "semantic_hash": ""
   },
   "src/Core/Autoloader.php": {
@@ -1412,21 +1387,6 @@
   "src/Models/ProvisionalBooking.php": {
     "mtime": 1784515582.0770931,
     "ast_hash": "dc521245a28661ae07206f5189cd80db",
-    "semantic_hash": ""
-  },
-  "src/Services/ChannexService.php": {
-    "mtime": 1784504956.0841858,
-    "ast_hash": "1985d8f6be218791dad7fa698d764cd1",
-    "semantic_hash": ""
-  },
-  "src/Services/MercadoPagoService.php": {
-    "mtime": 1784515570.7080972,
-    "ast_hash": "61cb54d2f74d95b68f27d5d001eef7a3",
-    "semantic_hash": ""
-  },
-  "src/Services/QloAppService.php": {
-    "mtime": 1784502757.820106,
-    "ast_hash": "a38dc2b64d4c3c9c1a9dcde85b2f8be8",
     "semantic_hash": ""
   },
   "src/Services/bookingService.ts": {
@@ -1539,19 +1499,14 @@
     "ast_hash": "e48fbfe87352cd1e2f418919e02c0f7f",
     "semantic_hash": ""
   },
-  "src/Controllers/ChannexWebhookController.php": {
-    "mtime": 1784504776.75854,
-    "ast_hash": "03ba014045714992e9835b4ef880f03e",
-    "semantic_hash": ""
-  },
   "src/Services/ChannexRoomMapper.php": {
     "mtime": 1784531015.5601802,
     "ast_hash": "83c6cd6528dbf91342d3540945801067",
     "semantic_hash": ""
   },
   "src/components/room/RoomAmenitiesGrid.astro": {
-    "mtime": 1784613579.2632825,
-    "ast_hash": "8d744fc3a2da70c610a14f34371bad7f",
+    "mtime": 1784737518.9807043,
+    "ast_hash": "33b360db58a918b653adbf0ca1d1e2f5",
     "semantic_hash": ""
   },
   "playwright.config.ts": {
@@ -1562,11 +1517,6 @@
   "scripts/audit-seo-schema.js": {
     "mtime": 1784507804.747019,
     "ast_hash": "4d3ad26cd73028cd02459d0384f3b16e",
-    "semantic_hash": ""
-  },
-  "src/Controllers/AuthController.php": {
-    "mtime": 1784608437.6198833,
-    "ast_hash": "5286dacdf05d6244ffe45eb5158f17bf",
     "semantic_hash": ""
   },
   "src/Models/User.php": {
@@ -1650,8 +1600,8 @@
     "semantic_hash": ""
   },
   "src/components/InteractiveRoomsSection.astro": {
-    "mtime": 1784644025.1013987,
-    "ast_hash": "b71c49c65f81f32a827bc93e5af150ca",
+    "mtime": 1784684696.923762,
+    "ast_hash": "d20c4415cbaf9f87b5bb14c8baf2e8cd",
     "semantic_hash": ""
   },
   "src/assets/explore/barrio-de-san-blas.jpg": {
@@ -1765,13 +1715,13 @@
     "semantic_hash": ""
   },
   "src/i18n/fr.json": {
-    "mtime": 1784643790.2007499,
-    "ast_hash": "965b64b02d9db4114e9f25519b122c9a",
+    "mtime": 1784737374.9564836,
+    "ast_hash": "5d7465ef2e375e1fd68f1969f9012022",
     "semantic_hash": ""
   },
   "src/i18n/pt.json": {
-    "mtime": 1784643824.3604887,
-    "ast_hash": "40512af9e2b481ca0398a219f353434d",
+    "mtime": 1784737374.956999,
+    "ast_hash": "468e7ca4823df457050e1306804ec596",
     "semantic_hash": ""
   },
   "src/pages/fr/book.astro": {
@@ -1970,8 +1920,8 @@
     "semantic_hash": ""
   },
   "src/Features/Booking/Domain/ProvisionalBookingRepository.php": {
-    "mtime": 1784681656.513319,
-    "ast_hash": "422673829dbed6c86f3f5c655be6b6b9",
+    "mtime": 1784684874.4986851,
+    "ast_hash": "813605c31203495365b4a92bff564028",
     "semantic_hash": ""
   },
   "src/Features/Cron/Actions/CleanExpiredCartsAction.php": {
@@ -2025,8 +1975,8 @@
     "semantic_hash": ""
   },
   "src/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php": {
-    "mtime": 1784681685.796744,
-    "ast_hash": "ee62d39abe5937a21d0924252a4cf30a",
+    "mtime": 1784737098.8641267,
+    "ast_hash": "ca5d491bd4fe7c07ad83dcd5a3f178a9",
     "semantic_hash": ""
   },
   "tests/Unit/Features/GetRoomsActionTest.php": {
@@ -2042,6 +1992,11 @@
   "tests/Unit/TestCase.php": {
     "mtime": 1784682712.7766206,
     "ast_hash": "a76c5a444682033ab6e9760115598ecc",
+    "semantic_hash": ""
+  },
+  "scripts/update-i18n.js": {
+    "mtime": 1784737170.7014072,
+    "ast_hash": "797134ad53bcce5f81588e53b4557552",
     "semantic_hash": ""
   }
 }
