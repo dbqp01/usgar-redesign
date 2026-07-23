@@ -82,9 +82,11 @@ const blogSchema = {
       <Image
         src={exploreImages[`../../assets/explore/${attraction.id}.jpg`].default}
         alt={attraction.name[lang]}
-        width={1920}
-        height={1080}
+        widths={[640, 1024, 1600]}
+        sizes="100vw"
         format="webp"
+        loading="eager"
+        decoding="async"
         class="w-full h-full object-cover filter brightness-[0.4] transition-all duration-500"
       />
       <!-- Dark overlay -->

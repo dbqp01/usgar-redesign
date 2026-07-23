@@ -532,5 +532,10 @@
   "530": "PaymentGatewayPortInterface",
   "531": "PDO",
   "532": "PmsPortInterface",
-  "533": "Request"
+  "533": "Request",
+  "534": "File Creation Checklist",
+  "535": "ObjectModel Best Practices",
+  "536": "十、PHP命令执行元思考方法论",
+  "537": "10.8 实战案例深度剖析",
+  "538": "10.9 防御体系建设"
 }

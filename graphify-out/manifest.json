@@ -1315,8 +1315,8 @@
     "semantic_hash": ""
   },
   "public/index.php": {
-    "mtime": 1784681752.8524609,
-    "ast_hash": "b77bd76adf67bd8818f30234eb2ee8f0",
+    "mtime": 1784768410.1038578,
+    "ast_hash": "b43137d233e34d9e14fa23e9cd3032ef",
     "semantic_hash": ""
   },
   "scripts/run-exhaustive-tests.php": {
@@ -1330,8 +1330,8 @@
     "semantic_hash": ""
   },
   "src/Core/BookingStatus.php": {
-    "mtime": 1784292899.0598483,
-    "ast_hash": "1b53eb07f84c608881b193b1539707fb",
+    "mtime": 1784767772.9232175,
+    "ast_hash": "627f5fbc1b8e5c4f9c3efe678e76e1e9",
     "semantic_hash": ""
   },
   "src/Core/Config.php": {
@@ -1355,8 +1355,8 @@
     "semantic_hash": ""
   },
   "src/Core/Middleware.php": {
-    "mtime": 1784502725.392133,
-    "ast_hash": "e6230828334594a682a3b741df55c527",
+    "mtime": 1784767672.351395,
+    "ast_hash": "84402602043916e956d94ee216c0e040",
     "semantic_hash": ""
   },
   "src/Core/RateLimiter.php": {
@@ -1375,8 +1375,8 @@
     "semantic_hash": ""
   },
   "src/Core/Router.php": {
-    "mtime": 1784681760.4560633,
-    "ast_hash": "ec20b7878fe79e64e3ed6d3d4b2a25dc",
+    "mtime": 1784767758.0427794,
+    "ast_hash": "e2dfb598c61eba2a0b250f69c2f35a12",
     "semantic_hash": ""
   },
   "src/Core/Validator.php": {
@@ -1390,8 +1390,8 @@
     "semantic_hash": ""
   },
   "src/Services/bookingService.ts": {
-    "mtime": 1784495144.7313392,
-    "ast_hash": "d99317cb52a745d686df0d8718d08b6a",
+    "mtime": 1784767659.8330803,
+    "ast_hash": "7ba13609be9de9eaa710766c859eb368",
     "semantic_hash": ""
   },
   "src/Services/httpClient.ts": {
@@ -1520,8 +1520,8 @@
     "semantic_hash": ""
   },
   "src/Models/User.php": {
-    "mtime": 1784514443.2936797,
-    "ast_hash": "f0462434f8e366f78fb2facd008b2062",
+    "mtime": 1784767738.2595136,
+    "ast_hash": "b2a6480ba76542052d94ac07ecb3c581",
     "semantic_hash": ""
   },
   "src/Services/AuthService.php": {
@@ -1860,13 +1860,13 @@
     "semantic_hash": ""
   },
   "src/Features/Auth/Actions/AuthCallbackAction.php": {
-    "mtime": 1784681716.4359987,
-    "ast_hash": "421d417235083a7b45b58d4de1b1b1f2",
+    "mtime": 1784768390.9559672,
+    "ast_hash": "1d7c49ebd14829fb89104bcb7aff80cb",
     "semantic_hash": ""
   },
   "src/Features/Auth/Actions/AuthLoginAction.php": {
-    "mtime": 1784681711.9739747,
-    "ast_hash": "2ab1cb52843ff07f3f742429478c0a16",
+    "mtime": 1784768402.2341259,
+    "ast_hash": "e58b18cf69223087aa6e77718c72e707",
     "semantic_hash": ""
   },
   "src/Features/Auth/Actions/AuthLoginEmailAction.php": {
@@ -1895,18 +1895,18 @@
     "semantic_hash": ""
   },
   "src/Features/Booking/Actions/CreateBookingAction.php": {
-    "mtime": 1784681662.5105076,
-    "ast_hash": "acf9d8a0eb5d2d0ef9fd073404b5b956",
+    "mtime": 1784767630.5347238,
+    "ast_hash": "9cfac6a1cd519c051e5240e900822de7",
     "semantic_hash": ""
   },
   "src/Features/Booking/Actions/ExtendHoldAction.php": {
-    "mtime": 1784681667.7308035,
-    "ast_hash": "ad18706471408e09f3fbdffec2370e4c",
+    "mtime": 1784767704.1321912,
+    "ast_hash": "bfe285615e76f21b935e23803893a282",
     "semantic_hash": ""
   },
   "src/Features/Booking/Actions/GetBookingStatusAction.php": {
-    "mtime": 1784681674.8241348,
-    "ast_hash": "329870f7080c9a491784f075c950ecb5",
+    "mtime": 1784767639.4128463,
+    "ast_hash": "5b9ddf9493491479b0e120870ac90115",
     "semantic_hash": ""
   },
   "src/Features/Booking/Domain/ProvisionalBookingRepository.php": {
@@ -1915,8 +1915,8 @@
     "semantic_hash": ""
   },
   "src/Features/Cron/Actions/CleanExpiredCartsAction.php": {
-    "mtime": 1784681703.3723667,
-    "ast_hash": "b7bab691d1aef19022614a2dad6d73b2",
+    "mtime": 1784767718.9253573,
+    "ast_hash": "2df6744310f04f14b09d2417149b6a20",
     "semantic_hash": ""
   },
   "src/Features/Health/Actions/HealthCheckAction.php": {
@@ -1987,6 +1987,726 @@
   "scripts/update-i18n.js": {
     "mtime": 1784737170.7014072,
     "ast_hash": "797134ad53bcce5f81588e53b4557552",
+    "semantic_hash": ""
+  },
+  "composer.json": {
+    "mtime": 1784768361.0690985,
+    "ast_hash": "00fe1fd54153eb9fe02f29ca1ead06f1",
+    "semantic_hash": ""
+  },
+  "vendor/autoload.php": {
+    "mtime": 1784768361.058597,
+    "ast_hash": "aa16099fa3d70226b0cbe202c40fc73f",
+    "semantic_hash": ""
+  },
+  "vendor/composer/ClassLoader.php": {
+    "mtime": 1782897885.0,
+    "ast_hash": "c02be6d96671f88d28aad3ffa134c8ae",
+    "semantic_hash": ""
+  },
+  "vendor/composer/InstalledVersions.php": {
+    "mtime": 1784768360.5351305,
+    "ast_hash": "7baf73014351c49ea0fef617dae7019b",
+    "semantic_hash": ""
+  },
+  "vendor/composer/autoload_classmap.php": {
+    "mtime": 1784768361.0503075,
+    "ast_hash": "5615b29a1f5688414d56a1515d954a91",
+    "semantic_hash": ""
+  },
+  "vendor/composer/autoload_namespaces.php": {
+    "mtime": 1784768361.0478163,
+    "ast_hash": "224007c97efb82c7b45b0e92f240af41",
+    "semantic_hash": ""
+  },
+  "vendor/composer/autoload_psr4.php": {
+    "mtime": 1784768361.0490804,
+    "ast_hash": "aa9f0197c0c1f9e8cc48e9a10bf0c811",
+    "semantic_hash": ""
+  },
+  "vendor/composer/autoload_real.php": {
+    "mtime": 1784768361.0591822,
+    "ast_hash": "512186d214bc8297147cda21967a033e",
+    "semantic_hash": ""
+  },
+  "vendor/composer/autoload_static.php": {
+    "mtime": 1784768361.0554852,
+    "ast_hash": "b0a8b4def18f852b7d30aa3a42e6806f",
+    "semantic_hash": ""
+  },
+  "vendor/composer/installed.json": {
+    "mtime": 1784768360.5320997,
+    "ast_hash": "59a14077680508fe4da97f8647dd8e50",
+    "semantic_hash": ""
+  },
+  "vendor/composer/installed.php": {
+    "mtime": 1784768360.5336032,
+    "ast_hash": "bac6659860dea9d01e3b6aadd676404d",
+    "semantic_hash": ""
+  },
+  "vendor/composer/platform_check.php": {
+    "mtime": 1784768361.0575793,
+    "ast_hash": "1eebc0b4b9df4ae65ea5ec48b8046677",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/examples/example_01.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "29173bb0d17c3b1672f386ba3623e350",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/examples/example_02.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "d2438897181a0c6155fbaf82b10d0636",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/examples/example_03.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "7375b318cc7c580025f7d4e2c52b119a",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/examples/example_04.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "02d3f3e26f9d077bc9a4311cad20a6c8",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/examples/example_05.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "817aff01325339edd336628edcc1a8a5",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/examples/example_06/callback.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "2cac92296ae129c90aa4611f57886c39",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/examples/example_06/config.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "a3493f7c885a732b4c929ad6f97d5a7c",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/examples/example_06/index.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "8d39158d2716c919cde187a5e9bc707c",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/examples/example_07/callback.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "f5e87b90905590e7533b8ab5e8548cee",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/examples/example_07/config.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "a6f6ae9236b582626bfeb5042fde3523",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/examples/example_07/index.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "fecd4034c6c5cfcf829a140906b9a462",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Adapter/AbstractAdapter.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "4b3b58db8040c0303759276ecec8bca0",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Adapter/AdapterInterface.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "5f745917c32aabd0c4bd5cfaabafd195",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Adapter/DataStoreTrait.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "98adb9adfe6c2853a06a6d51cae78d23",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Adapter/FilterService.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "00751be98adb80a74873d7d8c2abbc62",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Adapter/OAuth1.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "505d60adc8a373090b79c13ddbad3c77",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Adapter/OAuth2.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "f27b166c61f6bf35866c457280c90a22",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Adapter/OpenID.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "2ca849c37fbc1b3ba739a1ec3fc045ec",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Data/Collection.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "92ca5cb6c2581211cec2c376646eae96",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Data/Parser.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "97ea8383aa299577a1cf790539eeb5fe",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/AuthorizationDeniedException.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "41b5110ff1548ccd72945f4086a39797",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/BadMethodCallException.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "70bcddf148bba6529a6301ad15880a5f",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/Exception.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "f0f5c1da0ad4f015c509b87632c3adf8",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/ExceptionInterface.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "6bcdea090e423222309611730aa64aec",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/HttpClientFailureException.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "869940fd69c1ce624062854da651090e",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/HttpRequestFailedException.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "4bcb40669f2cfe7a7cd247f322af532b",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/InvalidAccessTokenException.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "61d0c985f06261480aaa41e95cf03579",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/InvalidApplicationCredentialsException.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "3ebbdc6ffa0964954c2470ea8e4f6a2d",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/InvalidArgumentException.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "831c4ac17d3e51d2b432a463505b6069",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/InvalidAuthorizationCodeException.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "e7816690a174ca035c6d734d01090719",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/InvalidAuthorizationStateException.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "47ab28998826125fedbee4eb290b7e0c",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/InvalidOauthTokenException.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "57be882e0931236fe73ef35d8c388aeb",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/InvalidOpenidIdentifierException.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "8a9f9b1533294727a1388f6ff5a274b1",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/NotImplementedException.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "72e5e3825d6edca5af3a2e5079352018",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/RuntimeException.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "5319482cfd612a9d12e9949f21a1728f",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/UnexpectedApiResponseException.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "26e8e9514517d085210eb8b11bdf4c8f",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Exception/UnexpectedValueException.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "0c9da93c10c42c347d3f2525bfa93c01",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/HttpClient/Curl.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "1f74620e08efc1f4537ee48633d7bedf",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/HttpClient/Guzzle.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "b7caf72106035143f22d1cfdc06345c0",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/HttpClient/HttpClientInterface.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "d4df8344b1d5394b4604fc88bc3b7069",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/HttpClient/Util.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "4e8a5a1855f3c44e84b2b1dda82b7ef4",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Hybridauth.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "cae017866bdd4fafdcbb3a2ff3e279e5",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Logger/Logger.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "736d7382f01eb7793973bf46d777dbce",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Logger/LoggerInterface.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "e3593279cea5e2183070fc880b40e3fd",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Logger/Psr3LoggerWrapper.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "437b4cb19a536697ba9a96fda241a344",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/AOLOpenID.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "c2b7fa183b3de554b7f2ae2854c68b48",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Amazon.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "93e46c54ede5c75b085f860ec08fe1a2",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Apple.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "0e23ae6165015ed79d20809658863dab",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Authentiq.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "2b6a0e2cac6c4022a7f357fb60e87278",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/AutoDesk.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "cd5199b8c4aeb13bada13076b843c781",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/BitBucket.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "394f21414ec23f5ccd08dc7ba2c841d4",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Blizzard.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "4eea67034061ff8c615379bb28c32d6c",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/BlizzardAPAC.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "6c9202966e996481ba275d3a7a4afcb2",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/BlizzardEU.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "914274af0d84babbcbc589b16a7fba8b",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/DeviantArt.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "60700d927bb5b5b11026b2d061795b49",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Discord.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "077347b486e13ff0bd909b3d1aa97b58",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Disqus.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "ca3df44327697727827fbc4a1fb925e1",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Dribbble.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "8e1934918cee84f75b4061ae0b333b4f",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Dropbox.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "be191a791da50d584d3b6235810b620c",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Facebook.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "4fa4cc3b1efd4de8db6cb99f327fcd44",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Foursquare.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "e5e4f2fc1bdf166c909bf3443ec9ae9c",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/GitHub.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "634a93d0984c55bc67a0c6123566b6cb",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/GitLab.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "f6744262b3a2781e2cd516c193b7d008",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Google.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "d3256823741d9fb609b73b9eaadb430b",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Instagram.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "b61fcb1c1161a6bd019c65e20658c2db",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Keycloak.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "ea32f8c98eb6c88d4893dc3ca17cf45c",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/LinkedIn.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "f9dc936b3065be846a528e4aca48a328",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/LinkedInOpenID.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "e76451e05a2369325fc93a56e19f0a7f",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Mastodon.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "bf8a80643ca6cf4d538fc9bb738eded5",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Medium.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "a5765dd6f294682087e55aa27ae65499",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/MicrosoftGraph.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "72dd6387a7826c367e18e06500721d31",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/ORCID.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "881c0aa92e1163c44b8dabdb584d5078",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/OktaOIDC.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "6ab76389db743b58eb522722d44a02e6",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/OpenID.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "86abb544692bebdbc53cc5b126c5c0ae",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Patreon.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "185d22074ba733fcf051c09feec436a0",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Paypal.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "3f11d4018d5ed2516bc550307045ac31",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/PaypalOpenID.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "ad625843c4700b92f9f22891506e1fc9",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Pinterest.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "d0f209251942e1509f2c075cc878f6da",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/QQ.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "497fb442d7901e84d36f1f2e3e9b34d9",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Reddit.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "ee01891619aa912bfd453e3bd0654f76",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Seznam.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "dee277a20664705ba71cdef27cc7fa68",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Slack.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "78f273dee0b541196406e928e94b7d71",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Spotify.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "0e5bc83013644c2e09825ca6b9ffc732",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/StackExchange.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "83f499393a099c911724ae9803ce3cc5",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/StackExchangeOpenID.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "2bca770e7209d644b4f9ab71ba80ea32",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Steam.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "64dbce6b3c79642bee2b7a717a603424",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/SteemConnect.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "c53c18d55f5e4bc5920a6e1e4dcac781",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Strava.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "562ddf59ca2e882fcb3192ee12d5f52c",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Telegram.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "e5e2399df8b96fca29e8d4b1e5cee9c4",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Tumblr.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "c26258c8a4ce35cf0a0f2a49cb323ce6",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/TwitchTV.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "46a5296d2c7c93f86fbae39a5d877daa",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Twitter.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "3bc2b445dafdba3e12bee2de182343fd",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/WeChat.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "ee2cb4a7954a79056cf5cad09704268b",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/WeChatChina.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "fc4e8c7ae2dcd3691d385aeb1b8390dc",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/WindowsLive.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "7d0ae6758a2244b508a0cce74125f666",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/WordPress.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "21ccb6f093efaa7354bd822f1affbfaa",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/X.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "9fc2f47af7161d9dc98253d983e7f587",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Provider/Yahoo.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "2d5e6ee414a2c755e7e0db300773eee1",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Storage/Session.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "f77fd8875c59cd16895f50f0d786af42",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Storage/StorageImpl.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "6fdcd329c30adcc2a4923e5b800c8645",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Storage/StorageInterface.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "ec9ff3ea94086ea2bf70f5e3582af05b",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Thirdparty/OAuth/OAuthConsumer.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "545ab19f05c7702091d431364a37e914",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Thirdparty/OAuth/OAuthRequest.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "3ee6a46db34609dd376915c3cb867e86",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Thirdparty/OAuth/OAuthSignatureMethod.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "60e04a43afc73b6aa03f8a10a8e0602f",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Thirdparty/OAuth/OAuthSignatureMethodHMACSHA1.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "32df68b7ef7c27b8491c2414aecbc663",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Thirdparty/OAuth/OAuthUtil.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "9a839ce7e6723956648d8f0db8b0e22e",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Thirdparty/OpenID/LightOpenID.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "2de4a55f7abf1e4fa90ffa711a1453f2",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/User/Activity.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "42b025d8077f63ef48c9946209026e04",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/User/Contact.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "8e5ffd46192d452cd53664f57dbd8aab",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/User/Profile.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "4da593a586a96f1cb0b913f6d928abb0",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/autoload.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "d3a4c6eba486455acc3cfd7594e99748",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/tests/Data/CollectionTest.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "086e6736ceddd90e02ec219c4dc8c8e5",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/tests/Data/ParserTest.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "55b336c48d1fa86570bf9da669f4052a",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/tests/HybridauthTest.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "dfd6a38f3522e26006b657df2c3f11a0",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/tests/Provider/KeycloakTest.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "66d49f4c2b5fe2f6a92a01b6e15d1875",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/tests/Storage/SessionTest.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "b9d84d7b728a49fa882326509b1b02b5",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/tests/User/ActivityTest.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "90365c6441f5eac5dcfe0ac2b59e5ce0",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/tests/User/ContactTest.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "b4f6c85407efdb913e1d903d8c99ccc6",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/tests/User/ProfileTest.php": {
+    "mtime": 1775157086.0,
+    "ast_hash": "b3922619639e0f392f75034d9513fb88",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/CHANGELOG.md": {
+    "mtime": 1775157086.0,
+    "ast_hash": "e98aa2998d201081d3f574e63263d8d3",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/CODE_OF_CONDUCT.md": {
+    "mtime": 1775157086.0,
+    "ast_hash": "5b581f31bd17f45ab11e30d4ac253bd0",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/CONTRIBUTING.md": {
+    "mtime": 1775157086.0,
+    "ast_hash": "dc9599753d227abc9d3b419355e4262b",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/COPYING.md": {
+    "mtime": 1775157086.0,
+    "ast_hash": "12152328006cfb4bcb559b2dd81e904f",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/ISSUE_TEMPLATE.md": {
+    "mtime": 1775157086.0,
+    "ast_hash": "10871e1f3afee7cc750d761a092efea5",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/PULL_REQUEST_TEMPLATE.md": {
+    "mtime": 1775157086.0,
+    "ast_hash": "b40d398b4b1d2e0e5e89e378b1b0e777",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/README.md": {
+    "mtime": 1775157086.0,
+    "ast_hash": "042e2f44261024b8eae51cc66c97df6a",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/examples/README.md": {
+    "mtime": 1775157086.0,
+    "ast_hash": "14b6d750e6ea17d3548056c258fcb8ad",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/examples/index.html": {
+    "mtime": 1775157086.0,
+    "ast_hash": "bdce9efad9a163201b1c9275af6aa07f",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Thirdparty/OAuth/README.md": {
+    "mtime": 1775157086.0,
+    "ast_hash": "6c2c070f0019b138604b1c0a4e46fc4e",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Thirdparty/OpenID/README.md": {
+    "mtime": 1775157086.0,
+    "ast_hash": "01e00ed608437e04ae2f267f51925ce3",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/Thirdparty/readme.md": {
+    "mtime": 1775157086.0,
+    "ast_hash": "4537165924626d2c8a8869aa8c66c3ba",
+    "semantic_hash": ""
+  },
+  "vendor/hybridauth/hybridauth/src/index.html": {
+    "mtime": 1775157086.0,
+    "ast_hash": "bdce9efad9a163201b1c9275af6aa07f",
     "semantic_hash": ""
   }
 }

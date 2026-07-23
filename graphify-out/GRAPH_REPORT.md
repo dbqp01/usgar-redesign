@@ -1,16 +1,16 @@
 # Graph Report - usgar-redesign  (2026-07-22)
 
 ## Corpus Check
-- 338 files · ~720,537 words
+- 480 files · ~764,917 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 5895 nodes · 6106 edges · 539 communities (480 shown, 59 thin omitted)
-- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 13 edges (avg confidence: 0.78)
+- 6675 nodes · 7317 edges · 621 communities (526 shown, 95 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 56 edges (avg confidence: 0.79)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `19da5a45`
+- Built from commit: `ce1cc6a6`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -535,43 +535,101 @@
 - 十、PHP命令执行元思考方法论
 - 10.8 实战案例深度剖析
 - 10.9 防御体系建设
+- Telegram
+- ClassLoader
+- AdapterInterface.php
+- self
+- OAuthRequest
+- dependencies
+- OpenID
+- TestCase
+- Hybridauth.php
+- OAuth1
+- IBookingService.ts
+- UnexpectedValueException
+- OAuthUtil
+- ActivityTest
+- CollectionTest
+- OAuth1.php
+- Hybridauth
+- Twitter
+- OAuthSignatureMethod
+- Contributor Covenant Code of Conduct
+- [Hybridauth](https://hybridauth.github.io/) 3.12
+- Apple
+- LinkedIn
+- X
+- BookingService
+- WeChat
+- Process
+- Common Pitfalls
+- Advanced Features
+- GetBookingStatusAction.php
+- DataStoreTrait.php
+- ParserTest
+- Parser
+- Util
+- Foursquare
+- ContactTest
+- Controller Best Practices
+- Hook Development Checklist
+- CRUD Operations
+- Framework-Specific Considerations
+- RateLimiter
+- Keycloak.php
+- ProfileTest
+- Utility Components
+- Navigation
+- ComposerAutoloaderInit66501ca8fa27c2f60c8a58c36c7c5686
+- CONTRIBUTING.md
+- Bug, feature or question?
+- Tumblr.php
+- Advanced Components
+- From Bootstrap
+- Migration Strategies
+- require
+- ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
+- FilterService
+- OpenID
+- readme.md
+- self
 
 ## God Nodes (most connected - your core abstractions)
-1. `轨道B: 数据流分析法 (注入类漏洞)` - 39 edges
-2. `轨道B: 数据流分析法 (注入类漏洞)` - 29 edges
-3. `ProvisionalBookingRepository` - 23 edges
-4. `../layouts/Layout.astro` - 22 edges
-5. `Spring Boot Security Audit Guide` - 21 edges
-6. `Koa Security Audit Guide` - 19 edges
-7. `Laravel Security Audit Guide` - 19 edges
-8. `HttpException` - 18 edges
-9. `USGAR Hotels — Manual de Marca Oficial` - 17 edges
-10. `Taint Analysis Module` - 17 edges
+1. `OAuth2` - 104 edges
+2. `轨道B: 数据流分析法 (注入类漏洞)` - 39 edges
+3. `AbstractAdapter` - 34 edges
+4. `LightOpenID` - 31 edges
+5. `轨道B: 数据流分析法 (注入类漏洞)` - 29 edges
+6. `ClassLoader` - 28 edges
+7. `Telegram` - 28 edges
+8. `../layouts/Layout.astro` - 22 edges
+9. `OAuthRequest` - 21 edges
+10. `Spring Boot Security Audit Guide` - 21 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `../components/MapSection.astro` --dynamic_import--> `leaflet/dist/leaflet.css`  [EXTRACTED]
   src/components/MapSection.astro → leaflet/dist/leaflet.css
 - `../components/MapSection.astro` --dynamic_import--> `../assets/logos/Logo usgar isotipo.png`  [EXTRACTED]
   src/components/MapSection.astro → src/assets/logos/Logo usgar isotipo.png
-- `CreateBookingAction` --references--> `ProvisionalBookingRepository`  [EXTRACTED]
-  src/Features/Booking/Actions/CreateBookingAction.php → src/Features/Booking/Domain/ProvisionalBookingRepository.php
-- `ExtendHoldAction` --references--> `ProvisionalBookingRepository`  [EXTRACTED]
-  src/Features/Booking/Actions/ExtendHoldAction.php → src/Features/Booking/Domain/ProvisionalBookingRepository.php
-- `GetBookingStatusAction` --references--> `ProvisionalBookingRepository`  [EXTRACTED]
-  src/Features/Booking/Actions/GetBookingStatusAction.php → src/Features/Booking/Domain/ProvisionalBookingRepository.php
+- `OAuth1` --inherits--> `AbstractAdapter`  [EXTRACTED]
+  vendor/hybridauth/hybridauth/src/Adapter/OAuth1.php → vendor/hybridauth/hybridauth/src/Adapter/AbstractAdapter.php
+- `OAuth2` --inherits--> `AbstractAdapter`  [EXTRACTED]
+  vendor/hybridauth/hybridauth/src/Adapter/OAuth2.php → vendor/hybridauth/hybridauth/src/Adapter/AbstractAdapter.php
+- `OpenID` --inherits--> `AbstractAdapter`  [EXTRACTED]
+  vendor/hybridauth/hybridauth/src/Adapter/OpenID.php → vendor/hybridauth/hybridauth/src/Adapter/AbstractAdapter.php
 
 ## Import Cycles
 - None detected.
 
-## Communities (539 total, 59 thin omitted)
+## Communities (621 total, 95 thin omitted)
 
 ### Community 0 - "python.md"
 Cohesion: 0.02
 Nodes (116): 1. Check-Then-Act (TOCTOU) - 文件操作, 2. 共享状态竞态 (多线程), 3. Django ORM 竞态, 4. Flask 全局状态竞态, 5. asyncio 竞态, AJAX 请求, 🔴 API 密钥, AWS - 使用 IAM 角色或环境变量 (+108 more)
 
 ### Community 1 - "Code Audit - 代码安全审计技能"
-Cohesion: 0.31
-Nodes (3): ExtendHoldAction, PmsPortInterface, Request
+Cohesion: 0.52
+Nodes (4): ExtendHoldAction, PmsPortInterface, ProvisionalBookingRepository, Request
 
 ### Community 2 - "External Security Tools Integration Guide"
 Cohesion: 0.04
@@ -582,8 +640,8 @@ Cohesion: 0.04
 Nodes (47): 10. CI/CD 集成, 1. Semgrep - 多语言SAST工具, 2. Bandit - Python安全扫描, 3. Gosec - Go安全扫描, 4. npm audit / yarn audit - Node.js依赖扫描, 5. pip-audit / safety - Python依赖扫描, 6. Gitleaks - 密钥泄露检测, 7. Trivy - 容器/依赖扫描 (+39 more)
 
 ### Community 5 - "Best practices"
-Cohesion: 0.04
-Nodes (44): @astrojs/check, @astrojs/sitemap, allowScripts, esbuild@0.28.1, sharp@0.35.3, dependencies, @astrojs/check, @astrojs/sitemap (+36 more)
+Cohesion: 0.06
+Nodes (32): allowScripts, esbuild@0.28.1, sharp@0.35.3, devDependencies, @playwright/test, @types/leaflet, @types/node, typescript (+24 more)
 
 ### Community 6 - "Rust Security Audit"
 Cohesion: 0.04
@@ -594,8 +652,8 @@ Cohesion: 0.05
 Nodes (43): Corner Case 思维清单, IP地址表示绕过, JavaScript关键字绕过, SQL注入绕过策略树, SSRF绕过策略树, WAF通用绕过思路, XSS绕过策略树, 事件过滤绕过 (+35 more)
 
 ### Community 8 - "Java JNDI Injection - JNDI 注入完整审计规则"
-Cohesion: 0.23
-Nodes (7): ../Services/bookingService, applyUserData(), autoFillUser(), selectRoomCard(), updatePricing(), daysBetween(), translateBeds()
+Cohesion: 0.14
+Nodes (10): ../Services/bookingService, AmenityLabel, Room, rooms, applyUserData(), autoFillUser(), selectRoomCard(), updatePricing() (+2 more)
 
 ### Community 9 - "📊 真实案例：若依管理系统依赖漏洞"
 Cohesion: 0.40
@@ -722,12 +780,12 @@ Cohesion: 0.06
 Nodes (31): 1. XSS 漏洞, 1. XSS 漏洞, 1. XSS 漏洞, 1. 本地存储安全, 1. 环境变量, 2. CSP (内容安全策略), 2. Source Map, 2. Vue 3 特定问题 (+23 more)
 
 ### Community 45 - "attacker_perspective.md"
-Cohesion: 0.15
-Nodes (7): Database Class: `classes/QymModuleDb.php`, define.php, Module Architecture & File Structure, Optional But Recommended Files, Reference Implementation, Related References, Standard Module Structure
+Cohesion: 0.06
+Nodes (31): 1. Main Module File: `qlomodulename.php`, 1. Separation of Concerns, 2. config.xml, 2. No Code Outside Module Folder, 3. Follow QloApps Standards, 3. LICENSE.md, 4. Index Files Everywhere, 4. README.md (+23 more)
 
 ### Community 46 - "Race Conditions Detection Module"
-Cohesion: 0.06
-Nodes (32): 1. Not Setting Up Tailwind Properly, 2. Forgetting Path Aliases, 3. Trying to Match Old Library Exactly, 4. Not Using Form Libraries, 5. Ignoring Accessibility, After Migration, Before Migration, Common Pitfalls (+24 more)
+Cohesion: 0.10
+Nodes (20): After Migration, Before Migration, Component Mapping, Component Mapping, Component Mapping, During Migration, From Ant Design, From Chakra UI (+12 more)
 
 ### Community 47 - "Hooks System - Integration Without Core Modification"
 Cohesion: 0.06
@@ -750,8 +808,8 @@ Cohesion: 0.06
 Nodes (30): 1. Browse Available Components, 1. Theme Customization, 2. Component Installation, 2. Component Variants, 3. Extending Components, 3. Registry and Custom Registries, Accessibility, Blocks and Complex Components (+22 more)
 
 ### Community 52 - "Flask Security Audit"
-Cohesion: 0.12
-Nodes (12): BookingService, defaultHttpClient, FetchHttpClient, ApiResult, BookingPayload, BookingResponseData, BookingStatusData, GuestDetails (+4 more)
+Cohesion: 0.29
+Nodes (4): defaultHttpClient, FetchHttpClient, HttpResponse, IHttpClient
 
 ### Community 53 - "NestJS 特定漏洞"
 Cohesion: 0.07
@@ -774,8 +832,8 @@ Cohesion: 0.07
 Nodes (28): 1. CRLF 日志注入, 1. 安全事件记录清单, 1. 密码/凭据记录, 1. 速率限制绕过, 2. PII (个人身份信息) 记录, 2. 日志格式化字符串, 2. 日志逃逸, 2. 结构化日志 (+20 more)
 
 ### Community 58 - "Code Audit Skill"
-Cohesion: 0.07
-Nodes (27): Action Hooks (Backend Events), Admin Hooks, Common Hooks Reference, Creating Custom Hooks, Creating Override (If You Must), Custom Hook Guidelines, Custom Hooks (if created), Display Hooks (Frontend) (+19 more)
+Cohesion: 0.12
+Nodes (16): Action Hooks (Backend Events), Admin Hooks, Common Hooks Reference, Creating Override (If You Must), Display Hooks (Frontend), Examples from hotelreservationsystem, Hook Parameters, Hook Types (+8 more)
 
 ### Community 59 - "Core Web Vitals optimization"
 Cohesion: 0.07
@@ -802,8 +860,8 @@ Cohesion: 0.15
 Nodes (3): HttpException, self, Validator
 
 ### Community 65 - "Anti-Hallucination Rules Module"
-Cohesion: 0.12
-Nodes (10): ChannexRoomMapper, GetBookingStatusAction, Request, PDO, ProvisionalBookingRepository, CleanExpiredCartsAction, Request, HandleChannexWebhookAction (+2 more)
+Cohesion: 0.17
+Nodes (6): ChannexRoomMapper, PDO, ProvisionalBookingRepository, HandleChannexWebhookAction, PDO, Request
 
 ### Community 66 - "Koa Security Audit Guide"
 Cohesion: 0.08
@@ -834,7 +892,7 @@ Cohesion: 0.08
 Nodes (24): Anti-Confirmation-Bias Rules (MUST FOLLOW), Anti-Hallucination Rules (MUST FOLLOW), Code Audit Skill, Core Modules (Load First), Core Workflow, Detailed Documentation, Docker部署验证, Execution Controller（执行控制器 — 必经路径） (+16 more)
 
 ### Community 73 - "二、安全控制矩阵详表"
-Cohesion: 0.09
+Cohesion: 0.11
 Nodes (19): Adding New Animations, Adjusting Existing Animations, Advanced Customization, Animation Customization, Best Practices, Border Radius, Creating a Design System, Custom Spacing (+11 more)
 
 ### Community 74 - "shadcn/ui Customization Guide"
@@ -859,7 +917,7 @@ Nodes (37): 1. Always Use Table Prefix, 2. Always Escape/Cast Inputs, 3. Check R
 
 ### Community 79 - "php.md"
 Cohesion: 0.11
-Nodes (18): Create (Insert), Creating ObjectModel Classes, CRUD Operations, Custom Methods, Database Class Pattern, Delete, Field Options, Field Types (+10 more)
+Nodes (18): 1. Always Validate Before Use, 2. Use Static Methods for Queries, 3. Type Cast All Query Variables, 4. Query Only Required Fields, Creating ObjectModel Classes, Custom Methods, Database Class Pattern, Field Options (+10 more)
 
 ### Community 81 - "文件上传漏洞深度分析"
 Cohesion: 0.09
@@ -886,8 +944,8 @@ Cohesion: 0.10
 Nodes (20): 1. 先验证，后报告, 2. 保持怀疑态度, 3. 宁缺毋滥, Anti-Hallucination Rules Module, 与其他模块的关系, 常见幻觉模式, 最佳实践, 🔒 核心规则 (+12 more)
 
 ### Community 88 - "MyBatis SQL Injection Security Audit Guide"
-Cohesion: 0.10
-Nodes (21): Advanced Components, Aspect Ratio, Breadcrumb, Carousel, Combobox, Command, Command & Search, Component Updates (+13 more)
+Cohesion: 0.20
+Nodes (10): Combobox, Command, Command & Search, Component Updates, Date Picker, Date & Time, Further Reading, Installation Shortcuts (+2 more)
 
 ### Community 89 - "Rust Web Framework Security Audit Guide"
 Cohesion: 0.22
@@ -907,7 +965,7 @@ Nodes (19): Backend — install & server.js, Bricks uses Payments API (/v1/payme
 
 ### Community 93 - "3. iOS 安全审计"
 Cohesion: 0.10
-Nodes (19): 1. Always Validate Before Save, 2. Type Cast All Inputs, 3. Check Permissions First, 4. Use Standard JSON Response, Admin Controllers, Admin Controllers, AJAX Controller, Basic Admin Controller Structure (+11 more)
+Nodes (14): Admin Controllers, Admin Controllers, AJAX Controller, Basic Admin Controller Structure, Basic Front Controller, Controller Types, Controllers - Admin & Front, Form Handling (+6 more)
 
 ### Community 94 - "Checkout Pro uses Preferences API (/v1/checkout/preferences), NOT Orders API."
 Cohesion: 0.10
@@ -922,8 +980,8 @@ Cohesion: 0.11
 Nodes (18): 2.1 数据修改操作 (CREATE/UPDATE/DELETE), 2.2 数据访问操作 (READ), 2.3 批量操作, 2.4 权限变更操作, 2.5 资金操作, 2.6 外部HTTP请求, 2.7.1 文件操作 CRUD 检测命令 (多语言), 2.7 文件操作 (CRUD 完整覆盖 - v2.5.0 增强) (+10 more)
 
 ### Community 97 - "Payment Module Structure"
-Cohesion: 0.11
-Nodes (19): Additional Resources, Advanced Features, Base UI Support, Create React App, Existing Project Setup, Framework-Specific Considerations, Next.js App Router, Next.js Pages Router (+11 more)
+Cohesion: 0.15
+Nodes (13): Additional Resources, "Cannot find module '@/components/ui/button'", Components look broken, Existing Project Setup, Next Steps, Prerequisites, shadcn/ui Setup Guide, Step 1: Ensure Tailwind CSS is Installed (+5 more)
 
 ### Community 98 - "Database"
 Cohesion: 0.18
@@ -1130,8 +1188,8 @@ Cohesion: 0.15
 Nodes (12): Auditoría Lógica — USGAR Hotels, Formato de Reporte, MCPs Requeridos, Paso 1: Verificar sincronización de habitaciones, Paso 2: Buscar precios hardcodeados, Paso 3: Verificar flujo de reserva completo, Paso 4: Verificar i18n, Paso 5: Verificar Schema.org (+4 more)
 
 ### Community 150 - "12.4 文件头检测绕过详解"
-Cohesion: 0.05
-Nodes (11): Config, self, Database, PDO, self, Logger, Middleware, Request (+3 more)
+Cohesion: 0.07
+Nodes (7): Config, self, Database, PDO, self, Logger, Response
 
 ### Community 152 - "四、绕过技巧大全"
 Cohesion: 0.17
@@ -1454,8 +1512,8 @@ Cohesion: 0.22
 Nodes (8): 1. 核心统计数据, 4.1 水平越权 (Horizontal Privilege Escalation), 4.2 ID枚举 (ID Enumeration), 4. IDOR越权漏洞, 8.1 常见未授权服务检测命令, 8.2 Web中间件默认路径, 8. 快速参考卡, 未授权访问漏洞分析知识库
 
 ### Community 232 - "3.1 上下文类型识别"
-Cohesion: 0.40
-Nodes (5): "Cannot find module '@/components/ui/button'", Components look broken, Styles not applying, Troubleshooting, TypeScript errors in components
+Cohesion: 0.03
+Nodes (33): OAuth2, Amazon, Authentiq, AutoDesk, BitBucket, Blizzard, BlizzardAPAC, BlizzardEU (+25 more)
 
 ### Community 233 - "Tailwind CSS v4 Design & Styling Best Practices"
 Cohesion: 0.22
@@ -1541,10 +1599,6 @@ Nodes (8): Buttons, Common ARIA patterns, Error states, Form fields, Links, Live
 Cohesion: 0.25
 Nodes (8): Accessible authentication (3.3.8) — new in 2.2, Consistent help (3.2.6) — new in 2.2, Consistent navigation (3.2.3), Error handling (3.3.1, 3.3.3), Form labels (3.3.2), Page language (3.1.1), Redundant entry (3.3.7) — new in 2.2, Understandable
 
-### Community 254 - "四、信息利用链（攻击路径）"
-Cohesion: 0.11
-Nodes (12): AuthLoginEmailAction, Request, AuthLogoutAction, Request, AuthMeAction, Request, AuthRegisterAction, Request (+4 more)
-
 ### Community 255 - "3.1 指纹识别技术"
 Cohesion: 0.29
 Nodes (6): D2: 认证 (通用), D3: 授权 (通用), D7: 加密 (通用), D8: 信息泄露 (通用), D9: 业务逻辑 (通用), 通用安全审计语义提示 (Universal Semantic Hints)
@@ -1628,10 +1682,6 @@ Nodes (7): 5.1 内联注释绕过, 5.2 编码绕过, 5.3 大小写混淆, 5.4 �
 ### Community 275 - "🔍 文件下载安全检测"
 Cohesion: 0.29
 Nodes (6): 1. Type Safety & Strict Types, 2. Secure Database Operations (PDO), 3. JSON Output Conventions, 4. Input Sanitization & Verification, Modern PHP 8.x Best Practices & Security Guidelines, Safe Query Example:
-
-### Community 276 - "HTTP Request Smuggling / HTTP/2 Desync"
-Cohesion: 0.36
-Nodes (3): Middleware, Request, Router
 
 ### Community 278 - "12.5 绕过WAF/过滤技巧"
 Cohesion: 0.29
@@ -1858,8 +1908,8 @@ Cohesion: 0.40
 Nodes (5): 2.5 网络安全配置 (M5), 代码层证书校验绕过, 危险配置检测, 安全配置, 快速检测
 
 ### Community 338 - "Validation Checklist"
-Cohesion: 0.23
-Nodes (4): AuthCallbackAction, Request, PDO, User
+Cohesion: 0.07
+Nodes (13): LoggerAwareTrait, LoggerInterface, Middleware, Request, Request, Router, CleanExpiredCartsAction, ProvisionalBookingRepository (+5 more)
 
 ### Community 339 - "Quick Reference"
 Cohesion: 0.40
@@ -1870,8 +1920,8 @@ Cohesion: 0.40
 Nodes (5): 10.6.1 编码混淆矩阵, 10.6.2 函数别名/替代, 10.6.3 注释/空白混淆, 10.6.4 字符串操作技术, 10.6 绕过WAF/防护的实战技巧
 
 ### Community 342 - "Color Customization"
-Cohesion: 0.24
-Nodes (5): AmenityLabel, Room, rooms, capacities, t
+Cohesion: 0.07
+Nodes (6): AdapterInterface, OpenID, Collection, Facebook, ORCID, Profile
 
 ### Community 344 - "analyze.sh"
 Cohesion: 0.40
@@ -2134,8 +2184,8 @@ Cohesion: 0.31
 Nodes (3): SimpleXMLElement, PDO, QloAppAdapter
 
 ### Community 410 - "Permission Checks"
-Cohesion: 0.19
-Nodes (8): ChannelManagerPortInterface, Exception, PaymentGatewayPortInterface, PDO, PmsPortInterface, ProvisionalBookingRepository, Request, HandleMercadoPagoWebhookAction
+Cohesion: 0.06
+Nodes (27): ChannelManagerPortInterface, Exception, PaymentGatewayPortInterface, PDO, PmsPortInterface, ProvisionalBookingRepository, Request, AuthCallbackAction (+19 more)
 
 ### Community 412 - "Webhook Controllers"
 Cohesion: 0.50
@@ -2311,11 +2361,11 @@ Nodes (3): 1.1 核心原理, 1.2 三层分析模型, 一、元认知框架：XSS
 
 ### Community 475 - "../../book/success.astro"
 Cohesion: 0.13
-Nodes (23): ../assets/hotel/fallback-room-pasillo.jpg, ../assets/logos/Logo usgar isotipo.png, ../assets/logos/Logo usgar morado.png, ../assets/logos/Logo usgar.png, ../data/reviews, ../data/settings, leaflet/dist/leaflet.css, ../components/Footer.astro (+15 more)
+Nodes (27): ../assets/hotel/fallback-room-pasillo.jpg, ../assets/logos/Logo usgar isotipo.png, ../assets/logos/Logo usgar morado.png, ../assets/logos/Logo usgar.png, ../data/reviews, ../data/settings, ../i18n/utils, leaflet/dist/leaflet.css (+19 more)
 
 ### Community 477 - "../i18n/utils"
-Cohesion: 0.17
-Nodes (8): ../icons/SVGIcons.astro, ../data/rooms, ../i18n/utils, ../utils/helpers, ../components/BookingWidget.astro, ../components/InteractiveRoomsSection.astro, ../explore.astro, astro/types
+Cohesion: 0.18
+Nodes (5): ../icons/SVGIcons.astro, ../data/rooms, ../utils/helpers, ../components/BookingWidget.astro, astro/types
 
 ### Community 482 - "dev.js"
 Cohesion: 0.29
@@ -2330,20 +2380,20 @@ Cohesion: 0.14
 Nodes (13): ../components/Footer.astro, ../components/Navbar.astro, ../components/WhatsAppButton.astro, ../styles/global.css, ../layouts/Layout.astro, canonicalURL, enURL, esURL (+5 more)
 
 ### Community 486 - "Recuento de errores y propuestas de solucion -- usgar-redesign (implementacion pt/fr)"
-Cohesion: 0.33
-Nodes (6): classes/, controllers/admin/, controllers/front/, Folder Organization Rules, views/css/ & views/js/, views/templates/
+Cohesion: 0.06
+Nodes (6): HttpClientInterface, StorageInterface, Curl, Guzzle, Session, StorageImpl
 
 ### Community 487 - "Recuento de Errores Completos - Implementación pt/fr"
 Cohesion: 0.40
 Nodes (5): 3.2.1 `${IFS}` 内部字段分隔符, 3.2.2 Tab制表符 `%09`, 3.2.3 重定向符号 `<>`, 3.2.4 大括号扩展, 3.2 空格绕过
 
 ### Community 489 - "Required Files (MANDATORY)"
-Cohesion: 0.25
-Nodes (8): 1. Main Module File: `qlomodulename.php`, 2. config.xml, 3. LICENSE.md, 4. README.md, 5. CHANGELOG.txt, 6. logo.png, 7. index.php (in EVERY folder), Required Files (MANDATORY)
+Cohesion: 0.08
+Nodes (5): DataStoreTrait, AbstractAdapter, HttpClientInterface, LoggerInterface, StorageInterface
 
 ### Community 492 - "Folder Organization Rules"
 Cohesion: 0.29
-Nodes (4): ListenerInterface, self, EventDispatcher, EventInterface
+Nodes (3): ListenerInterface, EventDispatcher, EventInterface
 
 ### Community 493 - "6. Habitaciones (4 tipos)"
 Cohesion: 0.67
@@ -2354,8 +2404,8 @@ Cohesion: 0.40
 Nodes (5): Changing Brand Colors, Color Customization, Creating a Color Scheme, Tools for Color Selection, Understanding the Color System
 
 ### Community 496 - "attractions.ts"
-Cohesion: 0.24
-Nodes (6): ../data/attractions, astro, Attraction, attractions, LocalizedField, ../../explore/[slug].astro
+Cohesion: 0.21
+Nodes (6): ../data/attractions, Attraction, attractions, LocalizedField, ../explore.astro, ../../explore/[slug].astro
 
 ### Community 497 - "Feedback Components"
 Cohesion: 0.50
@@ -2373,29 +2423,21 @@ Nodes (5): 3.3.1 引号分割, 3.3.2 反斜杠分割, 3.3.3 变量拼接, 3.3.4 
 Cohesion: 0.50
 Nodes (4): Option 1: npx shadcn create (Recommended), Option 2: Classic Manual Setup (Next.js), Option 3: Classic Manual Setup (Vite + React), Quick Start (New Project)
 
-### Community 504 - "CreateBookingAction"
-Cohesion: 0.50
-Nodes (5): CreateBookingAction, PaymentGatewayPortInterface, PDO, PmsPortInterface, Request
-
-### Community 508 - "Architecture Best Practices"
-Cohesion: 0.40
-Nodes (5): 1. Separation of Concerns, 2. No Code Outside Module Folder, 3. Follow QloApps Standards, 4. Index Files Everywhere, Architecture Best Practices
-
 ### Community 509 - "CRUD Operations"
 Cohesion: 0.40
 Nodes (5): 7.1 输入验证, 7.2 命令执行防护, 7.3 框架/组件更新, 7.4 最小权限原则, 七、防御建议
 
 ### Community 515 - "GetRoomsAction"
-Cohesion: 0.22
-Nodes (5): AuthLoginAction, Request, GetRoomsAction, PmsPortInterface, Request
+Cohesion: 0.50
+Nodes (3): GetRoomsAction, PmsPortInterface, Request
 
 ### Community 534 - "File Creation Checklist"
-Cohesion: 0.40
-Nodes (5): File Creation Checklist, Phase 1: Core Files, Phase 2: Mandatory Files, Phase 3: Structure, Phase 4: Additional (as needed)
+Cohesion: 0.12
+Nodes (13): ExceptionInterface, AuthorizationDeniedException, BadMethodCallException, Exception, InvalidAccessTokenException, InvalidApplicationCredentialsException, InvalidArgumentException, InvalidAuthorizationCodeException (+5 more)
 
 ### Community 535 - "ObjectModel Best Practices"
-Cohesion: 0.40
-Nodes (5): 1. Always Validate Before Use, 2. Use Static Methods for Queries, 3. Type Cast All Query Variables, 4. Query Only Required Fields, ObjectModel Best Practices
+Cohesion: 0.08
+Nodes (4): Instagram, Mastodon, Patreon, QQ
 
 ### Community 536 - "十、PHP命令执行元思考方法论"
 Cohesion: 0.50
@@ -2409,25 +2451,129 @@ Nodes (4): 10.8 实战案例深度剖析, 案例1：ThinkPHP 5.x 远程代码执
 Cohesion: 0.50
 Nodes (4): 10.9.1 代码层面防御, 10.9.2 框架层面防御, 10.9.3 服务器层面防御, 10.9 防御体系建设
 
+### Community 541 - "AdapterInterface.php"
+Cohesion: 0.10
+Nodes (6): HttpClientInterface, LoggerInterface, StorageInterface, setHttpClient(), setLogger(), setStorage()
+
+### Community 542 - "self"
+Cohesion: 0.16
+Nodes (3): self, InstalledVersions, VersionParser
+
+### Community 544 - "dependencies"
+Cohesion: 0.13
+Nodes (13): @astrojs/check, @astrojs/sitemap, dependencies, astro, @astrojs/check, @astrojs/sitemap, leaflet, sharp (+5 more)
+
+### Community 545 - "OpenID"
+Cohesion: 0.21
+Nodes (5): OpenID, AOLOpenID, PaypalOpenID, StackExchangeOpenID, Steam
+
+### Community 546 - "TestCase"
+Cohesion: 0.15
+Nodes (3): TestCase, KeycloakTest, SessionTest
+
+### Community 547 - "Hybridauth.php"
+Cohesion: 0.18
+Nodes (4): HttpClientInterface, LoggerInterface, StorageInterface, HybridauthTest
+
+### Community 549 - "IBookingService.ts"
+Cohesion: 0.17
+Nodes (7): ApiResult, BookingPayload, BookingResponseData, BookingStatusData, GuestDetails, IBookingService, RoomAvailability
+
+### Community 550 - "UnexpectedValueException"
+Cohesion: 0.21
+Nodes (5): HttpClientFailureException, HttpRequestFailedException, UnexpectedApiResponseException, UnexpectedValueException, Contact
+
+### Community 558 - "Contributor Covenant Code of Conduct"
+Cohesion: 0.25
+Nodes (7): Attribution, Contributor Covenant Code of Conduct, Enforcement, Our Pledge, Our Responsibilities, Our Standards, Scope
+
+### Community 559 - "[Hybridauth](https://hybridauth.github.io/) 3.12"
+Cohesion: 0.25
+Nodes (7): [Hybridauth](https://hybridauth.github.io/) 3.12, Installation, License, Questions, Help and Support?, Requirements, Usage, Versions Status
+
+### Community 565 - "Process"
+Cohesion: 0.33
+Nodes (6): Creating Custom Hooks, Custom Hook Guidelines, Process, Step 1: Design Hook, Step 2: Document in README.md, Step 3: Use Hook in Your Module
+
+### Community 566 - "Common Pitfalls"
+Cohesion: 0.33
+Nodes (6): 1. Not Setting Up Tailwind Properly, 2. Forgetting Path Aliases, 3. Trying to Match Old Library Exactly, 4. Not Using Form Libraries, 5. Ignoring Accessibility, Common Pitfalls
+
+### Community 567 - "Advanced Features"
+Cohesion: 0.33
+Nodes (6): Advanced Features, Base UI Support, Step 3: Verify Configuration, Step 4: Configure Path Aliases, Step 5: Add Components, Visual Styles
+
+### Community 568 - "GetBookingStatusAction.php"
+Cohesion: 0.53
+Nodes (3): GetBookingStatusAction, ProvisionalBookingRepository, Request
+
+### Community 569 - "DataStoreTrait.php"
+Cohesion: 0.67
+Nodes (5): clearStoredData(), deleteStoredData(), getStorage(), getStoredData(), storeData()
+
+### Community 577 - "Controller Best Practices"
+Cohesion: 0.40
+Nodes (5): 1. Always Validate Before Save, 2. Type Cast All Inputs, 3. Check Permissions First, 4. Use Standard JSON Response, Controller Best Practices
+
+### Community 578 - "Hook Development Checklist"
+Cohesion: 0.40
+Nodes (5): Custom Hooks (if created), Hook Development Checklist, Implementation, Override (if absolutely necessary), Planning
+
+### Community 579 - "CRUD Operations"
+Cohesion: 0.40
+Nodes (5): Create (Insert), CRUD Operations, Delete, Read (Select), Update
+
+### Community 580 - "Framework-Specific Considerations"
+Cohesion: 0.40
+Nodes (5): Create React App, Framework-Specific Considerations, Next.js App Router, Next.js Pages Router, Vite
+
+### Community 586 - "Utility Components"
+Cohesion: 0.50
+Nodes (4): Aspect Ratio, Resizable, Scroll Area, Utility Components
+
+### Community 587 - "Navigation"
+Cohesion: 0.50
+Nodes (4): Breadcrumb, Navigation, Navigation Menu, Pagination
+
+### Community 589 - "CONTRIBUTING.md"
+Cohesion: 0.50
+Nodes (3): Develop, Documentation, Report Problems
+
+### Community 590 - "Bug, feature or question?"
+Cohesion: 0.50
+Nodes (3): Bug, feature or question?, Reproduction, Version and provider
+
+### Community 592 - "Advanced Components"
+Cohesion: 0.67
+Nodes (3): Advanced Components, Carousel, Drawer
+
+### Community 593 - "From Bootstrap"
+Cohesion: 0.67
+Nodes (3): Component Mapping, From Bootstrap, Key Differences
+
+### Community 594 - "Migration Strategies"
+Cohesion: 0.67
+Nodes (3): Migration Strategies, Strategy 1: Incremental Migration (Recommended), Strategy 2: Big Bang Migration
+
 ## Knowledge Gaps
-- **4009 isolated node(s):** `i18nDir`, `newKeys`, `../assets/hotel/fallback-room-oxigeno.jpg`, `t`, `canonicalURL` (+4004 more)
+- **4034 isolated node(s):** `hybridauth/hybridauth`, `Our Pledge`, `Our Standards`, `Our Responsibilities`, `Scope` (+4029 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **59 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **95 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Database Operations & Security` connect `Go特定漏洞` to `attacker_perspective.md`?**
-  _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **What connects `i18nDir`, `newKeys`, `../assets/hotel/fallback-room-oxigeno.jpg` to the rest of the system?**
-  _4009 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `OAuth2` connect `3.1 上下文类型识别` to `ObjectModel Best Practices`, `UnexpectedValueException`, `Keycloak.php`, `Required Files (MANDATORY)`, `Apple`, `LinkedIn`, `X`, `WeChat`, `Color Customization`, `File Creation Checklist`, `Foursquare`?**
+  _High betweenness centrality (0.006) - this node is a cross-community bridge._
+- **Why does `Exception` connect `File Creation Checklist` to `Permission Checks`, `Hybridauth.php`, `OAuth1.php`, `UnexpectedValueException`?**
+  _High betweenness centrality (0.004) - this node is a cross-community bridge._
+- **Why does `AbstractAdapter` connect `Required Files (MANDATORY)` to `OAuth1`, `3.1 上下文类型识别`, `Color Customization`, `File Creation Checklist`, `Telegram`?**
+  _High betweenness centrality (0.004) - this node is a cross-community bridge._
+- **What connects `hybridauth/hybridauth`, `Our Pledge`, `Our Standards` to the rest of the system?**
+  _4034 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `python.md` be split into smaller, more focused modules?**
   _Cohesion score 0.017094017094017096 - nodes in this community are weakly interconnected._
 - **Should `External Security Tools Integration Guide` be split into smaller, more focused modules?**
   _Cohesion score 0.041666666666666664 - nodes in this community are weakly interconnected._
 - **Should `逻辑漏洞深度分析手册` be split into smaller, more focused modules?**
   _Cohesion score 0.041666666666666664 - nodes in this community are weakly interconnected._
-- **Should `Best practices` be split into smaller, more focused modules?**
-  _Cohesion score 0.043478260869565216 - nodes in this community are weakly interconnected._
-- **Should `Rust Security Audit` be split into smaller, more focused modules?**
-  _Cohesion score 0.0425531914893617 - nodes in this community are weakly interconnected._

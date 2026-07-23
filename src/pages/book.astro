@@ -653,6 +653,7 @@ import type { Locale } from '@/i18n/utils';
         if (flightTimeInput) flightTimeInput.value = '';
         transferCalculation?.classList.add('hidden');
       }
+      updatePricing();
     }, { signal });
 
     flightTimeInput?.addEventListener('input', () => {
@@ -682,6 +683,12 @@ import type { Locale } from '@/i18n/utils';
     const checkoutParam = params.get('checkout') || params.get('checkOut');
     const guestsParam = params.get('guests');
     const roomTypeParam = params.get('roomType') || params.get('room_type');
+    const pickupParam = params.get('pickup') || params.get('transfer') || params.get('airportTransfer');
+
+    if (pickupParam && (pickupParam === '1' || pickupParam === 'true' || pickupParam === 'yes') && airportTransferCheckbox) {
+      airportTransferCheckbox.checked = true;
+      transferDetails?.classList.remove('hidden');
+    }
 
     if (checkinParam && checkinInput) {
       checkinInput.value = checkinParam;
@@ -695,7 +702,7 @@ import type { Locale } from '@/i18n/utils';
     if (roomTypeParam) {
       selectRoomCard(roomTypeParam);
     } else if (roomSelect && roomSelect.value) {
-      selectRoomCard(roomSelect.value);
+      selectRoomCard(roomTypeParam || roomSelect.value);
     } else {
       updatePricing();
     }

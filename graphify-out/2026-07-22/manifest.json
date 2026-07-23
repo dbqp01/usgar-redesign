@@ -1844,16 +1844,6 @@
     "ast_hash": "e13f374dff91f04d2520d4688a359567",
     "semantic_hash": ""
   },
-  "[eliminame] rev1.md": {
-    "mtime": 1784642978.0913131,
-    "ast_hash": "a990bd98406577909a2665d99dbf1f8d",
-    "semantic_hash": ""
-  },
-  "[eliminame] rev2.md": {
-    "mtime": 1784642999.4185307,
-    "ast_hash": "6091a2f608eb05632092849608040c03",
-    "semantic_hash": ""
-  },
   "src/Core/Events/EventDispatcher.php": {
     "mtime": 1784681596.6411798,
     "ast_hash": "eafc4ea34cd536f0aaed199f5e5959e7",

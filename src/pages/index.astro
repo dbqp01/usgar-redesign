@@ -349,10 +349,6 @@ const schemas = [hotelSchema, faqSchema];
   <section class="py-24 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-300 relative">
     <div class="max-w-7xl mx-auto">
       <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll">
-        <span
-          class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-tertiary/15 border border-tertiary/30 text-tertiary dark:text-mint text-xs font-semibold uppercase tracking-widest mb-4"
-          >{t("explore.sectionLabel")}</span
-        >
         <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl text-primary-dark dark:text-white leading-tight">
           {t("explore.title")}
         </h2>
@@ -394,20 +390,31 @@ const schemas = [hotelSchema, faqSchema];
                     <h3 class="font-display font-bold text-3xl sm:text-4xl text-white mb-2 drop-shadow-lg">
                       {attraction.name[lang]}
                     </h3>
-                    <div class="flex items-center gap-4 text-xs font-mono uppercase tracking-widest text-secondary font-bold">
-                      <span class="flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <div class="flex flex-wrap items-center justify-between gap-4 mt-3">
+                      <div class="flex items-center gap-4 text-xs font-mono uppercase tracking-widest text-secondary font-bold">
+                        <span class="flex items-center gap-1">
+                          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          {attraction.distance}
+                        </span>
+                        <span class="flex items-center gap-1">
+                          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          {attraction.travelTime}
+                        </span>
+                      </div>
+                      <a
+                        href={getRelativeLocaleUrl(lang, `explore/${attraction.id}`)}
+                        class="inline-flex items-center gap-2 bg-primary/90 hover:bg-primary text-white font-semibold text-xs px-5 py-2.5 rounded-full transition-all duration-300 backdrop-blur-sm border border-white/20 hover:scale-105 shadow-md"
+                      >
+                        <span>{t('explore.viewGuide')}</span>
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
-                        {attraction.distance}
-                      </span>
-                      <span class="flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        {attraction.travelTime}
-                      </span>
+                      </a>
                     </div>
                   </div>
                 </div>
