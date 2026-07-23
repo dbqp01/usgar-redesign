@@ -45,8 +45,8 @@
     "semantic_hash": "36bb78d8017a7890cb547609c3a30d60"
   },
   "astro.config.mjs": {
-    "mtime": 1784644170.1672564,
-    "ast_hash": "eaaef7e116f6917dc295327719f3d08b",
+    "mtime": 1784823617.0312357,
+    "ast_hash": "45f49e6a2052d05aac22f9c92b1ff04c",
     "semantic_hash": ""
   },
   "package.json": {
@@ -105,8 +105,8 @@
     "semantic_hash": ""
   },
   "src/components/Navbar.astro": {
-    "mtime": 1784612619.8724408,
-    "ast_hash": "f40d48c2e127c4ce422bbc1c63da3d8a",
+    "mtime": 1784823598.0682857,
+    "ast_hash": "679a35fdb0dcdae0181db07962b0d99f",
     "semantic_hash": ""
   },
   "src/components/ReviewMarquee.astro": {
@@ -175,8 +175,8 @@
     "semantic_hash": ""
   },
   "src/pages/book.astro": {
-    "mtime": 1784615202.6488228,
-    "ast_hash": "869f914050d75f6d49559693ee3698c2",
+    "mtime": 1784823609.1883137,
+    "ast_hash": "0bcf922cdd27b32c75cc46b7a3c87c4e",
     "semantic_hash": ""
   },
   "src/pages/book/mock-payment.astro": {
@@ -245,13 +245,13 @@
     "semantic_hash": "a4c571a358d4c893a59d0a0d62c3eecf"
   },
   "src/pages/explore.astro": {
-    "mtime": 1784615482.8519542,
-    "ast_hash": "ce3cd8650de461f3220a457f49bde36d",
+    "mtime": 1784823628.5587058,
+    "ast_hash": "e44e121281d892d9697f0aa96b06723f",
     "semantic_hash": ""
   },
   "src/pages/explore/[slug].astro": {
-    "mtime": 1784613160.3062267,
-    "ast_hash": "f691d1b25c18e7248ca8653daaac1a5e",
+    "mtime": 1784823652.8681169,
+    "ast_hash": "83c86b58198bc072a6c0d4f0a9f8bab4",
     "semantic_hash": ""
   },
   "src/pages/gallery.astro": {
@@ -260,8 +260,8 @@
     "semantic_hash": ""
   },
   "src/pages/index.astro": {
-    "mtime": 1784737534.6912105,
-    "ast_hash": "908b09571f99684b393658c37d16edf0",
+    "mtime": 1784823644.9119482,
+    "ast_hash": "38acfc9d801dbf8505379ea0dea18c6a",
     "semantic_hash": ""
   },
   "src/pages/rooms/[slug].astro": {
@@ -2707,6 +2707,36 @@
   "vendor/hybridauth/hybridauth/src/index.html": {
     "mtime": 1775157086.0,
     "ast_hash": "bdce9efad9a163201b1c9275af6aa07f",
+    "semantic_hash": ""
+  },
+  "anotaciones.md": {
+    "mtime": 1784823278.473475,
+    "ast_hash": "bc22deccffea73002b6b752066625ce7",
+    "semantic_hash": ""
+  },
+  "image-1.png": {
+    "mtime": 1784823759.7986193,
+    "ast_hash": "2dcf4691ab9f85d76d98881ff65a657f",
+    "semantic_hash": ""
+  },
+  "image-2.png": {
+    "mtime": 1784770014.5227537,
+    "ast_hash": "efad8aa7eb8ddeb8fb6bd39851919f5e",
+    "semantic_hash": ""
+  },
+  "image-3.png": {
+    "mtime": 1784770058.7651956,
+    "ast_hash": "4d5d546db11faed9ee8fa458cc0d6f80",
+    "semantic_hash": ""
+  },
+  "image-4.png": {
+    "mtime": 1784770094.39101,
+    "ast_hash": "2f7f5d30ea42c5144d62d0ce52fcad21",
+    "semantic_hash": ""
+  },
+  "image.png": {
+    "mtime": 1784823760.0252795,
+    "ast_hash": "1194d4a9777433550423aad20cc9a47b",
     "semantic_hash": ""
   }
 }
