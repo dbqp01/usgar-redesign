@@ -25,3 +25,5 @@
 [2026-07-22 01:48:12] [WARNING] Database credentials or database name are not configured. Running in offline/mock/test mode.
 [2026-07-22 01:48:12] [WARNING] Database credentials or database name are not configured. Running in offline/mock/test mode.
 [2026-07-22 01:48:12] [WARNING] Database credentials or database name are not configured. Running in offline/mock/test mode.
+[2026-07-23 18:13:52] [ERROR] ProvisionalBookingRepository::cleanExpiredCarts Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.provisional_bookings' doesn't exist
+[2026-07-23 18:13:52] [INFO] CleanExpiredCartsAction: Se limpiaron 0 bloqueos temporales expirados.

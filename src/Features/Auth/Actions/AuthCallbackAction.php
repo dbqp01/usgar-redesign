@@ -21,16 +21,7 @@ class AuthCallbackAction {
         $config = AuthService::getConfig();
 
         try {
-            $vendorAutoload = dirname(__DIR__, 4) . '/vendor/autoload.php';
-            if (file_exists($vendorAutoload)) {
-                require_once $vendorAutoload;
-            }
-            $hybridAuthAutoload = dirname(__DIR__, 4) . '/vendor/hybridauth/autoload.php';
-            if (file_exists($hybridAuthAutoload)) {
-                require_once $hybridAuthAutoload;
-            }
-
-            if (!class_exists(\Hybridauth\Hybridauth::class)) {
+            if (!AuthService::ensureHybridauthLoaded()) {
                 throw HttpException::internal("Hybridauth library not found.");
             }
 

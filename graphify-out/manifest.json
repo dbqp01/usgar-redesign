@@ -105,8 +105,8 @@
     "semantic_hash": ""
   },
   "src/components/Navbar.astro": {
-    "mtime": 1784823598.0682857,
-    "ast_hash": "679a35fdb0dcdae0181db07962b0d99f",
+    "mtime": 1784824327.7024052,
+    "ast_hash": "19ae4866117a503be997c4323af02eea",
     "semantic_hash": ""
   },
   "src/components/ReviewMarquee.astro": {
@@ -140,28 +140,28 @@
     "semantic_hash": "98a5495cb543ec9848bb2afe2eed7dc2"
   },
   "src/content/about/about.json": {
-    "mtime": 1784615418.2579901,
-    "ast_hash": "94695b05622635ebfaa472268e9b26e5",
+    "mtime": 1784824377.1917977,
+    "ast_hash": "730f077e668657f70e2e9c3d2dec513c",
     "semantic_hash": ""
   },
   "src/content/explore/explore.json": {
-    "mtime": 1784614969.6848893,
-    "ast_hash": "87ecb9a441f6be5d2f76a0a25d9cf493",
+    "mtime": 1784824377.1932814,
+    "ast_hash": "655265798f8eb99f98d5080df0f8746f",
     "semantic_hash": ""
   },
   "src/content/faq/faq.json": {
-    "mtime": 1784614839.2293603,
-    "ast_hash": "f02cb6b8ca858309e334fe276308fd8e",
+    "mtime": 1784824377.1943388,
+    "ast_hash": "533751167342efda6a9f365364c936da",
     "semantic_hash": ""
   },
   "src/i18n/en.json": {
-    "mtime": 1784737374.9536228,
+    "mtime": 1784824377.1849105,
     "ast_hash": "f02c08dae0e0f4c8b3cd3d8f56eb9c67",
     "semantic_hash": ""
   },
   "src/i18n/es.json": {
-    "mtime": 1784737374.9559636,
-    "ast_hash": "6577b3b7b1f8babd7c7b52624ad5f999",
+    "mtime": 1784824377.1864986,
+    "ast_hash": "6c9c5778e7d9d22560b53dd2bd40bb8e",
     "semantic_hash": ""
   },
   "src/i18n/utils.ts": {
@@ -1410,27 +1410,27 @@
     "semantic_hash": ""
   },
   "src/content/reviews/reviews.json": {
-    "mtime": 1784615103.426245,
-    "ast_hash": "f3328897c7233cdbb729b00d0fde6f95",
+    "mtime": 1784824377.1948676,
+    "ast_hash": "2861e087f64938b458a248511c5a9f5a",
     "semantic_hash": ""
   },
   "src/content/rooms/rooms.json": {
-    "mtime": 1784612657.3241315,
-    "ast_hash": "46ab919f7af753a2b1d3d025117ec717",
+    "mtime": 1784824377.1959085,
+    "ast_hash": "a3d97071c9ad57756e2b59db11b4246b",
     "semantic_hash": ""
   },
   "src/content/services/services.json": {
-    "mtime": 1784612674.3457322,
-    "ast_hash": "1b54ab6fcf2d6c94e025e87650fd7a34",
+    "mtime": 1784824377.1969824,
+    "ast_hash": "b27b5d4cbab45f48e9584051d740164b",
     "semantic_hash": ""
   },
   "src/content/settings/settings.json": {
-    "mtime": 1784612638.4167838,
-    "ast_hash": "492a3a28ace257399951da4b442d8cd5",
+    "mtime": 1784824377.1974475,
+    "ast_hash": "5234b6f51ceb64f27d4f89b9607a3e80",
     "semantic_hash": ""
   },
   "src/data/attractions.ts": {
-    "mtime": 1784612920.9925666,
+    "mtime": 1784824377.1986113,
     "ast_hash": "740d150f0d8df34b143eac1fb9bc6541",
     "semantic_hash": ""
   },
@@ -1440,7 +1440,7 @@
     "semantic_hash": ""
   },
   "src/data/rooms.ts": {
-    "mtime": 1784615089.1085727,
+    "mtime": 1784824377.198063,
     "ast_hash": "23cb098c233baed54d9ab707f1625edf",
     "semantic_hash": ""
   },
@@ -1450,7 +1450,7 @@
     "semantic_hash": ""
   },
   "src/data/settings.ts": {
-    "mtime": 1784612643.6173773,
+    "mtime": 1784824377.2000904,
     "ast_hash": "1ed8f0101f49da92baa67075bfa2aa14",
     "semantic_hash": ""
   },
@@ -1715,13 +1715,13 @@
     "semantic_hash": ""
   },
   "src/i18n/fr.json": {
-    "mtime": 1784737374.9564836,
-    "ast_hash": "5d7465ef2e375e1fd68f1969f9012022",
+    "mtime": 1784824377.1881115,
+    "ast_hash": "c8971dd3752868a5f68346bcc65c4c60",
     "semantic_hash": ""
   },
   "src/i18n/pt.json": {
-    "mtime": 1784737374.956999,
-    "ast_hash": "468e7ca4823df457050e1306804ec596",
+    "mtime": 1784824377.1891558,
+    "ast_hash": "6a8b9f0f7dbec9f503463f81479e7ae4",
     "semantic_hash": ""
   },
   "src/pages/fr/book.astro": {

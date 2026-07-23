@@ -105,4 +105,56 @@ class AuthService {
     public static function isValidProvider(string $provider): bool {
         return in_array($provider, self::getEnabledProviders(), true);
     }
+
+    /**
+     * Asegura la carga de la librería Hybridauth buscando autoloader en Composer o en subdirectorios vendor nativos.
+     */
+    public static function ensureHybridauthLoaded(): bool {
+        if (class_exists(\Hybridauth\Hybridauth::class)) {
+            return true;
+        }
+
+        $rootDir = dirname(__DIR__, 2);
+
+        $possibleAutoloaders = [
+            $rootDir . '/vendor/autoload.php',
+            $rootDir . '/vendor/hybridauth/hybridauth/src/autoload.php',
+            $rootDir . '/vendor/hybridauth/src/autoload.php',
+            $rootDir . '/vendor/hybridauth/autoload.php',
+        ];
+
+        foreach ($possibleAutoloaders as $file) {
+            if (file_exists($file)) {
+                require_once $file;
+                if (class_exists(\Hybridauth\Hybridauth::class)) {
+                    return true;
+                }
+            }
+        }
+
+        // Fallback: Registro explícito del namespace PSR-4 si falta autoloader externo
+        $srcDirs = [
+            $rootDir . '/vendor/hybridauth/hybridauth/src/',
+            $rootDir . '/vendor/hybridauth/src/',
+        ];
+
+        foreach ($srcDirs as $srcDir) {
+            if (is_dir($srcDir)) {
+                spl_autoload_register(function (string $class) use ($srcDir) {
+                    $prefix = 'Hybridauth\\';
+                    if (str_starts_with($class, $prefix)) {
+                        $relativeClass = substr($class, strlen($prefix));
+                        $file = $srcDir . str_replace('\\', '/', $relativeClass) . '.php';
+                        if (file_exists($file)) {
+                            require_once $file;
+                        }
+                    }
+                });
+                break;
+            }
+        }
+
+        return class_exists(\Hybridauth\Hybridauth::class);
+    }
 }
+
