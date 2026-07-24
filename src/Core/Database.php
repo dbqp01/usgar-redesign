@@ -63,12 +63,4 @@ class Database {
     public function isConnected(): bool {
         return $this->pdo !== null;
     }
-
-    /**
-     * Proxy de compatibilidad — delega a Config::get().
-     * @deprecated Usar Config::get() directamente.
-     */
-    public function getEnv(string $key, ?string $default = null): ?string {
-        return Config::get($key, $default);
-    }
 }

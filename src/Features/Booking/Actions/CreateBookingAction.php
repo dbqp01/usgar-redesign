@@ -11,6 +11,7 @@ use App\Core\Database;
 use App\Core\Validator;
 use App\Core\HttpException;
 use App\Core\BookingStatus;
+use App\Core\Container;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
 use App\Features\Shared\Ports\PmsPortInterface;
 use App\Features\Shared\Ports\PaymentGatewayPortInterface;
@@ -33,17 +34,43 @@ class CreateBookingAction {
     public function __construct(
         ?PDO $pdo = null,
         ?PmsPortInterface $pms = null,
-        ?PaymentGatewayPortInterface $paymentGateway = null
+        ?PaymentGatewayPortInterface $paymentGateway = null,
+        ?ProvisionalBookingRepository $bookingRepo = null
     ) {
+        $container = Container::getInstance();
         $db = Database::getInstance();
-        $this->pdo = $pdo ?? $db->getConnection();
+        $this->pdo = $pdo ?? ($container->has(PDO::class) ? $container->get(PDO::class) : $db->getConnection());
         $this->pms = $pms ?? new QloAppAdapter($this->pdo);
         $this->paymentGateway = $paymentGateway ?? new MercadoPagoAdapter();
-        $this->bookingRepo = new ProvisionalBookingRepository($this->pdo);
+        $this->bookingRepo = $bookingRepo ?? new ProvisionalBookingRepository($this->pdo);
     }
 
     public function __invoke(Request $request): void {
         $body = $request->getBody() ?? [];
+
+        // --- Normalización Adaptativa de Payload (Zero-Breakage) ---
+        if (isset($body['roomSlug']) && empty($body['id_room_type'])) {
+            $slugMap = [
+                'suite-imperial' => 1,
+                'suite-ejecutiva' => 2,
+                'habitacion-doble' => 3,
+                'habitacion-estandar' => 4,
+            ];
+            $body['id_room_type'] = $slugMap[$body['roomSlug']] ?? 1;
+        }
+
+        if (isset($body['guestDetails']) && is_array($body['guestDetails'])) {
+            $gd = $body['guestDetails'];
+            if (empty($body['guestName'])) {
+                $body['guestName'] = trim(($gd['firstName'] ?? '') . ' ' . ($gd['lastName'] ?? ''));
+            }
+            if (empty($body['guestEmail'])) {
+                $body['guestEmail'] = $gd['email'] ?? '';
+            }
+            if (empty($body['guestPhone'])) {
+                $body['guestPhone'] = $gd['phone'] ?? '';
+            }
+        }
 
         Validator::requireFields($body, ['id_room_type', 'checkIn', 'checkOut', 'guestName', 'guestEmail']);
 
@@ -83,9 +110,9 @@ class CreateBookingAction {
             }
 
             $idProduct = (int)($targetRoom['id_product'] ?? $idRoomType);
-            $nights = (int)round((strtotime($checkOut) - strtotime($checkIn)) / 86400);
+            $nights = (int)max(1, round((strtotime($checkOut) - strtotime($checkIn)) / 86400));
             $pricePerNight = (float)$targetRoom['price'];
-            $totalPrice = $pricePerNight * $nights;
+            $totalPrice = round($pricePerNight * $nights, 2);
 
             $cartId = $this->pms->createCart($hotelId, $idProduct, $checkIn, $checkOut, $guests);
             $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
@@ -118,13 +145,12 @@ class CreateBookingAction {
                 throw new Exception('Fallo al insertar el bloqueo de reserva en DB.');
             }
 
+            // Exigencia estricta de variables de entorno sin fallbacks inseguros
             $secretKey = Config::get('BOOKING_TOKEN_SECRET', Config::get('CRON_SECRET'));
             if (empty($secretKey)) {
-                if (Config::isProduction()) {
-                    throw HttpException::internal('Falta configuración de BOOKING_TOKEN_SECRET en servidor.');
-                }
-                $secretKey = 'USGAR_SECURE_TOKEN_SECRET_DEV_ONLY';
+                throw HttpException::internal('Falta configuración obligatoria de BOOKING_TOKEN_SECRET en servidor .env');
             }
+
             $accessToken = hash_hmac('sha256', $cartId . ':' . $guestEmail, $secretKey);
 
             $preference = $this->paymentGateway->createPreference(

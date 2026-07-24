@@ -44,10 +44,7 @@ class ExtendHoldAction {
         $guestEmail = $hold['guest_data']['email'] ?? '';
         $secretKey = \App\Core\Config::get('BOOKING_TOKEN_SECRET', \App\Core\Config::get('CRON_SECRET'));
         if (empty($secretKey)) {
-            if (\App\Core\Config::isProduction()) {
-                throw HttpException::internal('Falta configuración de seguridad de token en el servidor.');
-            }
-            $secretKey = 'USGAR_SECURE_TOKEN_SECRET_DEV_ONLY';
+            throw HttpException::internal('Falta configuración de seguridad de BOOKING_TOKEN_SECRET en el servidor.');
         }
 
         $expectedToken = hash_hmac('sha256', $cartId . ':' . $guestEmail, $secretKey);

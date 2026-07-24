@@ -89,7 +89,7 @@ class Middleware {
             header('X-Content-Type-Options: nosniff');
             header('X-Frame-Options: DENY');
             header('Referrer-Policy: strict-origin-when-cross-origin');
-            header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://sdk.mercadopago.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https://api.mercadopago.com https://api.channex.io https://cms.hotelesusgar.com; frame-src 'self' https://www.mercadopago.com;");
+            header("Content-Security-Policy: default-src 'self'; script-src 'self' https://sdk.mercadopago.com https://unpkg.com; style-src 'self' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob: *.tile.openstreetmap.org; connect-src 'self' https://api.mercadopago.com https://api.channex.io https://cms.hotelesusgar.com; frame-src 'self' https://www.mercadopago.com;");
             header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
 
             if (Config::isProduction()) {

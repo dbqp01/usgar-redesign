@@ -27,11 +27,8 @@ class CleanExpiredCartsAction {
             $providedSecret = $request->getHeader('x-cron-secret') ?? $request->getQuery('secret', '');
 
             if (empty($cronSecret)) {
-                if (Config::isProduction()) {
-                    Logger::error("CleanExpiredCartsAction: CRON_SECRET no está configurado en entorno de producción.");
-                    Response::error('Cron secret non-configured.', 500);
-                }
-                $cronSecret = 'USGAR_CRON_SECRET_DEV_ONLY';
+                Logger::error("CleanExpiredCartsAction: CRON_SECRET no está configurado en servidor.");
+                Response::error('Cron secret non-configured.', 500);
             }
 
             if (!hash_equals($cronSecret, $providedSecret)) {

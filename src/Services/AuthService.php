@@ -108,22 +108,47 @@ class AuthService {
 
     /**
      * Asegura la carga de la librería Hybridauth buscando autoloader en Composer o en subdirectorios vendor nativos.
+     * Escanea dinámicamente múltiples ubicaciones de vendor (raíz, DocumentRoot, carpetas superiores)
+     * para garantizar compatibilidad total en entornos nativos y Hostinger.
      */
     public static function ensureHybridauthLoaded(): bool {
         if (class_exists(\Hybridauth\Hybridauth::class)) {
             return true;
         }
 
-        $rootDir = dirname(__DIR__, 2);
+        // Determinar carpetas base candidatas para ubicar /vendor
+        $candidateBases = array_unique(array_filter([
+            dirname(__DIR__, 2),
+            dirname(__DIR__, 3),
+            dirname(__DIR__, 1),
+            $_SERVER['DOCUMENT_ROOT'] ?? null,
+            isset($_SERVER['DOCUMENT_ROOT']) ? dirname($_SERVER['DOCUMENT_ROOT']) : null,
+            isset($_SERVER['SCRIPT_FILENAME']) ? dirname($_SERVER['SCRIPT_FILENAME']) : null,
+            isset($_SERVER['SCRIPT_FILENAME']) ? dirname($_SERVER['SCRIPT_FILENAME']) . '/..' : null,
+        ]));
 
-        $possibleAutoloaders = [
-            $rootDir . '/vendor/autoload.php',
-            $rootDir . '/vendor/hybridauth/hybridauth/src/autoload.php',
-            $rootDir . '/vendor/hybridauth/src/autoload.php',
-            $rootDir . '/vendor/hybridauth/autoload.php',
+        // 1. Prioridad: Cargar autoloader nativo de Hybridauth (registra spl_autoload_register para Hybridauth\)
+        $relativeAutoloaders = [
+            '/vendor/hybridauth/hybridauth/src/autoload.php',
+            '/vendor/hybridauth/src/autoload.php',
+            '/vendor/hybridauth/autoload.php',
         ];
 
-        foreach ($possibleAutoloaders as $file) {
+        foreach ($candidateBases as $base) {
+            foreach ($relativeAutoloaders as $rel) {
+                $file = $base . $rel;
+                if (file_exists($file)) {
+                    require_once $file;
+                    if (class_exists(\Hybridauth\Hybridauth::class)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        // 2. Segunda opción: Cargar vendor/autoload.php general de Composer
+        foreach ($candidateBases as $base) {
+            $file = $base . '/vendor/autoload.php';
             if (file_exists($file)) {
                 require_once $file;
                 if (class_exists(\Hybridauth\Hybridauth::class)) {
@@ -132,25 +157,29 @@ class AuthService {
             }
         }
 
-        // Fallback: Registro explícito del namespace PSR-4 si falta autoloader externo
-        $srcDirs = [
-            $rootDir . '/vendor/hybridauth/hybridauth/src/',
-            $rootDir . '/vendor/hybridauth/src/',
-        ];
+        // 3. Fallback PSR-4: Registrar manualmente spl_autoload_register si se localiza la carpeta src/ de Hybridauth
+        foreach ($candidateBases as $base) {
+            $srcDirs = [
+                $base . '/vendor/hybridauth/hybridauth/src/',
+                $base . '/vendor/hybridauth/src/',
+            ];
 
-        foreach ($srcDirs as $srcDir) {
-            if (is_dir($srcDir)) {
-                spl_autoload_register(function (string $class) use ($srcDir) {
-                    $prefix = 'Hybridauth\\';
-                    if (str_starts_with($class, $prefix)) {
-                        $relativeClass = substr($class, strlen($prefix));
-                        $file = $srcDir . str_replace('\\', '/', $relativeClass) . '.php';
-                        if (file_exists($file)) {
-                            require_once $file;
+            foreach ($srcDirs as $srcDir) {
+                if (is_dir($srcDir)) {
+                    spl_autoload_register(function (string $class) use ($srcDir) {
+                        $prefix = 'Hybridauth\\';
+                        if (str_starts_with($class, $prefix)) {
+                            $relativeClass = substr($class, strlen($prefix));
+                            $file = $srcDir . str_replace('\\', '/', $relativeClass) . '.php';
+                            if (file_exists($file)) {
+                                require_once $file;
+                            }
                         }
+                    });
+                    if (class_exists(\Hybridauth\Hybridauth::class)) {
+                        return true;
                     }
-                });
-                break;
+                }
             }
         }
 

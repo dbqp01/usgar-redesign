@@ -38,11 +38,8 @@ class GetBookingStatusAction {
         $guestEmail = $hold['guest_data']['email'] ?? '';
         $secretKey = Config::get('BOOKING_TOKEN_SECRET', Config::get('CRON_SECRET'));
         if (empty($secretKey)) {
-            if (Config::isProduction()) {
-                Logger::error("GetBookingStatusAction: BOOKING_TOKEN_SECRET no está configurado en entorno de producción.");
-                throw HttpException::internal("Configuración de seguridad de token no disponible.");
-            }
-            $secretKey = 'USGAR_SECURE_TOKEN_SECRET_DEV_ONLY';
+            Logger::error("GetBookingStatusAction: BOOKING_TOKEN_SECRET no está configurado en servidor.");
+            throw HttpException::internal("Configuración de seguridad de token no disponible.");
         }
 
         $expectedToken = hash_hmac('sha256', $cartId . ':' . $guestEmail, $secretKey);

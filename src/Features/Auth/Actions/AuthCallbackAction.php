@@ -18,6 +18,10 @@ use Throwable;
  */
 class AuthCallbackAction {
     public function __invoke(Request $request): void {
+        if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+            @session_start();
+        }
+
         $config = AuthService::getConfig();
 
         try {

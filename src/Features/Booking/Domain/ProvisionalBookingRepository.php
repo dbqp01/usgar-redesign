@@ -74,6 +74,68 @@ class ProvisionalBookingRepository {
         }
     }
 
+    /**
+     * Obtiene una reserva provisional con bloqueo pesimista (FOR UPDATE) dentro de una transacción activa.
+     */
+    public function getByCartIdForUpdate(string $cartId): ?array {
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM provisional_bookings WHERE cart_id = :cart_id LIMIT 1 FOR UPDATE");
+            $stmt->execute([':cart_id' => $cartId]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$row) {
+                return null;
+            }
+
+            if (!empty($row['guest_data']) && is_string($row['guest_data'])) {
+                $row['guest_data'] = json_decode($row['guest_data'], true) ?: [];
+            }
+            if (!empty($row['room_data']) && is_string($row['room_data'])) {
+                $row['room_data'] = json_decode($row['room_data'], true) ?: [];
+            }
+
+            return $row;
+        } catch (PDOException $e) {
+            Logger::error('ProvisionalBookingRepository::getByCartIdForUpdate Error: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Verifica si un payment_id ya fue procesado en la tabla de idempotencia.
+     */
+    public function isPaymentProcessed(string $paymentId): bool {
+        try {
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM processed_payments WHERE payment_id = :payment_id");
+            $stmt->execute([':payment_id' => $paymentId]);
+            return (int)$stmt->fetchColumn() > 0;
+        } catch (PDOException $e) {
+            Logger::error('ProvisionalBookingRepository::isPaymentProcessed Error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Registra un pago procesado en la tabla de idempotencia processed_payments.
+     */
+    public function markPaymentProcessed(string $paymentId, string $cartId, string $status = 'approved'): bool {
+        try {
+            $stmt = $this->pdo->prepare("
+                INSERT INTO processed_payments (payment_id, cart_id, status)
+                VALUES (:payment_id, :cart_id, :status)
+                ON DUPLICATE KEY UPDATE status = VALUES(status)
+            ");
+            return $stmt->execute([
+                ':payment_id' => $paymentId,
+                ':cart_id'    => $cartId,
+                ':status'     => $status,
+            ]);
+        } catch (PDOException $e) {
+            Logger::error('ProvisionalBookingRepository::markPaymentProcessed Error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
     public function updatePreferenceId(string $cartId, string $preferenceId): bool {
         try {
             $stmt = $this->pdo->prepare("UPDATE provisional_bookings SET preference_id = :pref WHERE cart_id = :cartId");

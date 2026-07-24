@@ -27,6 +27,8 @@ if (file_exists(__DIR__ . '/../src/Core/Autoloader.php')) {
 }
 
 use App\Core\Config;
+use App\Core\Container;
+use App\Core\Database;
 use App\Core\Request;
 use App\Core\Router;
 use App\Core\Middleware;
@@ -48,8 +50,13 @@ use App\Features\Auth\Actions\AuthMeAction;
 use App\Features\Auth\Actions\AuthLogoutAction;
 use App\Features\Auth\Actions\GetUserBookingsAction;
 
-// 2. Inicializar configuración centralizada
+// 2. Inicializar configuración centralizada y Container PSR-11
 Config::boot();
+$container = Container::getInstance();
+$dbConnection = Database::getInstance()->getConnection();
+if ($dbConnection !== null) {
+    $container->set(PDO::class, $dbConnection);
+}
 
 // 3. Soporte para ejecuciones desde la línea de comandos (Cron Jobs)
 if (PHP_SAPI === 'cli') {
@@ -78,6 +85,7 @@ $router->post('/api/booking',         CreateBookingAction::class);
 $router->post('/api/extend-hold',     ExtendHoldAction::class);
 $router->get('/api/booking-status',   GetBookingStatusAction::class);
 $router->post('/api/webhook',         HandleMercadoPagoWebhookAction::class);
+$router->post('/api/webhook-mercado-pago', HandleMercadoPagoWebhookAction::class);
 $router->post('/api/webhook/channex', HandleChannexWebhookAction::class);
 
 // Endpoint de mantenimiento del sistema (Cron)

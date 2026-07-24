@@ -17,6 +17,10 @@ use Throwable;
  */
 class AuthLoginAction {
     public function __invoke(Request $request): void {
+        if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+            @session_start();
+        }
+
         $provider = $request->getQuery('provider', 'Google');
         $redirect = $request->getQuery('redirect', '/');
 
