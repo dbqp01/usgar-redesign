@@ -36,6 +36,14 @@ jobs:
           php-version: '8.2'
           coverage: none
 
+      - name: Verificar disponibilidad de puerto 8089 para pruebas
+        run: |
+          if ss -ltn | grep -q ':8089 '; then
+            echo "❌ Puerto 8089 ocupado previamente."
+            ss -ltnp | grep ':8089 ' || true
+            exit 1
+          fi
+
       - name: Ejecutar pruebas unitarias de backend
         run: php scripts/run-exhaustive-tests.php
 

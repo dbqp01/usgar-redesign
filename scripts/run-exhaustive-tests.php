@@ -103,32 +103,53 @@ echo PHP_EOL . "--- 🌐 SECCIÓN 2: PRUEBAS DE INTEGRACIÓN HTTP ---" . PHP_EOL
 $host = '127.0.0.1';
 $port = 8089;
 
-$nullDevice = PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null';
+$serverLogFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php-test-server.log';
+if (file_exists($serverLogFile)) {
+    @unlink($serverLogFile);
+}
+
 $descriptorspec = [
     0 => ["pipe", "r"],
-    1 => ["file", $nullDevice, "w"],
-    2 => ["file", $nullDevice, "w"]
+    1 => ["file", $serverLogFile, "a"],
+    2 => ["file", $serverLogFile, "a"]
 ];
 
-$docRoot = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'index.php';
-$process = proc_open("php -S $host:$port $docRoot", $descriptorspec, $pipes, dirname(__DIR__));
+$docRoot = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'public';
+$routerScript = $docRoot . DIRECTORY_SEPARATOR . 'index.php';
+
+$cmd = sprintf('php -S %s:%d -t %s %s', $host, $port, escapeshellarg($docRoot), escapeshellarg($routerScript));
+$process = proc_open($cmd, $descriptorspec, $pipes, dirname(__DIR__));
+
+register_shutdown_function(function () use (&$process, &$pipes) {
+    if (is_resource($process)) {
+        if (isset($pipes[0]) && is_resource($pipes[0])) {
+            @fclose($pipes[0]);
+        }
+        @proc_terminate($process);
+        @proc_close($process);
+    }
+});
 
 $serverReady = false;
 for ($i = 0; $i < 30; $i++) {
-    usleep(100000);
-    $healthCheck = @file_get_contents("http://$host:$port/api/health");
-    if ($healthCheck !== false && str_contains($healthCheck, '"success":true')) {
-        $serverReady = true;
-        break;
+    usleep(200000);
+    $fp = @fsockopen($host, $port, $errno, $errstr, 0.5);
+    if ($fp) {
+        fclose($fp);
+        $healthCheck = @file_get_contents("http://$host:$port/api/health");
+        if ($healthCheck !== false && str_contains($healthCheck, '"success":true')) {
+            $serverReady = true;
+            break;
+        }
     }
 }
 
 if (!$serverReady) {
     echo "   ❌ ERROR: El servidor de pruebas en http://$host:$port no pudo iniciar." . PHP_EOL;
-    if (is_resource($process)) {
-        proc_terminate($process);
-        proc_close($process);
-    }
+    $logContent = file_exists($serverLogFile) ? file_get_contents($serverLogFile) : '(sin log)';
+    echo "---- php -S log ----" . PHP_EOL;
+    echo ($logContent !== false && trim($logContent) !== '') ? $logContent : '(log vacío)' . PHP_EOL;
+    echo "--------------------" . PHP_EOL;
     exit(1);
 }
 
