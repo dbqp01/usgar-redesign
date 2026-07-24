@@ -1155,8 +1155,8 @@
     "semantic_hash": "62891cee2f4fda539afe93b1903972d5"
   },
   ".github/workflows/build.yml": {
-    "mtime": 1784509164.3505073,
-    "ast_hash": "97e6dbd0e4c7b6edac9ac068b51bbfba",
+    "mtime": 1784873080.2304094,
+    "ast_hash": "f5ef1ee3afb3e375064ad85faabdd207",
     "semantic_hash": ""
   },
   "README.md": {
@@ -1320,8 +1320,8 @@
     "semantic_hash": ""
   },
   "scripts/run-exhaustive-tests.php": {
-    "mtime": 1784684825.962579,
-    "ast_hash": "db2f61d0c48001a9b4b026ba2bd637fc",
+    "mtime": 1784873059.359102,
+    "ast_hash": "2edcda2ea63418a2bc90406ac9d6d65f",
     "semantic_hash": ""
   },
   "src/Core/Autoloader.php": {

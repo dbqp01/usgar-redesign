@@ -136,6 +136,15 @@ const localeMap: Record<Locale, string> = {
     <!-- Global Scroll Animations Observer -->
     <script>
       function initScrollAnimations() {
+        const elements = document.querySelectorAll('.animate-on-scroll:not(.visible)');
+        if (!elements.length) return;
+
+        // Respect prefers-reduced-motion: make all visible immediately
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          elements.forEach(el => el.classList.add('visible'));
+          return;
+        }
+
         let delayCount = 0;
         let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
@@ -165,7 +174,28 @@ const localeMap: Record<Locale, string> = {
           rootMargin: "0px 0px -50px 0px"
         });
 
-        document.querySelectorAll('.animate-on-scroll:not(.visible)').forEach(el => observer.observe(el));
+        // Fix: immediately mark elements already in (or above) the viewport
+        elements.forEach(el => {
+          const rect = el.getBoundingClientRect();
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            // Element is already visible in viewport — activate immediately
+            el.classList.add('visible');
+          } else if (rect.bottom <= 0) {
+            // Element is above viewport (user scrolled past) — activate without animation
+            (el as HTMLElement).style.transition = 'none';
+            el.classList.add('visible');
+          } else {
+            // Element is below viewport — let the observer handle it normally
+            observer.observe(el);
+          }
+        });
+
+        // Safety fallback: if any elements are still hidden after 4s, force them visible
+        setTimeout(() => {
+          document.querySelectorAll('.animate-on-scroll:not(.visible)').forEach(el => {
+            el.classList.add('visible');
+          });
+        }, 4000);
       }
 
       document.addEventListener('astro:page-load', initScrollAnimations);

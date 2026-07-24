@@ -490,7 +490,7 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
 
 <script>
   import { translateBeds, daysBetween } from '../utils/helpers';
-  import { bookingService } from '../frontend/services/bookingService';
+  import { bookingService } from '../services/bookingService';
 import type { Locale } from '@/i18n/utils';
 
   // Use data serialized from server (avoids hardcoding duplicates)

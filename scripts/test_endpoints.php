@@ -9,7 +9,7 @@ declare(strict_types=1);
  */
 
 // 1. Cargar el Autocargador PSR-4
-require_once __DIR__ . '/../src/Core/Autoloader.php';
+require_once __DIR__ . '/../app/Core/Autoloader.php';
 \App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src');
 \App\Core\Config::boot();
 

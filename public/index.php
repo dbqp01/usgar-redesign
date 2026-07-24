@@ -13,12 +13,13 @@ if (file_exists($vendorAutoload)) {
 }
 
 // Cargar el Autoloader personalizado (Compatibilidad nativa con Hostinger sin Composer)
-if (file_exists(__DIR__ . '/../src/Core/Autoloader.php')) {
-    require_once __DIR__ . '/../src/Core/Autoloader.php';
-    \App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src');
-} elseif (file_exists(__DIR__ . '/src/Core/Autoloader.php')) {
-    require_once __DIR__ . '/src/Core/Autoloader.php';
-    \App\Core\Autoloader::register(__DIR__ . DIRECTORY_SEPARATOR . 'src');
+// Backend PHP vive en app/ (separado de src/ que es exclusivo para Astro/frontend)
+if (file_exists(__DIR__ . '/../app/Core/Autoloader.php')) {
+    require_once __DIR__ . '/../app/Core/Autoloader.php';
+    \App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'app');
+} elseif (file_exists(__DIR__ . '/app/Core/Autoloader.php')) {
+    require_once __DIR__ . '/app/Core/Autoloader.php';
+    \App\Core\Autoloader::register(__DIR__ . DIRECTORY_SEPARATOR . 'app');
 } else {
     http_response_code(500);
     header('Content-Type: application/json');

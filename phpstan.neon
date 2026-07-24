@@ -1,11 +1,9 @@
 parameters:
     level: 6
     paths:
-        - src/Controllers
-        - src/Services
-        - src/Core
-        - src/Models
+        - app/Core
+        - app/Features
     bootstrapFiles:
-        - src/Core/Autoloader.php
+        - app/Core/Autoloader.php
     ignoreErrors:
         - '#Constant [A-Z_]+ not found#'

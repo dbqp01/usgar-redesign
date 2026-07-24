@@ -27,3 +27,7 @@
 [2026-07-22 01:48:12] [WARNING] Database credentials or database name are not configured. Running in offline/mock/test mode.
 [2026-07-23 18:13:52] [ERROR] ProvisionalBookingRepository::cleanExpiredCarts Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.provisional_bookings' doesn't exist
 [2026-07-23 18:13:52] [INFO] CleanExpiredCartsAction: Se limpiaron 0 bloqueos temporales expirados.
+[2026-07-24 07:28:18] [ERROR] OAuth callback failed: Signed API request to https://www.googleapis.com/oauth2/v3/userinfo has returned an error. HTTP error 401. Raw Provider API response: {
+  "error": "invalid_request",
+  "error_description": "Invalid Credentials"
+}.
