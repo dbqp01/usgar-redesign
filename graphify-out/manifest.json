@@ -1740,8 +1740,8 @@
     "semantic_hash": ""
   },
   "app/Core/Middleware.php": {
-    "mtime": 1784908675.142096,
-    "ast_hash": "fc490a2086051117c39d4450be4f3583",
+    "mtime": 1784910842.2533312,
+    "ast_hash": "f3fd2b3885e313067316f9963f4cbe88",
     "semantic_hash": ""
   },
   "app/Core/RateLimiter.php": {
