@@ -16,5 +16,5 @@ RewriteRule ^api/(.*)$ index.php [L,QSA]
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
     Header set Referrer-Policy "strict-origin-when-cross-origin"
-    Header set Content-Security-Policy "default-src 'self'; script-src 'self' https://sdk.mercadopago.com https://unpkg.com; style-src 'self' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob: *.tile.openstreetmap.org; connect-src 'self' https://api.mercadopago.com https://api.channex.io https://cms.hotelesusgar.com; frame-src 'self' https://www.mercadopago.com;"
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://sdk.mercadopago.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob: *.tile.openstreetmap.org; connect-src 'self' https://api.mercadopago.com https://api.channex.io https://cms.hotelesusgar.com; frame-src 'self' https://www.mercadopago.com;"
 </IfModule>

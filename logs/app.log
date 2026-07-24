@@ -31,3 +31,7 @@
   "error": "invalid_request",
   "error_description": "Invalid Credentials"
 }.
+[2026-07-24 16:09:59] [ERROR] OAuth callback failed: Signed API request to https://www.googleapis.com/oauth2/v3/userinfo has returned an error. HTTP error 401. Raw Provider API response: {
+  "error": "invalid_request",
+  "error_description": "Invalid Credentials"
+}.
