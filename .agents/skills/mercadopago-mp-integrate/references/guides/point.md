@@ -90,7 +90,7 @@ app.post('/create-order', async (req, res) => {
   if (!response.ok) return res.status(400).json(order);
 
   res.send(`
-    <h1>✅ Order sent to device</h1>
+    <h1> Order sent to device</h1>
     <p>Order ID: ${order.id}</p>
     <p>Status: ${order.status}</p>
     <p>Present card on the Point terminal.</p>
@@ -99,7 +99,7 @@ app.post('/create-order', async (req, res) => {
 });
 
 app.listen(process.env.PORT || 3000, () =>
-  console.log(`\n🚀 Point Server at http://localhost:${process.env.PORT || 3000}\n`)
+  console.log(`\n Point Server at http://localhost:${process.env.PORT || 3000}\n`)
 );
 ```
 

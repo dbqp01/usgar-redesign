@@ -77,7 +77,7 @@ app.post('/webhooks/mp', async (req, res) => {
 app.get('/', (req, res) => res.send('Webhook server running'));
 
 const PORT = process.env.PORT || 3002;
-app.listen(PORT, () => console.log(`\n🔔 Webhook server at http://localhost:${PORT}/webhooks/mp\n`));
+app.listen(PORT, () => console.log(`\n Webhook server at http://localhost:${PORT}/webhooks/mp\n`));
 ```
 
 ### .env

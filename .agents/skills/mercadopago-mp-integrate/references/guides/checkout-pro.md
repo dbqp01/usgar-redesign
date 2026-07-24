@@ -75,7 +75,7 @@ app.post('/checkout', async (req, res) => {
           failure: `${process.env.APP_URL || `http://localhost:${process.env.PORT || 3000}`}/failure`,
           pending: `${process.env.APP_URL || `http://localhost:${process.env.PORT || 3000}`}/pending`,
         },
-        // ⚠️ auto_return only works with a public URL — MP rejects localhost
+        // ️ auto_return only works with a public URL — MP rejects localhost
         // Remove this line during local development; add back in production
         ...(process.env.APP_URL && !process.env.APP_URL.includes('localhost')
           ? { auto_return: 'approved' }
@@ -86,7 +86,7 @@ app.post('/checkout', async (req, res) => {
       },
     });
 
-    // ✅ Always use init_point — NEVER sandbox_init_point
+    //  Always use init_point — NEVER sandbox_init_point
     res.redirect(result.init_point);
   } catch (err) {
     console.error(err);
@@ -98,24 +98,24 @@ app.post('/checkout', async (req, res) => {
 app.get('/success', async (req, res) => {
   const { collection_id, collection_status, external_reference } = req.query;
 
-  // ⚠️ Never trust query params alone — always verify server-side
+  // ️ Never trust query params alone — always verify server-side
   try {
     const payment = new Payment(client);
     const paymentData = await payment.get({ id: collection_id });
     res.send(`
-      <h1>✅ Payment ${paymentData.status}</h1>
+      <h1> Payment ${paymentData.status}</h1>
       <p>Payment ID: ${paymentData.id}</p>
       <p>Status detail: ${paymentData.status_detail}</p>
       <p>External reference: ${external_reference}</p>
       <a href="/">← Back to checkout</a>
     `);
   } catch (err) {
-    res.send(`<h1>✅ Back from checkout</h1><p>Status: ${collection_status}</p><a href="/">← Back</a>`);
+    res.send(`<h1> Back from checkout</h1><p>Status: ${collection_status}</p><a href="/">← Back</a>`);
   }
 });
 
 app.get('/failure', (req, res) => {
-  res.send(`<h1>❌ Payment failed</h1><a href="/">← Try again</a>`);
+  res.send(`<h1> Payment failed</h1><a href="/">← Try again</a>`);
 });
 
 app.get('/pending', (req, res) => {
@@ -131,7 +131,7 @@ app.post('/webhooks/mp', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`\n🚀 Server running at http://localhost:${PORT}\n`));
+app.listen(PORT, () => console.log(`\n Server running at http://localhost:${PORT}\n`));
 ```
 
 ### .env
@@ -177,7 +177,7 @@ node server.js
 
 ## Step 4 — Verify payment (server-side)
 
-⚠️ **Never trust query params alone.** The `/success` route above already verifies via `Payment.get()`.
+️ **Never trust query params alone.** The `/success` route above already verifies via `Payment.get()`.
 
 ---
 

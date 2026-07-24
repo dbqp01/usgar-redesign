@@ -10,8 +10,8 @@ use App\Features\Auth\User;
 use App\Features\Auth\SessionService;
 
 /**
- * Acción ADR: POST /api/auth/register
- * Registro de usuario mediante Email y Contraseña.
+ * Accion ADR: POST /api/auth/register
+ * Registro de usuario mediante Email y Contrasena.
  */
 class AuthRegisterAction {
     public function __invoke(Request $request): void {

@@ -76,7 +76,7 @@ Archivos que conectan frontend con backend. Cambiar uno requiere verificar el ot
 | `src/pages/login.astro` | Consume endpoints de Auth |
 | `src/utils/auth-client.ts` | Consume `/api/auth/me` y `/api/auth/logout` |
 
-### 🔴 ZONA CRÍTICA — No tocar sin justificación
+###  ZONA CRÍTICA — No tocar sin justificación
 
 Cambiar estos archivos puede romper toda la aplicación.
 

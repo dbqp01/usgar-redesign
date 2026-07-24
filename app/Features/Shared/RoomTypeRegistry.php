@@ -6,17 +6,17 @@ namespace App\Features\Shared;
 use App\Core\Config;
 
 /**
- * Fuente única de verdad para el mapeo de tipos de habitación.
- * Centraliza la relación id_room_type ↔ slug ↔ Channex env key.
+ * Fuente unica de verdad para el mapeo de tipos de habitacion.
+ * Centraliza la relacion id_room_type ↔ slug ↔ Channex env key.
  *
  * REGLA ANTI-HARDCODING: Los UUIDs de Channex se leen del .env.
- * Solo los slugs internos y IDs numéricos están aquí (son constantes del dominio).
+ * Solo los slugs internos y IDs numericos estan aqui (son constantes del dominio).
  */
 class RoomTypeRegistry {
 
     /**
-     * Mapeo canónico: id_room_type → slug del dominio.
-     * Estos son los 4 tipos de habitación del Hotel San Pedro.
+     * Mapeo canonico: id_room_type → slug del dominio.
+     * Estos son los 4 tipos de habitacion del Hotel San Pedro.
      */
     private const SLUG_MAP = [
         1 => 'matrimonial',
@@ -42,7 +42,7 @@ class RoomTypeRegistry {
     }
 
     /**
-     * Retorna todos los slugs válidos.
+     * Retorna todos los slugs validos.
      *
      * @return array<int, string> [id => slug]
      */

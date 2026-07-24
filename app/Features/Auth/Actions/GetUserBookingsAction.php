@@ -10,7 +10,7 @@ use App\Features\Auth\User;
 use App\Features\Auth\SessionService;
 
 /**
- * Acción ADR: GET /api/user/bookings
+ * Accion ADR: GET /api/user/bookings
  * Retorna las reservas del usuario autenticado.
  */
 class GetUserBookingsAction {

@@ -22,7 +22,7 @@ use PDO;
 use Exception;
 
 /**
- * Acción ADR: POST /api/webhook y POST /api/webhook-mercado-pago
+ * Accion ADR: POST /api/webhook y POST /api/webhook-mercado-pago
  * Procesa notificaciones de pago IPN de Mercado Pago con idempotencia y bloqueo pesimista.
  */
 class HandleMercadoPagoWebhookAction {
@@ -61,7 +61,7 @@ class HandleMercadoPagoWebhookAction {
 
         $paymentIdStr = (string)$paymentId;
 
-        // 1. Verificación de Idempotencia previa
+        // 1. Verificacion de Idempotencia previa
         if ($this->bookingRepo->isPaymentProcessed($paymentIdStr)) {
             Logger::info("HandleMercadoPagoWebhookAction: Payment ID {$paymentIdStr} ya consta como procesado en la tabla de idempotencia.");
             Response::json(['success' => true, 'message' => 'Payment already processed.']);
@@ -98,7 +98,7 @@ class HandleMercadoPagoWebhookAction {
         }
 
         try {
-            // 2. Transacción Local PDO con Bloqueo Pesimista
+            // 2. Transaccion Local PDO con Bloqueo Pesimista
             $this->pdo->beginTransaction();
 
             $hold = $this->bookingRepo->getByCartIdForUpdate((string)$cartId);
@@ -123,7 +123,7 @@ class HandleMercadoPagoWebhookAction {
             $this->pdo->commit();
             Logger::info("HandleMercadoPagoWebhookAction: Transacción en BD local confirmada para Cart ID {$cartId}");
 
-            // 3. Emisión de Evento de Dominio Desacoplado
+            // 3. Emision de Evento de Dominio Desacoplado
             $event = new BookingPaidEvent(
                 (string)$cartId,
                 $paymentIdStr,

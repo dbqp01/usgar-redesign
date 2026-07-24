@@ -14,7 +14,7 @@ class RateLimiter {
 
     private static function init(): void {
         if (self::$limitsDir === '') {
-            // Guardar datos fuera del directorio público por seguridad
+            // Guardar datos fuera del directorio publico por seguridad
             self::$limitsDir = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'limits';
             if (!is_dir(self::$limitsDir)) {
                 @mkdir(self::$limitsDir, 0755, true);
@@ -23,12 +23,12 @@ class RateLimiter {
     }
 
     /**
-     * Valida si la IP del cliente no ha excedido la tasa máxima en la ventana de tiempo.
+     * Valida si la IP del cliente no ha excedido la tasa maxima en la ventana de tiempo.
      *
-     * @param string $ip               Dirección IP del cliente
-     * @param int    $maxRequests       Cantidad máxima de peticiones
+     * @param string $ip               Direccion IP del cliente
+     * @param int    $maxRequests       Cantidad maxima de peticiones
      * @param int    $timeWindowSeconds Ventana de tiempo en segundos
-     * @return bool True si la petición está permitida, False si está limitada
+     * @return bool True si la peticion esta permitida, False si esta limitada
      */
     public static function check(string $ip, int $maxRequests = 5, int $timeWindowSeconds = 600): bool {
         self::init();
@@ -40,7 +40,7 @@ class RateLimiter {
 
         $fp = @fopen($limitFile, 'c+');
         if (!$fp) {
-            // Si el archivo no se puede abrir, permitir la petición como fallback
+            // Si el archivo no se puede abrir, permitir la peticion como fallback
             return true;
         }
 
@@ -72,10 +72,10 @@ class RateLimiter {
             return false;
         }
 
-        // Agregar petición actual
+        // Agregar peticion actual
         $requests[] = $now;
 
-        // Truncar y escribir estado actualizado de forma atómica
+        // Truncar y escribir estado actualizado de forma atomica
         ftruncate($fp, 0);
         rewind($fp);
         fwrite($fp, json_encode($requests));

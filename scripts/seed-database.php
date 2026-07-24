@@ -7,7 +7,7 @@ require_once __DIR__ . '/../public/api/db.php';
 
 $pdo = getDbConnection();
 if (!$pdo) {
-    echo "❌ ERROR: No se pudo conectar a la base de datos.\n";
+    echo " ERROR: No se pudo conectar a la base de datos.\n";
     exit(1);
 }
 
@@ -70,7 +70,7 @@ try {
         ],
     ];
 
-    echo "-> Insertando tipos de habitación...\n";
+    echo "-> Insertando tipos de habitacion...\n";
     foreach ($roomTypes as $room) {
         // A. Insert into qlo_product
         $stmtProd = $pdo->prepare("
@@ -117,9 +117,9 @@ try {
     }
 
     $pdo->commit();
-    echo "\n✅ BASE DE DATOS SEMBRADA EXITOSAMENTE.\n";
+    echo "\n BASE DE DATOS SEMBRADA EXITOSAMENTE.\n";
 
 } catch (PDOException $e) {
     $pdo->rollBack();
-    echo "\n❌ ERROR durante el sembrado: " . $e->getMessage() . "\n";
+    echo "\n ERROR durante el sembrado: " . $e->getMessage() . "\n";
 }

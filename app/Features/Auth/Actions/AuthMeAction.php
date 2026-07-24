@@ -8,8 +8,8 @@ use App\Core\Response;
 use App\Features\Auth\SessionService;
 
 /**
- * Acción ADR: GET /api/auth/me
- * Retorna la información del usuario autenticado actualmente.
+ * Accion ADR: GET /api/auth/me
+ * Retorna la informacion del usuario autenticado actualmente.
  */
 class AuthMeAction {
     public function __invoke(Request $request): void {

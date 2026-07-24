@@ -27,16 +27,16 @@ test_endpoint() {
     body_content=$(cat /tmp/api_response)
 
     if [ "$response" = "$expected_status" ]; then
-        echo "✅ $label → $response"
+        echo " $label → $response"
         PASS=$((PASS + 1))
     elif [ "$response" = "500" ]; then
-        echo "❌ $label → $response (SERVER ERROR)"
+        echo " $label → $response (SERVER ERROR)"
         FAIL=$((FAIL + 1))
     elif [ "$response" = "000" ]; then
-        echo "❌ $label → CONNECTION REFUSED (server not running?)"
+        echo " $label → CONNECTION REFUSED (server not running?)"
         FAIL=$((FAIL + 1))
     else
-        echo "⚠️  $label → $response (expected $expected_status)"
+        echo "️  $label → $response (expected $expected_status)"
         WARN=$((WARN + 1))
     fi
 }
@@ -71,7 +71,7 @@ test_endpoint "POST" "/api/auth/logout" "401"
 
 echo ""
 echo "================================="
-echo "  Results: ✅ $PASS  ⚠️  $WARN  ❌ $FAIL"
+echo "  Results:  $PASS  ️  $WARN   $FAIL"
 echo "================================="
 
 # Exit with error code if any failures

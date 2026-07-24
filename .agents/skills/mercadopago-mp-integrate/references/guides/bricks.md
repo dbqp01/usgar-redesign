@@ -75,7 +75,7 @@ app.post('/api/process-payment', async (req, res) => {
       headers: {
         Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`,
         'Content-Type': 'application/json',
-        'X-Idempotency-Key': randomUUID(), // ✅ always send — prevents duplicate charges on retry
+        'X-Idempotency-Key': randomUUID(), //  always send — prevents duplicate charges on retry
       },
       body: JSON.stringify({
         transaction_amount: Number(transaction_amount),
@@ -132,7 +132,7 @@ export default function App() {
       const data = await res.json();
       setPaymentId(data.paymentId); // direct from POST /v1/payments response
       setStatus(data.status === 'approved' ? 'approved' : 'rejected');
-      return data; // ✅ MUST return a Promise — void keeps brick in loading forever
+      return data; //  MUST return a Promise — void keeps brick in loading forever
     } catch (err) {
       setStatus('rejected');
     }
@@ -141,9 +141,9 @@ export default function App() {
   if (status === 'approved' && paymentId) {
     return (
       <div>
-        <h1>✅ Payment approved!</h1>
+        <h1> Payment approved!</h1>
         <p>Payment ID: {paymentId}</p>
-        <StatusScreen initialization={{ paymentId }} /> {/* ✅ payment.id from POST /v1/payments */}
+        <StatusScreen initialization={{ paymentId }} /> {/*  payment.id from POST /v1/payments */}
       </div>
     );
   }
@@ -151,7 +151,7 @@ export default function App() {
   return (
     <div style={{ maxWidth: 500, margin: '40px auto', padding: '0 20px' }}>
       <h1>Bricks — CardPayment Test</h1>
-      {/* ✅ Always show amount above brick */}
+      {/*  Always show amount above brick */}
       <p style={{ fontSize: 18 }}>Total: <strong>BRL {AMOUNT.toFixed(2)}</strong></p>
 
       {(status === 'idle' || status === 'loading') && (
@@ -166,7 +166,7 @@ export default function App() {
 
       {status === 'rejected' && (
         <div>
-          <p>❌ Payment could not be processed. Check your card and try again.</p>
+          <p> Payment could not be processed. Check your card and try again.</p>
           <button onClick={() => setStatus('idle')}>Try again</button>
         </div>
       )}

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-// Permitir ejecución en segundo plano para webhooks lentos
+// Permitir ejecucion en segundo plano para webhooks lentos
 if (PHP_SAPI !== 'cli') {
     ob_start();
 }
@@ -34,7 +34,7 @@ use App\Core\Request;
 use App\Core\Router;
 use App\Core\Middleware;
 
-// Importar Clases-Acción ADR (Action-Domain-Responder)
+// Importar Clases-Accion ADR (Action-Domain-Responder)
 use App\Features\Health\Actions\HealthCheckAction;
 use App\Features\Rooms\Actions\GetRoomsAction;
 use App\Features\Booking\Actions\CreateBookingAction;
@@ -51,7 +51,7 @@ use App\Features\Auth\Actions\AuthMeAction;
 use App\Features\Auth\Actions\AuthLogoutAction;
 use App\Features\Auth\Actions\GetUserBookingsAction;
 
-// 2. Inicializar configuración centralizada y Container PSR-11
+// 2. Inicializar configuracion centralizada y Container PSR-11
 Config::boot();
 $container = Container::getInstance();
 $dbConnection = Database::getInstance()->getConnection();
@@ -59,7 +59,7 @@ if ($dbConnection !== null) {
     $container->set(PDO::class, $dbConnection);
 }
 
-// 3. Soporte para ejecuciones desde la línea de comandos (Cron Jobs)
+// 3. Soporte para ejecuciones desde la linea de comandos (Cron Jobs)
 if (PHP_SAPI === 'cli') {
     global $argv;
     $_SERVER['REQUEST_METHOD'] = 'POST';
@@ -79,7 +79,7 @@ $middleware
 
 $router->setMiddleware($middleware);
 
-// 6. Registrar endpoints mapeados a Clases-Acción ADR (SRP extremo)
+// 6. Registrar endpoints mapeados a Clases-Accion ADR (SRP extremo)
 $router->get('/api/health',           HealthCheckAction::class);
 $router->get('/api/rooms',            GetRoomsAction::class);
 $router->post('/api/booking',         CreateBookingAction::class);
@@ -92,7 +92,7 @@ $router->post('/api/webhook/channex', HandleChannexWebhookAction::class);
 // Endpoint de mantenimiento del sistema (Cron)
 $router->post('/api/cron/cleanup',    CleanExpiredCartsAction::class);
 
-// Endpoints de Autenticación y Panel de Huéspedes
+// Endpoints de Autenticacion y Panel de Huespedes
 $router->get('/api/auth/login',        AuthLoginAction::class);
 $router->get('/api/auth/callback',     AuthCallbackAction::class);
 $router->post('/api/auth/register',    AuthRegisterAction::class);
@@ -101,5 +101,5 @@ $router->get('/api/auth/me',           AuthMeAction::class);
 $router->post('/api/auth/logout',      AuthLogoutAction::class);
 $router->get('/api/user/bookings',     GetUserBookingsAction::class);
 
-// 7. Despachar la petición actual
+// 7. Despachar la peticion actual
 $router->dispatch($request);

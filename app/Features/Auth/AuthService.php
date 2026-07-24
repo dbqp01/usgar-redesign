@@ -7,7 +7,7 @@ use App\Core\Config;
 use App\Core\Logger;
 
 /**
- * Servicio de autenticación OAuth usando HybridAuth 3.x.
+ * Servicio de autenticacion OAuth usando HybridAuth 3.x.
  *
  * Proveedores soportados (todos gratuitos):
  * - Google (OAuth2)
@@ -17,13 +17,13 @@ use App\Core\Logger;
  * HybridAuth se carga desde vendor/hybridauth/ (sin Composer).
  * El autoload se registra en public/index.php.
  *
- * Documentación verificada con Context7 /hybridauth/hybridauth (Score: High, 70 snippets).
+ * Documentacion verificada con Context7 /hybridauth/hybridauth (Score: High, 70 snippets).
  */
 class AuthService {
 
     /**
-     * Retorna la configuración de HybridAuth con los proveedores activos.
-     * Solo habilita proveedores cuyas credenciales estén configuradas en .env.
+     * Retorna la configuracion de HybridAuth con los proveedores activos.
+     * Solo habilita proveedores cuyas credenciales esten configuradas en .env.
      */
     public static function getConfig(): array {
         $siteUrl = Config::get('SITE_URL', 'http://localhost:8000');
@@ -81,7 +81,7 @@ class AuthService {
     }
 
     /**
-     * Normaliza el perfil de HybridAuth a un array estándar para User::createFromOAuth().
+     * Normaliza el perfil de HybridAuth a un array estandar para User::createFromOAuth().
      *
      * @param \Hybridauth\User\Profile $profile Perfil de HybridAuth
      * @param string $provider Nombre del proveedor (Google, MicrosoftGraph, Facebook)
@@ -100,15 +100,15 @@ class AuthService {
     }
 
     /**
-     * Verifica si un proveedor es válido y está habilitado.
+     * Verifica si un proveedor es valido y esta habilitado.
      */
     public static function isValidProvider(string $provider): bool {
         return in_array($provider, self::getEnabledProviders(), true);
     }
 
     /**
-     * Asegura la carga de la librería Hybridauth buscando autoloader en Composer o en subdirectorios vendor nativos.
-     * Escanea dinámicamente múltiples ubicaciones de vendor (raíz, DocumentRoot, carpetas superiores)
+     * Asegura la carga de la libreria Hybridauth buscando autoloader en Composer o en subdirectorios vendor nativos.
+     * Escanea dinamicamente multiples ubicaciones de vendor (raiz, DocumentRoot, carpetas superiores)
      * para garantizar compatibilidad total en entornos nativos y Hostinger.
      */
     public static function ensureHybridauthLoaded(): bool {
@@ -147,7 +147,7 @@ class AuthService {
             }
         }
 
-        // 2. Segunda opción: Cargar vendor/autoload.php general de Composer
+        // 2. Segunda opcion: Cargar vendor/autoload.php general de Composer
         foreach ($candidateBases as $base) {
             $file = $base . '/vendor/autoload.php';
             if (file_exists($file)) {

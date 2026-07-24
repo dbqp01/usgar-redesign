@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Features\Shared\Ports;
 
 /**
- * Puerto de abstracción para la interacción con Channel Managers (Channex).
+ * Puerto de abstraccion para la interaccion con Channel Managers (Channex).
  */
 interface ChannelManagerPortInterface {
     public function pushAvailability(

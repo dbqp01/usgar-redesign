@@ -4,17 +4,17 @@ declare(strict_types=1);
 namespace App\Core;
 
 /**
- * Abstracción de la respuesta HTTP. Administra salidas JSON estandarizadas.
+ * Abstraccion de la respuesta HTTP. Administra salidas JSON estandarizadas.
  * CORS fue movido a Middleware::cors() para cumplir SRP.
  */
 class Response {
     /**
-     * Envía una respuesta JSON formateada y finaliza la ejecución.
-     * Usa JSON_THROW_ON_ERROR para detección temprana de errores de serialización
+     * Envia una respuesta JSON formateada y finaliza la ejecucion.
+     * Usa JSON_THROW_ON_ERROR para deteccion temprana de errores de serializacion
      * (per json-standards skill).
      */
     public static function json(array $data, int $statusCode = 200): void {
-        // Limpiar cualquier búfer de salida previo para evitar JSON corrompido
+        // Limpiar cualquier bufer de salida previo para evitar JSON corrompido
         if (ob_get_length()) {
             ob_clean();
         }
@@ -33,7 +33,7 @@ class Response {
     }
 
     /**
-     * Envía una respuesta de error uniforme.
+     * Envia una respuesta de error uniforme.
      */
     public static function error(string $message, int $statusCode = 500, string $code = 'ERROR', array $details = []): void {
         $payload = [

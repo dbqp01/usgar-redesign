@@ -8,7 +8,7 @@ use Exception;
 if (!class_exists(TestCase::class)) {
     /**
      * Polyfill nativo de PHPUnit TestCase para entornos de desarrollo PHP 8 sin Composer global.
-     * Evita advertencias de clases/métodos no encontrados en IDEs y editores de código.
+     * Evita advertencias de clases/metodos no encontrados en IDEs y editores de codigo.
      */
     abstract class TestCase {
         public function createMock(string $originalClassName): object {

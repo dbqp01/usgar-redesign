@@ -13,8 +13,8 @@ use App\Features\Auth\SessionService;
 use Throwable;
 
 /**
- * Acción ADR: GET /api/auth/callback
- * Procesa el retorno del proveedor OAuth y crea la sesión del usuario.
+ * Accion ADR: GET /api/auth/callback
+ * Procesa el retorno del proveedor OAuth y crea la sesion del usuario.
  */
 class AuthCallbackAction {
     public function __invoke(Request $request): void {

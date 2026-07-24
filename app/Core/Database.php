@@ -7,9 +7,9 @@ use PDO;
 use PDOException;
 
 /**
- * Gestión de conexión a Base de Datos (Singleton PDO).
- * Principio de Responsabilidad Única: solo maneja la conexión PDO.
- * La carga de .env fue extraída a Config.php.
+ * Gestion de conexion a Base de Datos (Singleton PDO).
+ * Principio de Responsabilidad Unica: solo maneja la conexion PDO.
+ * La carga de .env fue extraida a Config.php.
  */
 class Database {
     private static ?Database $instance = null;
@@ -41,7 +41,7 @@ class Database {
     }
 
     /**
-     * Retorna la instancia única del gestor de base de datos.
+     * Retorna la instancia unica del gestor de base de datos.
      */
     public static function getInstance(): self {
         if (self::$instance === null) {
@@ -51,14 +51,14 @@ class Database {
     }
 
     /**
-     * Retorna el objeto de conexión PDO o null si no se pudo conectar.
+     * Retorna el objeto de conexion PDO o null si no se pudo conectar.
      */
     public function getConnection(): ?PDO {
         return $this->pdo;
     }
 
     /**
-     * Verifica si la conexión a la base de datos está activa.
+     * Verifica si la conexion a la base de datos esta activa.
      */
     public function isConnected(): bool {
         return $this->pdo !== null;

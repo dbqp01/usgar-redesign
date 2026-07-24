@@ -4,7 +4,7 @@ declare(strict_types=1);
 // scripts/run-exhaustive-tests.php - Exhaustive Integration and Unit Audit Test Suite
 
 require_once __DIR__ . '/../app/Core/Autoloader.php';
-\App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src');
+\App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'app');
 
 use App\Core\Config;
 use App\Core\Database;
@@ -18,7 +18,7 @@ use App\Features\Shared\Ports\ChannelManagerPortInterface;
 use App\Features\Shared\Adapters\QloAppAdapter;
 
 echo "==========================================================" . PHP_EOL;
-echo "🧪 USGAR REDESIGN - AUDITORÍA Y PRUEBAS EXHAUSTIVAS" . PHP_EOL;
+echo " USGAR REDESIGN - AUDITORIA Y PRUEBAS EXHAUSTIVAS" . PHP_EOL;
 echo "==========================================================" . PHP_EOL;
 
 $failedTests = 0;
@@ -27,10 +27,10 @@ $passedTests = 0;
 function assertTest(string $description, bool $condition, $debugData = null): void {
     global $passedTests, $failedTests;
     if ($condition) {
-        echo "   ✅ PASS: $description" . PHP_EOL;
+        echo "    PASS: $description" . PHP_EOL;
         $passedTests++;
     } else {
-        echo "   ❌ FAIL: $description" . PHP_EOL;
+        echo "    FAIL: $description" . PHP_EOL;
         if ($debugData !== null) {
             echo "      DEBUG DATA: " . print_r($debugData, true) . PHP_EOL;
         }
@@ -41,7 +41,7 @@ function assertTest(string $description, bool $condition, $debugData = null): vo
 // --------------------------------------------------------
 // SECTION 1: Unit & Core Tests
 // --------------------------------------------------------
-echo PHP_EOL . "--- 📦 SECCIÓN 1: PRUEBAS UNITARIAS DE CORE & ADR ---" . PHP_EOL;
+echo PHP_EOL . "---  SECCION 1: PRUEBAS UNITARIAS DE CORE & ADR ---" . PHP_EOL;
 
 // 1.1 Autoloader PSR-4
 assertTest("El Autoloader PSR-4 está cargando las clases de Core", class_exists('App\Core\Router'));
@@ -49,7 +49,7 @@ assertTest("El Autoloader PSR-4 está cargando las Clases-Acción ADR (Vertical 
 assertTest("El Autoloader PSR-4 está cargando los Puertos Hexagonales", interface_exists(PmsPortInterface::class));
 assertTest("El Autoloader PSR-4 está cargando los Adaptadores Hexagonales", class_exists(QloAppAdapter::class));
 
-// 1.2 Verificación de Contratos Hexagonales (verifySignature, getPaymentDetails, createBooking)
+// 1.2 Verificacion de Contratos Hexagonales (verifySignature, getPaymentDetails, createBooking)
 assertTest("PaymentGatewayPortInterface declara 'verifySignature'", method_exists(PaymentGatewayPortInterface::class, 'verifySignature'));
 assertTest("PaymentGatewayPortInterface declara 'getPaymentDetails'", method_exists(PaymentGatewayPortInterface::class, 'getPaymentDetails'));
 assertTest("ChannelManagerPortInterface declara 'createBooking'", method_exists(ChannelManagerPortInterface::class, 'createBooking'));
@@ -98,7 +98,7 @@ try {
 // --------------------------------------------------------
 // SECTION 2: HTTP Integration Tests via Server
 // --------------------------------------------------------
-echo PHP_EOL . "--- 🌐 SECCIÓN 2: PRUEBAS DE INTEGRACIÓN HTTP ---" . PHP_EOL;
+echo PHP_EOL . "---  SECCION 2: PRUEBAS DE INTEGRACION HTTP ---" . PHP_EOL;
 
 $host = '127.0.0.1';
 $port = 8089;
@@ -145,10 +145,10 @@ for ($i = 0; $i < 30; $i++) {
 }
 
 if (!$serverReady) {
-    echo "   ❌ ERROR: El servidor de pruebas en http://$host:$port no pudo iniciar." . PHP_EOL;
+    echo "    ERROR: El servidor de pruebas en http://$host:$port no pudo iniciar." . PHP_EOL;
     $logContent = file_exists($serverLogFile) ? file_get_contents($serverLogFile) : '(sin log)';
     echo "---- php -S log ----" . PHP_EOL;
-    echo ($logContent !== false && trim($logContent) !== '') ? $logContent : '(log vacío)' . PHP_EOL;
+    echo ($logContent !== false && trim($logContent) !== '') ? $logContent : '(log vacio)' . PHP_EOL;
     echo "--------------------" . PHP_EOL;
     exit(1);
 }
@@ -182,12 +182,12 @@ $healthRes = httpGet("http://$host:$port/api/health");
 assertTest("Endpoint GET /api/health retorna HTTP 200", $healthRes['status'] === 200);
 assertTest("Endpoint GET /api/health retorna JSON válido con success=true", str_contains($healthRes['body'], '"success":true'));
 
-// Test /api/rooms sin parámetros (debe fallar por validación)
+// Test /api/rooms sin parametros (debe fallar por validacion)
 $roomsInvalidRes = httpGet("http://$host:$port/api/rooms");
 assertTest("Endpoint GET /api/rooms sin parámetros retorna HTTP 400 (Bad Request)", $roomsInvalidRes['status'] === 400);
 assertTest("Endpoint GET /api/rooms sin parámetros reporta error de validación", str_contains(strtolower($roomsInvalidRes['body']), 'falta') || str_contains(strtolower($roomsInvalidRes['body']), 'field') || str_contains(strtolower($roomsInvalidRes['body']), 'checkin'));
 
-// Test /api/rooms con rango inválido
+// Test /api/rooms con rango invalido
 $roomsRangeInvalidRes = httpGet("http://$host:$port/api/rooms?checkIn=2026-07-25&checkOut=2026-07-20");
 assertTest("Endpoint GET /api/rooms con rango de fechas invertido retorna HTTP 400", $roomsRangeInvalidRes['status'] === 400);
 
@@ -205,7 +205,7 @@ if (is_resource($process)) {
 echo "   Servidor de pruebas apagado." . PHP_EOL;
 
 echo PHP_EOL . "==========================================================" . PHP_EOL;
-echo "📊 RESUMEN DE AUDITORÍA:" . PHP_EOL;
+echo " RESUMEN DE AUDITORIA:" . PHP_EOL;
 echo "   Pasados: $passedTests" . PHP_EOL;
 echo "   Fallidos: $failedTests" . PHP_EOL;
 echo "==========================================================" . PHP_EOL;

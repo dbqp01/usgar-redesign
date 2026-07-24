@@ -13,7 +13,7 @@ use SimpleXMLElement;
 use Exception;
 
 /**
- * Adaptador Hexagonal para la integración con QloApps PMS.
+ * Adaptador Hexagonal para la integracion con QloApps PMS.
  * Cumple estrictamente con PmsPortInterface.
  */
 class QloAppAdapter implements PmsPortInterface {

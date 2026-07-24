@@ -10,8 +10,8 @@ use App\Features\Auth\User;
 use App\Features\Auth\SessionService;
 
 /**
- * Acción ADR: POST /api/auth/login-email
- * Inicio de sesión tradicional con email y contraseña.
+ * Accion ADR: POST /api/auth/login-email
+ * Inicio de sesion tradicional con email y contrasena.
  */
 class AuthLoginEmailAction {
     public function __invoke(Request $request): void {

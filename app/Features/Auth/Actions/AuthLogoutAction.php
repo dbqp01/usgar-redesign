@@ -8,8 +8,8 @@ use App\Core\Response;
 use App\Features\Auth\SessionService;
 
 /**
- * Acción ADR: POST /api/auth/logout
- * Cierra la sesión activa expirando la cookie JWT.
+ * Accion ADR: POST /api/auth/logout
+ * Cierra la sesion activa expirando la cookie JWT.
  */
 class AuthLogoutAction {
     public function __invoke(Request $request): void {

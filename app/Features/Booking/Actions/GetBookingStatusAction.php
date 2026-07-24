@@ -11,7 +11,7 @@ use App\Core\Config;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
 
 /**
- * Acción ADR: GET /api/booking-status
+ * Accion ADR: GET /api/booking-status
  * Retorna el estado actual de la reserva protegiendo PII sensible.
  */
 class GetBookingStatusAction {

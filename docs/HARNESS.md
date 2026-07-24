@@ -64,6 +64,6 @@ php tests/api-harness.php
 
 | Símbolo | Significado |
 |---------|------------|
-| ✅ | Endpoint responde correctamente |
-| ⚠️ | Endpoint responde pero con error esperado (falta config) |
-| ❌ | Endpoint no responde o error inesperado |
+|  | Endpoint responde correctamente |
+| ️ | Endpoint responde pero con error esperado (falta config) |
+|  | Endpoint no responde o error inesperado |

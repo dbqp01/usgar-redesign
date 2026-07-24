@@ -100,16 +100,16 @@ Crear un artifact `audit_code_results.md` con:
 # Auditoría Lógica — Resultados
 Fecha: [fecha]
 
-## ✅ Correcto
+##  Correcto
 - [lista de cosas que están bien]
 
-## ⚠️ Advertencias
+## ️ Advertencias
 - [inconsistencias menores]
 
-## ❌ Errores Críticos
+##  Errores Críticos
 - [incoherencias que rompen funcionalidad]
 
-## 📋 Acciones Requeridas
+##  Acciones Requeridas
 - [ ] [acción 1]
 - [ ] [acción 2]
 ```

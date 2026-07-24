@@ -10,7 +10,7 @@ use App\Core\BookingStatus;
 
 /**
  * Modelo para la tabla provisional_bookings (bloqueos temporales).
- * Patrón Repository/Data Mapper — SQL separado de controllers.
+ * Patron Repository/Data Mapper — SQL separado de controllers.
  *
  * Fix: cleanupExpiredHolds usa UPDATE (audit trail) en vez de DELETE.
  * Mejora: usa BookingStatus enum para tipo-seguridad.
@@ -132,7 +132,7 @@ class ProvisionalBooking {
     }
 
     /**
-     * Extiende el tiempo de expiración del hold.
+     * Extiende el tiempo de expiracion del hold.
      */
     public function extend(string $cartId, string $newExpiration): bool {
         try {
@@ -153,7 +153,7 @@ class ProvisionalBooking {
     }
 
     /**
-     * Marca como expirados los bloqueos que superaron su tiempo límite.
+     * Marca como expirados los bloqueos que superaron su tiempo limite.
      * Usa UPDATE en vez de DELETE para mantener audit trail.
      */
     public function cleanupExpiredHolds(): int {

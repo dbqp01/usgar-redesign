@@ -10,8 +10,8 @@ use App\Core\Config;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
 
 /**
- * Acción ADR: POST /api/cron/cleanup
- * Tarea programada para limpiar carritos expirados (más de 15 minutos sin pago).
+ * Accion ADR: POST /api/cron/cleanup
+ * Tarea programada para limpiar carritos expirados (mas de 15 minutos sin pago).
  */
 class CleanExpiredCartsAction {
     private ProvisionalBookingRepository $bookingRepo;
@@ -21,7 +21,7 @@ class CleanExpiredCartsAction {
     }
 
     public function __invoke(Request $request): void {
-        // En entorno HTTP, exigir validación de token de cron (excepto CLI)
+        // En entorno HTTP, exigir validacion de token de cron (excepto CLI)
         if (PHP_SAPI !== 'cli') {
             $cronSecret = Config::get('CRON_SECRET');
             $providedSecret = $request->getHeader('x-cron-secret') ?? $request->getQuery('secret', '');

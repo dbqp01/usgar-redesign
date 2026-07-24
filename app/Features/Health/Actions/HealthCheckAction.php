@@ -10,8 +10,8 @@ use App\Core\Database;
 use Exception;
 
 /**
- * Acción ADR: GET /api/health
- * Retorna el estado de salud del sistema, conexión a BD y entorno.
+ * Accion ADR: GET /api/health
+ * Retorna el estado de salud del sistema, conexion a BD y entorno.
  */
 class HealthCheckAction {
     public function __invoke(Request $request): void {

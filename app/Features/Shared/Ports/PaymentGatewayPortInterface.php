@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Features\Shared\Ports;
 
 /**
- * Puerto de abstracción para la interacción con pasarelas de pago (Mercado Pago).
+ * Puerto de abstraccion para la interaccion con pasarelas de pago (Mercado Pago).
  */
 interface PaymentGatewayPortInterface {
     public function createPreference(

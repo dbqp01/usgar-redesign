@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Core;
 
 /**
- * Abstracción de la petición HTTP. Encapsula parámetros, cuerpo y headers.
- * Fix: IP spoofing via X-Forwarded-For — ahora solo confía en proxies configurados.
+ * Abstraccion de la peticion HTTP. Encapsula parametros, cuerpo y headers.
+ * Fix: IP spoofing via X-Forwarded-For — ahora solo confia en proxies configurados.
  * Fix: JSON body parsing con JSON_THROW_ON_ERROR.
  */
 class Request {
@@ -63,14 +63,14 @@ class Request {
     }
 
     /**
-     * Obtiene la dirección IP real del cliente de forma segura.
-     * Solo confía en headers de proxy si REMOTE_ADDR está en la lista de proxies confiables.
+     * Obtiene la direccion IP real del cliente de forma segura.
+     * Solo confia en headers de proxy si REMOTE_ADDR esta en la lista de proxies confiables.
      */
     public function getIp(): string {
         $remoteAddr = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
         $trustedProxies = Config::getTrustedProxies();
 
-        // Solo leer headers de proxy si la petición viene de un proxy confiable
+        // Solo leer headers de proxy si la peticion viene de un proxy confiable
         if (!empty($trustedProxies) && in_array($remoteAddr, $trustedProxies, true)) {
             $proxyHeaders = ['HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP'];
             foreach ($proxyHeaders as $header) {
@@ -88,7 +88,7 @@ class Request {
     }
 
     /**
-     * Parsea el body de la petición (JSON o Form Data) de forma segura (SEC-06).
+     * Parsea el body de la peticion (JSON o Form Data) de forma segura (SEC-06).
      */
     private function parseBody(): ?array {
         if (!in_array($this->method, ['POST', 'PUT', 'PATCH'], true)) {

@@ -89,7 +89,7 @@ app.get('/oauth/callback', async (req, res) => {
 
   sellers[tokens.user_id] = {
     access_token: tokens.access_token,
-    refresh_token: tokens.refresh_token, // ✅ store this — expires in 6 months
+    refresh_token: tokens.refresh_token, //  store this — expires in 6 months
     email: `seller-${tokens.user_id}@test.com`,
   };
   res.redirect('/');
@@ -101,7 +101,7 @@ app.post('/charge', async (req, res) => {
   const seller = sellers[seller_id];
   if (!seller) return res.status(404).send('Seller not found');
 
-  // ✅ Use seller's access_token — payments go to seller's account
+  //  Use seller's access_token — payments go to seller's account
   const response = await fetch('https://api.mercadopago.com/v1/payments', {
     method: 'POST',
     headers: {
@@ -115,7 +115,7 @@ app.post('/charge', async (req, res) => {
       description: 'Marketplace test',
       installments: 1,
       payment_method_id: 'visa',
-      application_fee: parseFloat(fee), // ✅ your commission — required
+      application_fee: parseFloat(fee), //  your commission — required
       payer: { email: 'buyer@test.com' },
       external_reference: `mkt-${Date.now()}`,
     }),
@@ -125,7 +125,7 @@ app.post('/charge', async (req, res) => {
   if (!response.ok) return res.status(400).json(payment);
 
   res.send(`
-    <h1>✅ Payment ${payment.status}</h1>
+    <h1> Payment ${payment.status}</h1>
     <p>Payment ID: ${payment.id}</p>
     <p>Amount: BRL ${amount} · Your fee: BRL ${fee}</p>
     <a href="/">← Back</a>
@@ -133,7 +133,7 @@ app.post('/charge', async (req, res) => {
 });
 
 app.listen(process.env.PORT || 3000, () =>
-  console.log(`\n🚀 Marketplace Server at http://localhost:${process.env.PORT || 3000}\n`)
+  console.log(`\n Marketplace Server at http://localhost:${process.env.PORT || 3000}\n`)
 );
 ```
 

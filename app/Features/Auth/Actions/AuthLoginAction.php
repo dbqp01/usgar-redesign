@@ -12,8 +12,8 @@ use App\Features\Auth\AuthService;
 use Throwable;
 
 /**
- * Acción ADR: GET /api/auth/login
- * Inicia la autenticación con el proveedor OAuth indicado.
+ * Accion ADR: GET /api/auth/login
+ * Inicia la autenticacion con el proveedor OAuth indicado.
  */
 class AuthLoginAction {
     public function __invoke(Request $request): void {

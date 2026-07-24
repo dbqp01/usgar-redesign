@@ -19,7 +19,7 @@ Sitio web transaccional para turistas internacionales. Reservas directas con Mer
 
 ## Project Map
 - `app/` — Backend PHP completo
-- `app/Core/` — Router, Request, Response, Config, Middleware, Events (🔴 NO TOCAR)
+- `app/Core/` — Router, Request, Response, Config, Middleware, Events ( NO TOCAR)
 - `app/Features/` — Vertical slices: Auth, Booking, Rooms, Webhooks, Cron, Health
 - `app/Features/Shared/` — Ports (interfaces) + Adapters (QloApps, MercadoPago, Channex)
 - `src/` — Frontend Astro exclusivamente
@@ -42,19 +42,19 @@ Sitio web transaccional para turistas internacionales. Reservas directas con Mer
 
 ## Boundaries
 
-### ✅ Allowed
+###  Allowed
 - Editar componentes, páginas, layouts, estilos, i18n en `src/`
 - Agregar/modificar Actions en `app/Features/`
 - Ejecutar tests, lint, build
 - Leer archivos y listar directorios
 
-### ⚠️ Ask first
+### ️ Ask first
 - Modificar Ports/Interfaces en `app/Features/Shared/Ports/`
 - Cambiar estructura de DB
 - Modificar Adapters (conectan con servicios externos reales)
 - Instalar/remover dependencias npm o PHP
 
-### 🚫 Never
+###  Never
 - Hardcodear precios, slugs, tokens, emails, IDs de Channex
 - Exponer credenciales — todo vía `.env`
 - Modificar `vendor/`, `dist/`, `node_modules/`

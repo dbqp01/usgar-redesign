@@ -166,10 +166,10 @@ h1, h2, h3, h4 { font-family: var(--font-display); }
 ### Fotos Disponibles
 | Habitación | Fotos disponibles | Videos | Estado |
 |---|---|---|---|
-| Doble Superior | 16 (seleccionar 4) | 4 | ✅ Con material |
-| Matrimonial | 12 (seleccionar 4) | 4 | ✅ Con material |
-| Familiar Superior | 0 | 0 | ⚠️ Usar fotos genéricas |
-| Triple Estándar | 0 | 0 | ⚠️ Usar fotos genéricas |
+| Doble Superior | 16 (seleccionar 4) | 4 |  Con material |
+| Matrimonial | 12 (seleccionar 4) | 4 |  Con material |
+| Familiar Superior | 0 | 0 | ️ Usar fotos genéricas |
+| Triple Estándar | 0 | 0 | ️ Usar fotos genéricas |
 
 ---
 

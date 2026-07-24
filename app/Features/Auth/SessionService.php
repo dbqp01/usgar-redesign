@@ -7,16 +7,16 @@ use App\Core\Config;
 
 /**
  * Servicio de sesiones basado en JWT (JSON Web Tokens).
- * Implementación nativa en PHP 8 sin dependencias externas.
+ * Implementacion nativa en PHP 8 sin dependencias externas.
  *
  * Seguridad:
  * - Firma HMAC-SHA256 con secret del .env (AUTH_JWT_SECRET)
  * - Cookie HttpOnly (no accesible desde JS del cliente)
- * - SameSite=Lax (protección CSRF)
- * - Secure=true en producción (solo HTTPS)
+ * - SameSite=Lax (proteccion CSRF)
+ * - Secure=true en produccion (solo HTTPS)
  *
  * Persistencia:
- * - Cookie de 30 días = sesión sobrevive cierre del navegador
+ * - Cookie de 30 dias = sesion sobrevive cierre del navegador
  */
 class SessionService {
     private const COOKIE_NAME = 'usgar_session';
@@ -64,7 +64,7 @@ class SessionService {
 
     /**
      * Valida un JWT y retorna el payload decodificado.
-     * Retorna null si el token es inválido, expirado o la firma no coincide.
+     * Retorna null si el token es invalido, expirado o la firma no coincide.
      */
     public static function validateToken(string $jwt): ?array {
         $parts = explode('.', $jwt);
@@ -90,7 +90,7 @@ class SessionService {
             return null;
         }
 
-        // Verificar expiración
+        // Verificar expiracion
         if (isset($decoded['exp']) && $decoded['exp'] < time()) {
             return null;
         }
@@ -103,7 +103,7 @@ class SessionService {
     // ──────────────────────────────────────
 
     /**
-     * Setea la cookie de sesión con el JWT.
+     * Setea la cookie de sesion con el JWT.
      */
     public static function setAuthCookie(string $jwt): void {
         setcookie(self::COOKIE_NAME, $jwt, [
@@ -116,7 +116,7 @@ class SessionService {
     }
 
     /**
-     * Elimina la cookie de sesión.
+     * Elimina la cookie de sesion.
      */
     public static function clearAuthCookie(): void {
         setcookie(self::COOKIE_NAME, '', [
@@ -130,7 +130,7 @@ class SessionService {
 
     /**
      * Obtiene los datos del usuario de la cookie JWT actual.
-     * Retorna null si no hay cookie o el token es inválido.
+     * Retorna null si no hay cookie o el token es invalido.
      */
     public static function getUserFromRequest(): ?array {
         $jwt = $_COOKIE[self::COOKIE_NAME] ?? null;

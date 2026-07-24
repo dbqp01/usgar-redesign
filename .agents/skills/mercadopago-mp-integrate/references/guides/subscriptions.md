@@ -84,7 +84,7 @@ app.post('/subscribe', async (req, res) => {
       preapproval_plan_id: plan_id,
       payer_email: email,
       card_token_id: card_token,
-      status: 'authorized', // ✅ REQUIRED — subscription starts active
+      status: 'authorized', //  REQUIRED — subscription starts active
       back_url: `http://localhost:${process.env.PORT || 3000}/`,
       auto_recurring: {
         frequency: 1,
@@ -97,7 +97,7 @@ app.post('/subscribe', async (req, res) => {
   const sub = await response.json();
   if (!response.ok) return res.status(400).json(sub);
   res.send(`
-    <h1>✅ Subscribed!</h1>
+    <h1> Subscribed!</h1>
     <p>Subscription ID: ${sub.id}</p>
     <p>Status: ${sub.status}</p>
     <a href="/">← Back</a>
@@ -105,7 +105,7 @@ app.post('/subscribe', async (req, res) => {
 });
 
 app.listen(process.env.PORT || 3000, () =>
-  console.log(`\n🚀 Subscriptions Server at http://localhost:${process.env.PORT || 3000}\n`)
+  console.log(`\n Subscriptions Server at http://localhost:${process.env.PORT || 3000}\n`)
 );
 ```
 

@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace App\Core;
 
 /**
- * Gestión centralizada de configuración y variables de entorno.
- * Principio de Responsabilidad Única: solo lectura de .env y acceso a configuración.
- * Extraído de Database para cumplir SRP (Database solo debe manejar PDO).
+ * Gestion centralizada de configuracion y variables de entorno.
+ * Principio de Responsabilidad Unica: solo lectura de .env y acceso a configuracion.
+ * Extraido de Database para cumplir SRP (Database solo debe manejar PDO).
  */
 class Config {
     private static ?Config $instance = null;
@@ -17,7 +17,7 @@ class Config {
     }
 
     /**
-     * Inicializa la configuración al arrancar la aplicación.
+     * Inicializa la configuracion al arrancar la aplicacion.
      */
     public static function boot(): self {
         if (self::$instance === null) {
@@ -36,7 +36,7 @@ class Config {
     ];
 
     /**
-     * Obtiene una variable de configuración con fallback opcional.
+     * Obtiene una variable de configuracion con fallback opcional.
      */
     public static function get(string $key, ?string $default = null): ?string {
         $instance = self::boot();
@@ -46,15 +46,15 @@ class Config {
     }
 
     /**
-     * Verifica si el entorno actual es producción.
+     * Verifica si el entorno actual es produccion.
      */
     public static function isProduction(): bool {
         return self::get('ENVIRONMENT', 'development') === 'production';
     }
 
     /**
-     * Retorna los orígenes CORS permitidos como array.
-     * En desarrollo retorna ['*']. En producción solo dominios configurados.
+     * Retorna los origenes CORS permitidos como array.
+     * En desarrollo retorna ['*']. En produccion solo dominios configurados.
      */
     public static function getAllowedOrigins(): array {
         $origins = self::get('ALLOWED_ORIGINS', '*');
@@ -94,7 +94,7 @@ class Config {
         foreach ($lines as $line) {
             $line = trim($line);
 
-            // Ignorar comentarios y líneas vacías
+            // Ignorar comentarios y lineas vacias
             if ($line === '' || str_starts_with($line, '#')) {
                 continue;
             }
@@ -107,7 +107,7 @@ class Config {
             $key = trim($parts[0]);
             $value = trim($parts[1]);
 
-            // Remover comillas únicamente si envuelven el valor completo
+            // Remover comillas unicamente si envuelven el valor completo
             if ((str_starts_with($value, '"') && str_ends_with($value, '"')) ||
                 (str_starts_with($value, "'") && str_ends_with($value, "'"))) {
                 $value = substr($value, 1, -1);

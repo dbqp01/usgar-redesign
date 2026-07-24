@@ -7,7 +7,7 @@
     "dev:php": "php -S localhost:8000 public/index.php",
     "dev:all": "node scripts/dev.js",
     "build": "astro build",
-    "postbuild": "node -e \"import fs from 'fs'; fs.cpSync('app', 'dist/app', { recursive: true }); console.log('✓ Copied app/ to dist/app/ for Hostinger PHP APIs');\"",
+    "postbuild": "node -e \"import fs from 'fs'; fs.cpSync('app', 'dist/app', { recursive: true }); console.log(' Copied app/ to dist/app/ for Hostinger PHP APIs');\"",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",

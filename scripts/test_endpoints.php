@@ -2,65 +2,65 @@
 declare(strict_types=1);
 
 /**
- * test_endpoints.php - Script de integración para validar el correcto funcionamiento de la API.
+ * test_endpoints.php - Script de integracion para validar el correcto funcionamiento de la API.
  * Ubicado en scripts/ por seguridad (RULES.md: No exponer scripts en public/).
  *
- * Ejecutar vía CLI: php scripts/test_endpoints.php
+ * Ejecutar via CLI: php scripts/test_endpoints.php
  */
 
 // 1. Cargar el Autocargador PSR-4
 require_once __DIR__ . '/../app/Core/Autoloader.php';
-\App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src');
+\App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'app');
 \App\Core\Config::boot();
 
-echo "=== INICIANDO PRUEBAS DE INTEGRACIÓN DE ENDPOINTS (usgar-redesign) ===" . PHP_EOL;
+echo "=== INICIANDO PRUEBAS DE INTEGRACION DE ENDPOINTS (usgar-redesign) ===" . PHP_EOL;
 
 use App\Core\Database;
 use App\Core\Config;
 use App\Core\BookingStatus;
-use App\Controllers\RoomController;
+use App\Features\Rooms\Actions\GetRoomsAction;
 
-// 2. Verificar conexión a la base de datos
+// 2. Verificar conexion a la base de datos
 $db = Database::getInstance();
 $pdo = $db->getConnection();
 
 if (!$pdo) {
-    echo "⚠️ Base de datos offline. Los tests de BD se omitirán (modo Mock)." . PHP_EOL;
+    echo "️ Base de datos offline. Los tests de BD se omitiran (modo Mock)." . PHP_EOL;
 } else {
-    echo "✅ Conexión a la base de datos establecida con éxito." . PHP_EOL;
+    echo " Conexion a la base de datos establecida con exito." . PHP_EOL;
 }
 
 // 3. Probar Autoloading
-if (class_exists('App\Core\Router') && class_exists('App\Controllers\RoomController')) {
-    echo "✅ Autoloading PSR-4 personalizado funcionando correctamente." . PHP_EOL;
+if (class_exists('App\Core\Router') && class_exists('App\Features\Rooms\Actions\GetRoomsAction')) {
+    echo " Autoloading PSR-4 personalizado funcionando correctamente." . PHP_EOL;
 } else {
-    die("❌ Error: Autoloading falló.");
+    die(" Error: Autoloading falló.");
 }
 
 // 4. Probar BookingStatus Enum
 $pending = BookingStatus::Pending;
 if ($pending->value === 'pending' && $pending->isExtendable() && !$pending->isTerminal()) {
-    echo "✅ BookingStatus enum: Pending OK" . PHP_EOL;
+    echo " BookingStatus enum: Pending OK" . PHP_EOL;
 }
 
 $paid = BookingStatus::Paid;
 if ($paid->value === 'paid' && !$paid->isExtendable() && $paid->isTerminal()) {
-    echo "✅ BookingStatus enum: Paid OK" . PHP_EOL;
+    echo " BookingStatus enum: Paid OK" . PHP_EOL;
 }
 
 // 5. Probar Config
 $env = Config::get('ENVIRONMENT', 'development');
-echo "✅ Config: ENVIRONMENT = {$env}" . PHP_EOL;
+echo " Config: ENVIRONMENT = {$env}" . PHP_EOL;
 
-// 6. Probar controladores y lógica de BD
+// 6. Probar controladores y logica de BD
 echo PHP_EOL . "--- PROBANDO CONTROLADORES Y BASE DE DATOS ---" . PHP_EOL;
 
 try {
-    $roomController = new RoomController();
-    echo "✅ RoomController instanciado correctamente." . PHP_EOL;
+    $roomsAction = new GetRoomsAction();
+    echo " GetRoomsAction instanciado correctamente." . PHP_EOL;
 
     if ($pdo) {
-        $bookingModel = new \App\Models\ProvisionalBooking($pdo);
+        $bookingModel = new \App\Features\Booking\Domain\ProvisionalBookingRepository($pdo);
         $testCartId = 'MOCK-CART-TEST-' . time();
 
         // Limpiar holds de prueba previos
@@ -81,34 +81,34 @@ try {
         ]);
 
         if ($holdCreated) {
-            echo "✅ Creación de provisional_bookings en BD: OK" . PHP_EOL;
+            echo " Creacion de provisional_bookings en BD: OK" . PHP_EOL;
 
             // Probar lectura
             $hold = $bookingModel->getByCartId($testCartId);
             if ($hold && $hold['guest_data']['name'] === 'Test User') {
-                echo "✅ Lectura de provisional_bookings en BD: OK" . PHP_EOL;
+                echo " Lectura de provisional_bookings en BD: OK" . PHP_EOL;
             } else {
-                echo "❌ Fallo al leer provisional_bookings." . PHP_EOL;
+                echo " Fallo al leer provisional_bookings." . PHP_EOL;
             }
 
-            // Probar extensión
+            // Probar extension
             $extended = $bookingModel->extend($testCartId, date('Y-m-d H:i:s', strtotime('+30 minutes')));
-            echo ($extended ? "✅" : "❌") . " Extensión de provisional_bookings en BD: " . ($extended ? "OK" : "FAIL") . PHP_EOL;
+            echo ($extended ? "" : "") . " Extension de provisional_bookings en BD: " . ($extended ? "OK" : "FAIL") . PHP_EOL;
 
             // Probar cleanup (UPDATE a 'expired')
-            $expiredCount = $bookingModel->cleanupExpiredHolds();
-            echo "✅ Cleanup de holds expirados: {$expiredCount} registros afectados" . PHP_EOL;
+            $expiredCount = $bookingModel->cleanExpiredCarts();
+            echo " Cleanup de holds expirados: {$expiredCount} registros afectados" . PHP_EOL;
 
             // Limpieza
             $deleteStmt = $pdo->prepare("DELETE FROM provisional_bookings WHERE cart_id = :cart_id");
             $deleteStmt->execute([':cart_id' => $testCartId]);
-            echo "✅ Limpieza de registros de prueba en BD: OK" . PHP_EOL;
+            echo " Limpieza de registros de prueba en BD: OK" . PHP_EOL;
         } else {
-            echo "❌ Fallo al insertar provisional_bookings de prueba." . PHP_EOL;
+            echo " Fallo al insertar provisional_bookings de prueba." . PHP_EOL;
         }
     }
 } catch (Exception $e) {
-    echo "❌ Excepción durante las pruebas: " . $e->getMessage() . PHP_EOL;
+    echo " Excepcion durante las pruebas: " . $e->getMessage() . PHP_EOL;
 }
 
-echo PHP_EOL . "=== PRUEBAS COMPLETADAS CON ÉXITO ===" . PHP_EOL;
+echo PHP_EOL . "=== PRUEBAS COMPLETADAS CON EXITO ===" . PHP_EOL;

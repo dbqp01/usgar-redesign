@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Core;
 
 /**
- * Enrutador HTTP con soporte de middleware pipeline y Clases-Acción (ADR) o controladores.
- * Soporta registación mediante arrays [Clase, Método] o Nombres de Clase Invocable.
+ * Enrutador HTTP con soporte de middleware pipeline y Clases-Accion (ADR) o controladores.
+ * Soporta registacion mediante arrays [Clase, Metodo] o Nombres de Clase Invocable.
  */
 class Router {
     private array $routes = [];
@@ -19,27 +19,27 @@ class Router {
     }
 
     /**
-     * Registra una ruta para el método GET.
+     * Registra una ruta para el metodo GET.
      *
      * @param string $path Ruta HTTP
-     * @param array|string $handler Array [Clase, Método] o Nombre de Clase Invocable
+     * @param array|string $handler Array [Clase, Metodo] o Nombre de Clase Invocable
      */
     public function get(string $path, array|string $handler): void {
         $this->routes['GET'][$this->normalizePath($path)] = $handler;
     }
 
     /**
-     * Registra una ruta para el método POST.
+     * Registra una ruta para el metodo POST.
      *
      * @param string $path Ruta HTTP
-     * @param array|string $handler Array [Clase, Método] o Nombre de Clase Invocable
+     * @param array|string $handler Array [Clase, Metodo] o Nombre de Clase Invocable
      */
     public function post(string $path, array|string $handler): void {
         $this->routes['POST'][$this->normalizePath($path)] = $handler;
     }
 
     /**
-     * Procesa la petición actual: middleware → resolve route → dispatch action/controller.
+     * Procesa la peticion actual: middleware → resolve route → dispatch action/controller.
      */
     public function dispatch(Request $request): void {
         $method = $request->getMethod();

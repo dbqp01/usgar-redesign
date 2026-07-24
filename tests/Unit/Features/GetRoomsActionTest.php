@@ -12,7 +12,7 @@ use App\Features\Rooms\Actions\GetRoomsAction;
 use App\Features\Shared\Ports\PmsPortInterface;
 
 /**
- * Pruebas unitarias para la clase-acción ADR GetRoomsAction.
+ * Pruebas unitarias para la clase-accion ADR GetRoomsAction.
  */
 final class GetRoomsActionTest extends TestCase {
     public function testGetRoomsActionInstantiation(): void {

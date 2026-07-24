@@ -43,13 +43,13 @@ Alternatively use the path: `~/.claude/plugins/cache/claude-plugins-official/mer
 
 ---
 
-⚠️ **IMPORTANT — when invoked via `/mp-integrate` command:** The command file already ran env check, journey map, MCP state check, and credential fetch. **Start directly at Step 1.a** (auto-detect SDK/client/mode). Do NOT run any pre-flight or Step 0 checks again — they are done.
+️ **IMPORTANT — when invoked via `/mp-integrate` command:** The command file already ran env check, journey map, MCP state check, and credential fetch. **Start directly at Step 1.a** (auto-detect SDK/client/mode). Do NOT run any pre-flight or Step 0 checks again — they are done.
 
 ---
 
 
 
-## ⚠️ HARD LOCKS — read before doing anything else
+## ️ HARD LOCKS — read before doing anything else
 
 These rules override any "what makes sense" judgement during the wizard. Past wizard runs have violated them; do not repeat the mistake.
 
@@ -59,8 +59,8 @@ The SDK / language is **NEVER** asked via `AskUserQuestion`. Period.
 
 - Resolve it silently in Step 1.a by globbing the repo for a manifest (`package.json`, `pyproject.toml`, etc.).
 - If a single manifest is found → record the SDK and **skip the question entirely**.
-- If multiple manifests exist (real polyglot monorepo) → still don't ask. Pick the one that matches the directory the developer is currently editing, or default to `node`. Mention the choice in a single line of chat (`✓ SDK: node — from package.json`) and **continue without asking**.
-- If no manifest exists at all → still don't ask. Default to `node`, mention it (`✓ SDK: node — defaulted (no manifest detected; we'll create package.json during scaffolding)`), and continue.
+- If multiple manifests exist (real polyglot monorepo) → still don't ask. Pick the one that matches the directory the developer is currently editing, or default to `node`. Mention the choice in a single line of chat (` SDK: node — from package.json`) and **continue without asking**.
+- If no manifest exists at all → still don't ask. Default to `node`, mention it (` SDK: node — defaulted (no manifest detected; we'll create package.json during scaffolding)`), and continue.
 
 If you find yourself about to call `AskUserQuestion` with `header="SDK"` or `header="Stack"` or `header="Language"`, **stop immediately**. The SDK is never a picker. The Tabs row at the top of the wizard must NOT include "SDK" as one of the tabs.
 
@@ -93,7 +93,7 @@ If you find `sandbox_init_point` in existing code, flag it as a bug: the redirec
 
 ### LOCK 4 — Tabs row must reflect only the questions that will actually be asked
 
-The wizard's Tabs row at the top (the `□ Country  □ Product  □ Mode  ✓ Submit` line) must include **only** the dimensions that are actually still unresolved AND non-skipped per LOCK 1 and LOCK 2. Concretely:
+The wizard's Tabs row at the top (the `□ Country  □ Product  □ Mode   Submit` line) must include **only** the dimensions that are actually still unresolved AND non-skipped per LOCK 1 and LOCK 2. Concretely:
 
 - Never include "SDK" in the tabs — see LOCK 1.
 - Never include "Mode" in the tabs when `product` is `checkout-pro` / `bricks` / `wallet-connect` / `subscriptions` / `money-out` / `smartapps`.
@@ -165,9 +165,9 @@ Example block to render:
 ```
 I auto-detected the following from your repo:
 
-  ✓ App:    Villa mco (157134683642259) — from application_list
-  ✓ SDK:    node — from backend/package.json (mercadopago v2.12.0 already installed)
-  ✓ Client: react — from frontend/package.json
+   App:    Villa mco (157134683642259) — from application_list
+   SDK:    node — from backend/package.json (mercadopago v2.12.0 already installed)
+   Client: react — from frontend/package.json
 
 Country will be asked next (not auto-detected).
 Confirm the above to continue, or correct.
@@ -258,8 +258,8 @@ Now I need a few details to scaffold the right integration:
 Right:
 
 ```
-✓ App: Villa mco (157134683642259) — from application_list
-✓ SDK: node — from package.json
+ App: Villa mco (157134683642259) — from application_list
+ SDK: node — from package.json
 (Country will be asked next — not auto-detected.)
 ```
 
@@ -413,7 +413,7 @@ Render the result with this exact structure. Code blocks come from MCP responses
 ## 2. Credentials
 
 Get your credentials from the Mercado Pago Developer Dashboard:
-👉 **https://{DOMAIN}/developers/panel/app**
+ **https://{DOMAIN}/developers/panel/app**
 
 - Under your application, click **Credentials**.
 - For **testing**: click the **{test_tab}** to get test credentials.
@@ -532,11 +532,11 @@ Immediately after rendering the bundle, **before listing next steps**, call `Ask
 6. After all writes, print a short summary:
 
 ```
-✓ npm install mercadopago — OK
-✓ backend/index.js — route /api/create-preference added
-✓ frontend/src/components/CheckoutButton.jsx — created
-✓ .env.example — created (fill in your credentials)
-✓ .gitignore — updated
+ npm install mercadopago — OK
+ backend/index.js — route /api/create-preference added
+ frontend/src/components/CheckoutButton.jsx — created
+ .env.example — created (fill in your credentials)
+ .gitignore — updated
 ```
 
 **Scaffold guardrails:**
@@ -556,7 +556,7 @@ Always close with:
 2. **Run `/mp-integrate test-setup`** to create a test user and load funds.
 2.5. **For Orders API products (checkout-api / qr / point — ALL countries):** Ask via `AskUserQuestion` before listing next steps:
    - Question: *"Orders API requires a test buyer user to process payments. Do you want me to create one now?"*
-   - Options: `"Yes, create test user now"` → invoke `mp-test-setup` skill inline; `"No, I'll do it later"` → show reminder: *"⚠️ Run `/mp-integrate test-setup` before testing — Orders API returns 422 without a test user."*
+   - Options: `"Yes, create test user now"` → invoke `mp-test-setup` skill inline; `"No, I'll do it later"` → show reminder: *"️ Run `/mp-integrate test-setup` before testing — Orders API returns 422 without a test user."*
    - Note: Bricks uses Payments API (`/v1/payments`), not Orders API — this step does not apply to Bricks.
 
 3. **Run `/mp-review` — MANDATORY before going to production.** This is **step 6 of 7** in your integration journey. The auto-checker validates your integration automatically after the first payment. Do **not** switch to production credentials (step 7) until `/mp-review` passes.
@@ -577,7 +577,7 @@ Render only the section that matches the chosen product. These are the experient
 - `external_reference` is your reconciliation anchor — set it on every preference/order.
 
 ### checkout-api
-- **⛔ Orders API requires a test user buyer** — `422 unprocessable_content` if you use an arbitrary email. Run `/mp-integrate test-setup` **before** testing. This applies to ALL countries.
+- ** Orders API requires a test user buyer** — `422 unprocessable_content` if you use an arbitrary email. Run `/mp-integrate test-setup` **before** testing. This applies to ALL countries.
 - **`getCardFormData()` returns camelCase** — `paymentMethodId` and `issuerId`, not `payment_method_id` and `issuer_id`. Map them on the server.
 - **`issuer_id` is NOT allowed inside `payment_method`** for Orders API — remove it from the payload or you get `additionalProperties not allowed`.
 - **`total_amount` and `amount` must be `"10.00"` not `"10"`** — use `Number(x).toFixed(2)`.

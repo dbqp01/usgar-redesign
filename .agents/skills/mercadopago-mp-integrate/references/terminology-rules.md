@@ -21,7 +21,7 @@
 
 ## Credentials
 
-| ❌ Never say / use | ✅ Always say / use | Why |
+|  Never say / use |  Always say / use | Why |
 |---|---|---|
 | Telling dev to change prefix | Use whichever prefix the app issues — both are valid. `get_credentials` returns the correct one. |
 | "legacy credentials" or "obsolete format" | "test credentials (from {test_tab})" | There is no sandbox. The difference is which DevPanel tab they come from. |
@@ -45,7 +45,7 @@ Never combine both languages in the same term (never write "Prueba/Teste").
 
 ## SDK React components (`@mercadopago/sdk-react`)
 
-| ❌ Never use | ✅ Always use | Use case |
+|  Never use |  Always use | Use case |
 |---|---|---|
 | `CardForm` | `CardPayment` | Card-only payment form |
 | `CheckoutForm` | `Payment` | Multi-method payment form |
@@ -60,7 +60,7 @@ Never combine both languages in the same term (never write "Prueba/Teste").
 
 ## Checkout redirect URL
 
-| ❌ Never use | ✅ Always use |
+|  Never use |  Always use |
 |---|---|
 | `sandbox_init_point` | `init_point` |
 | `response.sandbox_init_point` | `response.init_point` |
@@ -71,7 +71,7 @@ Never combine both languages in the same term (never write "Prueba/Teste").
 
 ## API mode naming
 
-| ❌ Avoid | ✅ Prefer | Note |
+|  Avoid |  Prefer | Note |
 |---|---|---|
 | "legacy payments" | "Payments API (`/v1/payments`)" | Be specific about which API |
 | "new orders" | "Orders API (`/v1/orders`)" | Be specific |
@@ -104,7 +104,7 @@ For Point/QR: verify availability — use Payments API as fallback if unavailabl
 
 ## Product naming
 
-| ❌ Never say | ✅ Always say |
+|  Never say |  Always say |
 |---|---|
 | "Checkout Transparente" (outside Brazil) | "Checkout API" |
 | "Checkout API" (in Brazil) | "Checkout Transparente" |
@@ -138,7 +138,7 @@ For Point/QR: verify availability — use Payments API as fallback if unavailabl
 
 ## Webhooks
 
-| ❌ Deprecated | ✅ Use instead |
+|  Deprecated |  Use instead |
 |---|---|
 | IPN (`?id=&topic=` GET-style) | Signed webhooks with `x-signature` |
 | `point_integration_wh` topic | `orders` topic (new integrations) |

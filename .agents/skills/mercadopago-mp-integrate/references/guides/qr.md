@@ -84,7 +84,7 @@ app.post('/create-qr-order', express.urlencoded({ extended: true }), async (req,
 });
 
 app.listen(process.env.PORT || 3000, () =>
-  console.log(`\n🚀 QR Server at http://localhost:${process.env.PORT || 3000}\n`)
+  console.log(`\n QR Server at http://localhost:${process.env.PORT || 3000}\n`)
 );
 ```
 
@@ -110,7 +110,7 @@ Create Store and POS before running the server:
 
 ```bash
 # Create store
-# ⚠️ state_name must be the FULL official state name (e.g. "São Paulo", "Bahia"),
+# ️ state_name must be the FULL official state name (e.g. "São Paulo", "Bahia"),
 #    not an abbreviation like "SP" — the API rejects invalid/placeholder values with 400.
 curl -X POST https://api.mercadopago.com/users/$USER_ID/stores \
   -H "Authorization: Bearer $MP_ACCESS_TOKEN" \

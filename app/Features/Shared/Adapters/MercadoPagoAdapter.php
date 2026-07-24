@@ -10,7 +10,7 @@ use Exception;
 use JsonException;
 
 /**
- * Adaptador Hexagonal para la integración con Mercado Pago.
+ * Adaptador Hexagonal para la integracion con Mercado Pago.
  * Cumple con PaymentGatewayPortInterface.
  */
 class MercadoPagoAdapter implements PaymentGatewayPortInterface {
@@ -106,7 +106,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             return null;
         }
 
-        // Si se configuró webhookSecret, validar firma HMAC
+        // Si se configuro webhookSecret, validar firma HMAC
         if (!empty($this->webhookSecret)) {
             if (!$this->verifySignature($signatureHeader, $requestId, (string)$dataId)) {
                 Logger::error('MercadoPagoAdapter: Firma de webhook inválida.');

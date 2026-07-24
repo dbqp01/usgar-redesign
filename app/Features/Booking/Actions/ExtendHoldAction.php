@@ -12,7 +12,7 @@ use App\Features\Shared\Ports\PmsPortInterface;
 use App\Features\Shared\Adapters\QloAppAdapter;
 
 /**
- * Acción ADR: POST /api/extend-hold
+ * Accion ADR: POST /api/extend-hold
  * Extiende el bloqueo temporal del carrito por 15 minutos adicionales.
  */
 class ExtendHoldAction {

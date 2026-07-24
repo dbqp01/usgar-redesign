@@ -10,7 +10,7 @@ use App\Core\Logger;
 use Exception;
 
 /**
- * Adaptador Hexagonal para la integración con Channex Channel Manager.
+ * Adaptador Hexagonal para la integracion con Channex Channel Manager.
  * Cumple con ChannelManagerPortInterface.
  */
 class ChannexAdapter implements ChannelManagerPortInterface {

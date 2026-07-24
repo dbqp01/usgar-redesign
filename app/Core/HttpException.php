@@ -6,7 +6,7 @@ namespace App\Core;
 use Exception;
 
 /**
- * Excepción HTTP base para respuestas de error tipadas.
+ * Excepcion HTTP base para respuestas de error tipadas.
  * Permite que controllers lancen excepciones en vez de llamar exit() directamente,
  * facilitando testing y manejo uniforme de errores en el Router/Middleware.
  */
@@ -33,7 +33,7 @@ class HttpException extends Exception {
     }
 
     /**
-     * Convierte la excepción al formato de payload JSON estándar de la API.
+     * Convierte la excepcion al formato de payload JSON estandar de la API.
      */
     public function toPayload(): array {
         $payload = [

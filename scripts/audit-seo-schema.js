@@ -8,11 +8,11 @@ const __dirname = path.dirname(__filename);
 const distDir = path.join(__dirname, '..', 'dist');
 
 console.log('==========================================================');
-console.log('🔍 AUDITORÍA DE SEO Y SCHEMA.ORG JSON-LD');
+console.log(' AUDITORIA DE SEO Y SCHEMA.ORG JSON-LD');
 console.log('==========================================================');
 
 if (!fs.existsSync(distDir)) {
-  console.log('❌ Error: El directorio dist/ no existe. Ejecuta `npm run build` primero.');
+  console.log(' Error: El directorio dist/ no existe. Ejecuta `npm run build` primero.');
   process.exit(1);
 }
 
@@ -33,10 +33,10 @@ function checkHtmlFile(filePath) {
       try {
         const json = JSON.parse(match[1]);
         if (!json['@context'] || !json['@type']) {
-          console.log(` ⚠️ WARN: [${path.basename(filePath)}] Schema no contiene @context o @type.`);
+          console.log(` ️ WARN: [${path.basename(filePath)}] Schema no contiene @context o @type.`);
         }
       } catch (e) {
-        console.log(` ❌ FAIL: [${path.basename(filePath)}] Error parseando JSON-LD: ${e.message}`);
+        console.log(`  FAIL: [${path.basename(filePath)}] Error parseando JSON-LD: ${e.message}`);
         errors++;
       }
     });
@@ -58,8 +58,8 @@ function traverseDir(dir) {
 
 traverseDir(distDir);
 
-console.log(`\n📊 RESUMEN DE AUDITORÍA SEO:`);
-console.log(`   Páginas examinadas: ${totalPagesChecked}`);
+console.log(`\n RESUMEN DE AUDITORIA SEO:`);
+console.log(`   Paginas examinadas: ${totalPagesChecked}`);
 console.log(`   Bloques JSON-LD encontrados: ${totalSchemasFound}`);
 console.log(`   Errores de sintaxis Schema: ${errors}`);
 console.log('==========================================================\n');

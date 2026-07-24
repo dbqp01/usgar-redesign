@@ -27,7 +27,7 @@ class Middleware {
     /**
      * Ejecuta todos los middleware en orden. Corta al primer HttpException.
      *
-     * @throws HttpException Si algún middleware rechaza la petición
+     * @throws HttpException Si algun middleware rechaza la peticion
      */
     public function run(Request $request): void {
         foreach ($this->stack as $handler) {
@@ -38,8 +38,8 @@ class Middleware {
     // --- Middleware factories preconfigurados ---
 
     /**
-     * Middleware de CORS que valida origen y envía headers.
-     * Lee orígenes permitidos desde Config.
+     * Middleware de CORS que valida origen y envia headers.
+     * Lee origenes permitidos desde Config.
      */
     public static function cors(): callable {
         return static function (Request $request): void {

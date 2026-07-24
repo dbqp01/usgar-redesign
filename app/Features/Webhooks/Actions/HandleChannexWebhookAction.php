@@ -14,8 +14,8 @@ use PDO;
 use Exception;
 
 /**
- * Acción ADR: POST /api/webhook/channex
- * Recibe notificaciones de reservas que ingresan desde OTAs a través de Channex.
+ * Accion ADR: POST /api/webhook/channex
+ * Recibe notificaciones de reservas que ingresan desde OTAs a traves de Channex.
  */
 class HandleChannexWebhookAction {
     private PDO $pdo;

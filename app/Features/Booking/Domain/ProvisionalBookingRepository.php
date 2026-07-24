@@ -75,7 +75,7 @@ class ProvisionalBookingRepository {
     }
 
     /**
-     * Obtiene una reserva provisional con bloqueo pesimista (FOR UPDATE) dentro de una transacción activa.
+     * Obtiene una reserva provisional con bloqueo pesimista (FOR UPDATE) dentro de una transaccion activa.
      */
     public function getByCartIdForUpdate(string $cartId): ?array {
         try {

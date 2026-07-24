@@ -8,14 +8,14 @@ use App\Core\Config;
 
 /**
  * Servicio de Mapeo de Habitaciones Channex (DIP / SRP).
- * Convierte identificadores de habitación o tarifas de Channex/OTA en id_room_type local.
+ * Convierte identificadores de habitacion o tarifas de Channex/OTA en id_room_type local.
  */
 class ChannexRoomMapper {
     /**
-     * Mapeo por defecto de tipos de habitación local (ID -> Slug/Código OTA)
+     * Mapeo por defecto de tipos de habitacion local (ID -> Slug/Codigo OTA)
      * 1: Matrimonial Superior
      * 2: Doble Superior
-     * 3: Triple Estándar
+     * 3: Triple Estandar
      * 4: Familiar Superior
      */
     private array $mapping;
@@ -24,7 +24,7 @@ class ChannexRoomMapper {
         if ($mapping !== null) {
             $this->mapping = $mapping;
         } else {
-            // Intentar cargar mapa desde variable de entorno o archivo de configuración
+            // Intentar cargar mapa desde variable de entorno o archivo de configuracion
             $envMapJson = Config::get('CHANNEX_ROOM_MAP');
             if (!empty($envMapJson)) {
                 $decoded = json_decode($envMapJson, true);
@@ -38,11 +38,11 @@ class ChannexRoomMapper {
     /**
      * Resuelve el id_room_type local a partir del payload de reserva de Channex.
      *
-     * @param array $bookingData Payload de la reserva o línea de habitación
+     * @param array $bookingData Payload de la reserva o linea de habitacion
      * @return int id_room_type asignado
      */
     public function resolveRoomTypeId(array $bookingData): int {
-        // Intentar extraer identificador de tipo de habitación del payload Channex
+        // Intentar extraer identificador de tipo de habitacion del payload Channex
         $channexRoomTypeId = $bookingData['room_type_id'] 
             ?? ($bookingData['room_type_code'] 
             ?? ($bookingData['rate_plan_id'] 
@@ -52,7 +52,7 @@ class ChannexRoomMapper {
             return (int)$this->mapping[$channexRoomTypeId];
         }
 
-        // Búsqueda por coincidencia de nombre (fallback inteligente)
+        // Busqueda por coincidencia de nombre (fallback inteligente)
         $roomTitle = strtolower($bookingData['room_name'] ?? ($bookingData['title'] ?? ''));
         if (!empty($roomTitle)) {
             if (str_contains($roomTitle, 'familiar')) {

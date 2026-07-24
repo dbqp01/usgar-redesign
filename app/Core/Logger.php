@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Core;
 
 /**
- * Gestor de Logs con rotación básica y soporte para formato JSON estructurado.
- * Mejoras: rotación por tamaño (5MB), nivel WARNING, formato JSON en producción.
+ * Gestor de Logs con rotacion basica y soporte para formato JSON estructurado.
+ * Mejoras: rotacion por tamano (5MB), nivel WARNING, formato JSON en produccion.
  */
 class Logger {
     private static string $logDir = '';
@@ -21,14 +21,14 @@ class Logger {
     }
 
     /**
-     * Escribe un mensaje en el archivo de log con rotación automática.
+     * Escribe un mensaje en el archivo de log con rotacion automatica.
      */
     public static function log(string $level, string $message, array $context = []): void {
         self::init();
 
         $file = self::$logDir . DIRECTORY_SEPARATOR . 'app.log';
 
-        // Rotación: si el archivo supera MAX_SIZE, renombrar a .log.1
+        // Rotacion: si el archivo supera MAX_SIZE, renombrar a .log.1
         self::rotateIfNeeded($file);
 
         $entry = self::formatEntry($level, $message, $context);
@@ -52,7 +52,7 @@ class Logger {
     }
 
     /**
-     * Formatea la entrada de log. JSON en producción, texto plano en desarrollo.
+     * Formatea la entrada de log. JSON en produccion, texto plano en desarrollo.
      */
     private static function formatEntry(string $level, string $message, array $context): string {
         $date = date('Y-m-d H:i:s');
@@ -74,7 +74,7 @@ class Logger {
     }
 
     /**
-     * Rotación simple: si el archivo supera 5MB, moverlo a .log.1.
+     * Rotacion simple: si el archivo supera 5MB, moverlo a .log.1.
      */
     private static function rotateIfNeeded(string $file): void {
         if (!file_exists($file)) {

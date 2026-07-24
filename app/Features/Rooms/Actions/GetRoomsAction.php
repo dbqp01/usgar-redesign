@@ -14,8 +14,8 @@ use App\Features\Shared\Adapters\QloAppAdapter;
 use Exception;
 
 /**
- * Acción ADR: GET /api/rooms
- * Consulta la disponibilidad neta y precios dinámicos desde el PMS QloApps.
+ * Accion ADR: GET /api/rooms
+ * Consulta la disponibilidad neta y precios dinamicos desde el PMS QloApps.
  */
 class GetRoomsAction {
     private PmsPortInterface $pms;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Features\Shared\Ports;
 
 /**
- * Puerto de abstracción para la interacción con el sistema PMS (QloApps).
+ * Puerto de abstraccion para la interaccion con el sistema PMS (QloApps).
  */
 interface PmsPortInterface {
     public function getAvailableRooms(string $checkIn, string $checkOut, int $idHotel = 1): array;

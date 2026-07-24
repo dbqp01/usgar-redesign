@@ -4,14 +4,14 @@ declare(strict_types=1);
 namespace App\Core;
 
 /**
- * Autoloader PSR-4 personalizado para cargar dinámicamente las clases del proyecto.
+ * Autoloader PSR-4 personalizado para cargar dinamicamente las clases del proyecto.
  * Evita la necesidad de dependencias complejas y funciona de forma nativa en Hostinger.
  */
 class Autoloader {
     /**
      * Registra el cargador de clases.
      *
-     * @param string $baseDir Ruta base correspondiente al namespace raíz (ej: /src)
+     * @param string $baseDir Ruta base correspondiente al namespace raiz (ej: /src)
      */
     public static function register(string $baseDir): void {
         spl_autoload_register(function (string $class) use ($baseDir) {

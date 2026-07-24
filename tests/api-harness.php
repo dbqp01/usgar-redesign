@@ -1,7 +1,7 @@
 <?php
 /**
  * API Smoke Test Harness — USGAR Hotels
- * Versión PHP para ejecutar en Hostinger donde no hay bash.
+ * Version PHP para ejecutar en Hostinger donde no hay bash.
  * Usage: php tests/api-harness.php [base_url]
  */
 declare(strict_types=1);
@@ -59,22 +59,22 @@ foreach ($tests as $test) {
     $result = testEndpoint($test[0], $test[1], $test[2], $test[3] ?? null);
 
     if ($result['status'] === 0) {
-        echo "❌ {$result['label']} → CONNECTION REFUSED ({$result['error']})\n";
+        echo " {$result['label']} → CONNECTION REFUSED ({$result['error']})\n";
         $fail++;
     } elseif ($result['status'] === $result['expected']) {
-        echo "✅ {$result['label']} → {$result['status']}\n";
+        echo " {$result['label']} → {$result['status']}\n";
         $pass++;
     } elseif ($result['status'] === 500) {
-        echo "❌ {$result['label']} → {$result['status']} (SERVER ERROR)\n";
+        echo " {$result['label']} → {$result['status']} (SERVER ERROR)\n";
         $fail++;
     } else {
-        echo "⚠️  {$result['label']} → {$result['status']} (expected {$result['expected']})\n";
+        echo "️  {$result['label']} → {$result['status']} (expected {$result['expected']})\n";
         $warn++;
     }
 }
 
 echo "\n=================================\n";
-echo "  Results: ✅ $pass  ⚠️  $warn  ❌ $fail\n";
+echo "  Results:  $pass  ️  $warn   $fail\n";
 echo "=================================\n";
 
 exit($fail > 0 ? 1 : 0);

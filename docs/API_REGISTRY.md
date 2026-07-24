@@ -10,7 +10,7 @@ Catálogo completo de endpoints del backend PHP. Todos los endpoints se sirven d
 
 | Method | Endpoint | Action | Auth |
 |--------|----------|--------|------|
-| GET | `/api/health` | `HealthCheckAction` | ❌ |
+| GET | `/api/health` | `HealthCheckAction` |  |
 
 **Response:** `{ "success": true, "status": "ok", "timestamp": "..." }`
 
@@ -20,7 +20,7 @@ Catálogo completo de endpoints del backend PHP. Todos los endpoints se sirven d
 
 | Method | Endpoint | Action | Auth |
 |--------|----------|--------|------|
-| GET | `/api/rooms` | `GetRoomsAction` | ❌ |
+| GET | `/api/rooms` | `GetRoomsAction` |  |
 
 **Query Params:** `?checkIn=YYYY-MM-DD&checkOut=YYYY-MM-DD` (opcionales)
 
@@ -44,9 +44,9 @@ Catálogo completo de endpoints del backend PHP. Todos los endpoints se sirven d
 
 | Method | Endpoint | Action | Auth |
 |--------|----------|--------|------|
-| POST | `/api/booking` | `CreateBookingAction` | ❌ |
-| POST | `/api/extend-hold` | `ExtendHoldAction` | ❌ |
-| GET | `/api/booking-status` | `GetBookingStatusAction` | ❌ |
+| POST | `/api/booking` | `CreateBookingAction` |  |
+| POST | `/api/extend-hold` | `ExtendHoldAction` |  |
+| GET | `/api/booking-status` | `GetBookingStatusAction` |  |
 
 ### POST `/api/booking`
 
@@ -112,10 +112,10 @@ Catálogo completo de endpoints del backend PHP. Todos los endpoints se sirven d
 
 | Method | Endpoint | Action | Auth |
 |--------|----------|--------|------|
-| GET | `/api/auth/login` | `AuthLoginAction` | ❌ |
-| GET | `/api/auth/callback` | `AuthCallbackAction` | ❌ |
-| POST | `/api/auth/register` | `AuthRegisterAction` | ❌ |
-| POST | `/api/auth/login-email` | `AuthLoginEmailAction` | ❌ |
+| GET | `/api/auth/login` | `AuthLoginAction` |  |
+| GET | `/api/auth/callback` | `AuthCallbackAction` |  |
+| POST | `/api/auth/register` | `AuthRegisterAction` |  |
+| POST | `/api/auth/login-email` | `AuthLoginEmailAction` |  |
 | GET | `/api/auth/me` | `AuthMeAction` | JWT |
 | POST | `/api/auth/logout` | `AuthLogoutAction` | JWT |
 | GET | `/api/user/bookings` | `GetUserBookingsAction` | JWT |

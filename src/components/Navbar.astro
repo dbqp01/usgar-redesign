@@ -12,10 +12,10 @@ const currentPath = Astro.url.pathname;
 const searchParams = Astro.url.search;
 
 const locales: { code: Locale; label: string; flag: string }[] = [
-  { code: 'en', label: 'English', flag: '🇺🇸' },
-  { code: 'es', label: 'Español', flag: '🇪🇸' },
-  { code: 'fr', label: 'Français', flag: '🇫🇷' },
-  { code: 'pt', label: 'Português', flag: '🇵🇹' }
+  { code: 'en', label: 'English', flag: '' },
+  { code: 'es', label: 'Español', flag: '' },
+  { code: 'fr', label: 'Français', flag: '' },
+  { code: 'pt', label: 'Português', flag: '' }
 ];
 
 function getLocaleUrl(targetLang: Locale): string {

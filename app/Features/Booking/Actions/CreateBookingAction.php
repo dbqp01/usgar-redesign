@@ -23,7 +23,7 @@ use PDO;
 use Exception;
 
 /**
- * Acción ADR: POST /api/booking
+ * Accion ADR: POST /api/booking
  * Crea un bloqueo temporal en QloApps y genera la preferencia de pago en Mercado Pago.
  */
 class CreateBookingAction {
@@ -49,7 +49,7 @@ class CreateBookingAction {
     public function __invoke(Request $request): void {
         $body = $request->getBody() ?? [];
 
-        // --- Normalización Adaptativa de Payload (Zero-Breakage) ---
+        // --- Normalizacion Adaptativa de Payload (Zero-Breakage) ---
         if (isset($body['roomSlug']) && empty($body['id_room_type'])) {
             $body['id_room_type'] = RoomTypeRegistry::getIdBySlug($body['roomSlug']) ?? 1;
         }

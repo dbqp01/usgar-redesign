@@ -7,7 +7,7 @@ use ReflectionClass;
 use Exception;
 
 /**
- * Contenedor de Inyección de Dependencias PSR-11 ligero para PHP 8.
+ * Contenedor de Inyeccion de Dependencias PSR-11 ligero para PHP 8.
  * Soporta autowiring mediante Reflection API.
  */
 class Container {

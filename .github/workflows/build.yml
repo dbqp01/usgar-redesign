@@ -39,7 +39,7 @@ jobs:
       - name: Verificar disponibilidad de puerto 8089 para pruebas
         run: |
           if ss -ltn | grep -q ':8089 '; then
-            echo "❌ Puerto 8089 ocupado previamente."
+            echo " Puerto 8089 ocupado previamente."
             ss -ltnp | grep ':8089 ' || true
             exit 1
           fi
@@ -75,7 +75,7 @@ jobs:
             const tailLog = log.split("\n").slice(-100).join("\n");
             
             const body = JSON.stringify({
-              body: `### ❌ Fallo en Compilación CI\n\n\`\`\`\n${tailLog}\n\`\`\``
+              body: `###  Fallo en Compilación CI\n\n\`\`\`\n${tailLog}\n\`\`\``
             });
             
             const req = https.request({

@@ -76,7 +76,7 @@ app.post('/api/process-payment', async (req, res) => {
               type: 'credit_card',
               token,
               installments: Number(installments),
-              // ⚠️ issuer_id is NOT allowed inside payment_method for Orders API
+              // ️ issuer_id is NOT allowed inside payment_method for Orders API
             },
           }],
         },
@@ -92,7 +92,7 @@ app.post('/api/process-payment', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`\n🚀 Server at http://localhost:${PORT}\n`));
+app.listen(PORT, () => console.log(`\n Server at http://localhost:${PORT}\n`));
 ```
 
 ### public/index.html
@@ -160,12 +160,12 @@ app.listen(PORT, () => console.log(`\n🚀 Server at http://localhost:${PORT}\n`
           })
           .then(r => r.json())
           .then(data => {
-            const icon = data.status === 'approved' || data.status === 'processed' ? '✅' : '❌';
+            const icon = data.status === 'approved' || data.status === 'processed' ? '' : '';
             document.getElementById('result').innerHTML =
               `<h2>${icon} ${data.status || 'error'}</h2><p>ID: ${data.id || JSON.stringify(data)}</p>`;
           })
           .catch(err => {
-            document.getElementById('result').innerHTML = `<h2>❌ Error</h2><p>${err.message}</p>`;
+            document.getElementById('result').innerHTML = `<h2> Error</h2><p>${err.message}</p>`;
           });
         },
       },
@@ -206,7 +206,7 @@ Run `/mp-test-cards {country}` for the full list. Quick reference for Brazil:
 
 ---
 
-## ⛔ Blocker — Orders API requires a test user buyer
+##  Blocker — Orders API requires a test user buyer
 
 The Orders API (`/v1/orders`) does **not** accept arbitrary emails. The payer must be an actual Mercado Pago test user created via the MCP tool.
 
@@ -215,7 +215,7 @@ The Orders API (`/v1/orders`) does **not** accept arbitrary emails. The payer mu
 2. Use the test user's email in the `payer.email` field
 3. Log in at the checkout page with that test user's email + password
 
-⚠️ **Never use your own account's email as `payer.email`** — MP returns error 4390 (`Payer email forbidden`) because you cannot pay yourself. Use the buyer test user's email.
+️ **Never use your own account's email as `payer.email`** — MP returns error 4390 (`Payer email forbidden`) because you cannot pay yourself. Use the buyer test user's email.
 
 Without a test user, the Orders API returns `422 unprocessable_content`. This is not a bug in your code.
 

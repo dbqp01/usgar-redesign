@@ -63,7 +63,7 @@ async function runAudit() {
 Generated on: ${new Date().toISOString()}
 Target URL: ${SITE_URL}
 
-## 📊 Loading Performance
+##  Loading Performance
 - **Full Load Time (networkidle0):** ${loadTime} ms
 - **Time to First Byte (TTFB):** ${performanceTiming.ttfb} ms
 - **DNS Lookup Time:** ${performanceTiming.dnsLookup} ms
@@ -71,14 +71,14 @@ Target URL: ${SITE_URL}
 - **DOM Interactive:** ${performanceTiming.domInteractive} ms
 - **DOM Complete:** ${performanceTiming.domComplete} ms
 
-## 🚨 Errors & Logs
+##  Errors & Logs
 - **Console Errors Detected:** ${consoleErrors.length}
 ${consoleErrors.map(err => `  - \`ERROR:\` ${err}`).join('\n') || '  - None'}
 
 - **Failed Network Requests:** ${failedRequests.length}
 ${failedRequests.map(req => `  - \`FAILED:\` ${req}`).join('\n') || '  - None'}
 
-## 📸 Screenshots Saved
+##  Screenshots Saved
 - **Desktop View:** [desktop-home.png](file:///${path.resolve(desktopScreenshotPath).replace(/\\/g, '/')})
 - **Mobile View:** [mobile-home.png](file:///${path.resolve(mobileScreenshotPath).replace(/\\/g, '/')})
 `;

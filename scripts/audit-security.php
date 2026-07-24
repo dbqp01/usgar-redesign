@@ -90,9 +90,9 @@ $markdown .= "Generated on: " . date('Y-m-d H:i:s') . "\n";
 $markdown .= "Issues found: " . $issuesFound . "\n\n";
 
 if ($issuesFound === 0) {
-    $markdown .= "## ✅ Clean Scan\nNo critical security vulnerabilities or patterns were detected in the backend PHP scripts.\n";
+    $markdown .= "##  Clean Scan\nNo critical security vulnerabilities or patterns were detected in the backend PHP scripts.\n";
 } else {
-    $markdown .= "## 🚨 Vulnerabilities and Security Concerns\n\n";
+    $markdown .= "##  Vulnerabilities and Security Concerns\n\n";
     $markdown .= "| File | Line | Severity | Description | Code Snippet |\n";
     $markdown .= "|------|------|----------|-------------|--------------|\n";
     foreach ($report as $issue) {

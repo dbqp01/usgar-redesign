@@ -152,9 +152,9 @@ Fecha: [fecha]
 
 | Sección | Estado | Detalles |
 |---|---|---|
-| Paleta de colores | ✅/⚠️/❌ | ... |
-| Tipografías | ✅/⚠️/❌ | ... |
-| Tema dual | ✅/⚠️/❌ | ... |
+| Paleta de colores | /️/ | ... |
+| Tipografías | /️/ | ... |
+| Tema dual | /️/ | ... |
 | ... | ... | ... |
 
 ## Capturas de Pantalla (si playwright disponible)

@@ -35,7 +35,7 @@
 
 ## 2. Credentials
 
-> {credential_type === 'production' ? '⚠️ **Production credentials selected — any payment processed is real.**' : ''}
+> {credential_type === 'production' ? '️ **Production credentials selected — any payment processed is real.**' : ''}
 
 Get your credentials at **https://{DOMAIN}/developers/panel/app** → your app → Credentials → **{test_tab}**.
 
@@ -139,7 +139,7 @@ Key topics for {product}: `{relevant_topics}`
 - Use exact install commands from `references/products.md` SDK table.
 
 ### Section 2 — Credentials
-- If `credential_type=production`: show ⚠️ warning block at the top of section 2.
+- If `credential_type=production`: show ️ warning block at the top of section 2.
 - If `credential_type=test`: no warning.
 - If `credential_type=unknown`: add reminder to use test credentials.
 - **If credentials were fetched via `get_credentials` (State A):** use the real `APP_USR-...` / `TEST-...` values in the `.env` block — NOT placeholders. Add note: "Credentials from app **{app_name}** — copy this block to your `.env`."

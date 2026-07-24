@@ -4,17 +4,17 @@ declare(strict_types=1);
 namespace App\Core;
 
 /**
- * Servicio de validación reutilizable para parámetros de entrada de la API.
- * Elimina duplicación de validaciones entre controllers (DRY).
+ * Servicio de validacion reutilizable para parametros de entrada de la API.
+ * Elimina duplicacion de validaciones entre controllers (DRY).
  * Lanza HttpException en caso de error — capturada por el Router.
  */
 class Validator {
     /**
-     * Valida que todos los campos requeridos estén presentes y no vacíos.
+     * Valida que todos los campos requeridos esten presentes y no vacios.
      *
      * @param array       $data   Datos de entrada (body o query)
      * @param list<string> $fields Lista de campos requeridos
-     * @throws HttpException Si falta algún campo
+     * @throws HttpException Si falta algun campo
      */
     public static function requireFields(array $data, array $fields): void {
         $missing = [];
@@ -34,7 +34,7 @@ class Validator {
      * Valida un par de fechas check-in / check-out.
      * Verifica formato YYYY-MM-DD y que checkIn < checkOut.
      *
-     * @throws HttpException Si el formato o rango es inválido
+     * @throws HttpException Si el formato o rango es invalido
      */
     public static function dateRange(string $checkIn, string $checkOut): void {
         $pattern = '/^\d{4}-\d{2}-\d{2}$/';
@@ -58,7 +58,7 @@ class Validator {
     /**
      * Valida formato de email usando filter_var (per php-8-modern skill).
      *
-     * @throws HttpException Si el formato es inválido
+     * @throws HttpException Si el formato es invalido
      */
     public static function email(string $email): string {
         $clean = filter_var($email, FILTER_VALIDATE_EMAIL);

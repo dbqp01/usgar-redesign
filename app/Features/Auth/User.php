@@ -9,13 +9,13 @@ use App\Core\Logger;
 
 /**
  * Modelo para la tabla `users`.
- * Patrón Repository/Data Mapper — SQL separado de controllers.
+ * Patron Repository/Data Mapper — SQL separado de controllers.
  *
- * Soporta autenticación social (Google, Microsoft, Facebook)
- * y autenticación tradicional (email + contraseña con bcrypt).
+ * Soporta autenticacion social (Google, Microsoft, Facebook)
+ * y autenticacion tradicional (email + contrasena con bcrypt).
  *
- * Vinculación por email: si un usuario se registra con Google
- * y después intenta con email+password (o viceversa), se vincula
+ * Vinculacion por email: si un usuario se registra con Google
+ * y despues intenta con email+password (o viceversa), se vincula
  * por email para evitar duplicados.
  */
 class User {
@@ -129,7 +129,7 @@ class User {
     }
 
     /**
-     * Crea un usuario con email y contraseña.
+     * Crea un usuario con email y contrasena.
      *
      * @return int|null ID del usuario creado, o null si el email ya existe o hubo error
      */
@@ -160,7 +160,7 @@ class User {
     }
 
     /**
-     * Verifica email + contraseña y retorna el usuario.
+     * Verifica email + contrasena y retorna el usuario.
      */
     public function verifyPassword(string $email, string $password): ?array {
         $user = $this->findByEmail($email);
