@@ -196,13 +196,15 @@ const t = useTranslations(lang);
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/channex/booking/${bookingId}`);
+      const response = await fetch(`${API_BASE_URL}/booking-status?cart_id=${bookingId}`);
       if (!response.ok) throw new Error('Booking not found');
       
-      const booking = await response.json();
-      const room = ROOMS_DATA.find((r: any) => r.slug === booking.roomId);
-
-      if (!booking || !room) throw new Error('Data mismatch');
+      const payload = await response.json();
+      const booking = payload.data || payload;
+      
+      if (!booking || !booking.id_room_type) throw new Error('Data mismatch');
+      
+      const room = ROOMS_DATA.find((r: any) => r.id === booking.id_room_type || r.slug === booking.id_room_type);
 
       const formatDate = (dateStr: string) => {
         if (!dateStr) return '';
@@ -222,29 +224,32 @@ const t = useTranslations(lang);
       const billingNightsEl = document.getElementById('success-billing-nights');
       const totalPriceEl = document.getElementById('success-total-price');
 
-      if (confCodeEl) confCodeEl.textContent = booking.confirmationCode || booking.id;
-      if (guestNameEl) guestNameEl.textContent = booking.guestName;
-      if (guestEmailEl) guestEmailEl.textContent = booking.guestEmail;
-      if (guestPhoneEl) guestPhoneEl.textContent = booking.guestPhone;
-      if (roomNameEl) roomNameEl.textContent = room.name[lang] || room.name.en;
+      if (confCodeEl) confCodeEl.textContent = booking.cart_id || booking.id || bookingId;
+      if (guestNameEl) guestNameEl.textContent = booking.guest_name || booking.guestName || '---';
+      if (guestEmailEl) guestEmailEl.textContent = booking.guest_email || booking.guestEmail || '---';
+      if (guestPhoneEl) guestPhoneEl.textContent = booking.guest_phone || booking.guestPhone || '---';
+      if (roomNameEl) roomNameEl.textContent = booking.room_name || (room ? (room.name[lang] || room.name.en) : '---');
       
       const L = labels[lang] || labels.en;
       if (guestsTextEl) {
-        guestsTextEl.textContent = booking.guests === 1
+        const guests = booking.guests || 2;
+        guestsTextEl.textContent = guests === 1
           ? L.singleGuest
-          : `${booking.guests} ${L.pluralGuest}`;
+          : `${guests} ${L.pluralGuest}`;
       }
 
-      if (checkinEl) checkinEl.textContent = formatDate(booking.checkIn);
-      if (checkoutEl) checkoutEl.textContent = formatDate(booking.checkOut);
+      if (checkinEl) checkinEl.textContent = formatDate(booking.checkin || booking.checkIn);
+      if (checkoutEl) checkoutEl.textContent = formatDate(booking.checkout || booking.checkOut);
       
       if (billingNightsEl) {
-        billingNightsEl.textContent = booking.nights === 1
-          ? `1 ${L.singleNight} x $${room.pricePerNight} USD`
-          : `${booking.nights} ${L.pluralNight} x $${room.pricePerNight} USD`;
+        const nights = booking.nights || 1;
+        const priceNight = booking.price_per_night || (room ? room.pricePerNight : 0);
+        billingNightsEl.textContent = nights === 1
+          ? `1 ${L.singleNight} x $${priceNight} PEN`
+          : `${nights} ${L.pluralNight} x $${priceNight} PEN`;
       }
       
-      if (totalPriceEl) totalPriceEl.textContent = booking.totalPrice.toString();
+      if (totalPriceEl) totalPriceEl.textContent = (booking.price || booking.totalPrice || 0).toString();
 
       // Show details card
       loadingContainer?.classList.add('hidden');

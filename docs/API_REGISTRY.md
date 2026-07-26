@@ -118,6 +118,7 @@ Catálogo completo de endpoints del backend PHP. Todos los endpoints se sirven d
 | POST | `/api/auth/login-email` | `AuthLoginEmailAction` |  |
 | GET | `/api/auth/me` | `AuthMeAction` | JWT |
 | POST | `/api/auth/logout` | `AuthLogoutAction` | JWT |
+| GET | `/api/auth/providers` | `AuthProvidersAction` |  |
 | GET | `/api/user/bookings` | `GetUserBookingsAction` | JWT |
 
 ### POST `/api/auth/register`

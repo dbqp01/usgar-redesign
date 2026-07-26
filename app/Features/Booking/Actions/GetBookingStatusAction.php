@@ -59,7 +59,7 @@ class GetBookingStatusAction {
             'expires_at'      => $hold['expires_at'] ?? null,
         ];
 
-        if ($isAuthenticated) {
+        if ($isAuthenticated || $hold['status'] === \App\Core\BookingStatus::Paid->value) {
             $payload['guest_name']  = $hold['guest_data']['name'] ?? '';
             $payload['guest_email'] = $guestEmail;
             $payload['guest_phone'] = $hold['guest_data']['phone'] ?? '';

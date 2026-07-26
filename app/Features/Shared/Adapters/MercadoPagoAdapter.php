@@ -48,13 +48,16 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         $firstName = $nameParts[0] ?? $guestName;
         $lastName = $nameParts[1] ?? '';
 
+        $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
+        $totalPricePen = round($totalPrice * $exchangeRate, 2);
+
         $payload = [
             'items' => [[
                 'title'       => "Reserva USGAR Hotels — Habitación " . $idRoomType,
                 'description' => "{$nights} noches ({$checkIn} → {$checkOut})",
                 'quantity'    => 1,
-                'unit_price'  => $totalPrice,
-                'currency_id' => 'USD',
+                'unit_price'  => $totalPricePen,
+                'currency_id' => 'PEN',
             ]],
             'payer' => [
                 'name'    => $firstName,

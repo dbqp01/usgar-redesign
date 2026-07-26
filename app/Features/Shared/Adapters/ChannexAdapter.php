@@ -133,6 +133,23 @@ class ChannexAdapter implements ChannelManagerPortInterface {
                 return false;
             }
 
+            $begin = new \DateTime($checkIn);
+            $end = new \DateTime($checkOut);
+            $interval = \DateInterval::createFromDateString('1 day');
+            $period = new \DatePeriod($begin, $interval, $end);
+            
+            $days = [];
+            $nights = iterator_count($period);
+            $pricePerNight = $nights > 0 ? round($totalPrice / $nights, 2) : $totalPrice;
+
+            foreach ($period as $dt) {
+                $days[] = [
+                    'date'           => $dt->format('Y-m-d'),
+                    'price'          => (string)$pricePerNight,
+                    'rate_plan_code' => $ratePlanId,
+                ];
+            }
+
             $bookingPayload = [
                 'booking' => [
                     'status'          => 'new',
@@ -156,12 +173,15 @@ class ChannexAdapter implements ChannelManagerPortInterface {
                         [
                             'index'          => 0,
                             'room_type_code' => $channexRoomId,
-                            'rate_plan_code' => $ratePlanId,
                             'occupancy' => [
                                 'adults'   => max(1, $adults),
                                 'children' => 0,
                                 'infants'  => 0,
                             ],
+                            'guests' => [
+                                ['name' => $firstName, 'surname' => $lastName]
+                            ],
+                            'days' => $days,
                         ],
                     ],
                 ],

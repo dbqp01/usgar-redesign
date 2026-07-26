@@ -44,6 +44,7 @@ use App\Features\Webhooks\Actions\HandleMercadoPagoWebhookAction;
 use App\Features\Webhooks\Actions\HandleChannexWebhookAction;
 use App\Features\Cron\Actions\CleanExpiredCartsAction;
 use App\Features\Auth\Actions\AuthLoginAction;
+use App\Features\Auth\Actions\AuthProvidersAction;
 use App\Features\Auth\Actions\AuthCallbackAction;
 use App\Features\Auth\Actions\AuthRegisterAction;
 use App\Features\Auth\Actions\AuthLoginEmailAction;
@@ -93,6 +94,7 @@ $router->post('/api/webhook/channex', HandleChannexWebhookAction::class);
 $router->post('/api/cron/cleanup',    CleanExpiredCartsAction::class);
 
 // Endpoints de Autenticacion y Panel de Huespedes
+$router->get('/api/auth/providers',    AuthProvidersAction::class);
 $router->get('/api/auth/login',        AuthLoginAction::class);
 $router->get('/api/auth/callback',     AuthCallbackAction::class);
 $router->post('/api/auth/register',    AuthRegisterAction::class);

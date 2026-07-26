@@ -114,6 +114,12 @@ Repositorio oficial del sitio web transaccional de **USGAR Hotels** en Cusco, Pe
 ### E. Seguridad Web en Hostinger Apache
 - Inyección de políticas `Content-Security-Policy`, `X-Frame-Options` y `Referrer-Policy` en `public/.htaccess` y `src/Core/Middleware.php`.
 
+### F. Correcciones Estructurales de Integraciones (PMS, Channel Manager, Pasarela y UI)
+- **QloApps PMS (XML):** Se corrigió la comunicación migrando del endpoint genérico fallido de PrestaShop a `/api/bookings` para generar correctamente las reservas mediante payloads estructurados en XML.
+- **Channex OTA Sync:** Se arregló la estructura JSON del Channel Manager, corrigiendo la asignación anidada de `rooms.days` (ahora se envía como un arreglo de días `[]` y no un objeto único).
+- **Mercado Pago & Tipado (PEN/USD):** Corrección del cast de tipos de PHP (`Config::get` forzado a `string`) en `HandleMercadoPagoWebhookAction.php`. Además, debido a que Hostinger / Mercado Pago en Perú exige operar en moneda local, el `MercadoPagoAdapter` ahora realiza conversiones al vuelo multiplicando por una tasa de cambio (ej. 3.80 PEN = 1 USD).
+- **OAuth & Frontend Estático (Astro):** Al ser pre-renderizado (SSG), la sesión no se propagaba visualmente de vuelta desde PHP a Astro. Se configuró `auth-client.ts` dentro de `Navbar.astro` en un entorno de cliente, de modo que Vite lo compila transparentemente sin ensuciar la estructura estática en el host compartido. Se sumó el endpoint dinámico `/api/auth/providers` para listar métodos de inicio de sesión habilitados.
+
 ---
 
 ## 4. Endpoints de la API REST (`public/index.php`)

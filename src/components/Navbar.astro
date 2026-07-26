@@ -127,13 +127,48 @@ const navLinks = [
         </button>
 
         <!-- Auth State (Sign In / User Avatar) -->
-        <div id="auth-nav-desktop" class="flex items-center gap-3">
+        <div id="auth-nav-desktop" class="flex items-center gap-3 relative">
+          <!-- Logged Out State -->
           <a
+            id="auth-login-btn"
             href={getRelativeLocaleUrl(lang, 'login')}
             class="nav-link nav-link-text nav-btn-border text-white text-sm font-medium px-4 py-2 rounded-full border border-current/20 hover:border-primary hover:text-primary transition-all duration-300 drop-shadow-md"
           >
             {t('auth.signIn')}
           </a>
+
+          <!-- Logged In State (Hidden initially) -->
+          <div id="auth-user-dropdown" class="hidden relative group">
+            <button
+              type="button"
+              class="nav-link nav-link-text flex items-center gap-2 text-white text-sm font-medium transition-colors hover:text-primary drop-shadow-md"
+            >
+              <div class="w-8 h-8 rounded-full overflow-hidden bg-primary/20 border border-primary/50 flex-shrink-0 flex items-center justify-center">
+                <img id="auth-user-photo" src="" alt="User" class="w-full h-full object-cover hidden" />
+                <span id="auth-user-initial" class="text-xs text-primary font-bold">U</span>
+              </div>
+              <span id="auth-user-name" class="max-w-[100px] truncate">User</span>
+            </button>
+            
+            <div class="absolute right-0 mt-2 w-48 rounded-2xl bg-surface-card-light dark:bg-surface-card-dark shadow-2xl border border-black/10 dark:border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 py-2">
+              <a
+                href={getRelativeLocaleUrl(lang, 'my-bookings')}
+                class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-text-primary-light dark:text-text-primary-dark hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                {t('nav.myBookings') || 'My Bookings'}
+              </a>
+              <div class="border-t border-black/10 dark:border-white/10 my-1"></div>
+              <button
+                id="auth-logout-btn"
+                type="button"
+                class="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-red-500 hover:bg-red-500/10 transition-colors text-left"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                {t('auth.signOut') || 'Log Out'}
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- CTA: Book Now -->
@@ -227,6 +262,44 @@ const navLinks = [
         <!-- Spacer -->
         <div class="flex-1"></div>
 
+        <!-- Mobile Auth State -->
+        <div id="auth-nav-mobile" class="mt-4 mb-4 flex flex-col gap-2">
+          <!-- Logged out -->
+          <a
+            id="mobile-auth-login-btn"
+            href={getRelativeLocaleUrl(lang, 'login')}
+            class="flex justify-center items-center gap-2 bg-stone-100 dark:bg-stone-800 text-text-primary-light dark:text-text-primary-dark font-medium py-3 rounded-xl transition-all duration-200"
+          >
+            {t('auth.signIn')}
+          </a>
+
+          <!-- Logged in (hidden) -->
+          <div id="mobile-auth-user" class="hidden flex flex-col gap-2">
+            <div class="flex items-center gap-3 px-4 py-3 bg-primary/10 rounded-xl">
+              <div class="w-10 h-10 rounded-full overflow-hidden bg-primary/20 border border-primary/50 flex items-center justify-center flex-shrink-0">
+                <img id="mobile-auth-user-photo" src="" alt="User" class="w-full h-full object-cover hidden" />
+                <span id="mobile-auth-user-initial" class="text-sm text-primary font-bold">U</span>
+              </div>
+              <span id="mobile-auth-user-name" class="font-medium text-text-primary-light dark:text-text-primary-dark truncate">User</span>
+            </div>
+            <a
+              href={getRelativeLocaleUrl(lang, 'my-bookings')}
+              class="flex items-center gap-3 px-4 py-3 bg-stone-100 dark:bg-stone-800 rounded-xl font-medium text-text-primary-light dark:text-text-primary-dark"
+            >
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+              {t('nav.myBookings') || 'My Bookings'}
+            </a>
+            <button
+              id="mobile-auth-logout-btn"
+              type="button"
+              class="flex items-center gap-3 px-4 py-3 bg-red-500/10 rounded-xl font-medium text-red-500 text-left"
+            >
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+              {t('auth.signOut') || 'Log Out'}
+            </button>
+          </div>
+        </div>
+
         <!-- CTA -->
         <a
           href={getRelativeLocaleUrl(lang, 'book')}
@@ -241,7 +314,60 @@ const navLinks = [
 </header>
 
 <script>
+  import { getUser, logout } from '../utils/auth-client';
+
   let abortController = new AbortController();
+
+  async function initAuth(signal: AbortSignal) {
+    const loginBtn = document.getElementById('auth-login-btn');
+    const userDropdown = document.getElementById('auth-user-dropdown');
+    const userPhoto = document.getElementById('auth-user-photo') as HTMLImageElement;
+    const userInitial = document.getElementById('auth-user-initial');
+    const userName = document.getElementById('auth-user-name');
+    const logoutBtn = document.getElementById('auth-logout-btn');
+
+    const mobileLoginBtn = document.getElementById('mobile-auth-login-btn');
+    const mobileUserContainer = document.getElementById('mobile-auth-user');
+    const mobileUserPhoto = document.getElementById('mobile-auth-user-photo') as HTMLImageElement;
+    const mobileUserInitial = document.getElementById('mobile-auth-user-initial');
+    const mobileUserName = document.getElementById('mobile-auth-user-name');
+    const mobileLogoutBtn = document.getElementById('mobile-auth-logout-btn');
+
+    try {
+      const user = await getUser();
+      
+      if (user) {
+        if (loginBtn) loginBtn.classList.add('hidden');
+        if (userDropdown) userDropdown.classList.remove('hidden');
+        if (mobileLoginBtn) mobileLoginBtn.classList.add('hidden');
+        if (mobileUserContainer) mobileUserContainer.classList.remove('hidden');
+
+        const initial = user.name.charAt(0).toUpperCase();
+
+        if (userName) userName.textContent = user.name;
+        if (mobileUserName) mobileUserName.textContent = user.name;
+
+        if (user.photo) {
+          if (userPhoto) {
+            userPhoto.src = user.photo;
+            userPhoto.classList.remove('hidden');
+            userInitial?.classList.add('hidden');
+          }
+          if (mobileUserPhoto) {
+            mobileUserPhoto.src = user.photo;
+            mobileUserPhoto.classList.remove('hidden');
+            mobileUserInitial?.classList.add('hidden');
+          }
+        } else {
+          if (userInitial) userInitial.textContent = initial;
+          if (mobileUserInitial) mobileUserInitial.textContent = initial;
+        }
+
+        logoutBtn?.addEventListener('click', () => { logout(); }, { signal });
+        mobileLogoutBtn?.addEventListener('click', () => { logout(); }, { signal });
+      }
+    } catch {}
+  }
 
   function initNavbar() {
     abortController.abort();
@@ -330,6 +456,9 @@ const navLinks = [
 
     document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme, { signal });
     document.getElementById('theme-toggle-mobile')?.addEventListener('click', toggleTheme, { signal });
+
+    // Initialize Auth state
+    initAuth(signal);
   }
 
   initNavbar();

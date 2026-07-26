@@ -15,8 +15,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1784908642.936233,
-    "ast_hash": "01cf0f920c2d7732d188c16f78a64bea",
+    "mtime": 1784912311.9393363,
+    "ast_hash": "b42e5118a6ae283866483dafaced6196",
     "semantic_hash": ""
   },
   "scripts/audit-performance.js": {

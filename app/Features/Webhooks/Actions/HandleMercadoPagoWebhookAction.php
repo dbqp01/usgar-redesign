@@ -90,7 +90,9 @@ class HandleMercadoPagoWebhookAction {
 
         $status = $paymentDetails['status'] ?? 'pending';
         $cartId = $paymentDetails['external_reference'] ?? null;
-        $amount = (float)($paymentDetails['transaction_amount'] ?? 0.0);
+        $amountPen = (float)($paymentDetails['transaction_amount'] ?? 0.0);
+        $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
+        $amount = round($amountPen / $exchangeRate, 2);
 
         if ($status !== 'approved' || !$cartId) {
             Logger::info("HandleMercadoPagoWebhookAction: Pago ID {$paymentIdStr} tiene estado '{$status}'. Omitiendo confirmación.");
