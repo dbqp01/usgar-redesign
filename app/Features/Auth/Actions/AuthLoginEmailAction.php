@@ -18,14 +18,23 @@ class AuthLoginEmailAction {
         $data = $request->getBody() ?? [];
         $email = trim($data['email'] ?? '');
         $password = $data['password'] ?? '';
+        $isHtml = $this->isHtmlRequest($request);
 
         if (empty($email) || empty($password)) {
+            if ($isHtml) {
+                header('Location: /login?error=' . urlencode('Correo y contraseña son requeridos.'));
+                exit(0);
+            }
             Response::error("Correo y contraseña son requeridos.", 400);
             return;
         }
 
         $pdo = Database::getInstance()->getConnection();
         if ($pdo === null) {
+            if ($isHtml) {
+                header('Location: /login?error=' . urlencode('Error interno de conexión.'));
+                exit(0);
+            }
             Response::error("Error interno de conexión.", 500);
             return;
         }
@@ -34,12 +43,25 @@ class AuthLoginEmailAction {
         $user = $userModel->verifyPassword($email, $password);
 
         if ($user === null) {
+            if ($isHtml) {
+                header('Location: /login?error=' . urlencode('Correo o contraseña incorrectos.'));
+                exit(0);
+            }
             Response::error("Correo o contraseña incorrectos.", 401);
             return;
         }
 
         $jwt = SessionService::createToken($user);
         SessionService::setAuthCookie($jwt);
+
+        if ($isHtml) {
+            $redirect = trim((string)($data['redirect'] ?? '/my-bookings'));
+            if (!str_starts_with($redirect, '/') || str_starts_with($redirect, '//')) {
+                $redirect = '/my-bookings';
+            }
+            header('Location: ' . $redirect);
+            exit(0);
+        }
 
         Response::json([
             'success' => true,
@@ -52,5 +74,21 @@ class AuthLoginEmailAction {
                 'provider' => $user['provider'],
             ],
         ]);
+    }
+
+    private function isHtmlRequest(Request $request): bool {
+        $accept = $request->getHeader('accept') ?? '';
+        $requestedWith = $request->getHeader('x-requested-with') ?? '';
+        $contentType = $request->getHeader('content-type') ?? '';
+
+        if (str_contains($accept, 'application/json') || strtolower($requestedWith) === 'xmlhttprequest') {
+            return false;
+        }
+
+        if (str_contains($contentType, 'application/x-www-form-urlencoded') || str_contains($contentType, 'multipart/form-data')) {
+            return true;
+        }
+
+        return str_contains($accept, 'text/html');
     }
 }

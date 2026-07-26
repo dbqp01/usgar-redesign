@@ -70,8 +70,8 @@
     "semantic_hash": ""
   },
   "src/components/Navbar.astro": {
-    "mtime": 1784908642.9738362,
-    "ast_hash": "2f9ee11e26c3032469c06b9c142fcc25",
+    "mtime": 1785048417.5402296,
+    "ast_hash": "c59ed8398b54073a78341779b5d04a3b",
     "semantic_hash": ""
   },
   "src/components/ReviewMarquee.astro": {
@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "src/pages/book/success.astro": {
-    "mtime": 1784908642.9870038,
-    "ast_hash": "7997bd3349a89fc491cf81473de8b5cf",
+    "mtime": 1785047230.3772075,
+    "ast_hash": "6a6c4313213e2324a47f5d577d75472c",
     "semantic_hash": ""
   },
   "src/pages/contact.astro": {
@@ -365,8 +365,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1784872165.501589,
-    "ast_hash": "283c48c2940e5ef6ee69df3eb08882c9",
+    "mtime": 1785048658.2117524,
+    "ast_hash": "dc3432a679ec86e88302c5f5d2040510",
     "semantic_hash": ""
   },
   "docs/multi-hotel.md": {
@@ -515,8 +515,8 @@
     "semantic_hash": ""
   },
   "public/index.php": {
-    "mtime": 1784908675.1670506,
-    "ast_hash": "d3a16409365a806564524930a85ca28b",
+    "mtime": 1785047514.7857018,
+    "ast_hash": "4f235afeb17f9aab014370742a68b343",
     "semantic_hash": ""
   },
   "scripts/run-exhaustive-tests.php": {
@@ -640,8 +640,8 @@
     "semantic_hash": ""
   },
   "src/pages/login.astro": {
-    "mtime": 1784613710.564725,
-    "ast_hash": "00cbd86601d55ac15bcb304b00566a89",
+    "mtime": 1785047539.3283963,
+    "ast_hash": "474df187145b58f61ad721abef3eb68c",
     "semantic_hash": ""
   },
   "src/pages/my-bookings.astro": {
@@ -1244,94 +1244,9 @@
     "ast_hash": "437b4cb19a536697ba9a96fda241a344",
     "semantic_hash": ""
   },
-  "vendor/hybridauth/hybridauth/src/Provider/AOLOpenID.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "c2b7fa183b3de554b7f2ae2854c68b48",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Amazon.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "93e46c54ede5c75b085f860ec08fe1a2",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Apple.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "0e23ae6165015ed79d20809658863dab",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Authentiq.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "2b6a0e2cac6c4022a7f357fb60e87278",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/AutoDesk.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "cd5199b8c4aeb13bada13076b843c781",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/BitBucket.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "394f21414ec23f5ccd08dc7ba2c841d4",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Blizzard.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "4eea67034061ff8c615379bb28c32d6c",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/BlizzardAPAC.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "6c9202966e996481ba275d3a7a4afcb2",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/BlizzardEU.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "914274af0d84babbcbc589b16a7fba8b",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/DeviantArt.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "60700d927bb5b5b11026b2d061795b49",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Discord.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "077347b486e13ff0bd909b3d1aa97b58",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Disqus.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "ca3df44327697727827fbc4a1fb925e1",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Dribbble.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "8e1934918cee84f75b4061ae0b333b4f",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Dropbox.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "be191a791da50d584d3b6235810b620c",
-    "semantic_hash": ""
-  },
   "vendor/hybridauth/hybridauth/src/Provider/Facebook.php": {
     "mtime": 1775157086.0,
     "ast_hash": "4fa4cc3b1efd4de8db6cb99f327fcd44",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Foursquare.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "e5e4f2fc1bdf166c909bf3443ec9ae9c",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/GitHub.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "634a93d0984c55bc67a0c6123566b6cb",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/GitLab.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "f6744262b3a2781e2cd516c193b7d008",
     "semantic_hash": ""
   },
   "vendor/hybridauth/hybridauth/src/Provider/Google.php": {
@@ -1339,174 +1254,9 @@
     "ast_hash": "d3256823741d9fb609b73b9eaadb430b",
     "semantic_hash": ""
   },
-  "vendor/hybridauth/hybridauth/src/Provider/Instagram.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "b61fcb1c1161a6bd019c65e20658c2db",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Keycloak.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "ea32f8c98eb6c88d4893dc3ca17cf45c",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/LinkedIn.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "f9dc936b3065be846a528e4aca48a328",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/LinkedInOpenID.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "e76451e05a2369325fc93a56e19f0a7f",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Mastodon.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "bf8a80643ca6cf4d538fc9bb738eded5",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Medium.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "a5765dd6f294682087e55aa27ae65499",
-    "semantic_hash": ""
-  },
   "vendor/hybridauth/hybridauth/src/Provider/MicrosoftGraph.php": {
     "mtime": 1775157086.0,
     "ast_hash": "72dd6387a7826c367e18e06500721d31",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/ORCID.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "881c0aa92e1163c44b8dabdb584d5078",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/OktaOIDC.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "6ab76389db743b58eb522722d44a02e6",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/OpenID.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "86abb544692bebdbc53cc5b126c5c0ae",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Patreon.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "185d22074ba733fcf051c09feec436a0",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Paypal.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "3f11d4018d5ed2516bc550307045ac31",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/PaypalOpenID.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "ad625843c4700b92f9f22891506e1fc9",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Pinterest.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "d0f209251942e1509f2c075cc878f6da",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/QQ.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "497fb442d7901e84d36f1f2e3e9b34d9",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Reddit.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "ee01891619aa912bfd453e3bd0654f76",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Seznam.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "dee277a20664705ba71cdef27cc7fa68",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Slack.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "78f273dee0b541196406e928e94b7d71",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Spotify.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "0e5bc83013644c2e09825ca6b9ffc732",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/StackExchange.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "83f499393a099c911724ae9803ce3cc5",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/StackExchangeOpenID.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "2bca770e7209d644b4f9ab71ba80ea32",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Steam.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "64dbce6b3c79642bee2b7a717a603424",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/SteemConnect.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "c53c18d55f5e4bc5920a6e1e4dcac781",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Strava.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "562ddf59ca2e882fcb3192ee12d5f52c",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Telegram.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "e5e2399df8b96fca29e8d4b1e5cee9c4",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Tumblr.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "c26258c8a4ce35cf0a0f2a49cb323ce6",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/TwitchTV.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "46a5296d2c7c93f86fbae39a5d877daa",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Twitter.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "3bc2b445dafdba3e12bee2de182343fd",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/WeChat.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "ee2cb4a7954a79056cf5cad09704268b",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/WeChatChina.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "fc4e8c7ae2dcd3691d385aeb1b8390dc",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/WindowsLive.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "7d0ae6758a2244b508a0cce74125f666",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/WordPress.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "21ccb6f093efaa7354bd822f1affbfaa",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/X.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "9fc2f47af7161d9dc98253d983e7f587",
-    "semantic_hash": ""
-  },
-  "vendor/hybridauth/hybridauth/src/Provider/Yahoo.php": {
-    "mtime": 1775157086.0,
-    "ast_hash": "2d5e6ee414a2c755e7e0db300773eee1",
     "semantic_hash": ""
   },
   "vendor/hybridauth/hybridauth/src/Storage/Session.php": {
@@ -1830,8 +1580,8 @@
     "semantic_hash": ""
   },
   "app/Features/Booking/Actions/GetBookingStatusAction.php": {
-    "mtime": 1784908675.156389,
-    "ast_hash": "846fb1f637c339ef5e1318d8bb05c01f",
+    "mtime": 1785047248.9045393,
+    "ast_hash": "5f2c7e6df8fce9898b7b900830deb512",
     "semantic_hash": ""
   },
   "app/Features/Booking/Domain/Events/BookingPaidEvent.php": {
@@ -1875,18 +1625,18 @@
     "semantic_hash": ""
   },
   "app/Features/Shared/Adapters/ChannexAdapter.php": {
-    "mtime": 1784908675.1611047,
-    "ast_hash": "c9ec12bc71c50d008db7d064e653354c",
+    "mtime": 1785047447.6562183,
+    "ast_hash": "431ccf9d07f882c927e4f215bec17671",
     "semantic_hash": ""
   },
   "app/Features/Shared/Adapters/MercadoPagoAdapter.php": {
-    "mtime": 1784908675.162253,
-    "ast_hash": "43976e29f28ecdd16dec658bcf211785",
+    "mtime": 1785047746.7409298,
+    "ast_hash": "ea8b01563c03e598be2acb2bd6da3e70",
     "semantic_hash": ""
   },
   "app/Features/Shared/Adapters/QloAppAdapter.php": {
-    "mtime": 1784908675.1633158,
-    "ast_hash": "f62273e429f29bfe62b875a70c9f3519",
+    "mtime": 1785047376.5250518,
+    "ast_hash": "705db32d435804aa8aef966a4f923cdb",
     "semantic_hash": ""
   },
   "app/Features/Shared/ChannexRoomMapper.php": {
@@ -1920,8 +1670,8 @@
     "semantic_hash": ""
   },
   "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php": {
-    "mtime": 1784908675.1665213,
-    "ast_hash": "c6df9607423c8a5098c4a53609698e97",
+    "mtime": 1785047748.7038946,
+    "ast_hash": "3beeeaefa3a8fef41d48d254e7ff7667",
     "semantic_hash": ""
   },
   "src/services/bookingService.ts": {
@@ -1965,8 +1715,8 @@
     "semantic_hash": ""
   },
   "docs/API_REGISTRY.md": {
-    "mtime": 1784908642.9632304,
-    "ast_hash": "33deb3171cab9b5a7640d0353f7c68c4",
+    "mtime": 1785048646.4877913,
+    "ast_hash": "daf1bd80c9b5d3f0323f40fa7b19474f",
     "semantic_hash": ""
   },
   "docs/ARCHITECTURE.md": {
@@ -1977,6 +1727,11 @@
   "docs/HARNESS.md": {
     "mtime": 1784908642.9652352,
     "ast_hash": "23dac33388cec051e3093306030374ce",
+    "semantic_hash": ""
+  },
+  "app/Features/Auth/Actions/AuthProvidersAction.php": {
+    "mtime": 1785047505.426539,
+    "ast_hash": "401e36c1d5392746417646ddba58ae18",
     "semantic_hash": ""
   }
 }

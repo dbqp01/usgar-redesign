@@ -101,6 +101,7 @@ $router->post('/api/auth/register',    AuthRegisterAction::class);
 $router->post('/api/auth/login-email', AuthLoginEmailAction::class);
 $router->get('/api/auth/me',           AuthMeAction::class);
 $router->post('/api/auth/logout',      AuthLogoutAction::class);
+$router->get('/api/auth/logout',       AuthLogoutAction::class);
 $router->get('/api/user/bookings',     GetUserBookingsAction::class);
 
 // 7. Despachar la peticion actual

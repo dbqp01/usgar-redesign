@@ -8,7 +8,7 @@ const lang = (Astro.currentLocale || "en") as Locale;
 const t = useTranslations(lang);
 
 const url = new URL(Astro.url);
-const redirect = url.searchParams.get('redirect') || '/';
+const redirect = url.searchParams.get('redirect') || '/my-bookings';
 const errorMessage = url.searchParams.get('error') || '';
 ---
 
@@ -121,7 +121,8 @@ const errorMessage = url.searchParams.get('error') || '';
         </div>
 
         <!-- Form: Login -->
-        <form id="login-form" class="space-y-4">
+        <form id="login-form" action="/api/auth/login-email" method="POST" class="space-y-4">
+          <input type="hidden" name="redirect" value={redirect || '/my-bookings'} />
           <div>
             <label for="login-email" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
               {t('auth.emailAddress')} *
@@ -160,7 +161,8 @@ const errorMessage = url.searchParams.get('error') || '';
         </form>
 
         <!-- Form: Register (Hidden by default) -->
-        <form id="register-form" class="space-y-4 hidden">
+        <form id="register-form" action="/api/auth/register" method="POST" class="space-y-4 hidden">
+          <input type="hidden" name="redirect" value={redirect || '/my-bookings'} />
           <div>
             <label for="reg-name" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
               {t('auth.fullName')} *

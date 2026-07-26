@@ -14,9 +14,19 @@ use App\Features\Auth\SessionService;
 class AuthLogoutAction {
     public function __invoke(Request $request): void {
         SessionService::clearAuthCookie();
-        Response::json([
-            'success' => true,
-            'message' => 'Sesión cerrada correctamente.',
-        ]);
+
+        $accept = $request->getHeader('accept') ?? '';
+        $requestedWith = $request->getHeader('x-requested-with') ?? '';
+
+        if (str_contains($accept, 'application/json') || strtolower($requestedWith) === 'xmlhttprequest') {
+            Response::json([
+                'success' => true,
+                'message' => 'Sesión cerrada correctamente.',
+            ]);
+            return;
+        }
+
+        header('Location: /login');
+        exit(0);
     }
 }
