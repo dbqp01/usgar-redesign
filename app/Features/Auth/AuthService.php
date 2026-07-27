@@ -26,11 +26,13 @@ class AuthService {
      * Solo habilita proveedores cuyas credenciales esten configuradas en .env.
      */
     public static function getConfig(): array {
-        $siteUrl = Config::get('SITE_URL');
-        if (empty($siteUrl)) {
-            $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
-            $host = $_SERVER['HTTP_HOST'] ?? 'localhost:8000';
+        $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? null;
+
+        if ($host) {
             $siteUrl = "{$scheme}://{$host}";
+        } else {
+            $siteUrl = Config::get('SITE_URL', 'https://sanpedro.hotelesusgar.com');
         }
 
         $config = [

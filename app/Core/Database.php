@@ -27,17 +27,30 @@ class Database {
             return;
         }
 
-        try {
-            $dsn = "mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4";
-            $this->pdo = new PDO($dsn, $user, $pass, [
-                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES   => false,
-            ]);
-        } catch (PDOException $e) {
-            Logger::error('[Database Connection Error] Running in offline/mock/test mode: ' . $e->getMessage());
-            $this->pdo = null;
+        $hostsToTry = array_unique(array_filter([
+            $host,
+            '127.0.0.1',
+            'localhost'
+        ]));
+
+        foreach ($hostsToTry as $currentHost) {
+            try {
+                $dsn = "mysql:host={$currentHost};port={$port};dbname={$name};charset=utf8mb4";
+                $this->pdo = new PDO($dsn, $user, $pass, [
+                    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES   => false,
+                ]);
+                if ($this->pdo !== null) {
+                    return; // Conexion exitosa
+                }
+            } catch (PDOException $e) {
+                Logger::warning("[Database Connection Attempt Failed on host {$currentHost}]: " . $e->getMessage());
+                $this->pdo = null;
+            }
         }
+
+        Logger::error('[Database Connection Error] Could not connect to any DB host. Running in offline mode.');
     }
 
     /**
