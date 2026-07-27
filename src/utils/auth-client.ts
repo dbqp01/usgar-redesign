@@ -24,14 +24,19 @@ export interface AuthUser {
  * Primero revisa el cache de sessionStorage, luego llama a la API.
  * Retorna null si no hay sesión activa.
  */
-export async function getUser(): Promise<AuthUser | null> {
-  // Intentar cache primero
-  const cached = sessionStorage.getItem(CACHE_KEY);
-  if (cached) {
-    try {
-      return JSON.parse(cached) as AuthUser;
-    } catch {
-      sessionStorage.removeItem(CACHE_KEY);
+export async function getUser(forceRefresh = false): Promise<AuthUser | null> {
+  // Intentar cache solo si no se fuerza el refresco
+  if (!forceRefresh) {
+    const cached = sessionStorage.getItem(CACHE_KEY);
+    if (cached && cached !== 'null' && cached !== 'undefined') {
+      try {
+        const parsed = JSON.parse(cached);
+        if (parsed && typeof parsed === 'object' && parsed.email) {
+          return parsed as AuthUser;
+        }
+      } catch {
+        sessionStorage.removeItem(CACHE_KEY);
+      }
     }
   }
 
@@ -47,6 +52,7 @@ export async function getUser(): Promise<AuthUser | null> {
 
     const data = await res.json();
     if (!data.success || !data.user) {
+      sessionStorage.removeItem(CACHE_KEY);
       return null;
     }
 
@@ -54,6 +60,7 @@ export async function getUser(): Promise<AuthUser | null> {
     sessionStorage.setItem(CACHE_KEY, JSON.stringify(user));
     return user;
   } catch {
+    sessionStorage.removeItem(CACHE_KEY);
     return null;
   }
 }

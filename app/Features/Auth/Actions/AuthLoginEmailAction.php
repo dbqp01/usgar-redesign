@@ -51,6 +51,22 @@ class AuthLoginEmailAction {
             return;
         }
 
+        if (isset($user['error']) && $user['error'] === 'oauth_only') {
+            $provider = ucfirst($user['provider'] ?? 'Google');
+            $msg = "Esta cuenta fue registrada usando {$provider}. Por favor presiona 'Continuar con {$provider}' para iniciar sesión.";
+            if ($isHtml) {
+                header('Location: /login?error=' . urlencode($msg));
+                exit(0);
+            }
+            Response::json([
+                'success' => false,
+                'isOAuth' => true,
+                'provider' => $provider,
+                'message' => $msg,
+            ], 400);
+            return;
+        }
+
         $jwt = SessionService::createToken($user);
         SessionService::setAuthCookie($jwt);
 

@@ -152,11 +152,11 @@ const navLinks = [
             
             <div class="absolute right-0 mt-2 w-48 rounded-2xl bg-surface-card-light dark:bg-surface-card-dark shadow-2xl border border-black/10 dark:border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 py-2">
               <a
-                href={getRelativeLocaleUrl(lang, 'my-bookings')}
+                href={getRelativeLocaleUrl(lang, 'profile')}
                 class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-text-primary-light dark:text-text-primary-dark hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
               >
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                {t('nav.myBookings') || 'My Bookings'}
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                {t('auth.myProfile') || 'My Profile & Bookings'}
               </a>
               <div class="border-t border-black/10 dark:border-white/10 my-1"></div>
               <button
@@ -283,11 +283,11 @@ const navLinks = [
               <span id="mobile-auth-user-name" class="font-medium text-text-primary-light dark:text-text-primary-dark truncate">User</span>
             </div>
             <a
-              href={getRelativeLocaleUrl(lang, 'my-bookings')}
+              href={getRelativeLocaleUrl(lang, 'profile')}
               class="flex items-center gap-3 px-4 py-3 bg-stone-100 dark:bg-stone-800 rounded-xl font-medium text-text-primary-light dark:text-text-primary-dark"
             >
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-              {t('nav.myBookings') || 'My Bookings'}
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+              {t('auth.myProfile') || 'My Profile & Bookings'}
             </a>
             <button
               id="mobile-auth-logout-btn"
@@ -334,7 +334,7 @@ const navLinks = [
     const mobileLogoutBtn = document.getElementById('mobile-auth-logout-btn');
 
     try {
-      const user = await getUser();
+      const user = await getUser(true);
       
       if (user) {
         if (loginBtn) loginBtn.classList.add('hidden');
@@ -342,10 +342,10 @@ const navLinks = [
         if (mobileLoginBtn) mobileLoginBtn.classList.add('hidden');
         if (mobileUserContainer) mobileUserContainer.classList.remove('hidden');
 
-        const initial = user.name.charAt(0).toUpperCase();
+        const initial = user.name ? user.name.charAt(0).toUpperCase() : 'U';
 
-        if (userName) userName.textContent = user.name;
-        if (mobileUserName) mobileUserName.textContent = user.name;
+        if (userName) userName.textContent = user.name || user.email;
+        if (mobileUserName) mobileUserName.textContent = user.name || user.email;
 
         if (user.photo) {
           if (userPhoto) {
@@ -365,6 +365,11 @@ const navLinks = [
 
         logoutBtn?.addEventListener('click', () => { logout(); }, { signal });
         mobileLogoutBtn?.addEventListener('click', () => { logout(); }, { signal });
+      } else {
+        if (loginBtn) loginBtn.classList.remove('hidden');
+        if (userDropdown) userDropdown.classList.add('hidden');
+        if (mobileLoginBtn) mobileLoginBtn.classList.remove('hidden');
+        if (mobileUserContainer) mobileUserContainer.classList.add('hidden');
       }
     } catch {}
   }

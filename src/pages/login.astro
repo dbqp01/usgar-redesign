@@ -272,6 +272,24 @@ const errorMessage = url.searchParams.get('error') || '';
         loginForm?.classList.add('hidden');
       });
 
+      // Helper to activate Sign In tab
+      function switchToSignIn(email = '') {
+        hideAlert();
+        if (tabLoginBtn && tabRegisterBtn && loginForm && registerForm) {
+          tabLoginBtn.className = 'flex-1 py-3 text-center text-sm font-semibold border-b-2 border-primary text-primary transition-all cursor-pointer';
+          tabRegisterBtn.className = 'flex-1 py-3 text-center text-sm font-semibold border-b-2 border-transparent text-text-secondary-light dark:text-text-secondary-dark hover:text-primary transition-all cursor-pointer';
+          loginForm.classList.remove('hidden');
+          registerForm.classList.add('hidden');
+
+          if (email) {
+            const loginEmail = document.getElementById('login-email');
+            const loginPass = document.getElementById('login-password');
+            if (loginEmail) loginEmail.value = email;
+            if (loginPass) loginPass.focus();
+          }
+        }
+      }
+
       // Submit Login
       loginForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -289,7 +307,7 @@ const errorMessage = url.searchParams.get('error') || '';
           const data = await res.json();
           if (res.ok && data.success) {
             sessionStorage.removeItem('usgar_auth_user');
-            window.location.href = redirect || '/';
+            window.location.href = redirect || '/profile';
           } else {
             showAlert(data.message || tErrorLogin, false);
           }
@@ -316,9 +334,15 @@ const errorMessage = url.searchParams.get('error') || '';
           const data = await res.json();
           if (res.ok && data.success) {
             sessionStorage.removeItem('usgar_auth_user');
-            window.location.href = redirect || '/';
+            window.location.href = redirect || '/profile';
           } else {
-            showAlert(data.message || tEmailExists, false);
+            // Si la cuenta ya existe, alternar inteligentemente a Iniciar Sesión o sugerir Google
+            if (res.status === 409 || data.message?.includes('ya existe') || data.message?.includes('already exists')) {
+              showAlert('This account already exists. We have switched you to the Sign In tab.', false);
+              setTimeout(() => { switchToSignIn(email); }, 1500);
+            } else {
+              showAlert(data.message || tEmailExists, false);
+            }
           }
         } catch {
           showAlert(tEmailExists, false);

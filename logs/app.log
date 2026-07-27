@@ -62,3 +62,26 @@
   "error": "invalid_request",
   "error_description": "Invalid Credentials"
 }.
+[2026-07-27 04:29:31] [ERROR] OAuth callback failed: Signed API request to https://www.googleapis.com/oauth2/v3/userinfo has returned an error. HTTP error 401. Raw Provider API response: {
+  "error": "invalid_request",
+  "error_description": "Invalid Credentials"
+}.
+[2026-07-27 04:35:22] [ERROR] OAuth callback failed: Signed API request to https://www.googleapis.com/oauth2/v3/userinfo has returned an error. HTTP error 401. Raw Provider API response: {
+  "error": "invalid_request",
+  "error_description": "Invalid Credentials"
+}.
+[2026-07-27 04:42:20] [ERROR] OAuth callback failed: Signed API request to https://www.googleapis.com/oauth2/v3/userinfo has returned an error. HTTP error 401. Raw Provider API response: {
+  "error": "invalid_request",
+  "error_description": "Invalid Credentials"
+}.
+[2026-07-27 04:42:38] [ERROR] User::findByEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 04:42:39] [ERROR] User::createFromEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 04:42:50] [ERROR] User::findByEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 04:43:09] [ERROR] OAuth callback failed: Signed API request to https://www.googleapis.com/oauth2/v3/userinfo has returned an error. HTTP error 401. Raw Provider API response: {
+  "error": "invalid_request",
+  "error_description": "Invalid Credentials"
+}.
+[2026-07-27 04:43:28] [ERROR] User::findByEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 04:43:28] [ERROR] User::createFromEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 04:43:35] [ERROR] User::findByEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 04:43:36] [ERROR] User::createFromEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist

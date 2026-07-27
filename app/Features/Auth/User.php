@@ -130,14 +130,35 @@ class User {
 
     /**
      * Crea un usuario con email y contrasena.
+     * Si ya existe una cuenta de Google OAuth sin contrasena, le vincula la contrasena.
      *
-     * @return int|null ID del usuario creado, o null si el email ya existe o hubo error
+     * @return int|null ID del usuario creado o actualizado, o null si el email ya existe con contrasena o por error
      */
     public function createFromEmail(string $email, string $password, string $firstName, string $lastName = ''): ?int {
         try {
-            // Verificar duplicado
-            if ($this->findByEmail($email) !== null) {
-                return null; // Email ya registrado
+            $existing = $this->findByEmail($email);
+
+            if ($existing !== null) {
+                // Si la cuenta existe pero NO tiene contrasena (fue creada via OAuth), se la vinculamos
+                if (empty($existing['password_hash'])) {
+                    $stmt = $this->pdo->prepare('
+                        UPDATE users SET
+                            password_hash = :password_hash,
+                            first_name = COALESCE(first_name, :first_name),
+                            last_name = COALESCE(last_name, :last_name),
+                            updated_at = NOW()
+                        WHERE id = :id
+                    ');
+                    $stmt->execute([
+                        ':password_hash' => password_hash($password, PASSWORD_BCRYPT),
+                        ':first_name'    => !empty($firstName) ? $firstName : null,
+                        ':last_name'     => !empty($lastName) ? $lastName : null,
+                        ':id'            => $existing['id'],
+                    ]);
+                    return (int) $existing['id'];
+                }
+
+                return null; // Ya existe con contraseña
             }
 
             $stmt = $this->pdo->prepare('
@@ -161,6 +182,7 @@ class User {
 
     /**
      * Verifica email + contrasena y retorna el usuario.
+     * Retorna un arreglo especial ['error' => 'oauth_only', 'provider' => ...] si la cuenta fue creada via OAuth.
      */
     public function verifyPassword(string $email, string $password): ?array {
         $user = $this->findByEmail($email);
@@ -170,7 +192,10 @@ class User {
         }
 
         if (empty($user['password_hash'])) {
-            return null; // Usuario OAuth sin contraseña
+            return [
+                'error'    => 'oauth_only',
+                'provider' => $user['provider'] ?? 'Google',
+            ];
         }
 
         if (!password_verify($password, $user['password_hash'])) {

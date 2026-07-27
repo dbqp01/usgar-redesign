@@ -57,11 +57,11 @@ class AuthCallbackAction {
             $jwt = SessionService::createToken($user);
             SessionService::setAuthCookie($jwt);
 
-            $redirect = $_COOKIE['usgar_auth_redirect'] ?? '/my-bookings';
+            $redirect = $_COOKIE['usgar_auth_redirect'] ?? '/profile';
             setcookie('usgar_auth_redirect', '', time() - 3600, '/');
 
             if (!str_starts_with($redirect, '/') || str_starts_with($redirect, '//') || $redirect === '/') {
-                $redirect = '/my-bookings';
+                $redirect = '/profile';
             }
 
             header('Location: ' . $redirect);

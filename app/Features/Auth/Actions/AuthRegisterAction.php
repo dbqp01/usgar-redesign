@@ -76,9 +76,9 @@ class AuthRegisterAction {
         SessionService::setAuthCookie($jwt);
 
         if ($isHtml) {
-            $redirect = trim((string)($data['redirect'] ?? '/my-bookings'));
+            $redirect = trim((string)($data['redirect'] ?? '/profile'));
             if (!str_starts_with($redirect, '/') || str_starts_with($redirect, '//')) {
-                $redirect = '/my-bookings';
+                $redirect = '/profile';
             }
             header('Location: ' . $redirect);
             exit(0);

@@ -1,0 +1,231 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { useTranslations, type Locale } from "../i18n/utils";
+
+export const prerender = true;
+
+const lang = (Astro.currentLocale || "en") as Locale;
+const t = useTranslations(lang);
+---
+
+<Layout title={`Profile & Bookings — USGAR Hotels`} lang={lang}>
+  <main class="py-24 px-4 max-w-5xl mx-auto flex-1 animate-fade-in space-y-8">
+    
+    <!-- Profile Card (Quiet Luxury Header) -->
+    <div id="profile-card" class="bg-surface-card-light dark:bg-surface-card-dark p-8 md:p-10 rounded-3xl border border-black/10 dark:border-white/10 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
+      <!-- Background Ambient Glow -->
+      <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="flex items-center gap-6 relative z-10">
+        <!-- User Avatar / Initial Ring -->
+        <div class="relative w-20 h-20 rounded-full overflow-hidden bg-primary/15 border-2 border-[#EACA1C] shadow-lg flex-shrink-0 flex items-center justify-center">
+          <img id="profile-user-photo" src="" alt="User Profile" class="w-full h-full object-cover hidden" />
+          <span id="profile-user-initial" class="text-3xl font-display font-bold text-primary dark:text-[#EACA1C]">U</span>
+        </div>
+
+        <div class="space-y-1">
+          <div class="flex items-center gap-3 flex-wrap">
+            <h1 id="profile-user-name" class="font-display text-2xl md:text-3xl font-bold tracking-tight">
+              Loading Profile...
+            </h1>
+            <span id="profile-provider-tag" class="text-[10px] uppercase font-mono tracking-widest px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-semibold">
+              Guest
+            </span>
+          </div>
+          <p id="profile-user-email" class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-mono">
+            —
+          </p>
+        </div>
+      </div>
+
+      <!-- Action: Logout -->
+      <div class="relative z-10 flex items-center gap-3 self-end md:self-center">
+        <button
+          id="profile-logout-btn"
+          type="button"
+          class="px-6 py-2.5 rounded-full border border-black/10 dark:border-white/10 hover:border-rose-500 hover:text-rose-500 text-xs font-semibold uppercase tracking-wider transition-all duration-300 inline-flex items-center gap-2 cursor-pointer"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span>{t('auth.signOut')}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Section Title: My Bookings -->
+    <div class="flex items-center justify-between border-b border-black/10 dark:border-white/10 pb-4">
+      <div>
+        <span class="text-xs font-semibold text-primary dark:text-purple-pastel uppercase tracking-widest block">
+          USGAR Hotels Experience
+        </span>
+        <h2 class="font-display text-2xl font-bold">
+          {t('auth.myBookings')}
+        </h2>
+      </div>
+
+      <a
+        href="/book"
+        class="bg-primary hover:bg-primary-dark text-white text-xs font-semibold uppercase tracking-wider px-5 py-2.5 rounded-full transition-all duration-300 shadow-md hover:shadow-lg inline-flex items-center gap-2"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        <span>{t('auth.startBooking')}</span>
+      </a>
+    </div>
+
+    <!-- Loading State -->
+    <div id="profile-loading" class="text-center py-16">
+      <div class="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      <p class="mt-4 text-sm text-text-secondary-light dark:text-text-secondary-dark font-medium">
+        Fetching profile & reservation records...
+      </p>
+    </div>
+
+    <!-- Unauthenticated State -->
+    <div id="profile-unauth" class="hidden text-center py-16 bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-3xl border border-black/10 dark:border-white/10 space-y-4">
+      <svg class="w-12 h-12 text-stone-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+      </svg>
+      <p class="text-base font-semibold">{t('auth.loginRequired')}</p>
+      <a
+        href={`/login?redirect=${encodeURIComponent(Astro.url.pathname)}`}
+        class="inline-block bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-full text-sm transition-all shadow-md"
+      >
+        {t('auth.signIn')}
+      </a>
+    </div>
+
+    <!-- Empty Bookings State -->
+    <div id="profile-empty-bookings" class="hidden text-center py-16 bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-3xl border border-black/10 dark:border-white/10 space-y-4">
+      <svg class="w-12 h-12 text-stone-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+      </svg>
+      <p class="text-base font-semibold">{t('auth.noBookingsYet')}</p>
+      <a
+        href="/book"
+        class="inline-block bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-full text-sm transition-all shadow-md"
+      >
+        {t('auth.startBooking')}
+      </a>
+    </div>
+
+    <!-- Bookings List -->
+    <div id="profile-bookings-list" class="space-y-4 hidden"></div>
+
+  </main>
+
+  <script is:inline>
+    (function() {
+      async function initProfilePage() {
+        const loadingEl = document.getElementById('profile-loading');
+        const unauthEl = document.getElementById('profile-unauth');
+        const emptyEl = document.getElementById('profile-empty-bookings');
+        const listEl = document.getElementById('profile-bookings-list');
+        const nameEl = document.getElementById('profile-user-name');
+        const emailEl = document.getElementById('profile-user-email');
+        const photoEl = document.getElementById('profile-user-photo');
+        const initialEl = document.getElementById('profile-user-initial');
+        const providerTag = document.getElementById('profile-provider-tag');
+        const logoutBtn = document.getElementById('profile-logout-btn');
+
+        try {
+          // Fetch authenticated user info
+          const userRes = await fetch('/api/auth/me', { credentials: 'include' });
+          if (!userRes.ok) throw new Error('Unauthenticated');
+
+          const userData = await userRes.json();
+          if (!userData.success || !userData.user) throw new Error('Unauthenticated');
+
+          const user = userData.user;
+
+          // Populate User Header
+          if (nameEl) nameEl.textContent = user.name || user.email;
+          if (emailEl) emailEl.textContent = user.email;
+          if (providerTag) providerTag.textContent = `${user.provider || 'Google'} Account`;
+
+          if (user.photo && photoEl && initialEl) {
+            photoEl.src = user.photo;
+            photoEl.classList.remove('hidden');
+            initialEl.classList.add('hidden');
+          } else if (initialEl && user.name) {
+            initialEl.textContent = user.name.charAt(0).toUpperCase();
+          }
+
+          // Attach Logout Event
+          if (logoutBtn) {
+            logoutBtn.addEventListener('click', async () => {
+              sessionStorage.removeItem('usgar_auth_user');
+              try {
+                await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+              } catch (e) {}
+              window.location.href = '/';
+            });
+          }
+
+          // Fetch User Bookings
+          const bookingsRes = await fetch('/api/user/bookings', { credentials: 'include' });
+          if (loadingEl) loadingEl.classList.add('hidden');
+
+          if (!bookingsRes.ok) {
+            if (emptyEl) emptyEl.classList.remove('hidden');
+            return;
+          }
+
+          const bookingsData = await bookingsRes.json();
+          const bookings = bookingsData.bookings || [];
+
+          if (bookings.length === 0) {
+            if (emptyEl) emptyEl.classList.remove('hidden');
+            return;
+          }
+
+          // Render Bookings List
+          if (listEl) {
+            listEl.classList.remove('hidden');
+            listEl.innerHTML = bookings.map(b => {
+              const statusClass = b.status === 'confirmed' || b.status === 'paid'
+                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                : b.status === 'pending'
+                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                : 'bg-stone-500/10 text-stone-600 dark:text-stone-400 border-stone-500/20';
+
+              const roomName = b.room_data?.name?.en || b.room_data?.name || 'Hotel Room';
+
+              return `
+                <div class="bg-surface-card-light dark:bg-surface-card-dark p-6 rounded-2xl border border-black/10 dark:border-white/10 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-all hover:border-primary/30">
+                  <div class="space-y-1">
+                    <div class="flex items-center gap-3">
+                      <h3 class="font-display font-bold text-lg text-text-primary-light dark:text-text-primary-dark">${roomName}</h3>
+                      <span class="text-xs px-2.5 py-1 rounded-full font-semibold uppercase border ${statusClass}">
+                        ${b.status}
+                      </span>
+                    </div>
+                    <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                      📅 ${b.checkin} → ${b.checkout}
+                    </p>
+                    <p class="text-xs font-mono text-stone-400">
+                      Cart ID: ${b.cart_id} ${b.qlo_order_id ? '| Order: ' + b.qlo_order_id : ''}
+                    </p>
+                  </div>
+                  <div class="text-left md:text-right">
+                    <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark block">Total</span>
+                    <span class="font-bold text-xl text-primary dark:text-[#EACA1C]">$${Number(b.price_snapshot).toFixed(2)} USD</span>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          }
+
+        } catch (err) {
+          if (loadingEl) loadingEl.classList.add('hidden');
+          if (unauthEl) unauthEl.classList.remove('hidden');
+        }
+      }
+
+      initProfilePage();
+      document.addEventListener('astro:page-load', initProfilePage);
+    })();
+  </script>
+</Layout>
