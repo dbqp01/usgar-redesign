@@ -113,3 +113,5 @@
 }.
 [2026-07-27 05:25:05] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'
 [2026-07-27 05:25:06] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'
+[2026-07-27 05:31:35] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'
+[2026-07-27 05:31:37] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'
