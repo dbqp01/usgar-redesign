@@ -81,9 +81,21 @@ class Config {
      * Compatible con Hostinger (hosting compartido, sin Composer).
      */
     private function loadEnv(): void {
-        $path = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . '.env';
+        $possiblePaths = array_unique(array_filter([
+            dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . '.env',
+            ($_SERVER['DOCUMENT_ROOT'] ?? '') . DIRECTORY_SEPARATOR . '.env',
+            dirname($_SERVER['DOCUMENT_ROOT'] ?? '') . DIRECTORY_SEPARATOR . '.env',
+        ]));
 
-        if (!file_exists($path)) {
+        $path = null;
+        foreach ($possiblePaths as $p) {
+            if (file_exists($p)) {
+                $path = $p;
+                break;
+            }
+        }
+
+        if (!$path) {
             return;
         }
 
