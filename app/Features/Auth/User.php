@@ -258,6 +258,7 @@ class User {
             Logger::error('User::getBookings failed: ' . $e->getMessage());
             return [];
         }
+    }
     /**
      * Actualiza los datos del perfil de un usuario.
      */

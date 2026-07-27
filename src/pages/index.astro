@@ -127,7 +127,7 @@ const schemas = [hotelSchema, faqSchema];
        HERO SECTION — Video Background
        ========================================== -->
   <section
-    class="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden"
+    class="relative h-dvh min-h-[500px] sm:min-h-[600px] flex items-center justify-center overflow-hidden"
     id="hero"
   >
     <!-- Video Background -->
@@ -216,12 +216,12 @@ const schemas = [hotelSchema, faqSchema];
     <!-- Content -->
     <div class="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
       <h1
-        class="font-display text-5xl md:text-7xl lg:text-8xl mb-6 drop-shadow-lg animate-fade-in"
+        class="font-display fluid-h1 text-3xl sm:text-6xl lg:text-7xl mb-4 sm:mb-6 drop-shadow-lg animate-fade-in"
       >
         {t("hero.title")}
       </h1>
       <p
-        class="text-lg md:text-2xl font-light tracking-wide opacity-90 mb-8 animate-slide-up"
+        class="text-base sm:text-xl lg:text-2xl font-light tracking-wide opacity-90 mb-6 sm:mb-8 animate-slide-up"
         style="animation-delay: 0.3s; animation-fill-mode: both;"
       >
         {t("hero.subtitle")}

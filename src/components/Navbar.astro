@@ -44,7 +44,7 @@ const navLinks = [
   class="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
 >
   <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between h-20">
+    <div class="flex items-center justify-between h-16 lg:h-20">
       <!-- Logo -->
       <a href={getRelativeLocaleUrl(lang, '')} class="flex-shrink-0 relative z-10" aria-label="USGAR Hotels Home">
         <Image
@@ -223,15 +223,30 @@ const navLinks = [
     <!-- Panel -->
     <div
       id="mobile-panel"
-      class="absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-surface-card-light dark:bg-surface-card-dark shadow-2xl translate-x-full transition-transform duration-300 ease-out"
+      class="absolute right-0 top-0 h-dvh w-80 max-w-[85vw] bg-surface-card-light dark:bg-surface-card-dark shadow-2xl translate-x-full transition-transform duration-300 ease-out flex flex-col pt-safe pb-safe overflow-y-auto"
     >
-      <div class="flex flex-col h-full pt-24 pb-8 px-6">
+      <div class="flex flex-col h-full px-6 py-6">
+        <!-- Drawer Header with close button -->
+        <div class="flex items-center justify-between pb-4 mb-4 border-b border-black/10 dark:border-white/10">
+          <span class="text-xs font-bold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark">Menu</span>
+          <button
+            id="mobile-menu-close-btn"
+            type="button"
+            class="touch-target p-2 rounded-full text-text-primary-light dark:text-text-primary-dark hover:bg-black/5 dark:hover:bg-white/10"
+            aria-label="Close menu"
+          >
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
         <!-- Nav Links -->
         <nav class="flex flex-col gap-1">
           {navLinks.map(link => (
             <a
               href={link.href}
-              class="text-lg font-medium py-3 px-4 rounded-xl hover:bg-primary/10 hover:text-primary transition-all duration-200"
+              class="text-base font-semibold py-3.5 px-4 rounded-xl hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center min-h-[48px]"
             >
               {link.label}
             </a>
@@ -447,6 +462,9 @@ const navLinks = [
     mobileMenuBtn?.addEventListener('click', () => {
       isMenuOpen ? closeMenu() : openMenu();
     }, { signal });
+
+    const mobileMenuCloseBtn = document.getElementById('mobile-menu-close-btn');
+    mobileMenuCloseBtn?.addEventListener('click', closeMenu, { signal });
 
     mobileBackdrop?.addEventListener('click', closeMenu, { signal });
 
