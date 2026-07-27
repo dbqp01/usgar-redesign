@@ -137,7 +137,8 @@ const schemas = [hotelSchema, faqSchema];
       loop
       playsinline
       preload="auto"
-      class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 z-0"
+      transition:persist="hero-video-player"
+      class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 z-0 opacity-100"
       poster={optimizedPoster.src}
       id="hero-video"
       src="/videos/hero-video.mp4"
@@ -501,10 +502,24 @@ const schemas = [hotelSchema, faqSchema];
     if (!video || !toggleBtn || !mutedIcon || !unmutedIcon || !slideshow)
       return;
 
-    // Ensure video is played explicitly on load
-    video.play().catch((err) => {
-      console.log("Autoplay notice:", err);
-    });
+    // Reset visibility state on page load / re-entry
+    video.classList.remove("opacity-0");
+    video.classList.add("opacity-100");
+
+    // Ensure audio toggle state matches video muted state
+    mutedIcon.classList.toggle("hidden", !video.muted);
+    unmutedIcon.classList.toggle("hidden", video.muted);
+
+    // Play video if paused or not playing
+    if (video.paused) {
+      video.play().catch((err) => {
+        console.log("Autoplay notice on page load:", err);
+      });
+    }
+
+    // Prevent duplicate event listener bindings
+    if (video.dataset.init === "true") return;
+    video.dataset.init = "true";
 
     // Toggle sound
     toggleBtn.addEventListener("click", () => {
@@ -518,78 +533,61 @@ const schemas = [hotelSchema, faqSchema];
     let slideshowInterval: any = null;
 
     function startSlideshow() {
-      // Fade in slideshow container
       slideshow.classList.remove("opacity-0");
       slideshow.classList.add("opacity-100");
 
-      // Hide audio toggle button during slideshow
       toggleBtn.classList.add("opacity-0", "pointer-events-none");
 
-      // Show first slide
       currentSlide = 0;
-      slides[currentSlide].classList.remove("opacity-0");
-      slides[currentSlide].classList.add("opacity-100");
+      slides[currentSlide]?.classList.remove("opacity-0");
+      slides[currentSlide]?.classList.add("opacity-100");
 
       slideshowInterval = setInterval(() => {
-        // Fade out current slide
-        slides[currentSlide].classList.remove("opacity-100");
-        slides[currentSlide].classList.add("opacity-0");
+        slides[currentSlide]?.classList.remove("opacity-100");
+        slides[currentSlide]?.classList.add("opacity-0");
 
         currentSlide++;
 
         if (currentSlide < slides.length) {
-          // Fade in next slide
-          slides[currentSlide].classList.remove("opacity-0");
-          slides[currentSlide].classList.add("opacity-100");
+          slides[currentSlide]?.classList.remove("opacity-0");
+          slides[currentSlide]?.classList.add("opacity-100");
         } else {
-          // End of slideshow: clean up and return to video
           clearInterval(slideshowInterval);
 
-          // Fade out slideshow container
           slideshow.classList.remove("opacity-100");
           slideshow.classList.add("opacity-0");
 
-          // Reset all slides to opacity-0
           slides.forEach((slide) => {
             slide.classList.remove("opacity-100");
             slide.classList.add("opacity-0");
           });
 
-          // Fade in video
           video.classList.remove("opacity-0");
           video.classList.add("opacity-100");
 
-          // Fade in audio toggle
           toggleBtn.classList.remove("opacity-0", "pointer-events-none");
 
-          // Replay video
           video.currentTime = 0;
           video.play().catch((err) => console.log("Replay error:", err));
         }
       }, 4000);
     }
 
-    // When video ends
+    // When video ends (if loop is disabled or ends)
     video.addEventListener("ended", () => {
-      // Fade out video
       video.classList.remove("opacity-100");
       video.classList.add("opacity-0");
-
-      // Start slideshow
       startSlideshow();
     });
 
     // Cleanup interval on page transition
-    document.addEventListener(
-      "astro:before-swap",
-      () => {
-        if (slideshowInterval) clearInterval(slideshowInterval);
-      },
-      { once: true },
-    );
+    document.addEventListener("astro:before-swap", () => {
+      if (slideshowInterval) clearInterval(slideshowInterval);
+      video.dataset.init = "false";
+    });
   }
 
-    // Init on load & after View Transition
+  // Init on load & after View Transition
   document.addEventListener("astro:page-load", initHeroVideo);
 
   function initCinematicShowcase() {
