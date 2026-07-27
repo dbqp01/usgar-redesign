@@ -1,16 +1,16 @@
-# Graph Report - usgar-redesign  (2026-07-26)
+# Graph Report - usgar-redesign  (2026-07-27)
 
 ## Corpus Check
-- 292 files · ~515,927 words
+- 300 files · ~518,709 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1680 nodes · 2153 edges · 243 communities (131 shown, 112 thin omitted)
-- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 103 edges (avg confidence: 0.8)
+- 1682 nodes · 2147 edges · 242 communities (129 shown, 113 thin omitted)
+- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 94 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `03fc8661`
+- Built from commit: `a4d7c915`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -208,21 +208,20 @@
 - FilterService
 - readme.md
 - self
-- PDO
 - ProvisionalBookingRepository
 - ProvisionalBookingRepository
 - ProvisionalBookingRepository
 
 ## God Nodes (most connected - your core abstractions)
-1. `Logger` - 41 edges
-2. `Request` - 32 edges
-3. `AbstractAdapter` - 32 edges
-4. `LightOpenID` - 31 edges
+1. `Logger` - 34 edges
+2. `AbstractAdapter` - 32 edges
+3. `LightOpenID` - 31 edges
+4. `Request` - 30 edges
 5. `ClassLoader` - 28 edges
-6. `Config` - 26 edges
+6. `Config` - 24 edges
 7. `ProvisionalBookingRepository` - 24 edges
 8. `OAuth2` - 24 edges
-9. `HttpException` - 23 edges
+9. `HttpException` - 22 edges
 10. `OAuthRequest` - 21 edges
 
 ## Surprising Connections (you probably didn't know these)
@@ -234,36 +233,36 @@
   src/components/MapSection.astro → src/assets/logos/Logo usgar isotipo.png
 - `CreateBookingAction` --references--> `ProvisionalBookingRepository`  [EXTRACTED]
   app/Features/Booking/Actions/CreateBookingAction.php → app/Features/Booking/Domain/ProvisionalBookingRepository.php
-- `CleanExpiredCartsAction` --references--> `ProvisionalBookingRepository`  [EXTRACTED]
-  app/Features/Cron/Actions/CleanExpiredCartsAction.php → app/Features/Booking/Domain/ProvisionalBookingRepository.php
+- `ExtendHoldAction` --references--> `ProvisionalBookingRepository`  [EXTRACTED]
+  app/Features/Booking/Actions/ExtendHoldAction.php → app/Features/Booking/Domain/ProvisionalBookingRepository.php
 
 ## Import Cycles
 - None detected.
 
-## Communities (243 total, 112 thin omitted)
+## Communities (242 total, 113 thin omitted)
 
 ### Community 0 - "python.md"
-Cohesion: 0.05
-Nodes (8): Config, self, HttpException, self, Validator, AuthService, SessionService, RoomTypeRegistry
+Cohesion: 0.06
+Nodes (7): Config, self, HttpException, self, Validator, SessionService, RoomTypeRegistry
 
 ### Community 2 - "External Security Tools Integration Guide"
-Cohesion: 0.14
-Nodes (3): Logger, PDO, ProvisionalBooking
+Cohesion: 0.09
+Nodes (6): Logger, PDO, ProvisionalBookingRepository, PDO, ProvisionalBooking, CleanExpiredCartsAction
 
 ### Community 3 - "逻辑漏洞深度分析手册"
-Cohesion: 0.18
-Nodes (6): AuthCallbackAction, Request, AuthLoginAction, AuthProvidersAction, Middleware, Request
+Cohesion: 0.16
+Nodes (5): AuthLoginAction, Request, AuthProvidersAction, AuthService, Request
 
 ### Community 4 - "绕过策略方法论 (Bypass Strategies)"
-Cohesion: 0.10
-Nodes (9): ../icons/SVGIcons.astro, ../../components/RoomCard.astro, ../i18n/utils, @/i18n/utils, ../layouts/Layout.astro, string, capacities, t (+1 more)
+Cohesion: 0.12
+Nodes (7): ../../components/RoomCard.astro, ../i18n/utils, @/i18n/utils, ../layouts/Layout.astro, string, capacities, t
 
 ### Community 5 - "Best practices"
 Cohesion: 0.04
-Nodes (45): @astrojs/check, @astrojs/sitemap, leaflet, allowScripts, esbuild@0.28.1, sharp@0.35.3, dependencies, @astrojs/check (+37 more)
+Nodes (47): astro, @astrojs/check, @astrojs/sitemap, leaflet, allowScripts, esbuild@0.28.1, sharp@0.35.3, dependencies (+39 more)
 
 ### Community 6 - "Rust Security Audit"
-Cohesion: 0.31
+Cohesion: 0.39
 Nodes (3): ChannexRoomMapper, HandleChannexWebhookAction, PDO
 
 ### Community 7 - "全面审计方法论 - 避免遗漏的系统性框架"
@@ -291,36 +290,32 @@ Cohesion: 0.60
 Nodes (4): compressImage(), files, run(), SUPPORTED_EXTENSIONS
 
 ### Community 14 - "Python Deserialization Deep Dive"
-Cohesion: 0.23
-Nodes (7): CreateBookingAction, PaymentGatewayPortInterface, PDO, PmsPortInterface, ChannelManagerPortInterface, Exception, PaymentGatewayPortInterface
+Cohesion: 0.33
+Nodes (6): ../assets/hotel/fallback-room-desayuno.jpg, ../assets/hotel/hero-slide-recepcion.jpg, ../components/FAQSection.astro, ../components/GastronomySection.astro, culinaryOffers, t
+
+### Community 15 - "动态代码审计指南 (Dynamic Code Audit Guide)"
+Cohesion: 0.17
+Nodes (5): GetRoomsAction, PmsPortInterface, Exception, Middleware, PmsPortInterface
 
 ### Community 16 - "版本边界速查表 (Version Boundaries Reference)"
 Cohesion: 0.22
 Nodes (8): Arquitectura — USGAR Hotels, Diagrama de Capas, Flujo de una Reserva, Mapa de Zonas de Riesgo, Regla de Oro, ZONA CRÍTICA — No tocar sin justificación, 🟡 ZONA DE INTERFAZ — Entender contrato API antes de editar, 🟢 ZONA SEGURA — Editar libremente
 
 ### Community 17 - "认证与授权安全审计 (CWE-287/306/269/276/862/863)"
-Cohesion: 0.25
-Nodes (4): Database, PDO, self, HealthCheckAction
+Cohesion: 0.17
+Nodes (9): Database, PDO, self, GetUserBookingsAction, CreateBookingAction, PaymentGatewayPortInterface, PDO, PmsPortInterface (+1 more)
 
 ### Community 18 - "Database Operations & Security"
 Cohesion: 0.12
 Nodes (3): Container, Middleware, Router
 
 ### Community 19 - "SEO optimization"
-Cohesion: 0.21
-Nodes (10): ../assets/hotel/hero-slide-recepcion.jpg, ../assets/logos/Logo usgar isotipo.png, ../data/settings, leaflet/dist/leaflet.css, ../components/FAQSection.astro, ../components/MapSection.astro, ../components/WhatsAppButton.astro, SiteSettings (+2 more)
-
-### Community 21 - "Real World Vulnerabilities Case Study"
-Cohesion: 0.40
-Nodes (8): HandleMercadoPagoWebhookAction, ChannelManagerPortInterface, PaymentGatewayPortInterface, PDO, PmsPortInterface, ProvisionalBookingRepository, Request, EventDispatcher
+Cohesion: 0.25
+Nodes (8): ../assets/logos/Logo usgar isotipo.png, ../data/settings, leaflet/dist/leaflet.css, ../components/MapSection.astro, ../components/WhatsAppButton.astro, SiteSettings, SocialLink, ../contact.astro
 
 ### Community 24 - "Gotchas Bank"
 Cohesion: 0.05
 Nodes (39): (1) WebFetch official llms.txt per country → (2) this file → (3) MCP search_documentation, API Reference, Argentina (MLA), Brazil (MLB), CardPayment Brick, Checkout API (Orders mode), Checkout API — Orders (new, recommended), Checkout Bricks (+31 more)
-
-### Community 25 - "PoC 分类与模板"
-Cohesion: 0.16
-Nodes (4): ExtendHoldAction, PmsPortInterface, PDO, ProvisionalBookingRepository
 
 ### Community 26 - "Semantic Search Guide for Security Audit"
 Cohesion: 0.40
@@ -343,24 +338,20 @@ Cohesion: 0.40
 Nodes (3): ../assets/logos/Logo usgar morado.png, ../assets/logos/Logo usgar.png, ../utils/auth-client
 
 ### Community 37 - "UnexpectedValueException"
-Cohesion: 0.22
-Nodes (4): HttpRequestFailedException, UnexpectedApiResponseException, UnexpectedValueException, Contact
+Cohesion: 0.18
+Nodes (5): HttpClientFailureException, HttpRequestFailedException, UnexpectedApiResponseException, UnexpectedValueException, Contact
 
 ### Community 40 - "Java Web框架安全检测模块"
 Cohesion: 0.67
 Nodes (3): 8. Video del Hero (Página Principal), Reglas de Audio/Video, Secuencia Obligatoria del Video/Slideshow
-
-### Community 49 - "AbstractAdapter.php"
-Cohesion: 0.25
-Nodes (3): BadMethodCallException, HttpClientFailureException, NotImplementedException
 
 ### Community 84 - "Request"
 Cohesion: 0.10
 Nodes (20): 1. Arquitectura General, 2. Estructura de Directorios, 3. Refactorizaciones y Mejoras Arquitectónicas Recientes, 4. Endpoints de la API REST (`public/index.php`), 5. Pautas de Desarrollo, 6. Entorno de Desarrollo y Variables de Entorno (.env), 7. Despliegue en Hostinger Shared Hosting, A. Inyección de Dependencias PSR-11 (DI Container) (+12 more)
 
 ### Community 85 - "Sinks & Sources Reference"
-Cohesion: 0.10
-Nodes (4): RouterTest, GetRoomsActionTest, HandleMercadoPagoWebhookActionTest, TestCase
+Cohesion: 0.06
+Nodes (16): ChannexAdapter, MercadoPagoAdapter, HandleMercadoPagoWebhookAction, ChannelManagerPortInterface, PaymentGatewayPortInterface, PDO, PmsPortInterface, ProvisionalBookingRepository (+8 more)
 
 ### Community 86 - "Django特定漏洞"
 Cohesion: 0.17
@@ -443,7 +434,7 @@ Cohesion: 0.22
 Nodes (9): 9. UI Components — Especificaciones, Booking Widget, Botones, Footer, Galería (Página de Habitación), Mapa, Navbar, Room Cards (+1 more)
 
 ### Community 232 - "3.1 上下文类型识别"
-Cohesion: 0.13
+Cohesion: 0.12
 Nodes (3): OAuth2, Google, MicrosoftGraph
 
 ### Community 251 - "6.2 绕过场景与方法"
@@ -455,12 +446,16 @@ Cohesion: 0.29
 Nodes (6): 1. Type Safety & Strict Types, 2. Secure Database Operations (PDO), 3. JSON Output Conventions, 4. Input Sanitization & Verification, Modern PHP 8.x Best Practices & Security Guidelines, Safe Query Example:
 
 ### Community 276 - "HTTP Request Smuggling / HTTP/2 Desync"
-Cohesion: 0.17
-Nodes (6): AuthLogoutAction, Request, AuthMeAction, AuthRegisterAction, Request, GetUserBookingsAction
+Cohesion: 0.16
+Nodes (7): AuthCallbackAction, Request, AuthLoginEmailAction, Request, AuthMeAction, AuthRegisterAction, Request
 
 ### Community 280 - "信息泄露漏洞分析知识库"
 Cohesion: 0.33
 Nodes (6): 11. Animaciones, Accesibilidad, Filosofía, Hover, Navegación, Scroll
+
+### Community 307 - "SSRF 审计 (增强版)"
+Cohesion: 0.13
+Nodes (3): Request, ExtendHoldAction, PmsPortInterface
 
 ### Community 310 - "授权检查缺失审计 (Authorization Gap)"
 Cohesion: 0.33
@@ -495,16 +490,16 @@ Cohesion: 0.50
 Nodes (4): 15. Correcciones Pendientes en el Código, Alta Prioridad, Baja Prioridad, Media Prioridad
 
 ### Community 410 - "Permission Checks"
-Cohesion: 0.29
-Nodes (4): PDO, QloAppAdapter, PmsPortInterface, SimpleXMLElement
+Cohesion: 0.31
+Nodes (3): PDO, QloAppAdapter, SimpleXMLElement
 
 ### Community 439 - "WordPress 特定漏洞"
 Cohesion: 0.50
 Nodes (3): post-checkout script, GRAPHIFY_REBUILD_LOG, PYTHONHASHSEED
 
 ### Community 475 - "../../book/success.astro"
-Cohesion: 0.19
-Nodes (17): ../assets/hotel/fallback-room-desayuno.jpg, ../assets/hotel/fallback-room-pasillo.jpg, ../data/reviews, ../utils/helpers, ../components/Footer.astro, ../components/GastronomySection.astro, culinaryOffers, t (+9 more)
+Cohesion: 0.24
+Nodes (13): ../assets/hotel/fallback-room-pasillo.jpg, ../data/reviews, ../utils/helpers, ../components/Footer.astro, ../components/HeritageSection.astro, ../components/InteractiveRoomsSection.astro, ../components/ReviewMarquee.astro, dictionaries (+5 more)
 
 ### Community 482 - "dev.js"
 Cohesion: 0.29
@@ -519,16 +514,16 @@ Cohesion: 0.17
 Nodes (11): ../components/Footer.astro, ../components/WhatsAppButton.astro, ../layouts/Layout.astro, canonicalURL, enURL, esURL, frURL, pathWithoutLocale (+3 more)
 
 ### Community 486 - "Recuento de errores y propuestas de solucion -- usgar-redesign (implementacion pt/fr)"
-Cohesion: 0.06
-Nodes (6): HttpClientInterface, StorageInterface, Curl, Guzzle, StorageImpl, ProfileTest
+Cohesion: 0.08
+Nodes (5): HttpClientInterface, StorageInterface, Curl, Guzzle, StorageImpl
 
 ### Community 489 - "Required Files (MANDATORY)"
 Cohesion: 0.08
 Nodes (5): DataStoreTrait, AbstractAdapter, HttpClientInterface, LoggerInterface, StorageInterface
 
 ### Community 496 - "attractions.ts"
-Cohesion: 0.21
-Nodes (6): astro, ../data/attractions, astro, Attraction, attractions, LocalizedField
+Cohesion: 0.26
+Nodes (4): ../data/attractions, Attraction, attractions, LocalizedField
 
 ### Community 501 - "SKILL.md"
 Cohesion: 0.06
@@ -570,10 +565,6 @@ Nodes (7): [Hybridauth](https://hybridauth.github.io/) 3.12, Installation, Licen
 Cohesion: 0.67
 Nodes (5): clearStoredData(), deleteStoredData(), getStorage(), getStoredData(), storeData()
 
-### Community 584 - "ProfileTest"
-Cohesion: 0.22
-Nodes (3): TestCase, HybridauthTest, KeycloakTest
-
 ### Community 589 - "CONTRIBUTING.md"
 Cohesion: 0.50
 Nodes (3): Develop, Documentation, Report Problems
@@ -585,22 +576,22 @@ Nodes (3): Bug, feature or question?, Reproduction, Version and provider
 ## Knowledge Gaps
 - **477 isolated node(s):** `../assets/logos/Logo usgar.png`, `Roles de cada sistema`, `2. Estructura de Directorios`, `A. Inyección de Dependencias PSR-11 (DI Container)`, `B. Resiliencia e Idempotencia FinTech (Mercado Pago & Hostinger MySQL)` (+472 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **112 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **113 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `SessionTest` connect `TestCase` to `ProfileTest`?**
-  _High betweenness centrality (0.102) - this node is a cross-community bridge._
-- **Why does `Router` connect `Database Operations & Security` to `逻辑漏洞深度分析手册`?**
-  _High betweenness centrality (0.083) - this node is a cross-community bridge._
-- **Are the 32 inferred relationships involving `Logger` (e.g. with `.__construct()` and `.parseBody()`) actually correct?**
-  _`Logger` has 32 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 25 inferred relationships involving `Logger` (e.g. with `.__construct()` and `.parseBody()`) actually correct?**
+  _`Logger` has 25 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `../assets/logos/Logo usgar.png`, `Roles de cada sistema`, `2. Estructura de Directorios` to the rest of the system?**
   _477 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `python.md` be split into smaller, more focused modules?**
-  _Cohesion score 0.0512987012987013 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05877551020408163 - nodes in this community are weakly interconnected._
 - **Should `External Security Tools Integration Guide` be split into smaller, more focused modules?**
-  _Cohesion score 0.14210526315789473 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.08858858858858859 - nodes in this community are weakly interconnected._
 - **Should `绕过策略方法论 (Bypass Strategies)` be split into smaller, more focused modules?**
-  _Cohesion score 0.10256410256410256 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11956521739130435 - nodes in this community are weakly interconnected._
+- **Should `Best practices` be split into smaller, more focused modules?**
+  _Cohesion score 0.041666666666666664 - nodes in this community are weakly interconnected._
+- **Should `全面审计方法论 - 避免遗漏的系统性框架` be split into smaller, more focused modules?**
+  _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._

@@ -82,8 +82,9 @@ class AuthCallbackAction {
             exit(0);
 
         } catch (Throwable $e) {
-            Logger::error("OAuth callback failed: " . $e->getMessage());
-            header('Location: /login?error=' . urlencode("No se pudo completar la autenticación. Intente nuevamente."));
+            Logger::error("OAuth callback failed: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine());
+            $detail = $e->getMessage();
+            header('Location: /login?error=' . urlencode("Error en autenticación (" . $detail . ")"));
             exit(0);
         }
     }
