@@ -334,7 +334,7 @@ const navLinks = [
     const mobileLogoutBtn = document.getElementById('mobile-auth-logout-btn');
 
     try {
-      const user = await getUser(true);
+      const user = await getUser(false);
       
       if (user) {
         if (loginBtn) loginBtn.classList.add('hidden');

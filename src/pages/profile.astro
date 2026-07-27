@@ -8,7 +8,7 @@ const lang = (Astro.currentLocale || "en") as Locale;
 const t = useTranslations(lang);
 ---
 
-<Layout title={`Profile & Bookings — USGAR Hotels`} lang={lang}>
+<Layout title={`Profile & Sanctuary Management — USGAR Hotels`} lang={lang}>
   <main class="py-24 px-4 max-w-5xl mx-auto flex-1 animate-fade-in space-y-8">
     
     <!-- Profile Card (Quiet Luxury Header) -->
@@ -53,33 +53,54 @@ const t = useTranslations(lang);
       </div>
     </div>
 
-    <!-- Section Title: My Bookings -->
-    <div class="flex items-center justify-between border-b border-black/10 dark:border-white/10 pb-4">
-      <div>
-        <span class="text-xs font-semibold text-primary dark:text-purple-pastel uppercase tracking-widest block">
-          USGAR Hotels Experience
-        </span>
-        <h2 class="font-display text-2xl font-bold">
-          {t('auth.myBookings')}
-        </h2>
-      </div>
-
-      <a
-        href="/book"
-        class="bg-primary hover:bg-primary-dark text-white text-xs font-semibold uppercase tracking-wider px-5 py-2.5 rounded-full transition-all duration-300 shadow-md hover:shadow-lg inline-flex items-center gap-2"
+    <!-- Navigation Tabs (Quiet Luxury Interactive Control) -->
+    <div class="flex border-b border-black/10 dark:border-white/10 gap-2 overflow-x-auto pb-px">
+      <button
+        id="tab-bookings-btn"
+        type="button"
+        class="px-6 py-3 text-sm font-semibold border-b-2 border-primary text-primary transition-all cursor-pointer whitespace-nowrap flex items-center gap-2"
       >
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4" />
         </svg>
-        <span>{t('auth.startBooking')}</span>
-      </a>
+        <span>{t('auth.myBookings')}</span>
+        <span id="badge-bookings-count" class="hidden text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-bold">0</span>
+      </button>
+
+      <button
+        id="tab-personal-btn"
+        type="button"
+        class="px-6 py-3 text-sm font-semibold border-b-2 border-transparent text-text-secondary-light dark:text-text-secondary-dark hover:text-primary transition-all cursor-pointer whitespace-nowrap flex items-center gap-2"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        <span>Personal Details</span>
+      </button>
+
+      <button
+        id="tab-preferences-btn"
+        type="button"
+        class="px-6 py-3 text-sm font-semibold border-b-2 border-transparent text-text-secondary-light dark:text-text-secondary-dark hover:text-primary transition-all cursor-pointer whitespace-nowrap flex items-center gap-2"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span>Preferences & Security</span>
+      </button>
+    </div>
+
+    <!-- Alert Container for Profile Actions -->
+    <div id="profile-alert" class="hidden p-4 rounded-xl text-sm font-medium flex items-center gap-3 transition-all">
+      <span id="profile-alert-text"></span>
     </div>
 
     <!-- Loading State -->
     <div id="profile-loading" class="text-center py-16">
       <div class="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
       <p class="mt-4 text-sm text-text-secondary-light dark:text-text-secondary-dark font-medium">
-        Fetching profile & reservation records...
+        Fetching profile & sanctuary records...
       </p>
     </div>
 
@@ -97,131 +118,373 @@ const t = useTranslations(lang);
       </a>
     </div>
 
-    <!-- Empty Bookings State -->
-    <div id="profile-empty-bookings" class="hidden text-center py-16 bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-3xl border border-black/10 dark:border-white/10 space-y-4">
-      <svg class="w-12 h-12 text-stone-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
-      </svg>
-      <p class="text-base font-semibold">{t('auth.noBookingsYet')}</p>
-      <a
-        href="/book"
-        class="inline-block bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-full text-sm transition-all shadow-md"
-      >
-        {t('auth.startBooking')}
-      </a>
+    <!-- VIEW 1: Bookings Section -->
+    <div id="view-bookings" class="space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-xs font-semibold text-primary dark:text-purple-pastel uppercase tracking-widest block">
+            Reservations History
+          </span>
+          <h2 class="font-display text-2xl font-bold">
+            {t('auth.myBookings')}
+          </h2>
+        </div>
+
+        <a
+          href="/book"
+          class="bg-primary hover:bg-primary-dark text-white text-xs font-semibold uppercase tracking-wider px-5 py-2.5 rounded-full transition-all duration-300 shadow-md hover:shadow-lg inline-flex items-center gap-2"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>{t('auth.startBooking')}</span>
+        </a>
+      </div>
+
+      <!-- Empty Bookings State -->
+      <div id="profile-empty-bookings" class="hidden text-center py-16 bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-3xl border border-black/10 dark:border-white/10 space-y-4">
+        <svg class="w-12 h-12 text-stone-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+        </svg>
+        <p class="text-base font-semibold">{t('auth.noBookingsYet')}</p>
+        <a
+          href="/book"
+          class="inline-block bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-full text-sm transition-all shadow-md"
+        >
+          {t('auth.startBooking')}
+        </a>
+      </div>
+
+      <!-- Bookings List Container -->
+      <div id="profile-bookings-list" class="hidden space-y-4"></div>
     </div>
 
-    <!-- Bookings List -->
-    <div id="profile-bookings-list" class="space-y-4 hidden"></div>
+    <!-- VIEW 2: Personal Details Form (Real Editing) -->
+    <div id="view-personal" class="hidden space-y-6">
+      <div class="bg-surface-card-light dark:bg-surface-card-dark p-8 md:p-10 rounded-3xl border border-black/10 dark:border-white/10 shadow-xl space-y-6">
+        <div>
+          <h2 class="font-display text-2xl font-bold">Personal Information</h2>
+          <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">
+            Update your personal details for faster check-ins and direct contact.
+          </p>
+        </div>
+
+        <form id="form-personal-details" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="edit-fullname" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                Full Name *
+              </label>
+              <input
+                type="text"
+                id="edit-fullname"
+                name="fullName"
+                required
+                autocomplete="name"
+                class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary outline-none transition-all"
+              />
+            </div>
+
+            <div>
+              <label for="edit-email" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                Email Address (Read Only)
+              </label>
+              <input
+                type="email"
+                id="edit-email"
+                disabled
+                class="w-full px-4 py-3 rounded-xl bg-stone-100 dark:bg-stone-800/50 border border-black/10 dark:border-white/10 text-sm text-stone-500 cursor-not-allowed outline-none"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="edit-phone" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+              Phone / WhatsApp Number
+            </label>
+            <input
+              type="tel"
+              id="edit-phone"
+              name="phone"
+              placeholder="+51 984 000 000"
+              autocomplete="tel"
+              class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary outline-none transition-all"
+            />
+          </div>
+
+          <div class="flex items-center justify-end">
+            <button
+              type="submit"
+              id="btn-save-personal"
+              class="bg-primary hover:bg-primary-dark text-white font-semibold text-sm px-8 py-3.5 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer"
+            >
+              Save Profile Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- VIEW 3: Preferences & Security -->
+    <div id="view-preferences" class="hidden space-y-6">
+      <div class="bg-surface-card-light dark:bg-surface-card-dark p-8 md:p-10 rounded-3xl border border-black/10 dark:border-white/10 shadow-xl space-y-6">
+        <div>
+          <h2 class="font-display text-2xl font-bold">Preferences & Security</h2>
+          <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">
+            Customize your stay preferences and account verification status.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-6 rounded-2xl border border-black/10 dark:border-white/10 bg-white/50 dark:bg-surface-dark/50 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark">Account Provider</span>
+              <span id="pref-provider-badge" class="text-xs font-bold px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 uppercase">
+                Email
+              </span>
+            </div>
+            <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark">
+              Your account is authenticated securely via JWT HttpOnly tokens.
+            </p>
+          </div>
+
+          <div class="p-6 rounded-2xl border border-black/10 dark:border-white/10 bg-white/50 dark:bg-surface-dark/50 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark">Sanctuary Perk</span>
+              <span class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 uppercase">
+                Direct Booking VIP
+              </span>
+            </div>
+            <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark">
+              Free Andean breakfast & complimentary oxygen concentrator on arrival.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </main>
 
   <script is:inline>
     (function() {
-      async function initProfilePage() {
+      let currentUser = null;
+
+      function initProfilePage() {
         const loadingEl = document.getElementById('profile-loading');
         const unauthEl = document.getElementById('profile-unauth');
-        const emptyEl = document.getElementById('profile-empty-bookings');
-        const listEl = document.getElementById('profile-bookings-list');
+        const profileCard = document.getElementById('profile-card');
         const nameEl = document.getElementById('profile-user-name');
         const emailEl = document.getElementById('profile-user-email');
+        const providerTag = document.getElementById('profile-provider-tag');
         const photoEl = document.getElementById('profile-user-photo');
         const initialEl = document.getElementById('profile-user-initial');
-        const providerTag = document.getElementById('profile-provider-tag');
         const logoutBtn = document.getElementById('profile-logout-btn');
+        const listEl = document.getElementById('profile-bookings-list');
+        const emptyEl = document.getElementById('profile-empty-bookings');
+        const badgeCount = document.getElementById('badge-bookings-count');
 
-        try {
-          // Fetch authenticated user info
-          const userRes = await fetch('/api/auth/me', { credentials: 'include' });
-          if (!userRes.ok) throw new Error('Unauthenticated');
+        const tabBookingsBtn = document.getElementById('tab-bookings-btn');
+        const tabPersonalBtn = document.getElementById('tab-personal-btn');
+        const tabPreferencesBtn = document.getElementById('tab-preferences-btn');
 
-          const userData = await userRes.json();
-          if (!userData.success || !userData.user) throw new Error('Unauthenticated');
+        const viewBookings = document.getElementById('view-bookings');
+        const viewPersonal = document.getElementById('view-personal');
+        const viewPreferences = document.getElementById('view-preferences');
 
-          const user = userData.user;
+        const editFullName = document.getElementById('edit-fullname');
+        const editEmail = document.getElementById('edit-email');
+        const editPhone = document.getElementById('edit-phone');
+        const formPersonal = document.getElementById('form-personal-details');
+        const btnSavePersonal = document.getElementById('btn-save-personal');
 
-          // Populate User Header
-          if (nameEl) nameEl.textContent = user.name || user.email;
-          if (emailEl) emailEl.textContent = user.email;
-          if (providerTag) providerTag.textContent = `${user.provider || 'Google'} Account`;
+        const profileAlert = document.getElementById('profile-alert');
+        const profileAlertText = document.getElementById('profile-alert-text');
 
-          if (user.photo && photoEl && initialEl) {
-            photoEl.src = user.photo;
-            photoEl.classList.remove('hidden');
-            initialEl.classList.add('hidden');
-          } else if (initialEl && user.name) {
-            initialEl.textContent = user.name.charAt(0).toUpperCase();
-          }
-
-          // Attach Logout Event
-          if (logoutBtn) {
-            logoutBtn.addEventListener('click', async () => {
-              sessionStorage.removeItem('usgar_auth_user');
-              try {
-                await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-              } catch (e) {}
-              window.location.href = '/';
-            });
-          }
-
-          // Fetch User Bookings
-          const bookingsRes = await fetch('/api/user/bookings', { credentials: 'include' });
-          if (loadingEl) loadingEl.classList.add('hidden');
-
-          if (!bookingsRes.ok) {
-            if (emptyEl) emptyEl.classList.remove('hidden');
-            return;
-          }
-
-          const bookingsData = await bookingsRes.json();
-          const bookings = bookingsData.bookings || [];
-
-          if (bookings.length === 0) {
-            if (emptyEl) emptyEl.classList.remove('hidden');
-            return;
-          }
-
-          // Render Bookings List
-          if (listEl) {
-            listEl.classList.remove('hidden');
-            listEl.innerHTML = bookings.map(b => {
-              const statusClass = b.status === 'confirmed' || b.status === 'paid'
-                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
-                : b.status === 'pending'
-                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
-                : 'bg-stone-500/10 text-stone-600 dark:text-stone-400 border-stone-500/20';
-
-              const roomName = b.room_data?.name?.en || b.room_data?.name || 'Hotel Room';
-
-              return `
-                <div class="bg-surface-card-light dark:bg-surface-card-dark p-6 rounded-2xl border border-black/10 dark:border-white/10 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-all hover:border-primary/30">
-                  <div class="space-y-1">
-                    <div class="flex items-center gap-3">
-                      <h3 class="font-display font-bold text-lg text-text-primary-light dark:text-text-primary-dark">${roomName}</h3>
-                      <span class="text-xs px-2.5 py-1 rounded-full font-semibold uppercase border ${statusClass}">
-                        ${b.status}
-                      </span>
-                    </div>
-                    <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">
-                      📅 ${b.checkin} → ${b.checkout}
-                    </p>
-                    <p class="text-xs font-mono text-stone-400">
-                      Cart ID: ${b.cart_id} ${b.qlo_order_id ? '| Order: ' + b.qlo_order_id : ''}
-                    </p>
-                  </div>
-                  <div class="text-left md:text-right">
-                    <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark block">Total</span>
-                    <span class="font-bold text-xl text-primary dark:text-[#EACA1C]">$${Number(b.price_snapshot).toFixed(2)} USD</span>
-                  </div>
-                </div>
-              `;
-            }).join('');
-          }
-
-        } catch (err) {
-          if (loadingEl) loadingEl.classList.add('hidden');
-          if (unauthEl) unauthEl.classList.remove('hidden');
+        function showAlert(msg, isSuccess = true) {
+          if (!profileAlert || !profileAlertText) return;
+          profileAlertText.textContent = msg;
+          profileAlert.className = isSuccess
+            ? 'p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-medium flex items-center gap-3'
+            : 'p-4 rounded-xl border border-rose-500/20 bg-rose-500/10 text-rose-600 dark:text-rose-400 text-sm font-medium flex items-center gap-3';
+          profileAlert.classList.remove('hidden');
+          profileAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
+
+        function switchTab(activeTab) {
+          [tabBookingsBtn, tabPersonalBtn, tabPreferencesBtn].forEach(btn => {
+            if (btn) {
+              btn.classList.remove('border-primary', 'text-primary');
+              btn.classList.add('border-transparent', 'text-text-secondary-light', 'dark:text-text-secondary-dark');
+            }
+          });
+
+          [viewBookings, viewPersonal, viewPreferences].forEach(view => {
+            if (view) view.classList.add('hidden');
+          });
+
+          if (activeTab === 'bookings') {
+            tabBookingsBtn?.classList.add('border-primary', 'text-primary');
+            tabBookingsBtn?.classList.remove('border-transparent', 'text-text-secondary-light', 'dark:text-text-secondary-dark');
+            viewBookings?.classList.remove('hidden');
+          } else if (activeTab === 'personal') {
+            tabPersonalBtn?.classList.add('border-primary', 'text-primary');
+            tabPersonalBtn?.classList.remove('border-transparent', 'text-text-secondary-light', 'dark:text-text-secondary-dark');
+            viewPersonal?.classList.remove('hidden');
+          } else if (activeTab === 'preferences') {
+            tabPreferencesBtn?.classList.add('border-primary', 'text-primary');
+            tabPreferencesBtn?.classList.remove('border-transparent', 'text-text-secondary-light', 'dark:text-text-secondary-dark');
+            viewPreferences?.classList.remove('hidden');
+          }
+        }
+
+        tabBookingsBtn?.addEventListener('click', () => switchTab('bookings'));
+        tabPersonalBtn?.addEventListener('click', () => switchTab('personal'));
+        tabPreferencesBtn?.addEventListener('click', () => switchTab('preferences'));
+
+        async function loadProfile() {
+          try {
+            const userRes = await fetch('/api/auth/me', { credentials: 'include' });
+            if (!userRes.ok) {
+              if (loadingEl) loadingEl.classList.add('hidden');
+              if (unauthEl) unauthEl.classList.remove('hidden');
+              return;
+            }
+
+            const userData = await userRes.json();
+            if (!userData.success || !userData.user) {
+              if (loadingEl) loadingEl.classList.add('hidden');
+              if (unauthEl) unauthEl.classList.remove('hidden');
+              return;
+            }
+
+            currentUser = userData.user;
+            sessionStorage.setItem('usgar_auth_user', JSON.stringify(currentUser));
+
+            // Populate Header Data
+            if (nameEl) nameEl.textContent = currentUser.name || currentUser.email;
+            if (emailEl) emailEl.textContent = currentUser.email;
+            if (providerTag) providerTag.textContent = currentUser.provider || 'email';
+            if (editFullName) editFullName.value = currentUser.name || '';
+            if (editEmail) editEmail.value = currentUser.email || '';
+            if (editPhone) editPhone.value = currentUser.phone || '';
+
+            if (currentUser.photo && photoEl) {
+              photoEl.src = currentUser.photo;
+              photoEl.classList.remove('hidden');
+              initialEl?.classList.add('hidden');
+            } else if (initialEl && currentUser.name) {
+              initialEl.textContent = currentUser.name.charAt(0).toUpperCase();
+            }
+
+            // Fetch Bookings
+            const bookingsRes = await fetch('/api/user/bookings', { credentials: 'include' });
+            if (loadingEl) loadingEl.classList.add('hidden');
+
+            if (bookingsRes.ok) {
+              const bookingsData = await bookingsRes.json();
+              const bookings = bookingsData.bookings || [];
+
+              if (badgeCount) {
+                badgeCount.textContent = String(bookings.length);
+                badgeCount.classList.remove('hidden');
+              }
+
+              if (bookings.length === 0) {
+                if (emptyEl) emptyEl.classList.remove('hidden');
+              } else if (listEl) {
+                listEl.classList.remove('hidden');
+                listEl.innerHTML = bookings.map(b => {
+                  const statusClass = b.status === 'confirmed' || b.status === 'paid'
+                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                    : b.status === 'pending'
+                    ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                    : 'bg-stone-500/10 text-stone-600 dark:text-stone-400 border-stone-500/20';
+
+                  const roomName = b.room_data?.name?.en || b.room_data?.name || 'Sanctuary Suite';
+
+                  return `
+                    <div class="bg-surface-card-light dark:bg-surface-card-dark p-6 rounded-2xl border border-black/10 dark:border-white/10 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-all hover:border-primary/30">
+                      <div class="space-y-1">
+                        <div class="flex items-center gap-3">
+                          <h3 class="font-display font-bold text-lg text-text-primary-light dark:text-text-primary-dark">${roomName}</h3>
+                          <span class="text-xs px-2.5 py-1 rounded-full font-semibold uppercase border ${statusClass}">
+                            ${b.status}
+                          </span>
+                        </div>
+                        <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                          📅 ${b.checkin} → ${b.checkout}
+                        </p>
+                        <p class="text-xs font-mono text-stone-400">
+                          Cart ID: ${b.cart_id} ${b.qlo_order_id ? '| Order: ' + b.qlo_order_id : ''}
+                        </p>
+                      </div>
+                      <div class="text-left md:text-right">
+                        <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark block">Total Paid</span>
+                        <span class="font-bold text-xl text-primary dark:text-[#EACA1C]">$${Number(b.price_snapshot).toFixed(2)} USD</span>
+                      </div>
+                    </div>
+                  `;
+                }).join('');
+              }
+            } else if (emptyEl) {
+              emptyEl.classList.remove('hidden');
+            }
+
+          } catch (err) {
+            if (loadingEl) loadingEl.classList.add('hidden');
+            if (unauthEl) unauthEl.classList.remove('hidden');
+          }
+        }
+
+        // Handle Personal Details Form Submit
+        formPersonal?.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          if (btnSavePersonal) {
+            btnSavePersonal.disabled = true;
+            btnSavePersonal.textContent = 'Saving Changes...';
+          }
+
+          const fullName = editFullName?.value || '';
+          const phone = editPhone?.value || '';
+
+          try {
+            const res = await fetch('/api/user/profile', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ fullName, phone }),
+            });
+
+            const data = await res.json();
+            if (res.ok && data.success) {
+              showAlert('Profile updated successfully!', true);
+              if (data.user) {
+                currentUser = data.user;
+                sessionStorage.setItem('usgar_auth_user', JSON.stringify(currentUser));
+                if (nameEl) nameEl.textContent = currentUser.name || currentUser.email;
+              }
+            } else {
+              showAlert(data.message || 'Failed to update profile.', false);
+            }
+          } catch {
+            showAlert('Connection error while updating profile.', false);
+          } finally {
+            if (btnSavePersonal) {
+              btnSavePersonal.disabled = false;
+              btnSavePersonal.textContent = 'Save Profile Changes';
+            }
+          }
+        });
+
+        // Logout Event
+        logoutBtn?.addEventListener('click', async () => {
+          sessionStorage.removeItem('usgar_auth_user');
+          try {
+            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+          } catch {}
+          window.location.href = '/';
+        });
+
+        loadProfile();
       }
 
       initProfilePage();

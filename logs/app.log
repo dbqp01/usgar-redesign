@@ -121,3 +121,4 @@
 [2026-07-27 05:34:07] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'
 [2026-07-27 05:39:20] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'
 [2026-07-27 05:39:21] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'
+[2026-07-27 07:07:39] [ERROR] Unhandled exception in Router: syntax error, unexpected token "public" {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Features\\Auth\\User.php","line":264}

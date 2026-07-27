@@ -258,5 +258,28 @@ class User {
             Logger::error('User::getBookings failed: ' . $e->getMessage());
             return [];
         }
+    /**
+     * Actualiza los datos del perfil de un usuario.
+     */
+    public function updateProfile(int $id, string $firstName, string $lastName = '', ?string $phone = null): bool {
+        try {
+            $stmt = $this->pdo->prepare('
+                UPDATE users SET
+                    first_name = :first_name,
+                    last_name = :last_name,
+                    phone = :phone,
+                    updated_at = NOW()
+                WHERE id = :id
+            ');
+            return $stmt->execute([
+                ':first_name' => $firstName,
+                ':last_name'  => $lastName,
+                ':phone'      => $phone,
+                ':id'         => $id,
+            ]);
+        } catch (PDOException $e) {
+            Logger::error('User::updateProfile failed: ' . $e->getMessage());
+            return false;
+        }
     }
 }

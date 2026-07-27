@@ -93,6 +93,8 @@ $router->post('/api/webhook/channex', HandleChannexWebhookAction::class);
 // Endpoint de mantenimiento del sistema (Cron)
 $router->post('/api/cron/cleanup',    CleanExpiredCartsAction::class);
 
+use App\Features\Auth\Actions\UpdateUserProfileAction;
+
 // Endpoints de Autenticacion y Panel de Huespedes
 $router->get('/api/auth/providers',    AuthProvidersAction::class);
 $router->get('/api/auth/login',        AuthLoginAction::class);
@@ -103,6 +105,7 @@ $router->get('/api/auth/me',           AuthMeAction::class);
 $router->post('/api/auth/logout',      AuthLogoutAction::class);
 $router->get('/api/auth/logout',       AuthLogoutAction::class);
 $router->get('/api/user/bookings',     GetUserBookingsAction::class);
+$router->post('/api/user/profile',     UpdateUserProfileAction::class);
 
 // 7. Despachar la peticion actual
 $router->dispatch($request);

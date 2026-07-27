@@ -135,11 +135,11 @@ const schemas = [hotelSchema, faqSchema];
       autoplay
       muted
       playsinline
-      preload="auto"
+      preload="none"
       class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 z-0 opacity-100"
       poster={optimizedPoster.src}
       id="hero-video"
-      src="/videos/hero-video.mp4"
+      data-src="/videos/hero-video.mp4"
     >
     </video>
 
@@ -381,6 +381,7 @@ const schemas = [hotelSchema, faqSchema];
                     format="webp"
                     class="w-full h-full object-cover transform transition-transform duration-[10s] ease-out showcase-img scale-100"
                     loading={i === 0 ? "eager" : "lazy"}
+                    decoding="async"
                   />
                   <!-- Gradient for text readability -->
                   <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
@@ -527,8 +528,11 @@ const schemas = [hotelSchema, faqSchema];
     mutedIcon.classList.remove("hidden");
     unmutedIcon.classList.add("hidden");
 
-    // 3. Reset and play media source
+    // 3. Reset and play media source (deferred attach)
     video.currentTime = 0;
+    if (video.dataset.src && (!video.src || video.src.endsWith('#') || !video.src.includes('.mp4'))) {
+      video.src = video.dataset.src;
+    }
     try {
       video.load();
     } catch (e) {
