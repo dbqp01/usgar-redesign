@@ -134,10 +134,8 @@ const schemas = [hotelSchema, faqSchema];
     <video
       autoplay
       muted
-      loop
       playsinline
       preload="auto"
-      transition:persist="hero-video-player"
       class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 z-0 opacity-100"
       poster={optimizedPoster.src}
       id="hero-video"
@@ -490,47 +488,65 @@ const schemas = [hotelSchema, faqSchema];
 
 <!-- Hero Video Audio Toggle & Slideshow loop -->
 <script>
+  let activeSlideshowInterval: ReturnType<typeof setInterval> | null = null;
+
   function initHeroVideo() {
     const video = document.getElementById("hero-video") as HTMLVideoElement;
-    const toggleBtn = document.getElementById(
-      "video-audio-toggle",
-    ) as HTMLElement;
+    const toggleBtn = document.getElementById("video-audio-toggle") as HTMLElement;
     const mutedIcon = document.getElementById("muted-icon") as HTMLElement;
     const unmutedIcon = document.getElementById("unmuted-icon") as HTMLElement;
     const slideshow = document.getElementById("hero-slideshow") as HTMLElement;
 
-    if (!video || !toggleBtn || !mutedIcon || !unmutedIcon || !slideshow)
-      return;
+    if (!video || !toggleBtn || !mutedIcon || !unmutedIcon || !slideshow) return;
 
-    // Reset visibility state on page load / re-entry
+    // Clear any leftover interval from previous page visits
+    if (activeSlideshowInterval) {
+      clearInterval(activeSlideshowInterval);
+      activeSlideshowInterval = null;
+    }
+
+    const slides = slideshow.querySelectorAll("[data-slide]");
+
+    // 1. Force reset DOM visibility state for fresh page view
     video.classList.remove("opacity-0");
     video.classList.add("opacity-100");
 
-    // Ensure audio toggle state matches video muted state
-    mutedIcon.classList.toggle("hidden", !video.muted);
-    unmutedIcon.classList.toggle("hidden", video.muted);
+    slideshow.classList.remove("opacity-100");
+    slideshow.classList.add("opacity-0");
 
-    // Play video if paused or not playing
-    if (video.paused) {
-      video.play().catch((err) => {
-        console.log("Autoplay notice on page load:", err);
-      });
+    slides.forEach((slide) => {
+      slide.classList.remove("opacity-100");
+      slide.classList.add("opacity-0");
+    });
+
+    toggleBtn.classList.remove("opacity-0", "pointer-events-none");
+    toggleBtn.classList.add("opacity-100");
+
+    // 2. Sync audio button state with video
+    video.muted = true;
+    mutedIcon.classList.remove("hidden");
+    unmutedIcon.classList.add("hidden");
+
+    // 3. Reset and play media source
+    video.currentTime = 0;
+    try {
+      video.load();
+    } catch (e) {
+      // Ignore load errors
     }
 
-    // Prevent duplicate event listener bindings
-    if (video.dataset.init === "true") return;
-    video.dataset.init = "true";
+    requestAnimationFrame(() => {
+      video.play().catch((err) => {
+        console.log("Hero video autoplay notice:", err);
+      });
+    });
 
-    // Toggle sound
-    toggleBtn.addEventListener("click", () => {
+    // 4. Toggle sound handler (clean direct assignment)
+    toggleBtn.onclick = () => {
       video.muted = !video.muted;
       mutedIcon.classList.toggle("hidden", !video.muted);
       unmutedIcon.classList.toggle("hidden", video.muted);
-    });
-
-    const slides = slideshow.querySelectorAll("[data-slide]");
-    let currentSlide = 0;
-    let slideshowInterval: any = null;
+    };
 
     function startSlideshow() {
       slideshow.classList.remove("opacity-0");
@@ -538,21 +554,30 @@ const schemas = [hotelSchema, faqSchema];
 
       toggleBtn.classList.add("opacity-0", "pointer-events-none");
 
-      currentSlide = 0;
-      slides[currentSlide]?.classList.remove("opacity-0");
-      slides[currentSlide]?.classList.add("opacity-100");
+      let currentSlide = 0;
+      if (slides[0]) {
+        slides[0].classList.remove("opacity-0");
+        slides[0].classList.add("opacity-100");
+      }
 
-      slideshowInterval = setInterval(() => {
-        slides[currentSlide]?.classList.remove("opacity-100");
-        slides[currentSlide]?.classList.add("opacity-0");
+      if (activeSlideshowInterval) clearInterval(activeSlideshowInterval);
+
+      activeSlideshowInterval = setInterval(() => {
+        if (slides[currentSlide]) {
+          slides[currentSlide].classList.remove("opacity-100");
+          slides[currentSlide].classList.add("opacity-0");
+        }
 
         currentSlide++;
 
         if (currentSlide < slides.length) {
-          slides[currentSlide]?.classList.remove("opacity-0");
-          slides[currentSlide]?.classList.add("opacity-100");
+          if (slides[currentSlide]) {
+            slides[currentSlide].classList.remove("opacity-0");
+            slides[currentSlide].classList.add("opacity-100");
+          }
         } else {
-          clearInterval(slideshowInterval);
+          if (activeSlideshowInterval) clearInterval(activeSlideshowInterval);
+          activeSlideshowInterval = null;
 
           slideshow.classList.remove("opacity-100");
           slideshow.classList.add("opacity-0");
@@ -573,21 +598,27 @@ const schemas = [hotelSchema, faqSchema];
       }, 4000);
     }
 
-    // When video ends (if loop is disabled or ends)
-    video.addEventListener("ended", () => {
+    // 5. Video ended handler (starts slideshow sequence)
+    video.onended = () => {
       video.classList.remove("opacity-100");
       video.classList.add("opacity-0");
       startSlideshow();
-    });
+    };
 
-    // Cleanup interval on page transition
-    document.addEventListener("astro:before-swap", () => {
-      if (slideshowInterval) clearInterval(slideshowInterval);
-      video.dataset.init = "false";
-    });
+    // Cleanup interval on page transition before swap
+    document.addEventListener(
+      "astro:before-swap",
+      () => {
+        if (activeSlideshowInterval) {
+          clearInterval(activeSlideshowInterval);
+          activeSlideshowInterval = null;
+        }
+      },
+      { once: true },
+    );
   }
 
-  // Init on load & after View Transition
+  // Init on initial load & after View Transitions navigation
   document.addEventListener("astro:page-load", initHeroVideo);
 
   function initCinematicShowcase() {
