@@ -92,10 +92,10 @@
 
   /* === FONDOS ESTÉTICOS (Nuevos — v2) === */
   --color-surface-light: #F7F3FA;         /* Lavender Mist — light mode page bg */
-  --color-surface-dark: #121212;          /* Jet Black — dark mode page bg */
+  --color-surface-dark: #1C1917;          /* Stone Dark — dark mode page bg */
   --color-surface-light-alt: #FBF4D2;     /* Crema — testimonial blocks */
   --color-surface-card-light: #FFFFFF;
-  --color-surface-card-dark: #1C1C1C;     /* Neutral Gray — dark card */
+  --color-surface-card-dark: #1C1C1C;     /* Dark Neutral Gray — dark card */
 
   /* === TEXTO === */
   --color-text-primary-light: #333333;

@@ -41,6 +41,14 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         $nights = (int)round((strtotime($checkOut) - strtotime($checkIn)) / 86400);
 
         if (empty($this->accessToken) || !$this->isValidToken($this->accessToken)) {
+            if (!Config::isProduction()) {
+                Logger::info("MercadoPagoAdapter: Generando preferencia Mock para desarrollo (Cart ID: {$cartId}).");
+                return [
+                    'id'                 => 'MP-MOCK-PREF-' . $cartId,
+                    'init_point'         => "{$this->siteUrl}/book/success?bookingId={$cartId}&mock=true",
+                    'sandbox_init_point' => "{$this->siteUrl}/book/success?bookingId={$cartId}&mock=true",
+                ];
+            }
             throw new Exception('Mercado Pago Access Token is not configured or invalid.');
         }
 
@@ -176,6 +184,14 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             throw new Exception('Mercado Pago Access Token is not configured.');
         }
         if (str_contains($paymentId, 'MOCK')) {
+            if (!Config::isProduction()) {
+                return [
+                    'id'                 => $paymentId,
+                    'status'             => 'approved',
+                    'external_reference' => 'USGAR-287f0138cfc1',
+                    'transaction_amount' => 342.0,
+                ];
+            }
             throw new Exception('Cannot query mock payment.');
         }
 

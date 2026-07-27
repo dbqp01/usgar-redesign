@@ -46,7 +46,73 @@ class ProvisionalBookingRepository {
             ]);
         } catch (PDOException $e) {
             Logger::error('ProvisionalBookingRepository::create Error: ' . $e->getMessage());
+            if ($this->pdo && (str_contains($e->getMessage(), '1146') || str_contains($e->getMessage(), '42S02') || str_contains($e->getMessage(), "doesn't exist"))) {
+                Logger::info('ProvisionalBookingRepository: Creando tablas provisional_bookings y processed_payments automáticamente...');
+                $this->ensureTablesExist();
+                try {
+                    $stmt = $this->pdo->prepare("
+                        INSERT INTO provisional_bookings (
+                            cart_id, user_id, id_hotel, id_room_type, guest_data, room_data,
+                            price_snapshot, checkin, checkout, status, preference_id, expires_at
+                        ) VALUES (
+                            :cart_id, :user_id, :id_hotel, :id_room_type, :guest_data, :room_data,
+                            :price_snapshot, :checkin, :checkout, :status, :preference_id, :expires_at
+                        )
+                    ");
+                    return $stmt->execute([
+                        ':cart_id'       => $data['cart_id'],
+                        ':user_id'       => $data['user_id'] ?? null,
+                        ':id_hotel'      => $data['id_hotel'] ?? 1,
+                        ':id_room_type'  => $data['id_room_type'],
+                        ':guest_data'    => json_encode($data['guest_data'] ?? [], JSON_THROW_ON_ERROR),
+                        ':room_data'     => json_encode($data['room_data'] ?? [], JSON_THROW_ON_ERROR),
+                        ':price_snapshot'=> $data['price_snapshot'],
+                        ':checkin'       => $data['checkin'],
+                        ':checkout'      => $data['checkout'],
+                        ':status'        => $data['status'] ?? 'pending',
+                        ':preference_id' => $data['preference_id'] ?? null,
+                        ':expires_at'    => $data['expires_at'],
+                    ]);
+                } catch (PDOException $ex) {
+                    Logger::error('ProvisionalBookingRepository::create Retry Error: ' . $ex->getMessage());
+                    return false;
+                }
+            }
             return false;
+        }
+    }
+
+    private function ensureTablesExist(): void {
+        if (!$this->pdo) return;
+        try {
+            $this->pdo->exec("
+                CREATE TABLE IF NOT EXISTS provisional_bookings (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    cart_id VARCHAR(64) UNIQUE NOT NULL,
+                    user_id INT NULL,
+                    id_hotel INT DEFAULT 1,
+                    id_room_type INT NOT NULL,
+                    guest_data TEXT,
+                    room_data TEXT,
+                    price_snapshot DECIMAL(10,2) NOT NULL,
+                    checkin DATE NOT NULL,
+                    checkout DATE NOT NULL,
+                    status VARCHAR(32) DEFAULT 'pending',
+                    preference_id VARCHAR(128) NULL,
+                    expires_at DATETIME NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+                CREATE TABLE IF NOT EXISTS processed_payments (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    payment_id VARCHAR(64) UNIQUE NOT NULL,
+                    cart_id VARCHAR(64) NOT NULL,
+                    status VARCHAR(32) NOT NULL,
+                    processed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            ");
+        } catch (PDOException $e) {
+            Logger::error('ProvisionalBookingRepository::ensureTablesExist Error: ' . $e->getMessage());
         }
     }
 

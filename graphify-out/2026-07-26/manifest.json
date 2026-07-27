@@ -70,8 +70,8 @@
     "semantic_hash": ""
   },
   "src/components/Navbar.astro": {
-    "mtime": 1785048417.5402296,
-    "ast_hash": "c59ed8398b54073a78341779b5d04a3b",
+    "mtime": 1785049460.7219636,
+    "ast_hash": "dab4179504522f3b8bab16fc4df76edf",
     "semantic_hash": ""
   },
   "src/components/ReviewMarquee.astro": {
@@ -515,8 +515,8 @@
     "semantic_hash": ""
   },
   "public/index.php": {
-    "mtime": 1785047514.7857018,
-    "ast_hash": "4f235afeb17f9aab014370742a68b343",
+    "mtime": 1785049420.8093126,
+    "ast_hash": "89776d47f4da5417153999ddf7a72da9",
     "semantic_hash": ""
   },
   "scripts/run-exhaustive-tests.php": {
@@ -640,13 +640,13 @@
     "semantic_hash": ""
   },
   "src/pages/login.astro": {
-    "mtime": 1785047539.3283963,
-    "ast_hash": "474df187145b58f61ad721abef3eb68c",
+    "mtime": 1785049435.0867157,
+    "ast_hash": "453fe0a5880663fae1074c3566c12a63",
     "semantic_hash": ""
   },
   "src/pages/my-bookings.astro": {
-    "mtime": 1784908642.9860015,
-    "ast_hash": "de1b8f194f68761a8fb05a2f39ca476f",
+    "mtime": 1785049443.28314,
+    "ast_hash": "ab54f6a55b92fde7cb5eaceb8235c897",
     "semantic_hash": ""
   },
   "src/utils/auth-client.ts": {
@@ -1520,8 +1520,8 @@
     "semantic_hash": ""
   },
   "app/Features/Auth/Actions/AuthCallbackAction.php": {
-    "mtime": 1784908675.1480987,
-    "ast_hash": "5990df3f12713f81736bdcd23161f9c2",
+    "mtime": 1785049397.7427158,
+    "ast_hash": "9fcfe7d047eb6b8bc90ae71dec221b98",
     "semantic_hash": ""
   },
   "app/Features/Auth/Actions/AuthLoginAction.php": {
@@ -1530,13 +1530,13 @@
     "semantic_hash": ""
   },
   "app/Features/Auth/Actions/AuthLoginEmailAction.php": {
-    "mtime": 1784908675.1490972,
-    "ast_hash": "b95e539fbb1feb3715561452d01cf073",
+    "mtime": 1785049375.9621193,
+    "ast_hash": "ba6ca655f90538b2c22d0aff161b37d5",
     "semantic_hash": ""
   },
   "app/Features/Auth/Actions/AuthLogoutAction.php": {
-    "mtime": 1784908675.1503327,
-    "ast_hash": "435e8c15e0cbeefe43d20ab0182d8920",
+    "mtime": 1785049409.7098079,
+    "ast_hash": "0b318ef7af3f292f1ac343c4594b2466",
     "semantic_hash": ""
   },
   "app/Features/Auth/Actions/AuthMeAction.php": {
@@ -1545,8 +1545,8 @@
     "semantic_hash": ""
   },
   "app/Features/Auth/Actions/AuthRegisterAction.php": {
-    "mtime": 1784908675.151457,
-    "ast_hash": "a27f15b78f683bf099567a0cc223bc0d",
+    "mtime": 1785049386.2476697,
+    "ast_hash": "03969071c48930c5dff27714b5b76135",
     "semantic_hash": ""
   },
   "app/Features/Auth/Actions/GetUserBookingsAction.php": {

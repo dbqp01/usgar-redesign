@@ -24,7 +24,7 @@ function checkHtmlFile(filePath) {
   const html = fs.readFileSync(filePath, 'utf8');
   totalPagesChecked++;
 
-  const schemaRegex = /<script\s+is:inline\s+type="application\/ld\+json">([\s\S]*?)<\/script>/gi;
+  const schemaRegex = /<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi;
   const matches = [...html.matchAll(schemaRegex)];
 
   if (matches.length > 0) {
@@ -32,9 +32,12 @@ function checkHtmlFile(filePath) {
       totalSchemasFound++;
       try {
         const json = JSON.parse(match[1]);
-        if (!json['@context'] || !json['@type']) {
-          console.log(` ️ WARN: [${path.basename(filePath)}] Schema no contiene @context o @type.`);
-        }
+        const items = Array.isArray(json) ? json : [json];
+        items.forEach(item => {
+          if (!item['@context'] || !item['@type']) {
+            console.log(` ️ WARN: [${path.basename(filePath)}] Schema item no contiene @context o @type.`);
+          }
+        });
       } catch (e) {
         console.log(`  FAIL: [${path.basename(filePath)}] Error parseando JSON-LD: ${e.message}`);
         errors++;

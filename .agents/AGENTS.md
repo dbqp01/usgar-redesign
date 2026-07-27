@@ -1,29 +1,73 @@
-# USGAR Hotels — Cusco, Perú
+# USGAR Hotels — Cusco, Peru
 
-Sitio web transaccional para turistas internacionales. Reservas directas con Mercado Pago y sincronización de inventario con OTAs vía Channex.
+Sitio web transaccional para turistas internacionales. Reservas directas con Mercado Pago y sincronizacion de inventario con OTAs via Channex.
 
 ## Stack
-- **Frontend:** Astro v7 (estático), Tailwind CSS v4, Leaflet
-- **Backend:** PHP 8 nativo (Monolito Modular, patrón ADR)
+- **Frontend:** Astro v7.x.x (estatico en http://localhost:4321), Tailwind CSS v4.3, Leaflet
+- **Backend:** PHP 8.x nativo (Monolito Modular, patron ADR con DI Container PSR-11)
 - **Server:** Hostinger compartido (PHP + MySQL, sin Composer en prod)
 - **Payments:** Mercado Pago (USD)
 - **PMS:** QloApps (API XML)
 - **Channel Manager:** Channex
 
 ## Commands
-- Dev: `npm run dev` (Astro + Vite proxy → localhost:8000)
-- PHP server: `php -S localhost:8000 -t public`
+- Dev Entorno Completo (Astro + PHP API): `npm run dev:all` (Abre en http://localhost:4321)
+- Dev Solo Frontend: `npm run dev` (http://localhost:4321)
+- PHP API server solo: `npm run dev:php` (http://localhost:8000)
 - Build: `npm run build`
+- TypeCheck: `npm run check`
 - Lint PHP: `vendor/bin/phpstan analyse`
-- Tests: `vendor/bin/phpunit`
+- Tests PHP (Script Unico): `php tests/api-harness.php`
+
+## REGLA IMPERATIVA DE MENCION DE MCPs EN CHAT
+Si el usuario menciona cualquier servidor o herramienta MCP por su nombre en el chat (por ejemplo: `postman`, `context7`, `tavily`, `sequential-thinking`, `graphify`, `agent-skills`, `filesystem`, etc.), el agente TIENE PROHIBIDO omitir o usar de forma superficial dicho MCP. El agente DEBE invocar de forma automatica, constante, profunda y exhaustiva las herramientas correspondientes a ese MCP durante toda la conversacion.
+
+---
+
+## MANDATO IMPERATIVO DE USO DE MCPs (CERO OMISIONES)
+
+1. **`sequential-thinking` (MANDATORIO):** Invocacion obligatoria via `call_mcp_tool` al inicio de cada turno. Prohibido emitir propuestas o codigo sin este registro previo.
+2. **`context7` (MANDATORIO EN CODIFICACION Y CONSULTAS):** Consulta obligatoria de `resolve-library-id` y `query-docs` para resolver dudas de documentacion, verificar sintaxis y mejores practicas de Astro v7.x.x, Tailwind CSS v4.3 y PHP 8.x antes de escribir codigo.
+3. **`tavily-mcp` (MANDATORIO EN INVESTIGACION):** Consultar en tiempo real con `tavily_search` estandares de la industria y coding agentico.
+4. **`postman-mcp-server` (MANDATORIO EN AUDITORIA EXHAUSTIVA DE API):** Utilizar colecciones y solicitudes Postman (`getCollections`, `runCollection`, `createCollectionRequest`, `searchPostmanElements`) para probar **todas las opciones posibles** de endpoints (`/api/*`): caminos felices, errores, cargas, escenarios limite y pruebas de estres.
+5. **`agent-skills` MCP (MANDATORIO EN CALIDAD Y SEGURIDAD):** Invocacion obligatoria de skills estandarizadas (`coding-guidelines`, `security-best-practices`, `perf-astro`, `web-quality-audit`, `accessibility`).
+6. **`graphify` / Red de Nodos (MANDATORIO EN IMPACTO):** Consulta obligatoria de dependencias respondiendo a: *"¿Si hago este cambio, en que afectara al proyecto?"*.
+
+---
+
+## Pruebas y Scripts PHP
+- **Script Unico PHP:** Se mantiene exclusivamente `tests/api-harness.php` para verificaciones locales basicas en PHP. Las auditorias complejas de endpoints y pruebas de estres/carga se realizan obligatoriamente con **Postman MCP**.
+
+---
+
+## Flujos de Razonamiento Diferenciados
+
+### Flujo A — Lenguaje Natural e Ideacion (Clarificacion y Validacion)
+1. **Divergencia e Intencion:** Descomponer supuestos, necesidades de usuario y objetivos.
+2. **Estres-Test Adversarial:** Evaluar puntos de fallo, complejidad innecesaria y alternativas.
+3. **Recoleccion de Referencias:** Consultar Context7, Tavily y agent-skills MCP para enriquecer el concepto.
+4. **Sintesis Convergente:** Proponer una solucion clara antes de modificar codigo.
+
+### Flujo B — Codificacion y Refactorizacion (Desarrollo Agentico Seguro)
+1. **Descomposicion Tecnica:** Hipotesis de solucion guiada con `sequential-thinking`.
+2. **Oportunidades de Mejora (Context7):** APIs y patrones actualizados de Astro v7.x.x, Tailwind CSS v4.3 y PHP 8.x ADR.
+3. **Investigacion de Estandares (Tavily & agent-skills MCP):** Consultar `web-quality-audit`, `perf-astro`, `security-best-practices`, `best-practices`, `coding-guidelines`, `accessibility`.
+4. **Analisis de Impacto en Red de Nodos (Graphify / Busqueda de Nodos):** Responder obligatoriamente:
+   > *"¿Si hago este cambio o refactorizacion, en que afectara al resto del proyecto?"*
+5. **Aplicacion Desacoplada (Zero-Hardcoding):** Implementar mediante `.env` o DB.
+6. **Depuracion Logica Profunda en Runtime:** Validar en ejecucion real (colecciones exhaustivas de **Postman MCP**, script unico `tests/api-harness.php`, inspeccion de payloads) superando simples comprobaciones estaticas (`npm build`/`check`).
+
+## Reglas de Verificacion y Calidad
+- **Depuracion Logica Profunda en Runtime:** `npm run check` y `npm run build` son unicamente controles sintacticos/estaticos iniciales. TODO cambio debe validarse en tiempo de ejecucion via Postman MCP (todas las opciones y estres) y `tests/api-harness.php`.
+- **Sin Tildes ni Acentos en Contenido o Rutas:** Prohibido el uso de tildes o caracteres acentuados en textos fuente, slugs y rutas web para evitar fallos tipograficos y problemas de codificacion.
 
 ## Project Map
 - `app/` — Backend PHP completo
-- `app/Core/` — Router, Request, Response, Config, Middleware, Events ( NO TOCAR)
+- `app/Core/` — Router, Request, Response, Config, Middleware, Events (NO TOCAR)
 - `app/Features/` — Vertical slices: Auth, Booking, Rooms, Webhooks, Cron, Health
 - `app/Features/Shared/` — Ports (interfaces) + Adapters (QloApps, MercadoPago, Channex)
 - `src/` — Frontend Astro exclusivamente
-- `src/services/` — Capa de conexión frontend → backend API (httpClient, bookingService)
+- `src/services/` — Capa de conexion frontend → backend API (httpClient, bookingService)
 - `src/services/contracts/` — Interfaces TypeScript (IBookingService, IHttpClient)
 - `public/` — Document Root: index.php (entry point PHP) + .htaccess
 - `docs/` — API_REGISTRY, ARCHITECTURE, HARNESS
@@ -34,31 +78,11 @@ Sitio web transaccional para turistas internacionales. Reservas directas con Mer
 - El frontend NUNCA llama servicios externos directo; siempre pasa por `/api/`
 - QloApps usa API XML (no JSON). El adapter en Shared/ traduce
 - Bloqueo temporal de 15 min al iniciar reserva (`ProvisionalBookingRepository`). Webhook de MP confirma
-- Autenticación vía JWT en cookie HttpOnly (`usgar_session`)
-- Room slugs canónicos: `matrimonial`, `doble-superior`, `triple-standar`, `familiar-superior`
-- Fuente única de slugs: `app/Features/Shared/RoomTypeRegistry.php`
+- Autenticacion via JWT en cookie HttpOnly (`usgar_session`)
+- Room slugs canonicos: `matrimonial`, `doble-superior`, `triple-standar`, `familiar-superior`
+- Fuente unica de slugs: `app/Features/Shared/RoomTypeRegistry.php`
 - Autoloader PSR-4 propio (sin Composer en prod): `app/Core/Autoloader.php`
 - Adaptadores implementan Ports (interfaces) en `Shared/Ports/` para ser intercambiables
-
-## Boundaries
-
-###  Allowed
-- Editar componentes, páginas, layouts, estilos, i18n en `src/`
-- Agregar/modificar Actions en `app/Features/`
-- Ejecutar tests, lint, build
-- Leer archivos y listar directorios
-
-### ️ Ask first
-- Modificar Ports/Interfaces en `app/Features/Shared/Ports/`
-- Cambiar estructura de DB
-- Modificar Adapters (conectan con servicios externos reales)
-- Instalar/remover dependencias npm o PHP
-
-###  Never
-- Hardcodear precios, slugs, tokens, emails, IDs de Channex
-- Exponer credenciales — todo vía `.env`
-- Modificar `vendor/`, `dist/`, `node_modules/`
-- Tocar `app/Core/` sin justificación arquitectónica
 
 ## Key Files
 - `public/index.php` — API entry point y registro de rutas
@@ -66,5 +90,5 @@ Sitio web transaccional para turistas internacionales. Reservas directas con Mer
 - `src/services/bookingService.ts` — Cliente de reservas frontend
 - `src/services/httpClient.ts` — Cliente HTTP base
 - `.env` / `.env.example` — Variables de entorno requeridas
-- `docs/API_REGISTRY.md` — Catálogo completo de endpoints
+- `docs/API_REGISTRY.md` — Catalogo completo de endpoints
 - `.agents/BRAND.md` — Identidad visual y de marca

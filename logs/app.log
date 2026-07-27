@@ -39,3 +39,22 @@
   "error": "invalid_request",
   "error_description": "Invalid Credentials"
 }.
+[2026-07-27 00:18:06] [ERROR] QloAppAdapter: Error al consultar disponibilidad: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.provisional_bookings' doesn't exist
+[2026-07-27 00:18:06] [ERROR] GetRoomsAction Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.provisional_bookings' doesn't exist
+[2026-07-27 00:18:23] [ERROR] QloAppAdapter: Error al consultar disponibilidad: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.provisional_bookings' doesn't exist
+[2026-07-27 00:18:23] [ERROR] GetRoomsAction Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.provisional_bookings' doesn't exist
+[2026-07-27 00:18:39] [ERROR] QloAppAdapter: Error al consultar disponibilidad: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.provisional_bookings' doesn't exist
+[2026-07-27 00:18:39] [ERROR] GetRoomsAction Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.provisional_bookings' doesn't exist
+[2026-07-27 00:19:07] [WARNING] QloAppAdapter: Error en consulta SQL (posibles tablas faltantes en DB). Retornando disponibilidad fallback: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.provisional_bookings' doesn't exist
+[2026-07-27 00:19:11] [ERROR] [Request] JSON body parse error: Syntax error
+[2026-07-27 00:19:16] [ERROR] [Request] JSON body parse error: Syntax error
+[2026-07-27 00:19:29] [WARNING] QloAppAdapter: Error en consulta SQL (posibles tablas faltantes en DB). Retornando disponibilidad fallback: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.provisional_bookings' doesn't exist
+[2026-07-27 00:19:30] [WARNING] QloAppAdapter: Error en consulta SQL (posibles tablas faltantes en DB). Retornando disponibilidad fallback: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.provisional_bookings' doesn't exist
+[2026-07-27 00:19:30] [ERROR] ProvisionalBookingRepository::create Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.provisional_bookings' doesn't exist
+[2026-07-27 00:19:30] [ERROR] CreateBookingAction Exception: Fallo al insertar el bloqueo de reserva en DB.
+[2026-07-27 00:19:53] [WARNING] QloAppAdapter: Error en consulta SQL (posibles tablas faltantes en DB). Retornando disponibilidad fallback: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.provisional_bookings' doesn't exist
+[2026-07-27 00:19:54] [WARNING] QloAppAdapter: Error en consulta SQL (posibles tablas faltantes en DB). Retornando disponibilidad fallback: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.provisional_bookings' doesn't exist
+[2026-07-27 00:19:54] [ERROR] ProvisionalBookingRepository::create Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.provisional_bookings' doesn't exist
+[2026-07-27 00:19:54] [INFO] ProvisionalBookingRepository: Creando tablas provisional_bookings y processed_payments automáticamente...
+[2026-07-27 00:25:01] [ERROR] Unhandled exception in Router: Cannot query mock payment. {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Features\\Shared\\Adapters\\MercadoPagoAdapter.php","line":187}
+[2026-07-27 00:25:01] [ERROR] Unhandled exception in Router: Cannot query mock payment. {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Features\\Shared\\Adapters\\MercadoPagoAdapter.php","line":187}

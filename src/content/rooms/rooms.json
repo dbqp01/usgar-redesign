@@ -11,7 +11,7 @@
       "description_en": "Spacious room with two comfortable double beds with warm ambient lighting. Perfect for friends or families traveling together.",
       "description_fr": "Chambre spacieuse avec deux lits doubles confortables et un eclairage d'ambiance chaleureux. Parfaite pour des amis ou des familles voyageant ensemble.",
       "description_pt": "Quarto amplo com duas confortaveis camas de casal e iluminacao ambiente acolhedora. Perfeito para amigos ou familias viajando juntos.",
-      "maxGuests": 4,
+      "maxGuests": 2,
       "beds": "2 double beds",
       "pricePerNight": 90,
       "amenities": [
@@ -80,7 +80,7 @@
       "description_en": "Romantic retreat featuring a king-size bed, artisan textiles, and a cozy atmosphere. Ideal for couples exploring the wonders of Cusco.",
       "description_fr": "Refuge romantique dote d'un lit king-size, de textiles artisanaux et d'une atmosphere chaleureuse. Ideal pour les couples explorant Cusco.",
       "description_pt": "Refugio romantico com cama king-size, tecidos artesanais e atmosfera acolhedora. Ideal para casais explorando as maravilhas de Cusco.",
-      "maxGuests": 3,
+      "maxGuests": 2,
       "beds": "1 king bed",
       "pricePerNight": 90,
       "amenities": [

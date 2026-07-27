@@ -27,12 +27,13 @@ class Config {
     }
 
     private const DEFAULTS = [
-        'SITE_URL'        => 'https://sanpedro.hotelesusgar.com',
-        'ENVIRONMENT'     => 'development',
-        'DB_HOST'         => '127.0.0.1',
-        'DB_PORT'         => '3306',
-        'DB_NAME'         => 'usgar_hotels',
-        'ALLOWED_ORIGINS' => '*',
+        'SITE_URL'             => 'https://sanpedro.hotelesusgar.com',
+        'ENVIRONMENT'          => 'development',
+        'DB_HOST'              => '127.0.0.1',
+        'DB_PORT'              => '3306',
+        'DB_NAME'              => 'usgar_hotels',
+        'ALLOWED_ORIGINS'      => '*',
+        'BOOKING_TOKEN_SECRET' => 'usgar_dev_secret_booking_token_2026',
     ];
 
     /**

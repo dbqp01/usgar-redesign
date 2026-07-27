@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>usgar-redesign — 完整调用流程与架构文档</h1>
-<p class="subtitle">由 graphify 知识图谱生成：1677 个节点、2147 条边、236 个社区。Commit: 6676280</p>
+<p class="subtitle">由 graphify 知识图谱生成：1680 个节点、2153 条边、243 个社区。Commit: 03fc866</p>
 
 <div class="nav">
     <a href="#overview">架构总览</a>
@@ -73,7 +73,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
     <a href="#serve-api">服务 API</a>
     <a href="#security-global">安全与全局图</a>
     <a href="#tests-fixtures">测试与样例</a>
-    <a href="#file-creation-checklist">File Creation Checklist</a>
+    <a href="#python-md">python.md</a>
     <a href="#skill-md">SKILL.md</a>
     <a href="#classloader">ClassLoader</a>
     <a href="#required-files-mandatory">Required Files (MANDATORY)</a>
@@ -98,38 +98,38 @@ flowchart LR
     class OUTPUTS_DOCS_ED82387C module;
     CLI_SKILLS_9964CBB8("CLI 与技能安装<br/><small>138 nodes</small>")
     class CLI_SKILLS_9964CBB8 module;
-    INGEST_CACHE_UPDATE_FF457338("摄取与增量更新<br/><small>33 nodes</small>")
+    INGEST_CACHE_UPDATE_FF457338("摄取与增量更新<br/><small>32 nodes</small>")
     class INGEST_CACHE_UPDATE_FF457338 module;
-    SERVE_API_35EC8E86("服务 API<br/><small>383 nodes</small>")
+    SERVE_API_35EC8E86("服务 API<br/><small>307 nodes</small>")
     class SERVE_API_35EC8E86 module;
     SECURITY_GLOBAL_5B9C6A04("安全与全局图<br/><small>3 nodes</small>")
     class SECURITY_GLOBAL_5B9C6A04 module;
-    TESTS_FIXTURES_B84B1DCC("测试与样例<br/><small>167 nodes</small>")
+    TESTS_FIXTURES_B84B1DCC("测试与样例<br/><small>207 nodes</small>")
     class TESTS_FIXTURES_B84B1DCC module;
-    FILE_CREATION_CHECKLIST_6769FDE4("File Creation Checklist<br/><small>70 nodes</small>")
-    class FILE_CREATION_CHECKLIST_6769FDE4 module;
+    PYTHON_MD_500A2B9C("python.md<br/><small>56 nodes</small>")
+    class PYTHON_MD_500A2B9C module;
     SKILL_MD_A8619231("SKILL.md<br/><small>50 nodes</small>")
     class SKILL_MD_A8619231 module;
     CLASSLOADER_4774D4DC("ClassLoader<br/><small>48 nodes</small>")
     class CLASSLOADER_4774D4DC module;
-    REQUIRED_FILES_MANDATORY_21AA3DB6("Required Files (MANDATORY)<br/><small>34 nodes</small>")
+    REQUIRED_FILES_MANDATORY_21AA3DB6("Required Files (MANDATORY)<br/><small>31 nodes</small>")
     class REQUIRED_FILES_MANDATORY_21AA3DB6 module;
     ADAPTERINTERFACE_PHP_0B37A7EC("AdapterInterface.php<br/><small>23 nodes</small>")
     class ADAPTERINTERFACE_PHP_0B37A7EC module;
-    OTHER_D0941E68("其他<br/><small>546 nodes</small>")
+    OTHER_D0941E68("其他<br/><small>603 nodes</small>")
     class OTHER_D0941E68 module;
-    TESTS_FIXTURES_B84B1DCC -->|导入 x36| OTHER_D0941E68
-    OTHER_D0941E68 -->|导入 x35| TESTS_FIXTURES_B84B1DCC
-    SERVE_API_35EC8E86 -->|导入 x23| OTHER_D0941E68
-    OTHER_D0941E68 -->|导入 x18| SERVE_API_35EC8E86
+    TESTS_FIXTURES_B84B1DCC -->|导入 x40| OTHER_D0941E68
+    OTHER_D0941E68 -->|导入 x39| TESTS_FIXTURES_B84B1DCC
+    SERVE_API_35EC8E86 -->|导入 x21| OTHER_D0941E68
+    SERVE_API_35EC8E86 -->|导入 x12| TESTS_FIXTURES_B84B1DCC
+    OTHER_D0941E68 -->|导入 x11| SERVE_API_35EC8E86
+    SERVE_API_35EC8E86 -->|包含 x8| PYTHON_MD_500A2B9C
     TESTS_FIXTURES_B84B1DCC -->|导入 x6| BUILD_GRAPH_321CBB04
-    REQUIRED_FILES_MANDATORY_21AA3DB6 -->|导入 x5| FILE_CREATION_CHECKLIST_6769FDE4
-    SERVE_API_35EC8E86 -->|导入 x4| TESTS_FIXTURES_B84B1DCC
-    FILE_CREATION_CHECKLIST_6769FDE4 -->|包含 x4| BUILD_GRAPH_321CBB04
-    FILE_CREATION_CHECKLIST_6769FDE4 -->|导入 x4| TESTS_FIXTURES_B84B1DCC
-    TESTS_FIXTURES_B84B1DCC -->|导入 x3| SERVE_API_35EC8E86
+    OTHER_D0941E68 -->|包含 x4| INGEST_CACHE_UPDATE_FF457338
+    TESTS_FIXTURES_B84B1DCC -->|包含 x4| PYTHON_MD_500A2B9C
+    OTHER_D0941E68 -->|导入 x4| REQUIRED_FILES_MANDATORY_21AA3DB6
+    OTHER_D0941E68 -->|包含 x4| BUILD_GRAPH_321CBB04
     BUILD_GRAPH_321CBB04 -->|导入 x3| OTHER_D0941E68
-    FILE_CREATION_CHECKLIST_6769FDE4 -->|导入 x3| INGEST_CACHE_UPDATE_FF457338
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -146,19 +146,19 @@ flowchart LR
     <h4>架构层次</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>层</th><th>节点</th><th>社区</th></tr>
-      <tr><td>提取管线</td><td>6</td><td><code>38</code></td></tr><tr><td>图谱构建</td><td>168</td><td><code>543, 5, 128, 496, 140, 143, 26, 11, 595</code></td></tr><tr><td>分析聚类</td><td>4</td><td><code>590</code></td></tr><tr><td>输出文档</td><td>4</td><td><code>589</code></td></tr><tr><td>CLI 与技能安装</td><td>138</td><td><code>35, 101, 173, 135, 144, 148, 174, 251, 275</code></td></tr><tr><td>摄取与增量更新</td><td>33</td><td><code>232, 343, 40</code></td></tr><tr><td>服务 API</td><td>383</td><td><code>2, 24, 486, 508, 84, 276, 92, 307, 100, 117, 118, 121, 18, 7, 141, 142, 48, 52, 513, 528, 616, 90</code></td></tr><tr><td>安全与全局图</td><td>3</td><td><code>47</code></td></tr><tr><td>测试与样例</td><td>167</td><td><code>85, 4, 475, 15, 553, 9, 552, 546, 584, 30, 570, 576, 465, 511, 57</code></td></tr><tr><td>File Creation Checklist</td><td>70</td><td><code>534</code></td></tr><tr><td>SKILL.md</td><td>50</td><td><code>501</code></td></tr><tr><td>ClassLoader</td><td>48</td><td><code>540</code></td></tr><tr><td>Required Files (MANDATORY)</td><td>34</td><td><code>489</code></td></tr><tr><td>AdapterInterface.php</td><td>23</td><td><code>541</code></td></tr><tr><td>其他</td><td>546</td><td><code>134, 0, 14, 3, 554, 19, 6, 484, 86, 17, 21, 410, 98, 8, 16, 211, 29, 13, 558, 559, 25, 452, 482, 10, 280, 310, 33, 483, 569, 572, 573, 575, 12, 27, 28, 311, 312, 313, 314, 32, 36, 364, 39, 531, 582, 31, 365, 366, 439, 588, 309, 363, 411, 434, 46, 461, 567, 597, 20, 466, 469, 471, 599, 1, 149, 150, 22, 23, 279, 338, 341, 409, 42, 429, 435, 436, 472, 473, 474, 476, 480, 481, 485, 488, 490, 491, 492, 495, 498, 499, 50, 504, 506, 507, 510, 512, 514, 518, 519, 520, 521, 523, 524, 525, 526, 527, 529, 53, 537, 54, 545, 547, 55, 56, 568, 58, 59, 60, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 61, 610, 611, 612, 613, 614, 615, 617, 618, 619, 62, 620, 623, 624, 625, 626, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 87, 88, 89, 91</code></td></tr>
+      <tr><td>提取管线</td><td>6</td><td><code>38</code></td></tr><tr><td>图谱构建</td><td>168</td><td><code>543, 5, 128, 496, 140, 143, 26, 11, 595</code></td></tr><tr><td>分析聚类</td><td>4</td><td><code>590</code></td></tr><tr><td>输出文档</td><td>4</td><td><code>589</code></td></tr><tr><td>CLI 与技能安装</td><td>138</td><td><code>35, 101, 173, 135, 144, 148, 174, 251, 275</code></td></tr><tr><td>摄取与增量更新</td><td>32</td><td><code>232, 343, 40</code></td></tr><tr><td>服务 API</td><td>307</td><td><code>24, 508, 18, 84, 92, 100, 276, 307, 117, 118, 121, 3, 7, 141, 142, 44, 48, 52, 513, 528, 616, 90</code></td></tr><tr><td>安全与全局图</td><td>3</td><td><code>47</code></td></tr><tr><td>测试与样例</td><td>207</td><td><code>486, 4, 475, 85, 14, 15, 553, 9, 552, 584, 546, 570, 576, 465, 511, 57</code></td></tr><tr><td>python.md</td><td>56</td><td><code>0</code></td></tr><tr><td>SKILL.md</td><td>50</td><td><code>501</code></td></tr><tr><td>ClassLoader</td><td>48</td><td><code>540</code></td></tr><tr><td>Required Files (MANDATORY)</td><td>31</td><td><code>489</code></td></tr><tr><td>AdapterInterface.php</td><td>23</td><td><code>541</code></td></tr><tr><td>其他</td><td>603</td><td><code>134, 2, 25, 554, 534, 19, 484, 86, 17, 21, 29, 30, 34, 37, 410, 98, 6, 8, 16, 211, 41, 43, 13, 45, 49, 558, 559, 452, 482, 10, 280, 310, 33, 483, 569, 572, 573, 575, 12, 27, 28, 311, 312, 313, 314, 32, 36, 364, 39, 531, 582, 31, 365, 366, 439, 588, 309, 363, 411, 434, 46, 461, 567, 597, 20, 466, 469, 471, 599, 1, 149, 150, 22, 23, 279, 338, 341, 409, 42, 429, 435, 436, 472, 473, 474, 476, 480, 481, 485, 488, 490, 491, 492, 495, 498, 499, 50, 504, 506, 507, 510, 512, 514, 518, 519, 520, 521, 523, 524, 525, 526, 527, 529, 53, 537, 54, 545, 547, 55, 56, 568, 58, 59, 60, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 61, 610, 611, 612, 613, 614, 615, 617, 618, 619, 62, 620, 623, 624, 625, 626, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 87, 88, 89, 91</code></td></tr>
     </table>
   </div>
   <div class="card">
     <h4>核心数据流</h4>
-    <div class="arrow-chain">分析聚类 -&gt; 提取管线 -&gt; 图谱构建 -&gt; 其他 -&gt; 测试与样例 -&gt; 服务 API -&gt; ClassLoader</div>
+    <div class="arrow-chain">分析聚类 -&gt; 提取管线 -&gt; 图谱构建 -&gt; 其他 -&gt; 测试与样例 -&gt; python.md -&gt; 输出文档</div>
   </div>
 </div>
 <div class="grid">
   <div class="card">
     <h4>图谱报告摘要</h4>
     <ul>
-      <li>1677 nodes · 2147 edges · 236 communities (126 shown, 110 thin omitted)</li>
+      <li>1680 nodes · 2153 edges · 243 communities (131 shown, 112 thin omitted)</li>
       <li>Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 103 edges (avg confidence: 0.8)</li>
       <li>Token cost: 0 input · 0 output</li>
       <li>1. `Logger` - 41 edges</li>
@@ -1168,12 +1168,12 @@ flowchart LR
 
 <!-- ====== 7. 摄取与增量更新 ====== -->
 <h2 id="ingest-cache-update">7. 摄取与增量更新</h2>
-<p>摄取与增量更新 汇集了与 hybridauth、vendor、adapter、oauth2php 相关的实现，主要分布在 src/Adapter/OAuth2.php、src/Provider/Google.php、src/Provider/MicrosoftGraph.php。本节覆盖 33 个节点、49 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>摄取与增量更新 汇集了与 hybridauth、vendor、adapter、oauth2php 相关的实现，主要分布在 src/Adapter/OAuth2.php、src/Provider/Google.php、src/Provider/MicrosoftGraph.php。本节覆盖 32 个节点、47 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 摄取与增量更新 (33 nodes, 49 edges)
+    %% Section: 摄取与增量更新 (32 nodes, 47 edges)
     subgraph ingest_cache_update_src_Adapter_OAuth2_php_ea56de69["src/Adapter/OAuth2.php"]
         vendor_hybridauth_hybridauth_src_adapter_oauth2_7a401bb8("OAuth2<br/><small>src/Adapter/OAuth2.php</small>")
         vendor_hybridauth_hybridauth_src_adapter_oauth2_c5ee470e("authenticate()<br/><small>src/Adapter/OAuth2.php</small>")
@@ -1218,7 +1218,7 @@ flowchart LR
     vendor_hybridauth_hybridauth_src_adapter_oauth2_ff68f24b -->|调用| vendor_hybridauth_hybridauth_src_adapter_oauth2_4d0bcf49
     vendor_hybridauth_hybridauth_src_adapter_oauth2_ff68f24b -->|调用| vendor_hybridauth_hybridauth_src_adapter_oauth2_a3a6bb6c
     vendor_hybridauth_hybridauth_src_adapter_oauth2_a3a6bb6c -->|调用| vendor_hybridauth_hybridauth_src_adapter_oauth2_d6682f7d
-    %% Omitted for readability: 15 nodes, 7 edges
+    %% Omitted for readability: 14 nodes, 7 edges
     class vendor_hybridauth_hybridauth_src_adapter_oauth2_7a401bb8 klass;
     class vendor_hybridauth_hybridauth_src_adapter_oauth2_c5ee470e function;
     class vendor_hybridauth_hybridauth_src_adapter_oauth2_a4d8f22f function;
@@ -1263,7 +1263,7 @@ flowchart LR
   <td><code>OAuth2</code><br><small style="color:var(--muted)">src/Adapter/OAuth2.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>apiRequest()</code><br><small style="color:var(--muted)">src/Adapter/OAuth2.php</small><br><code>authenticate()</code><br><small style="color:var(--muted)">src/Adapter/OAuth2.php</small><br><code>authenticateBegin()</code><br><small style="color:var(--muted)">src/Adapter/OAuth2.php</small><br>+14 个更多</td>
+  <td><code>apiRequest()</code><br><small style="color:var(--muted)">src/Adapter/OAuth2.php</small><br><code>authenticate()</code><br><small style="color:var(--muted)">src/Adapter/OAuth2.php</small><br><code>authenticateBegin()</code><br><small style="color:var(--muted)">src/Adapter/OAuth2.php</small><br>+13 个更多</td>
   <td>src/Adapter/OAuth2.php 中的 OAuth2 节点。</td>
 </tr>
 <tr>
@@ -1436,14 +1436,6 @@ flowchart LR
 </tr>
 <tr>
   <td>23</td>
-  <td><code>MicrosoftGraph.php</code><br><small style="color:var(--muted)">src/Provider/MicrosoftGraph.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>OAuth2</code><br><small style="color:var(--muted)">src/Adapter/OAuth2.php</small></td>
-  <td>无直接出边</td>
-  <td>构建依赖关系并提供排序或图形化数据。</td>
-</tr>
-<tr>
-  <td>24</td>
   <td><code>MicrosoftGraph</code><br><small style="color:var(--muted)">src/Provider/MicrosoftGraph.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -1451,7 +1443,7 @@ flowchart LR
   <td>构建依赖关系并提供排序或图形化数据。</td>
 </tr>
 <tr>
-  <td>25</td>
+  <td>24</td>
   <td><code>.initialize()</code><br><small style="color:var(--muted)">src/Provider/MicrosoftGraph.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>MicrosoftGraph</code><br><small style="color:var(--muted)">src/Provider/MicrosoftGraph.php</small></td>
@@ -1459,7 +1451,7 @@ flowchart LR
   <td>src/Provider/MicrosoftGraph.php 中的 .initialize() 节点。</td>
 </tr>
 <tr>
-  <td>26</td>
+  <td>25</td>
   <td><code>.getUserProfile()</code><br><small style="color:var(--muted)">src/Provider/MicrosoftGraph.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>MicrosoftGraph</code><br><small style="color:var(--muted)">src/Provider/MicrosoftGraph.php</small></td>
@@ -1467,7 +1459,7 @@ flowchart LR
   <td>src/Provider/MicrosoftGraph.php 中的 .getUserProfile() 节点。</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>26</td>
   <td><code>.getUserContacts()</code><br><small style="color:var(--muted)">src/Provider/MicrosoftGraph.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>MicrosoftGraph</code><br><small style="color:var(--muted)">src/Provider/MicrosoftGraph.php</small></td>
@@ -1475,7 +1467,7 @@ flowchart LR
   <td>src/Provider/MicrosoftGraph.php 中的 .getUserContacts() 节点。</td>
 </tr>
 <tr>
-  <td>28</td>
+  <td>27</td>
   <td><code>update-i18n.js</code><br><small style="color:var(--muted)">scripts/update-i18n.js</small></td>
   <td><span class="tag tag-class">模块</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -1483,7 +1475,7 @@ flowchart LR
   <td>scripts/update-i18n.js 中的 update-i18n.js 节点。</td>
 </tr>
 <tr>
-  <td>29</td>
+  <td>28</td>
   <td><code>i18nDir</code><br><small style="color:var(--muted)">scripts/update-i18n.js</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -1491,12 +1483,20 @@ flowchart LR
   <td>scripts/update-i18n.js 中的 i18nDir 节点。</td>
 </tr>
 <tr>
-  <td>30</td>
+  <td>29</td>
   <td><code>newKeys</code><br><small style="color:var(--muted)">scripts/update-i18n.js</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
   <td>scripts/update-i18n.js 中的 newKeys 节点。</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>8. Video del Hero (Página Principal)</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 8. Video del Hero (Página Principal) 相关能力。</td>
 </tr>
 </table>
 
@@ -1507,33 +1507,36 @@ flowchart LR
       <tr><th>File</th><th>覆盖节点</th></tr>
       <tr><td><code>src/Adapter/OAuth2.php</code></td><td>16 个节点</td></tr>
 <tr><td><code>src/Provider/Google.php</code></td><td>6 个节点</td></tr>
-<tr><td><code>src/Provider/MicrosoftGraph.php</code></td><td>5 个节点</td></tr>
+<tr><td><code>src/Provider/MicrosoftGraph.php</code></td><td>4 个节点</td></tr>
 <tr><td><code>.agents/BRAND.md</code></td><td>3 个节点</td></tr>
 <tr><td><code>scripts/update-i18n.js</code></td><td>3 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：方法 x22, 调用 x17, 包含 x6, 导入 x2。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：方法 x22, 调用 x17, 包含 x5, inherits x2。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 8. 服务 API ====== -->
 <h2 id="serve-api">8. 服务 API</h2>
-<p>服务 API 汇集了与 agents、skills、references、mercadopago 相关的实现，主要分布在 mercadopago-mp-integrate/references/products.md、Thirdparty/OpenID/LightOpenID.php、README.md。本节覆盖 383 个节点、499 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>服务 API 汇集了与 agents、skills、references、mercadopago 相关的实现，主要分布在 mercadopago-mp-integrate/references/products.md、Thirdparty/OpenID/LightOpenID.php、README.md。本节覆盖 307 个节点、355 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 服务 API (383 nodes, 499 edges)
+    %% Section: 服务 API (307 nodes, 355 edges)
     subgraph serve_api_app_Core_Middleware_php_750cf140["app/Core/Middleware.php"]
         app_core_middleware_middleware_91f45a78("Middleware<br/><small>app/Core/Middleware.php</small>")
         app_core_middleware_middleware_add_36dd127a("add()<br/><small>app/Core/Middleware.php</small>")
         app_core_middleware_middleware_cors_c3c019ec("cors()<br/><small>app/Core/Middleware.php</small>")
         app_core_middleware_middleware_ratelimit_4c2de9d6("rateLimit()<br/><small>app/Core/Middleware.php</small>")
-        app_core_middleware_middleware_run_cd33a418("run()<br/><small>app/Core/Middleware.php</small>")
-        app_core_middleware_middleware_securityheaders_2b9dcdfa("securityHeaders()<br/><small>app/Core/Middleware.php</small>")
+    end
+    subgraph serve_api_Auth_Actions_AuthCallbackAction_php_496b554f["Auth/Actions/AuthCallbackAction.php"]
+        app_features_auth_actions_authcallbackaction_f7129411("AuthCallbackAction.php")
+        app_features_auth_actions_authcallbackaction_aut_6f9fc78d("AuthCallbackAction<br/><small>Auth/Actions/AuthCallbackAction.php</small>")
+        app_features_auth_actions_authcallbackaction_aut_6f179a8d("__invoke()<br/><small>Auth/Actions/AuthCallbackAction.php</small>")
     end
     subgraph serve_api_Auth_Actions_AuthRegisterAction_php_02e84611["Auth/Actions/AuthRegisterAction.php"]
         app_features_auth_actions_authregisteraction_aut_8d140561("AuthRegisterAction<br/><small>Auth/Actions/AuthRegisterAction.php</small>")
@@ -1544,13 +1547,16 @@ flowchart LR
         app_features_auth_actions_authlogoutaction_authl_a142d402("AuthLogoutAction<br/><small>Auth/Actions/AuthLogoutAction.php</small>")
         app_features_auth_actions_authlogoutaction_authl_5fe193b8("__invoke()<br/><small>Auth/Actions/AuthLogoutAction.php</small>")
     end
-    app_features_booking_domain_provisionalbookingre_330585fb("ProvisionalBookingRepository<br/><small>Booking/Domain/ProvisionalBookingRepository.php</small>")
-    app_features_auth_user_user_3ef48886("User<br/><small>Features/Auth/User.php</small>")
+    subgraph serve_api_Auth_Actions_AuthProvidersAction_php_22f98b7a["Auth/Actions/AuthProvidersAction.php"]
+        app_features_auth_actions_authprovidersaction_au_71ebbd2d("AuthProvidersAction<br/><small>Auth/Actions/AuthProvidersAction.php</small>")
+        app_features_auth_actions_authprovidersaction_au_ebea5270("__invoke()<br/><small>Auth/Actions/AuthProvidersAction.php</small>")
+    end
     vendor_hybridauth_hybridauth_src_thirdparty_open_893dd73b("LightOpenID<br/><small>Thirdparty/OpenID/LightOpenID.php</small>")
-    app_core_logger_logger_dbd13d55("Logger<br/><small>app/Core/Logger.php</small>")
     app_core_request_request_d11f3b0f("Request<br/><small>app/Core/Request.php</small>")
-    vendor_hybridauth_hybridauth_src_httpclient_curl_9038eb26("Curl<br/><small>src/HttpClient/Curl.php</small>")
-    vendor_hybridauth_hybridauth_src_httpclient_guzz_853ad1f5("Guzzle<br/><small>src/HttpClient/Guzzle.php</small>")
+    app_core_response_response_5eed53b1("Response<br/><small>app/Core/Response.php</small>")
+    app_core_router_router_c829bbdb("Router<br/><small>app/Core/Router.php</small>")
+    app_features_auth_actions_authprovidersaction_au_71ebbd2d -->|方法| app_features_auth_actions_authprovidersaction_au_ebea5270
+    app_features_auth_actions_authcallbackaction_aut_6f9fc78d -->|方法| app_features_auth_actions_authcallbackaction_aut_6f179a8d
     app_features_auth_actions_authlogoutaction_authl_a142d402 -->|方法| app_features_auth_actions_authlogoutaction_authl_5fe193b8
     app_features_auth_actions_authregisteraction_aut_8d140561 -->|方法| app_features_auth_actions_authregisteraction_aut_1e01c242
     app_features_auth_actions_authregisteraction_aut_8d140561 -->|方法| app_features_auth_actions_authregisteraction_aut_ae546fd7
@@ -1558,27 +1564,25 @@ flowchart LR
     app_core_middleware_middleware_91f45a78 -->|方法| app_core_middleware_middleware_add_36dd127a
     app_core_middleware_middleware_91f45a78 -->|方法| app_core_middleware_middleware_cors_c3c019ec
     app_core_middleware_middleware_91f45a78 -->|方法| app_core_middleware_middleware_ratelimit_4c2de9d6
-    app_core_middleware_middleware_91f45a78 -->|方法| app_core_middleware_middleware_run_cd33a418
-    app_core_middleware_middleware_91f45a78 -->|方法| app_core_middleware_middleware_securityheaders_2b9dcdfa
-    %% Omitted for readability: 365 nodes, 0 edges
+    %% Omitted for readability: 289 nodes, 0 edges
     class app_core_middleware_middleware_91f45a78 klass;
     class app_core_middleware_middleware_add_36dd127a function;
     class app_core_middleware_middleware_cors_c3c019ec function;
     class app_core_middleware_middleware_ratelimit_4c2de9d6 function;
-    class app_core_middleware_middleware_run_cd33a418 function;
-    class app_core_middleware_middleware_securityheaders_2b9dcdfa function;
+    class app_features_auth_actions_authcallbackaction_f7129411 klass;
+    class app_features_auth_actions_authcallbackaction_aut_6f9fc78d klass;
+    class app_features_auth_actions_authcallbackaction_aut_6f179a8d function;
     class app_features_auth_actions_authregisteraction_aut_8d140561 klass;
     class app_features_auth_actions_authregisteraction_aut_1e01c242 function;
     class app_features_auth_actions_authregisteraction_aut_ae546fd7 function;
     class app_features_auth_actions_authlogoutaction_authl_a142d402 klass;
     class app_features_auth_actions_authlogoutaction_authl_5fe193b8 function;
-    class app_features_booking_domain_provisionalbookingre_330585fb klass;
-    class app_features_auth_user_user_3ef48886 klass;
+    class app_features_auth_actions_authprovidersaction_au_71ebbd2d klass;
+    class app_features_auth_actions_authprovidersaction_au_ebea5270 function;
     class vendor_hybridauth_hybridauth_src_thirdparty_open_893dd73b klass;
-    class app_core_logger_logger_dbd13d55 klass;
     class app_core_request_request_d11f3b0f klass;
-    class vendor_hybridauth_hybridauth_src_httpclient_curl_9038eb26 klass;
-    class vendor_hybridauth_hybridauth_src_httpclient_guzz_853ad1f5 klass;
+    class app_core_response_response_5eed53b1 klass;
+    class app_core_router_router_c829bbdb api;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -1602,243 +1606,243 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>Logger.php</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
+  <td><code>products.md</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
   <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>app/Core/Logger.php 中的 Logger.php 节点。</td>
+  <td>文档入口，描述 products.md 相关能力。</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
+  <td><code>Mercado Pago — Product Reference</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>__invoke()</code><br><small style="color:var(--muted)">Cron/Actions/CleanExpiredCartsAction.php</small><br><code>__invoke()</code><br><small style="color:var(--muted)">Webhooks/Actions/HandleChannexWebhookAction.php</small><br><code>cleanExpiredCarts()</code><br><small style="color:var(--muted)">Booking/Domain/ProvisionalBookingRepository.php</small><br>+32 个更多</td>
-  <td>app/Core/Logger.php 中的 Logger 节点。</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 Mercado Pago — Product Reference 相关能力。</td>
 </tr>
 <tr>
   <td>3</td>
-  <td><code>.init()</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
+  <td><code>Version: 4.2.0 | Updated: 2026-06-10</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>app/Core/Logger.php 中的 .init() 节点。</td>
+  <td>文档入口，描述 Version: 4.2.0 | Updated: 2026-06-10 相关能力。</td>
 </tr>
 <tr>
   <td>4</td>
-  <td><code>.log()</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
+  <td><code>Source: Official Mercado Pago developer documentation</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>app/Core/Logger.php 中的 .log() 节点。</td>
+  <td>文档入口，描述 Source: Official Mercado Pago developer documentation 相关能力。</td>
 </tr>
 <tr>
   <td>5</td>
-  <td><code>.info()</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
+  <td><code>This file is tier-2 in the documentation hierarchy:</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>app/Core/Logger.php 中的 .info() 节点。</td>
+  <td>文档入口，描述 This file is tier-2 in the documentation hierarchy: 相关能力。</td>
 </tr>
 <tr>
   <td>6</td>
-  <td><code>.warning()</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
+  <td><code>(1) WebFetch official llms.txt per country → (2) this file → (3) MCP search_documentation</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>app/Core/Logger.php 中的 .warning() 节点。</td>
+  <td>文档入口，描述 (1) WebFetch official llms.txt per country → (2) this file → (3) MCP search_documentation 相关能力。</td>
 </tr>
 <tr>
   <td>7</td>
-  <td><code>.error()</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
+  <td><code>Contains: product descriptions, when to use each, best practices, key payload fields,</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>app/Core/Logger.php 中的 .error() 节点。</td>
+  <td>文档入口，描述 Contains: product descriptions, when to use each, best practices, key payload fields, 相关能力。</td>
 </tr>
 <tr>
   <td>8</td>
-  <td><code>.debug()</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
+  <td><code>SDK component map, and test card data per country.</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>app/Core/Logger.php 中的 .debug() 节点。</td>
+  <td>文档入口，描述 SDK component map, and test card data per country. 相关能力。</td>
 </tr>
 <tr>
   <td>9</td>
-  <td><code>.rotateIfNeeded()</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
+  <td><code>@mercadopago/sdk-react — Component Map</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>app/Core/Logger.php 中的 .rotateIfNeeded() 节点。</td>
+  <td>文档入口，描述 @mercadopago/sdk-react — Component Map 相关能力。</td>
 </tr>
 <tr>
   <td>10</td>
-  <td><code>Response</code><br><small style="color:var(--muted)">app/Core/Response.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
+  <td><code>Products</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>badRequest()</code><br><small style="color:var(--muted)">app/Core/Response.php</small><br><code>error()</code><br><small style="color:var(--muted)">app/Core/Response.php</small><br><code>forbidden()</code><br><small style="color:var(--muted)">app/Core/Response.php</small><br>+4 个更多</td>
-  <td>app/Core/Response.php 中的 Response 节点。</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 Products 相关能力。</td>
 </tr>
 <tr>
   <td>11</td>
-  <td><code>.json()</code><br><small style="color:var(--muted)">app/Core/Response.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small><br><code>Response</code><br><small style="color:var(--muted)">app/Core/Response.php</small></td>
+  <td><code>Checkout Pro</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>app/Core/Response.php 中的 .json() 节点。</td>
+  <td>文档入口，描述 Checkout Pro 相关能力。</td>
 </tr>
 <tr>
   <td>12</td>
-  <td><code>.error()</code><br><small style="color:var(--muted)">app/Core/Response.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Response</code><br><small style="color:var(--muted)">app/Core/Response.php</small></td>
+  <td><code>Checkout API (Orders mode)</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>app/Core/Response.php 中的 .error() 节点。</td>
+  <td>文档入口，描述 Checkout API (Orders mode) 相关能力。</td>
 </tr>
 <tr>
   <td>13</td>
-  <td><code>.badRequest()</code><br><small style="color:var(--muted)">app/Core/Response.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Response</code><br><small style="color:var(--muted)">app/Core/Response.php</small></td>
+  <td><code>Checkout Bricks</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>app/Core/Response.php 中的 .badRequest() 节点。</td>
+  <td>文档入口，描述 Checkout Bricks 相关能力。</td>
 </tr>
 <tr>
   <td>14</td>
-  <td><code>.unauthorized()</code><br><small style="color:var(--muted)">app/Core/Response.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Response</code><br><small style="color:var(--muted)">app/Core/Response.php</small></td>
+  <td><code>CardPayment Brick</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>app/Core/Response.php 中的 .unauthorized() 节点。</td>
+  <td>文档入口，描述 CardPayment Brick 相关能力。</td>
 </tr>
 <tr>
   <td>15</td>
-  <td><code>.forbidden()</code><br><small style="color:var(--muted)">app/Core/Response.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Response</code><br><small style="color:var(--muted)">app/Core/Response.php</small></td>
+  <td><code>Payment Brick</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>app/Core/Response.php 中的 .forbidden() 节点。</td>
+  <td>文档入口，描述 Payment Brick 相关能力。</td>
 </tr>
 <tr>
   <td>16</td>
-  <td><code>.notFound()</code><br><small style="color:var(--muted)">app/Core/Response.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Response</code><br><small style="color:var(--muted)">app/Core/Response.php</small></td>
+  <td><code>Wallet Brick</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>app/Core/Response.php 中的 .notFound() 节点。</td>
+  <td>文档入口，描述 Wallet Brick 相关能力。</td>
 </tr>
 <tr>
   <td>17</td>
-  <td><code>.tooManyRequests()</code><br><small style="color:var(--muted)">app/Core/Response.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Response</code><br><small style="color:var(--muted)">app/Core/Response.php</small></td>
+  <td><code>StatusScreen Brick</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>app/Core/Response.php 中的 .tooManyRequests() 节点。</td>
+  <td>文档入口，描述 StatusScreen Brick 相关能力。</td>
 </tr>
 <tr>
   <td>18</td>
-  <td><code>User.php</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>AuthRegisterAction.php</code><br><small style="color:var(--muted)">Auth/Actions/AuthRegisterAction.php</small><br><code>GetUserBookingsAction.php</code><br><small style="color:var(--muted)">Auth/Actions/GetUserBookingsAction.php</small></td>
-  <td><code>PDO</code></td>
-  <td>Features/Auth/User.php 中的 User.php 节点。</td>
+  <td><code>QR Code</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 QR Code 相关能力。</td>
 </tr>
 <tr>
   <td>19</td>
-  <td><code>User</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
+  <td><code>MP Point</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>__construct()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small><br><code>createFromEmail()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small><br><code>createFromOAuth()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small><br>+5 个更多</td>
-  <td>Features/Auth/User.php 中的 User 节点。</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 MP Point 相关能力。</td>
 </tr>
 <tr>
   <td>20</td>
-  <td><code>.__construct()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>User</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
+  <td><code>Subscriptions</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>Features/Auth/User.php 中的 .__construct() 节点。</td>
+  <td>文档入口，描述 Subscriptions 相关能力。</td>
 </tr>
 <tr>
   <td>21</td>
-  <td><code>PDO</code><br><small style="color:var(--muted)"></small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>User.php</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
+  <td><code>Marketplace</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>项目 中的 PDO 节点。</td>
+  <td>文档入口，描述 Marketplace 相关能力。</td>
 </tr>
 <tr>
   <td>22</td>
-  <td><code>.findByEmail()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small><br><code>User</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
-  <td><code>createFromEmail()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small><br><code>createFromOAuth()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small><br><code>verifyPassword()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
-  <td>Features/Auth/User.php 中的 .findByEmail() 节点。</td>
+  <td><code>Wallet Connect</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 Wallet Connect 相关能力。</td>
 </tr>
 <tr>
   <td>23</td>
-  <td><code>.findByProvider()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small><br><code>User</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
+  <td><code>Test Cards per Country</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>Features/Auth/User.php 中的 .findByProvider() 节点。</td>
+  <td>文档入口，描述 Test Cards per Country 相关能力。</td>
 </tr>
 <tr>
   <td>24</td>
-  <td><code>.findById()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small><br><code>User</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
+  <td><code>Argentina (MLA)</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>Features/Auth/User.php 中的 .findById() 节点。</td>
+  <td>文档入口，描述 Argentina (MLA) 相关能力。</td>
 </tr>
 <tr>
   <td>25</td>
-  <td><code>.createFromOAuth()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>findByEmail()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small><br><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small><br><code>User</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
+  <td><code>Brazil (MLB)</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>Features/Auth/User.php 中的 .createFromOAuth() 节点。</td>
+  <td>文档入口，描述 Brazil (MLB) 相关能力。</td>
 </tr>
 <tr>
   <td>26</td>
-  <td><code>.createFromEmail()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>findByEmail()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small><br><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small><br><code>User</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
+  <td><code>Mexico (MLM)</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>Features/Auth/User.php 中的 .createFromEmail() 节点。</td>
+  <td>文档入口，描述 Mexico (MLM) 相关能力。</td>
 </tr>
 <tr>
   <td>27</td>
-  <td><code>.verifyPassword()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>findByEmail()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small><br><code>User</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
+  <td><code>Colombia (MCO)</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>Features/Auth/User.php 中的 .verifyPassword() 节点。</td>
+  <td>文档入口，描述 Colombia (MCO) 相关能力。</td>
 </tr>
 <tr>
   <td>28</td>
-  <td><code>.getBookings()</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small><br><code>User</code><br><small style="color:var(--muted)">Features/Auth/User.php</small></td>
+  <td><code>Chile (MLC)</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>Features/Auth/User.php 中的 .getBookings() 节点。</td>
+  <td>文档入口，描述 Chile (MLC) 相关能力。</td>
 </tr>
 <tr>
   <td>29</td>
-  <td><code>ProvisionalBookingRepository.php</code><br><small style="color:var(--muted)">Booking/Domain/ProvisionalBookingRepository.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
+  <td><code>Peru (MPE)</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>PDO</code></td>
-  <td>Booking/Domain/ProvisionalBookingRepository.php 中的 ProvisionalBookingRepository.php 节点。</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 Peru (MPE) 相关能力。</td>
 </tr>
 <tr>
   <td>30</td>
-  <td><code>ProvisionalBookingRepository</code><br><small style="color:var(--muted)">Booking/Domain/ProvisionalBookingRepository.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>ExtendHoldAction.php</code><br><small style="color:var(--muted)">Booking/Actions/ExtendHoldAction.php</small></td>
-  <td><code>__construct()</code><br><small style="color:var(--muted)">Booking/Domain/ProvisionalBookingRepository.php</small><br><code>cleanExpiredCarts()</code><br><small style="color:var(--muted)">Booking/Domain/ProvisionalBookingRepository.php</small><br><code>CleanExpiredCartsAction.php</code><br><small style="color:var(--muted)">Cron/Actions/CleanExpiredCartsAction.php</small><br>+9 个更多</td>
-  <td>Booking/Domain/ProvisionalBookingRepository.php 中的 ProvisionalBookingRepository 节点。</td>
+  <td><code>Uruguay (MLU)</code><br><small style="color:var(--muted)">mercadopago-mp-integrate/references/products.md</small></td>
+  <td><span class="tag tag-func">概念</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>文档入口，描述 Uruguay (MLU) 相关能力。</td>
 </tr>
 </table>
 
@@ -1859,7 +1863,7 @@ flowchart LR
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x199, 方法 x133, 调用 x57, 导入 x42。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x193, 方法 x72, 调用 x39, 导入 x35。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -1943,21 +1947,24 @@ flowchart LR
 
 <!-- ====== 10. 测试与样例 ====== -->
 <h2 id="tests-fixtures">10. 测试与样例</h2>
-<p>测试与样例 汇集了与 hybridauth、tests、vendor、test 相关的实现，主要分布在 docs/HARNESS.md、tests/Data/CollectionTest.php、Shared/Adapters/ChannexAdapter.php。本节覆盖 167 个节点、230 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>测试与样例 汇集了与 hybridauth、vendor、tests、test 相关的实现，主要分布在 src/HttpClient/Curl.php、src/HttpClient/Guzzle.php、docs/HARNESS.md。本节覆盖 207 个节点、297 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 测试与样例 (167 nodes, 230 edges)
-    subgraph tests_fixtures_Shared_Adapters_ChannexAdapter_ph_37345e80["Shared/Adapters/ChannexAdapter.php"]
-        app_features_shared_adapters_channexadapter_chan_746f9773("ChannexAdapter<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
-        app_features_shared_adapters_channexadapter_chan_44c022c8("__construct()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
-        app_features_shared_adapters_channexadapter_chan_d641a080("createBooking()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
-        app_features_shared_adapters_channexadapter_chan_3e5cdd67("getSlugByRoomType()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
-        app_features_shared_adapters_channexadapter_chan_be546d02("processChannelBooking()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
-        app_features_shared_adapters_channexadapter_chan_d1e7f2c2("pushAvailability()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
-        app_features_shared_adapters_channexadapter_chan_ff9e0fc6("resolveChannexRatePlanId()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
-        app_features_shared_adapters_channexadapter_chan_5f1f6218("resolveChannexRoomId()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
+    %% Section: 测试与样例 (207 nodes, 297 edges)
+    subgraph tests_fixtures_tests_Unit_TestCase_php_0f1bbc35["tests/Unit/TestCase.php"]
+        tests_unit_testcase_testcase_f2ea97b9("TestCase<br/><small>tests/Unit/TestCase.php</small>")
+        tests_unit_testcase_testcase_assertequals_278abc06("assertEquals()<br/><small>tests/Unit/TestCase.php</small>")
+        tests_unit_testcase_testcase_assertfalse_3325f9cb("assertFalse()<br/><small>tests/Unit/TestCase.php</small>")
+        tests_unit_testcase_testcase_asserttrue_bb5d1ecf("assertTrue()<br/><small>tests/Unit/TestCase.php</small>")
+        tests_unit_testcase_testcase_createmock_ea97009a("createMock()<br/><small>tests/Unit/TestCase.php</small>")
+        tests_unit_testcase_testcase_expectexception_ebc31cd8("expectException()<br/><small>tests/Unit/TestCase.php</small>")
+        tests_unit_testcase_testcase_expectexceptioncode_8f9082e2("expectExceptionCode()<br/><small>tests/Unit/TestCase.php</small>")
+    end
+    subgraph tests_fixtures_Booking_Actions_CreateBookingActi_8e749ff0["Booking/Actions/CreateBookingAction.php"]
+        app_features_booking_actions_createbookingaction_0f230954("CreateBookingAction<br/><small>Booking/Actions/CreateBookingAction.php</small>")
+        app_features_booking_actions_createbookingaction_b931358f("__construct()<br/><small>Booking/Actions/CreateBookingAction.php</small>")
     end
     subgraph tests_fixtures_Rooms_Actions_GetRoomsAction_php_6bd541b3["Rooms/Actions/GetRoomsAction.php"]
         app_features_rooms_actions_getroomsaction_getroo_789bac19("GetRoomsAction<br/><small>Rooms/Actions/GetRoomsAction.php</small>")
@@ -1967,48 +1974,39 @@ flowchart LR
         tests_unit_features_getroomsactiontest_getroomsa_2698d290("GetRoomsActionTest<br/><small>Unit/Features/GetRoomsActionTest.php</small>")
         tests_unit_features_getroomsactiontest_getroomsa_d68fa3e3("testGetRoomsActionInstantiation()<br/><small>Unit/Features/GetRoomsActionTest.php</small>")
     end
-    subgraph tests_fixtures_tests_Unit_TestCase_php_0f1bbc35["tests/Unit/TestCase.php"]
-        tests_unit_testcase_testcase_f2ea97b9("TestCase<br/><small>tests/Unit/TestCase.php</small>")
-        tests_unit_testcase_testcase_assertequals_278abc06("assertEquals()<br/><small>tests/Unit/TestCase.php</small>")
-    end
     astro_assets_b0866f09("astro:assets")
+    vendor_hybridauth_hybridauth_src_httpclient_curl_9038eb26("Curl<br/><small>src/HttpClient/Curl.php</small>")
+    vendor_hybridauth_hybridauth_src_httpclient_guzz_853ad1f5("Guzzle<br/><small>src/HttpClient/Guzzle.php</small>")
     c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901("../i18n/utils")
     vendor_hybridauth_hybridauth_tests_data_collecti_6f6ef0f5("CollectionTest<br/><small>tests/Data/CollectionTest.php</small>")
-    vendor_hybridauth_hybridauth_tests_storage_sessi_5160496a("SessionTest<br/><small>tests/Storage/SessionTest.php</small>")
-    app_features_shared_adapters_channexadapter_chan_746f9773 -->|方法| app_features_shared_adapters_channexadapter_chan_44c022c8
-    app_features_shared_adapters_channexadapter_chan_746f9773 -->|方法| app_features_shared_adapters_channexadapter_chan_d641a080
-    app_features_shared_adapters_channexadapter_chan_746f9773 -->|方法| app_features_shared_adapters_channexadapter_chan_3e5cdd67
-    app_features_shared_adapters_channexadapter_chan_746f9773 -->|方法| app_features_shared_adapters_channexadapter_chan_be546d02
-    app_features_shared_adapters_channexadapter_chan_746f9773 -->|方法| app_features_shared_adapters_channexadapter_chan_d1e7f2c2
-    app_features_shared_adapters_channexadapter_chan_746f9773 -->|方法| app_features_shared_adapters_channexadapter_chan_ff9e0fc6
-    app_features_shared_adapters_channexadapter_chan_746f9773 -->|方法| app_features_shared_adapters_channexadapter_chan_5f1f6218
-    app_features_shared_adapters_channexadapter_chan_d1e7f2c2 -->|调用| app_features_shared_adapters_channexadapter_chan_5f1f6218
-    app_features_shared_adapters_channexadapter_chan_be546d02 -->|调用| app_features_shared_adapters_channexadapter_chan_d641a080
-    app_features_shared_adapters_channexadapter_chan_d641a080 -->|调用| app_features_shared_adapters_channexadapter_chan_3e5cdd67
-    app_features_shared_adapters_channexadapter_chan_d641a080 -->|调用| app_features_shared_adapters_channexadapter_chan_ff9e0fc6
-    app_features_shared_adapters_channexadapter_chan_d641a080 -->|调用| app_features_shared_adapters_channexadapter_chan_5f1f6218
+    app_features_booking_actions_createbookingaction_0f230954 -->|方法| app_features_booking_actions_createbookingaction_b931358f
     app_features_rooms_actions_getroomsaction_getroo_789bac19 -->|方法| app_features_rooms_actions_getroomsaction_getroo_5279f355
     tests_unit_features_getroomsactiontest_getroomsa_2698d290 -->|方法| tests_unit_features_getroomsactiontest_getroomsa_d68fa3e3
     tests_unit_testcase_testcase_f2ea97b9 -->|方法| tests_unit_testcase_testcase_assertequals_278abc06
-    %% Omitted for readability: 149 nodes, 0 edges
-    class app_features_shared_adapters_channexadapter_chan_746f9773 klass;
-    class app_features_shared_adapters_channexadapter_chan_44c022c8 function;
-    class app_features_shared_adapters_channexadapter_chan_d641a080 function;
-    class app_features_shared_adapters_channexadapter_chan_3e5cdd67 function;
-    class app_features_shared_adapters_channexadapter_chan_be546d02 function;
-    class app_features_shared_adapters_channexadapter_chan_d1e7f2c2 function;
-    class app_features_shared_adapters_channexadapter_chan_ff9e0fc6 function;
-    class app_features_shared_adapters_channexadapter_chan_5f1f6218 function;
+    tests_unit_testcase_testcase_f2ea97b9 -->|方法| tests_unit_testcase_testcase_assertfalse_3325f9cb
+    tests_unit_testcase_testcase_f2ea97b9 -->|方法| tests_unit_testcase_testcase_asserttrue_bb5d1ecf
+    tests_unit_testcase_testcase_f2ea97b9 -->|方法| tests_unit_testcase_testcase_createmock_ea97009a
+    tests_unit_testcase_testcase_f2ea97b9 -->|方法| tests_unit_testcase_testcase_expectexception_ebc31cd8
+    tests_unit_testcase_testcase_f2ea97b9 -->|方法| tests_unit_testcase_testcase_expectexceptioncode_8f9082e2
+    %% Omitted for readability: 189 nodes, 0 edges
+    class tests_unit_testcase_testcase_f2ea97b9 test;
+    class tests_unit_testcase_testcase_assertequals_278abc06 test;
+    class tests_unit_testcase_testcase_assertfalse_3325f9cb test;
+    class tests_unit_testcase_testcase_asserttrue_bb5d1ecf test;
+    class tests_unit_testcase_testcase_createmock_ea97009a test;
+    class tests_unit_testcase_testcase_expectexception_ebc31cd8 test;
+    class tests_unit_testcase_testcase_expectexceptioncode_8f9082e2 test;
+    class app_features_booking_actions_createbookingaction_0f230954 klass;
+    class app_features_booking_actions_createbookingaction_b931358f function;
     class app_features_rooms_actions_getroomsaction_getroo_789bac19 klass;
     class app_features_rooms_actions_getroomsaction_getroo_5279f355 function;
     class tests_unit_features_getroomsactiontest_getroomsa_2698d290 test;
     class tests_unit_features_getroomsactiontest_getroomsa_d68fa3e3 test;
-    class tests_unit_testcase_testcase_f2ea97b9 test;
-    class tests_unit_testcase_testcase_assertequals_278abc06 test;
     class astro_assets_b0866f09 async;
+    class vendor_hybridauth_hybridauth_src_httpclient_curl_9038eb26 klass;
+    class vendor_hybridauth_hybridauth_src_httpclient_guzz_853ad1f5 klass;
     class c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 function;
     class vendor_hybridauth_hybridauth_tests_data_collecti_6f6ef0f5 test;
-    class vendor_hybridauth_hybridauth_tests_storage_sessi_5160496a test;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -2032,243 +2030,243 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>ChannexAdapter.php</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
+  <td><code>Curl</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>ChannelManagerPortInterface</code><br><code>RoomTypeRegistry.php</code><br><small style="color:var(--muted)">Features/Shared/RoomTypeRegistry.php</small></td>
-  <td>Shared/Adapters/ChannexAdapter.php 中的 ChannexAdapter.php 节点。</td>
+  <td><code>fetchResponseHeader()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br><code>getRequestArguments()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br><code>getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br>+9 个更多</td>
+  <td>src/HttpClient/Curl.php 中的 Curl 节点。</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>ChannexAdapter</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
+  <td><code>HttpClientInterface</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>__construct()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small><br><code>createBooking()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small><br><code>getSlugByRoomType()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small><br>+4 个更多</td>
-  <td>Shared/Adapters/ChannexAdapter.php 中的 ChannexAdapter 节点。</td>
+  <td><code>KeycloakTest.php</code><br><small style="color:var(--muted)">tests/Provider/KeycloakTest.php</small></td>
+  <td>项目 中的 HttpClientInterface 节点。</td>
 </tr>
 <tr>
   <td>3</td>
-  <td><code>ChannelManagerPortInterface</code><br><small style="color:var(--muted)"></small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>ChannexAdapter.php</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
-  <td><code>HandleMercadoPagoWebhookActionTest.php</code><br><small style="color:var(--muted)">Unit/Features/HandleMercadoPagoWebhookActionTest.php</small><br><code>run-exhaustive-tests.php</code><br><small style="color:var(--muted)">scripts/run-exhaustive-tests.php</small></td>
-  <td>项目 中的 ChannelManagerPortInterface 节点。</td>
+  <td><code>.request()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Curl</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
+  <td><code>getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br><code>prepareRequestHeaders()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
+  <td>src/HttpClient/Curl.php 中的 .request() 节点。</td>
 </tr>
 <tr>
   <td>4</td>
-  <td><code>.__construct()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
+  <td><code>.getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>ChannexAdapter</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
-  <td>无直接出边</td>
-  <td>Shared/Adapters/ChannexAdapter.php 中的 .__construct() 节点。</td>
+  <td><code>Curl</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br><code>request()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
+  <td><code>getRequestArguments()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br><code>getResponseBody()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br><code>getResponseClientError()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br>+3 个更多</td>
+  <td>src/HttpClient/Curl.php 中的 .getResponse() 节点。</td>
 </tr>
 <tr>
   <td>5</td>
-  <td><code>.pushAvailability()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
+  <td><code>.setCurlOptions()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>ChannexAdapter</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
-  <td><code>resolveChannexRoomId()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
-  <td>Shared/Adapters/ChannexAdapter.php 中的 .pushAvailability() 节点。</td>
+  <td><code>Curl</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
+  <td>无直接出边</td>
+  <td>src/HttpClient/Curl.php 中的 .setCurlOptions() 节点。</td>
 </tr>
 <tr>
   <td>6</td>
-  <td><code>.processChannelBooking()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
+  <td><code>.setLogger()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>ChannexAdapter</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
-  <td><code>createBooking()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
-  <td>Shared/Adapters/ChannexAdapter.php 中的 .processChannelBooking() 节点。</td>
+  <td><code>Curl</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
+  <td>无直接出边</td>
+  <td>src/HttpClient/Curl.php 中的 .setLogger() 节点。</td>
 </tr>
 <tr>
   <td>7</td>
-  <td><code>.createBooking()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
+  <td><code>.getResponseBody()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>ChannexAdapter</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small><br><code>processChannelBooking()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
-  <td><code>getSlugByRoomType()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small><br><code>resolveChannexRatePlanId()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small><br><code>resolveChannexRoomId()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
-  <td>Shared/Adapters/ChannexAdapter.php 中的 .createBooking() 节点。</td>
+  <td><code>Curl</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br><code>getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
+  <td>无直接出边</td>
+  <td>src/HttpClient/Curl.php 中的 .getResponseBody() 节点。</td>
 </tr>
 <tr>
   <td>8</td>
-  <td><code>.resolveChannexRoomId()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
+  <td><code>.getResponseHeader()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>ChannexAdapter</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small><br><code>createBooking()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small><br><code>pushAvailability()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
+  <td><code>Curl</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br><code>getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
   <td>无直接出边</td>
-  <td>Shared/Adapters/ChannexAdapter.php 中的 .resolveChannexRoomId() 节点。</td>
+  <td>src/HttpClient/Curl.php 中的 .getResponseHeader() 节点。</td>
 </tr>
 <tr>
   <td>9</td>
-  <td><code>.resolveChannexRatePlanId()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
+  <td><code>.getResponseHttpCode()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>ChannexAdapter</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small><br><code>createBooking()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
+  <td><code>Curl</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br><code>getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
   <td>无直接出边</td>
-  <td>Shared/Adapters/ChannexAdapter.php 中的 .resolveChannexRatePlanId() 节点。</td>
+  <td>src/HttpClient/Curl.php 中的 .getResponseHttpCode() 节点。</td>
 </tr>
 <tr>
   <td>10</td>
-  <td><code>.getSlugByRoomType()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>ChannexAdapter</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small><br><code>createBooking()</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
+  <td><code>.getResponseClientError()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td><code>Curl</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br><code>getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
   <td>无直接出边</td>
-  <td>Shared/Adapters/ChannexAdapter.php 中的 .getSlugByRoomType() 节点。</td>
+  <td>src/HttpClient/Curl.php 中的 .getResponseClientError() 节点。</td>
 </tr>
 <tr>
   <td>11</td>
-  <td><code>RoomTypeRegistry.php</code><br><small style="color:var(--muted)">Features/Shared/RoomTypeRegistry.php</small></td>
+  <td><code>.getResponseClientInfo()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
   <td><span class="tag tag-cmd">入口</span></td>
-  <td><code>ChannexAdapter.php</code><br><small style="color:var(--muted)">Shared/Adapters/ChannexAdapter.php</small></td>
+  <td><code>Curl</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br><code>getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
   <td>无直接出边</td>
-  <td>Features/Shared/RoomTypeRegistry.php 中的 RoomTypeRegistry.php 节点。</td>
+  <td>src/HttpClient/Curl.php 中的 .getResponseClientInfo() 节点。</td>
 </tr>
 <tr>
   <td>12</td>
-  <td><code>GetRoomsActionTest.php</code><br><small style="color:var(--muted)">Unit/Features/GetRoomsActionTest.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>GetRoomsAction.php</code><br><small style="color:var(--muted)">Rooms/Actions/GetRoomsAction.php</small></td>
-  <td><code>TestCase</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
-  <td>验证导入、入口点或版本等基础行为。</td>
+  <td><code>.getRequestArguments()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Curl</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br><code>getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
+  <td>无直接出边</td>
+  <td>src/HttpClient/Curl.php 中的 .getRequestArguments() 节点。</td>
 </tr>
 <tr>
   <td>13</td>
-  <td><code>GetRoomsActionTest</code><br><small style="color:var(--muted)">Unit/Features/GetRoomsActionTest.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>testGetRoomsActionInstantiation()</code><br><small style="color:var(--muted)">Unit/Features/GetRoomsActionTest.php</small></td>
-  <td>验证导入、入口点或版本等基础行为。</td>
+  <td><code>.fetchResponseHeader()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Curl</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
+  <td>无直接出边</td>
+  <td>src/HttpClient/Curl.php 中的 .fetchResponseHeader() 节点。</td>
 </tr>
 <tr>
   <td>14</td>
-  <td><code>.testGetRoomsActionInstantiation()</code><br><small style="color:var(--muted)">Unit/Features/GetRoomsActionTest.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>GetRoomsActionTest</code><br><small style="color:var(--muted)">Unit/Features/GetRoomsActionTest.php</small></td>
+  <td><code>.prepareRequestHeaders()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Curl</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br><code>request()</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small></td>
   <td>无直接出边</td>
-  <td>验证导入、入口点或版本等基础行为。</td>
+  <td>src/HttpClient/Curl.php 中的 .prepareRequestHeaders() 节点。</td>
 </tr>
 <tr>
   <td>15</td>
-  <td><code>TestCase</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>GetRoomsActionTest.php</code><br><small style="color:var(--muted)">Unit/Features/GetRoomsActionTest.php</small></td>
-  <td><code>assertEquals()</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small><br><code>assertFalse()</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small><br><code>assertTrue()</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small><br>+7 个更多</td>
-  <td>验证导入、入口点或版本等基础行为。</td>
+  <td><code>Guzzle.php</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>src/HttpClient/Guzzle.php 中的 Guzzle.php 节点。</td>
 </tr>
 <tr>
   <td>16</td>
-  <td><code>.createMock()</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>TestCase</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
-  <td>无直接出边</td>
-  <td>tests/Unit/TestCase.php 中的 .createMock() 节点。</td>
+  <td><code>Guzzle</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>__construct()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small><br><code>getRequestArguments()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small><br><code>getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small><br>+7 个更多</td>
+  <td>src/HttpClient/Guzzle.php 中的 Guzzle 节点。</td>
 </tr>
 <tr>
   <td>17</td>
-  <td><code>.once()</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>TestCase</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
+  <td><code>.__construct()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Guzzle</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
   <td>无直接出边</td>
-  <td>tests/Unit/TestCase.php 中的 .once() 节点。</td>
+  <td>src/HttpClient/Guzzle.php 中的 .__construct() 节点。</td>
 </tr>
 <tr>
   <td>18</td>
-  <td><code>.assertTrue()</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>TestCase</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
-  <td>无直接出边</td>
-  <td>tests/Unit/TestCase.php 中的 .assertTrue() 节点。</td>
+  <td><code>.request()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Guzzle</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
+  <td><code>getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
+  <td>src/HttpClient/Guzzle.php 中的 .request() 节点。</td>
 </tr>
 <tr>
   <td>19</td>
-  <td><code>.assertFalse()</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>TestCase</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
-  <td>无直接出边</td>
-  <td>tests/Unit/TestCase.php 中的 .assertFalse() 节点。</td>
+  <td><code>.getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Guzzle</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small><br><code>request()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
+  <td><code>getRequestArguments()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small><br><code>getResponseBody()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small><br><code>getResponseClientError()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small><br>+3 个更多</td>
+  <td>src/HttpClient/Guzzle.php 中的 .getResponse() 节点。</td>
 </tr>
 <tr>
   <td>20</td>
-  <td><code>.assertEquals()</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>TestCase</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
+  <td><code>.setLogger()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Guzzle</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
   <td>无直接出边</td>
-  <td>tests/Unit/TestCase.php 中的 .assertEquals() 节点。</td>
+  <td>src/HttpClient/Guzzle.php 中的 .setLogger() 节点。</td>
 </tr>
 <tr>
   <td>21</td>
-  <td><code>.expectException()</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>TestCase</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
+  <td><code>.getResponseBody()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small><br><code>Guzzle</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
   <td>无直接出边</td>
-  <td>tests/Unit/TestCase.php 中的 .expectException() 节点。</td>
+  <td>src/HttpClient/Guzzle.php 中的 .getResponseBody() 节点。</td>
 </tr>
 <tr>
   <td>22</td>
-  <td><code>.expectExceptionCode()</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>TestCase</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
+  <td><code>.getResponseHeader()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small><br><code>Guzzle</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
   <td>无直接出边</td>
-  <td>tests/Unit/TestCase.php 中的 .expectExceptionCode() 节点。</td>
+  <td>src/HttpClient/Guzzle.php 中的 .getResponseHeader() 节点。</td>
 </tr>
 <tr>
   <td>23</td>
-  <td><code>.expectNotToPerformAssertions()</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>TestCase</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
+  <td><code>.getResponseHttpCode()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small><br><code>Guzzle</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
   <td>无直接出边</td>
-  <td>tests/Unit/TestCase.php 中的 .expectNotToPerformAssertions() 节点。</td>
+  <td>src/HttpClient/Guzzle.php 中的 .getResponseHttpCode() 节点。</td>
 </tr>
 <tr>
   <td>24</td>
-  <td><code>RouterTest.php</code><br><small style="color:var(--muted)">Unit/Core/RouterTest.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>TestCase</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
+  <td><code>.getResponseClientError()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td><code>getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small><br><code>Guzzle</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
   <td>无直接出边</td>
-  <td>验证导入、入口点或版本等基础行为。</td>
+  <td>src/HttpClient/Guzzle.php 中的 .getResponseClientError() 节点。</td>
 </tr>
 <tr>
   <td>25</td>
-  <td><code>RouterTest</code><br><small style="color:var(--muted)">Unit/Core/RouterTest.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>testBookingStatusEnumValues()</code><br><small style="color:var(--muted)">Unit/Core/RouterTest.php</small><br><code>testValidatorDateRangeThrowsOnInvertedDates()</code><br><small style="color:var(--muted)">Unit/Core/RouterTest.php</small><br><code>testValidatorRequireFieldsSuccess()</code><br><small style="color:var(--muted)">Unit/Core/RouterTest.php</small><br>+1 个更多</td>
-  <td>验证导入、入口点或版本等基础行为。</td>
+  <td><code>.getResponseClientInfo()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td><code>getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small><br><code>Guzzle</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
+  <td>无直接出边</td>
+  <td>src/HttpClient/Guzzle.php 中的 .getResponseClientInfo() 节点。</td>
 </tr>
 <tr>
   <td>26</td>
-  <td><code>.testBookingStatusEnumValues()</code><br><small style="color:var(--muted)">Unit/Core/RouterTest.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>RouterTest</code><br><small style="color:var(--muted)">Unit/Core/RouterTest.php</small></td>
+  <td><code>.getRequestArguments()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>getResponse()</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small><br><code>Guzzle</code><br><small style="color:var(--muted)">src/HttpClient/Guzzle.php</small></td>
   <td>无直接出边</td>
-  <td>验证导入、入口点或版本等基础行为。</td>
+  <td>src/HttpClient/Guzzle.php 中的 .getRequestArguments() 节点。</td>
 </tr>
 <tr>
   <td>27</td>
-  <td><code>.testValidatorRequireFieldsSuccess()</code><br><small style="color:var(--muted)">Unit/Core/RouterTest.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>RouterTest</code><br><small style="color:var(--muted)">Unit/Core/RouterTest.php</small></td>
-  <td>无直接出边</td>
-  <td>验证导入、入口点或版本等基础行为。</td>
+  <td><code>StorageInterface</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>KeycloakTest.php</code><br><small style="color:var(--muted)">tests/Provider/KeycloakTest.php</small></td>
+  <td>支撑检索增强问答或流式聊天。</td>
 </tr>
 <tr>
   <td>28</td>
-  <td><code>.testValidatorRequireFieldsThrowsOnMissing()</code><br><small style="color:var(--muted)">Unit/Core/RouterTest.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>RouterTest</code><br><small style="color:var(--muted)">Unit/Core/RouterTest.php</small></td>
-  <td>无直接出边</td>
-  <td>验证导入、入口点或版本等基础行为。</td>
+  <td><code>StorageImpl.php</code><br><small style="color:var(--muted)">src/Storage/StorageImpl.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>KeycloakTest.php</code><br><small style="color:var(--muted)">tests/Provider/KeycloakTest.php</small></td>
+  <td>支撑检索增强问答或流式聊天。</td>
 </tr>
 <tr>
   <td>29</td>
-  <td><code>.testValidatorDateRangeThrowsOnInvertedDates()</code><br><small style="color:var(--muted)">Unit/Core/RouterTest.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>RouterTest</code><br><small style="color:var(--muted)">Unit/Core/RouterTest.php</small></td>
-  <td>无直接出边</td>
-  <td>验证导入、入口点或版本等基础行为。</td>
+  <td><code>StorageImpl</code><br><small style="color:var(--muted)">src/Storage/StorageImpl.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>__construct()</code><br><small style="color:var(--muted)">src/Storage/StorageImpl.php</small><br><code>clear()</code><br><small style="color:var(--muted)">src/Storage/StorageImpl.php</small><br><code>delete()</code><br><small style="color:var(--muted)">src/Storage/StorageImpl.php</small><br>+3 个更多</td>
+  <td>支撑检索增强问答或流式聊天。</td>
 </tr>
 <tr>
   <td>30</td>
-  <td><code>HandleMercadoPagoWebhookActionTest.php</code><br><small style="color:var(--muted)">Unit/Features/HandleMercadoPagoWebhookActionTest.php</small></td>
-  <td><span class="tag tag-func">测试</span></td>
-  <td><code>ChannelManagerPortInterface</code><br><code>TestCase</code><br><small style="color:var(--muted)">tests/Unit/TestCase.php</small></td>
+  <td><code>.__construct()</code><br><small style="color:var(--muted)">src/Storage/StorageImpl.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>StorageImpl</code><br><small style="color:var(--muted)">src/Storage/StorageImpl.php</small></td>
   <td>无直接出边</td>
-  <td>验证导入、入口点或版本等基础行为。</td>
+  <td>src/Storage/StorageImpl.php 中的 .__construct() 节点。</td>
 </tr>
 </table>
 
@@ -2277,95 +2275,88 @@ flowchart LR
     <h4>关键文件</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>覆盖节点</th></tr>
-      <tr><td><code>docs/HARNESS.md</code></td><td>12 个节点</td></tr>
+      <tr><td><code>src/HttpClient/Curl.php</code></td><td>13 个节点</td></tr>
+<tr><td><code>docs/HARNESS.md</code></td><td>12 个节点</td></tr>
+<tr><td><code>src/HttpClient/Guzzle.php</code></td><td>12 个节点</td></tr>
 <tr><td><code>tests/Data/CollectionTest.php</code></td><td>11 个节点</td></tr>
-<tr><td><code>Shared/Adapters/ChannexAdapter.php</code></td><td>9 个节点</td></tr>
-<tr><td><code>tests/Unit/TestCase.php</code></td><td>9 个节点</td></tr>
-<tr><td><code>tests/Storage/SessionTest.php</code></td><td>8 个节点</td></tr>
+<tr><td><code>tests/Unit/TestCase.php</code></td><td>10 个节点</td></tr>
+<tr><td><code>tests/Storage/SessionTest.php</code></td><td>9 个节点</td></tr>
+<tr><td><code>src/Storage/StorageImpl.php</code></td><td>8 个节点</td></tr>
 <tr><td><code>src/i18n/utils.ts</code></td><td>7 个节点</td></tr>
-<tr><td><code>Unit/Core/RouterTest.php</code></td><td>6 个节点</td></tr>
-<tr><td><code>tests/User/ActivityTest.php</code></td><td>6 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：导入 x68, 方法 x60, 包含 x39, 导入 x34。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：方法 x82, 导入 x68, 导入 x56, 包含 x44。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
 
-<!-- ====== 11. File Creation Checklist ====== -->
-<h2 id="file-creation-checklist">11. File Creation Checklist</h2>
-<p>File Creation Checklist 汇集了与 hybridauth、vendor、exception、hybridauthphp 相关的实现，主要分布在 hybridauth/src/Hybridauth.php、Thirdparty/OAuth/OAuthConsumer.php、src/Exception/Exception.php。本节覆盖 70 个节点、121 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<!-- ====== 11. python.md ====== -->
+<h2 id="python-md">11. python.md</h2>
+<p>python.md 汇集了与 app、features、auth、httpexceptionphp 相关的实现，主要分布在 app/Core/HttpException.php、app/Core/Config.php、Features/Auth/SessionService.php。本节覆盖 56 个节点、79 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: File Creation Checklist (70 nodes, 121 edges)
-    subgraph file_creation_checklist_hybridauth_src_Hybridaut_edb6770b["hybridauth/src/Hybridauth.php"]
-        vendor_hybridauth_hybridauth_src_hybridauth_hybr_f2bc206f("Hybridauth<br/><small>hybridauth/src/Hybridauth.php</small>")
-        vendor_hybridauth_hybridauth_src_hybridauth_hybr_8a23226d("authenticate()<br/><small>hybridauth/src/Hybridauth.php</small>")
-        vendor_hybridauth_hybridauth_src_hybridauth_hybr_0204798d("__construct()<br/><small>hybridauth/src/Hybridauth.php</small>")
-        vendor_hybridauth_hybridauth_src_hybridauth_hybr_79994815("disconnectAllAdapters()<br/><small>hybridauth/src/Hybridauth.php</small>")
-        vendor_hybridauth_hybridauth_src_hybridauth_hybr_da32d4d0("getAdapter()<br/><small>hybridauth/src/Hybridauth.php</small>")
-        vendor_hybridauth_hybridauth_src_hybridauth_hybr_c74b3ac9("getConnectedAdapters()<br/><small>hybridauth/src/Hybridauth.php</small>")
-        vendor_hybridauth_hybridauth_src_hybridauth_hybr_10e918f7("getConnectedProviders()<br/><small>hybridauth/src/Hybridauth.php</small>")
-        vendor_hybridauth_hybridauth_src_hybridauth_hybr_5a98d51d("getProviderConfig()<br/><small>hybridauth/src/Hybridauth.php</small>")
-        vendor_hybridauth_hybridauth_src_hybridauth_hybr_9eaf6001("getProviders()<br/><small>hybridauth/src/Hybridauth.php</small>")
-        vendor_hybridauth_hybridauth_src_hybridauth_hybr_ef4c6d58("isConnectedWith()<br/><small>hybridauth/src/Hybridauth.php</small>")
+    %% Section: python.md (56 nodes, 79 edges)
+    subgraph python_md_app_Core_Config_php_1bab4718["app/Core/Config.php"]
+        app_core_config_config_fc55d656("Config<br/><small>app/Core/Config.php</small>")
+        app_core_config_config_boot_6a1dd654("boot()<br/><small>app/Core/Config.php</small>")
+        app_core_config_config_construct_ba19f25c("__construct()<br/><small>app/Core/Config.php</small>")
+        app_core_config_config_get_2e11c8f6("get()<br/><small>app/Core/Config.php</small>")
+        app_core_config_config_getallowedorigins_3a36a21a("getAllowedOrigins()<br/><small>app/Core/Config.php</small>")
+        app_core_config_config_gettrustedproxies_e62dff8e("getTrustedProxies()<br/><small>app/Core/Config.php</small>")
+        app_core_config_config_isproduction_61502680("isProduction()<br/><small>app/Core/Config.php</small>")
+        app_core_config_config_loadenv_cee558d4("loadEnv()<br/><small>app/Core/Config.php</small>")
     end
-    subgraph file_creation_checklist_src_Exception_Exception_a58953c5["src/Exception/Exception.php"]
-        vendor_hybridauth_hybridauth_src_exception_excep_e720610e("Exception<br/><small>src/Exception/Exception.php</small>")
-        vendor_hybridauth_hybridauth_src_exception_excep_425ee7b3("debug()<br/><small>src/Exception/Exception.php</small>")
+    subgraph python_md_app_Core_HttpException_php_e5c76edd["app/Core/HttpException.php"]
+        app_core_httpexception_httpexception_75382b3b("HttpException<br/><small>app/Core/HttpException.php</small>")
+        app_core_httpexception_httpexception_badrequest_de6589fc("badRequest()<br/><small>app/Core/HttpException.php</small>")
+        app_core_httpexception_httpexception_construct_f80c0f71("__construct()<br/><small>app/Core/HttpException.php</small>")
+        app_core_httpexception_httpexception_forbidden_141cca0c("forbidden()<br/><small>app/Core/HttpException.php</small>")
+        app_core_httpexception_httpexception_getdetails_25169f24("getDetails()<br/><small>app/Core/HttpException.php</small>")
     end
-    vendor_hybridauth_hybridauth_src_thirdparty_oaut_7a59ef19("OAuthConsumer<br/><small>Thirdparty/OAuth/OAuthConsumer.php</small>")
-    vendor_hybridauth_hybridauth_examples_example_06_f1f856e4("callback.php")
-    vendor_hybridauth_hybridauth_examples_example_07_e2871298("callback.php")
-    vendor_hybridauth_hybridauth_src_adapter_oauth1_2615c368("OAuth1.php")
-    vendor_hybridauth_hybridauth_src_adapter_oauth2_36279af0("OAuth2.php")
-    vendor_hybridauth_hybridauth_src_adapter_openid_dc8ffa70("OpenID.php")
-    vendor_hybridauth_hybridauth_src_exception_excep_e720610e -->|方法| vendor_hybridauth_hybridauth_src_exception_excep_425ee7b3
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_f2bc206f -->|方法| vendor_hybridauth_hybridauth_src_hybridauth_hybr_8a23226d
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_f2bc206f -->|方法| vendor_hybridauth_hybridauth_src_hybridauth_hybr_0204798d
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_f2bc206f -->|方法| vendor_hybridauth_hybridauth_src_hybridauth_hybr_79994815
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_f2bc206f -->|方法| vendor_hybridauth_hybridauth_src_hybridauth_hybr_da32d4d0
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_f2bc206f -->|方法| vendor_hybridauth_hybridauth_src_hybridauth_hybr_c74b3ac9
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_f2bc206f -->|方法| vendor_hybridauth_hybridauth_src_hybridauth_hybr_10e918f7
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_f2bc206f -->|方法| vendor_hybridauth_hybridauth_src_hybridauth_hybr_5a98d51d
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_f2bc206f -->|方法| vendor_hybridauth_hybridauth_src_hybridauth_hybr_9eaf6001
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_f2bc206f -->|方法| vendor_hybridauth_hybridauth_src_hybridauth_hybr_ef4c6d58
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_8a23226d -->|调用| vendor_hybridauth_hybridauth_src_hybridauth_hybr_da32d4d0
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_da32d4d0 -->|调用| vendor_hybridauth_hybridauth_src_hybridauth_hybr_79994815
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_da32d4d0 -->|调用| vendor_hybridauth_hybridauth_src_hybridauth_hybr_5a98d51d
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_da32d4d0 -->|调用| vendor_hybridauth_hybridauth_src_hybridauth_hybr_c74b3ac9
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_da32d4d0 -->|调用| vendor_hybridauth_hybridauth_src_hybridauth_hybr_ef4c6d58
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_ef4c6d58 -->|调用| vendor_hybridauth_hybridauth_src_hybridauth_hybr_10e918f7
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_9eaf6001 -->|调用| vendor_hybridauth_hybridauth_src_hybridauth_hybr_79994815
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_9eaf6001 -->|调用| vendor_hybridauth_hybridauth_src_hybridauth_hybr_c74b3ac9
-    vendor_hybridauth_hybridauth_src_hybridauth_hybr_9eaf6001 -->|调用| vendor_hybridauth_hybridauth_src_hybridauth_hybr_10e918f7
-    vendor_hybridauth_hybridauth_examples_example_06_f1f856e4 -->|导入| vendor_hybridauth_hybridauth_src_exception_excep_e720610e
-    vendor_hybridauth_hybridauth_examples_example_07_e2871298 -->|导入| vendor_hybridauth_hybridauth_src_exception_excep_e720610e
-    vendor_hybridauth_hybridauth_src_adapter_oauth1_2615c368 -->|导入| vendor_hybridauth_hybridauth_src_exception_excep_e720610e
-    vendor_hybridauth_hybridauth_src_adapter_oauth2_36279af0 -->|导入| vendor_hybridauth_hybridauth_src_exception_excep_e720610e
-    %% Omitted for readability: 52 nodes, 0 edges
-    class vendor_hybridauth_hybridauth_src_hybridauth_hybr_f2bc206f klass;
-    class vendor_hybridauth_hybridauth_src_hybridauth_hybr_8a23226d function;
-    class vendor_hybridauth_hybridauth_src_hybridauth_hybr_0204798d function;
-    class vendor_hybridauth_hybridauth_src_hybridauth_hybr_79994815 function;
-    class vendor_hybridauth_hybridauth_src_hybridauth_hybr_da32d4d0 function;
-    class vendor_hybridauth_hybridauth_src_hybridauth_hybr_c74b3ac9 function;
-    class vendor_hybridauth_hybridauth_src_hybridauth_hybr_10e918f7 function;
-    class vendor_hybridauth_hybridauth_src_hybridauth_hybr_5a98d51d function;
-    class vendor_hybridauth_hybridauth_src_hybridauth_hybr_9eaf6001 function;
-    class vendor_hybridauth_hybridauth_src_hybridauth_hybr_ef4c6d58 function;
-    class vendor_hybridauth_hybridauth_src_exception_excep_e720610e klass;
-    class vendor_hybridauth_hybridauth_src_exception_excep_425ee7b3 function;
-    class vendor_hybridauth_hybridauth_src_thirdparty_oaut_7a59ef19 klass;
-    class vendor_hybridauth_hybridauth_examples_example_06_f1f856e4 module;
-    class vendor_hybridauth_hybridauth_examples_example_07_e2871298 module;
-    class vendor_hybridauth_hybridauth_src_adapter_oauth1_2615c368 klass;
-    class vendor_hybridauth_hybridauth_src_adapter_oauth2_36279af0 klass;
-    class vendor_hybridauth_hybridauth_src_adapter_openid_dc8ffa70 klass;
+    app_core_config_php_self_9c7e914d("self")
+    app_features_auth_authservice_authservice_bd35312c("AuthService<br/><small>Features/Auth/AuthService.php</small>")
+    app_features_auth_sessionservice_sessionservice_6369ffda("SessionService<br/><small>Features/Auth/SessionService.php</small>")
+    app_features_shared_roomtyperegistry_roomtypereg_9058e722("RoomTypeRegistry<br/><small>Features/Shared/RoomTypeRegistry.php</small>")
+    app_core_validator_validator_bf7a5c30("Validator<br/><small>app/Core/Validator.php</small>")
+    app_core_config_config_fc55d656 -->|方法| app_core_config_config_boot_6a1dd654
+    app_core_config_config_fc55d656 -->|方法| app_core_config_config_construct_ba19f25c
+    app_core_config_config_fc55d656 -->|方法| app_core_config_config_get_2e11c8f6
+    app_core_config_config_fc55d656 -->|方法| app_core_config_config_getallowedorigins_3a36a21a
+    app_core_config_config_fc55d656 -->|方法| app_core_config_config_gettrustedproxies_e62dff8e
+    app_core_config_config_fc55d656 -->|方法| app_core_config_config_isproduction_61502680
+    app_core_config_config_fc55d656 -->|方法| app_core_config_config_loadenv_cee558d4
+    app_core_config_config_construct_ba19f25c -->|调用| app_core_config_config_loadenv_cee558d4
+    app_core_config_php_self_9c7e914d -->|调用| app_core_config_config_get_2e11c8f6
+    app_core_config_php_self_9c7e914d -->|调用| app_core_config_config_getallowedorigins_3a36a21a
+    app_core_config_php_self_9c7e914d -->|调用| app_core_config_config_gettrustedproxies_e62dff8e
+    app_core_config_php_self_9c7e914d -->|调用| app_core_config_config_isproduction_61502680
+    app_core_httpexception_httpexception_75382b3b -->|方法| app_core_httpexception_httpexception_badrequest_de6589fc
+    app_core_httpexception_httpexception_75382b3b -->|方法| app_core_httpexception_httpexception_construct_f80c0f71
+    app_core_httpexception_httpexception_75382b3b -->|方法| app_core_httpexception_httpexception_forbidden_141cca0c
+    app_core_httpexception_httpexception_75382b3b -->|方法| app_core_httpexception_httpexception_getdetails_25169f24
+    %% Omitted for readability: 38 nodes, 0 edges
+    class app_core_config_config_fc55d656 klass;
+    class app_core_config_config_boot_6a1dd654 function;
+    class app_core_config_config_construct_ba19f25c function;
+    class app_core_config_config_get_2e11c8f6 function;
+    class app_core_config_config_getallowedorigins_3a36a21a function;
+    class app_core_config_config_gettrustedproxies_e62dff8e function;
+    class app_core_config_config_isproduction_61502680 function;
+    class app_core_config_config_loadenv_cee558d4 function;
+    class app_core_httpexception_httpexception_75382b3b klass;
+    class app_core_httpexception_httpexception_badrequest_de6589fc function;
+    class app_core_httpexception_httpexception_construct_f80c0f71 function;
+    class app_core_httpexception_httpexception_forbidden_141cca0c function;
+    class app_core_httpexception_httpexception_getdetails_25169f24 function;
+    class app_core_config_php_self_9c7e914d function;
+    class app_features_auth_authservice_authservice_bd35312c klass;
+    class app_features_auth_sessionservice_sessionservice_6369ffda klass;
+    class app_features_shared_roomtyperegistry_roomtypereg_9058e722 entry;
+    class app_core_validator_validator_bf7a5c30 klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -2389,243 +2380,243 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>example_02.php</code><br><small style="color:var(--muted)">hybridauth/examples/example_02.php</small></td>
-  <td><span class="tag tag-class">模块</span></td>
+  <td><code>Config.php</code><br><small style="color:var(--muted)">app/Core/Config.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>Hybridauth.php</code><br><small style="color:var(--muted)">hybridauth/src/Hybridauth.php</small></td>
-  <td>hybridauth/examples/example_02.php 中的 example_02.php 节点。</td>
+  <td>无直接出边</td>
+  <td>读取、解析或持久化项目配置。</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>callback.php</code><br><small style="color:var(--muted)">examples/example_06/callback.php</small></td>
-  <td><span class="tag tag-class">模块</span></td>
+  <td><code>Config</code><br><small style="color:var(--muted)">app/Core/Config.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>Exception</code><br><small style="color:var(--muted)">src/Exception/Exception.php</small><br><code>Hybridauth.php</code><br><small style="color:var(--muted)">hybridauth/src/Hybridauth.php</small><br><code>Session.php</code><br><small style="color:var(--muted)">src/Storage/Session.php</small></td>
-  <td>examples/example_06/callback.php 中的 callback.php 节点。</td>
+  <td><code>__construct()</code><br><small style="color:var(--muted)">app/Core/Config.php</small><br><code>__invoke()</code><br><small style="color:var(--muted)">Booking/Actions/CreateBookingAction.php</small><br><code>__invoke()</code><br><small style="color:var(--muted)">Rooms/Actions/GetRoomsAction.php</small><br>+15 个更多</td>
+  <td>读取、解析或持久化项目配置。</td>
 </tr>
 <tr>
   <td>3</td>
-  <td><code>index.php</code><br><small style="color:var(--muted)">examples/example_06/index.php</small></td>
-  <td><span class="tag tag-class">模块</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>Hybridauth.php</code><br><small style="color:var(--muted)">hybridauth/src/Hybridauth.php</small></td>
-  <td>examples/example_06/index.php 中的 index.php 节点。</td>
+  <td><code>.__construct()</code><br><small style="color:var(--muted)">app/Core/Config.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Config</code><br><small style="color:var(--muted)">app/Core/Config.php</small></td>
+  <td><code>loadEnv()</code><br><small style="color:var(--muted)">app/Core/Config.php</small></td>
+  <td>app/Core/Config.php 中的 .__construct() 节点。</td>
 </tr>
 <tr>
   <td>4</td>
-  <td><code>callback.php</code><br><small style="color:var(--muted)">examples/example_07/callback.php</small></td>
-  <td><span class="tag tag-class">模块</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>Exception</code><br><small style="color:var(--muted)">src/Exception/Exception.php</small><br><code>Hybridauth.php</code><br><small style="color:var(--muted)">hybridauth/src/Hybridauth.php</small><br><code>Session.php</code><br><small style="color:var(--muted)">src/Storage/Session.php</small></td>
-  <td>examples/example_07/callback.php 中的 callback.php 节点。</td>
+  <td><code>.boot()</code><br><small style="color:var(--muted)">app/Core/Config.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Config</code><br><small style="color:var(--muted)">app/Core/Config.php</small></td>
+  <td>无直接出边</td>
+  <td>app/Core/Config.php 中的 .boot() 节点。</td>
 </tr>
 <tr>
   <td>5</td>
-  <td><code>index.php</code><br><small style="color:var(--muted)">examples/example_07/index.php</small></td>
-  <td><span class="tag tag-class">模块</span></td>
+  <td><code>self</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">函数</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>Hybridauth.php</code><br><small style="color:var(--muted)">hybridauth/src/Hybridauth.php</small></td>
-  <td>examples/example_07/index.php 中的 index.php 节点。</td>
+  <td><code>get()</code><br><small style="color:var(--muted)">app/Core/Config.php</small><br><code>getAllowedOrigins()</code><br><small style="color:var(--muted)">app/Core/Config.php</small><br><code>getTrustedProxies()</code><br><small style="color:var(--muted)">app/Core/Config.php</small><br>+1 个更多</td>
+  <td>项目 中的 self 节点。</td>
 </tr>
 <tr>
   <td>6</td>
-  <td><code>OAuth1.php</code><br><small style="color:var(--muted)">src/Adapter/OAuth1.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>AuthorizationDeniedException.php</code><br><small style="color:var(--muted)">src/Exception/AuthorizationDeniedException.php</small><br><code>Exception</code><br><small style="color:var(--muted)">src/Exception/Exception.php</small><br><code>InvalidAccessTokenException.php</code><br><small style="color:var(--muted)">src/Exception/InvalidAccessTokenException.php</small><br>+5 个更多</td>
-  <td>src/Adapter/OAuth1.php 中的 OAuth1.php 节点。</td>
+  <td><code>.get()</code><br><small style="color:var(--muted)">app/Core/Config.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Config</code><br><small style="color:var(--muted)">app/Core/Config.php</small><br><code>self</code></td>
+  <td>无直接出边</td>
+  <td>app/Core/Config.php 中的 .get() 节点。</td>
 </tr>
 <tr>
   <td>7</td>
-  <td><code>OAuth2.php</code><br><small style="color:var(--muted)">src/Adapter/OAuth2.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>AuthorizationDeniedException.php</code><br><small style="color:var(--muted)">src/Exception/AuthorizationDeniedException.php</small><br><code>Exception</code><br><small style="color:var(--muted)">src/Exception/Exception.php</small><br><code>InvalidAccessTokenException.php</code><br><small style="color:var(--muted)">src/Exception/InvalidAccessTokenException.php</small><br>+3 个更多</td>
-  <td>src/Adapter/OAuth2.php 中的 OAuth2.php 节点。</td>
+  <td><code>.isProduction()</code><br><small style="color:var(--muted)">app/Core/Config.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Config</code><br><small style="color:var(--muted)">app/Core/Config.php</small><br><code>self</code></td>
+  <td>无直接出边</td>
+  <td>app/Core/Config.php 中的 .isProduction() 节点。</td>
 </tr>
 <tr>
   <td>8</td>
-  <td><code>OpenID.php</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>AuthorizationDeniedException.php</code><br><small style="color:var(--muted)">src/Exception/AuthorizationDeniedException.php</small><br><code>InvalidOpenidIdentifierException.php</code><br><small style="color:var(--muted)">src/Exception/InvalidOpenidIdentifierException.php</small><br><code>LightOpenID.php</code><br><small style="color:var(--muted)">Thirdparty/OpenID/LightOpenID.php</small><br>+1 个更多</td>
-  <td>src/Adapter/OpenID.php 中的 OpenID.php 节点。</td>
+  <td><code>.getAllowedOrigins()</code><br><small style="color:var(--muted)">app/Core/Config.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Config</code><br><small style="color:var(--muted)">app/Core/Config.php</small><br><code>self</code></td>
+  <td>无直接出边</td>
+  <td>app/Core/Config.php 中的 .getAllowedOrigins() 节点。</td>
 </tr>
 <tr>
   <td>9</td>
-  <td><code>AuthorizationDeniedException.php</code><br><small style="color:var(--muted)">src/Exception/AuthorizationDeniedException.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>OAuth1.php</code><br><small style="color:var(--muted)">src/Adapter/OAuth1.php</small><br><code>OAuth2.php</code><br><small style="color:var(--muted)">src/Adapter/OAuth2.php</small><br><code>OpenID.php</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
+  <td><code>.getTrustedProxies()</code><br><small style="color:var(--muted)">app/Core/Config.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Config</code><br><small style="color:var(--muted)">app/Core/Config.php</small><br><code>self</code></td>
   <td>无直接出边</td>
-  <td>src/Exception/AuthorizationDeniedException.php 中的 AuthorizationDeniedException.php 节点。</td>
+  <td>app/Core/Config.php 中的 .getTrustedProxies() 节点。</td>
 </tr>
 <tr>
   <td>10</td>
-  <td><code>AuthorizationDeniedException</code><br><small style="color:var(--muted)">src/Exception/AuthorizationDeniedException.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.loadEnv()</code><br><small style="color:var(--muted)">app/Core/Config.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>__construct()</code><br><small style="color:var(--muted)">app/Core/Config.php</small><br><code>Config</code><br><small style="color:var(--muted)">app/Core/Config.php</small></td>
   <td>无直接出边</td>
-  <td>src/Exception/AuthorizationDeniedException.php 中的 AuthorizationDeniedException 节点。</td>
+  <td>app/Core/Config.php 中的 .loadEnv() 节点。</td>
 </tr>
 <tr>
   <td>11</td>
-  <td><code>ExceptionInterface</code><br><small style="color:var(--muted)"></small></td>
+  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>LightOpenID.php</code><br><small style="color:var(--muted)">Thirdparty/OpenID/LightOpenID.php</small></td>
-  <td>项目 中的 ExceptionInterface 节点。</td>
+  <td><code>__construct()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small><br><code>__invoke()</code><br><small style="color:var(--muted)">Rooms/Actions/GetRoomsAction.php</small><br><code>__invoke()</code><br><small style="color:var(--muted)">Booking/Actions/CreateBookingAction.php</small><br>+16 个更多</td>
+  <td>app/Core/HttpException.php 中的 HttpException 节点。</td>
 </tr>
 <tr>
   <td>12</td>
-  <td><code>BadMethodCallException.php</code><br><small style="color:var(--muted)">src/Exception/BadMethodCallException.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.__construct()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
   <td>无直接出边</td>
-  <td>src/Exception/BadMethodCallException.php 中的 BadMethodCallException.php 节点。</td>
+  <td>app/Core/HttpException.php 中的 .__construct() 节点。</td>
 </tr>
 <tr>
   <td>13</td>
-  <td><code>BadMethodCallException</code><br><small style="color:var(--muted)">src/Exception/BadMethodCallException.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.getStatusCode()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
   <td>无直接出边</td>
-  <td>src/Exception/BadMethodCallException.php 中的 BadMethodCallException 节点。</td>
+  <td>app/Core/HttpException.php 中的 .getStatusCode() 节点。</td>
 </tr>
 <tr>
   <td>14</td>
-  <td><code>Exception.php</code><br><small style="color:var(--muted)">src/Exception/Exception.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.getErrorCode()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
   <td>无直接出边</td>
-  <td>src/Exception/Exception.php 中的 Exception.php 节点。</td>
+  <td>app/Core/HttpException.php 中的 .getErrorCode() 节点。</td>
 </tr>
 <tr>
   <td>15</td>
-  <td><code>Exception</code><br><small style="color:var(--muted)">src/Exception/Exception.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>callback.php</code><br><small style="color:var(--muted)">examples/example_06/callback.php</small><br><code>callback.php</code><br><small style="color:var(--muted)">examples/example_07/callback.php</small><br><code>OAuth1.php</code><br><small style="color:var(--muted)">src/Adapter/OAuth1.php</small><br>+1 个更多</td>
-  <td><code>debug()</code><br><small style="color:var(--muted)">src/Exception/Exception.php</small><br><code>LightOpenID.php</code><br><small style="color:var(--muted)">Thirdparty/OpenID/LightOpenID.php</small></td>
-  <td>src/Exception/Exception.php 中的 Exception 节点。</td>
+  <td><code>.getDetails()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td>无直接出边</td>
+  <td>app/Core/HttpException.php 中的 .getDetails() 节点。</td>
 </tr>
 <tr>
   <td>16</td>
-  <td><code>.debug()</code><br><small style="color:var(--muted)">src/Exception/Exception.php</small></td>
+  <td><code>.toPayload()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>Exception</code><br><small style="color:var(--muted)">src/Exception/Exception.php</small></td>
+  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
   <td>无直接出边</td>
-  <td>src/Exception/Exception.php 中的 .debug() 节点。</td>
+  <td>app/Core/HttpException.php 中的 .toPayload() 节点。</td>
 </tr>
 <tr>
   <td>17</td>
-  <td><code>HttpClientFailureException</code><br><small style="color:var(--muted)">src/Exception/HttpClientFailureException.php</small></td>
-  <td><span class="tag tag-cmd">入口</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.badRequest()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
   <td>无直接出边</td>
-  <td>src/Exception/HttpClientFailureException.php 中的 HttpClientFailureException 节点。</td>
+  <td>app/Core/HttpException.php 中的 .badRequest() 节点。</td>
 </tr>
 <tr>
   <td>18</td>
-  <td><code>HttpRequestFailedException.php</code><br><small style="color:var(--muted)">src/Exception/HttpRequestFailedException.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
+  <td><code>self</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">函数</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>Facebook.php</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small></td>
-  <td>src/Exception/HttpRequestFailedException.php 中的 HttpRequestFailedException.php 节点。</td>
+  <td>无直接出边</td>
+  <td>项目 中的 self 节点。</td>
 </tr>
 <tr>
   <td>19</td>
-  <td><code>HttpRequestFailedException</code><br><small style="color:var(--muted)">src/Exception/HttpRequestFailedException.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.missingCredentials()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
   <td>无直接出边</td>
-  <td>src/Exception/HttpRequestFailedException.php 中的 HttpRequestFailedException 节点。</td>
+  <td>app/Core/HttpException.php 中的 .missingCredentials() 节点。</td>
 </tr>
 <tr>
   <td>20</td>
-  <td><code>InvalidAccessTokenException.php</code><br><small style="color:var(--muted)">src/Exception/InvalidAccessTokenException.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>OAuth1.php</code><br><small style="color:var(--muted)">src/Adapter/OAuth1.php</small><br><code>OAuth2.php</code><br><small style="color:var(--muted)">src/Adapter/OAuth2.php</small></td>
+  <td><code>.unauthorized()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
   <td>无直接出边</td>
-  <td>src/Exception/InvalidAccessTokenException.php 中的 InvalidAccessTokenException.php 节点。</td>
+  <td>app/Core/HttpException.php 中的 .unauthorized() 节点。</td>
 </tr>
 <tr>
   <td>21</td>
-  <td><code>InvalidAccessTokenException</code><br><small style="color:var(--muted)">src/Exception/InvalidAccessTokenException.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.forbidden()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
   <td>无直接出边</td>
-  <td>src/Exception/InvalidAccessTokenException.php 中的 InvalidAccessTokenException 节点。</td>
+  <td>app/Core/HttpException.php 中的 .forbidden() 节点。</td>
 </tr>
 <tr>
   <td>22</td>
-  <td><code>InvalidApplicationCredentialsException.php</code><br><small style="color:var(--muted)">src/Exception/InvalidApplicationCredentialsException.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>OAuth1.php</code><br><small style="color:var(--muted)">src/Adapter/OAuth1.php</small><br><code>OAuth2.php</code><br><small style="color:var(--muted)">src/Adapter/OAuth2.php</small></td>
+  <td><code>.notFound()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
   <td>无直接出边</td>
-  <td>src/Exception/InvalidApplicationCredentialsException.php 中的 InvalidApplicationCredentialsException.php 节点。</td>
+  <td>app/Core/HttpException.php 中的 .notFound() 节点。</td>
 </tr>
 <tr>
   <td>23</td>
-  <td><code>InvalidApplicationCredentialsException</code><br><small style="color:var(--muted)">src/Exception/InvalidApplicationCredentialsException.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.tooManyRequests()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
   <td>无直接出边</td>
-  <td>src/Exception/InvalidApplicationCredentialsException.php 中的 InvalidApplicationCredentialsException 节点。</td>
+  <td>app/Core/HttpException.php 中的 .tooManyRequests() 节点。</td>
 </tr>
 <tr>
   <td>24</td>
-  <td><code>InvalidArgumentException.php</code><br><small style="color:var(--muted)">src/Exception/InvalidArgumentException.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.internal()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
   <td>无直接出边</td>
-  <td>src/Exception/InvalidArgumentException.php 中的 InvalidArgumentException.php 节点。</td>
+  <td>app/Core/HttpException.php 中的 .internal() 节点。</td>
 </tr>
 <tr>
   <td>25</td>
-  <td><code>InvalidArgumentException</code><br><small style="color:var(--muted)">src/Exception/InvalidArgumentException.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>Facebook.php</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small><br><code>Hybridauth.php</code><br><small style="color:var(--muted)">hybridauth/src/Hybridauth.php</small><br><code>Logger.php</code><br><small style="color:var(--muted)">src/Logger/Logger.php</small></td>
-  <td>src/Exception/InvalidArgumentException.php 中的 InvalidArgumentException 节点。</td>
+  <td><code>.formatEntry()</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Config</code><br><small style="color:var(--muted)">app/Core/Config.php</small></td>
+  <td>无直接出边</td>
+  <td>app/Core/Logger.php 中的 .formatEntry() 节点。</td>
 </tr>
 <tr>
   <td>26</td>
-  <td><code>InvalidAuthorizationCodeException.php</code><br><small style="color:var(--muted)">src/Exception/InvalidAuthorizationCodeException.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>OAuth2.php</code><br><small style="color:var(--muted)">src/Adapter/OAuth2.php</small></td>
+  <td><code>.getIp()</code><br><small style="color:var(--muted)">app/Core/Request.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Config</code><br><small style="color:var(--muted)">app/Core/Config.php</small></td>
   <td>无直接出边</td>
-  <td>src/Exception/InvalidAuthorizationCodeException.php 中的 InvalidAuthorizationCodeException.php 节点。</td>
+  <td>app/Core/Request.php 中的 .getIp() 节点。</td>
 </tr>
 <tr>
   <td>27</td>
-  <td><code>InvalidAuthorizationCodeException</code><br><small style="color:var(--muted)">src/Exception/InvalidAuthorizationCodeException.php</small></td>
+  <td><code>Validator</code><br><small style="color:var(--muted)">app/Core/Validator.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>src/Exception/InvalidAuthorizationCodeException.php 中的 InvalidAuthorizationCodeException 节点。</td>
+  <td><code>__invoke()</code><br><small style="color:var(--muted)">Booking/Actions/CreateBookingAction.php</small><br><code>__invoke()</code><br><small style="color:var(--muted)">Rooms/Actions/GetRoomsAction.php</small><br><code>dateRange()</code><br><small style="color:var(--muted)">app/Core/Validator.php</small><br>+4 个更多</td>
+  <td>app/Core/Validator.php 中的 Validator 节点。</td>
 </tr>
 <tr>
   <td>28</td>
-  <td><code>InvalidAuthorizationStateException.php</code><br><small style="color:var(--muted)">src/Exception/InvalidAuthorizationStateException.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>OAuth2.php</code><br><small style="color:var(--muted)">src/Adapter/OAuth2.php</small></td>
+  <td><code>.requireFields()</code><br><small style="color:var(--muted)">app/Core/Validator.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small><br><code>Validator</code><br><small style="color:var(--muted)">app/Core/Validator.php</small></td>
   <td>无直接出边</td>
-  <td>src/Exception/InvalidAuthorizationStateException.php 中的 InvalidAuthorizationStateException.php 节点。</td>
+  <td>app/Core/Validator.php 中的 .requireFields() 节点。</td>
 </tr>
 <tr>
   <td>29</td>
-  <td><code>InvalidAuthorizationStateException</code><br><small style="color:var(--muted)">src/Exception/InvalidAuthorizationStateException.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.dateRange()</code><br><small style="color:var(--muted)">app/Core/Validator.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small><br><code>Validator</code><br><small style="color:var(--muted)">app/Core/Validator.php</small></td>
   <td>无直接出边</td>
-  <td>src/Exception/InvalidAuthorizationStateException.php 中的 InvalidAuthorizationStateException 节点。</td>
+  <td>app/Core/Validator.php 中的 .dateRange() 节点。</td>
 </tr>
 <tr>
   <td>30</td>
-  <td><code>InvalidOauthTokenException.php</code><br><small style="color:var(--muted)">src/Exception/InvalidOauthTokenException.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>OAuth1.php</code><br><small style="color:var(--muted)">src/Adapter/OAuth1.php</small></td>
+  <td><code>.email()</code><br><small style="color:var(--muted)">app/Core/Validator.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small><br><code>Validator</code><br><small style="color:var(--muted)">app/Core/Validator.php</small></td>
   <td>无直接出边</td>
-  <td>src/Exception/InvalidOauthTokenException.php 中的 InvalidOauthTokenException.php 节点。</td>
+  <td>app/Core/Validator.php 中的 .email() 节点。</td>
 </tr>
 </table>
 
@@ -2634,19 +2625,19 @@ flowchart LR
     <h4>关键文件</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>覆盖节点</th></tr>
-      <tr><td><code>hybridauth/src/Hybridauth.php</code></td><td>11 个节点</td></tr>
-<tr><td><code>Thirdparty/OAuth/OAuthConsumer.php</code></td><td>4 个节点</td></tr>
-<tr><td><code>src/Exception/Exception.php</code></td><td>3 个节点</td></tr>
-<tr><td><code>src/User/Contact.php</code></td><td>3 个节点</td></tr>
-<tr><td><code>src/Exception/AuthorizationDeniedException.php</code></td><td>2 个节点</td></tr>
-<tr><td><code>src/Exception/BadMethodCallException.php</code></td><td>2 个节点</td></tr>
-<tr><td><code>src/Exception/HttpRequestFailedException.php</code></td><td>2 个节点</td></tr>
-<tr><td><code>src/Exception/InvalidAccessTokenException.php</code></td><td>2 个节点</td></tr>
+      <tr><td><code>app/Core/HttpException.php</code></td><td>13 个节点</td></tr>
+<tr><td><code>app/Core/Config.php</code></td><td>9 个节点</td></tr>
+<tr><td><code>Features/Auth/SessionService.php</code></td><td>9 个节点</td></tr>
+<tr><td><code>app/Core/Validator.php</code></td><td>6 个节点</td></tr>
+<tr><td><code>Features/Auth/AuthService.php</code></td><td>6 个节点</td></tr>
+<tr><td><code>Features/Shared/RoomTypeRegistry.php</code></td><td>6 个节点</td></tr>
+<tr><td><code>app/Core/Logger.php</code></td><td>1 个节点</td></tr>
+<tr><td><code>app/Core/Request.php</code></td><td>1 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：导入 x43, 包含 x19, implements x17, inherits x17。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：方法 x42, references x7, 调用 x5, 包含 x1。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -3353,16 +3344,14 @@ flowchart LR
 
 <!-- ====== 14. Required Files (MANDATORY) ====== -->
 <h2 id="required-files-mandatory">14. Required Files (MANDATORY)</h2>
-<p>Required Files (MANDATORY) 汇集了与 hybridauth、vendor、abstractadapterphp、adapter 相关的实现，主要分布在 src/Adapter/AbstractAdapter.php、src/Exception/HttpClientFailureException.php、src/HttpClient/Curl.php。本节覆盖 34 个节点、45 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>Required Files (MANDATORY) 汇集了与 hybridauth、vendor、adapter、abstractadapterphp 相关的实现，主要分布在 src/Adapter/AbstractAdapter.php。本节覆盖 31 个节点、39 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Required Files (MANDATORY) (34 nodes, 45 edges)
+    %% Section: Required Files (MANDATORY) (31 nodes, 39 edges)
     vendor_hybridauth_hybridauth_src_adapter_abstrac_3b1245f2("AbstractAdapter<br/><small>src/Adapter/AbstractAdapter.php</small>")
-    vendor_hybridauth_hybridauth_src_adapter_abstrac_c01bdd57("AbstractAdapter.php")
     vendor_hybridauth_hybridauth_src_adapter_abstrac_3bd267d0("__construct()<br/><small>src/Adapter/AbstractAdapter.php</small>")
-    vendor_hybridauth_hybridauth_src_adapter_abstrac_1c6fc1f0("initialize()<br/><small>src/Adapter/AbstractAdapter.php</small>")
     vendor_hybridauth_hybridauth_src_adapter_abstrac_ea46a1fc("apiRequest()<br/><small>src/Adapter/AbstractAdapter.php</small>")
     vendor_hybridauth_hybridauth_src_adapter_abstrac_475b8b4b("configure()<br/><small>src/Adapter/AbstractAdapter.php</small>")
     vendor_hybridauth_hybridauth_src_adapter_abstrac_12c302ae("disconnect()<br/><small>src/Adapter/AbstractAdapter.php</small>")
@@ -3375,8 +3364,10 @@ flowchart LR
     vendor_hybridauth_hybridauth_src_adapter_abstrac_983ca632("getUserContacts()<br/><small>src/Adapter/AbstractAdapter.php</small>")
     vendor_hybridauth_hybridauth_src_adapter_abstrac_934dfbe5("getUserPages()<br/><small>src/Adapter/AbstractAdapter.php</small>")
     vendor_hybridauth_hybridauth_src_adapter_abstrac_d2398163("getUserProfile()<br/><small>src/Adapter/AbstractAdapter.php</small>")
+    vendor_hybridauth_hybridauth_src_adapter_abstrac_1c6fc1f0("initialize()<br/><small>src/Adapter/AbstractAdapter.php</small>")
     vendor_hybridauth_hybridauth_src_adapter_abstrac_0f555498("isConnected()<br/><small>src/Adapter/AbstractAdapter.php</small>")
     vendor_hybridauth_hybridauth_src_adapter_abstrac_0b72cb41("maintainToken()<br/><small>src/Adapter/AbstractAdapter.php</small>")
+    vendor_hybridauth_hybridauth_src_adapter_abstrac_9c1d6e09("setAccessToken()<br/><small>src/Adapter/AbstractAdapter.php</small>")
     vendor_hybridauth_hybridauth_src_adapter_abstrac_3b1245f2 -->|方法| vendor_hybridauth_hybridauth_src_adapter_abstrac_ea46a1fc
     vendor_hybridauth_hybridauth_src_adapter_abstrac_3b1245f2 -->|方法| vendor_hybridauth_hybridauth_src_adapter_abstrac_475b8b4b
     vendor_hybridauth_hybridauth_src_adapter_abstrac_3b1245f2 -->|方法| vendor_hybridauth_hybridauth_src_adapter_abstrac_3bd267d0
@@ -3393,13 +3384,13 @@ flowchart LR
     vendor_hybridauth_hybridauth_src_adapter_abstrac_3b1245f2 -->|方法| vendor_hybridauth_hybridauth_src_adapter_abstrac_1c6fc1f0
     vendor_hybridauth_hybridauth_src_adapter_abstrac_3b1245f2 -->|方法| vendor_hybridauth_hybridauth_src_adapter_abstrac_0f555498
     vendor_hybridauth_hybridauth_src_adapter_abstrac_3b1245f2 -->|方法| vendor_hybridauth_hybridauth_src_adapter_abstrac_0b72cb41
+    vendor_hybridauth_hybridauth_src_adapter_abstrac_3b1245f2 -->|方法| vendor_hybridauth_hybridauth_src_adapter_abstrac_9c1d6e09
     vendor_hybridauth_hybridauth_src_adapter_abstrac_3bd267d0 -->|调用| vendor_hybridauth_hybridauth_src_adapter_abstrac_475b8b4b
     vendor_hybridauth_hybridauth_src_adapter_abstrac_3bd267d0 -->|调用| vendor_hybridauth_hybridauth_src_adapter_abstrac_1c6fc1f0
-    %% Omitted for readability: 16 nodes, 0 edges
+    vendor_hybridauth_hybridauth_src_adapter_abstrac_1c6fc1f0 -->|调用| vendor_hybridauth_hybridauth_src_adapter_abstrac_9c1d6e09
+    %% Omitted for readability: 13 nodes, 0 edges
     class vendor_hybridauth_hybridauth_src_adapter_abstrac_3b1245f2 klass;
-    class vendor_hybridauth_hybridauth_src_adapter_abstrac_c01bdd57 klass;
     class vendor_hybridauth_hybridauth_src_adapter_abstrac_3bd267d0 function;
-    class vendor_hybridauth_hybridauth_src_adapter_abstrac_1c6fc1f0 function;
     class vendor_hybridauth_hybridauth_src_adapter_abstrac_ea46a1fc api;
     class vendor_hybridauth_hybridauth_src_adapter_abstrac_475b8b4b function;
     class vendor_hybridauth_hybridauth_src_adapter_abstrac_12c302ae function;
@@ -3412,8 +3403,10 @@ flowchart LR
     class vendor_hybridauth_hybridauth_src_adapter_abstrac_983ca632 function;
     class vendor_hybridauth_hybridauth_src_adapter_abstrac_934dfbe5 function;
     class vendor_hybridauth_hybridauth_src_adapter_abstrac_d2398163 function;
+    class vendor_hybridauth_hybridauth_src_adapter_abstrac_1c6fc1f0 function;
     class vendor_hybridauth_hybridauth_src_adapter_abstrac_0f555498 function;
     class vendor_hybridauth_hybridauth_src_adapter_abstrac_0b72cb41 function;
+    class vendor_hybridauth_hybridauth_src_adapter_abstrac_9c1d6e09 function;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -3437,14 +3430,6 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>AbstractAdapter.php</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>Curl.php</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br><code>HttpClientFailureException.php</code><br><small style="color:var(--muted)">src/Exception/HttpClientFailureException.php</small><br><code>HttpClientInterface</code><br>+2 个更多</td>
-  <td>src/Adapter/AbstractAdapter.php 中的 AbstractAdapter.php 节点。</td>
-</tr>
-<tr>
-  <td>2</td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -3452,7 +3437,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 AbstractAdapter 节点。</td>
 </tr>
 <tr>
-  <td>3</td>
+  <td>2</td>
   <td><code>DataStoreTrait</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -3460,7 +3445,7 @@ flowchart LR
   <td>项目 中的 DataStoreTrait 节点。</td>
 </tr>
 <tr>
-  <td>4</td>
+  <td>3</td>
   <td><code>.__construct()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3468,31 +3453,31 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .__construct() 节点。</td>
 </tr>
 <tr>
-  <td>5</td>
+  <td>4</td>
   <td><code>HttpClientInterface</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-cmd">入口</span></td>
-  <td><code>AbstractAdapter.php</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
   <td>项目 中的 HttpClientInterface 节点。</td>
 </tr>
 <tr>
-  <td>6</td>
+  <td>5</td>
   <td><code>StorageInterface</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-class">类</span></td>
-  <td><code>AbstractAdapter.php</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
   <td>支撑检索增强问答或流式聊天。</td>
 </tr>
 <tr>
-  <td>7</td>
+  <td>6</td>
   <td><code>LoggerInterface</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-class">类</span></td>
-  <td><code>AbstractAdapter.php</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
   <td>项目 中的 LoggerInterface 节点。</td>
 </tr>
 <tr>
-  <td>8</td>
+  <td>7</td>
   <td><code>.configure()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>__construct()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small><br><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3500,7 +3485,7 @@ flowchart LR
   <td>读取、解析或持久化项目配置。</td>
 </tr>
 <tr>
-  <td>9</td>
+  <td>8</td>
   <td><code>.initialize()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>__construct()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small><br><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3508,7 +3493,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .initialize() 节点。</td>
 </tr>
 <tr>
-  <td>10</td>
+  <td>9</td>
   <td><code>.isConnected()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3516,7 +3501,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .isConnected() 节点。</td>
 </tr>
 <tr>
-  <td>11</td>
+  <td>10</td>
   <td><code>.apiRequest()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-endpoint">API</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3524,7 +3509,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .apiRequest() 节点。</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>11</td>
   <td><code>.maintainToken()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3532,7 +3517,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .maintainToken() 节点。</td>
 </tr>
 <tr>
-  <td>13</td>
+  <td>12</td>
   <td><code>.getUserProfile()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3540,7 +3525,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .getUserProfile() 节点。</td>
 </tr>
 <tr>
-  <td>14</td>
+  <td>13</td>
   <td><code>.getUserContacts()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3548,7 +3533,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .getUserContacts() 节点。</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>14</td>
   <td><code>.getUserPages()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3556,7 +3541,7 @@ flowchart LR
   <td>组织文档页面、侧边栏或内容读取。</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>15</td>
   <td><code>.getUserActivity()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3564,7 +3549,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .getUserActivity() 节点。</td>
 </tr>
 <tr>
-  <td>17</td>
+  <td>16</td>
   <td><code>.setUserStatus()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3572,7 +3557,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .setUserStatus() 节点。</td>
 </tr>
 <tr>
-  <td>18</td>
+  <td>17</td>
   <td><code>.setPageStatus()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3580,7 +3565,7 @@ flowchart LR
   <td>组织文档页面、侧边栏或内容读取。</td>
 </tr>
 <tr>
-  <td>19</td>
+  <td>18</td>
   <td><code>.disconnect()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3588,7 +3573,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .disconnect() 节点。</td>
 </tr>
 <tr>
-  <td>20</td>
+  <td>19</td>
   <td><code>.getAccessToken()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3596,7 +3581,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .getAccessToken() 节点。</td>
 </tr>
 <tr>
-  <td>21</td>
+  <td>20</td>
   <td><code>.setAccessToken()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small><br><code>initialize()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3604,7 +3589,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .setAccessToken() 节点。</td>
 </tr>
 <tr>
-  <td>22</td>
+  <td>21</td>
   <td><code>.setHttpClient()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-cmd">入口</span></td>
   <td><code>__construct()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small><br><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3612,7 +3597,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .setHttpClient() 节点。</td>
 </tr>
 <tr>
-  <td>23</td>
+  <td>22</td>
   <td><code>.getHttpClient()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-cmd">入口</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3620,7 +3605,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .getHttpClient() 节点。</td>
 </tr>
 <tr>
-  <td>24</td>
+  <td>23</td>
   <td><code>.setStorage()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>__construct()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small><br><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3628,7 +3613,7 @@ flowchart LR
   <td>支撑检索增强问答或流式聊天。</td>
 </tr>
 <tr>
-  <td>25</td>
+  <td>24</td>
   <td><code>.getStorage()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3636,7 +3621,7 @@ flowchart LR
   <td>支撑检索增强问答或流式聊天。</td>
 </tr>
 <tr>
-  <td>26</td>
+  <td>25</td>
   <td><code>.setLogger()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>__construct()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small><br><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3644,7 +3629,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .setLogger() 节点。</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>26</td>
   <td><code>.getLogger()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3652,7 +3637,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .getLogger() 节点。</td>
 </tr>
 <tr>
-  <td>28</td>
+  <td>27</td>
   <td><code>.setCallback()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3660,7 +3645,7 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .setCallback() 节点。</td>
 </tr>
 <tr>
-  <td>29</td>
+  <td>28</td>
   <td><code>.setApiEndpoints()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-endpoint">API</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
@@ -3668,12 +3653,20 @@ flowchart LR
   <td>src/Adapter/AbstractAdapter.php 中的 .setApiEndpoints() 节点。</td>
 </tr>
 <tr>
-  <td>30</td>
+  <td>29</td>
   <td><code>.validateApiResponse()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-endpoint">API</span></td>
   <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td>无直接出边</td>
   <td>src/Adapter/AbstractAdapter.php 中的 .validateApiResponse() 节点。</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>.filterInput()</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>AbstractAdapter</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
+  <td>无直接出边</td>
+  <td>src/Adapter/AbstractAdapter.php 中的 .filterInput() 节点。</td>
 </tr>
 </table>
 
@@ -3682,14 +3675,12 @@ flowchart LR
     <h4>关键文件</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>覆盖节点</th></tr>
-      <tr><td><code>src/Adapter/AbstractAdapter.php</code></td><td>28 个节点</td></tr>
-<tr><td><code>src/Exception/HttpClientFailureException.php</code></td><td>1 个节点</td></tr>
-<tr><td><code>src/HttpClient/Curl.php</code></td><td>1 个节点</td></tr>
+      <tr><td><code>src/Adapter/AbstractAdapter.php</code></td><td>27 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：方法 x26, 调用 x6, references x6, 导入 x5。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：方法 x26, 调用 x6, references x6, mixes in x1。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -3970,18 +3961,19 @@ flowchart LR
 
 <!-- ====== 16. 其他 ====== -->
 <h2 id="other">16. 其他</h2>
-<p>其他 汇集了与 hybridauth、app、vendor、features 相关的实现，主要分布在 .agents/BRAND.md、app/Core/HttpException.php、.agents/AGENTS.md。本节覆盖 546 个节点、510 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>其他 汇集了与 hybridauth、vendor、app、features 相关的实现，主要分布在 .agents/BRAND.md、Booking/Domain/ProvisionalBookingRepository.php、hybridauth/src/Hybridauth.php。本节覆盖 603 个节点、627 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 其他 (546 nodes, 510 edges)
-    subgraph other_Shared_Adapters_MercadoPagoAdapter_php_e83fa5f7["Shared/Adapters/MercadoPagoAdapter.php"]
-        app_features_shared_adapters_mercadopagoadapter_3f9c2328("MercadoPagoAdapter<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
-        app_features_shared_adapters_mercadopagoadapter_bf98f842("__construct()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
-        app_features_shared_adapters_mercadopagoadapter_a02420d0("createPreference()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
-        app_features_shared_adapters_mercadopagoadapter_f34ce702("curlPost()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
-        app_features_shared_adapters_mercadopagoadapter_9a465b4b("getPaymentDetails()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
+    %% Section: 其他 (603 nodes, 627 edges)
+    subgraph other_Shared_Adapters_ChannexAdapter_php_45d516c8["Shared/Adapters/ChannexAdapter.php"]
+        app_features_shared_adapters_channexadapter_chan_746f9773("ChannexAdapter<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
+        app_features_shared_adapters_channexadapter_chan_44c022c8("__construct()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
+        app_features_shared_adapters_channexadapter_chan_d641a080("createBooking()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
+        app_features_shared_adapters_channexadapter_chan_3e5cdd67("getSlugByRoomType()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
+        app_features_shared_adapters_channexadapter_chan_be546d02("processChannelBooking()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
+        app_features_shared_adapters_channexadapter_chan_d1e7f2c2("pushAvailability()<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
     end
     subgraph other_Auth_Actions_AuthLoginEmailAction_php_b54a1502["Auth/Actions/AuthLoginEmailAction.php"]
         app_features_auth_actions_authloginemailaction_a_8896d5e5("AuthLoginEmailAction<br/><small>Auth/Actions/AuthLoginEmailAction.php</small>")
@@ -3993,44 +3985,42 @@ flowchart LR
         app_features_booking_actions_getbookingstatusact_b97517a2("__construct()<br/><small>Booking/Actions/GetBookingStatusAction.php</small>")
         app_features_booking_actions_getbookingstatusact_3f995070("__invoke()<br/><small>Booking/Actions/GetBookingStatusAction.php</small>")
     end
-    subgraph other_Auth_Actions_AuthCallbackAction_php_9344975e["Auth/Actions/AuthCallbackAction.php"]
-        app_features_auth_actions_authcallbackaction_aut_6f9fc78d("AuthCallbackAction<br/><small>Auth/Actions/AuthCallbackAction.php</small>")
-        app_features_auth_actions_authcallbackaction_aut_6f179a8d("__invoke()<br/><small>Auth/Actions/AuthCallbackAction.php</small>")
-    end
-    app_features_auth_sessionservice_sessionservice_6369ffda("SessionService<br/><small>Features/Auth/SessionService.php</small>")
-    app_features_webhooks_actions_handlemercadopagow_b9bd9406("HandleMercadoPagoWebhookAction.php")
-    app_core_config_config_fc55d656("Config<br/><small>app/Core/Config.php</small>")
-    app_core_httpexception_httpexception_75382b3b("HttpException<br/><small>app/Core/HttpException.php</small>")
+    app_features_booking_domain_provisionalbookingre_330585fb("ProvisionalBookingRepository<br/><small>Booking/Domain/ProvisionalBookingRepository.php</small>")
+    app_features_auth_user_user_3ef48886("User<br/><small>Features/Auth/User.php</small>")
+    app_features_booking_provisionalbooking_provisio_ac97f2fc("ProvisionalBooking<br/><small>Features/Booking/ProvisionalBooking.php</small>")
+    vendor_hybridauth_hybridauth_src_hybridauth_hybr_f2bc206f("Hybridauth<br/><small>hybridauth/src/Hybridauth.php</small>")
+    vendor_hybridauth_hybridauth_src_adapter_oauth1_2615c368("OAuth1.php")
     src_pages_index_5f5e2633("index.astro")
-    app_features_auth_actions_authcallbackaction_aut_6f9fc78d -->|方法| app_features_auth_actions_authcallbackaction_aut_6f179a8d
     app_features_auth_actions_authloginemailaction_a_8896d5e5 -->|方法| app_features_auth_actions_authloginemailaction_a_4d562af3
     app_features_auth_actions_authloginemailaction_a_8896d5e5 -->|方法| app_features_auth_actions_authloginemailaction_a_1238e8e3
     app_features_auth_actions_authloginemailaction_a_4d562af3 -->|调用| app_features_auth_actions_authloginemailaction_a_1238e8e3
     app_features_booking_actions_getbookingstatusact_a3de231f -->|方法| app_features_booking_actions_getbookingstatusact_b97517a2
     app_features_booking_actions_getbookingstatusact_a3de231f -->|方法| app_features_booking_actions_getbookingstatusact_3f995070
-    app_features_shared_adapters_mercadopagoadapter_3f9c2328 -->|方法| app_features_shared_adapters_mercadopagoadapter_bf98f842
-    app_features_shared_adapters_mercadopagoadapter_3f9c2328 -->|方法| app_features_shared_adapters_mercadopagoadapter_a02420d0
-    app_features_shared_adapters_mercadopagoadapter_3f9c2328 -->|方法| app_features_shared_adapters_mercadopagoadapter_f34ce702
-    app_features_shared_adapters_mercadopagoadapter_3f9c2328 -->|方法| app_features_shared_adapters_mercadopagoadapter_9a465b4b
-    app_features_shared_adapters_mercadopagoadapter_a02420d0 -->|调用| app_features_shared_adapters_mercadopagoadapter_f34ce702
-    %% Omitted for readability: 528 nodes, 0 edges
-    class app_features_shared_adapters_mercadopagoadapter_3f9c2328 klass;
-    class app_features_shared_adapters_mercadopagoadapter_bf98f842 function;
-    class app_features_shared_adapters_mercadopagoadapter_a02420d0 function;
-    class app_features_shared_adapters_mercadopagoadapter_f34ce702 function;
-    class app_features_shared_adapters_mercadopagoadapter_9a465b4b function;
+    app_features_shared_adapters_channexadapter_chan_746f9773 -->|方法| app_features_shared_adapters_channexadapter_chan_44c022c8
+    app_features_shared_adapters_channexadapter_chan_746f9773 -->|方法| app_features_shared_adapters_channexadapter_chan_d641a080
+    app_features_shared_adapters_channexadapter_chan_746f9773 -->|方法| app_features_shared_adapters_channexadapter_chan_3e5cdd67
+    app_features_shared_adapters_channexadapter_chan_746f9773 -->|方法| app_features_shared_adapters_channexadapter_chan_be546d02
+    app_features_shared_adapters_channexadapter_chan_746f9773 -->|方法| app_features_shared_adapters_channexadapter_chan_d1e7f2c2
+    app_features_shared_adapters_channexadapter_chan_be546d02 -->|调用| app_features_shared_adapters_channexadapter_chan_d641a080
+    app_features_shared_adapters_channexadapter_chan_d641a080 -->|调用| app_features_shared_adapters_channexadapter_chan_3e5cdd67
+    %% Omitted for readability: 585 nodes, 0 edges
+    class app_features_shared_adapters_channexadapter_chan_746f9773 klass;
+    class app_features_shared_adapters_channexadapter_chan_44c022c8 function;
+    class app_features_shared_adapters_channexadapter_chan_d641a080 function;
+    class app_features_shared_adapters_channexadapter_chan_3e5cdd67 function;
+    class app_features_shared_adapters_channexadapter_chan_be546d02 function;
+    class app_features_shared_adapters_channexadapter_chan_d1e7f2c2 function;
     class app_features_auth_actions_authloginemailaction_a_8896d5e5 klass;
     class app_features_auth_actions_authloginemailaction_a_4d562af3 function;
     class app_features_auth_actions_authloginemailaction_a_1238e8e3 function;
     class app_features_booking_actions_getbookingstatusact_a3de231f klass;
     class app_features_booking_actions_getbookingstatusact_b97517a2 function;
     class app_features_booking_actions_getbookingstatusact_3f995070 function;
-    class app_features_auth_actions_authcallbackaction_aut_6f9fc78d klass;
-    class app_features_auth_actions_authcallbackaction_aut_6f179a8d function;
-    class app_features_auth_sessionservice_sessionservice_6369ffda klass;
-    class app_features_webhooks_actions_handlemercadopagow_b9bd9406 ui;
-    class app_core_config_config_fc55d656 klass;
-    class app_core_httpexception_httpexception_75382b3b klass;
+    class app_features_booking_domain_provisionalbookingre_330585fb klass;
+    class app_features_auth_user_user_3ef48886 klass;
+    class app_features_booking_provisionalbooking_provisio_ac97f2fc klass;
+    class vendor_hybridauth_hybridauth_src_hybridauth_hybr_f2bc206f klass;
+    class vendor_hybridauth_hybridauth_src_adapter_oauth1_2615c368 klass;
     class src_pages_index_5f5e2633 function;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
@@ -4231,67 +4221,67 @@ flowchart LR
 </tr>
 <tr>
   <td>23</td>
-  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><code>Logger.php</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>__construct()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small><br><code>__invoke()</code><br><small style="color:var(--muted)">Rooms/Actions/GetRoomsAction.php</small><br><code>__invoke()</code><br><small style="color:var(--muted)">Booking/Actions/CreateBookingAction.php</small><br>+16 个更多</td>
-  <td>app/Core/HttpException.php 中的 HttpException 节点。</td>
+  <td>无直接出边</td>
+  <td>app/Core/Logger.php 中的 Logger.php 节点。</td>
 </tr>
 <tr>
   <td>24</td>
-  <td><code>.__construct()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
-  <td>无直接出边</td>
-  <td>app/Core/HttpException.php 中的 .__construct() 节点。</td>
+  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>__construct()</code><br><small style="color:var(--muted)">app/Core/Database.php</small></td>
+  <td><code>__invoke()</code><br><small style="color:var(--muted)">Webhooks/Actions/HandleChannexWebhookAction.php</small><br><code>cleanExpiredCarts()</code><br><small style="color:var(--muted)">Booking/Domain/ProvisionalBookingRepository.php</small><br><code>cleanupExpiredHolds()</code><br><small style="color:var(--muted)">Features/Booking/ProvisionalBooking.php</small><br>+28 个更多</td>
+  <td>app/Core/Logger.php 中的 Logger 节点。</td>
 </tr>
 <tr>
   <td>25</td>
-  <td><code>.getStatusCode()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><code>.init()</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
   <td>无直接出边</td>
-  <td>app/Core/HttpException.php 中的 .getStatusCode() 节点。</td>
+  <td>app/Core/Logger.php 中的 .init() 节点。</td>
 </tr>
 <tr>
   <td>26</td>
-  <td><code>.getErrorCode()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><code>.log()</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
   <td>无直接出边</td>
-  <td>app/Core/HttpException.php 中的 .getErrorCode() 节点。</td>
+  <td>app/Core/Logger.php 中的 .log() 节点。</td>
 </tr>
 <tr>
   <td>27</td>
-  <td><code>.getDetails()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><code>.info()</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
   <td>无直接出边</td>
-  <td>app/Core/HttpException.php 中的 .getDetails() 节点。</td>
+  <td>app/Core/Logger.php 中的 .info() 节点。</td>
 </tr>
 <tr>
   <td>28</td>
-  <td><code>.toPayload()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><code>.warning()</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
   <td>无直接出边</td>
-  <td>app/Core/HttpException.php 中的 .toPayload() 节点。</td>
+  <td>app/Core/Logger.php 中的 .warning() 节点。</td>
 </tr>
 <tr>
   <td>29</td>
-  <td><code>.badRequest()</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><code>.error()</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>HttpException</code><br><small style="color:var(--muted)">app/Core/HttpException.php</small></td>
+  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
   <td>无直接出边</td>
-  <td>app/Core/HttpException.php 中的 .badRequest() 节点。</td>
+  <td>app/Core/Logger.php 中的 .error() 节点。</td>
 </tr>
 <tr>
   <td>30</td>
-  <td><code>self</code><br><small style="color:var(--muted)"></small></td>
+  <td><code>.debug()</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>Logger</code><br><small style="color:var(--muted)">app/Core/Logger.php</small></td>
   <td>无直接出边</td>
-  <td>项目 中的 self 节点。</td>
+  <td>app/Core/Logger.php 中的 .debug() 节点。</td>
 </tr>
 </table>
 
@@ -4301,18 +4291,18 @@ flowchart LR
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>覆盖节点</th></tr>
       <tr><td><code>.agents/BRAND.md</code></td><td>61 个节点</td></tr>
-<tr><td><code>app/Core/HttpException.php</code></td><td>14 个节点</td></tr>
+<tr><td><code>Booking/Domain/ProvisionalBookingRepository.php</code></td><td>12 个节点</td></tr>
 <tr><td><code>.agents/AGENTS.md</code></td><td>11 个节点</td></tr>
-<tr><td><code>app/Core/Config.php</code></td><td>9 个节点</td></tr>
-<tr><td><code>Features/Auth/SessionService.php</code></td><td>9 个节点</td></tr>
-<tr><td><code>Shared/Adapters/MercadoPagoAdapter.php</code></td><td>9 个节点</td></tr>
+<tr><td><code>hybridauth/src/Hybridauth.php</code></td><td>11 个节点</td></tr>
+<tr><td><code>Features/Auth/User.php</code></td><td>10 个节点</td></tr>
+<tr><td><code>Features/Booking/ProvisionalBooking.php</code></td><td>10 个节点</td></tr>
+<tr><td><code>app/Core/Logger.php</code></td><td>9 个节点</td></tr>
 <tr><td><code>docs/ARCHITECTURE.md</code></td><td>9 个节点</td></tr>
-<tr><td><code>src/layouts/Layout.astro</code></td><td>9 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x201, 方法 x94, 导入 x54, 导入 x47。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x221, 方法 x104, 导入 x83, 导入 x54。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -4323,17 +4313,17 @@ flowchart LR
   <div class="card">
     <h4>Graph</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>Nodes</td><td>1677</td></tr>
-      <tr><td>Edges</td><td>2147</td></tr>
+      <tr><td>Nodes</td><td>1680</td></tr>
+      <tr><td>Edges</td><td>2153</td></tr>
       <tr><td>Hyperedges</td><td>0</td></tr>
-      <tr><td>Communities</td><td>236</td></tr>
+      <tr><td>Communities</td><td>243</td></tr>
       <tr><td>Documented Sections</td><td>15</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Edge Confidence</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>EXTRACTED</td><td>2044</td></tr>
+      <tr><td>EXTRACTED</td><td>2050</td></tr>
       <tr><td>INFERRED</td><td>103</td></tr>
       <tr><td>AMBIGUOUS</td><td>0</td></tr>
     </table>
@@ -4342,7 +4332,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>usgar-redesign — Architecture Documentation</p>
-  <p>Generated: 2026-07-26 18:53 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-07-26 18:55 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

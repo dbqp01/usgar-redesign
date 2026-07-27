@@ -23,7 +23,7 @@ if (file_exists(__DIR__ . '/../app/Core/Autoloader.php')) {
 } else {
     http_response_code(500);
     header('Content-Type: application/json');
-    echo json_encode(['error' => 'Backend src/ folder not found. Please upload src/ directory.']);
+    echo json_encode(['error' => 'Backend app/ folder not found. Please upload app/ directory.']);
     exit;
 }
 

@@ -1,115 +1,71 @@
 ---
 name: "code-auditor"
-description: "Auditoría lógica completa del codebase USGAR Hotels. Revisa documento por documento: sincronización de datos entre frontend y backend, precios hardcodeados, flujos de reserva incompletos, habitaciones fantasma, i18n incompleto, imports rotos, lógica mock vs producción, Schema.org, y coherencia general del código."
+description: "Auditoria logica y arquitectonica exhaustiva del codebase USGAR Hotels (Astro v7.x.x, PHP 8.x ADR, Tailwind CSS v4.3, Postman MCP). Revisa paso a paso cada archivo aplicando razonamiento profundo, verificacion de oportunidades de mejora con Context7, analisis de impacto con Graphify, auditoria exhaustiva y de estres de API con Postman MCP y busquedas en tiempo real con Tavily."
 ---
 
-# Auditoría Lógica — USGAR Hotels
+# Auditoria Logica y Arquitectonica — USGAR Hotels
 
-## Propósito
+## Proposito
 
-Revisar CADA archivo del proyecto buscando incoherencias internas: datos duplicados
-que no coinciden, flujos rotos, lógica que nunca se ejecuta, y desincronización
-entre frontend (Astro/TypeScript) y backend (PHP).
+Realizar una auditoria profunda y sin atajos de CADA archivo del proyecto buscando incoherencias internas, oportunidades de mejora con las versiones actuales del stack (**Astro v7.x.x**, **PHP 8.x ADR**, **Tailwind CSS v4.3**), auditoria exhaustiva y de estres de endpoints backend con **Postman MCP**, desincronizacion entre frontend y backend, precios hardcodeados y violaciones arquitectonicas.
 
-## MCPs Requeridos
+---
 
-- **filesystem** — Para leer cada archivo del proyecto
-- **sequential-thinking** — Para razonar paso a paso sobre cada hallazgo
-- **context7** — Para verificar APIs correctas de Astro v5, Tailwind v4
+## MANDATO IMPERATIVO DE USO DE MCPs (CERO OMISIONES NI USO SUPERFICIAL)
 
-## Procedimiento Paso a Paso
+El uso de las herramientas MCP durante una auditoria o refactorizacion es OBLIGATORIO E INELUDIBLE en cada etapa:
 
-### Paso 1: Verificar sincronización de habitaciones
+- **`sequential-thinking` — MANDATORIO:** Invocar obligatoriamente via `call_mcp_tool` al inicio de cada analisis. Prohibido emitir hallazgos o realizar cambios sin este registro previo.
+- **`postman-mcp-server` — MANDATORIO PARA AUDITORIA EXHAUSTIVA DE APIs:** Invocar herramientas de Postman (`getCollections`, `runCollection`, `createCollectionRequest`, `searchPostmanElements`) para probar **todas las opciones posibles** de endpoints (`/api/*`): caminos felices, payloads invalidos, parametros ausentes, firmas HMAC corruptas y pruebas de carga/estres. Prohibido limitar las pruebas a solo un par de peticiones simples.
+- **`context7` — MANDATORIO:** Invocar `resolve-library-id` y `query-docs` para consultar la sintaxis oficial, especificacion de APIs y mejores practicas de Astro v7.x.x, Tailwind CSS v4.3 y PHP 8.x antes de proponer cambios.
+- **`agent-skills` MCP & `tavily-mcp` — MANDATORIO:** Consultar e invocar las skills estandarizadas (`web-quality-audit`, `perf-astro`, `security-best-practices`, `best-practices`, `coding-guidelines`, `accessibility`) y ejecutar `tavily_search` para respaldar decisiones tecnicas en tiempo real.
+- **`graphify` / Red de Nodos — MANDATORIO:** Consultar la red de dependencias antes de proponer cualquier refactorizacion.
 
-Leer estos 3 archivos y comparar que tengan LOS MISMOS datos:
+---
 
-1. `src/data/rooms.ts` — Frontend
-2. `public/api/rooms.php` — Backend PHP
-3. `.agents/BRAND.md` sección §6 — Fuente de verdad
+## Ciclo de Auditoria & Codificacion (Flujo B)
 
-**Verificar para cada habitación:**
-- [ ] Nombre comercial idéntico (ES e EN)
-- [ ] Slug idéntico
-- [ ] Precio por noche idéntico ($90, $90, $120, $150)
-- [ ] Número de camas idéntico
-- [ ] Max huéspedes idéntico (2, 2, 3, 7)
-- [ ] Solo existen 4 habitaciones (NO Quadruple Superior)
+Para cada archivo o componente auditado/modificado:
 
-### Paso 2: Buscar precios hardcodeados
+1. **Descomposicion Tecnica e Hipotesis (`sequential-thinking`):** Analisis del problema y formulacion de la hipotesis de solucion.
+2. **Recoleccion de Oportunidades y Documentacion (Context7):** Inspeccionar APIs actualizadas y patrones optimizados del stack.
+3. **Investigacion de Estandares (`agent-skills` & `tavily-mcp`):** Verificacion contra skills estandarizadas de calidad.
+4. **Analisis de Impacto en Red de Nodos (`graphify` / Busqueda de Nodos):** Responder obligatoriamente:
+   > *"¿Si hago este cambio o refactorizacion, en que afectara al resto del proyecto?"*
+5. **Aplicacion Desacoplada (Zero-Hardcoding):** Implementar via `.env` o DB manteniendo SRP/DIP.
+6. **Depuracion Logica Profunda en Runtime (**Postman MCP** & Script Unico PHP):** Validacion activa en ejecucion real (colecciones exhaustivas y pruebas de estres con **Postman MCP**, script unico `tests/api-harness.php`, pruebas de endpoints API en http://localhost:4321) superando simples comprobaciones estaticas (`npm build`/`check`).
 
-Buscar en TODO el proyecto la cadena `50 *` o `$50` o `45 *` o `65 *`:
+---
 
-**Archivos conocidos con este problema:**
-- `public/api/create-preference.php` línea 26: `$totalPrice = 50 * $nights`
-- `public/api/channex/booking.php` línea 29: `$totalPrice = 50 * $nights`
+## Reglas Anti-Hardcoding, Servidor Dev y Tipograficas
+- **Entorno Dev:** Se ejecuta con `npm run dev:all` (servidor accesible en `http://localhost:4321`).
+- **Script Unico PHP:** Se utiliza unicamente `tests/api-harness.php` para verificaciones locales en PHP.
+- **Zero Hardcoding:** Toda configuracion, precio o token debe abstraerse via `.env` o base de datos.
+- **Sin Tildes ni Acentos:** Prohibido el uso de tildes o caracteres acentuados en textos fuente, slugs y rutas web para evitar fallos tipograficos y problemas de codificacion.
 
-**Acción requerida:** Estos deben obtener el precio de `rooms.php` según el `roomId`.
+---
 
-### Paso 3: Verificar flujo de reserva completo
+## Procedimiento de Auditoria Completa
 
-Trazar el flujo desde el frontend hasta el webhook:
+### Fase A: Sincronizacion de Datos y Contratos
+- [ ] Comparar `src/content/rooms/rooms.json`, `app/Features/Shared/RoomTypeRegistry.php` y `.agents/BRAND.md` §6. Verificar los 4 tipos de habitacion exactos (Matrimonial $90, Doble Superior $90, Triple Estandar $120, Familiar Superior $150 USD). Confirmar eliminacion total de "Quadruple Superior".
+- [ ] Auditar `src/services/bookingService.ts` y contratos en `src/services/contracts/` para asegurar desacoplamiento total de apis externas.
+- [ ] Verificar `public/index.php` y Router ADR (`app/Core/Router.php`).
 
-1. `BookingWidget.astro` → ¿Hace fetch a `/api/channex/availability`?
-2. `book.astro` → ¿Envía POST a `/api/channex/booking`?
-3. `booking.php` → ¿Crea carrito en QloApps vía `QloAppWriter`?
-4. `create-preference.php` → ¿Crea preferencia en Mercado Pago?
-5. `webhook-mercado-pago.php` → ¿Confirma orden en QloApps + push a Channex?
+### Fase B: Auditoria Anti-Hardcoding y Configuracion
+- [ ] Buscar cadenas hardcodeadas de precios (`50 *`, `$50`, `45 *`, etc.) en todo el codebase.
+- [ ] Auditar `app/Features/Booking/Actions/CreateBookingAction.php` y `.env.example` vs `Config::get('...')`.
 
-**Para cada paso verificar:**
-- [ ] El endpoint existe y responde al método correcto (GET/POST)
-- [ ] Los parámetros enviados coinciden con los esperados
-- [ ] Los datos de respuesta son consumidos correctamente por el siguiente paso
+### Fase C: Integraciones Hexagonales y Seguridad API con Postman MCP (Exhaustivo + Estres)
+- [ ] Ejecutar auditoria exhaustiva y de estres con Postman (`postman-mcp-server`) evaluando todas las combinaciones de payloads, cabeceras, firmas HMAC y limites contra endpoints de la API (`/api/rooms`, `/api/booking`, `/api/extend-hold`, `/api/booking-status`, `/api/webhook`).
+- [ ] Auditar `MercadoPagoAdapter.php`, `HandleMercadoPagoWebhookAction.php`, `QloAppAdapter.php`, `ChannexAdapter.php` y `HandleChannexWebhookAction.php`.
 
-### Paso 4: Verificar i18n
+### Fase D: Frontend Astro v7 & Tailwind v4.3
+- [ ] Auditar `src/pages/index.astro` (Astro v7 View Transitions, `<Image />` assets, Schema.org `checkinTime: "12:00"`, `checkoutTime: "10:30"`).
+- [ ] Auditar `src/styles/global.css` y directivas `@theme` de Tailwind CSS v4.3.
+- [ ] Auditar i18n (`src/i18n/`).
 
-Comparar `src/i18n/en.json` y `src/i18n/es.json`:
-- [ ] Ambos tienen exactamente las mismas claves
-- [ ] No hay claves vacías o placeholder
-- [ ] Los componentes usan `t('clave')` y no texto hardcodeado
-
-Buscar en componentes `.astro` la cadena `lang === 'es'` o condicionales inline:
-- [ ] Si existen, reportar como incoherencia con las reglas i18n
-
-### Paso 5: Verificar Schema.org
-
-Leer `src/pages/index.astro` y buscar el bloque `<script type="application/ld+json">`:
-- [ ] `checkinTime` = "12:00"
-- [ ] `checkoutTime` = "10:30"
-- [ ] `numberOfRooms` = 4 (NO 5)
-- [ ] `priceRange` = "$$"
-- [ ] URL del hotel = "https://usgarhoteles.com"
-
-### Paso 6: Verificar variables de entorno
-
-Leer `.env` y verificar que cada variable referenciada en el código PHP existe:
-- Buscar todas las llamadas a `getEnvValue('...')` en los archivos PHP
-- Verificar que cada clave exista en `.env`
-- Reportar variables huérfanas (existen en .env pero nadie las usa)
-
-### Paso 7: Buscar código muerto
-
-- [ ] ¿Hay archivos en `src/services/` que no son importados por nadie?
-- [ ] ¿Hay componentes en `src/components/` que no son usados en ninguna página?
-- [ ] ¿Hay rutas en `router.php` que apuntan a archivos que no existen?
-
-## Formato de Reporte
-
-Crear un artifact `audit_code_results.md` con:
-
-```markdown
-# Auditoría Lógica — Resultados
-Fecha: [fecha]
-
-##  Correcto
-- [lista de cosas que están bien]
-
-## ️ Advertencias
-- [inconsistencias menores]
-
-##  Errores Críticos
-- [incoherencias que rompen funcionalidad]
-
-##  Acciones Requeridas
-- [ ] [acción 1]
-- [ ] [acción 2]
-```
+### Fase E: Compilacion y Verificacion Logica Profunda en Runtime
+- [ ] Ejecutar `npm run check` y `npm run build` como partida estatica.
+- [ ] Ejecutar depuracion logica en runtime con colecciones exhaustivas de **Postman MCP** y `tests/api-harness.php`.
+- [ ] Generar o actualizar el reporte en el artifact `audit_code_results.md`.
