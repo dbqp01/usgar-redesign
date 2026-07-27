@@ -26,10 +26,15 @@ class AuthService {
      * Solo habilita proveedores cuyas credenciales esten configuradas en .env.
      */
     public static function getConfig(): array {
-        $siteUrl = Config::get('SITE_URL', 'http://localhost:8000');
+        $siteUrl = Config::get('SITE_URL');
+        if (empty($siteUrl)) {
+            $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+            $host = $_SERVER['HTTP_HOST'] ?? 'localhost:8000';
+            $siteUrl = "{$scheme}://{$host}";
+        }
 
         $config = [
-            'callback' => $siteUrl . '/api/auth/callback',
+            'callback' => rtrim($siteUrl, '/') . '/api/auth/callback',
             'providers' => [],
         ];
 

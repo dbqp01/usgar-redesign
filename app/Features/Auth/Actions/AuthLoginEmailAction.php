@@ -22,20 +22,20 @@ class AuthLoginEmailAction {
 
         if (empty($email) || empty($password)) {
             if ($isHtml) {
-                header('Location: /login?error=' . urlencode('Correo y contraseña son requeridos.'));
+                header('Location: /login?error=' . urlencode('Email and password are required.'));
                 exit(0);
             }
-            Response::error("Correo y contraseña son requeridos.", 400);
+            Response::error("Email and password are required.", 400);
             return;
         }
 
         $pdo = Database::getInstance()->getConnection();
         if ($pdo === null) {
             if ($isHtml) {
-                header('Location: /login?error=' . urlencode('Error interno de conexión.'));
+                header('Location: /login?error=' . urlencode('Internal connection error.'));
                 exit(0);
             }
-            Response::error("Error interno de conexión.", 500);
+            Response::error("Internal connection error.", 500);
             return;
         }
 
@@ -44,16 +44,16 @@ class AuthLoginEmailAction {
 
         if ($user === null) {
             if ($isHtml) {
-                header('Location: /login?error=' . urlencode('Correo o contraseña incorrectos.'));
+                header('Location: /login?error=' . urlencode('Invalid email or password.'));
                 exit(0);
             }
-            Response::error("Correo o contraseña incorrectos.", 401);
+            Response::error("Invalid email or password.", 401);
             return;
         }
 
         if (isset($user['error']) && $user['error'] === 'oauth_only') {
             $provider = ucfirst($user['provider'] ?? 'Google');
-            $msg = "Esta cuenta fue registrada usando {$provider}. Por favor presiona 'Continuar con {$provider}' para iniciar sesión.";
+            $msg = "This account was registered with {$provider}. Please use 'Continue with {$provider}' to sign in.";
             if ($isHtml) {
                 header('Location: /login?error=' . urlencode($msg));
                 exit(0);
@@ -81,7 +81,7 @@ class AuthLoginEmailAction {
 
         Response::json([
             'success' => true,
-            'message' => 'Sesión iniciada correctamente.',
+            'message' => 'Signed in successfully.',
             'user'    => [
                 'sub'      => $user['id'],
                 'name'     => trim($user['first_name'] . ' ' . $user['last_name']),

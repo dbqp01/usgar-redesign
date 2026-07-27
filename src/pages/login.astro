@@ -132,6 +132,7 @@ const errorMessage = url.searchParams.get('error') || '';
               id="login-email"
               name="email"
               required
+              autocomplete="email"
               placeholder="e.g. john@example.com"
               class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary outline-none transition-all"
             />
@@ -146,6 +147,7 @@ const errorMessage = url.searchParams.get('error') || '';
               id="login-password"
               name="password"
               required
+              autocomplete="current-password"
               placeholder="••••••••"
               class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary outline-none transition-all"
             />
@@ -172,6 +174,7 @@ const errorMessage = url.searchParams.get('error') || '';
               id="reg-name"
               name="fullName"
               required
+              autocomplete="name"
               placeholder="e.g. John Doe"
               class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary outline-none transition-all"
             />
@@ -186,6 +189,7 @@ const errorMessage = url.searchParams.get('error') || '';
               id="reg-email"
               name="email"
               required
+              autocomplete="email"
               placeholder="e.g. john@example.com"
               class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary outline-none transition-all"
             />
@@ -201,6 +205,7 @@ const errorMessage = url.searchParams.get('error') || '';
               name="password"
               required
               minlength="8"
+              autocomplete="new-password"
               placeholder="••••••••"
               class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary outline-none transition-all"
             />
@@ -218,8 +223,10 @@ const errorMessage = url.searchParams.get('error') || '';
     </div>
   </main>
 
-  <script is:inline define:vars={{ redirect, tErrorLogin: t('auth.loginError'), tEmailExists: t('auth.emailExists') }}>
+  <script is:inline define:vars={{ redirect, tErrorLogin: t('auth.loginError'), tEmailExists: t('auth.emailExists'), tSignIn: t('auth.signIn'), tSignUp: t('auth.signUp') }}>
     (function() {
+      const loginSubmitLabel = tSignIn;
+      const registerSubmitLabel = tSignUp;
       const tabLoginBtn = document.getElementById('tab-login-btn');
       const tabRegisterBtn = document.getElementById('tab-register-btn');
       const loginForm = document.getElementById('login-form');
@@ -233,6 +240,7 @@ const errorMessage = url.searchParams.get('error') || '';
         alertBox.className = isSuccess
           ? 'p-4 rounded-xl border border-green-500/20 bg-green-500/10 text-green-600 dark:text-green-400 text-sm font-medium flex items-center gap-3'
           : 'p-4 rounded-xl border border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-medium flex items-center gap-3';
+        alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
 
       function hideAlert() {
@@ -296,6 +304,9 @@ const errorMessage = url.searchParams.get('error') || '';
         hideAlert();
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
+        const submitBtn = document.getElementById('login-submit');
+
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '...'; }
 
         try {
           const res = await fetch('/api/auth/login-email', {
@@ -309,10 +320,12 @@ const errorMessage = url.searchParams.get('error') || '';
             sessionStorage.removeItem('usgar_auth_user');
             window.location.href = redirect || '/profile';
           } else {
-            showAlert(data.message || tErrorLogin, false);
+            showAlert(data.error?.message || data.message || tErrorLogin, false);
           }
         } catch {
           showAlert(tErrorLogin, false);
+        } finally {
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = loginSubmitLabel; }
         }
       });
 
@@ -323,6 +336,9 @@ const errorMessage = url.searchParams.get('error') || '';
         const fullName = document.getElementById('reg-name').value;
         const email = document.getElementById('reg-email').value;
         const password = document.getElementById('reg-password').value;
+        const submitBtn = document.getElementById('register-submit');
+
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '...'; }
 
         try {
           const res = await fetch('/api/auth/register', {
@@ -336,16 +352,19 @@ const errorMessage = url.searchParams.get('error') || '';
             sessionStorage.removeItem('usgar_auth_user');
             window.location.href = redirect || '/profile';
           } else {
-            // Si la cuenta ya existe, alternar inteligentemente a Iniciar Sesión o sugerir Google
-            if (res.status === 409 || data.message?.includes('ya existe') || data.message?.includes('already exists')) {
+            const errMsg = data.error?.message || data.message || '';
+            // Si la cuenta ya existe, alternar inteligentemente a Iniciar Sesion
+            if (res.status === 409 || errMsg.includes('already exists') || errMsg.includes('ya existe')) {
               showAlert('This account already exists. We have switched you to the Sign In tab.', false);
               setTimeout(() => { switchToSignIn(email); }, 1500);
             } else {
-              showAlert(data.message || tEmailExists, false);
+              showAlert(errMsg || tEmailExists, false);
             }
           }
         } catch {
           showAlert(tEmailExists, false);
+        } finally {
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = registerSubmitLabel; }
         }
       });
     })();

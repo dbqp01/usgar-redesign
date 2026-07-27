@@ -19,7 +19,36 @@ use App\Core\Logger;
  * por email para evitar duplicados.
  */
 class User {
-    public function __construct(private readonly PDO $pdo) {}
+    public function __construct(private readonly PDO $pdo) {
+        $this->ensureTableExists();
+    }
+
+    /**
+     * Crea la tabla `users` automáticamente si no existe en la base de datos.
+     */
+    private function ensureTableExists(): void {
+        try {
+            $this->pdo->exec("
+                CREATE TABLE IF NOT EXISTS users (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    email VARCHAR(255) UNIQUE NOT NULL,
+                    first_name VARCHAR(100) NULL,
+                    last_name VARCHAR(100) NULL,
+                    password_hash VARCHAR(255) NULL,
+                    phone VARCHAR(50) NULL,
+                    photo_url TEXT NULL,
+                    provider VARCHAR(50) NOT NULL DEFAULT 'email',
+                    provider_id VARCHAR(255) NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    INDEX idx_email (email),
+                    INDEX idx_provider (provider, provider_id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            ");
+        } catch (PDOException $e) {
+            Logger::error('User::ensureTableExists failed: ' . $e->getMessage());
+        }
+    }
 
     /**
      * Busca un usuario por email.

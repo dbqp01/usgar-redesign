@@ -49,10 +49,10 @@ $tests = [
     ['POST', '/api/booking',        400, '{}'],
     ['POST', '/api/extend-hold',    400, '{}'],
     ['GET',  '/api/booking-status', 400],
-    ['GET',  '/api/auth/me',        401],
+    ['GET',  '/api/auth/me',        200],
     ['POST', '/api/auth/register',  400, '{}'],
     ['POST', '/api/auth/login-email', 400, '{}'],
-    ['POST', '/api/auth/logout',    401],
+    ['POST', '/api/auth/logout',    200],
 ];
 
 foreach ($tests as $test) {

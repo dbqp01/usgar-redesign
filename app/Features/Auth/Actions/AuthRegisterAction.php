@@ -18,44 +18,52 @@ class AuthRegisterAction {
         $data = $request->getBody() ?? [];
         $email = trim($data['email'] ?? '');
         $password = $data['password'] ?? '';
-        $firstName = trim($data['first_name'] ?? $data['fullName'] ?? '');
+
+        // Split fullName into first_name + last_name if provided as single field
+        $rawName = trim($data['first_name'] ?? $data['fullName'] ?? '');
         $lastName = trim($data['last_name'] ?? '');
+        if (!empty($rawName) && empty($lastName)) {
+            $nameParts = explode(' ', $rawName, 2);
+            $rawName = $nameParts[0];
+            $lastName = $nameParts[1] ?? '';
+        }
+        $firstName = $rawName;
         $isHtml = $this->isHtmlRequest($request);
 
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             if ($isHtml) {
-                header('Location: /login?error=' . urlencode('Dirección de correo electrónico no válida.'));
+                header('Location: /login?error=' . urlencode('Invalid email address.'));
                 exit(0);
             }
-            Response::error("Dirección de correo electrónico no válida.", 400);
+            Response::error("Invalid email address.", 400);
             return;
         }
 
         if (strlen($password) < 8) {
             if ($isHtml) {
-                header('Location: /login?error=' . urlencode('La contraseña debe tener al menos 8 caracteres.'));
+                header('Location: /login?error=' . urlencode('Password must be at least 8 characters.'));
                 exit(0);
             }
-            Response::error("La contraseña debe tener al menos 8 caracteres.", 400);
+            Response::error("Password must be at least 8 characters.", 400);
             return;
         }
 
         if (empty($firstName)) {
             if ($isHtml) {
-                header('Location: /login?error=' . urlencode('El nombre es requerido.'));
+                header('Location: /login?error=' . urlencode('Full name is required.'));
                 exit(0);
             }
-            Response::error("El nombre es requerido.", 400);
+            Response::error("Full name is required.", 400);
             return;
         }
 
         $pdo = Database::getInstance()->getConnection();
         if ($pdo === null) {
             if ($isHtml) {
-                header('Location: /login?error=' . urlencode('Error interno de conexión a la base de datos.'));
+                header('Location: /login?error=' . urlencode('Internal database connection error.'));
                 exit(0);
             }
-            Response::error("Error interno de conexión a la base de datos.", 500);
+            Response::error("Internal database connection error.", 500);
             return;
         }
 
@@ -64,10 +72,10 @@ class AuthRegisterAction {
 
         if ($userId === null) {
             if ($isHtml) {
-                header('Location: /login?error=' . urlencode('Ya existe una cuenta registrada con este correo electrónico.'));
+                header('Location: /login?error=' . urlencode('An account with this email already exists.'));
                 exit(0);
             }
-            Response::error("Ya existe una cuenta registrada con este correo electrónico.", 409);
+            Response::error("An account with this email already exists.", 409);
             return;
         }
 
@@ -86,7 +94,7 @@ class AuthRegisterAction {
 
         Response::json([
             'success' => true,
-            'message' => 'Cuenta creada exitosamente.',
+            'message' => 'Account created successfully.',
             'user'    => [
                 'sub'      => $user['id'],
                 'name'     => trim($user['first_name'] . ' ' . $user['last_name']),

@@ -173,6 +173,7 @@ const t = useTranslations(lang);
       }
 
       initMyBookings();
+      document.addEventListener('astro:page-load', initMyBookings);
     })();
   </script>
 </Layout>

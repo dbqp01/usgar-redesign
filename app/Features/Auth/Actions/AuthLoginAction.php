@@ -18,11 +18,29 @@ use Throwable;
 class AuthLoginAction {
     public function __invoke(Request $request): void {
         if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+            session_set_cookie_params([
+                'lifetime' => 0,
+                'path'     => '/',
+                'domain'   => '',
+                'secure'   => Config::isProduction(),
+                'httponly'  => true,
+                'samesite' => 'Lax'
+            ]);
             @session_start();
         }
 
         $provider = $request->getQuery('provider', 'Google');
-        $redirect = $request->getQuery('redirect', '/');
+        $redirect = $request->getQuery('redirect', '/profile');
+
+        $_SESSION['usgar_oauth_provider'] = $provider;
+
+        setcookie('usgar_auth_provider', $provider, [
+            'expires'  => time() + 300,
+            'path'     => '/',
+            'secure'   => Config::isProduction(),
+            'httponly'  => true,
+            'samesite' => 'Lax',
+        ]);
 
         setcookie('usgar_auth_redirect', $redirect, [
             'expires'  => time() + 300,

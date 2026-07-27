@@ -19,6 +19,14 @@ use Throwable;
 class AuthCallbackAction {
     public function __invoke(Request $request): void {
         if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+            session_set_cookie_params([
+                'lifetime' => 0,
+                'path'     => '/',
+                'domain'   => '',
+                'secure'   => \App\Core\Config::isProduction(),
+                'httponly'  => true,
+                'samesite' => 'Lax'
+            ]);
             @session_start();
         }
 
@@ -32,8 +40,14 @@ class AuthCallbackAction {
             $hybridauth = new \Hybridauth\Hybridauth($config);
             $storage = new \Hybridauth\Storage\Session();
 
-            $provider = $storage->get('provider') ?? 'Google';
-            $adapter = $hybridauth->getAdapter($provider);
+            $provider = $storage->get('provider')
+                ?? $_SESSION['usgar_oauth_provider']
+                ?? $_COOKIE['usgar_auth_provider']
+                ?? $request->getQuery('provider')
+                ?? 'Google';
+
+            // CRÍTICO: Ejecutar handshake de autenticación (intercambia ?code= por access_token)
+            $adapter = $hybridauth->authenticate($provider);
             $profile = $adapter->getUserProfile();
 
             if (empty($profile->email)) {

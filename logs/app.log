@@ -85,3 +85,31 @@
 [2026-07-27 04:43:28] [ERROR] User::createFromEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
 [2026-07-27 04:43:35] [ERROR] User::findByEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
 [2026-07-27 04:43:36] [ERROR] User::createFromEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 04:52:07] [ERROR] User::findByEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 04:53:08] [ERROR] User::findByEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 04:54:44] [ERROR] User::findByEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 04:59:58] [ERROR] User::findByEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 05:01:08] [ERROR] User::findByEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 05:01:08] [ERROR] User::createFromEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 05:01:46] [ERROR] User::findByEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 05:01:47] [ERROR] User::createFromEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 05:01:54] [ERROR] User::findByEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 05:01:54] [ERROR] User::createFromEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 05:03:23] [ERROR] OAuth callback failed: Signed API request to https://www.googleapis.com/oauth2/v3/userinfo has returned an error. HTTP error 401. Raw Provider API response: {
+  "error": "invalid_request",
+  "error_description": "Invalid Credentials"
+}.
+[2026-07-27 05:03:32] [ERROR] User::findByEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 05:03:32] [ERROR] User::createFromEmail failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'u941268346_QloApp.users' doesn't exist
+[2026-07-27 05:10:12] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'
+[2026-07-27 05:10:13] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'
+[2026-07-27 05:16:06] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'
+[2026-07-27 05:16:07] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'
+[2026-07-27 05:16:14] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'
+[2026-07-27 05:16:16] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'
+[2026-07-27 05:20:22] [ERROR] OAuth callback failed: Signed API request to https://www.googleapis.com/oauth2/v3/userinfo has returned an error. HTTP error 401. Raw Provider API response: {
+  "error": "invalid_request",
+  "error_description": "Invalid Credentials"
+}.
+[2026-07-27 05:25:05] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'
+[2026-07-27 05:25:06] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'

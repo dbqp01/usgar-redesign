@@ -76,7 +76,7 @@ $middleware = new Middleware();
 $middleware
     ->add(Middleware::cors())
     ->add(Middleware::securityHeaders())
-    ->add(Middleware::rateLimit(60, 600));
+    ->add(Middleware::rateLimit(300, 600));
 
 $router->setMiddleware($middleware);
 
