@@ -134,8 +134,9 @@ const schemas = [hotelSchema, faqSchema];
     <video
       autoplay
       muted
+      loop
       playsinline
-      preload="none"
+      preload="auto"
       class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 z-0"
       poster={optimizedPoster.src}
       id="hero-video"
@@ -500,7 +501,11 @@ const schemas = [hotelSchema, faqSchema];
     if (!video || !toggleBtn || !mutedIcon || !unmutedIcon || !slideshow)
       return;
 
-    // Video is loaded natively via src attribute for faster LCP
+    // Ensure video is played explicitly on load
+    video.play().catch((err) => {
+      console.log("Autoplay notice:", err);
+    });
+
     // Toggle sound
     toggleBtn.addEventListener("click", () => {
       video.muted = !video.muted;

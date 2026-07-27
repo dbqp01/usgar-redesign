@@ -58,3 +58,7 @@
 [2026-07-27 00:19:54] [INFO] ProvisionalBookingRepository: Creando tablas provisional_bookings y processed_payments automáticamente...
 [2026-07-27 00:25:01] [ERROR] Unhandled exception in Router: Cannot query mock payment. {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Features\\Shared\\Adapters\\MercadoPagoAdapter.php","line":187}
 [2026-07-27 00:25:01] [ERROR] Unhandled exception in Router: Cannot query mock payment. {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Features\\Shared\\Adapters\\MercadoPagoAdapter.php","line":187}
+[2026-07-27 04:13:47] [ERROR] OAuth callback failed: Signed API request to https://www.googleapis.com/oauth2/v3/userinfo has returned an error. HTTP error 401. Raw Provider API response: {
+  "error": "invalid_request",
+  "error_description": "Invalid Credentials"
+}.
