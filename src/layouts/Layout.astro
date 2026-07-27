@@ -5,6 +5,8 @@ import Footer from '../components/Footer.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import { siteSettings } from '../data/settings';
 import '../styles/global.css';
+import StatusBanner from '../components/ui/StatusBanner.astro';
+import SmoothScroll from '../components/common/SmoothScroll.astro';
 import { useTranslations } from '../i18n/utils';
 import type { Locale } from '../i18n/utils';
 
@@ -215,5 +217,7 @@ const localeMap: Record<Locale, string> = {
 
     <Footer />
     <WhatsAppButton />
+    <StatusBanner />
+    <SmoothScroll />
   </body>
 </html>

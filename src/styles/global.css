@@ -108,12 +108,14 @@
   --font-body: 'Montserrat', 'Outfit', sans-serif;
   --font-logo: 'Kravitz Extra Thermal', sans-serif;
 
-  /* === ANIMATIONS === */
+  /* === ANIMATIONS (Quiet Luxury Editorial) === */
   --animate-pulse-soft: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-slide-up: slide-up 0.6s ease-out;
   --animate-fade-in: fade-in 0.8s ease-out;
   --animate-slide-in-right: slide-in-right 0.3s ease-out;
   --animate-golden-glow: golden-glow 3s ease-in-out infinite;
+  --animate-status-slide: status-slide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-led-glow: led-glow 2s ease-in-out infinite;
 
   @keyframes pulse-soft {
     0%, 100% { transform: scale(1); opacity: 1; }
@@ -138,6 +140,16 @@
   @keyframes golden-glow {
     0%, 100% { box-shadow: 0 0 0 0 rgba(234, 202, 28, 0); }
     50% { box-shadow: 0 0 20px 4px rgba(234, 202, 28, 0.15); }
+  }
+
+  @keyframes status-slide {
+    from { transform: translateY(12px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes led-glow {
+    0%, 100% { opacity: 1; filter: drop-shadow(0 0 4px currentColor); }
+    50% { opacity: 0.4; filter: drop-shadow(0 0 1px currentColor); }
   }
 
   @keyframes float-slow {
