@@ -81,8 +81,11 @@ try {
     assertTest("Validator::requireFields lanza excepción si faltan campos", $e->getStatusCode() === 400);
 }
 
+// Fechas dinámicas para evitar pruebas frágiles dependientes del calendario.
+$validFutureCheckIn = date('Y-m-d', strtotime('+1 day'));
+$validFutureCheckOut = date('Y-m-d', strtotime('+5 days'));
 try {
-    Validator::dateRange('2026-07-20', '2026-07-25');
+    Validator::dateRange($validFutureCheckIn, $validFutureCheckOut);
     assertTest("Validator::dateRange acepta rango de fechas futuras válido", true);
 } catch (HttpException $e) {
     assertTest("Validator::dateRange acepta rango de fechas futuras", false, $e->getMessage());
