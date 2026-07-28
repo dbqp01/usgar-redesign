@@ -48,12 +48,25 @@ class Validator {
             throw HttpException::badRequest('La fecha proporcionada no existe.');
         }
 
-        $today = date('Y-m-d');
-        if ($checkIn < $today) {
-            throw HttpException::badRequest("La fecha de checkIn no puede ser anterior a la fecha actual ({$today}).");
+        $tz = new \DateTimeZone(date_default_timezone_get());
+        $todayObj = new \DateTimeImmutable('today', $tz);
+        
+        $inObj = \DateTimeImmutable::createFromFormat('Y-m-d', $checkIn, $tz);
+        $outObj = \DateTimeImmutable::createFromFormat('Y-m-d', $checkOut, $tz);
+
+        if (!$inObj || !$outObj) {
+            throw HttpException::badRequest('Formato de fecha inválido. Se espera YYYY-MM-DD.');
         }
 
-        if (strtotime($checkIn) >= strtotime($checkOut)) {
+        $inObj = $inObj->setTime(0, 0, 0);
+        $outObj = $outObj->setTime(0, 0, 0);
+
+        if ($inObj < $todayObj) {
+            $todayFormatted = $todayObj->format('Y-m-d');
+            throw HttpException::badRequest("La fecha de checkIn no puede ser anterior a la fecha actual ({$todayFormatted}).");
+        }
+
+        if ($inObj >= $outObj) {
             throw HttpException::badRequest(
                 'La fecha de checkIn debe ser estrictamente anterior a la de checkOut.'
             );

@@ -81,15 +81,19 @@ try {
     assertTest("Validator::requireFields lanza excepción si faltan campos", $e->getStatusCode() === 400);
 }
 
+$today = new DateTimeImmutable('today');
+$validCheckIn = $today->modify('+1 day')->format('Y-m-d');
+$validCheckOut = $today->modify('+3 day')->format('Y-m-d');
+
 try {
-    Validator::dateRange('2026-07-20', '2026-07-25');
+    Validator::dateRange($validCheckIn, $validCheckOut);
     assertTest("Validator::dateRange acepta rango de fechas futuras válido", true);
 } catch (HttpException $e) {
     assertTest("Validator::dateRange acepta rango de fechas futuras", false, $e->getMessage());
 }
 
 try {
-    Validator::dateRange('2026-07-25', '2026-07-20');
+    Validator::dateRange($validCheckOut, $validCheckIn);
     assertTest("Validator::dateRange falla si checkOut es antes de checkIn", false);
 } catch (HttpException $e) {
     assertTest("Validator::dateRange falla si checkOut es antes de checkIn", $e->getStatusCode() === 400);
@@ -188,7 +192,7 @@ assertTest("Endpoint GET /api/rooms sin parámetros retorna HTTP 400 (Bad Reques
 assertTest("Endpoint GET /api/rooms sin parámetros reporta error de validación", str_contains(strtolower($roomsInvalidRes['body']), 'falta') || str_contains(strtolower($roomsInvalidRes['body']), 'field') || str_contains(strtolower($roomsInvalidRes['body']), 'checkin'));
 
 // Test /api/rooms con rango invalido
-$roomsRangeInvalidRes = httpGet("http://$host:$port/api/rooms?checkIn=2026-07-25&checkOut=2026-07-20");
+$roomsRangeInvalidRes = httpGet("http://$host:$port/api/rooms?checkIn={$validCheckOut}&checkOut={$validCheckIn}");
 assertTest("Endpoint GET /api/rooms con rango de fechas invertido retorna HTTP 400", $roomsRangeInvalidRes['status'] === 400);
 
 // Test /api/booking-status sin cart_id (debe fallar)
