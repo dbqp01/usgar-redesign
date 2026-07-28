@@ -17,14 +17,19 @@ const stats = [
 
 ---
 
-<section id="heritage" class="py-32 px-4 bg-surface-card-dark text-white relative overflow-hidden transition-colors duration-500">
-  <div class="max-w-7xl mx-auto">
+<section id="heritage-section" class="scroll-mt-28 sm:scroll-mt-32 py-12 sm:py-16 px-4 bg-surface-card-dark text-white relative overflow-hidden transition-colors duration-500">
+  <!-- Decorative SVG path that draws on scroll -->
+  <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-25 z-0" viewBox="0 0 1400 900" fill="none" preserveAspectRatio="none">
+    <path id="heritage-svg-path" d="M -100 100 Q 700 0 1500 450 T -100 800" stroke="var(--color-secondary, #D4AF37)" stroke-width="3" stroke-linecap="round" />
+  </svg>
+
+  <div class="max-w-7xl mx-auto relative z-10">
     
     <!-- Editorial Split Layout -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
       
       <!-- Left: Massive Image with Parallax feel -->
-      <div class="relative w-full aspect-[3/4] sm:aspect-square lg:aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl img-hover-zoom animate-on-scroll">
+      <div class="relative w-full aspect-[3/4] sm:aspect-square lg:aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl img-hover-zoom animate-on-scroll" data-story-parallax="0.12">
         <Image
           src={patioImg}
           alt="Patio Inca Colonial USGAR Hotels"
@@ -66,7 +71,7 @@ const stats = [
         <!-- Metric Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-10 pt-10 border-t border-white/10">
           {stats.map((stat) => (
-            <div class="space-y-1">
+            <div class="space-y-1" data-story-parallax="0.08">
               <span class="font-display text-5xl sm:text-6xl font-bold text-secondary block">{stat.value}</span>
               <span class="text-[10px] font-mono uppercase tracking-widest text-text-secondary-dark font-semibold">
                 {stat.label[lang]}
@@ -76,7 +81,7 @@ const stats = [
         </div>
 
         <!-- Secondary Floating Image -->
-        <div class="relative w-full h-64 sm:h-80 rounded-2xl overflow-hidden shadow-xl img-hover-zoom hidden sm:block">
+        <div class="relative w-full h-64 sm:h-80 rounded-2xl overflow-hidden shadow-xl img-hover-zoom hidden sm:block" data-story-parallax="0.18">
            <Image
             src={pasilloImg}
             alt="Pasillos de Piedra USGAR Hotels"

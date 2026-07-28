@@ -7,10 +7,14 @@
 ---
 
 <script>
+  import { ScrollStoryEngine } from '../../utils/scrollStoryEngine';
+
+  let lenisInstance: any = null;
+
   function initSmoothScroll() {
     if (typeof window === 'undefined' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const schedule = (window.requestIdleCallback || ((cb: Function) => setTimeout(cb, 200)));
+    const schedule = (window.requestIdleCallback || ((cb: Function) => setTimeout(cb, 100)));
 
     schedule(async () => {
       try {
@@ -22,24 +26,38 @@
 
         gsap.registerPlugin(ScrollTrigger);
 
-        const lenis = new Lenis({
-          duration: 1.2,
-          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-          smoothWheel: true,
-        });
+        if (!lenisInstance) {
+          lenisInstance = new Lenis({
+            duration: 1.2,
+            easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothWheel: true,
+          });
 
-        lenis.on('scroll', ScrollTrigger.update);
+          lenisInstance.on('scroll', ScrollTrigger.update);
 
-        gsap.ticker.add((time: number) => {
-          lenis.raf(time * 1000);
-        });
+          gsap.ticker.add((time: number) => {
+            lenisInstance.raf(time * 1000);
+          });
 
-        gsap.ticker.lagSmoothing(0);
+          gsap.ticker.lagSmoothing(0);
+          (window as any).__lenis = lenisInstance;
+        }
+
+        // Initialize story engine animations for home/interactive sections
+        ScrollStoryEngine.initHomePageStory();
+
       } catch (e) {
         console.warn('SmoothScroll deferred init note:', e);
       }
     });
   }
 
+  // Teardown ScrollTrigger on View Transitions before swap
+  document.addEventListener('astro:before-preparation', () => {
+    ScrollStoryEngine.cleanup();
+  });
+
+  // Re-init on page load / transition completed
   document.addEventListener('astro:page-load', initSmoothScroll);
 </script>
+

@@ -329,9 +329,7 @@ const schemas = [hotelSchema, faqSchema];
   <!-- ==========================================
        INTERACTIVE ROOMS SECTION (Image 2 reference: Nuestras Habitaciones)
        ========================================== -->
-  <div id="rooms">
-    <InteractiveRoomsSection />
-  </div>
+  <InteractiveRoomsSection />
 
   <!-- ==========================================
        GASTRONOMY SECTION (Image 3 reference: Auka Restobar / Rueda Gastronómica)
@@ -346,10 +344,10 @@ const schemas = [hotelSchema, faqSchema];
   <!-- ==========================================
        EXPLORE CUSCO PREVIEW (Glassmorphic Destination Grid)
        ========================================== -->
-  <section class="py-24 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-300 relative">
+  <section class="py-12 sm:py-16 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-300 relative scroll-mt-28 sm:scroll-mt-32">
     <div class="max-w-7xl mx-auto">
-      <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll">
-        <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl text-primary-dark dark:text-white leading-tight">
+      <div class="text-center max-w-3xl mx-auto mb-10 animate-on-scroll">
+        <h2 class="font-display text-4xl sm:text-5xl lg:text-5xl text-primary-dark dark:text-white leading-tight">
           {t("explore.title")}
         </h2>
         <p
@@ -452,7 +450,7 @@ const schemas = [hotelSchema, faqSchema];
       </div>
 
       <!-- View All Link Button -->
-      <div class="text-center mt-12 animate-on-scroll">
+      <div class="text-center mt-8 animate-on-scroll">
         <a
           href={getRelativeLocaleUrl(lang, "explore")}
           data-astro-prefetch="tap"

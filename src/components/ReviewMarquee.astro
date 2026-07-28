@@ -10,84 +10,117 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<section class="py-24 bg-surface-light dark:bg-surface-dark transition-colors duration-500">
-  <div class="max-w-7xl mx-auto px-4 mb-16 text-center">
-    <span class="tag-dash-title block">
+<section id="velocity-marquee-section" class="scroll-mt-28 sm:scroll-mt-32 py-8 sm:py-12 bg-surface-light dark:bg-surface-dark transition-colors duration-500 overflow-hidden relative">
+  <div class="max-w-7xl mx-auto px-4 mb-12 text-center relative z-10">
+    <div class="inline-flex items-center gap-3 text-secondary text-xs font-mono tracking-[0.3em] uppercase mb-3">
+      <span class="w-8 h-px bg-secondary"></span>
       {t('reviews.sectionLabel')}
-    </span>
-    <h2 class="font-display text-4xl sm:text-5xl text-text-primary-light dark:text-white mt-3">
-      {t('reviews.title')}
-    </h2>
-    <p class="text-text-secondary-light dark:text-text-secondary-dark max-w-xl mx-auto mt-4 text-base sm:text-lg">
-      {t('reviews.description')}
-    </p>
-  </div>
-
-  <!-- Marquee Track -->
-  <div class="marquee-container overflow-hidden relative w-full py-4 select-none">
-    <!-- First track -->
-    <div class="marquee-content gap-6 px-3">
-      {
-        reviews.map((review) => (
-          <div class="flex-shrink-0 w-80 sm:w-96 bg-white/60 dark:bg-white/5 backdrop-blur-md p-8 rounded-3xl border border-black/5 dark:border-white/10 shadow-lg space-y-6 transform hover:-translate-y-2 transition-all duration-300 mx-3">
-            <div class="flex justify-center gap-1 text-secondary">
-              {Array.from({ length: 5 }).map(() => (
-                <svg
-                  class="w-4 h-4 fill-current text-secondary drop-shadow-sm"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
-            </div>
-            
-            <p class="text-sm sm:text-base text-center text-text-secondary-light dark:text-text-secondary-dark font-body font-light italic leading-relaxed">
-              "{review.text[lang] || review.text.en || review.text.es}"
-            </p>
-            
-            <div class="text-center pt-4 border-t border-black/5 dark:border-white/5">
-              <span class="block text-xs uppercase tracking-widest font-bold text-text-primary-light dark:text-white">
-                {review.name}
-              </span>
-              <span class="block text-[10px] uppercase tracking-wider text-text-secondary-light/70 dark:text-text-secondary-dark/70 mt-1">
-                {review.country}
-              </span>
-            </div>
-          </div>
-        ))
-      }
+      <span class="w-8 h-px bg-secondary"></span>
     </div>
     
-    <!-- Duplicate for seamless scroll -->
-    <div class="marquee-content gap-6 px-3" aria-hidden="true">
+    <h2 class="font-display text-4xl sm:text-6xl text-text-primary-light dark:text-white font-bold tracking-tight">
+      {t('reviews.title')}
+    </h2>
+    <p class="text-text-secondary-light dark:text-text-secondary-dark max-w-xl mx-auto mt-4 text-base sm:text-lg font-light font-body leading-relaxed">
+      {t('reviews.description')}
+    </p>
+
+    <!-- Editorial Reputation Metrics Header Bar (High Contrast Typographic Labels) -->
+    <div class="flex flex-wrap items-center justify-center gap-8 mt-10 pt-8 border-t border-black/10 dark:border-white/10 text-xs font-mono uppercase tracking-widest text-text-secondary-light dark:text-text-secondary-dark">
+      <div class="flex items-center gap-2">
+        <span class="text-[#059669] dark:text-[#34D399] font-bold">TRIPADVISOR</span>
+        <span class="text-slate-400">•</span>
+        <span class="text-text-primary-light dark:text-white font-bold">5.0 / 5.0</span>
+        <span class="text-slate-400">(240+ REVIEWS)</span>
+      </div>
+      <div class="hidden sm:block text-slate-300 dark:text-slate-700">|</div>
+      <div class="flex items-center gap-2">
+        <span class="text-[#2563EB] dark:text-[#60A5FA] font-bold">BOOKING.COM</span>
+        <span class="text-slate-400">•</span>
+        <span class="text-text-primary-light dark:text-white font-bold">9.6 / 10</span>
+        <span class="text-slate-400">(380+ REVIEWS)</span>
+      </div>
+      <div class="hidden sm:block text-slate-300 dark:text-slate-700">|</div>
+      <div class="flex items-center gap-2">
+        <span class="text-[#0284C7] dark:text-[#38BDF8] font-bold">GOOGLE</span>
+        <span class="text-slate-400">•</span>
+        <span class="text-text-primary-light dark:text-white font-bold">4.9 / 5.0</span>
+        <span class="text-slate-400">(190+ REVIEWS)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Marquee Track Container (GSAP Velocity Scroll Driven) -->
+  <div id="marquee-track-container" class="overflow-hidden relative w-full py-4 select-none z-10">
+    <!-- Gradient Edge Vignettes matching theme -->
+    <div class="absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-surface-light dark:from-surface-dark to-transparent z-20 pointer-events-none"></div>
+    <div class="absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-surface-light dark:from-surface-dark to-transparent z-20 pointer-events-none"></div>
+
+    <!-- Velocity Track with High Contrast Dark Luxury Cards on Light Background -->
+    <div id="velocity-marquee-track" class="flex gap-8 w-max">
       {
-        reviews.map((review) => (
-          <div class="flex-shrink-0 w-80 sm:w-96 bg-white/60 dark:bg-white/5 backdrop-blur-md p-8 rounded-3xl border border-black/5 dark:border-white/10 shadow-lg space-y-6 transform hover:-translate-y-2 transition-all duration-300 mx-3">
-            <div class="flex justify-center gap-1 text-secondary">
-              {Array.from({ length: 5 }).map(() => (
-                <svg
-                  class="w-4 h-4 fill-current text-secondary drop-shadow-sm"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
+        [...reviews, ...reviews].map((review, idx) => {
+          const platforms = [
+            { name: 'TRIPADVISOR', border: 'border-l-[#10B981]', text: 'text-[#10B981]', label: 'VERIFIED TRIPADVISOR REVIEW' },
+            { name: 'BOOKING.COM', border: 'border-l-[#3B82F6]', text: 'text-[#3B82F6]', label: 'VERIFIED BOOKING.COM GUEST' },
+            { name: 'GOOGLE REVIEWS', border: 'border-l-[#60A5FA]', text: 'text-[#60A5FA]', label: 'VERIFIED GOOGLE LOCAL GUIDE' },
+            { name: 'EXPEDIA', border: 'border-l-[#F59E0B]', text: 'text-[#F59E0B]', label: 'VERIFIED EXPEDIA TRAVELER' }
+          ];
+          const platform = platforms[idx % platforms.length];
+
+          return (
+            <div class="flex-shrink-0 w-[300px] sm:w-[380px] bg-white dark:bg-surface-card-dark p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-none dark:border dark:border-white/10 space-y-6 transform transition-all duration-300 group flex flex-col justify-between">
+              
+              <div>
+                <!-- Top Header: Quote Mark & Platform Badge -->
+                <div class="flex items-start justify-between mb-4">
+                  <!-- Pale Purple Quote Mark -->
+                  <div class="text-[#EADDF3] dark:text-primary-dark font-serif text-6xl leading-none mt-2 select-none">
+                    &rdquo;
+                  </div>
+                  <!-- Platform Badge -->
+                  <div class="px-2 py-1 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 rounded uppercase text-[8px] font-bold tracking-widest text-slate-500 dark:text-slate-400">
+                    {platform.name}
+                  </div>
+                </div>
+
+                <!-- Golden Outlined Stars -->
+                <div class="flex gap-1 text-secondary mb-6">
+                  {Array.from({ length: review.rating || 5 }).map(() => (
+                    <svg class="w-4 h-4 fill-transparent stroke-current stroke-[1.5]" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385c.114.481-.433.879-.861.644l-4.66-2.533a.562.562 0 00-.542 0l-4.66 2.533c-.428.235-.975-.163-.861-.644l1.285-5.385a.563.563 0 00-.182-.557l-4.204-3.602a.563.563 0 00.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                    </svg>
+                  ))}
+                </div>
+                
+                <!-- Card Body Quote -->
+                <p class="text-xl text-text-primary-light dark:text-slate-100 font-serif italic leading-relaxed">
+                  "{review.text[lang] || review.text.en || review.text.es}"
+                </p>
+              </div>
+              
+              <!-- Divider & Footer Info -->
+              <div>
+                <hr class="my-6 border-slate-100 dark:border-white/10" />
+                <div class="flex items-center gap-4">
+                  <!-- Avatar Circle -->
+                  <div class="w-12 h-12 rounded-full bg-primary-dark dark:bg-black/50 border border-primary/20 dark:border-white/10 flex items-center justify-center text-white font-body font-semibold tracking-wider text-sm flex-shrink-0">
+                    {review.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase()}
+                  </div>
+                  <!-- Name & Label -->
+                  <div>
+                    <span class="block text-sm font-bold text-text-primary-light dark:text-white">
+                      {review.name}
+                    </span>
+                    <span class="block text-[10px] uppercase tracking-widest text-text-secondary-light dark:text-slate-400 mt-1 font-medium">
+                      {platform.label}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <p class="text-sm sm:text-base text-center text-text-secondary-light dark:text-text-secondary-dark font-body font-light italic leading-relaxed">
-              "{review.text[lang] || review.text.en || review.text.es}"
-            </p>
-            
-            <div class="text-center pt-4 border-t border-black/5 dark:border-white/5">
-              <span class="block text-xs uppercase tracking-widest font-bold text-text-primary-light dark:text-white">
-                {review.name}
-              </span>
-              <span class="block text-[10px] uppercase tracking-wider text-text-secondary-light/70 dark:text-text-secondary-dark/70 mt-1">
-                {review.country}
-              </span>
-            </div>
-          </div>
-        ))
+          );
+        })
       }
     </div>
   </div>

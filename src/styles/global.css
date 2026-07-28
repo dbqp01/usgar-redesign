@@ -91,11 +91,11 @@
   --color-green-bg: #CEF0ED;         /* Service card backgrounds */
 
   /* === FONDOS ESTÉTICOS (Nuevos — v2) === */
-  --color-surface-light: #F7F3FA;         /* Lavender Mist — light mode page bg */
+  --color-surface-light: #FFFFFF;         /* Pure White — light mode page bg (Reverted per user) */
   --color-surface-dark: #1C1917;          /* Stone Dark — dark mode page bg */
-  --color-surface-light-alt: #FBF4D2;     /* Crema — testimonial blocks */
+  --color-surface-light-alt: #FFFFFF;     /* White — testimonial blocks */
   --color-surface-card-light: #FFFFFF;
-  --color-surface-card-dark: #1C1C1C;     /* Dark Neutral Gray — dark card */
+  --color-surface-card-dark: #2B1D33;     /* Purple-Tinted Dark — dark card (BRAND.md) */
 
   /* === TEXTO === */
   --color-text-primary-light: #333333;
@@ -279,7 +279,7 @@ h3, h4 {
 }
 
 .dark .glass {
-  background: rgba(28, 28, 28, 0.8); /* surface-card-dark tint */
+  background: rgba(43, 29, 51, 0.85); /* surface-card-dark #2B1D33 with transparency */
   border: 0.5px solid rgba(255, 255, 255, 0.08);
 }
 

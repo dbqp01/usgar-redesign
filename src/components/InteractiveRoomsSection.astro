@@ -33,24 +33,24 @@ const roomsWithPhotos = await Promise.all(
 );
 ---
 
-<section id="rooms" class="py-24 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-500 overflow-hidden">
+<section id="rooms" class="scroll-mt-28 sm:scroll-mt-32 py-12 sm:py-16 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-500 overflow-hidden">
   <div class="max-w-[1400px] mx-auto">
     
     <!-- Header -->
-    <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll space-y-3">
+    <div class="text-center max-w-3xl mx-auto mb-10 animate-on-scroll space-y-2">
       <span class="tag-dash-title block">
         {t('rooms.sectionLabel')}
       </span>
-      <h2 class="font-display text-4xl sm:text-5xl lg:text-7xl text-text-primary-light dark:text-white leading-tight">
+      <h2 class="font-display text-4xl sm:text-5xl lg:text-5xl text-text-primary-light dark:text-white leading-tight">
         {t('roomsSection.heading')}
       </h2>
-      <p class="mt-4 text-base sm:text-lg text-text-secondary-light dark:text-text-secondary-dark font-body font-light">
+      <p class="mt-2 text-base sm:text-lg text-text-secondary-light dark:text-text-secondary-dark font-body font-light">
         {t('roomsSection.subheading')}
       </p>
     </div>
 
-    <!-- Accordion Layout -->
-    <div class="flex flex-col lg:flex-row h-[800px] lg:h-[650px] w-full gap-2 lg:gap-4 animate-on-scroll">
+    <!-- Accordion Layout with Viewport-Constrained Height -->
+    <div class="flex flex-col lg:flex-row h-[550px] lg:h-[500px] max-h-[62vh] w-full gap-2 lg:gap-4 animate-on-scroll">
       {roomsWithPhotos.map((room) => (
         <a
           href={getRelativeLocaleUrl(lang, `rooms/${room.slug}`)}
