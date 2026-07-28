@@ -70,8 +70,8 @@
     "semantic_hash": ""
   },
   "src/components/Navbar.astro": {
-    "mtime": 1785130426.6361413,
-    "ast_hash": "354323edb730207dcd52d4e0a9461872",
+    "mtime": 1785135841.4016902,
+    "ast_hash": "e609843ec0c18821593fe010a10df1d1",
     "semantic_hash": ""
   },
   "src/components/ReviewMarquee.astro": {
@@ -120,13 +120,13 @@
     "semantic_hash": ""
   },
   "src/i18n/en.json": {
-    "mtime": 1784824377.1849105,
-    "ast_hash": "f02c08dae0e0f4c8b3cd3d8f56eb9c67",
+    "mtime": 1785134187.7156339,
+    "ast_hash": "063a2562f044ec348e7d9c21eef6c681",
     "semantic_hash": ""
   },
   "src/i18n/es.json": {
-    "mtime": 1784824377.1864986,
-    "ast_hash": "6c9c5778e7d9d22560b53dd2bd40bb8e",
+    "mtime": 1785134198.4251564,
+    "ast_hash": "aaeda5a780a1a854d08485b7ed578f0a",
     "semantic_hash": ""
   },
   "src/i18n/utils.ts": {
@@ -135,8 +135,8 @@
     "semantic_hash": ""
   },
   "src/layouts/Layout.astro": {
-    "mtime": 1785130426.643334,
-    "ast_hash": "c39cedcaeccbe898fdb24b69bee08490",
+    "mtime": 1785135820.2348337,
+    "ast_hash": "8618a377aad2a9bf738e0a497aaabc23",
     "semantic_hash": ""
   },
   "src/pages/book.astro": {
@@ -225,8 +225,8 @@
     "semantic_hash": ""
   },
   "src/pages/index.astro": {
-    "mtime": 1785130426.646335,
-    "ast_hash": "8e9c3292a458c8e7cac03ec84c8c3460",
+    "mtime": 1785135881.6030476,
+    "ast_hash": "3e9e99687974e93d7d8e2648926144cc",
     "semantic_hash": ""
   },
   "src/pages/rooms/[slug].astro": {
@@ -515,8 +515,8 @@
     "semantic_hash": ""
   },
   "public/index.php": {
-    "mtime": 1785130426.6284819,
-    "ast_hash": "9c296075b9edcac2f87276e7d1f8641a",
+    "mtime": 1785135858.2297802,
+    "ast_hash": "d8563b85930a0ed2762f38ddb626d3c3",
     "semantic_hash": ""
   },
   "scripts/run-exhaustive-tests.php": {
@@ -810,13 +810,13 @@
     "semantic_hash": ""
   },
   "src/i18n/fr.json": {
-    "mtime": 1785130426.6411436,
-    "ast_hash": "31341c812347ef07705f0ca577c04a77",
+    "mtime": 1785134217.5959888,
+    "ast_hash": "205c9083d8f8d769445ebc3dce9b980c",
     "semantic_hash": ""
   },
   "src/i18n/pt.json": {
-    "mtime": 1785130426.6423278,
-    "ast_hash": "3310eaa79702353e8ea520c5c523db25",
+    "mtime": 1785134228.0286512,
+    "ast_hash": "9f1620954d1368b1b3d5081c57180d63",
     "semantic_hash": ""
   },
   "src/pages/fr/book.astro": {
@@ -1565,8 +1565,8 @@
     "semantic_hash": ""
   },
   "app/Features/Auth/User.php": {
-    "mtime": 1785130426.5853455,
-    "ast_hash": "ef72fcc9598031c70020d5d87e6c5256",
+    "mtime": 1785135802.801676,
+    "ast_hash": "bd5a7663f43568eea1d67a0c827f3b9e",
     "semantic_hash": ""
   },
   "app/Features/Booking/Actions/CreateBookingAction.php": {
@@ -1745,8 +1745,8 @@
     "semantic_hash": ""
   },
   "src/components/common/SmoothScroll.astro": {
-    "mtime": 1785130426.638142,
-    "ast_hash": "980ce8f84b7f79eda6701d081a08a986",
+    "mtime": 1785135831.1613853,
+    "ast_hash": "d09687b59ab010f41e67299bf6adc873",
     "semantic_hash": ""
   },
   "src/components/ui/StatusBanner.astro": {
@@ -1765,13 +1765,28 @@
     "semantic_hash": ""
   },
   "src/pages/profile.astro": {
-    "mtime": 1785130426.648332,
-    "ast_hash": "259ad052ef15db51cd9769073b5c41f9",
+    "mtime": 1785135896.2965868,
+    "ast_hash": "5a87d54a72579ca15ba36a0b387c42c0",
     "semantic_hash": ""
   },
   "src/pages/pt/profile.astro": {
     "mtime": 1785130426.649335,
     "ast_hash": "b4b3cb6c6057fa851667332c28e12fc4",
+    "semantic_hash": ""
+  },
+  "app/Features/Auth/Actions/UpdateUserProfileAction.php": {
+    "mtime": 1785135835.1581461,
+    "ast_hash": "07821ce4c3f9713d81cfb34848c5d532",
+    "semantic_hash": ""
+  },
+  "lh_desktop.json": {
+    "mtime": 1785134433.3718,
+    "ast_hash": "c1baf0d305939b9ba98661a33153b8c3",
+    "semantic_hash": ""
+  },
+  "lh_mobile.json": {
+    "mtime": 1785134408.1123152,
+    "ast_hash": "ba7521cb6ee4f4c489164f053880266c",
     "semantic_hash": ""
   }
 }

@@ -185,10 +185,14 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         }
         if (str_contains($paymentId, 'MOCK')) {
             if (!Config::isProduction()) {
+                $extRef = 'USGAR-287f0138cfc1';
+                if (preg_match('/(USGAR-[a-f0-9]+)/i', $paymentId, $matches)) {
+                    $extRef = $matches[1];
+                }
                 return [
                     'id'                 => $paymentId,
                     'status'             => 'approved',
-                    'external_reference' => 'USGAR-287f0138cfc1',
+                    'external_reference' => $extRef,
                     'transaction_amount' => 342.0,
                 ];
             }

@@ -33,7 +33,7 @@ class SyncChannexBookingListener implements ListenerInterface {
         $amount     = $event->getAmount();
         $guestData  = $event->getGuestData();
 
-        $guestName  = (string)($guestData['name'] ?? 'Huésped USGAR');
+        $guestName  = (string)($guestData['name'] ?? 'Huesped USGAR');
         $guestEmail = (string)($guestData['email'] ?? 'reserva@hotelesusgar.com');
         $guestPhone = (string)($guestData['phone'] ?? '');
         $adults     = (int)($guestData['guests'] ?? 2);

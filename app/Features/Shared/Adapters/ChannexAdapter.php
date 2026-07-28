@@ -38,7 +38,7 @@ class ChannexAdapter implements ChannelManagerPortInterface {
         try {
             $channexRoomId = $this->resolveChannexRoomId($idRoomType);
             if (empty($channexRoomId)) {
-                Logger::error("ChannexAdapter: Mapeo de habitación faltante para ID {$idRoomType}");
+                Logger::error("ChannexAdapter: Mapeo de habitacion faltante para ID {$idRoomType}");
                 return false;
             }
 
@@ -226,6 +226,76 @@ class ChannexAdapter implements ChannelManagerPortInterface {
         }
     }
 
+    public function fetchBookingRevision(string $revisionId): ?array {
+        if (empty($this->apiKey)) {
+            return null;
+        }
+
+        try {
+            $endpoint = "{$this->apiUrl}/booking_revisions/{$revisionId}";
+            $ch = curl_init($endpoint);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                "user-api-key: {$this->apiKey}",
+                'Accept: application/json',
+            ]);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            if ($httpCode === 200 && !empty($response)) {
+                $decoded = json_decode($response, true);
+                return $decoded['data'] ?? ($decoded['booking'] ?? $decoded);
+            }
+
+            Logger::error("ChannexAdapter: Error al consultar revision {$revisionId}. HTTP {$httpCode}");
+            return null;
+        } catch (Exception $e) {
+            Logger::error("ChannexAdapter Exception en fetchBookingRevision: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    public function acknowledgeRevision(string $revisionId): bool {
+        if (empty($this->apiKey)) {
+            return false;
+        }
+
+        try {
+            $endpoint = "{$this->apiUrl}/booking_revisions/{$revisionId}/ack";
+            $ch = curl_init($endpoint);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                "user-api-key: {$this->apiKey}",
+                'Content-Type: application/json',
+            ]);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, '{}');
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            if ($httpCode >= 200 && $httpCode < 300) {
+                Logger::info("ChannexAdapter: Revision {$revisionId} confirmada (ACK) exitosamente.");
+                return true;
+            }
+
+            Logger::error("ChannexAdapter: Fallo al enviar ACK para revision {$revisionId}. HTTP {$httpCode}");
+            return false;
+        } catch (Exception $e) {
+            Logger::error("ChannexAdapter Exception en acknowledgeRevision: " . $e->getMessage());
+            return false;
+        }
+    }
+
     private function resolveChannexRoomId(int $idRoomType): ?string {
         return RoomTypeRegistry::getChannexRoomId($idRoomType);
     }
@@ -237,5 +307,4 @@ class ChannexAdapter implements ChannelManagerPortInterface {
     private function getSlugByRoomType(int $idRoomType): string {
         return RoomTypeRegistry::getSlugById($idRoomType);
     }
-
 }

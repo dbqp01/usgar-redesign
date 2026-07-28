@@ -19,17 +19,24 @@ class Response {
             ob_clean();
         }
 
-        http_response_code($statusCode);
-        header('Content-Type: application/json; charset=utf-8');
+        if (!headers_sent()) {
+            http_response_code($statusCode);
+            header('Content-Type: application/json; charset=utf-8');
+        }
 
         try {
             echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
             Logger::error('[Response] JSON encode error: ' . $e->getMessage());
-            http_response_code(500);
+            if (!headers_sent()) {
+                http_response_code(500);
+            }
             echo '{"success":false,"error":"Internal serialization error"}';
         }
-        exit(0);
+
+        if (!defined('PHP_TESTING') && Config::get('APP_ENV') !== 'testing') {
+            exit(0);
+        }
     }
 
     /**

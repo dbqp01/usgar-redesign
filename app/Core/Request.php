@@ -15,18 +15,32 @@ class Request {
     private readonly array $headers;
     private readonly ?array $body;
 
-    public function __construct() {
-        $this->method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+    public function __construct(
+        ?string $method = null,
+        ?string $path = null,
+        ?array $headers = null,
+        ?array $body = null
+    ) {
+        $this->method = strtoupper($method ?? ($_SERVER['REQUEST_METHOD'] ?? 'GET'));
         $this->queryParams = $_GET;
-        $this->headers = $this->extractHeaders();
 
-        // Parsear el Path quitando query string y barras finales
-        $uri = $_SERVER['REQUEST_URI'] ?? '/';
-        $parts = explode('?', $uri, 2);
-        $this->path = '/' . trim($parts[0], '/');
+        $rawHeaders = $this->extractHeaders();
+        if (is_array($headers)) {
+            foreach ($headers as $k => $v) {
+                $rawHeaders[strtolower((string)$k)] = (string)$v;
+            }
+        }
+        $this->headers = $rawHeaders;
 
-        // Parsear cuerpo JSON si corresponde
-        $this->body = $this->parseBody();
+        if ($path !== null) {
+            $this->path = '/' . trim($path, '/');
+        } else {
+            $uri = $_SERVER['REQUEST_URI'] ?? '/';
+            $parts = explode('?', $uri, 2);
+            $this->path = '/' . trim($parts[0], '/');
+        }
+
+        $this->body = $body ?? $this->parseBody();
     }
 
     public function getMethod(): string {

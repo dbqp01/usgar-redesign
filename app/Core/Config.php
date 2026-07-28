@@ -47,6 +47,15 @@ class Config {
     }
 
     /**
+     * Define o sobreescribe una variable de configuracion en runtime/testing.
+     */
+    public static function set(string $key, string $value): void {
+        $instance = self::boot();
+        $instance->cache[$key] = $value;
+        putenv("{$key}={$value}");
+    }
+
+    /**
      * Verifica si el entorno actual es produccion.
      */
     public static function isProduction(): bool {

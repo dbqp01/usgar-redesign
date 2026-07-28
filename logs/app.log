@@ -122,3 +122,1097 @@
 [2026-07-27 05:39:20] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'
 [2026-07-27 05:39:21] [ERROR] User::getBookings failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'qlo_order_id' in 'SELECT'
 [2026-07-27 07:07:39] [ERROR] Unhandled exception in Router: syntax error, unexpected token "public" {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Features\\Auth\\User.php","line":264}
+[2026-07-27 15:59:29] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:42] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 15:59:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 15:59:52] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:03] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:11] [INFO] HandleChannexWebhookAction: Evento recibido [booking]
+[2026-07-27 16:00:11] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:24] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:24] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:24] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:24] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:24] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0001-1785168024] de Expedia (Huesped Stress 1 OTA Test) para 2026-07-28 -> 2026-07-30 | RoomType ID: 1
+[2026-07-27 16:00:24] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-320AC6E25117
+[2026-07-27 16:00:24] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:24] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:24] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0002-1785168024] de Booking.com (Huesped Stress 2 OTA Test) para 2026-07-29 -> 2026-07-31 | RoomType ID: 1
+[2026-07-27 16:00:24] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-1979E575C9B0
+[2026-07-27 16:00:24] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:24] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:24] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0003-1785168024] de Expedia (Huesped Stress 3 OTA Test) para 2026-07-30 -> 2026-08-01 | RoomType ID: 1
+[2026-07-27 16:00:24] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-4376384BE5E8
+[2026-07-27 16:00:24] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:24] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:24] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0004-1785168024] de Booking.com (Huesped Stress 4 OTA Test) para 2026-07-31 -> 2026-08-02 | RoomType ID: 1
+[2026-07-27 16:00:24] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-B9E6D7F72765
+[2026-07-27 16:00:24] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:24] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:24] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0005-1785168024] de Expedia (Huesped Stress 5 OTA Test) para 2026-08-01 -> 2026-08-03 | RoomType ID: 1
+[2026-07-27 16:00:25] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-C2D626C02E88
+[2026-07-27 16:00:25] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:25] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:25] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0006-1785168025] de Booking.com (Huesped Stress 6 OTA Test) para 2026-08-02 -> 2026-08-04 | RoomType ID: 1
+[2026-07-27 16:00:25] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-936851ADE0CF
+[2026-07-27 16:00:25] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:25] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:25] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0007-1785168025] de Expedia (Huesped Stress 7 OTA Test) para 2026-08-03 -> 2026-08-05 | RoomType ID: 1
+[2026-07-27 16:00:25] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-9636053C2CB0
+[2026-07-27 16:00:25] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:25] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:25] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0008-1785168025] de Booking.com (Huesped Stress 8 OTA Test) para 2026-08-04 -> 2026-08-06 | RoomType ID: 1
+[2026-07-27 16:00:25] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-C3E1474E2503
+[2026-07-27 16:00:25] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:25] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:25] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0009-1785168025] de Expedia (Huesped Stress 9 OTA Test) para 2026-08-05 -> 2026-08-07 | RoomType ID: 1
+[2026-07-27 16:00:25] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-8B8B2EFB66CC
+[2026-07-27 16:00:25] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:25] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:25] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0010-1785168025] de Booking.com (Huesped Stress 10 OTA Test) para 2026-08-06 -> 2026-08-08 | RoomType ID: 1
+[2026-07-27 16:00:26] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-B2D9220E74B4
+[2026-07-27 16:00:26] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:26] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:26] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0011-1785168026] de Expedia (Huesped Stress 11 OTA Test) para 2026-08-07 -> 2026-08-09 | RoomType ID: 1
+[2026-07-27 16:00:26] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-E62168B2C961
+[2026-07-27 16:00:26] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:26] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:26] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0012-1785168026] de Booking.com (Huesped Stress 12 OTA Test) para 2026-08-08 -> 2026-08-10 | RoomType ID: 1
+[2026-07-27 16:00:26] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-1CC3506780DA
+[2026-07-27 16:00:26] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:26] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:26] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0013-1785168026] de Expedia (Huesped Stress 13 OTA Test) para 2026-08-09 -> 2026-08-11 | RoomType ID: 1
+[2026-07-27 16:00:26] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-46DCE2E19929
+[2026-07-27 16:00:26] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:26] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:26] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0014-1785168026] de Booking.com (Huesped Stress 14 OTA Test) para 2026-08-10 -> 2026-08-12 | RoomType ID: 1
+[2026-07-27 16:00:27] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-872A1EC22907
+[2026-07-27 16:00:27] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:27] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:27] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0015-1785168027] de Expedia (Huesped Stress 15 OTA Test) para 2026-08-11 -> 2026-08-13 | RoomType ID: 1
+[2026-07-27 16:00:27] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-387B11B8C2DD
+[2026-07-27 16:00:27] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:27] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:27] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0016-1785168027] de Booking.com (Huesped Stress 16 OTA Test) para 2026-08-12 -> 2026-08-14 | RoomType ID: 1
+[2026-07-27 16:00:27] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-7C1F7821CB1D
+[2026-07-27 16:00:27] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:27] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:27] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0017-1785168027] de Expedia (Huesped Stress 17 OTA Test) para 2026-08-13 -> 2026-08-15 | RoomType ID: 1
+[2026-07-27 16:00:27] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-DCB273929509
+[2026-07-27 16:00:27] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:27] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:27] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0018-1785168027] de Booking.com (Huesped Stress 18 OTA Test) para 2026-08-14 -> 2026-08-16 | RoomType ID: 1
+[2026-07-27 16:00:27] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-8C933B06EAC2
+[2026-07-27 16:00:27] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:27] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:27] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0019-1785168027] de Expedia (Huesped Stress 19 OTA Test) para 2026-08-15 -> 2026-08-17 | RoomType ID: 1
+[2026-07-27 16:00:28] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-C0D7BA146EC3
+[2026-07-27 16:00:28] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:28] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:28] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0020-1785168028] de Booking.com (Huesped Stress 20 OTA Test) para 2026-08-16 -> 2026-08-18 | RoomType ID: 1
+[2026-07-27 16:00:28] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-026939B01C1D
+[2026-07-27 16:00:28] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:28] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:28] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0021-1785168028] de Expedia (Huesped Stress 21 OTA Test) para 2026-08-17 -> 2026-08-19 | RoomType ID: 1
+[2026-07-27 16:00:28] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-7A769F305DB8
+[2026-07-27 16:00:28] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:28] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:28] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0022-1785168028] de Booking.com (Huesped Stress 22 OTA Test) para 2026-08-18 -> 2026-08-20 | RoomType ID: 1
+[2026-07-27 16:00:28] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-D1326C0B69F2
+[2026-07-27 16:00:28] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:28] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:28] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0023-1785168028] de Expedia (Huesped Stress 23 OTA Test) para 2026-08-19 -> 2026-08-21 | RoomType ID: 1
+[2026-07-27 16:00:28] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-641CCA8DC340
+[2026-07-27 16:00:28] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:28] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:28] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0024-1785168028] de Booking.com (Huesped Stress 24 OTA Test) para 2026-08-20 -> 2026-08-22 | RoomType ID: 1
+[2026-07-27 16:00:29] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-B140712E07AA
+[2026-07-27 16:00:29] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:29] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:29] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0025-1785168029] de Expedia (Huesped Stress 25 OTA Test) para 2026-08-21 -> 2026-08-23 | RoomType ID: 1
+[2026-07-27 16:00:29] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-1255F31CA5C8
+[2026-07-27 16:00:29] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:29] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:29] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0026-1785168029] de Booking.com (Huesped Stress 26 OTA Test) para 2026-08-22 -> 2026-08-24 | RoomType ID: 1
+[2026-07-27 16:00:29] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-1BC62ECDD702
+[2026-07-27 16:00:29] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:29] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:29] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0027-1785168029] de Expedia (Huesped Stress 27 OTA Test) para 2026-08-23 -> 2026-08-25 | RoomType ID: 1
+[2026-07-27 16:00:29] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-DEA5129B0674
+[2026-07-27 16:00:29] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:29] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:29] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0028-1785168029] de Booking.com (Huesped Stress 28 OTA Test) para 2026-08-24 -> 2026-08-26 | RoomType ID: 1
+[2026-07-27 16:00:29] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-4D337A86B468
+[2026-07-27 16:00:29] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:29] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:29] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0029-1785168029] de Expedia (Huesped Stress 29 OTA Test) para 2026-08-25 -> 2026-08-27 | RoomType ID: 1
+[2026-07-27 16:00:30] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-4BB6D7A7649E
+[2026-07-27 16:00:30] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:30] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:30] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0030-1785168030] de Booking.com (Huesped Stress 30 OTA Test) para 2026-08-26 -> 2026-08-28 | RoomType ID: 1
+[2026-07-27 16:00:30] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-814B198485A7
+[2026-07-27 16:00:30] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:30] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:30] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0031-1785168030] de Expedia (Huesped Stress 31 OTA Test) para 2026-08-27 -> 2026-08-29 | RoomType ID: 1
+[2026-07-27 16:00:30] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-E65EED06DF1D
+[2026-07-27 16:00:30] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:30] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:30] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0032-1785168030] de Booking.com (Huesped Stress 32 OTA Test) para 2026-08-28 -> 2026-08-30 | RoomType ID: 1
+[2026-07-27 16:00:30] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-8198529BBCDD
+[2026-07-27 16:00:30] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:30] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:30] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0033-1785168030] de Expedia (Huesped Stress 33 OTA Test) para 2026-08-29 -> 2026-08-31 | RoomType ID: 1
+[2026-07-27 16:00:30] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-BEBCB15EDCC0
+[2026-07-27 16:00:30] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:30] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:30] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0034-1785168030] de Booking.com (Huesped Stress 34 OTA Test) para 2026-08-30 -> 2026-09-01 | RoomType ID: 1
+[2026-07-27 16:00:31] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-5277EE6576DE
+[2026-07-27 16:00:31] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:31] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:31] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0035-1785168031] de Expedia (Huesped Stress 35 OTA Test) para 2026-08-31 -> 2026-09-02 | RoomType ID: 1
+[2026-07-27 16:00:31] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-A35E74232C24
+[2026-07-27 16:00:31] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:31] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:31] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0036-1785168031] de Booking.com (Huesped Stress 36 OTA Test) para 2026-09-01 -> 2026-09-03 | RoomType ID: 1
+[2026-07-27 16:00:31] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-855CF016992E
+[2026-07-27 16:00:31] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:31] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:31] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0037-1785168031] de Expedia (Huesped Stress 37 OTA Test) para 2026-09-02 -> 2026-09-04 | RoomType ID: 1
+[2026-07-27 16:00:31] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-5238E4EA516E
+[2026-07-27 16:00:31] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:31] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:31] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0038-1785168031] de Booking.com (Huesped Stress 38 OTA Test) para 2026-09-03 -> 2026-09-05 | RoomType ID: 1
+[2026-07-27 16:00:32] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-F210F6F85A49
+[2026-07-27 16:00:32] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:32] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:32] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0039-1785168032] de Expedia (Huesped Stress 39 OTA Test) para 2026-09-04 -> 2026-09-06 | RoomType ID: 1
+[2026-07-27 16:00:32] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-463EFB5E808A
+[2026-07-27 16:00:32] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:32] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:32] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0040-1785168032] de Booking.com (Huesped Stress 40 OTA Test) para 2026-09-05 -> 2026-09-07 | RoomType ID: 1
+[2026-07-27 16:00:32] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-00BA2C545BFD
+[2026-07-27 16:00:32] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:32] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:32] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0041-1785168032] de Expedia (Huesped Stress 41 OTA Test) para 2026-09-06 -> 2026-09-08 | RoomType ID: 1
+[2026-07-27 16:00:32] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-86620CF2CB4A
+[2026-07-27 16:00:32] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:32] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:32] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0042-1785168032] de Booking.com (Huesped Stress 42 OTA Test) para 2026-09-07 -> 2026-09-09 | RoomType ID: 1
+[2026-07-27 16:00:32] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-B6588E2DA50F
+[2026-07-27 16:00:32] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:32] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:32] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0043-1785168032] de Expedia (Huesped Stress 43 OTA Test) para 2026-09-08 -> 2026-09-10 | RoomType ID: 1
+[2026-07-27 16:00:33] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-9EE7D32FF9D6
+[2026-07-27 16:00:33] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:33] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:33] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0044-1785168033] de Booking.com (Huesped Stress 44 OTA Test) para 2026-09-09 -> 2026-09-11 | RoomType ID: 1
+[2026-07-27 16:00:33] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-FDFC4B4136F0
+[2026-07-27 16:00:33] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:33] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:33] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0045-1785168033] de Expedia (Huesped Stress 45 OTA Test) para 2026-09-10 -> 2026-09-12 | RoomType ID: 1
+[2026-07-27 16:00:33] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-20726B615D6F
+[2026-07-27 16:00:33] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:33] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:33] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0046-1785168033] de Booking.com (Huesped Stress 46 OTA Test) para 2026-09-11 -> 2026-09-13 | RoomType ID: 1
+[2026-07-27 16:00:33] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-CF7D2B75B47D
+[2026-07-27 16:00:33] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:33] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:33] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0047-1785168033] de Expedia (Huesped Stress 47 OTA Test) para 2026-09-12 -> 2026-09-14 | RoomType ID: 1
+[2026-07-27 16:00:33] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-338A95272891
+[2026-07-27 16:00:33] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:33] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:33] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0048-1785168033] de Booking.com (Huesped Stress 48 OTA Test) para 2026-09-13 -> 2026-09-15 | RoomType ID: 1
+[2026-07-27 16:00:34] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-3AF9BF37289F
+[2026-07-27 16:00:34] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:34] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:34] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0049-1785168034] de Expedia (Huesped Stress 49 OTA Test) para 2026-09-14 -> 2026-09-16 | RoomType ID: 1
+[2026-07-27 16:00:34] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-B08EFDA5C8A8
+[2026-07-27 16:00:34] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:34] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:34] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0050-1785168034] de Booking.com (Huesped Stress 50 OTA Test) para 2026-09-15 -> 2026-09-17 | RoomType ID: 1
+[2026-07-27 16:00:34] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-8EE3038132B3
+[2026-07-27 16:00:44] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:44] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:00:44] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:44] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:44] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0001-1785168044] de Expedia (Huesped Stress 1 OTA Test) para 2026-07-28 -> 2026-07-30 | RoomType ID: 1
+[2026-07-27 16:00:44] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-7F8EC73BBDC5
+[2026-07-27 16:00:44] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:44] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:44] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0002-1785168044] de Booking.com (Huesped Stress 2 OTA Test) para 2026-07-29 -> 2026-07-31 | RoomType ID: 1
+[2026-07-27 16:00:44] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-728F5BFEE9B9
+[2026-07-27 16:00:44] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:44] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:44] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0003-1785168044] de Expedia (Huesped Stress 3 OTA Test) para 2026-07-30 -> 2026-08-01 | RoomType ID: 1
+[2026-07-27 16:00:44] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-5DBA7BF1111D
+[2026-07-27 16:00:44] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:44] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:44] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0004-1785168044] de Booking.com (Huesped Stress 4 OTA Test) para 2026-07-31 -> 2026-08-02 | RoomType ID: 1
+[2026-07-27 16:00:44] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-30C75A2C9BE3
+[2026-07-27 16:00:44] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:44] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:44] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0005-1785168044] de Expedia (Huesped Stress 5 OTA Test) para 2026-08-01 -> 2026-08-03 | RoomType ID: 1
+[2026-07-27 16:00:45] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-2638736E0273
+[2026-07-27 16:00:45] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:45] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:45] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0006-1785168045] de Booking.com (Huesped Stress 6 OTA Test) para 2026-08-02 -> 2026-08-04 | RoomType ID: 1
+[2026-07-27 16:00:45] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-21E8CC4E0BD7
+[2026-07-27 16:00:45] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:45] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:45] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0007-1785168045] de Expedia (Huesped Stress 7 OTA Test) para 2026-08-03 -> 2026-08-05 | RoomType ID: 1
+[2026-07-27 16:00:45] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-572025DFC9EA
+[2026-07-27 16:00:45] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:45] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:45] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0008-1785168045] de Booking.com (Huesped Stress 8 OTA Test) para 2026-08-04 -> 2026-08-06 | RoomType ID: 1
+[2026-07-27 16:00:45] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-BA38B0846CEF
+[2026-07-27 16:00:45] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:45] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:45] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0009-1785168045] de Expedia (Huesped Stress 9 OTA Test) para 2026-08-05 -> 2026-08-07 | RoomType ID: 1
+[2026-07-27 16:00:45] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-D1D64E89E124
+[2026-07-27 16:00:45] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:45] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:45] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0010-1785168045] de Booking.com (Huesped Stress 10 OTA Test) para 2026-08-06 -> 2026-08-08 | RoomType ID: 1
+[2026-07-27 16:00:46] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-D60E946A3024
+[2026-07-27 16:00:46] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:46] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:46] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0011-1785168046] de Expedia (Huesped Stress 11 OTA Test) para 2026-08-07 -> 2026-08-09 | RoomType ID: 1
+[2026-07-27 16:00:46] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-2D361FF10316
+[2026-07-27 16:00:46] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:46] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:46] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0012-1785168046] de Booking.com (Huesped Stress 12 OTA Test) para 2026-08-08 -> 2026-08-10 | RoomType ID: 1
+[2026-07-27 16:00:46] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-C30C140EB641
+[2026-07-27 16:00:46] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:46] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:46] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0013-1785168046] de Expedia (Huesped Stress 13 OTA Test) para 2026-08-09 -> 2026-08-11 | RoomType ID: 1
+[2026-07-27 16:00:46] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-95F0B8A931DB
+[2026-07-27 16:00:46] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:46] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:46] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0014-1785168046] de Booking.com (Huesped Stress 14 OTA Test) para 2026-08-10 -> 2026-08-12 | RoomType ID: 1
+[2026-07-27 16:00:47] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-9BFA3873DCD5
+[2026-07-27 16:00:47] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:47] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:47] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0015-1785168047] de Expedia (Huesped Stress 15 OTA Test) para 2026-08-11 -> 2026-08-13 | RoomType ID: 1
+[2026-07-27 16:00:47] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-9C1931BDEDA3
+[2026-07-27 16:00:47] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:47] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:47] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0016-1785168047] de Booking.com (Huesped Stress 16 OTA Test) para 2026-08-12 -> 2026-08-14 | RoomType ID: 1
+[2026-07-27 16:00:47] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-2AB70C4DAD8A
+[2026-07-27 16:00:47] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:47] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:47] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0017-1785168047] de Expedia (Huesped Stress 17 OTA Test) para 2026-08-13 -> 2026-08-15 | RoomType ID: 1
+[2026-07-27 16:00:47] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-62AFA275049B
+[2026-07-27 16:00:47] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:47] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:47] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0018-1785168047] de Booking.com (Huesped Stress 18 OTA Test) para 2026-08-14 -> 2026-08-16 | RoomType ID: 1
+[2026-07-27 16:00:47] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-9A95ACB3585E
+[2026-07-27 16:00:47] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:47] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:47] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0019-1785168047] de Expedia (Huesped Stress 19 OTA Test) para 2026-08-15 -> 2026-08-17 | RoomType ID: 1
+[2026-07-27 16:00:48] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-F84B07BBB8FE
+[2026-07-27 16:00:48] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:48] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:48] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0020-1785168048] de Booking.com (Huesped Stress 20 OTA Test) para 2026-08-16 -> 2026-08-18 | RoomType ID: 1
+[2026-07-27 16:00:48] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-F3051ABEEE4B
+[2026-07-27 16:00:48] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:48] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:48] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0021-1785168048] de Expedia (Huesped Stress 21 OTA Test) para 2026-08-17 -> 2026-08-19 | RoomType ID: 1
+[2026-07-27 16:00:48] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-6B3C4FD7EB72
+[2026-07-27 16:00:48] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:48] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:48] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0022-1785168048] de Booking.com (Huesped Stress 22 OTA Test) para 2026-08-18 -> 2026-08-20 | RoomType ID: 1
+[2026-07-27 16:00:48] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-D4EAA7BA39AD
+[2026-07-27 16:00:48] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:48] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:48] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0023-1785168048] de Expedia (Huesped Stress 23 OTA Test) para 2026-08-19 -> 2026-08-21 | RoomType ID: 1
+[2026-07-27 16:00:48] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-F38B987F7AD3
+[2026-07-27 16:00:48] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:48] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:48] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0024-1785168048] de Booking.com (Huesped Stress 24 OTA Test) para 2026-08-20 -> 2026-08-22 | RoomType ID: 1
+[2026-07-27 16:00:49] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-D0C8837E381E
+[2026-07-27 16:00:49] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:49] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:49] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0025-1785168049] de Expedia (Huesped Stress 25 OTA Test) para 2026-08-21 -> 2026-08-23 | RoomType ID: 1
+[2026-07-27 16:00:49] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-64A5AA41F570
+[2026-07-27 16:00:49] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:49] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:49] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0026-1785168049] de Booking.com (Huesped Stress 26 OTA Test) para 2026-08-22 -> 2026-08-24 | RoomType ID: 1
+[2026-07-27 16:00:49] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-DD1213F1B0EE
+[2026-07-27 16:00:49] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:49] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:49] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0027-1785168049] de Expedia (Huesped Stress 27 OTA Test) para 2026-08-23 -> 2026-08-25 | RoomType ID: 1
+[2026-07-27 16:00:49] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-5E690D41A50B
+[2026-07-27 16:00:49] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:49] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:49] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0028-1785168049] de Booking.com (Huesped Stress 28 OTA Test) para 2026-08-24 -> 2026-08-26 | RoomType ID: 1
+[2026-07-27 16:00:50] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-30A964029784
+[2026-07-27 16:00:50] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:50] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:50] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0029-1785168050] de Expedia (Huesped Stress 29 OTA Test) para 2026-08-25 -> 2026-08-27 | RoomType ID: 1
+[2026-07-27 16:00:50] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-BE2345A2B79D
+[2026-07-27 16:00:50] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:50] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:50] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0030-1785168050] de Booking.com (Huesped Stress 30 OTA Test) para 2026-08-26 -> 2026-08-28 | RoomType ID: 1
+[2026-07-27 16:00:50] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-BEFD6B03919C
+[2026-07-27 16:00:50] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:50] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:50] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0031-1785168050] de Expedia (Huesped Stress 31 OTA Test) para 2026-08-27 -> 2026-08-29 | RoomType ID: 1
+[2026-07-27 16:00:50] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-0BA7138AFCC1
+[2026-07-27 16:00:50] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:50] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:50] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0032-1785168050] de Booking.com (Huesped Stress 32 OTA Test) para 2026-08-28 -> 2026-08-30 | RoomType ID: 1
+[2026-07-27 16:00:50] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-F15B46DC039E
+[2026-07-27 16:00:50] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:50] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:50] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0033-1785168050] de Expedia (Huesped Stress 33 OTA Test) para 2026-08-29 -> 2026-08-31 | RoomType ID: 1
+[2026-07-27 16:00:51] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-6C9CBAA42036
+[2026-07-27 16:00:51] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:51] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:51] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0034-1785168051] de Booking.com (Huesped Stress 34 OTA Test) para 2026-08-30 -> 2026-09-01 | RoomType ID: 1
+[2026-07-27 16:00:51] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-0C0CE4B2AF88
+[2026-07-27 16:00:51] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:51] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:51] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0035-1785168051] de Expedia (Huesped Stress 35 OTA Test) para 2026-08-31 -> 2026-09-02 | RoomType ID: 1
+[2026-07-27 16:00:51] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-2A2BBDDD8937
+[2026-07-27 16:00:51] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:51] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:51] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0036-1785168051] de Booking.com (Huesped Stress 36 OTA Test) para 2026-09-01 -> 2026-09-03 | RoomType ID: 1
+[2026-07-27 16:00:51] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-98D2D373B9F1
+[2026-07-27 16:00:51] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:51] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:51] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0037-1785168051] de Expedia (Huesped Stress 37 OTA Test) para 2026-09-02 -> 2026-09-04 | RoomType ID: 1
+[2026-07-27 16:00:51] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-A18924FEC5C5
+[2026-07-27 16:00:51] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:51] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:51] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0038-1785168051] de Booking.com (Huesped Stress 38 OTA Test) para 2026-09-03 -> 2026-09-05 | RoomType ID: 1
+[2026-07-27 16:00:52] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-7EBA05D329C4
+[2026-07-27 16:00:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:52] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:52] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0039-1785168052] de Expedia (Huesped Stress 39 OTA Test) para 2026-09-04 -> 2026-09-06 | RoomType ID: 1
+[2026-07-27 16:00:52] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-E8A7D7A6CE1D
+[2026-07-27 16:00:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:52] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:52] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0040-1785168052] de Booking.com (Huesped Stress 40 OTA Test) para 2026-09-05 -> 2026-09-07 | RoomType ID: 1
+[2026-07-27 16:00:52] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-069ACCE2C113
+[2026-07-27 16:00:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:52] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:52] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0041-1785168052] de Expedia (Huesped Stress 41 OTA Test) para 2026-09-06 -> 2026-09-08 | RoomType ID: 1
+[2026-07-27 16:00:52] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-0F1048259986
+[2026-07-27 16:00:52] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:52] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:52] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0042-1785168052] de Booking.com (Huesped Stress 42 OTA Test) para 2026-09-07 -> 2026-09-09 | RoomType ID: 1
+[2026-07-27 16:00:53] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-8B6FD78020ED
+[2026-07-27 16:00:53] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:53] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:53] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0043-1785168053] de Expedia (Huesped Stress 43 OTA Test) para 2026-09-08 -> 2026-09-10 | RoomType ID: 1
+[2026-07-27 16:00:53] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-7DCDD576D56E
+[2026-07-27 16:00:53] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:53] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:53] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0044-1785168053] de Booking.com (Huesped Stress 44 OTA Test) para 2026-09-09 -> 2026-09-11 | RoomType ID: 1
+[2026-07-27 16:00:53] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-D1DAB4D3739C
+[2026-07-27 16:00:53] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:53] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:53] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0045-1785168053] de Expedia (Huesped Stress 45 OTA Test) para 2026-09-10 -> 2026-09-12 | RoomType ID: 1
+[2026-07-27 16:00:53] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-66A37A5123BD
+[2026-07-27 16:00:53] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:53] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:53] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0046-1785168053] de Booking.com (Huesped Stress 46 OTA Test) para 2026-09-11 -> 2026-09-13 | RoomType ID: 1
+[2026-07-27 16:00:53] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-E84EC889B150
+[2026-07-27 16:00:53] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:53] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:00:53] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0047-1785168053] de Expedia (Huesped Stress 47 OTA Test) para 2026-09-12 -> 2026-09-14 | RoomType ID: 1
+[2026-07-27 16:00:54] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-963E5BED4C68
+[2026-07-27 16:00:54] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:54] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:00:54] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0048-1785168054] de Booking.com (Huesped Stress 48 OTA Test) para 2026-09-13 -> 2026-09-15 | RoomType ID: 1
+[2026-07-27 16:00:54] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-F069707D5AA1
+[2026-07-27 16:00:54] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:54] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:00:54] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0049-1785168054] de Expedia (Huesped Stress 49 OTA Test) para 2026-09-14 -> 2026-09-16 | RoomType ID: 1
+[2026-07-27 16:00:54] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-7A0BA2580390
+[2026-07-27 16:00:54] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:00:54] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:00:54] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0050-1785168054] de Booking.com (Huesped Stress 50 OTA Test) para 2026-09-15 -> 2026-09-17 | RoomType ID: 1
+[2026-07-27 16:00:54] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-709C80CA9C25
+[2026-07-27 16:10:30] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:10:30] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:10:30] [INFO] HandleChannexWebhookAction: Reserva OTA [REALTIME-API-1785168630] de Booking.com Realtime Test (Huesped Realtime API Test) para 2026-07-27 -> 2026-07-28 | RoomType ID: 1
+[2026-07-27 16:10:30] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com Realtime Test en BD local con Cart ID OTA-B4EAE2C5F2DB
+[2026-07-27 16:10:46] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:10:46] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:10:46] [INFO] HandleChannexWebhookAction: Reserva OTA [REALTIME-API-1785168646] de Booking.com Realtime Test (Huesped Realtime API Test) para 2026-07-27 -> 2026-07-28 | RoomType ID: 1
+[2026-07-27 16:10:46] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com Realtime Test en BD local con Cart ID OTA-A28CF0F5D8DF
+[2026-07-27 16:10:55] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:10:55] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:10:55] [INFO] HandleChannexWebhookAction: Reserva OTA [REALTIME-API-1785168655] de Booking.com Realtime Test (Huesped Realtime API Test) para 2026-07-27 -> 2026-07-28 | RoomType ID: 1
+[2026-07-27 16:10:55] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com Realtime Test en BD local con Cart ID OTA-B05B2DBE62A6
+[2026-07-27 16:10:59] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:10:59] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.
+[2026-07-27 16:10:59] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:10:59] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:10:59] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0001-1785168659] de Expedia (Huesped Stress 1 OTA Test) para 2026-07-28 -> 2026-07-30 | RoomType ID: 1
+[2026-07-27 16:10:59] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-13B9E5D76C89
+[2026-07-27 16:10:59] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:10:59] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:10:59] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0002-1785168659] de Booking.com (Huesped Stress 2 OTA Test) para 2026-07-29 -> 2026-07-31 | RoomType ID: 1
+[2026-07-27 16:10:59] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-078DC74502BE
+[2026-07-27 16:10:59] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:10:59] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:10:59] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0003-1785168659] de Expedia (Huesped Stress 3 OTA Test) para 2026-07-30 -> 2026-08-01 | RoomType ID: 1
+[2026-07-27 16:11:00] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-0DF3C35B9BA4
+[2026-07-27 16:11:00] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:00] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:11:00] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0004-1785168660] de Booking.com (Huesped Stress 4 OTA Test) para 2026-07-31 -> 2026-08-02 | RoomType ID: 1
+[2026-07-27 16:11:00] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-EEC95150BE84
+[2026-07-27 16:11:00] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:00] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:11:00] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0005-1785168660] de Expedia (Huesped Stress 5 OTA Test) para 2026-08-01 -> 2026-08-03 | RoomType ID: 1
+[2026-07-27 16:11:00] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-7DA786AC139B
+[2026-07-27 16:11:00] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:00] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:11:00] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0006-1785168660] de Booking.com (Huesped Stress 6 OTA Test) para 2026-08-02 -> 2026-08-04 | RoomType ID: 1
+[2026-07-27 16:11:00] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-4A5B69BA6EDF
+[2026-07-27 16:11:00] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:00] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:11:00] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0007-1785168660] de Expedia (Huesped Stress 7 OTA Test) para 2026-08-03 -> 2026-08-05 | RoomType ID: 1
+[2026-07-27 16:11:00] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-DCC648E945C4
+[2026-07-27 16:11:00] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:00] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:11:00] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0008-1785168660] de Booking.com (Huesped Stress 8 OTA Test) para 2026-08-04 -> 2026-08-06 | RoomType ID: 1
+[2026-07-27 16:11:01] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-F91F571AE56A
+[2026-07-27 16:11:01] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:01] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:11:01] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0009-1785168661] de Expedia (Huesped Stress 9 OTA Test) para 2026-08-05 -> 2026-08-07 | RoomType ID: 1
+[2026-07-27 16:11:01] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-8F2930BFDFB0
+[2026-07-27 16:11:01] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:01] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:11:01] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0010-1785168661] de Booking.com (Huesped Stress 10 OTA Test) para 2026-08-06 -> 2026-08-08 | RoomType ID: 1
+[2026-07-27 16:11:01] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-4B1B72B4974B
+[2026-07-27 16:11:01] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:01] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:11:01] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0011-1785168661] de Expedia (Huesped Stress 11 OTA Test) para 2026-08-07 -> 2026-08-09 | RoomType ID: 1
+[2026-07-27 16:11:01] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-549141A795DE
+[2026-07-27 16:11:01] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:01] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:11:01] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0012-1785168661] de Booking.com (Huesped Stress 12 OTA Test) para 2026-08-08 -> 2026-08-10 | RoomType ID: 1
+[2026-07-27 16:11:02] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-F3965B4D4CD4
+[2026-07-27 16:11:02] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:02] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:11:02] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0013-1785168662] de Expedia (Huesped Stress 13 OTA Test) para 2026-08-09 -> 2026-08-11 | RoomType ID: 1
+[2026-07-27 16:11:02] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-8C2CE3A523EB
+[2026-07-27 16:11:02] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:02] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:11:02] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0014-1785168662] de Booking.com (Huesped Stress 14 OTA Test) para 2026-08-10 -> 2026-08-12 | RoomType ID: 1
+[2026-07-27 16:11:02] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-D8CA1DB48BE9
+[2026-07-27 16:11:02] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:02] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:11:02] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0015-1785168662] de Expedia (Huesped Stress 15 OTA Test) para 2026-08-11 -> 2026-08-13 | RoomType ID: 1
+[2026-07-27 16:11:02] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-37979A59F652
+[2026-07-27 16:11:02] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:02] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:11:02] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0016-1785168662] de Booking.com (Huesped Stress 16 OTA Test) para 2026-08-12 -> 2026-08-14 | RoomType ID: 1
+[2026-07-27 16:11:02] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-25E4773F9FE3
+[2026-07-27 16:11:02] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:02] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:11:02] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0017-1785168662] de Expedia (Huesped Stress 17 OTA Test) para 2026-08-13 -> 2026-08-15 | RoomType ID: 1
+[2026-07-27 16:11:03] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-004312B98517
+[2026-07-27 16:11:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:03] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:11:03] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0018-1785168663] de Booking.com (Huesped Stress 18 OTA Test) para 2026-08-14 -> 2026-08-16 | RoomType ID: 1
+[2026-07-27 16:11:03] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-2676EBA75843
+[2026-07-27 16:11:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:03] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:11:03] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0019-1785168663] de Expedia (Huesped Stress 19 OTA Test) para 2026-08-15 -> 2026-08-17 | RoomType ID: 1
+[2026-07-27 16:11:03] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-4242E2756AFC
+[2026-07-27 16:11:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:03] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:11:03] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0020-1785168663] de Booking.com (Huesped Stress 20 OTA Test) para 2026-08-16 -> 2026-08-18 | RoomType ID: 1
+[2026-07-27 16:11:03] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-AD3850200122
+[2026-07-27 16:11:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:03] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:11:03] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0021-1785168663] de Expedia (Huesped Stress 21 OTA Test) para 2026-08-17 -> 2026-08-19 | RoomType ID: 1
+[2026-07-27 16:11:03] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-4235CE7F90B3
+[2026-07-27 16:11:03] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:03] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:11:03] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0022-1785168663] de Booking.com (Huesped Stress 22 OTA Test) para 2026-08-18 -> 2026-08-20 | RoomType ID: 1
+[2026-07-27 16:11:04] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-3064596F3019
+[2026-07-27 16:11:04] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:04] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:11:04] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0023-1785168664] de Expedia (Huesped Stress 23 OTA Test) para 2026-08-19 -> 2026-08-21 | RoomType ID: 1
+[2026-07-27 16:11:04] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-68EAC44B95ED
+[2026-07-27 16:11:04] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:04] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:11:04] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0024-1785168664] de Booking.com (Huesped Stress 24 OTA Test) para 2026-08-20 -> 2026-08-22 | RoomType ID: 1
+[2026-07-27 16:11:04] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-4AB1BFEF88D0
+[2026-07-27 16:11:04] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:04] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:11:04] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0025-1785168664] de Expedia (Huesped Stress 25 OTA Test) para 2026-08-21 -> 2026-08-23 | RoomType ID: 1
+[2026-07-27 16:11:04] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-16D4199237AC
+[2026-07-27 16:11:04] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:04] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:11:04] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0026-1785168664] de Booking.com (Huesped Stress 26 OTA Test) para 2026-08-22 -> 2026-08-24 | RoomType ID: 1
+[2026-07-27 16:11:05] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-40E62C80E468
+[2026-07-27 16:11:05] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:05] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:11:05] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0027-1785168665] de Expedia (Huesped Stress 27 OTA Test) para 2026-08-23 -> 2026-08-25 | RoomType ID: 1
+[2026-07-27 16:11:05] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-3BB8788B1571
+[2026-07-27 16:11:05] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:05] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:11:05] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0028-1785168665] de Booking.com (Huesped Stress 28 OTA Test) para 2026-08-24 -> 2026-08-26 | RoomType ID: 1
+[2026-07-27 16:11:05] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-007554FFBA8B
+[2026-07-27 16:11:05] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:05] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:11:05] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0029-1785168665] de Expedia (Huesped Stress 29 OTA Test) para 2026-08-25 -> 2026-08-27 | RoomType ID: 1
+[2026-07-27 16:11:05] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-83C23528FCF5
+[2026-07-27 16:11:05] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:05] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:11:05] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0030-1785168665] de Booking.com (Huesped Stress 30 OTA Test) para 2026-08-26 -> 2026-08-28 | RoomType ID: 1
+[2026-07-27 16:11:05] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-A5C9A76AED97
+[2026-07-27 16:11:05] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:05] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:11:05] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0031-1785168665] de Expedia (Huesped Stress 31 OTA Test) para 2026-08-27 -> 2026-08-29 | RoomType ID: 1
+[2026-07-27 16:11:06] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-6373309D1650
+[2026-07-27 16:11:06] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:06] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:11:06] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0032-1785168666] de Booking.com (Huesped Stress 32 OTA Test) para 2026-08-28 -> 2026-08-30 | RoomType ID: 1
+[2026-07-27 16:11:06] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-FFC239919EDA
+[2026-07-27 16:11:06] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:06] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:11:06] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0033-1785168666] de Expedia (Huesped Stress 33 OTA Test) para 2026-08-29 -> 2026-08-31 | RoomType ID: 1
+[2026-07-27 16:11:06] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-AEA22FCB0CB7
+[2026-07-27 16:11:06] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:06] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:11:06] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0034-1785168666] de Booking.com (Huesped Stress 34 OTA Test) para 2026-08-30 -> 2026-09-01 | RoomType ID: 1
+[2026-07-27 16:11:06] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-913A9CD0BC52
+[2026-07-27 16:11:06] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:06] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:11:06] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0035-1785168666] de Expedia (Huesped Stress 35 OTA Test) para 2026-08-31 -> 2026-09-02 | RoomType ID: 1
+[2026-07-27 16:11:06] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-89FC57EDDB6F
+[2026-07-27 16:11:06] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:06] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:11:06] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0036-1785168666] de Booking.com (Huesped Stress 36 OTA Test) para 2026-09-01 -> 2026-09-03 | RoomType ID: 1
+[2026-07-27 16:11:07] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-117FDA782F60
+[2026-07-27 16:11:07] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:07] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:11:07] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0037-1785168667] de Expedia (Huesped Stress 37 OTA Test) para 2026-09-02 -> 2026-09-04 | RoomType ID: 1
+[2026-07-27 16:11:07] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-2908E6EDFC45
+[2026-07-27 16:11:07] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:07] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:11:07] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0038-1785168667] de Booking.com (Huesped Stress 38 OTA Test) para 2026-09-03 -> 2026-09-05 | RoomType ID: 1
+[2026-07-27 16:11:07] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-2A74B964B3F6
+[2026-07-27 16:11:07] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:07] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:11:07] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0039-1785168667] de Expedia (Huesped Stress 39 OTA Test) para 2026-09-04 -> 2026-09-06 | RoomType ID: 1
+[2026-07-27 16:11:07] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-4253C79FC8CD
+[2026-07-27 16:11:07] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:07] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:11:07] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0040-1785168667] de Booking.com (Huesped Stress 40 OTA Test) para 2026-09-05 -> 2026-09-07 | RoomType ID: 1
+[2026-07-27 16:11:08] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-1335C6C29CA6
+[2026-07-27 16:11:08] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:08] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:11:08] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0041-1785168668] de Expedia (Huesped Stress 41 OTA Test) para 2026-09-06 -> 2026-09-08 | RoomType ID: 1
+[2026-07-27 16:11:08] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-4BE1A0E75CB8
+[2026-07-27 16:11:08] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:08] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:11:08] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0042-1785168668] de Booking.com (Huesped Stress 42 OTA Test) para 2026-09-07 -> 2026-09-09 | RoomType ID: 1
+[2026-07-27 16:11:08] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-C30A50FA7194
+[2026-07-27 16:11:08] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:08] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:11:08] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0043-1785168668] de Expedia (Huesped Stress 43 OTA Test) para 2026-09-08 -> 2026-09-10 | RoomType ID: 1
+[2026-07-27 16:11:08] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-E11223791AA4
+[2026-07-27 16:11:08] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:08] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:11:08] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0044-1785168668] de Booking.com (Huesped Stress 44 OTA Test) para 2026-09-09 -> 2026-09-11 | RoomType ID: 1
+[2026-07-27 16:11:08] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-4EC9604427DA
+[2026-07-27 16:11:08] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:08] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:11:08] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0045-1785168668] de Expedia (Huesped Stress 45 OTA Test) para 2026-09-10 -> 2026-09-12 | RoomType ID: 1
+[2026-07-27 16:11:09] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-98C9D92BE80E
+[2026-07-27 16:11:09] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:09] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:11:09] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0046-1785168669] de Booking.com (Huesped Stress 46 OTA Test) para 2026-09-11 -> 2026-09-13 | RoomType ID: 1
+[2026-07-27 16:11:09] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-CBE418820124
+[2026-07-27 16:11:09] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:09] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [4]. Usando tipo predeterminado (1). {"channex_room_type_id":4,"room_title":""}
+[2026-07-27 16:11:09] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0047-1785168669] de Expedia (Huesped Stress 47 OTA Test) para 2026-09-12 -> 2026-09-14 | RoomType ID: 1
+[2026-07-27 16:11:09] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-50D46C5A1A64
+[2026-07-27 16:11:09] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:09] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [1]. Usando tipo predeterminado (1). {"channex_room_type_id":1,"room_title":""}
+[2026-07-27 16:11:09] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0048-1785168669] de Booking.com (Huesped Stress 48 OTA Test) para 2026-09-13 -> 2026-09-15 | RoomType ID: 1
+[2026-07-27 16:11:09] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-1515DC6CB361
+[2026-07-27 16:11:09] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:09] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [2]. Usando tipo predeterminado (1). {"channex_room_type_id":2,"room_title":""}
+[2026-07-27 16:11:09] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0049-1785168669] de Expedia (Huesped Stress 49 OTA Test) para 2026-09-14 -> 2026-09-16 | RoomType ID: 1
+[2026-07-27 16:11:09] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Expedia en BD local con Cart ID OTA-64BFD8E97F98
+[2026-07-27 16:11:09] [INFO] HandleChannexWebhookAction: Evento recibido [booking_new]
+[2026-07-27 16:11:09] [WARNING] ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [3]. Usando tipo predeterminado (1). {"channex_room_type_id":3,"room_title":""}
+[2026-07-27 16:11:09] [INFO] HandleChannexWebhookAction: Reserva OTA [STRESS-OTA-0050-1785168669] de Booking.com (Huesped Stress 50 OTA Test) para 2026-09-15 -> 2026-09-17 | RoomType ID: 1
+[2026-07-27 16:11:10] [INFO] HandleChannexWebhookAction: Sincronizado inventario de Booking.com en BD local con Cart ID OTA-0E2DDEC2573E
+[2026-07-28 00:26:29] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:26:30] [ERROR] MercadoPagoAdapter: Headers requeridos ausentes en verifySignature.
+[2026-07-28 00:26:30] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:26:32] [INFO] HandleMercadoPagoWebhookAction: Transacción en BD local confirmada para Cart ID USGAR-287f0138cfc1
+[2026-07-28 00:26:33] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-214458 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:26:33] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-214458 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:26:34] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-214458 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:26:34] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-214458 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:26:35] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-214458 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:26:35] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-214458 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:26:36] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-214458 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:26:37] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-214458 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:26:37] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-214458 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:26:58] [ERROR] [Request] JSON body parse error: Syntax error
+[2026-07-28 00:27:12] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:27:13] [ERROR] MercadoPagoAdapter: Headers requeridos ausentes en verifySignature.
+[2026-07-28 00:27:13] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:27:14] [INFO] HandleMercadoPagoWebhookAction: Reserva para Cart ID USGAR-287f0138cfc1 ya fue procesada previamente.
+[2026-07-28 00:27:15] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-268763 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:15] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-268763 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:16] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-268763 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:17] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-268763 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:17] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-268763 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:18] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-268763 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:18] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-268763 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:19] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-268763 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:19] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-268763 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:36] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:27:37] [ERROR] MercadoPagoAdapter: Headers requeridos ausentes en verifySignature.
+[2026-07-28 00:27:37] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:27:39] [INFO] HandleMercadoPagoWebhookAction: Reserva para Cart ID USGAR-287f0138cfc1 ya fue procesada previamente.
+[2026-07-28 00:27:39] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-301159 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:40] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-301159 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:41] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-301159 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:41] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-301159 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:42] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-301159 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:42] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-301159 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:43] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-301159 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:43] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-301159 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:27:44] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-301159 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:07] [INFO] HandleMercadoPagoWebhookAction: Transacción en BD local confirmada para Cart ID USGAR-05f4b34e52d0
+[2026-07-28 00:28:08] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:28:09] [ERROR] MercadoPagoAdapter: Headers requeridos ausentes en verifySignature.
+[2026-07-28 00:28:09] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:28:10] [INFO] HandleMercadoPagoWebhookAction: Reserva para Cart ID USGAR-287f0138cfc1 ya fue procesada previamente.
+[2026-07-28 00:28:11] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-447642 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:12] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-447642 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:12] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-447642 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:13] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-447642 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:13] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-447642 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:14] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-447642 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:14] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-447642 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:15] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-447642 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:16] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-447642 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:42] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:28:43] [ERROR] MercadoPagoAdapter: Headers requeridos ausentes en verifySignature.
+[2026-07-28 00:28:43] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:28:45] [INFO] HandleMercadoPagoWebhookAction: Reserva para Cart ID USGAR-287f0138cfc1 ya fue procesada previamente.
+[2026-07-28 00:28:45] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-904324 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:46] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-904324 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:46] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-904324 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:47] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-904324 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:48] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-904324 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:48] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-904324 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:49] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-904324 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:49] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-904324 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:28:50] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-904324 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:06] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:29:07] [ERROR] MercadoPagoAdapter: Headers requeridos ausentes en verifySignature.
+[2026-07-28 00:29:07] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:29:08] [INFO] HandleMercadoPagoWebhookAction: Reserva para Cart ID USGAR-287f0138cfc1 ya fue procesada previamente.
+[2026-07-28 00:29:09] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-892475 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:10] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-892475 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:10] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-892475 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:11] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-892475 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:11] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-892475 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:12] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-892475 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:13] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-892475 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:13] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-892475 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:14] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-892475 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:28] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:29:28] [ERROR] MercadoPagoAdapter: Headers requeridos ausentes en verifySignature.
+[2026-07-28 00:29:28] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:29:30] [INFO] HandleMercadoPagoWebhookAction: Reserva para Cart ID USGAR-287f0138cfc1 ya fue procesada previamente.
+[2026-07-28 00:29:31] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-182856 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:31] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-182856 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:32] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-182856 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:32] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-182856 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:33] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-182856 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:34] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-182856 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:34] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-182856 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:35] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-182856 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:35] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-182856 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:50] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:29:50] [ERROR] MercadoPagoAdapter: Headers requeridos ausentes en verifySignature.
+[2026-07-28 00:29:50] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:29:52] [INFO] HandleMercadoPagoWebhookAction: Reserva para Cart ID USGAR-287f0138cfc1 ya fue procesada previamente.
+[2026-07-28 00:29:53] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-419979 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:53] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-419979 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:54] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-419979 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:54] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-419979 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:55] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-419979 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:29:55] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-419979 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:30:03] [INFO] HandleMercadoPagoWebhookAction: Transacción en BD local confirmada para Cart ID USGAR-d43b9d636a5c
+[2026-07-28 00:30:04] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:30:05] [ERROR] MercadoPagoAdapter: Headers requeridos ausentes en verifySignature.
+[2026-07-28 00:30:05] [ERROR] HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID 9999999
+[2026-07-28 00:30:06] [INFO] HandleMercadoPagoWebhookAction: Reserva para Cart ID USGAR-287f0138cfc1 ya fue procesada previamente.
+[2026-07-28 00:30:07] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-493731 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:30:08] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-493731 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:30:08] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-493731 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:30:09] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-493731 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:30:09] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-493731 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:30:10] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-493731 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:30:11] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-493731 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:30:11] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-493731 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 00:30:12] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-493731 ya consta como procesado en la tabla de idempotencia.
+[2026-07-28 01:45:09] [ERROR] [Request] JSON body parse error: Syntax error

@@ -65,4 +65,10 @@ export interface IBookingService {
   createHoldAndPreference(payload: BookingPayload): Promise<ApiResult<BookingResponseData>>;
   extendHoldSession(bookingId: string): Promise<ApiResult<{ extended: boolean; new_expires_at: string }>>;
   getBookingStatus(bookingId: string): Promise<ApiResult<BookingStatusData>>;
+  subscribeToRoomAvailability?(
+    checkIn?: string,
+    checkOut?: string,
+    callback?: (rooms: RoomAvailability[]) => void,
+    intervalMs?: number
+  ): () => void;
 }

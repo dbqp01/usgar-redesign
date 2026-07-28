@@ -125,6 +125,32 @@ export class BookingService implements IBookingService {
       data: (response.data.data ?? response.data) as BookingStatusData,
     };
   }
+
+  subscribeToRoomAvailability(
+    checkIn?: string,
+    checkOut?: string,
+    callback?: (rooms: RoomAvailability[]) => void,
+    intervalMs = 4000
+  ): () => void {
+    if (!callback) return () => {};
+
+    const fetchAndUpdate = async () => {
+      const res = await this.getAvailableRooms(checkIn, checkOut);
+      if (res.success && Array.isArray(res.data)) {
+        callback(res.data);
+      }
+    };
+
+    // Ejecucion inicial inmediata
+    fetchAndUpdate();
+
+    // Auto-polling en segundo plano
+    const timerId = setInterval(fetchAndUpdate, intervalMs);
+
+    return () => {
+      clearInterval(timerId);
+    };
+  }
 }
 
 // Instancia global por defecto

@@ -28,4 +28,8 @@ interface ChannelManagerPortInterface {
         string $guestPhone = '',
         int $adults = 2
     ): bool;
+
+    public function fetchBookingRevision(string $revisionId): ?array;
+
+    public function acknowledgeRevision(string $revisionId): bool;
 }

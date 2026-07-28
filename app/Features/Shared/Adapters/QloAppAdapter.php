@@ -79,7 +79,7 @@ class QloAppAdapter implements PmsPortInterface {
                     COALESCE((
                         SELECT COUNT(*) FROM qlo_htl_room_information ri
                         WHERE ri.id_product = rt.id_product
-                    ), 10) AS total_rooms,
+                    ), 5) AS total_rooms,
                     COALESCE((
                         SELECT COUNT(DISTINCT bd.id_room) FROM qlo_htl_booking_detail bd
                         WHERE bd.id_product = rt.id_product
@@ -92,8 +92,7 @@ class QloAppAdapter implements PmsPortInterface {
                         SELECT COUNT(*) FROM provisional_bookings pb
                         WHERE pb.id_hotel = :id_hotel_holds
                           AND pb.id_room_type = rt.id
-                          AND pb.status = 'pending'
-                          AND pb.expires_at > NOW()
+                          AND (pb.status = 'paid' OR (pb.status = 'pending' AND pb.expires_at > NOW()))
                           AND pb.checkin < :checkout_holds
                           AND pb.checkout > :checkin_holds
                     ), 0) AS hold_count
@@ -119,57 +118,79 @@ class QloAppAdapter implements PmsPortInterface {
                 $totalRooms = max((int)$row['total_rooms'], 1);
                 $availableCount = max(0, $totalRooms - (int)$row['booked_count'] - (int)$row['hold_count']);
 
-                if ($availableCount > 0) {
-                    $availableRooms[] = [
-                        'id_room_type'  => (int)$row['id_room_type'],
-                        'id_product'    => (int)$row['id_product'],
-                        'room_name'     => $row['room_name'],
-                        'price'         => (float)$row['price'],
-                        'max_guests'    => (int)$row['max_guests'],
-                        'available_qty' => $availableCount,
-                    ];
-                }
+                $availableRooms[] = [
+                    'id_room_type'  => (int)$row['id_room_type'],
+                    'id_product'    => (int)$row['id_product'],
+                    'room_name'     => $row['room_name'],
+                    'price'         => (float)$row['price'],
+                    'max_guests'    => (int)$row['max_guests'],
+                    'available_qty' => $availableCount,
+                ];
             }
 
-            return $availableRooms;
+            if (!empty($availableRooms)) {
+                return $availableRooms;
+            }
+
+            return $this->getDynamicFallbackAvailability($checkIn, $checkOut, $idHotel);
 
         } catch (PDOException $e) {
-            Logger::warning('QloAppAdapter: Error en consulta SQL (posibles tablas faltantes en DB). Retornando disponibilidad fallback: ' . $e->getMessage());
-            return [
-                [
-                    'id_room_type'  => 1,
-                    'id_product'    => 1,
-                    'room_name'     => 'Habitacion Matrimonial Superior',
-                    'price'         => 90.0,
-                    'max_guests'    => 2,
-                    'available_qty' => 5,
-                ],
-                [
-                    'id_room_type'  => 2,
-                    'id_product'    => 2,
-                    'room_name'     => 'Habitacion Doble Superior',
-                    'price'         => 90.0,
-                    'max_guests'    => 2,
-                    'available_qty' => 5,
-                ],
-                [
-                    'id_room_type'  => 3,
-                    'id_product'    => 3,
-                    'room_name'     => 'Habitacion Triple Estandar',
-                    'price'         => 120.0,
-                    'max_guests'    => 3,
-                    'available_qty' => 5,
-                ],
-                [
-                    'id_room_type'  => 4,
-                    'id_product'    => 4,
-                    'room_name'     => 'Habitacion Familiar Superior',
-                    'price'         => 150.0,
-                    'max_guests'    => 7,
-                    'available_qty' => 5,
-                ],
+            Logger::warning('QloAppAdapter: Error en consulta SQL (posibles tablas de QloApps faltantes en DB). Usando fallback dinámico local: ' . $e->getMessage());
+            return $this->getDynamicFallbackAvailability($checkIn, $checkOut, $idHotel);
+        }
+    }
+
+    private function getDynamicFallbackAvailability(string $checkIn, string $checkOut, int $idHotel): array {
+        $baseRooms = [
+            1 => ['id_room_type' => 1, 'id_product' => 1, 'room_name' => 'Habitacion Matrimonial Superior', 'price' => 90.0,  'max_guests' => 2, 'total' => 5],
+            2 => ['id_room_type' => 2, 'id_product' => 2, 'room_name' => 'Habitacion Doble Superior',       'price' => 90.0,  'max_guests' => 2, 'total' => 5],
+            3 => ['id_room_type' => 3, 'id_product' => 3, 'room_name' => 'Habitacion Triple Estandar',       'price' => 120.0, 'max_guests' => 3, 'total' => 5],
+            4 => ['id_room_type' => 4, 'id_product' => 4, 'room_name' => 'Habitacion Familiar Superior',     'price' => 150.0, 'max_guests' => 7, 'total' => 5],
+        ];
+
+        if (!$this->pdo) {
+            return array_map(function($r) {
+                unset($r['total']);
+                $r['available_qty'] = 5;
+                return $r;
+            }, array_values($baseRooms));
+        }
+
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT id_room_type, COUNT(*) AS booked_count
+                FROM provisional_bookings
+                WHERE id_hotel = :idHotel
+                  AND (status = 'paid' OR (status = 'pending' AND expires_at > NOW()))
+                  AND checkin < :checkout
+                  AND checkout > :checkin
+                GROUP BY id_room_type
+            ");
+            $stmt->execute([
+                ':idHotel'  => $idHotel,
+                ':checkin'  => $checkIn,
+                ':checkout' => $checkOut,
+            ]);
+            $counts = $stmt->fetchAll(PDO::FETCH_KEY_PAIR) ?: [];
+        } catch (PDOException $e) {
+            $counts = [];
+        }
+
+        $result = [];
+        foreach ($baseRooms as $id => $room) {
+            $booked = (int)($counts[$id] ?? 0);
+            $available = max(0, $room['total'] - $booked);
+            $result[] = [
+                'id_room_type'  => $room['id_room_type'],
+                'id_product'    => $room['id_product'],
+                'room_name'     => $room['room_name'],
+                'price'         => $room['price'],
+                'max_guests'    => $room['max_guests'],
+                'available_qty' => $available,
             ];
         }
+
+        return $result;
     }
 
     public function createCart(int $idHotel, int $idProduct, string $checkIn, string $checkOut, int $guests = 1): string {
@@ -316,10 +337,20 @@ XML;
         }
 
         try {
+            $prevErrors = libxml_use_internal_errors(true);
             $xml = simplexml_load_string($response);
-            return $xml !== false ? $xml : null;
+            if ($xml === false) {
+                $xmlErrors = libxml_get_errors();
+                libxml_clear_errors();
+                libxml_use_internal_errors($prevErrors);
+                $errMsgs = array_map(fn($err) => trim($err->message), $xmlErrors);
+                Logger::error('QloAppAdapter: Error al parsear XML de QloApps: ' . implode(' | ', $errMsgs));
+                return null;
+            }
+            libxml_use_internal_errors($prevErrors);
+            return $xml;
         } catch (Exception $e) {
-            Logger::error('QloAppAdapter: Error al parsear XML: ' . $e->getMessage());
+            Logger::error('QloAppAdapter: Excepcion al parsear XML: ' . $e->getMessage());
             return null;
         }
     }
