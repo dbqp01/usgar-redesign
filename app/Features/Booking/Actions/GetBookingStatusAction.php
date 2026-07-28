@@ -10,6 +10,8 @@ use App\Core\Logger;
 use App\Core\Config;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
 
+use App\Features\Shared\RoomTypeRegistry;
+
 /**
  * Accion ADR: GET /api/booking-status
  * Retorna el estado actual de la reserva protegiendo PII sensible.
@@ -45,18 +47,30 @@ class GetBookingStatusAction {
         $expectedToken = hash_hmac('sha256', $cartId . ':' . $guestEmail, $secretKey);
         $isAuthenticated = (!empty($providedToken) && hash_equals($expectedToken, $providedToken));
 
+        $expiresAtStr = $hold['expires_at'] ?? null;
+        $expiresTimestamp = $expiresAtStr ? strtotime($expiresAtStr) : 0;
+        $now = time();
+        $isExpired = ($hold['status'] === 'pending' && $expiresTimestamp < $now);
+        $timeLeftSeconds = max(0, $expiresTimestamp - $now);
+        $idRoomType = (int)$hold['id_room_type'];
+        $slug = RoomTypeRegistry::getSlugById($idRoomType);
+
         $payload = [
-            'success'         => true,
-            'cart_id'         => $hold['cart_id'],
-            'status'          => $hold['status'],
-            'checkin'         => $hold['checkin'],
-            'checkout'        => $hold['checkout'],
-            'id_room_type'    => (int)$hold['id_room_type'],
-            'room_name'       => $hold['room_data']['room_name'] ?? '',
-            'price_per_night' => (float)($hold['room_data']['price_per_night'] ?? 0),
-            'nights'          => (int)($hold['room_data']['nights'] ?? 1),
-            'price'           => (float)$hold['price_snapshot'],
-            'expires_at'      => $hold['expires_at'] ?? null,
+            'success'           => true,
+            'cart_id'           => $hold['cart_id'],
+            'status'            => $isExpired ? 'expired' : $hold['status'],
+            'checkin'           => $hold['checkin'],
+            'checkout'          => $hold['checkout'],
+            'id_room_type'      => $idRoomType,
+            'slug'              => $slug,
+            'room_name'         => $hold['room_data']['room_name'] ?? '',
+            'price_per_night'   => (float)($hold['room_data']['price_per_night'] ?? 0),
+            'nights'            => (int)($hold['room_data']['nights'] ?? 1),
+            'currency'          => 'USD',
+            'price'             => (float)$hold['price_snapshot'],
+            'expires_at'        => $expiresAtStr,
+            'is_expired'        => $isExpired,
+            'time_left_seconds' => $timeLeftSeconds,
         ];
 
         if ($isAuthenticated || $hold['status'] === \App\Core\BookingStatus::Paid->value) {

@@ -22,6 +22,7 @@ class Config {
     public static function boot(): self {
         if (self::$instance === null) {
             self::$instance = new self();
+            date_default_timezone_set(self::get('TIMEZONE', 'America/Lima'));
         }
         return self::$instance;
     }
@@ -29,6 +30,7 @@ class Config {
     private const DEFAULTS = [
         'SITE_URL'             => 'https://sanpedro.hotelesusgar.com',
         'ENVIRONMENT'          => 'development',
+        'TIMEZONE'             => 'America/Lima',
         'DB_HOST'              => '127.0.0.1',
         'DB_PORT'              => '3306',
         'DB_NAME'              => 'usgar_hotels',

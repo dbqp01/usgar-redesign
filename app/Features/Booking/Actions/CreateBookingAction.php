@@ -168,14 +168,27 @@ class CreateBookingAction {
             $this->bookingRepo->updatePreferenceId($cartId, $preferenceId);
             $this->pdo->commit();
 
+            $timeLeftSeconds = max(0, strtotime($expiresAt) - time());
+            $roomSlug = RoomTypeRegistry::getSlugById($idRoomType);
+
             Response::json([
-                'success'       => true,
-                'cart_id'       => $cartId,
-                'access_token'  => $accessToken,
-                'preference_id' => $preferenceId,
-                'init_point'    => $initPoint,
-                'price'         => $totalPrice,
-                'expires_at'    => $expiresAt,
+                'success'           => true,
+                'cart_id'           => $cartId,
+                'access_token'      => $accessToken,
+                'preference_id'     => $preferenceId,
+                'init_point'        => $initPoint,
+                'currency'          => 'USD',
+                'price'             => $totalPrice,
+                'expires_at'        => $expiresAt,
+                'time_left_seconds' => $timeLeftSeconds,
+                'room_summary'      => [
+                    'id_room_type'    => $idRoomType,
+                    'slug'            => $roomSlug,
+                    'room_name'       => $targetRoom['room_name'],
+                    'price_per_night' => $pricePerNight,
+                    'nights'          => $nights,
+                    'guests'          => $guests,
+                ],
             ]);
 
         } catch (HttpException $e) {

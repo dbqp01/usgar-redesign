@@ -48,6 +48,11 @@ class Validator {
             throw HttpException::badRequest('La fecha proporcionada no existe.');
         }
 
+        $today = date('Y-m-d');
+        if ($checkIn < $today) {
+            throw HttpException::badRequest("La fecha de checkIn no puede ser anterior a la fecha actual ({$today}).");
+        }
+
         if (strtotime($checkIn) >= strtotime($checkOut)) {
             throw HttpException::badRequest(
                 'La fecha de checkIn debe ser estrictamente anterior a la de checkOut.'

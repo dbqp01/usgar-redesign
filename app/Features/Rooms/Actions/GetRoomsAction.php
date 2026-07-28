@@ -11,6 +11,7 @@ use App\Core\Logger;
 use App\Core\Config;
 use App\Features\Shared\Ports\PmsPortInterface;
 use App\Features\Shared\Adapters\QloAppAdapter;
+use App\Features\Shared\RoomTypeRegistry;
 use Exception;
 
 /**
@@ -37,10 +38,26 @@ class GetRoomsAction {
 
         try {
             $availableRooms = $this->pms->getAvailableRooms($checkIn, $checkOut, $hotelId);
+            $nights = (int)max(1, round((strtotime($checkOut) - strtotime($checkIn)) / 86400));
+
+            $enrichedRooms = array_map(function(array $room) use ($nights) {
+                $idRoomType = (int)($room['id_room_type'] ?? 1);
+                $slug = RoomTypeRegistry::getSlugById($idRoomType);
+                $price = (float)($room['price'] ?? 0.0);
+                $totalStayPrice = round($price * $nights, 2);
+
+                $room['slug']             = $slug;
+                $room['currency']         = 'USD';
+                $room['price_formatted']  = '$' . number_format($price, 2, '.', '') . ' USD';
+                $room['nights']           = $nights;
+                $room['total_stay_price'] = $totalStayPrice;
+
+                return $room;
+            }, $availableRooms);
 
             Response::json([
                 'success' => true,
-                'rooms'   => $availableRooms,
+                'rooms'   => $enrichedRooms,
             ]);
 
         } catch (Exception $e) {

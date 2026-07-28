@@ -52,33 +52,36 @@ class HandleMercadoPagoWebhookAction {
     public function __invoke(Request $request): void {
         $body = $request->getBody() ?? [];
 
-        $type = $body['type'] ?? ($body['topic'] ?? null);
-        $paymentId = $body['data']['id'] ?? ($body['id'] ?? null);
-
-        if ($type !== 'payment' || !$paymentId) {
-            Response::json(['success' => true, 'message' => 'Notification ignored (not a payment event).']);
+        $webhookSecret = Config::get('MERCADO_PAGO_WEBHOOK_SECRET');
+        if (empty($webhookSecret)) {
+            Logger::error('HandleMercadoPagoWebhookAction: MERCADO_PAGO_WEBHOOK_SECRET no configurado.');
+            Response::error('Webhook security not configured.', 500);
+            return;
         }
 
-        $paymentIdStr = (string)$paymentId;
+        $signatureHeader = $request->getHeader('x-signature') ?? '';
+        $requestId = $request->getHeader('x-request-id') ?? '';
+        $paymentId = $body['data']['id'] ?? ($body['id'] ?? null);
+        $paymentIdStr = $paymentId ? (string)$paymentId : '';
+
+        if (empty($signatureHeader) || !$this->paymentGateway->verifySignature($signatureHeader, $requestId, $paymentIdStr)) {
+            Logger::error("HandleMercadoPagoWebhookAction: Firma de webhook ausente o inválida detectada.");
+            Response::unauthorized('Firma de webhook inválida o ausente.');
+            return;
+        }
+
+        $type = $body['type'] ?? ($body['topic'] ?? ($body['action'] ?? null));
+
+        if (($type !== 'payment' && !str_contains((string)$type, 'payment')) || !$paymentId) {
+            Response::json(['success' => true, 'message' => 'Notification ignored (not a payment event).']);
+            return;
+        }
 
         // 1. Verificacion de Idempotencia previa
         if ($this->bookingRepo->isPaymentProcessed($paymentIdStr)) {
             Logger::info("HandleMercadoPagoWebhookAction: Payment ID {$paymentIdStr} ya consta como procesado en la tabla de idempotencia.");
             Response::json(['success' => true, 'message' => 'Payment already processed.']);
-        }
-
-        $webhookSecret = Config::get('MERCADO_PAGO_WEBHOOK_SECRET');
-        if (empty($webhookSecret)) {
-            Logger::error('HandleMercadoPagoWebhookAction: MERCADO_PAGO_WEBHOOK_SECRET no configurado.');
-            Response::error('Webhook security not configured.', 500);
-        }
-
-        $signatureHeader = $request->getHeader('x-signature') ?? '';
-        $requestId = $request->getHeader('x-request-id') ?? '';
-
-        if (!$this->paymentGateway->verifySignature($signatureHeader, $requestId, $paymentIdStr)) {
-            Logger::error("HandleMercadoPagoWebhookAction: Firma inválida detectada para Pago ID {$paymentIdStr}");
-            Response::unauthorized('Firma de webhook inválida.');
+            return;
         }
 
         // Obtener detalles del pago desde la API de Mercado Pago

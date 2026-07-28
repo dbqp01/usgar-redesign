@@ -45,17 +45,18 @@ class HandleChannexWebhookAction {
 
         Logger::info("HandleChannexWebhookAction: Evento recibido [{$event}]");
 
-        $channexSecret = Config::get('CHANNEX_WEBHOOK_SECRET');
-        if (!empty($channexSecret)) {
-            $headerSecret = $request->getHeader('x-channex-secret');
-            if (empty($headerSecret) || !hash_equals($channexSecret, $headerSecret)) {
-                Logger::error("HandleChannexWebhookAction: Secreto de webhook Channex invalido o ausente.");
-                Response::unauthorized('Invalid Channex webhook secret header.');
-                return;
-            }
-        } elseif (Config::isProduction()) {
-            Logger::error("HandleChannexWebhookAction: CHANNEX_WEBHOOK_SECRET no esta configurado en entorno de produccion.");
-            Response::unauthorized('Channex webhook secret not configured in production.');
+        $channexSecret = Config::get('CHANNEX_WEBHOOK_SECRET', Config::get('CHANNEX_API_KEY'));
+        $headerSecret = $request->getHeader('x-channex-secret') ?? $request->getQuery('token');
+
+        if (empty($channexSecret)) {
+            Logger::error("HandleChannexWebhookAction: CHANNEX_WEBHOOK_SECRET o API Key no está configurado.");
+            Response::unauthorized('Channex webhook authentication not configured.');
+            return;
+        }
+
+        if (empty($headerSecret) || !hash_equals((string)$channexSecret, (string)$headerSecret)) {
+            Logger::error("HandleChannexWebhookAction: Secreto de webhook Channex inválido o ausente.");
+            Response::unauthorized('Invalid or missing Channex webhook secret header.');
             return;
         }
 

@@ -62,9 +62,13 @@ class ExtendHoldAction {
         if ($this->bookingRepo->extend($cartId, $newExpiration)) {
             $this->pms->extendCartSession($cartId);
 
+            $timeLeftSeconds = max(0, strtotime($newExpiration) - time());
+
             Response::json([
-                'success'    => true,
-                'expires_at' => $newExpiration,
+                'success'           => true,
+                'cart_id'           => $cartId,
+                'expires_at'        => $newExpiration,
+                'time_left_seconds' => $timeLeftSeconds,
             ]);
         } else {
             Response::error('No se pudo extender el bloqueo en la base de datos.', 500);

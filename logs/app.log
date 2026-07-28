@@ -1216,3 +1216,20 @@
 [2026-07-28 00:30:11] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-493731 ya consta como procesado en la tabla de idempotencia.
 [2026-07-28 00:30:12] [INFO] HandleMercadoPagoWebhookAction: Payment ID MP-MOCK-STRESS-493731 ya consta como procesado en la tabla de idempotencia.
 [2026-07-28 01:45:09] [ERROR] [Request] JSON body parse error: Syntax error
+[2026-07-27 23:50:13] [ERROR] Unhandled exception in Router: Class "App\Features\Rooms\Actions\QloAppAdapter" not found {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Features\\Rooms\\Actions\\GetRoomsAction.php","line":24}
+[2026-07-27 23:50:14] [ERROR] Unhandled exception in Router: Class "App\Features\Rooms\Actions\QloAppAdapter" not found {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Features\\Rooms\\Actions\\GetRoomsAction.php","line":24}
+[2026-07-27 23:50:20] [ERROR] Unhandled exception in Router: Class "App\Features\Rooms\Actions\QloAppAdapter" not found {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Features\\Rooms\\Actions\\GetRoomsAction.php","line":24}
+[2026-07-28 00:12:56] [ERROR] [Request] JSON body parse error: Syntax error
+[2026-07-28 00:12:59] [ERROR] [Request] JSON body parse error: Syntax error
+[2026-07-28 00:13:20] [INFO] HandleChannexWebhookAction: Evento recibido [booking_created]
+[2026-07-28 00:14:02] [INFO] HandleChannexWebhookAction: Evento recibido [booking_created]
+[2026-07-28 00:14:18] [ERROR] HandleMercadoPagoWebhookAction: Firma de webhook ausente o inválida detectada.
+[2026-07-28 00:14:18] [ERROR] MercadoPagoAdapter: Headers requeridos ausentes en verifySignature.
+[2026-07-28 00:14:18] [ERROR] HandleMercadoPagoWebhookAction: Firma de webhook ausente o inválida detectada.
+[2026-07-28 00:14:19] [INFO] HandleChannexWebhookAction: Evento recibido [booking_created]
+[2026-07-28 00:14:19] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex inválido o ausente.
+[2026-07-28 00:14:37] [ERROR] HandleMercadoPagoWebhookAction: Firma de webhook ausente o inválida detectada.
+[2026-07-28 00:14:37] [ERROR] MercadoPagoAdapter: Headers requeridos ausentes en verifySignature.
+[2026-07-28 00:14:37] [ERROR] HandleMercadoPagoWebhookAction: Firma de webhook ausente o inválida detectada.
+[2026-07-28 00:14:38] [INFO] HandleChannexWebhookAction: Evento recibido [booking_created]
+[2026-07-28 00:14:38] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex inválido o ausente.

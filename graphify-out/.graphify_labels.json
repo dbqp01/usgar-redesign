@@ -95,7 +95,10 @@
   "93": "index.php",
   "94": "HandleChannexWebhookAction.php",
   "95": "ExtendHoldAction.php",
+  "96": "my-bookings.astro",
+  "97": "postman-payment-suite.php",
   "98": "Database",
+  "99": "6. Habitaciones (4 tipos)",
   "100": "Channex API reference (verified shapes)",
   "101": "Taint Analysis Module",
   "102": "PDO",
@@ -242,7 +245,6 @@
   "618": "ExceptionInterface.php",
   "619": "README.md",
   "620": "README.md",
-  "624": "ProvisionalBookingRepository",
   "625": "ProvisionalBookingRepository",
   "626": "ProvisionalBookingRepository"
 }
