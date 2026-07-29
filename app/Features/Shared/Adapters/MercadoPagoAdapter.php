@@ -101,9 +101,13 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             
             $preference = $client->create($payload, $requestOptions);
 
+            $checkoutUrl = (!Config::isProduction() && !empty($preference->sandbox_init_point))
+                ? $preference->sandbox_init_point
+                : $preference->init_point;
+
             return [
                 'id'                 => $preference->id,
-                'init_point'         => $preference->init_point,
+                'init_point'         => $checkoutUrl,
                 'sandbox_init_point' => $preference->sandbox_init_point,
             ];
 

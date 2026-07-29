@@ -1,16 +1,16 @@
 # Graph Report - usgar-redesign  (2026-07-29)
 
 ## Corpus Check
-- 663 files · ~600,150 words
+- 663 files · ~600,476 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3050 nodes · 4596 edges · 455 communities (168 shown, 287 thin omitted)
-- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 294 edges (avg confidence: 0.8)
+- 3050 nodes · 4594 edges · 457 communities (169 shown, 288 thin omitted)
+- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 292 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `17ee346e`
+- Built from commit: `04969c6b`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -249,7 +249,9 @@
 - StatusList
 - Mapper.php
 - CardTokenClientUnitTest
+- DisbursementRefundClientUnitTest
 - 6.2 绕过场景与方法
+- InvoiceClientUnitTest
 - InvoiceClientUnitTest
 - CustomerCreateRequest.php
 - PaymentCancelRequest.php
@@ -428,7 +430,7 @@
 7. `MPSearchRequest` - 32 edges
 8. `AbstractAdapter` - 32 edges
 9. `LightOpenID` - 31 edges
-10. `Config` - 30 edges
+10. `Config` - 28 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `../components/MapSection.astro` --dynamic_import--> `leaflet/dist/leaflet.css`  [EXTRACTED]
@@ -445,7 +447,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (455 total, 287 thin omitted)
+## Communities (457 total, 288 thin omitted)
 
 ### Community 0 - "python.md"
 Cohesion: 0.10
@@ -495,6 +497,10 @@ Nodes (4): compilerOptions, paths, extends, astro/tsconfigs/strict
 Cohesion: 0.60
 Nodes (4): compressImage(), files, run(), SUPPORTED_EXTENSIONS
 
+### Community 13 - "数据流分析方法论"
+Cohesion: 0.13
+Nodes (3): Response, self, InstalledVersions
+
 ### Community 14 - "Python Deserialization Deep Dive"
 Cohesion: 0.06
 Nodes (17): Order, Transactions, AdvancedPaymentClient, RequestOptions, CustomerCardClient, MPHttpClient, OrderClient, MPHttpClient (+9 more)
@@ -533,7 +539,7 @@ Nodes (4): ChannelManagerPortInterface, SyncChannexBookingListener, EventInterfa
 
 ### Community 30 - "Templates, Views, CSS & JavaScript"
 Cohesion: 0.06
-Nodes (5): MercadoPagoConfig, MPHttpClient, DisbursementRefundClientUnitTest, InvoiceClientUnitTest, OrderClientUnitTest
+Nodes (3): MercadoPagoConfig, MPHttpClient, OrderClientUnitTest
 
 ### Community 33 - "Cryptography Security Audit"
 Cohesion: 0.22
@@ -541,7 +547,7 @@ Nodes (3): ../data/rooms, ../utils/helpers, ../components/MobileBookingBar.astro
 
 ### Community 34 - "Hybridauth.php"
 Cohesion: 0.16
-Nodes (5): Hybridauth, HttpClientInterface, LoggerInterface, StorageInterface, HybridauthTest
+Nodes (4): HttpClientInterface, LoggerInterface, StorageInterface, HybridauthTest
 
 ### Community 35 - "Module Architecture & File Structure"
 Cohesion: 0.06
@@ -552,8 +558,8 @@ Cohesion: 0.08
 Nodes (4): InvalidWebhookSignatureException, SignatureFailureReason, WebhookSignatureValidator, WebhookSignatureValidatorUnitTest
 
 ### Community 37 - "UnexpectedValueException"
-Cohesion: 0.13
-Nodes (6): HttpClientFailureException, HttpRequestFailedException, UnexpectedApiResponseException, UnexpectedValueException, MicrosoftGraph, Contact
+Cohesion: 0.18
+Nodes (5): HttpClientFailureException, HttpRequestFailedException, UnexpectedApiResponseException, UnexpectedValueException, Contact
 
 ### Community 40 - "Java Web框架安全检测模块"
 Cohesion: 0.29
@@ -910,17 +916,17 @@ Nodes (3): require, hybridauth/hybridauth, mercadopago/dx-php
 ## Knowledge Gaps
 - **660 isolated node(s):** `hybridauth/hybridauth`, `mercadopago/dx-php`, `Changed`, `Added`, `Added` (+655 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **287 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **288 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
+- **Why does `MercadoPagoConfig` connect `Templates, Views, CSS & JavaScript` to `CustomerCardClientITTest`, `OrderClientITTest`, `OAuthClient.php`, `CustomerClientITTest`, `MerchantOrderClientITTest`, `PaymentRefundClientITTest`, `PreApprovalClientITTest`, `Python Deserialization Deep Dive`, `动态代码审计指南 (Dynamic Code Audit Guide)`, `PreApprovalPlanClientITTest`, `PreferenceClientITTest`, `PointClientUnitTest`, `MerchantOrderClient.php`, `PreApprovalClient.php`, `PaymentClientITTest`, `Database.php`, `PaymentClient.php`, `PreApprovalPlanClient.php`, `OrderTransactionClientITTest`, `CustomerCardClientUnitTest`, `CustomerClientUnitTest`, `MerchantOrderClientUnitTest`, `OrderTransactionClientUnitTest`, `AbstractAdapter.php`, `PaymentClientUnitTest`, `PreApprovalClientUnitTest`, `PreApprovalPlanClientUnitTest`, `PreferenceClientUnitTest`, `OAuthClientUnitTest`, `CardTokenClientITTest`, `IdentificationTypeClientITTest`, `PaymentMethodClientITTest`, `UserClientITTest`, `AdvancedPaymentClientUnitTest`, `ProfileTest`, `ChannexRoomMapper`, `DisbursementRefundClientUnitTest`, `RoomTypeRegistry`, `InvoiceClientUnitTest`, `ChargebackClientUnitTest`, `MPSearchRequest`, `HttpMethod.php`, `CardTokenClientUnitTest`, `MPRequest`, `BaseClient`, `PointClientITTest`?**
+  _High betweenness centrality (0.038) - this node is a cross-community bridge._
 - **Why does `AbstractAdapter` connect `Required Files (MANDATORY)` to `3.1 上下文类型识别`, `SKILL.md`, `OAuthRequest`?**
-  _High betweenness centrality (0.035) - this node is a cross-community bridge._
-- **Why does `MercadoPagoConfig` connect `Templates, Views, CSS & JavaScript` to `CustomerCardClientITTest`, `OrderClientITTest`, `OAuthClient.php`, `CustomerClientITTest`, `MerchantOrderClientITTest`, `PaymentRefundClientITTest`, `PreApprovalClientITTest`, `Python Deserialization Deep Dive`, `动态代码审计指南 (Dynamic Code Audit Guide)`, `PreApprovalPlanClientITTest`, `PreferenceClientITTest`, `PointClientUnitTest`, `MerchantOrderClient.php`, `PreApprovalClient.php`, `PaymentClientITTest`, `Database.php`, `PaymentClient.php`, `PreApprovalPlanClient.php`, `OrderTransactionClientITTest`, `CustomerCardClientUnitTest`, `CustomerClientUnitTest`, `MerchantOrderClientUnitTest`, `OrderTransactionClientUnitTest`, `AbstractAdapter.php`, `PaymentClientUnitTest`, `PreApprovalClientUnitTest`, `PreApprovalPlanClientUnitTest`, `PreferenceClientUnitTest`, `OAuthClientUnitTest`, `CardTokenClientITTest`, `IdentificationTypeClientITTest`, `PaymentMethodClientITTest`, `UserClientITTest`, `AdvancedPaymentClientUnitTest`, `ProfileTest`, `ChannexRoomMapper`, `RoomTypeRegistry`, `ChargebackClientUnitTest`, `MPSearchRequest`, `HttpMethod.php`, `CardTokenClientUnitTest`, `MPRequest`, `BaseClient`, `PointClientITTest`?**
-  _High betweenness centrality (0.029) - this node is a cross-community bridge._
-- **Why does `RequestOptions` connect `Python Deserialization Deep Dive` to `OAuthClient.php`, `ProfileTest`, `ChannexRoomMapper`, `动态代码审计指南 (Dynamic Code Audit Guide)`, `AbstractAdapter.php`, `RoomTypeRegistry`, `MerchantOrderClient.php`, `MPSearchRequest`, `HttpMethod.php`, `PreApprovalClient.php`, `BaseClient`, `Database.php`, `PaymentClient.php`?**
-  _High betweenness centrality (0.027) - this node is a cross-community bridge._
+  _High betweenness centrality (0.037) - this node is a cross-community bridge._
+- **Why does `Exception` connect `File Creation Checklist` to `Hybridauth.php`?**
+  _High betweenness centrality (0.025) - this node is a cross-community bridge._
 - **Are the 119 inferred relationships involving `MercadoPagoConfig` (e.g. with `.__construct()` and `.__construct()`) actually correct?**
   _`MercadoPagoConfig` has 119 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 71 inferred relationships involving `Serializer` (e.g. with `.cancel()` and `.capture()`) actually correct?**
