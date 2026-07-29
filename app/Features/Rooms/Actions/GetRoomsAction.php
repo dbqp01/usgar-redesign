@@ -47,8 +47,10 @@ class GetRoomsAction {
                 $totalStayPrice = round($price * $nights, 2);
 
                 $room['slug']             = $slug;
-                $room['currency']         = 'USD';
-                $room['price_formatted']  = '$' . number_format($price, 2, '.', '') . ' USD';
+                $currency = Config::get('MERCADO_PAGO_CURRENCY', 'PEN');
+                $symbol = $currency === 'PEN' ? 'S/.' : '$';
+                $room['currency']         = $currency;
+                $room['price_formatted']  = $symbol . ' ' . number_format($price, 2, '.', '') . ' ' . $currency;
                 $room['nights']           = $nights;
                 $room['total_stay_price'] = $totalStayPrice;
 

@@ -21,6 +21,7 @@ use App\Features\Shared\RoomTypeRegistry;
 use App\Features\Auth\SessionService;
 use PDO;
 use Exception;
+use MercadoPago\Exceptions\MPApiException;
 
 /**
  * Accion ADR: POST /api/booking
@@ -177,7 +178,7 @@ class CreateBookingAction {
                 'access_token'      => $accessToken,
                 'preference_id'     => $preferenceId,
                 'init_point'        => $initPoint,
-                'currency'          => 'USD',
+                'currency'          => Config::get('MERCADO_PAGO_CURRENCY', 'PEN'),
                 'price'             => $totalPrice,
                 'expires_at'        => $expiresAt,
                 'time_left_seconds' => $timeLeftSeconds,
@@ -196,6 +197,22 @@ class CreateBookingAction {
                 $this->pdo->rollBack();
             }
             throw $e;
+        } catch (MPApiException $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            $statusCode = $e->getStatusCode();
+            $apiBody = $e->getApiResponse() ? $e->getApiResponse()->getContent() : 'N/A';
+            Logger::error('CreateBookingAction MPApiException', [
+                'status_code' => $statusCode,
+                'api_response' => is_array($apiBody) ? json_encode($apiBody) : $apiBody,
+            ]);
+
+            $clientMessage = Config::isProduction()
+                ? 'No se pudo procesar la reserva. Intente nuevamente.'
+                : 'Error de Mercado Pago (HTTP ' . $statusCode . '): ' . (is_array($apiBody) ? json_encode($apiBody) : $apiBody);
+
+            Response::error($clientMessage, 500, 'PAYMENT_GATEWAY_ERROR');
         } catch (Exception $e) {
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
@@ -203,7 +220,7 @@ class CreateBookingAction {
             Logger::error('CreateBookingAction Exception: ' . $e->getMessage());
 
             if (str_contains($e->getMessage(), 'not configured') || str_contains($e->getMessage(), 'Token')) {
-                throw HttpException::missingCredentials('Faltan credenciales de configuración (Mercado Pago / QloApps) en el backend para procesar la transacción.');
+                throw HttpException::missingCredentials('Faltan credenciales de configuracion (Mercado Pago / QloApps) en el backend para procesar la transaccion.');
             }
 
             $clientMessage = Config::isProduction()

@@ -12,6 +12,7 @@ use MercadoPago\Client\Payment\PaymentClient;
 use MercadoPago\Client\Common\RequestOptions;
 use MercadoPago\Webhook\WebhookSignatureValidator;
 use MercadoPago\Exceptions\InvalidWebhookSignatureException;
+use MercadoPago\Exceptions\MPApiException;
 use Exception;
 
 /**
@@ -70,7 +71,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
                 'description' => "{$nights} noches ({$checkIn} → {$checkOut})",
                 'quantity'    => 1,
                 'unit_price'  => (float) round($totalPrice, 2),
-                'currency_id' => Config::get('MERCADO_PAGO_CURRENCY', 'USD'),
+                'currency_id' => Config::get('MERCADO_PAGO_CURRENCY', 'PEN'),
             ]],
             'payer' => [
                 'name'    => $firstName,
@@ -114,6 +115,15 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
                 'sandbox_init_point' => $preference->sandbox_init_point,
             ];
 
+        } catch (MPApiException $e) {
+            $statusCode = $e->getStatusCode();
+            $apiBody = $e->getApiResponse() ? $e->getApiResponse()->getContent() : 'N/A';
+            Logger::error('MercadoPagoAdapter API Error', [
+                'status_code' => $statusCode,
+                'api_response' => is_array($apiBody) ? json_encode($apiBody) : $apiBody,
+                'cart_id' => $cartId,
+            ]);
+            throw $e;
         } catch (Exception $e) {
             Logger::error('MercadoPagoAdapter Exception: ' . $e->getMessage());
             throw $e;
@@ -214,6 +224,15 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
                 'transaction_amount' => $payment->transaction_amount,
             ];
 
+        } catch (MPApiException $e) {
+            $statusCode = $e->getStatusCode();
+            $apiBody = $e->getApiResponse() ? $e->getApiResponse()->getContent() : 'N/A';
+            Logger::error('MercadoPagoAdapter API Error en getPaymentDetails', [
+                'status_code' => $statusCode,
+                'api_response' => is_array($apiBody) ? json_encode($apiBody) : $apiBody,
+                'payment_id' => $paymentId,
+            ]);
+            return null;
         } catch (Exception $e) {
             Logger::error('MercadoPagoAdapter Exception en getPaymentDetails: ' . $e->getMessage());
             return null;

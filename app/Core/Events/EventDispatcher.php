@@ -33,12 +33,18 @@ class EventDispatcher {
             return;
         }
 
+        $lastError = null;
         foreach ($this->listeners[$eventName] as $listener) {
             try {
                 $listener->handle($event);
             } catch (Throwable $e) {
                 Logger::error("EventDispatcher Error handling event {$eventName}: " . $e->getMessage());
+                $lastError = $e;
             }
+        }
+
+        if ($lastError !== null) {
+            throw $lastError;
         }
     }
 }

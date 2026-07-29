@@ -19,6 +19,8 @@ const t = useTranslations(lang);
       <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm animate-pulse">
         {t('success.retrieving')}
       </p>
+      <p id="polling-status" class="text-text-secondary-light dark:text-text-secondary-dark text-xs hidden">
+      </p>
     </div>
 
     <!-- 2. Success Details Card (Hidden by default, shown client-side) -->
@@ -102,7 +104,7 @@ const t = useTranslations(lang);
           </div>
           <div class="text-right">
             <span class="block text-xs uppercase font-semibold text-text-secondary-light dark:text-text-secondary-dark tracking-wider">{t('success.totalPaid')}</span>
-            <p class="font-display text-3xl font-bold text-primary">$<span id="success-total-price">0</span> USD</p>
+            <p class="font-display text-3xl font-bold text-primary"><span id="success-currency-symbol">S/.</span> <span id="success-total-price">0</span> <span id="success-currency-code">PEN</span></p>
           </div>
         </div>
       </div>
@@ -176,10 +178,54 @@ const t = useTranslations(lang);
 
   const labels: Record<Locale, { singleGuest: string; pluralGuest: string; singleNight: string; pluralNight: string }> = {
     en: { singleGuest: '1 Guest', pluralGuest: 'Guests', singleNight: 'night', pluralNight: 'nights' },
-    es: { singleGuest: '1 Huésped', pluralGuest: 'Huéspedes', singleNight: 'noche', pluralNight: 'noches' },
+    es: { singleGuest: '1 Huesped', pluralGuest: 'Huespedes', singleNight: 'noche', pluralNight: 'noches' },
     fr: { singleGuest: '1 Voyageur', pluralGuest: 'Voyageurs', singleNight: 'nuit', pluralNight: 'nuits' },
-    pt: { singleGuest: '1 Hóspede', pluralGuest: 'Hóspedes', singleNight: 'noite', pluralNight: 'noites' }
+    pt: { singleGuest: '1 Hospede', pluralGuest: 'Hospedes', singleNight: 'noite', pluralNight: 'noites' }
   };
+
+  const pollingLabels: Record<Locale, string> = {
+    en: 'Confirming payment with the bank, please wait...',
+    es: 'Confirmando pago con el banco, por favor espere...',
+    fr: 'Confirmation du paiement avec la banque, veuillez patienter...',
+    pt: 'Confirmando pagamento com o banco, aguarde...'
+  };
+
+  /** Fetch booking status with optional token for guest data access */
+  async function fetchBookingStatus(bookingId: string, token: string): Promise<any> {
+    const tokenParam = token ? `&token=${encodeURIComponent(token)}` : '';
+    const response = await fetch(`${API_BASE_URL}/booking-status?cart_id=${bookingId}${tokenParam}`);
+    if (!response.ok) throw new Error('Booking not found');
+    const payload = await response.json();
+    return payload.data || payload;
+  }
+
+  /** Poll until status changes from pending, with exponential backoff */
+  async function pollForPayment(bookingId: string, token: string, maxAttempts = 8): Promise<any> {
+    const pollingStatus = document.getElementById('polling-status');
+    let delay = 2000; // Start at 2 seconds
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const booking = await fetchBookingStatus(bookingId, token);
+
+      // If status is no longer pending, return immediately
+      if (booking.status && booking.status !== 'pending') {
+        return booking;
+      }
+
+      // Show polling status after first attempt
+      if (attempt > 0 && pollingStatus) {
+        pollingStatus.classList.remove('hidden');
+        pollingStatus.textContent = pollingLabels[lang] || pollingLabels.en;
+      }
+
+      // Wait with exponential backoff (2s, 3s, 4s, 6s, 8s, 12s, 16s, 24s)
+      await new Promise(resolve => setTimeout(resolve, delay));
+      delay = Math.min(delay * 1.5, 24000);
+    }
+
+    // After max attempts, return whatever we have
+    return await fetchBookingStatus(bookingId, token);
+  }
 
   async function loadSuccessPage() {
     const loadingContainer = document.getElementById('loading-container');
@@ -188,6 +234,10 @@ const t = useTranslations(lang);
 
     const params = new URLSearchParams(window.location.search);
     const bookingId = params.get('bookingId') || params.get('external_reference') || '';
+    // Retrieve access token from URL, sessionStorage, or empty
+    const token = params.get('token')
+      || sessionStorage.getItem(`booking_token_${bookingId}`)
+      || '';
 
     if (!bookingId) {
       loadingContainer?.classList.add('hidden');
@@ -196,14 +246,11 @@ const t = useTranslations(lang);
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/booking-status?cart_id=${bookingId}`);
-      if (!response.ok) throw new Error('Booking not found');
-      
-      const payload = await response.json();
-      const booking = payload.data || payload;
-      
+      // Poll for payment confirmation (handles webhook race condition)
+      const booking = await pollForPayment(bookingId, token);
+
       if (!booking || !booking.id_room_type) throw new Error('Data mismatch');
-      
+
       const room = ROOMS_DATA.find((r: any) => r.id === booking.id_room_type || r.slug === booking.id_room_type);
 
       const formatDate = (dateStr: string) => {
@@ -212,6 +259,10 @@ const t = useTranslations(lang);
         const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         return d.toLocaleDateString(dateLocales[lang] || 'en-US', options);
       };
+
+      // Determine currency from API response
+      const currency = booking.currency || 'PEN';
+      const currencySymbol = currency === 'PEN' ? 'S/.' : '$';
 
       const confCodeEl = document.getElementById('success-conf-code');
       const guestNameEl = document.getElementById('success-guest-name');
@@ -223,13 +274,15 @@ const t = useTranslations(lang);
       const checkoutEl = document.getElementById('success-checkout');
       const billingNightsEl = document.getElementById('success-billing-nights');
       const totalPriceEl = document.getElementById('success-total-price');
+      const currencySymbolEl = document.getElementById('success-currency-symbol');
+      const currencyCodeEl = document.getElementById('success-currency-code');
 
       if (confCodeEl) confCodeEl.textContent = booking.cart_id || booking.id || bookingId;
       if (guestNameEl) guestNameEl.textContent = booking.guest_name || booking.guestName || '---';
       if (guestEmailEl) guestEmailEl.textContent = booking.guest_email || booking.guestEmail || '---';
       if (guestPhoneEl) guestPhoneEl.textContent = booking.guest_phone || booking.guestPhone || '---';
       if (roomNameEl) roomNameEl.textContent = booking.room_name || (room ? (room.name[lang] || room.name.en) : '---');
-      
+
       const L = labels[lang] || labels.en;
       if (guestsTextEl) {
         const guests = booking.guests || 2;
@@ -240,16 +293,18 @@ const t = useTranslations(lang);
 
       if (checkinEl) checkinEl.textContent = formatDate(booking.checkin || booking.checkIn);
       if (checkoutEl) checkoutEl.textContent = formatDate(booking.checkout || booking.checkOut);
-      
+
       if (billingNightsEl) {
         const nights = booking.nights || 1;
         const priceNight = booking.price_per_night || (room ? room.pricePerNight : 0);
         billingNightsEl.textContent = nights === 1
-          ? `1 ${L.singleNight} x $${priceNight} PEN`
-          : `${nights} ${L.pluralNight} x $${priceNight} PEN`;
+          ? `1 ${L.singleNight} x ${currencySymbol} ${priceNight} ${currency}`
+          : `${nights} ${L.pluralNight} x ${currencySymbol} ${priceNight} ${currency}`;
       }
-      
+
       if (totalPriceEl) totalPriceEl.textContent = (booking.price || booking.totalPrice || 0).toString();
+      if (currencySymbolEl) currencySymbolEl.textContent = currencySymbol;
+      if (currencyCodeEl) currencyCodeEl.textContent = currency;
 
       // Show details card
       loadingContainer?.classList.add('hidden');

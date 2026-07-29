@@ -159,7 +159,7 @@ class ChannexAdapter implements ChannelManagerPortInterface {
                     'reservation_id'  => 'USG-' . $bookingId,
                     'arrival_date'    => $checkIn,
                     'departure_date'  => $checkOut,
-                    'currency'        => 'USD',
+                    'currency'        => Config::get('MERCADO_PAGO_CURRENCY', 'PEN'),
                     'payment_collect' => 'property',
                     'payment_type'    => 'credit_card',
                     'customer' => [

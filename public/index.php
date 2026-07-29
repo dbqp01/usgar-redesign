@@ -105,7 +105,6 @@ $router->post('/api/webhook/channex', HandleChannexWebhookAction::class);
 $router->post('/api/cron/cleanup',    CleanExpiredCartsAction::class);
 
 use App\Features\Auth\Actions\UpdateUserProfileAction;
-use App\Features\Health\Actions\WebhookDebugAction;
 
 // Endpoints de Autenticacion y Panel de Huespedes
 $router->get('/api/auth/providers',    AuthProvidersAction::class);
@@ -118,9 +117,6 @@ $router->post('/api/auth/logout',      AuthLogoutAction::class);
 $router->get('/api/auth/logout',       AuthLogoutAction::class);
 $router->get('/api/user/bookings',     GetUserBookingsAction::class);
 $router->post('/api/user/profile',     UpdateUserProfileAction::class);
-
-// TEMPORAL: Endpoint de diagnostico de webhooks (ELIMINAR despues de depurar)
-$router->get('/api/webhook-debug',     WebhookDebugAction::class);
 
 // 7. Despachar la peticion actual
 $router->dispatch($request);

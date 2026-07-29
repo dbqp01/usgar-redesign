@@ -4,413 +4,6 @@
   "graph": {},
   "nodes": [
     {
-      "label": "Request.php",
-      "file_type": "code",
-      "source_file": "app/Core/Request.php",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "app_core_request",
-      "community": 93,
-      "community_name": "User",
-      "norm_label": "request.php"
-    },
-    {
-      "label": "Request",
-      "file_type": "code",
-      "source_file": "app/Core/Request.php",
-      "source_location": "L11",
-      "_origin": "ast",
-      "id": "app_core_request_request",
-      "community": 93,
-      "community_name": "User",
-      "norm_label": "request"
-    },
-    {
-      "label": ".__construct()",
-      "file_type": "code",
-      "source_file": "app/Core/Request.php",
-      "source_location": "L18",
-      "_origin": "ast",
-      "id": "app_core_request_request_construct",
-      "community": 93,
-      "community_name": "User",
-      "norm_label": ".__construct()"
-    },
-    {
-      "label": ".getMethod()",
-      "file_type": "code",
-      "source_file": "app/Core/Request.php",
-      "source_location": "L46",
-      "_origin": "ast",
-      "id": "app_core_request_request_getmethod",
-      "community": 93,
-      "community_name": "User",
-      "norm_label": ".getmethod()"
-    },
-    {
-      "label": ".getPath()",
-      "file_type": "code",
-      "source_file": "app/Core/Request.php",
-      "source_location": "L50",
-      "_origin": "ast",
-      "id": "app_core_request_request_getpath",
-      "community": 93,
-      "community_name": "User",
-      "norm_label": ".getpath()"
-    },
-    {
-      "label": ".getQueryParams()",
-      "file_type": "code",
-      "source_file": "app/Core/Request.php",
-      "source_location": "L54",
-      "_origin": "ast",
-      "id": "app_core_request_request_getqueryparams",
-      "community": 93,
-      "community_name": "User",
-      "norm_label": ".getqueryparams()"
-    },
-    {
-      "label": ".getQuery()",
-      "file_type": "code",
-      "source_file": "app/Core/Request.php",
-      "source_location": "L58",
-      "_origin": "ast",
-      "id": "app_core_request_request_getquery",
-      "community": 93,
-      "community_name": "User",
-      "norm_label": ".getquery()"
-    },
-    {
-      "label": ".getHeaders()",
-      "file_type": "code",
-      "source_file": "app/Core/Request.php",
-      "source_location": "L62",
-      "_origin": "ast",
-      "id": "app_core_request_request_getheaders",
-      "community": 93,
-      "community_name": "User",
-      "norm_label": ".getheaders()"
-    },
-    {
-      "label": ".getHeader()",
-      "file_type": "code",
-      "source_file": "app/Core/Request.php",
-      "source_location": "L66",
-      "_origin": "ast",
-      "id": "app_core_request_request_getheader",
-      "community": 93,
-      "community_name": "User",
-      "norm_label": ".getheader()"
-    },
-    {
-      "label": ".getBody()",
-      "file_type": "code",
-      "source_file": "app/Core/Request.php",
-      "source_location": "L71",
-      "_origin": "ast",
-      "id": "app_core_request_request_getbody",
-      "community": 93,
-      "community_name": "User",
-      "norm_label": ".getbody()"
-    },
-    {
-      "label": ".get()",
-      "file_type": "code",
-      "source_file": "app/Core/Request.php",
-      "source_location": "L75",
-      "_origin": "ast",
-      "id": "app_core_request_request_get",
-      "community": 93,
-      "community_name": "User",
-      "norm_label": ".get()"
-    },
-    {
-      "label": ".getIp()",
-      "file_type": "code",
-      "source_file": "app/Core/Request.php",
-      "source_location": "L83",
-      "_origin": "ast",
-      "id": "app_core_request_request_getip",
-      "community": 93,
-      "community_name": "User",
-      "norm_label": ".getip()"
-    },
-    {
-      "label": ".parseBody()",
-      "file_type": "code",
-      "source_file": "app/Core/Request.php",
-      "source_location": "L107",
-      "_origin": "ast",
-      "id": "app_core_request_request_parsebody",
-      "community": 93,
-      "community_name": "User",
-      "norm_label": ".parsebody()"
-    },
-    {
-      "label": ".extractHeaders()",
-      "file_type": "code",
-      "source_file": "app/Core/Request.php",
-      "source_location": "L133",
-      "_origin": "ast",
-      "id": "app_core_request_request_extractheaders",
-      "community": 93,
-      "community_name": "User",
-      "norm_label": ".extractheaders()"
-    },
-    {
-      "label": "Response.php",
-      "file_type": "code",
-      "source_file": "app/Core/Response.php",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "app_core_response",
-      "community": 113,
-      "community_name": "AuthRegisterAction",
-      "norm_label": "response.php"
-    },
-    {
-      "label": "Response",
-      "file_type": "code",
-      "source_file": "app/Core/Response.php",
-      "source_location": "L10",
-      "_origin": "ast",
-      "id": "app_core_response_response",
-      "community": 151,
-      "community_name": "MerchantOrderClient.php",
-      "norm_label": "response"
-    },
-    {
-      "label": ".json()",
-      "file_type": "code",
-      "source_file": "app/Core/Response.php",
-      "source_location": "L16",
-      "_origin": "ast",
-      "id": "app_core_response_response_json",
-      "community": 151,
-      "community_name": "MerchantOrderClient.php",
-      "norm_label": ".json()"
-    },
-    {
-      "label": ".jsonAsync()",
-      "file_type": "code",
-      "source_file": "app/Core/Response.php",
-      "source_location": "L46",
-      "_origin": "ast",
-      "id": "app_core_response_response_jsonasync",
-      "community": 151,
-      "community_name": "MerchantOrderClient.php",
-      "norm_label": ".jsonasync()"
-    },
-    {
-      "label": ".error()",
-      "file_type": "code",
-      "source_file": "app/Core/Response.php",
-      "source_location": "L84",
-      "_origin": "ast",
-      "id": "app_core_response_response_error",
-      "community": 151,
-      "community_name": "MerchantOrderClient.php",
-      "norm_label": ".error()"
-    },
-    {
-      "label": ".badRequest()",
-      "file_type": "code",
-      "source_file": "app/Core/Response.php",
-      "source_location": "L102",
-      "_origin": "ast",
-      "id": "app_core_response_response_badrequest",
-      "community": 151,
-      "community_name": "MerchantOrderClient.php",
-      "norm_label": ".badrequest()"
-    },
-    {
-      "label": ".unauthorized()",
-      "file_type": "code",
-      "source_file": "app/Core/Response.php",
-      "source_location": "L106",
-      "_origin": "ast",
-      "id": "app_core_response_response_unauthorized",
-      "community": 151,
-      "community_name": "MerchantOrderClient.php",
-      "norm_label": ".unauthorized()"
-    },
-    {
-      "label": ".forbidden()",
-      "file_type": "code",
-      "source_file": "app/Core/Response.php",
-      "source_location": "L110",
-      "_origin": "ast",
-      "id": "app_core_response_response_forbidden",
-      "community": 151,
-      "community_name": "MerchantOrderClient.php",
-      "norm_label": ".forbidden()"
-    },
-    {
-      "label": ".notFound()",
-      "file_type": "code",
-      "source_file": "app/Core/Response.php",
-      "source_location": "L114",
-      "_origin": "ast",
-      "id": "app_core_response_response_notfound",
-      "community": 151,
-      "community_name": "MerchantOrderClient.php",
-      "norm_label": ".notfound()"
-    },
-    {
-      "label": ".tooManyRequests()",
-      "file_type": "code",
-      "source_file": "app/Core/Response.php",
-      "source_location": "L118",
-      "_origin": "ast",
-      "id": "app_core_response_response_toomanyrequests",
-      "community": 151,
-      "community_name": "MerchantOrderClient.php",
-      "norm_label": ".toomanyrequests()"
-    },
-    {
-      "label": "ConfirmQloAppsOrderListener.php",
-      "file_type": "code",
-      "source_file": "app/Features/Booking/Domain/Listeners/ConfirmQloAppsOrderListener.php",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "app_features_booking_domain_listeners_confirmqloappsorderlistener",
-      "community": 29,
-      "community_name": "Naming Conventions",
-      "norm_label": "confirmqloappsorderlistener.php"
-    },
-    {
-      "label": "ConfirmQloAppsOrderListener",
-      "file_type": "code",
-      "source_file": "app/Features/Booking/Domain/Listeners/ConfirmQloAppsOrderListener.php",
-      "source_location": "L17",
-      "_origin": "ast",
-      "id": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener",
-      "community": 29,
-      "community_name": "Naming Conventions",
-      "norm_label": "confirmqloappsorderlistener"
-    },
-    {
-      "label": "ListenerInterface",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "id": "listenerinterface",
-      "community": 29,
-      "community_name": "Naming Conventions",
-      "norm_label": "listenerinterface"
-    },
-    {
-      "label": "PmsPortInterface",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "id": "app_features_booking_domain_listeners_confirmqloappsorderlistener_php_pmsportinterface",
-      "community": 29,
-      "community_name": "Naming Conventions",
-      "norm_label": "pmsportinterface"
-    },
-    {
-      "label": ".__construct()",
-      "file_type": "code",
-      "source_file": "app/Features/Booking/Domain/Listeners/ConfirmQloAppsOrderListener.php",
-      "source_location": "L20",
-      "_origin": "ast",
-      "id": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener_construct",
-      "community": 29,
-      "community_name": "Naming Conventions",
-      "norm_label": ".__construct()"
-    },
-    {
-      "label": ".handle()",
-      "file_type": "code",
-      "source_file": "app/Features/Booking/Domain/Listeners/ConfirmQloAppsOrderListener.php",
-      "source_location": "L24",
-      "_origin": "ast",
-      "id": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener_handle",
-      "community": 29,
-      "community_name": "Naming Conventions",
-      "norm_label": ".handle()"
-    },
-    {
-      "label": "EventInterface",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "id": "app_features_booking_domain_listeners_confirmqloappsorderlistener_php_eventinterface",
-      "community": 29,
-      "community_name": "Naming Conventions",
-      "norm_label": "eventinterface"
-    },
-    {
-      "label": "SyncChannexBookingListener.php",
-      "file_type": "code",
-      "source_file": "app/Features/Booking/Domain/Listeners/SyncChannexBookingListener.php",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "app_features_booking_domain_listeners_syncchannexbookinglistener",
-      "community": 29,
-      "community_name": "Naming Conventions",
-      "norm_label": "syncchannexbookinglistener.php"
-    },
-    {
-      "label": "SyncChannexBookingListener",
-      "file_type": "code",
-      "source_file": "app/Features/Booking/Domain/Listeners/SyncChannexBookingListener.php",
-      "source_location": "L17",
-      "_origin": "ast",
-      "id": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener",
-      "community": 29,
-      "community_name": "Naming Conventions",
-      "norm_label": "syncchannexbookinglistener"
-    },
-    {
-      "label": "ChannelManagerPortInterface",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "id": "app_features_booking_domain_listeners_syncchannexbookinglistener_php_channelmanagerportinterface",
-      "community": 29,
-      "community_name": "Naming Conventions",
-      "norm_label": "channelmanagerportinterface"
-    },
-    {
-      "label": ".__construct()",
-      "file_type": "code",
-      "source_file": "app/Features/Booking/Domain/Listeners/SyncChannexBookingListener.php",
-      "source_location": "L20",
-      "_origin": "ast",
-      "id": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener_construct",
-      "community": 29,
-      "community_name": "Naming Conventions",
-      "norm_label": ".__construct()"
-    },
-    {
-      "label": ".handle()",
-      "file_type": "code",
-      "source_file": "app/Features/Booking/Domain/Listeners/SyncChannexBookingListener.php",
-      "source_location": "L24",
-      "_origin": "ast",
-      "id": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener_handle",
-      "community": 29,
-      "community_name": "Naming Conventions",
-      "norm_label": ".handle()"
-    },
-    {
-      "label": "EventInterface",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "id": "app_features_booking_domain_listeners_syncchannexbookinglistener_php_eventinterface",
-      "community": 29,
-      "community_name": "Naming Conventions",
-      "norm_label": "eventinterface"
-    },
-    {
       "label": "MercadoPagoAdapter.php",
       "file_type": "code",
       "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
@@ -502,7 +95,7 @@
       "label": ".isValidToken()",
       "file_type": "code",
       "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L224",
+      "source_location": "L223",
       "_origin": "ast",
       "id": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_isvalidtoken",
       "community": 152,
@@ -510,37 +103,301 @@
       "norm_label": ".isvalidtoken()"
     },
     {
-      "label": "HandleMercadoPagoWebhookAction.php",
+      "label": "Request.php",
       "file_type": "code",
-      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
+      "source_file": "app/Core/Request.php",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "app_features_webhooks_actions_handlemercadopagowebhookaction",
-      "community": 18,
-      "community_name": "Database Operations & Security",
-      "norm_label": "handlemercadopagowebhookaction.php"
+      "community": 93,
+      "community_name": "User",
+      "norm_label": "request.php",
+      "id": "app_core_request"
     },
     {
-      "label": "HandleMercadoPagoWebhookAction",
+      "label": "Request",
       "file_type": "code",
-      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
-      "source_location": "L29",
+      "source_file": "app/Core/Request.php",
+      "source_location": "L11",
       "_origin": "ast",
-      "id": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction",
-      "community": 18,
-      "community_name": "Database Operations & Security",
-      "norm_label": "handlemercadopagowebhookaction"
+      "community": 93,
+      "community_name": "User",
+      "norm_label": "request",
+      "id": "app_core_request_request"
     },
     {
-      "label": "PDO",
+      "label": ".__construct()",
+      "file_type": "code",
+      "source_file": "app/Core/Request.php",
+      "source_location": "L18",
+      "_origin": "ast",
+      "community": 93,
+      "community_name": "User",
+      "norm_label": ".__construct()",
+      "id": "app_core_request_request_construct"
+    },
+    {
+      "label": ".getMethod()",
+      "file_type": "code",
+      "source_file": "app/Core/Request.php",
+      "source_location": "L46",
+      "_origin": "ast",
+      "community": 93,
+      "community_name": "User",
+      "norm_label": ".getmethod()",
+      "id": "app_core_request_request_getmethod"
+    },
+    {
+      "label": ".getPath()",
+      "file_type": "code",
+      "source_file": "app/Core/Request.php",
+      "source_location": "L50",
+      "_origin": "ast",
+      "community": 93,
+      "community_name": "User",
+      "norm_label": ".getpath()",
+      "id": "app_core_request_request_getpath"
+    },
+    {
+      "label": ".getQueryParams()",
+      "file_type": "code",
+      "source_file": "app/Core/Request.php",
+      "source_location": "L54",
+      "_origin": "ast",
+      "community": 93,
+      "community_name": "User",
+      "norm_label": ".getqueryparams()",
+      "id": "app_core_request_request_getqueryparams"
+    },
+    {
+      "label": ".getQuery()",
+      "file_type": "code",
+      "source_file": "app/Core/Request.php",
+      "source_location": "L58",
+      "_origin": "ast",
+      "community": 93,
+      "community_name": "User",
+      "norm_label": ".getquery()",
+      "id": "app_core_request_request_getquery"
+    },
+    {
+      "label": ".getHeaders()",
+      "file_type": "code",
+      "source_file": "app/Core/Request.php",
+      "source_location": "L62",
+      "_origin": "ast",
+      "community": 93,
+      "community_name": "User",
+      "norm_label": ".getheaders()",
+      "id": "app_core_request_request_getheaders"
+    },
+    {
+      "label": ".getHeader()",
+      "file_type": "code",
+      "source_file": "app/Core/Request.php",
+      "source_location": "L66",
+      "_origin": "ast",
+      "community": 93,
+      "community_name": "User",
+      "norm_label": ".getheader()",
+      "id": "app_core_request_request_getheader"
+    },
+    {
+      "label": ".getBody()",
+      "file_type": "code",
+      "source_file": "app/Core/Request.php",
+      "source_location": "L71",
+      "_origin": "ast",
+      "community": 93,
+      "community_name": "User",
+      "norm_label": ".getbody()",
+      "id": "app_core_request_request_getbody"
+    },
+    {
+      "label": ".get()",
+      "file_type": "code",
+      "source_file": "app/Core/Request.php",
+      "source_location": "L75",
+      "_origin": "ast",
+      "community": 93,
+      "community_name": "User",
+      "norm_label": ".get()",
+      "id": "app_core_request_request_get"
+    },
+    {
+      "label": ".getIp()",
+      "file_type": "code",
+      "source_file": "app/Core/Request.php",
+      "source_location": "L83",
+      "_origin": "ast",
+      "community": 93,
+      "community_name": "User",
+      "norm_label": ".getip()",
+      "id": "app_core_request_request_getip"
+    },
+    {
+      "label": ".parseBody()",
+      "file_type": "code",
+      "source_file": "app/Core/Request.php",
+      "source_location": "L107",
+      "_origin": "ast",
+      "community": 93,
+      "community_name": "User",
+      "norm_label": ".parsebody()",
+      "id": "app_core_request_request_parsebody"
+    },
+    {
+      "label": ".extractHeaders()",
+      "file_type": "code",
+      "source_file": "app/Core/Request.php",
+      "source_location": "L133",
+      "_origin": "ast",
+      "community": 93,
+      "community_name": "User",
+      "norm_label": ".extractheaders()",
+      "id": "app_core_request_request_extractheaders"
+    },
+    {
+      "label": "Response.php",
+      "file_type": "code",
+      "source_file": "app/Core/Response.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 113,
+      "community_name": "AuthRegisterAction",
+      "norm_label": "response.php",
+      "id": "app_core_response"
+    },
+    {
+      "label": "Response",
+      "file_type": "code",
+      "source_file": "app/Core/Response.php",
+      "source_location": "L10",
+      "_origin": "ast",
+      "community": 151,
+      "community_name": "MerchantOrderClient.php",
+      "norm_label": "response",
+      "id": "app_core_response_response"
+    },
+    {
+      "label": ".json()",
+      "file_type": "code",
+      "source_file": "app/Core/Response.php",
+      "source_location": "L16",
+      "_origin": "ast",
+      "community": 151,
+      "community_name": "MerchantOrderClient.php",
+      "norm_label": ".json()",
+      "id": "app_core_response_response_json"
+    },
+    {
+      "label": ".jsonAsync()",
+      "file_type": "code",
+      "source_file": "app/Core/Response.php",
+      "source_location": "L46",
+      "_origin": "ast",
+      "community": 151,
+      "community_name": "MerchantOrderClient.php",
+      "norm_label": ".jsonasync()",
+      "id": "app_core_response_response_jsonasync"
+    },
+    {
+      "label": ".error()",
+      "file_type": "code",
+      "source_file": "app/Core/Response.php",
+      "source_location": "L84",
+      "_origin": "ast",
+      "community": 151,
+      "community_name": "MerchantOrderClient.php",
+      "norm_label": ".error()",
+      "id": "app_core_response_response_error"
+    },
+    {
+      "label": ".badRequest()",
+      "file_type": "code",
+      "source_file": "app/Core/Response.php",
+      "source_location": "L102",
+      "_origin": "ast",
+      "community": 151,
+      "community_name": "MerchantOrderClient.php",
+      "norm_label": ".badrequest()",
+      "id": "app_core_response_response_badrequest"
+    },
+    {
+      "label": ".unauthorized()",
+      "file_type": "code",
+      "source_file": "app/Core/Response.php",
+      "source_location": "L106",
+      "_origin": "ast",
+      "community": 151,
+      "community_name": "MerchantOrderClient.php",
+      "norm_label": ".unauthorized()",
+      "id": "app_core_response_response_unauthorized"
+    },
+    {
+      "label": ".forbidden()",
+      "file_type": "code",
+      "source_file": "app/Core/Response.php",
+      "source_location": "L110",
+      "_origin": "ast",
+      "community": 151,
+      "community_name": "MerchantOrderClient.php",
+      "norm_label": ".forbidden()",
+      "id": "app_core_response_response_forbidden"
+    },
+    {
+      "label": ".notFound()",
+      "file_type": "code",
+      "source_file": "app/Core/Response.php",
+      "source_location": "L114",
+      "_origin": "ast",
+      "community": 151,
+      "community_name": "MerchantOrderClient.php",
+      "norm_label": ".notfound()",
+      "id": "app_core_response_response_notfound"
+    },
+    {
+      "label": ".tooManyRequests()",
+      "file_type": "code",
+      "source_file": "app/Core/Response.php",
+      "source_location": "L118",
+      "_origin": "ast",
+      "community": 151,
+      "community_name": "MerchantOrderClient.php",
+      "norm_label": ".toomanyrequests()",
+      "id": "app_core_response_response_toomanyrequests"
+    },
+    {
+      "label": "ConfirmQloAppsOrderListener.php",
+      "file_type": "code",
+      "source_file": "app/Features/Booking/Domain/Listeners/ConfirmQloAppsOrderListener.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "Naming Conventions",
+      "norm_label": "confirmqloappsorderlistener.php",
+      "id": "app_features_booking_domain_listeners_confirmqloappsorderlistener"
+    },
+    {
+      "label": "ConfirmQloAppsOrderListener",
+      "file_type": "code",
+      "source_file": "app/Features/Booking/Domain/Listeners/ConfirmQloAppsOrderListener.php",
+      "source_location": "L17",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "Naming Conventions",
+      "norm_label": "confirmqloappsorderlistener",
+      "id": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener"
+    },
+    {
+      "label": "ListenerInterface",
       "file_type": "code",
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "id": "pdo",
-      "community": 18,
-      "community_name": "Database Operations & Security",
-      "norm_label": "pdo"
+      "community": 29,
+      "community_name": "Naming Conventions",
+      "norm_label": "listenerinterface",
+      "id": "listenerinterface"
     },
     {
       "label": "PmsPortInterface",
@@ -548,21 +405,65 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "id": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_pmsportinterface",
-      "community": 18,
-      "community_name": "Database Operations & Security",
-      "norm_label": "pmsportinterface"
+      "community": 29,
+      "community_name": "Naming Conventions",
+      "norm_label": "pmsportinterface",
+      "id": "app_features_booking_domain_listeners_confirmqloappsorderlistener_php_pmsportinterface"
     },
     {
-      "label": "PaymentGatewayPortInterface",
+      "label": ".__construct()",
+      "file_type": "code",
+      "source_file": "app/Features/Booking/Domain/Listeners/ConfirmQloAppsOrderListener.php",
+      "source_location": "L20",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "Naming Conventions",
+      "norm_label": ".__construct()",
+      "id": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener_construct"
+    },
+    {
+      "label": ".handle()",
+      "file_type": "code",
+      "source_file": "app/Features/Booking/Domain/Listeners/ConfirmQloAppsOrderListener.php",
+      "source_location": "L24",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "Naming Conventions",
+      "norm_label": ".handle()",
+      "id": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener_handle"
+    },
+    {
+      "label": "EventInterface",
       "file_type": "code",
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "id": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_paymentgatewayportinterface",
-      "community": 18,
-      "community_name": "Database Operations & Security",
-      "norm_label": "paymentgatewayportinterface"
+      "community": 29,
+      "community_name": "Naming Conventions",
+      "norm_label": "eventinterface",
+      "id": "app_features_booking_domain_listeners_confirmqloappsorderlistener_php_eventinterface"
+    },
+    {
+      "label": "SyncChannexBookingListener.php",
+      "file_type": "code",
+      "source_file": "app/Features/Booking/Domain/Listeners/SyncChannexBookingListener.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "Naming Conventions",
+      "norm_label": "syncchannexbookinglistener.php",
+      "id": "app_features_booking_domain_listeners_syncchannexbookinglistener"
+    },
+    {
+      "label": "SyncChannexBookingListener",
+      "file_type": "code",
+      "source_file": "app/Features/Booking/Domain/Listeners/SyncChannexBookingListener.php",
+      "source_location": "L17",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "Naming Conventions",
+      "norm_label": "syncchannexbookinglistener",
+      "id": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener"
     },
     {
       "label": "ChannelManagerPortInterface",
@@ -570,10 +471,109 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "id": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_channelmanagerportinterface",
+      "community": 29,
+      "community_name": "Naming Conventions",
+      "norm_label": "channelmanagerportinterface",
+      "id": "app_features_booking_domain_listeners_syncchannexbookinglistener_php_channelmanagerportinterface"
+    },
+    {
+      "label": ".__construct()",
+      "file_type": "code",
+      "source_file": "app/Features/Booking/Domain/Listeners/SyncChannexBookingListener.php",
+      "source_location": "L20",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "Naming Conventions",
+      "norm_label": ".__construct()",
+      "id": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener_construct"
+    },
+    {
+      "label": ".handle()",
+      "file_type": "code",
+      "source_file": "app/Features/Booking/Domain/Listeners/SyncChannexBookingListener.php",
+      "source_location": "L24",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "Naming Conventions",
+      "norm_label": ".handle()",
+      "id": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener_handle"
+    },
+    {
+      "label": "EventInterface",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "community": 29,
+      "community_name": "Naming Conventions",
+      "norm_label": "eventinterface",
+      "id": "app_features_booking_domain_listeners_syncchannexbookinglistener_php_eventinterface"
+    },
+    {
+      "label": "HandleMercadoPagoWebhookAction.php",
+      "file_type": "code",
+      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
+      "source_location": "L1",
+      "_origin": "ast",
       "community": 18,
       "community_name": "Database Operations & Security",
-      "norm_label": "channelmanagerportinterface"
+      "norm_label": "handlemercadopagowebhookaction.php",
+      "id": "app_features_webhooks_actions_handlemercadopagowebhookaction"
+    },
+    {
+      "label": "HandleMercadoPagoWebhookAction",
+      "file_type": "code",
+      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
+      "source_location": "L29",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "Database Operations & Security",
+      "norm_label": "handlemercadopagowebhookaction",
+      "id": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction"
+    },
+    {
+      "label": "PDO",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "Database Operations & Security",
+      "norm_label": "pdo",
+      "id": "pdo"
+    },
+    {
+      "label": "PmsPortInterface",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "Database Operations & Security",
+      "norm_label": "pmsportinterface",
+      "id": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_pmsportinterface"
+    },
+    {
+      "label": "PaymentGatewayPortInterface",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "Database Operations & Security",
+      "norm_label": "paymentgatewayportinterface",
+      "id": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_paymentgatewayportinterface"
+    },
+    {
+      "label": "ChannelManagerPortInterface",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "Database Operations & Security",
+      "norm_label": "channelmanagerportinterface",
+      "id": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_channelmanagerportinterface"
     },
     {
       "label": "ProvisionalBookingRepository",
@@ -581,10 +581,10 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "id": "provisionalbookingrepository",
       "community": 18,
       "community_name": "Database Operations & Security",
-      "norm_label": "provisionalbookingrepository"
+      "norm_label": "provisionalbookingrepository",
+      "id": "provisionalbookingrepository"
     },
     {
       "label": "EventDispatcher",
@@ -592,10 +592,10 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "id": "eventdispatcher",
       "community": 18,
       "community_name": "Database Operations & Security",
-      "norm_label": "eventdispatcher"
+      "norm_label": "eventdispatcher",
+      "id": "eventdispatcher"
     },
     {
       "label": ".__construct()",
@@ -603,10 +603,10 @@
       "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
       "source_location": "L37",
       "_origin": "ast",
-      "id": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_construct",
       "community": 18,
       "community_name": "Database Operations & Security",
-      "norm_label": ".__construct()"
+      "norm_label": ".__construct()",
+      "id": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_construct"
     },
     {
       "label": ".__invoke()",
@@ -614,10 +614,10 @@
       "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
       "source_location": "L53",
       "_origin": "ast",
-      "id": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_invoke",
       "community": 18,
       "community_name": "Database Operations & Security",
-      "norm_label": ".__invoke()"
+      "norm_label": ".__invoke()",
+      "id": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_invoke"
     },
     {
       "label": ".sanitizeForLog()",
@@ -625,10 +625,10 @@
       "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
       "source_location": "L253",
       "_origin": "ast",
-      "id": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_sanitizeforlog",
       "community": 18,
       "community_name": "Database Operations & Security",
-      "norm_label": ".sanitizeforlog()"
+      "norm_label": ".sanitizeforlog()",
+      "id": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_sanitizeforlog"
     },
     {
       "label": "Logger.php",
@@ -33704,15 +33704,283 @@
   ],
   "links": [
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Booking/Actions/CreateBookingAction.php",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_features_booking_actions_createbookingaction",
+      "target": "app_features_shared_adapters_mercadopagoadapter"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter",
+      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter",
+      "target": "exception",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter",
+      "target": "vendor_mercadopago_dx_php_src_mercadopago_exceptions_invalidwebhooksignatureexception",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter",
+      "target": "vendor_mercadopago_dx_php_src_mercadopago_mercadopagoconfig",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter",
+      "target": "vendor_mercadopago_dx_php_src_mercadopago_client_payment_paymentclient",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter",
+      "target": "paymentgatewayportinterface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter",
+      "target": "vendor_mercadopago_dx_php_src_mercadopago_client_preference_preferenceclient",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter",
+      "target": "vendor_mercadopago_dx_php_src_mercadopago_client_common_requestoptions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter",
+      "target": "vendor_mercadopago_dx_php_src_mercadopago_webhook_webhooksignaturevalidator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
+      "target": "app_features_shared_adapters_mercadopagoadapter"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter",
+      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_construct",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter",
+      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_createpreference",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L177",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter",
+      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_getpaymentdetails",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L223",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter",
+      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_isvalidtoken",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L123",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter",
+      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_verifynotification",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L153",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter",
+      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_verifysignature",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter",
+      "target": "paymentgatewayportinterface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/run-exhaustive-tests.php",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "scripts_run_exhaustive_tests",
+      "target": "paymentgatewayportinterface"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/Unit/Features/HandleMercadoPagoWebhookActionTest.php",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "tests_unit_features_handlemercadopagowebhookactiontest",
+      "target": "paymentgatewayportinterface"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_createpreference",
+      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_isvalidtoken",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L143",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_verifynotification",
+      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_getpaymentdetails",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_location": "L136",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_verifynotification",
+      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_verifysignature",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/Core/Request.php",
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_request",
-      "target": "app_core_request_request",
-      "confidence_score": 1.0
+      "target": "app_core_request_request"
     },
     {
       "relation": "method",
@@ -33721,9 +33989,9 @@
       "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_request_request",
-      "target": "app_core_request_request_construct",
-      "confidence_score": 1.0
+      "target": "app_core_request_request_construct"
     },
     {
       "relation": "method",
@@ -33732,9 +34000,9 @@
       "source_location": "L133",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_request_request",
-      "target": "app_core_request_request_extractheaders",
-      "confidence_score": 1.0
+      "target": "app_core_request_request_extractheaders"
     },
     {
       "relation": "method",
@@ -33743,9 +34011,9 @@
       "source_location": "L75",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_request_request",
-      "target": "app_core_request_request_get",
-      "confidence_score": 1.0
+      "target": "app_core_request_request_get"
     },
     {
       "relation": "method",
@@ -33754,9 +34022,9 @@
       "source_location": "L71",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_request_request",
-      "target": "app_core_request_request_getbody",
-      "confidence_score": 1.0
+      "target": "app_core_request_request_getbody"
     },
     {
       "relation": "method",
@@ -33765,9 +34033,9 @@
       "source_location": "L66",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_request_request",
-      "target": "app_core_request_request_getheader",
-      "confidence_score": 1.0
+      "target": "app_core_request_request_getheader"
     },
     {
       "relation": "method",
@@ -33776,9 +34044,9 @@
       "source_location": "L62",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_request_request",
-      "target": "app_core_request_request_getheaders",
-      "confidence_score": 1.0
+      "target": "app_core_request_request_getheaders"
     },
     {
       "relation": "method",
@@ -33787,9 +34055,9 @@
       "source_location": "L83",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_request_request",
-      "target": "app_core_request_request_getip",
-      "confidence_score": 1.0
+      "target": "app_core_request_request_getip"
     },
     {
       "relation": "method",
@@ -33798,9 +34066,9 @@
       "source_location": "L46",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_request_request",
-      "target": "app_core_request_request_getmethod",
-      "confidence_score": 1.0
+      "target": "app_core_request_request_getmethod"
     },
     {
       "relation": "method",
@@ -33809,9 +34077,9 @@
       "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_request_request",
-      "target": "app_core_request_request_getpath",
-      "confidence_score": 1.0
+      "target": "app_core_request_request_getpath"
     },
     {
       "relation": "method",
@@ -33820,9 +34088,9 @@
       "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_request_request",
-      "target": "app_core_request_request_getquery",
-      "confidence_score": 1.0
+      "target": "app_core_request_request_getquery"
     },
     {
       "relation": "method",
@@ -33831,9 +34099,9 @@
       "source_location": "L54",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_request_request",
-      "target": "app_core_request_request_getqueryparams",
-      "confidence_score": 1.0
+      "target": "app_core_request_request_getqueryparams"
     },
     {
       "relation": "method",
@@ -33842,9 +34110,9 @@
       "source_location": "L107",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_request_request",
-      "target": "app_core_request_request_parsebody",
-      "confidence_score": 1.0
+      "target": "app_core_request_request_parsebody"
     },
     {
       "relation": "references",
@@ -33962,9 +34230,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
-      "target": "app_core_request_request",
-      "confidence_score": 1.0
+      "target": "app_core_request_request"
     },
     {
       "relation": "references",
@@ -33974,9 +34242,9 @@
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_invoke",
-      "target": "app_core_request_request",
-      "confidence_score": 1.0
+      "target": "app_core_request_request"
     },
     {
       "relation": "imports",
@@ -33998,9 +34266,9 @@
       "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_request_request_construct",
-      "target": "app_core_request_request_extractheaders",
-      "confidence_score": 1.0
+      "target": "app_core_request_request_extractheaders"
     },
     {
       "relation": "calls",
@@ -34010,9 +34278,9 @@
       "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_request_request_construct",
-      "target": "app_core_request_request_parsebody",
-      "confidence_score": 1.0
+      "target": "app_core_request_request_parsebody"
     },
     {
       "relation": "contains",
@@ -34021,9 +34289,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_response",
-      "target": "app_core_response_response",
-      "confidence_score": 1.0
+      "target": "app_core_response_response"
     },
     {
       "relation": "imports",
@@ -34225,9 +34493,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
-      "target": "app_core_response",
-      "confidence_score": 1.0
+      "target": "app_core_response"
     },
     {
       "relation": "method",
@@ -34236,9 +34504,9 @@
       "source_location": "L102",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_response_response",
-      "target": "app_core_response_response_badrequest",
-      "confidence_score": 1.0
+      "target": "app_core_response_response_badrequest"
     },
     {
       "relation": "method",
@@ -34247,9 +34515,9 @@
       "source_location": "L84",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_response_response",
-      "target": "app_core_response_response_error",
-      "confidence_score": 1.0
+      "target": "app_core_response_response_error"
     },
     {
       "relation": "method",
@@ -34258,9 +34526,9 @@
       "source_location": "L110",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_response_response",
-      "target": "app_core_response_response_forbidden",
-      "confidence_score": 1.0
+      "target": "app_core_response_response_forbidden"
     },
     {
       "relation": "method",
@@ -34269,9 +34537,9 @@
       "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_response_response",
-      "target": "app_core_response_response_json",
-      "confidence_score": 1.0
+      "target": "app_core_response_response_json"
     },
     {
       "relation": "method",
@@ -34280,9 +34548,9 @@
       "source_location": "L46",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_response_response",
-      "target": "app_core_response_response_jsonasync",
-      "confidence_score": 1.0
+      "target": "app_core_response_response_jsonasync"
     },
     {
       "relation": "method",
@@ -34291,9 +34559,9 @@
       "source_location": "L114",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_response_response",
-      "target": "app_core_response_response_notfound",
-      "confidence_score": 1.0
+      "target": "app_core_response_response_notfound"
     },
     {
       "relation": "method",
@@ -34302,9 +34570,9 @@
       "source_location": "L118",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_response_response",
-      "target": "app_core_response_response_toomanyrequests",
-      "confidence_score": 1.0
+      "target": "app_core_response_response_toomanyrequests"
     },
     {
       "relation": "method",
@@ -34313,9 +34581,9 @@
       "source_location": "L106",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_core_response_response",
-      "target": "app_core_response_response_unauthorized",
-      "confidence_score": 1.0
+      "target": "app_core_response_response_unauthorized"
     },
     {
       "relation": "contains",
@@ -34324,9 +34592,9 @@
       "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_confirmqloappsorderlistener",
-      "target": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener",
-      "confidence_score": 1.0
+      "target": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener"
     },
     {
       "relation": "imports",
@@ -34336,9 +34604,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_confirmqloappsorderlistener",
-      "target": "app_features_booking_domain_listeners_confirmqloappsorderlistener_php_eventinterface",
-      "confidence_score": 1.0
+      "target": "app_features_booking_domain_listeners_confirmqloappsorderlistener_php_eventinterface"
     },
     {
       "relation": "imports",
@@ -34348,33 +34616,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_confirmqloappsorderlistener",
-      "target": "app_features_booking_domain_listeners_confirmqloappsorderlistener_php_pmsportinterface",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Booking/Domain/Listeners/ConfirmQloAppsOrderListener.php",
-      "source_location": "L12",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_booking_domain_listeners_confirmqloappsorderlistener",
-      "target": "exception",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Booking/Domain/Listeners/ConfirmQloAppsOrderListener.php",
-      "source_location": "L7",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_booking_domain_listeners_confirmqloappsorderlistener",
-      "target": "listenerinterface",
-      "confidence_score": 1.0
+      "target": "app_features_booking_domain_listeners_confirmqloappsorderlistener_php_pmsportinterface"
     },
     {
       "relation": "imports",
@@ -34384,9 +34628,33 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_confirmqloappsorderlistener",
-      "target": "app_features_shared_adapters_qloappadapter",
-      "confidence_score": 1.0
+      "target": "app_features_shared_adapters_qloappadapter"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Booking/Domain/Listeners/ConfirmQloAppsOrderListener.php",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_features_booking_domain_listeners_confirmqloappsorderlistener",
+      "target": "exception"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Booking/Domain/Listeners/ConfirmQloAppsOrderListener.php",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_features_booking_domain_listeners_confirmqloappsorderlistener",
+      "target": "listenerinterface"
     },
     {
       "relation": "method",
@@ -34395,9 +34663,9 @@
       "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener",
-      "target": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener_construct",
-      "confidence_score": 1.0
+      "target": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener_construct"
     },
     {
       "relation": "method",
@@ -34406,9 +34674,9 @@
       "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener",
-      "target": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener_handle",
-      "confidence_score": 1.0
+      "target": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener_handle"
     },
     {
       "relation": "references",
@@ -34418,9 +34686,9 @@
       "weight": 1.0,
       "context": "field",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener",
-      "target": "app_features_booking_domain_listeners_confirmqloappsorderlistener_php_pmsportinterface",
-      "confidence_score": 1.0
+      "target": "app_features_booking_domain_listeners_confirmqloappsorderlistener_php_pmsportinterface"
     },
     {
       "relation": "implements",
@@ -34429,9 +34697,9 @@
       "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener",
-      "target": "listenerinterface",
-      "confidence_score": 1.0
+      "target": "listenerinterface"
     },
     {
       "relation": "imports",
@@ -34441,9 +34709,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_syncchannexbookinglistener",
-      "target": "listenerinterface",
-      "confidence_score": 1.0
+      "target": "listenerinterface"
     },
     {
       "relation": "implements",
@@ -34452,9 +34720,9 @@
       "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener",
-      "target": "listenerinterface",
-      "confidence_score": 1.0
+      "target": "listenerinterface"
     },
     {
       "relation": "references",
@@ -34464,9 +34732,9 @@
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener_construct",
-      "target": "app_features_booking_domain_listeners_confirmqloappsorderlistener_php_pmsportinterface",
-      "confidence_score": 1.0
+      "target": "app_features_booking_domain_listeners_confirmqloappsorderlistener_php_pmsportinterface"
     },
     {
       "relation": "references",
@@ -34476,9 +34744,9 @@
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_confirmqloappsorderlistener_confirmqloappsorderlistener_handle",
-      "target": "app_features_booking_domain_listeners_confirmqloappsorderlistener_php_eventinterface",
-      "confidence_score": 1.0
+      "target": "app_features_booking_domain_listeners_confirmqloappsorderlistener_php_eventinterface"
     },
     {
       "relation": "imports",
@@ -34488,9 +34756,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_syncchannexbookinglistener",
-      "target": "app_features_booking_domain_listeners_syncchannexbookinglistener_php_channelmanagerportinterface",
-      "confidence_score": 1.0
+      "target": "app_features_booking_domain_listeners_syncchannexbookinglistener_php_channelmanagerportinterface"
     },
     {
       "relation": "imports",
@@ -34500,9 +34768,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_syncchannexbookinglistener",
-      "target": "app_features_booking_domain_listeners_syncchannexbookinglistener_php_eventinterface",
-      "confidence_score": 1.0
+      "target": "app_features_booking_domain_listeners_syncchannexbookinglistener_php_eventinterface"
     },
     {
       "relation": "contains",
@@ -34511,9 +34779,9 @@
       "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_syncchannexbookinglistener",
-      "target": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener",
-      "confidence_score": 1.0
+      "target": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener"
     },
     {
       "relation": "imports",
@@ -34523,9 +34791,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_syncchannexbookinglistener",
-      "target": "app_features_shared_adapters_channexadapter",
-      "confidence_score": 1.0
+      "target": "app_features_shared_adapters_channexadapter"
     },
     {
       "relation": "imports",
@@ -34535,9 +34803,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_syncchannexbookinglistener",
-      "target": "exception",
-      "confidence_score": 1.0
+      "target": "exception"
     },
     {
       "relation": "imports",
@@ -34559,9 +34827,9 @@
       "weight": 1.0,
       "context": "field",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener",
-      "target": "app_features_booking_domain_listeners_syncchannexbookinglistener_php_channelmanagerportinterface",
-      "confidence_score": 1.0
+      "target": "app_features_booking_domain_listeners_syncchannexbookinglistener_php_channelmanagerportinterface"
     },
     {
       "relation": "method",
@@ -34570,9 +34838,9 @@
       "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener",
-      "target": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener_construct",
-      "confidence_score": 1.0
+      "target": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener_construct"
     },
     {
       "relation": "method",
@@ -34581,9 +34849,9 @@
       "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener",
-      "target": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener_handle",
-      "confidence_score": 1.0
+      "target": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener_handle"
     },
     {
       "relation": "references",
@@ -34593,9 +34861,9 @@
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener_construct",
-      "target": "app_features_booking_domain_listeners_syncchannexbookinglistener_php_channelmanagerportinterface",
-      "confidence_score": 1.0
+      "target": "app_features_booking_domain_listeners_syncchannexbookinglistener_php_channelmanagerportinterface"
     },
     {
       "relation": "references",
@@ -34605,336 +34873,33 @@
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
-      "source": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener_handle",
-      "target": "app_features_booking_domain_listeners_syncchannexbookinglistener_php_eventinterface",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Booking/Actions/CreateBookingAction.php",
-      "source_location": "L19",
-      "weight": 1.0,
-      "_origin": "ast",
       "confidence_score": 1.0,
-      "source": "app_features_booking_actions_createbookingaction",
-      "target": "app_features_shared_adapters_mercadopagoadapter"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L22",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter",
-      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter",
-      "confidence_score": 1.0
+      "source": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener_handle",
+      "target": "app_features_booking_domain_listeners_syncchannexbookinglistener_php_eventinterface"
     },
     {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L15",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter",
-      "target": "exception",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L14",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter",
-      "target": "vendor_mercadopago_dx_php_src_mercadopago_exceptions_invalidwebhooksignatureexception",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter",
-      "target": "vendor_mercadopago_dx_php_src_mercadopago_mercadopagoconfig",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter",
-      "target": "vendor_mercadopago_dx_php_src_mercadopago_client_payment_paymentclient",
-      "confidence_score": 1.0
+      "confidence_score": 1.0,
+      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
+      "target": "app_core_bookingstatus"
     },
     {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L6",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter",
-      "target": "paymentgatewayportinterface",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
+      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter",
-      "target": "vendor_mercadopago_dx_php_src_mercadopago_client_preference_preferenceclient",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L12",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter",
-      "target": "vendor_mercadopago_dx_php_src_mercadopago_client_common_requestoptions",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L13",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter",
-      "target": "vendor_mercadopago_dx_php_src_mercadopago_webhook_webhooksignaturevalidator",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
-      "source_location": "L19",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
-      "target": "app_features_shared_adapters_mercadopagoadapter",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L27",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter",
-      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_construct",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L40",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter",
-      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_createpreference",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L177",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter",
-      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_getpaymentdetails",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L224",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter",
-      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_isvalidtoken",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L123",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter",
-      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_verifynotification",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L153",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter",
-      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_verifysignature",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L22",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter",
-      "target": "paymentgatewayportinterface",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/run-exhaustive-tests.php",
-      "source_location": "L16",
-      "weight": 1.0,
-      "_origin": "ast",
       "confidence_score": 1.0,
-      "source": "scripts_run_exhaustive_tests",
-      "target": "paymentgatewayportinterface"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "tests/Unit/Features/HandleMercadoPagoWebhookActionTest.php",
-      "source_location": "L12",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tests_unit_features_handlemercadopagowebhookactiontest",
-      "target": "paymentgatewayportinterface"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L51",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_createpreference",
-      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_isvalidtoken",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L143",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_verifynotification",
-      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_getpaymentdetails",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
-      "source_location": "L136",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_verifynotification",
-      "target": "app_features_shared_adapters_mercadopagoadapter_mercadopagoadapter_verifysignature",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
-      "source_location": "L29",
-      "weight": 1.0,
-      "_origin": "ast",
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
-      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
-      "source_location": "L17",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
-      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_channelmanagerportinterface",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
-      "source_location": "L16",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
-      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_paymentgatewayportinterface",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
-      "source_location": "L15",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
-      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_pmsportinterface",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
-      "target": "app_core_bookingstatus",
-      "confidence_score": 1.0
+      "target": "app_core_database"
     },
     {
       "relation": "imports",
@@ -34944,69 +34909,9 @@
       "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
-      "target": "app_features_shared_adapters_channexadapter",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
-      "source_location": "L10",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
-      "target": "app_core_database",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
-      "source_location": "L12",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
-      "target": "eventdispatcher",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
-      "source_location": "L22",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
-      "target": "exception",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
-      "source_location": "L21",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
-      "target": "pdo",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
-      "source_location": "L14",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
-      "target": "provisionalbookingrepository",
-      "confidence_score": 1.0
+      "target": "app_features_shared_adapters_channexadapter"
     },
     {
       "relation": "imports",
@@ -35016,9 +34921,104 @@
       "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
-      "target": "app_features_shared_adapters_qloappadapter",
-      "confidence_score": 1.0
+      "target": "app_features_shared_adapters_qloappadapter"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
+      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
+      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_channelmanagerportinterface"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
+      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_paymentgatewayportinterface"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
+      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_pmsportinterface"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
+      "target": "eventdispatcher"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
+      "target": "exception"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
+      "target": "pdo"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_features_webhooks_actions_handlemercadopagowebhookaction",
+      "target": "provisionalbookingrepository"
     },
     {
       "relation": "imports",
@@ -35039,9 +35039,9 @@
       "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction",
-      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_construct",
-      "confidence_score": 1.0
+      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_construct"
     },
     {
       "relation": "method",
@@ -35050,9 +35050,9 @@
       "source_location": "L53",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction",
-      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_invoke",
-      "confidence_score": 1.0
+      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_invoke"
     },
     {
       "relation": "method",
@@ -35061,9 +35061,9 @@
       "source_location": "L253",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction",
-      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_sanitizeforlog",
-      "confidence_score": 1.0
+      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_sanitizeforlog"
     },
     {
       "relation": "references",
@@ -35073,9 +35073,9 @@
       "weight": 1.0,
       "context": "field",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction",
-      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_channelmanagerportinterface",
-      "confidence_score": 1.0
+      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_channelmanagerportinterface"
     },
     {
       "relation": "references",
@@ -35085,9 +35085,9 @@
       "weight": 1.0,
       "context": "field",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction",
-      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_paymentgatewayportinterface",
-      "confidence_score": 1.0
+      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_paymentgatewayportinterface"
     },
     {
       "relation": "references",
@@ -35097,9 +35097,9 @@
       "weight": 1.0,
       "context": "field",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction",
-      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_pmsportinterface",
-      "confidence_score": 1.0
+      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_pmsportinterface"
     },
     {
       "relation": "references",
@@ -35109,9 +35109,9 @@
       "weight": 1.0,
       "context": "field",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction",
-      "target": "eventdispatcher",
-      "confidence_score": 1.0
+      "target": "eventdispatcher"
     },
     {
       "relation": "references",
@@ -35121,9 +35121,9 @@
       "weight": 1.0,
       "context": "field",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction",
-      "target": "pdo",
-      "confidence_score": 1.0
+      "target": "pdo"
     },
     {
       "relation": "references",
@@ -35133,9 +35133,9 @@
       "weight": 1.0,
       "context": "field",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction",
-      "target": "provisionalbookingrepository",
-      "confidence_score": 1.0
+      "target": "provisionalbookingrepository"
     },
     {
       "relation": "imports",
@@ -35192,9 +35192,9 @@
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_construct",
-      "target": "pdo",
-      "confidence_score": 1.0
+      "target": "pdo"
     },
     {
       "relation": "references",
@@ -35204,9 +35204,9 @@
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_construct",
-      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_pmsportinterface",
-      "confidence_score": 1.0
+      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_pmsportinterface"
     },
     {
       "relation": "references",
@@ -35216,9 +35216,9 @@
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_construct",
-      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_paymentgatewayportinterface",
-      "confidence_score": 1.0
+      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_paymentgatewayportinterface"
     },
     {
       "relation": "references",
@@ -35228,9 +35228,9 @@
       "weight": 1.0,
       "context": "parameter_type",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_construct",
-      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_channelmanagerportinterface",
-      "confidence_score": 1.0
+      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_php_channelmanagerportinterface"
     },
     {
       "relation": "references",
@@ -35240,9 +35240,9 @@
       "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_construct",
-      "target": "eventdispatcher",
-      "confidence_score": 1.0
+      "target": "eventdispatcher"
     },
     {
       "relation": "imports",
@@ -35264,9 +35264,9 @@
       "source_location": "L61",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_invoke",
-      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_sanitizeforlog",
-      "confidence_score": 1.0
+      "target": "app_features_webhooks_actions_handlemercadopagowebhookaction_handlemercadopagowebhookaction_sanitizeforlog"
     },
     {
       "relation": "contains",
@@ -85933,5 +85933,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "2b6abad3e7f503858f852c122d5726674c1b31e5"
+  "built_at_commit": "2db1040ac5bf0b5e2def778088460e041e8db1cb"
 }

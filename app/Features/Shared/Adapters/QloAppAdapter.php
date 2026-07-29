@@ -227,13 +227,14 @@ class QloAppAdapter implements PmsPortInterface {
         $firstName = htmlspecialchars($nameParts[0] ?? $guestName, ENT_XML1);
         $lastName = htmlspecialchars($nameParts[1] ?? 'Guest', ENT_XML1);
         $safeEmail = htmlspecialchars($guestEmail, ENT_XML1);
+        $currency = Config::get('MERCADO_PAGO_CURRENCY', 'PEN');
 
         $xmlData = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <qloapps xmlns:xlink="http://www.w3.org/1999/xlink">
     <booking>
         <id_property>{$idHotel}</id_property>
-        <currency>USD</currency>
+        <currency>{$currency}</currency>
         <booking_status>1</booking_status>
         <payment_status>1</payment_status>
         <source>website</source>

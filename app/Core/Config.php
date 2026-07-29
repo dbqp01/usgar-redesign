@@ -36,7 +36,6 @@ class Config {
         'DB_PORT'              => '3306',
         'DB_NAME'              => 'usgar_hotels',
         'ALLOWED_ORIGINS'      => '*',
-        'BOOKING_TOKEN_SECRET' => 'usgar_dev_secret_booking_token_2026',
     ];
 
     /**

@@ -66,7 +66,7 @@ class GetBookingStatusAction {
             'room_name'         => $hold['room_data']['room_name'] ?? '',
             'price_per_night'   => (float)($hold['room_data']['price_per_night'] ?? 0),
             'nights'            => (int)($hold['room_data']['nights'] ?? 1),
-            'currency'          => 'USD',
+            'currency'          => Config::get('MERCADO_PAGO_CURRENCY', 'PEN'),
             'price'             => (float)$hold['price_snapshot'],
             'expires_at'        => $expiresAtStr,
             'is_expired'        => $isExpired,

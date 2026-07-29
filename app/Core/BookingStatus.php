@@ -9,10 +9,12 @@ namespace App\Core;
  * Inmutable y auto-documentado — previene errores de tipeo en comparaciones.
  */
 enum BookingStatus: string {
-    case Pending = 'pending';
-    case Paid    = 'paid';
-    case Failed  = 'failed';
-    case Expired = 'expired';
+    case Pending      = 'pending';
+    case Paid         = 'paid';
+    case Failed       = 'failed';
+    case Expired      = 'expired';
+    case FraudReview  = 'fraud_review';
+    case ManualReview = 'manual_review';
 
     /**
      * Verifica si el estado permite extension de hold.
@@ -26,7 +28,7 @@ enum BookingStatus: string {
      */
     public function isTerminal(): bool {
         return match ($this) {
-            self::Paid, self::Expired, self::Failed => true,
+            self::Paid, self::Expired, self::Failed, self::FraudReview => true,
             default => false,
         };
     }

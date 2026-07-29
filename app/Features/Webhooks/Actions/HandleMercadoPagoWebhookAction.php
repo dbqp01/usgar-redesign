@@ -186,12 +186,14 @@ class HandleMercadoPagoWebhookAction {
             }
 
             // 5.5 VALIDACION DE SEGURIDAD ESTRICTA (Amount Mismatch)
-            $expectedAmount = (float)($hold['price_snapshot'] ?? 0.0);
-            if ($transactionAmount < $expectedAmount) {
-                Logger::error("HandleMercadoPagoWebhookAction ALERTA FRAUDE: Monto cobrado ({$transactionAmount}) es menor al esperado ({$expectedAmount}) para Cart ID {$cartId}");
-                $this->pdo->rollBack();
-                $this->bookingRepo->updateStatus((string)$cartId, 'fraud_review');
-                Response::error("El monto de la transacción no coincide con el valor de la reserva.", 400);
+            // Usar bccomp para evitar falsos positivos por imprecision de punto flotante
+            $transactionStr = number_format($transactionAmount, 2, '.', '');
+            $expectedStr = number_format((float)($hold['price_snapshot'] ?? 0.0), 2, '.', '');
+            if (bccomp($transactionStr, $expectedStr, 2) < 0) {
+                Logger::error("HandleMercadoPagoWebhookAction ALERTA FRAUDE: Monto cobrado ({$transactionStr}) es menor al esperado ({$expectedStr}) para Cart ID {$cartId}");
+                $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::FraudReview->value);
+                $this->pdo->commit();
+                Response::error("El monto de la transaccion no coincide con el valor de la reserva.", 400);
                 return;
             }
 
@@ -201,6 +203,11 @@ class HandleMercadoPagoWebhookAction {
 
             $this->pdo->commit();
             Logger::info("HandleMercadoPagoWebhookAction: Transaccion en BD local confirmada para Cart ID {$cartId}");
+
+            // 5.6 Extender tiempo de ejecucion para listeners en shared hosting
+            if (function_exists('set_time_limit')) {
+                @set_time_limit(120);
+            }
             
             // 6. CERRAR CONEXION HTTP TEMPRANAMENTE (Evitar timeout de Mercado Pago)
             // Se responde 200 OK inmediatamente a MP para que no reintente
@@ -230,7 +237,7 @@ class HandleMercadoPagoWebhookAction {
             } catch (Exception $e) {
                 Logger::error("HandleMercadoPagoWebhookAction: Fallo en integracion externa durante la dispatch del evento: " . $e->getMessage());
                 // En background, actualizar a manual_review si los reintentos locales fallaron
-                $this->bookingRepo->updateStatus((string)$cartId, 'manual_review');
+                $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::ManualReview->value);
                 // Nota: La respuesta HTTP 200 ya fue enviada a MP, no podemos usar Response::json() aquí.
                 return;
             }
