@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>usgar-redesign — 完整调用流程与架构文档</h1>
-<p class="subtitle">由 graphify 知识图谱生成：3047 个节点、4587 条边、457 个社区。Commit: 66df943</p>
+<p class="subtitle">由 graphify 知识图谱生成：3050 个节点、4595 条边、455 个社区。Commit: db912c5</p>
 
 <div class="nav">
     <a href="#overview">架构总览</a>
@@ -90,7 +90,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 flowchart LR
     EXTRACT_PIPELINE_5F350230("提取管线<br/><small>12 nodes</small>")
     class EXTRACT_PIPELINE_5F350230 module;
-    BUILD_GRAPH_321CBB04("图谱构建<br/><small>208 nodes</small>")
+    BUILD_GRAPH_321CBB04("图谱构建<br/><small>209 nodes</small>")
     class BUILD_GRAPH_321CBB04 module;
     ANALYSIS_CLUSTERING_C79796DA("分析聚类<br/><small>4 nodes</small>")
     class ANALYSIS_CLUSTERING_C79796DA module;
@@ -98,17 +98,17 @@ flowchart LR
     class OUTPUTS_DOCS_ED82387C module;
     CLI_SKILLS_9964CBB8("CLI 与技能安装<br/><small>138 nodes</small>")
     class CLI_SKILLS_9964CBB8 module;
-    INGEST_CACHE_UPDATE_FF457338("摄取与增量更新<br/><small>116 nodes</small>")
+    INGEST_CACHE_UPDATE_FF457338("摄取与增量更新<br/><small>113 nodes</small>")
     class INGEST_CACHE_UPDATE_FF457338 module;
-    SERVE_API_35EC8E86("服务 API<br/><small>410 nodes</small>")
+    SERVE_API_35EC8E86("服务 API<br/><small>383 nodes</small>")
     class SERVE_API_35EC8E86 module;
     SECURITY_GLOBAL_5B9C6A04("安全与全局图<br/><small>27 nodes</small>")
     class SECURITY_GLOBAL_5B9C6A04 module;
-    TESTS_FIXTURES_B84B1DCC("测试与样例<br/><small>683 nodes</small>")
+    TESTS_FIXTURES_B84B1DCC("测试与样例<br/><small>703 nodes</small>")
     class TESTS_FIXTURES_B84B1DCC module;
-    RUST_SECURITY_AUDIT_CB3475E2("Rust Security Audit<br/><small>70 nodes</small>")
+    RUST_SECURITY_AUDIT_CB3475E2("Rust Security Audit<br/><small>67 nodes</small>")
     class RUST_SECURITY_AUDIT_CB3475E2 module;
-    POC_E7C4E8B6("PoC 分类与模板<br/><small>61 nodes</small>")
+    POC_E7C4E8B6("PoC 分类与模板<br/><small>57 nodes</small>")
     class POC_E7C4E8B6 module;
     EXTERNAL_SECURITY_TOOLS_INTEGRATION_GUIDE_D7FEF94B("External Security Tools Integration Guide<br/><small>37 nodes</small>")
     class EXTERNAL_SECURITY_TOOLS_INTEGRATION_GUIDE_D7FEF94B module;
@@ -116,20 +116,20 @@ flowchart LR
     class FILE_CREATION_CHECKLIST_6769FDE4 module;
     REQUIRED_FILES_MANDATORY_21AA3DB6("Required Files (MANDATORY)<br/><small>33 nodes</small>")
     class REQUIRED_FILES_MANDATORY_21AA3DB6 module;
-    OTHER_D0941E68("其他<br/><small>1192 nodes</small>")
+    OTHER_D0941E68("其他<br/><small>1211 nodes</small>")
     class OTHER_D0941E68 module;
-    POC_E7C4E8B6 -->|mixes in x102| OTHER_D0941E68
-    TESTS_FIXTURES_B84B1DCC -->|导入 x76| OTHER_D0941E68
-    OTHER_D0941E68 -->|导入 x74| TESTS_FIXTURES_B84B1DCC
-    INGEST_CACHE_UPDATE_FF457338 -->|references x66| OTHER_D0941E68
-    POC_E7C4E8B6 -->|导入 x37| RUST_SECURITY_AUDIT_CB3475E2
-    RUST_SECURITY_AUDIT_CB3475E2 -->|inherits x34| OTHER_D0941E68
-    OTHER_D0941E68 -->|导入 x30| SERVE_API_35EC8E86
-    SERVE_API_35EC8E86 -->|导入 x28| OTHER_D0941E68
-    TESTS_FIXTURES_B84B1DCC -->|导入 x23| SERVE_API_35EC8E86
+    POC_E7C4E8B6 -->|mixes in x110| OTHER_D0941E68
+    INGEST_CACHE_UPDATE_FF457338 -->|references x83| OTHER_D0941E68
+    TESTS_FIXTURES_B84B1DCC -->|导入 x71| OTHER_D0941E68
+    OTHER_D0941E68 -->|导入 x70| TESTS_FIXTURES_B84B1DCC
+    RUST_SECURITY_AUDIT_CB3475E2 -->|inherits x42| OTHER_D0941E68
+    SERVE_API_35EC8E86 -->|导入 x36| OTHER_D0941E68
+    POC_E7C4E8B6 -->|导入 x35| RUST_SECURITY_AUDIT_CB3475E2
+    OTHER_D0941E68 -->|导入 x26| SERVE_API_35EC8E86
     TESTS_FIXTURES_B84B1DCC -->|导入 x22| BUILD_GRAPH_321CBB04
-    INGEST_CACHE_UPDATE_FF457338 -->|references x19| SERVE_API_35EC8E86
-    OTHER_D0941E68 -->|导入 x18| INGEST_CACHE_UPDATE_FF457338
+    TESTS_FIXTURES_B84B1DCC -->|导入 x21| SERVE_API_35EC8E86
+    INGEST_CACHE_UPDATE_FF457338 -->|导入 x19| TESTS_FIXTURES_B84B1DCC
+    TESTS_FIXTURES_B84B1DCC -->|导入 x17| INGEST_CACHE_UPDATE_FF457338
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -146,7 +146,7 @@ flowchart LR
     <h4>架构层次</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>层</th><th>节点</th><th>社区</th></tr>
-      <tr><td>提取管线</td><td>12</td><td><code>38</code></td></tr><tr><td>图谱构建</td><td>208</td><td><code>543, 5, 108, 134, 128, 140, 143, 4, 26, 11, 595</code></td></tr><tr><td>分析聚类</td><td>4</td><td><code>590</code></td></tr><tr><td>输出文档</td><td>22</td><td><code>125, 589</code></td></tr><tr><td>CLI 与技能安装</td><td>138</td><td><code>35, 101, 135, 144, 148, 173, 174, 251, 275, 40</code></td></tr><tr><td>摄取与增量更新</td><td>116</td><td><code>14, 127, 37, 86, 187, 343</code></td></tr><tr><td>服务 API</td><td>410</td><td><code>24, 0, 119, 508, 113, 13, 84, 92, 93, 100, 117, 118, 121, 7, 141, 142, 10, 159, 167, 188, 48, 52, 513, 528, 616, 90</code></td></tr><tr><td>安全与全局图</td><td>27</td><td><code>484, 47</code></td></tr><tr><td>测试与样例</td><td>683</td><td><code>501, 30, 486, 584, 115, 36, 85, 123, 124, 21, 475, 126, 34, 130, 131, 133, 136, 94, 138, 139, 145, 146, 147, 9, 156, 162, 552, 546, 171, 172, 175, 176, 177, 178, 179, 180, 185, 576, 161, 189, 109, 192, 193, 194, 195, 97, 246, 249, 250, 111, 323, 465, 511, 57</code></td></tr><tr><td>Rust Security Audit</td><td>70</td><td><code>6</code></td></tr><tr><td>PoC 分类与模板</td><td>61</td><td><code>25</code></td></tr><tr><td>External Security Tools Integration Guide</td><td>37</td><td><code>2</code></td></tr><tr><td>File Creation Checklist</td><td>34</td><td><code>534</code></td></tr><tr><td>Required Files (MANDATORY)</td><td>33</td><td><code>489</code></td></tr><tr><td>其他</td><td>1192</td><td><code>49, 540, 541, 120, 122, 17, 232, 3, 18, 8, 104, 496, 554, 129, 33, 132, 137, 151, 157, 45, 153, 155, 98, 15, 152, 19, 96, 158, 16, 163, 211, 43, 166, 558, 559, 106, 154, 169, 170, 29, 452, 482, 114, 181, 182, 183, 184, 280, 31, 310, 483, 55, 569, 572, 573, 575, 105, 12, 186, 27, 28, 311, 312, 313, 314, 32, 364, 39, 582, 160, 164, 191, 365, 366, 41, 439, 588, 165, 168, 190, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 247, 248, 309, 363, 434, 46, 461, 567, 597, 99, 20, 252, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 276, 277, 278, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 315, 316, 317, 318, 319, 320, 321, 322, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 339, 340, 342, 344, 345, 346, 347, 348, 349, 350, 466, 469, 54, 599, 1, 102, 103, 107, 110, 112, 116, 149, 150, 22, 23, 253, 279, 338, 341, 409, 411, 42, 429, 435, 436, 44, 472, 473, 474, 476, 481, 485, 488, 490, 491, 492, 495, 498, 499, 50, 504, 506, 507, 51, 510, 512, 514, 518, 519, 520, 521, 523, 524, 525, 526, 527, 529, 53, 537, 545, 56, 568, 58, 59, 60, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 61, 610, 611, 612, 613, 614, 615, 617, 618, 619, 62, 620, 625, 626, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 87, 88, 89, 91, 95</code></td></tr>
+      <tr><td>提取管线</td><td>12</td><td><code>38</code></td></tr><tr><td>图谱构建</td><td>209</td><td><code>543, 5, 108, 134, 128, 140, 143, 4, 26, 11, 595</code></td></tr><tr><td>分析聚类</td><td>4</td><td><code>590</code></td></tr><tr><td>输出文档</td><td>22</td><td><code>125, 589</code></td></tr><tr><td>CLI 与技能安装</td><td>138</td><td><code>35, 101, 135, 144, 148, 173, 174, 251, 275, 40</code></td></tr><tr><td>摄取与增量更新</td><td>113</td><td><code>14, 127, 37, 86, 187, 343</code></td></tr><tr><td>服务 API</td><td>383</td><td><code>24, 113, 508, 0, 13, 119, 84, 92, 93, 100, 117, 118, 121, 7, 141, 142, 159, 167, 188, 48, 52, 513, 528, 616, 90</code></td></tr><tr><td>安全与全局图</td><td>27</td><td><code>484, 47</code></td></tr><tr><td>测试与样例</td><td>703</td><td><code>501, 30, 486, 584, 36, 85, 115, 126, 123, 124, 475, 34, 130, 131, 133, 136, 138, 139, 145, 146, 147, 9, 106, 156, 94, 162, 552, 546, 171, 172, 175, 176, 177, 178, 179, 180, 185, 576, 161, 189, 109, 192, 193, 194, 195, 97, 246, 249, 111, 323, 465, 511, 57</code></td></tr><tr><td>Rust Security Audit</td><td>67</td><td><code>6</code></td></tr><tr><td>PoC 分类与模板</td><td>57</td><td><code>25</code></td></tr><tr><td>External Security Tools Integration Guide</td><td>37</td><td><code>2</code></td></tr><tr><td>File Creation Checklist</td><td>34</td><td><code>534</code></td></tr><tr><td>Required Files (MANDATORY)</td><td>33</td><td><code>489</code></td></tr><tr><td>其他</td><td>1211</td><td><code>122, 49, 540, 3, 120, 541, 17, 232, 18, 8, 104, 496, 554, 129, 33, 10, 132, 137, 45, 105, 114, 15, 153, 98, 151, 157, 158, 19, 96, 16, 163, 211, 43, 166, 21, 558, 559, 169, 170, 29, 452, 482, 181, 182, 183, 184, 280, 31, 310, 483, 55, 569, 572, 573, 575, 12, 186, 27, 28, 311, 312, 313, 314, 32, 364, 39, 582, 160, 164, 191, 365, 366, 41, 439, 588, 152, 154, 155, 165, 168, 190, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 247, 248, 309, 363, 434, 46, 461, 567, 597, 99, 20, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 276, 277, 278, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 315, 316, 317, 318, 319, 320, 321, 322, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 339, 340, 342, 344, 345, 346, 347, 348, 349, 350, 466, 469, 54, 599, 1, 102, 103, 107, 110, 112, 116, 149, 150, 22, 23, 253, 279, 338, 341, 409, 411, 42, 429, 435, 436, 44, 472, 473, 474, 476, 481, 485, 488, 490, 491, 492, 495, 498, 499, 50, 504, 506, 507, 51, 510, 512, 514, 518, 519, 520, 521, 523, 524, 525, 526, 527, 529, 53, 537, 545, 56, 568, 58, 59, 60, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 61, 610, 611, 612, 613, 614, 615, 617, 618, 619, 62, 620, 625, 626, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 87, 88, 89, 91, 95</code></td></tr>
     </table>
   </div>
   <div class="card">
@@ -158,7 +158,7 @@ flowchart LR
   <div class="card">
     <h4>图谱报告摘要</h4>
     <ul>
-      <li>3047 nodes · 4587 edges · 457 communities (167 shown, 290 thin omitted)</li>
+      <li>3050 nodes · 4595 edges · 455 communities (169 shown, 286 thin omitted)</li>
       <li>Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 293 edges (avg confidence: 0.8)</li>
       <li>Token cost: 0 input · 0 output</li>
       <li>1. `MercadoPagoConfig` - 141 edges</li>
@@ -353,12 +353,12 @@ flowchart LR
 
 <!-- ====== 3. 图谱构建 ====== -->
 <h2 id="build-graph">3. 图谱构建</h2>
-<p>图谱构建 汇集了与 hybridauth、vendor、mercadopago、packagejson 相关的实现，主要分布在 package.json、mercadopago/dx-php/composer.json、Thirdparty/OAuth/OAuthRequest.php。本节覆盖 208 个节点、234 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>图谱构建 汇集了与 hybridauth、vendor、mercadopago、packagejson 相关的实现，主要分布在 package.json、mercadopago/dx-php/composer.json、Thirdparty/OAuth/OAuthRequest.php。本节覆盖 209 个节点、235 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 图谱构建 (208 nodes, 234 edges)
+    %% Section: 图谱构建 (209 nodes, 235 edges)
     subgraph build_graph_src_Adapter_OAuth1_php_5494c84e["src/Adapter/OAuth1.php"]
         vendor_hybridauth_hybridauth_src_adapter_oauth1_a9b7ba30("OAuth1<br/><small>src/Adapter/OAuth1.php</small>")
         vendor_hybridauth_hybridauth_src_adapter_oauth1_17d4de53("apiRequest()<br/><small>src/Adapter/OAuth1.php</small>")
@@ -400,7 +400,7 @@ flowchart LR
     vendor_hybridauth_hybridauth_src_adapter_oauth1_4fc3317c -->|调用| vendor_hybridauth_hybridauth_src_adapter_oauth1_3c3fca29
     src_components_faqsection_47911ff2 -->|导入| src_pages_index_5f5e2633
     src_pages_index_5f5e2633 -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b
-    %% Omitted for readability: 190 nodes, 0 edges
+    %% Omitted for readability: 191 nodes, 0 edges
     class vendor_hybridauth_hybridauth_src_adapter_oauth1_a9b7ba30 klass;
     class vendor_hybridauth_hybridauth_src_adapter_oauth1_17d4de53 api;
     class vendor_hybridauth_hybridauth_src_adapter_oauth1_b4aa0c5d function;
@@ -694,12 +694,12 @@ flowchart LR
 <tr><td><code>references/guides/marketplace.md</code></td><td>14 个节点</td></tr>
 <tr><td><code>references/guides/subscriptions.md</code></td><td>14 个节点</td></tr>
 <tr><td><code>src/Adapter/OAuth1.php</code></td><td>14 个节点</td></tr>
-<tr><td><code>scripts/audit-seo-schema.js</code></td><td>6 个节点</td></tr>
+<tr><td><code>Thirdparty/OAuth/OAuthUtil.php</code></td><td>7 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x117, 方法 x38, 导入 x28, 调用 x26。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x117, 方法 x39, 导入 x28, 调用 x26。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -1426,12 +1426,12 @@ flowchart LR
 
 <!-- ====== 7. 摄取与增量更新 ====== -->
 <h2 id="ingest-cache-update">7. 摄取与增量更新</h2>
-<p>摄取与增量更新 汇集了与 mercadopago、vendor、php、client 相关的实现，主要分布在 mercadopago/dx-php/MIGRATION_GUIDE.md、.agents/BRAND.md、Client/AdvancedPayment/AdvancedPaymentClient.php。本节覆盖 116 个节点、183 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>摄取与增量更新 汇集了与 mercadopago、vendor、php、client 相关的实现，主要分布在 mercadopago/dx-php/MIGRATION_GUIDE.md、.agents/BRAND.md、Client/Point/PointClient.php。本节覆盖 113 个节点、180 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 摄取与增量更新 (116 nodes, 183 edges)
+    %% Section: 摄取与增量更新 (113 nodes, 180 edges)
     subgraph ingest_cache_update_Client_AdvancedPayment_Advan_34abcc38["Client/AdvancedPayment/AdvancedPaymentClient.php"]
         vendor_mercadopago_dx_php_src_mercadopago_client_a7fcc0a1("AdvancedPaymentClient<br/><small>Client/AdvancedPayment/AdvancedPaymentClient.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_client_394847e1("cancel()<br/><small>Client/AdvancedPayment/AdvancedPaymentClient.php</small>")
@@ -1450,10 +1450,10 @@ flowchart LR
         vendor_mercadopago_dx_php_src_mercadopago_client_583655b3("getCustomHeaders()<br/><small>Client/Common/RequestOptions.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_client_90acb655("setAccessToken()<br/><small>Client/Common/RequestOptions.php</small>")
     end
+    vendor_mercadopago_dx_php_src_mercadopago_client_f91e426b("CustomerCardClient<br/><small>Client/Customer/CustomerCardClient.php</small>")
     vendor_mercadopago_dx_php_src_mercadopago_client_a83470d4("OrderClient<br/><small>Client/Order/OrderClient.php</small>")
-    vendor_mercadopago_dx_php_src_mercadopago_client_21090c66("PaymentRefundClient<br/><small>Client/Payment/PaymentRefundClient.php</small>")
     vendor_mercadopago_dx_php_src_mercadopago_client_2f454d9d("PointClient<br/><small>Client/Point/PointClient.php</small>")
-    vendor_mercadopago_dx_php_src_mercadopago_client_6dbb999a("PreferenceClient<br/><small>Client/Preference/PreferenceClient.php</small>")
+    vendor_hybridauth_hybridauth_src_provider_google_6b86faf8("Google<br/><small>src/Provider/Google.php</small>")
     vendor_mercadopago_dx_php_src_mercadopago_client_a7fcc0a1 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_394847e1
     vendor_mercadopago_dx_php_src_mercadopago_client_a7fcc0a1 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_c03ad64e
     vendor_mercadopago_dx_php_src_mercadopago_client_a7fcc0a1 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_9e7899bc
@@ -1466,7 +1466,7 @@ flowchart LR
     vendor_mercadopago_dx_php_src_mercadopago_client_ea2f6f44 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_80295b37
     vendor_mercadopago_dx_php_src_mercadopago_client_ea2f6f44 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_583655b3
     vendor_mercadopago_dx_php_src_mercadopago_client_ea2f6f44 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_90acb655
-    %% Omitted for readability: 98 nodes, 0 edges
+    %% Omitted for readability: 95 nodes, 0 edges
     class vendor_mercadopago_dx_php_src_mercadopago_client_a7fcc0a1 entry;
     class vendor_mercadopago_dx_php_src_mercadopago_client_394847e1 function;
     class vendor_mercadopago_dx_php_src_mercadopago_client_c03ad64e function;
@@ -1481,10 +1481,10 @@ flowchart LR
     class vendor_mercadopago_dx_php_src_mercadopago_client_80295b37 function;
     class vendor_mercadopago_dx_php_src_mercadopago_client_583655b3 function;
     class vendor_mercadopago_dx_php_src_mercadopago_client_90acb655 function;
+    class vendor_mercadopago_dx_php_src_mercadopago_client_f91e426b entry;
     class vendor_mercadopago_dx_php_src_mercadopago_client_a83470d4 entry;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_21090c66 entry;
     class vendor_mercadopago_dx_php_src_mercadopago_client_2f454d9d entry;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_6dbb999a entry;
+    class vendor_hybridauth_hybridauth_src_provider_google_6b86faf8 klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -1575,7 +1575,7 @@ flowchart LR
   <td><code>RequestOptions</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>__construct()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small><br><code>getAccessToken()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small><br><code>getConnectionTimeout()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small><br>+4 个更多</td>
+  <td><code>__construct()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small><br><code>CustomerCardClient.php</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small><br><code>getAccessToken()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small><br>+6 个更多</td>
   <td>Client/Common/RequestOptions.php 中的 RequestOptions 节点。</td>
 </tr>
 <tr>
@@ -1636,6 +1636,78 @@ flowchart LR
 </tr>
 <tr>
   <td>17</td>
+  <td><code>CustomerCardClient.php</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td><code>RequestOptions</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
+  <td><code>CustomerCard</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerCard.php</small><br><code>CustomerCardClientUnitTest.php</code><br><small style="color:var(--muted)">Unit/Customer/CustomerCardClientUnitTest.php</small><br><code>MPHttpClient</code></td>
+  <td>Client/Customer/CustomerCardClient.php 中的 CustomerCardClient.php 节点。</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>CustomerCardClient</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>__construct()</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small><br><code>create()</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small><br><code>delete()</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small><br>+3 个更多</td>
+  <td>Client/Customer/CustomerCardClient.php 中的 CustomerCardClient 节点。</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>.__construct()</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>CustomerCardClient</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small></td>
+  <td>无直接出边</td>
+  <td>Client/Customer/CustomerCardClient.php 中的 .__construct() 节点。</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>MPHttpClient</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td><code>CustomerCardClient.php</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small></td>
+  <td>无直接出边</td>
+  <td>项目 中的 MPHttpClient 节点。</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>.create()</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>CustomerCardClient</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small></td>
+  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
+  <td>Client/Customer/CustomerCardClient.php 中的 .create() 节点。</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>.get()</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>CustomerCardClient</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small></td>
+  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
+  <td>Client/Customer/CustomerCardClient.php 中的 .get() 节点。</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>.update()</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>CustomerCardClient</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small></td>
+  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
+  <td>Client/Customer/CustomerCardClient.php 中的 .update() 节点。</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>.delete()</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>CustomerCardClient</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small></td>
+  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
+  <td>Client/Customer/CustomerCardClient.php 中的 .delete() 节点。</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>.list()</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>CustomerCardClient</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small></td>
+  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
+  <td>Client/Customer/CustomerCardClient.php 中的 .list() 节点。</td>
+</tr>
+<tr>
+  <td>26</td>
   <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
   <td><span class="tag tag-cmd">入口</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -1643,7 +1715,7 @@ flowchart LR
   <td>Client/Order/OrderClient.php 中的 OrderClient 节点。</td>
 </tr>
 <tr>
-  <td>18</td>
+  <td>27</td>
   <td><code>.__construct()</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
@@ -1651,7 +1723,7 @@ flowchart LR
   <td>Client/Order/OrderClient.php 中的 .__construct() 节点。</td>
 </tr>
 <tr>
-  <td>19</td>
+  <td>28</td>
   <td><code>MPHttpClient</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-cmd">入口</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -1659,7 +1731,7 @@ flowchart LR
   <td>项目 中的 MPHttpClient 节点。</td>
 </tr>
 <tr>
-  <td>20</td>
+  <td>29</td>
   <td><code>.create()</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
@@ -1667,84 +1739,12 @@ flowchart LR
   <td>Client/Order/OrderClient.php 中的 .create() 节点。</td>
 </tr>
 <tr>
-  <td>21</td>
+  <td>30</td>
   <td><code>Order</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
   <td>项目 中的 Order 节点。</td>
-</tr>
-<tr>
-  <td>22</td>
-  <td><code>.capture()</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
-  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
-  <td>Client/Order/OrderClient.php 中的 .capture() 节点。</td>
-</tr>
-<tr>
-  <td>23</td>
-  <td><code>.get()</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
-  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
-  <td>Client/Order/OrderClient.php 中的 .get() 节点。</td>
-</tr>
-<tr>
-  <td>24</td>
-  <td><code>.cancel()</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
-  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
-  <td>Client/Order/OrderClient.php 中的 .cancel() 节点。</td>
-</tr>
-<tr>
-  <td>25</td>
-  <td><code>.process()</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
-  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
-  <td>Client/Order/OrderClient.php 中的 .process() 节点。</td>
-</tr>
-<tr>
-  <td>26</td>
-  <td><code>.refund()</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
-  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
-  <td>Client/Order/OrderClient.php 中的 .refund() 节点。</td>
-</tr>
-<tr>
-  <td>27</td>
-  <td><code>OrderTransactionClient</code><br><small style="color:var(--muted)">Client/Order/OrderTransactionClient.php</small></td>
-  <td><span class="tag tag-cmd">入口</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>__construct()</code><br><small style="color:var(--muted)">Client/Order/OrderTransactionClient.php</small><br><code>create()</code><br><small style="color:var(--muted)">Client/Order/OrderTransactionClient.php</small><br><code>delete()</code><br><small style="color:var(--muted)">Client/Order/OrderTransactionClient.php</small><br>+1 个更多</td>
-  <td>Client/Order/OrderTransactionClient.php 中的 OrderTransactionClient 节点。</td>
-</tr>
-<tr>
-  <td>28</td>
-  <td><code>.__construct()</code><br><small style="color:var(--muted)">Client/Order/OrderTransactionClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>OrderTransactionClient</code><br><small style="color:var(--muted)">Client/Order/OrderTransactionClient.php</small></td>
-  <td>无直接出边</td>
-  <td>Client/Order/OrderTransactionClient.php 中的 .__construct() 节点。</td>
-</tr>
-<tr>
-  <td>29</td>
-  <td><code>MPHttpClient</code><br><small style="color:var(--muted)"></small></td>
-  <td><span class="tag tag-cmd">入口</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>项目 中的 MPHttpClient 节点。</td>
-</tr>
-<tr>
-  <td>30</td>
-  <td><code>.create()</code><br><small style="color:var(--muted)">Client/Order/OrderTransactionClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>OrderTransactionClient</code><br><small style="color:var(--muted)">Client/Order/OrderTransactionClient.php</small></td>
-  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
-  <td>Client/Order/OrderTransactionClient.php 中的 .create() 节点。</td>
 </tr>
 </table>
 
@@ -1755,36 +1755,34 @@ flowchart LR
       <tr><th>File</th><th>覆盖节点</th></tr>
       <tr><td><code>mercadopago/dx-php/MIGRATION_GUIDE.md</code></td><td>14 个节点</td></tr>
 <tr><td><code>.agents/BRAND.md</code></td><td>12 个节点</td></tr>
+<tr><td><code>Client/Point/PointClient.php</code></td><td>10 个节点</td></tr>
 <tr><td><code>Client/AdvancedPayment/AdvancedPaymentClient.php</code></td><td>8 个节点</td></tr>
 <tr><td><code>Client/Common/RequestOptions.php</code></td><td>8 个节点</td></tr>
+<tr><td><code>Client/Customer/CustomerCardClient.php</code></td><td>8 个节点</td></tr>
 <tr><td><code>Client/Order/OrderClient.php</code></td><td>8 个节点</td></tr>
-<tr><td><code>Client/Point/PointClient.php</code></td><td>8 个节点</td></tr>
 <tr><td><code>src/Provider/Google.php</code></td><td>6 个节点</td></tr>
-<tr><td><code>Client/Payment/PaymentRefundClient.php</code></td><td>6 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：方法 x52, references x37, 包含 x34, references constant x19。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：方法 x48, 包含 x36, references x34, references constant x17。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 8. 服务 API ====== -->
 <h2 id="serve-api">8. 服务 API</h2>
-<p>服务 API 汇集了与 mercadopago、agents、skills、references 相关的实现，主要分布在 mercadopago-mp-integrate/references/products.md、Thirdparty/OpenID/LightOpenID.php、README.md。本节覆盖 410 个节点、513 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>服务 API 汇集了与 mercadopago、agents、skills、references 相关的实现，主要分布在 mercadopago-mp-integrate/references/products.md、Thirdparty/OpenID/LightOpenID.php、README.md。本节覆盖 383 个节点、473 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 服务 API (410 nodes, 513 edges)
-    subgraph serve_api_Client_MerchantOrder_MerchantOrderClie_7d27d671["Client/MerchantOrder/MerchantOrderClient.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_client_a220e825("MerchantOrderClient<br/><small>Client/MerchantOrder/MerchantOrderClient.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_client_5a39fe40("__construct()<br/><small>Client/MerchantOrder/MerchantOrderClient.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_client_3384dcbc("create()<br/><small>Client/MerchantOrder/MerchantOrderClient.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_client_c94181c9("get()<br/><small>Client/MerchantOrder/MerchantOrderClient.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_client_654d2d5d("search()<br/><small>Client/MerchantOrder/MerchantOrderClient.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_client_40307ac3("update()<br/><small>Client/MerchantOrder/MerchantOrderClient.php</small>")
+    %% Section: 服务 API (383 nodes, 473 edges)
+    subgraph serve_api_Client_Chargeback_ChargebackClient_php_244629c5["Client/Chargeback/ChargebackClient.php"]
+        vendor_mercadopago_dx_php_src_mercadopago_client_6d770b20("ChargebackClient<br/><small>Client/Chargeback/ChargebackClient.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_client_0b19fcfd("__construct()<br/><small>Client/Chargeback/ChargebackClient.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_client_e89de79a("get()<br/><small>Client/Chargeback/ChargebackClient.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_client_013f0e4b("search()<br/><small>Client/Chargeback/ChargebackClient.php</small>")
     end
     subgraph serve_api_Client_Invoice_InvoiceClient_php_5d8eff45["Client/Invoice/InvoiceClient.php"]
         vendor_mercadopago_dx_php_src_mercadopago_client_4eb91127("InvoiceClient<br/><small>Client/Invoice/InvoiceClient.php</small>")
@@ -1792,9 +1790,13 @@ flowchart LR
         vendor_mercadopago_dx_php_src_mercadopago_client_3a185822("get()<br/><small>Client/Invoice/InvoiceClient.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_client_92c90070("search()<br/><small>Client/Invoice/InvoiceClient.php</small>")
     end
-    subgraph serve_api_Client_PreApprovalPlan_PreApprovalPlan_b0c95ebd["Client/PreApprovalPlan/PreApprovalPlanClient.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_client_9b5b718c("PreApprovalPlanClient<br/><small>Client/PreApprovalPlan/PreApprovalPlanClient.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_client_cc1b57c1("__construct()<br/><small>Client/PreApprovalPlan/PreApprovalPlanClient.php</small>")
+    subgraph serve_api_Health_Actions_WebhookDebugAction_php_0794d2ed["Health/Actions/WebhookDebugAction.php"]
+        app_features_health_actions_webhookdebugaction_w_a5cf12f6("WebhookDebugAction<br/><small>Health/Actions/WebhookDebugAction.php</small>")
+        app_features_health_actions_webhookdebugaction_w_7befe7ea("__invoke()<br/><small>Health/Actions/WebhookDebugAction.php</small>")
+    end
+    subgraph serve_api_MercadoPago_Net_MPSearchRequest_php_2d42682d["MercadoPago/Net/MPSearchRequest.php"]
+        vendor_mercadopago_dx_php_src_mercadopago_net_mp_31c764b5("MPSearchRequest<br/><small>MercadoPago/Net/MPSearchRequest.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_net_mp_d3d5f868("__construct()<br/><small>MercadoPago/Net/MPSearchRequest.php</small>")
     end
     vendor_hybridauth_hybridauth_src_thirdparty_open_893dd73b("LightOpenID<br/><small>Thirdparty/OpenID/LightOpenID.php</small>")
     app_core_httpexception_httpexception_75382b3b("HttpException<br/><small>app/Core/HttpException.php</small>")
@@ -1802,28 +1804,27 @@ flowchart LR
     app_core_response_8a158d30("Response.php")
     public_index_c7d833a6("index.php")
     vendor_composer_installedversions_installedversi_a8e4badf("InstalledVersions<br/><small>vendor/composer/InstalledVersions.php</small>")
+    app_features_health_actions_webhookdebugaction_w_a5cf12f6 -->|方法| app_features_health_actions_webhookdebugaction_w_7befe7ea
+    vendor_mercadopago_dx_php_src_mercadopago_client_6d770b20 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_0b19fcfd
+    vendor_mercadopago_dx_php_src_mercadopago_client_6d770b20 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_e89de79a
+    vendor_mercadopago_dx_php_src_mercadopago_client_6d770b20 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_013f0e4b
     vendor_mercadopago_dx_php_src_mercadopago_client_4eb91127 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_5090dede
     vendor_mercadopago_dx_php_src_mercadopago_client_4eb91127 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_3a185822
     vendor_mercadopago_dx_php_src_mercadopago_client_4eb91127 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_92c90070
-    vendor_mercadopago_dx_php_src_mercadopago_client_a220e825 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_5a39fe40
-    vendor_mercadopago_dx_php_src_mercadopago_client_a220e825 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_3384dcbc
-    vendor_mercadopago_dx_php_src_mercadopago_client_a220e825 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_c94181c9
-    vendor_mercadopago_dx_php_src_mercadopago_client_a220e825 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_654d2d5d
-    vendor_mercadopago_dx_php_src_mercadopago_client_a220e825 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_40307ac3
-    vendor_mercadopago_dx_php_src_mercadopago_client_9b5b718c -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_cc1b57c1
-    %% Omitted for readability: 392 nodes, 0 edges
-    class vendor_mercadopago_dx_php_src_mercadopago_client_a220e825 entry;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_5a39fe40 function;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_3384dcbc function;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_c94181c9 function;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_654d2d5d function;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_40307ac3 function;
+    vendor_mercadopago_dx_php_src_mercadopago_net_mp_31c764b5 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_net_mp_d3d5f868
+    %% Omitted for readability: 365 nodes, 0 edges
+    class vendor_mercadopago_dx_php_src_mercadopago_client_6d770b20 entry;
+    class vendor_mercadopago_dx_php_src_mercadopago_client_0b19fcfd function;
+    class vendor_mercadopago_dx_php_src_mercadopago_client_e89de79a function;
+    class vendor_mercadopago_dx_php_src_mercadopago_client_013f0e4b function;
     class vendor_mercadopago_dx_php_src_mercadopago_client_4eb91127 entry;
     class vendor_mercadopago_dx_php_src_mercadopago_client_5090dede function;
     class vendor_mercadopago_dx_php_src_mercadopago_client_3a185822 function;
     class vendor_mercadopago_dx_php_src_mercadopago_client_92c90070 function;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_9b5b718c entry;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_cc1b57c1 function;
+    class app_features_health_actions_webhookdebugaction_w_a5cf12f6 ui;
+    class app_features_health_actions_webhookdebugaction_w_7befe7ea function;
+    class vendor_mercadopago_dx_php_src_mercadopago_net_mp_31c764b5 klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_net_mp_d3d5f868 function;
     class vendor_hybridauth_hybridauth_src_thirdparty_open_893dd73b klass;
     class app_core_httpexception_httpexception_75382b3b klass;
     class app_core_request_request_d11f3b0f klass;
@@ -2103,14 +2104,14 @@ flowchart LR
 <tr><td><code>README.md</code></td><td>21 个节点</td></tr>
 <tr><td><code>references/guides/bricks.md</code></td><td>20 个节点</td></tr>
 <tr><td><code>references/guides/checkout-api.md</code></td><td>18 个节点</td></tr>
-<tr><td><code>vendor/composer/InstalledVersions.php</code></td><td>17 个节点</td></tr>
 <tr><td><code>references/guides/checkout-pro.md</code></td><td>16 个节点</td></tr>
 <tr><td><code>mercadopago-mp-integrate/references/terminology-rules.md</code></td><td>16 个节点</td></tr>
+<tr><td><code>channex-pms-integration/references/api.md</code></td><td>15 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x216, 方法 x121, 导入 x73, 调用 x38。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x213, 方法 x106, 导入 x65, 调用 x38。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -2439,12 +2440,21 @@ flowchart LR
 
 <!-- ====== 10. 测试与样例 ====== -->
 <h2 id="tests-fixtures">10. 测试与样例</h2>
-<p>测试与样例 汇集了与 mercadopago、vendor、tests、php 相关的实现，主要分布在 src/MercadoPago/MercadoPagoConfig.php、Unit/Order/OrderClientUnitTest.php、Integration/Point/PointClientITTest.php。本节覆盖 683 个节点、1217 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>测试与样例 汇集了与 mercadopago、vendor、tests、php 相关的实现，主要分布在 src/MercadoPago/MercadoPagoConfig.php、Unit/Order/OrderClientUnitTest.php、Integration/Point/PointClientITTest.php。本节覆盖 703 个节点、1244 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 测试与样例 (683 nodes, 1217 edges)
+    %% Section: 测试与样例 (703 nodes, 1244 edges)
+    subgraph tests_fixtures_Shared_Adapters_MercadoPagoAdapte_82b8fd1d["Shared/Adapters/MercadoPagoAdapter.php"]
+        app_features_shared_adapters_mercadopagoadapter_3f9c2328("MercadoPagoAdapter<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
+        app_features_shared_adapters_mercadopagoadapter_bf98f842("__construct()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
+        app_features_shared_adapters_mercadopagoadapter_a02420d0("createPreference()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
+        app_features_shared_adapters_mercadopagoadapter_9a465b4b("getPaymentDetails()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
+        app_features_shared_adapters_mercadopagoadapter_da648d7f("isValidToken()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
+        app_features_shared_adapters_mercadopagoadapter_c5c22b50("verifyNotification()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
+        app_features_shared_adapters_mercadopagoadapter_e888d20c("verifySignature()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
+    end
     subgraph tests_fixtures_MercadoPago_Exceptions_InvalidWeb_6ee157ba["MercadoPago/Exceptions/InvalidWebhookSignatureException.php"]
         vendor_mercadopago_dx_php_src_mercadopago_except_c75c6cee("InvalidWebhookSignatureException<br/><small>MercadoPago/Exceptions/InvalidWebhookSignatureException.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_except_a3e45655("__construct()<br/><small>MercadoPago/Exceptions/InvalidWebhookSignatureException.php</small>")
@@ -2452,52 +2462,43 @@ flowchart LR
         vendor_mercadopago_dx_php_src_mercadopago_except_e0383124("getRequestId()<br/><small>MercadoPago/Exceptions/InvalidWebhookSignatureException.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_except_191a91dc("getTimestamp()<br/><small>MercadoPago/Exceptions/InvalidWebhookSignatureException.php</small>")
     end
-    subgraph tests_fixtures_Client_Chargeback_ChargebackClien_c8b48e39["Client/Chargeback/ChargebackClient.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_client_6d770b20("ChargebackClient<br/><small>Client/Chargeback/ChargebackClient.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_client_0b19fcfd("__construct()<br/><small>Client/Chargeback/ChargebackClient.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_client_e89de79a("get()<br/><small>Client/Chargeback/ChargebackClient.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_client_013f0e4b("search()<br/><small>Client/Chargeback/ChargebackClient.php</small>")
-    end
-    subgraph tests_fixtures_MercadoPago_Exceptions_SignatureF_580b46f8["MercadoPago/Exceptions/SignatureFailureReason.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_except_7c84e0b5("SignatureFailureReason<br/><small>MercadoPago/Exceptions/SignatureFailureReason.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_except_22d59a5b("__construct()<br/><small>MercadoPago/Exceptions/SignatureFailureReason.php</small>")
-    end
-    subgraph tests_fixtures_src_MercadoPago_MercadoPagoConfig_5ea3b82d["src/MercadoPago/MercadoPagoConfig.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_mercad_8384dbb8("MercadoPagoConfig<br/><small>src/MercadoPago/MercadoPagoConfig.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_mercad_22bbbc38("getAccessToken()<br/><small>src/MercadoPago/MercadoPagoConfig.php</small>")
-    end
     testcase_fb0d5756("TestCase")
     vendor_mercadopago_dx_php_tests_mercadopago_clie_eb4b7abd("CustomerCardClientITTest<br/><small>Integration/Customer/CustomerCardClientITTest.php</small>")
     vendor_mercadopago_dx_php_tests_mercadopago_clie_3c096e25("OrderClientUnitTest<br/><small>Unit/Order/OrderClientUnitTest.php</small>")
     vendor_mercadopago_dx_php_tests_mercadopago_webh_2f12a5a9("WebhookSignatureValidatorUnitTest<br/><small>Webhook/Unit/WebhookSignatureValidatorUnitTest.php</small>")
+    vendor_mercadopago_dx_php_src_mercadopago_mercad_8384dbb8("MercadoPagoConfig<br/><small>src/MercadoPago/MercadoPagoConfig.php</small>")
     vendor_hybridauth_hybridauth_src_provider_facebo_ce20562e("Facebook<br/><small>src/Provider/Facebook.php</small>")
-    vendor_mercadopago_dx_php_src_mercadopago_client_6d770b20 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_0b19fcfd
-    vendor_mercadopago_dx_php_src_mercadopago_client_6d770b20 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_e89de79a
-    vendor_mercadopago_dx_php_src_mercadopago_client_6d770b20 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_013f0e4b
+    app_features_shared_adapters_mercadopagoadapter_3f9c2328 -->|方法| app_features_shared_adapters_mercadopagoadapter_bf98f842
+    app_features_shared_adapters_mercadopagoadapter_3f9c2328 -->|方法| app_features_shared_adapters_mercadopagoadapter_a02420d0
+    app_features_shared_adapters_mercadopagoadapter_3f9c2328 -->|方法| app_features_shared_adapters_mercadopagoadapter_9a465b4b
+    app_features_shared_adapters_mercadopagoadapter_3f9c2328 -->|方法| app_features_shared_adapters_mercadopagoadapter_da648d7f
+    app_features_shared_adapters_mercadopagoadapter_3f9c2328 -->|方法| app_features_shared_adapters_mercadopagoadapter_c5c22b50
+    app_features_shared_adapters_mercadopagoadapter_3f9c2328 -->|方法| app_features_shared_adapters_mercadopagoadapter_e888d20c
+    app_features_shared_adapters_mercadopagoadapter_a02420d0 -->|调用| app_features_shared_adapters_mercadopagoadapter_da648d7f
+    app_features_shared_adapters_mercadopagoadapter_c5c22b50 -->|调用| app_features_shared_adapters_mercadopagoadapter_9a465b4b
+    app_features_shared_adapters_mercadopagoadapter_c5c22b50 -->|调用| app_features_shared_adapters_mercadopagoadapter_e888d20c
     vendor_mercadopago_dx_php_src_mercadopago_except_c75c6cee -->|方法| vendor_mercadopago_dx_php_src_mercadopago_except_a3e45655
     vendor_mercadopago_dx_php_src_mercadopago_except_c75c6cee -->|方法| vendor_mercadopago_dx_php_src_mercadopago_except_b2f638f6
     vendor_mercadopago_dx_php_src_mercadopago_except_c75c6cee -->|方法| vendor_mercadopago_dx_php_src_mercadopago_except_e0383124
     vendor_mercadopago_dx_php_src_mercadopago_except_c75c6cee -->|方法| vendor_mercadopago_dx_php_src_mercadopago_except_191a91dc
-    vendor_mercadopago_dx_php_src_mercadopago_except_7c84e0b5 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_except_22d59a5b
-    vendor_mercadopago_dx_php_src_mercadopago_mercad_8384dbb8 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_mercad_22bbbc38
-    %% Omitted for readability: 665 nodes, 0 edges
+    %% Omitted for readability: 685 nodes, 0 edges
+    class app_features_shared_adapters_mercadopagoadapter_3f9c2328 klass;
+    class app_features_shared_adapters_mercadopagoadapter_bf98f842 function;
+    class app_features_shared_adapters_mercadopagoadapter_a02420d0 function;
+    class app_features_shared_adapters_mercadopagoadapter_9a465b4b function;
+    class app_features_shared_adapters_mercadopagoadapter_da648d7f function;
+    class app_features_shared_adapters_mercadopagoadapter_c5c22b50 function;
+    class app_features_shared_adapters_mercadopagoadapter_e888d20c function;
     class vendor_mercadopago_dx_php_src_mercadopago_except_c75c6cee ui;
     class vendor_mercadopago_dx_php_src_mercadopago_except_a3e45655 function;
     class vendor_mercadopago_dx_php_src_mercadopago_except_b2f638f6 function;
     class vendor_mercadopago_dx_php_src_mercadopago_except_e0383124 function;
     class vendor_mercadopago_dx_php_src_mercadopago_except_191a91dc function;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_6d770b20 entry;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_0b19fcfd function;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_e89de79a function;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_013f0e4b function;
-    class vendor_mercadopago_dx_php_src_mercadopago_except_7c84e0b5 klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_except_22d59a5b function;
-    class vendor_mercadopago_dx_php_src_mercadopago_mercad_8384dbb8 klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_mercad_22bbbc38 function;
     class testcase_fb0d5756 klass;
     class vendor_mercadopago_dx_php_tests_mercadopago_clie_eb4b7abd test;
     class vendor_mercadopago_dx_php_tests_mercadopago_clie_3c096e25 test;
     class vendor_mercadopago_dx_php_tests_mercadopago_webh_2f12a5a9 test;
+    class vendor_mercadopago_dx_php_src_mercadopago_mercad_8384dbb8 klass;
     class vendor_hybridauth_hybridauth_src_provider_facebo_ce20562e klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
@@ -2779,23 +2780,19 @@ flowchart LR
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：方法 x413, 导入 x277, 调用 x186, 包含 x89。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：方法 x426, 导入 x273, 调用 x191, 包含 x90。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 11. Rust Security Audit ====== -->
 <h2 id="rust-security-audit">11. Rust Security Audit</h2>
-<p>Rust Security Audit 汇集了与 mercadopago、vendor、php、resources 相关的实现，主要分布在 MercadoPago/Resources/AdvancedPaymentSearch.php、MercadoPago/Resources/CardToken.php、MercadoPago/Resources/CustomerCardResult.php。本节覆盖 70 个节点、90 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>Rust Security Audit 汇集了与 mercadopago、vendor、php、resources 相关的实现，主要分布在 MercadoPago/Resources/CardToken.php、MercadoPago/Resources/CustomerCardResult.php、MercadoPago/Resources/DisbursementRefundList.php。本节覆盖 67 个节点、86 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Rust Security Audit (70 nodes, 90 edges)
-    subgraph rust_security_audit_MercadoPago_Resources_Advanc_dcf67295["MercadoPago/Resources/AdvancedPaymentSearch.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_resour_49d05948("AdvancedPaymentSearch<br/><small>MercadoPago/Resources/AdvancedPaymentSearch.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_resour_cf3bbc70("getMap()<br/><small>MercadoPago/Resources/AdvancedPaymentSearch.php</small>")
-    end
+    %% Section: Rust Security Audit (67 nodes, 86 edges)
     subgraph rust_security_audit_MercadoPago_Resources_CardTo_ad4b0f55["MercadoPago/Resources/CardToken.php"]
         vendor_mercadopago_dx_php_src_mercadopago_resour_ce910cc2("CardToken<br/><small>MercadoPago/Resources/CardToken.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_resour_9a2a7b36("getMap()<br/><small>MercadoPago/Resources/CardToken.php</small>")
@@ -2804,13 +2801,13 @@ flowchart LR
         vendor_mercadopago_dx_php_src_mercadopago_resour_5adeee29("CustomerCardResult<br/><small>MercadoPago/Resources/CustomerCardResult.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_resour_16035a62("getMap()<br/><small>MercadoPago/Resources/CustomerCardResult.php</small>")
     end
-    subgraph rust_security_audit_MercadoPago_Resources_Custom_37a1892f["MercadoPago/Resources/CustomerSearch.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_resour_1ce6310b("CustomerSearch<br/><small>MercadoPago/Resources/CustomerSearch.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_resour_58607339("getMap()<br/><small>MercadoPago/Resources/CustomerSearch.php</small>")
-    end
     subgraph rust_security_audit_MercadoPago_Resources_Disbur_b650d17b["MercadoPago/Resources/DisbursementRefundList.php"]
         vendor_mercadopago_dx_php_src_mercadopago_resour_b7520370("DisbursementRefundList<br/><small>MercadoPago/Resources/DisbursementRefundList.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_resour_9e46dde1("getMap()<br/><small>MercadoPago/Resources/DisbursementRefundList.php</small>")
+    end
+    subgraph rust_security_audit_MercadoPago_Resources_Identi_3293dd46["MercadoPago/Resources/IdentificationTypeResult.php"]
+        vendor_mercadopago_dx_php_src_mercadopago_resour_153bbcad("IdentificationTypeResult<br/><small>MercadoPago/Resources/IdentificationTypeResult.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_resour_c38bd2bb("getMap()<br/><small>MercadoPago/Resources/IdentificationTypeResult.php</small>")
     end
     subgraph rust_security_audit_MercadoPago_Resources_Invoic_3c105776["MercadoPago/Resources/Invoice.php"]
         vendor_mercadopago_dx_php_src_mercadopago_resour_87a1a0cc("Invoice<br/><small>MercadoPago/Resources/Invoice.php</small>")
@@ -2820,39 +2817,43 @@ flowchart LR
         vendor_mercadopago_dx_php_src_mercadopago_resour_5c4d9d6e("InvoiceSearch<br/><small>MercadoPago/Resources/InvoiceSearch.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_resour_5b885313("getMap()<br/><small>MercadoPago/Resources/InvoiceSearch.php</small>")
     end
-    subgraph rust_security_audit_MercadoPago_Resources_Mercha_db38b7c8["MercadoPago/Resources/MerchantOrderSearch.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_resour_b52c9f58("MerchantOrderSearch<br/><small>MercadoPago/Resources/MerchantOrderSearch.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_resour_8e4db3e9("getMap()<br/><small>MercadoPago/Resources/MerchantOrderSearch.php</small>")
+    subgraph rust_security_audit_MercadoPago_Resources_Order_5ba9e602["MercadoPago/Resources/Order.php"]
+        vendor_mercadopago_dx_php_src_mercadopago_resour_f93d814d("Order<br/><small>MercadoPago/Resources/Order.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_resour_719f93ab("getMap()<br/><small>MercadoPago/Resources/Order.php</small>")
+    end
+    subgraph rust_security_audit_MercadoPago_Resources_OrderS_d82b80be["MercadoPago/Resources/OrderSearch.php"]
+        vendor_mercadopago_dx_php_src_mercadopago_resour_4aab1516("OrderSearch<br/><small>MercadoPago/Resources/OrderSearch.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_resour_89e5f0ac("getMap()<br/><small>MercadoPago/Resources/OrderSearch.php</small>")
     end
     vendor_mercadopago_dx_php_src_mercadopago_net_mp_3c1e6157("MPResource<br/><small>MercadoPago/Net/MPResource.php</small>")
-    vendor_mercadopago_dx_php_src_mercadopago_resour_ae936464("Transactions<br/><small>Resources/Order/Transactions.php</small>")
-    vendor_mercadopago_dx_php_src_mercadopago_resour_49d05948 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_cf3bbc70
+    vendor_mercadopago_dx_php_src_mercadopago_resour_bbcaf98a("Payment<br/><small>MercadoPago/Resources/Payment.php</small>")
     vendor_mercadopago_dx_php_src_mercadopago_resour_ce910cc2 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_9a2a7b36
     vendor_mercadopago_dx_php_src_mercadopago_resour_5adeee29 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_16035a62
-    vendor_mercadopago_dx_php_src_mercadopago_resour_1ce6310b -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_58607339
     vendor_mercadopago_dx_php_src_mercadopago_resour_b7520370 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_9e46dde1
+    vendor_mercadopago_dx_php_src_mercadopago_resour_153bbcad -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_c38bd2bb
     vendor_mercadopago_dx_php_src_mercadopago_resour_87a1a0cc -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_3b80b0cf
     vendor_mercadopago_dx_php_src_mercadopago_resour_5c4d9d6e -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_5b885313
-    vendor_mercadopago_dx_php_src_mercadopago_resour_b52c9f58 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_8e4db3e9
-    %% Omitted for readability: 52 nodes, 0 edges
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_49d05948 klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_cf3bbc70 function;
+    vendor_mercadopago_dx_php_src_mercadopago_resour_f93d814d -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_719f93ab
+    vendor_mercadopago_dx_php_src_mercadopago_resour_4aab1516 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_89e5f0ac
+    %% Omitted for readability: 49 nodes, 0 edges
     class vendor_mercadopago_dx_php_src_mercadopago_resour_ce910cc2 klass;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_9a2a7b36 function;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_5adeee29 klass;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_16035a62 function;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_1ce6310b klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_58607339 function;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_b7520370 klass;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_9e46dde1 function;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_153bbcad entry;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_c38bd2bb function;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_87a1a0cc klass;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_3b80b0cf function;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_5c4d9d6e klass;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_5b885313 function;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_b52c9f58 klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_8e4db3e9 function;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_f93d814d klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_719f93ab function;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_4aab1516 klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_89e5f0ac function;
     class vendor_mercadopago_dx_php_src_mercadopago_net_mp_3c1e6157 klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_ae936464 klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_bbcaf98a klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -2887,7 +2888,7 @@ flowchart LR
   <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>AdvancedPayment.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPayment.php</small><br><code>AdvancedPaymentSearch.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPaymentSearch.php</small><br><code>CardToken.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/CardToken.php</small><br>+28 个更多</td>
+  <td><code>AdvancedPayment.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPayment.php</small><br><code>CardToken.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/CardToken.php</small><br><code>Chargeback.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/Chargeback.php</small><br>+27 个更多</td>
   <td>MercadoPago/Net/MPResource.php 中的 MPResource 节点。</td>
 </tr>
 <tr>
@@ -2916,30 +2917,6 @@ flowchart LR
 </tr>
 <tr>
   <td>6</td>
-  <td><code>AdvancedPaymentSearch.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPaymentSearch.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
-  <td>无直接出边</td>
-  <td>MercadoPago/Resources/AdvancedPaymentSearch.php 中的 AdvancedPaymentSearch.php 节点。</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>AdvancedPaymentSearch</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPaymentSearch.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPaymentSearch.php</small></td>
-  <td>MercadoPago/Resources/AdvancedPaymentSearch.php 中的 AdvancedPaymentSearch 节点。</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>.getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPaymentSearch.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>AdvancedPaymentSearch</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPaymentSearch.php</small></td>
-  <td>无直接出边</td>
-  <td>MercadoPago/Resources/AdvancedPaymentSearch.php 中的 .getMap() 节点。</td>
-</tr>
-<tr>
-  <td>9</td>
   <td><code>CardToken.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/CardToken.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
@@ -2947,7 +2924,7 @@ flowchart LR
   <td>MercadoPago/Resources/CardToken.php 中的 CardToken.php 节点。</td>
 </tr>
 <tr>
-  <td>10</td>
+  <td>7</td>
   <td><code>CardToken</code><br><small style="color:var(--muted)">MercadoPago/Resources/CardToken.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -2955,7 +2932,7 @@ flowchart LR
   <td>MercadoPago/Resources/CardToken.php 中的 CardToken 节点。</td>
 </tr>
 <tr>
-  <td>11</td>
+  <td>8</td>
   <td><code>.getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/CardToken.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>CardToken</code><br><small style="color:var(--muted)">MercadoPago/Resources/CardToken.php</small></td>
@@ -2963,7 +2940,7 @@ flowchart LR
   <td>MercadoPago/Resources/CardToken.php 中的 .getMap() 节点。</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>9</td>
   <td><code>Chargeback.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/Chargeback.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
@@ -2971,7 +2948,7 @@ flowchart LR
   <td>MercadoPago/Resources/Chargeback.php 中的 Chargeback.php 节点。</td>
 </tr>
 <tr>
-  <td>13</td>
+  <td>10</td>
   <td><code>Chargeback</code><br><small style="color:var(--muted)">MercadoPago/Resources/Chargeback.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -2979,7 +2956,7 @@ flowchart LR
   <td>MercadoPago/Resources/Chargeback.php 中的 Chargeback 节点。</td>
 </tr>
 <tr>
-  <td>14</td>
+  <td>11</td>
   <td><code>Customer.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/Customer.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
@@ -2987,7 +2964,7 @@ flowchart LR
   <td>MercadoPago/Resources/Customer.php 中的 Customer.php 节点。</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>12</td>
   <td><code>CustomerCard.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerCard.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
@@ -2995,7 +2972,7 @@ flowchart LR
   <td>MercadoPago/Resources/CustomerCard.php 中的 CustomerCard.php 节点。</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>13</td>
   <td><code>CustomerCardResult.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerCardResult.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
@@ -3003,7 +2980,7 @@ flowchart LR
   <td>MercadoPago/Resources/CustomerCardResult.php 中的 CustomerCardResult.php 节点。</td>
 </tr>
 <tr>
-  <td>17</td>
+  <td>14</td>
   <td><code>CustomerCardResult</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerCardResult.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -3011,7 +2988,7 @@ flowchart LR
   <td>MercadoPago/Resources/CustomerCardResult.php 中的 CustomerCardResult 节点。</td>
 </tr>
 <tr>
-  <td>18</td>
+  <td>15</td>
   <td><code>.getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerCardResult.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>CustomerCardResult</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerCardResult.php</small></td>
@@ -3019,31 +2996,7 @@ flowchart LR
   <td>MercadoPago/Resources/CustomerCardResult.php 中的 .getMap() 节点。</td>
 </tr>
 <tr>
-  <td>19</td>
-  <td><code>CustomerSearch.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerSearch.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
-  <td>无直接出边</td>
-  <td>MercadoPago/Resources/CustomerSearch.php 中的 CustomerSearch.php 节点。</td>
-</tr>
-<tr>
-  <td>20</td>
-  <td><code>CustomerSearch</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerSearch.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerSearch.php</small></td>
-  <td>MercadoPago/Resources/CustomerSearch.php 中的 CustomerSearch 节点。</td>
-</tr>
-<tr>
-  <td>21</td>
-  <td><code>.getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerSearch.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>CustomerSearch</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerSearch.php</small></td>
-  <td>无直接出边</td>
-  <td>MercadoPago/Resources/CustomerSearch.php 中的 .getMap() 节点。</td>
-</tr>
-<tr>
-  <td>22</td>
+  <td>16</td>
   <td><code>DisbursementRefund.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/DisbursementRefund.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
@@ -3051,7 +3004,7 @@ flowchart LR
   <td>MercadoPago/Resources/DisbursementRefund.php 中的 DisbursementRefund.php 节点。</td>
 </tr>
 <tr>
-  <td>23</td>
+  <td>17</td>
   <td><code>DisbursementRefundList.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/DisbursementRefundList.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
@@ -3059,7 +3012,7 @@ flowchart LR
   <td>MercadoPago/Resources/DisbursementRefundList.php 中的 DisbursementRefundList.php 节点。</td>
 </tr>
 <tr>
-  <td>24</td>
+  <td>18</td>
   <td><code>DisbursementRefundList</code><br><small style="color:var(--muted)">MercadoPago/Resources/DisbursementRefundList.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -3067,7 +3020,7 @@ flowchart LR
   <td>MercadoPago/Resources/DisbursementRefundList.php 中的 DisbursementRefundList 节点。</td>
 </tr>
 <tr>
-  <td>25</td>
+  <td>19</td>
   <td><code>.getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/DisbursementRefundList.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>DisbursementRefundList</code><br><small style="color:var(--muted)">MercadoPago/Resources/DisbursementRefundList.php</small></td>
@@ -3075,7 +3028,31 @@ flowchart LR
   <td>MercadoPago/Resources/DisbursementRefundList.php 中的 .getMap() 节点。</td>
 </tr>
 <tr>
-  <td>26</td>
+  <td>20</td>
+  <td><code>IdentificationTypeResult.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/IdentificationTypeResult.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
+  <td>无直接出边</td>
+  <td>MercadoPago/Resources/IdentificationTypeResult.php 中的 IdentificationTypeResult.php 节点。</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>IdentificationTypeResult</code><br><small style="color:var(--muted)">MercadoPago/Resources/IdentificationTypeResult.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/IdentificationTypeResult.php</small></td>
+  <td>MercadoPago/Resources/IdentificationTypeResult.php 中的 IdentificationTypeResult 节点。</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>.getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/IdentificationTypeResult.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>IdentificationTypeResult</code><br><small style="color:var(--muted)">MercadoPago/Resources/IdentificationTypeResult.php</small></td>
+  <td>无直接出边</td>
+  <td>MercadoPago/Resources/IdentificationTypeResult.php 中的 .getMap() 节点。</td>
+</tr>
+<tr>
+  <td>23</td>
   <td><code>Invoice.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/Invoice.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
@@ -3083,7 +3060,7 @@ flowchart LR
   <td>MercadoPago/Resources/Invoice.php 中的 Invoice.php 节点。</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>24</td>
   <td><code>Invoice</code><br><small style="color:var(--muted)">MercadoPago/Resources/Invoice.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -3091,7 +3068,7 @@ flowchart LR
   <td>MercadoPago/Resources/Invoice.php 中的 Invoice 节点。</td>
 </tr>
 <tr>
-  <td>28</td>
+  <td>25</td>
   <td><code>.getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/Invoice.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>Invoice</code><br><small style="color:var(--muted)">MercadoPago/Resources/Invoice.php</small></td>
@@ -3099,7 +3076,7 @@ flowchart LR
   <td>MercadoPago/Resources/Invoice.php 中的 .getMap() 节点。</td>
 </tr>
 <tr>
-  <td>29</td>
+  <td>26</td>
   <td><code>InvoiceSearch.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/InvoiceSearch.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
@@ -3107,12 +3084,36 @@ flowchart LR
   <td>MercadoPago/Resources/InvoiceSearch.php 中的 InvoiceSearch.php 节点。</td>
 </tr>
 <tr>
-  <td>30</td>
+  <td>27</td>
   <td><code>InvoiceSearch</code><br><small style="color:var(--muted)">MercadoPago/Resources/InvoiceSearch.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
   <td><code>getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/InvoiceSearch.php</small></td>
   <td>MercadoPago/Resources/InvoiceSearch.php 中的 InvoiceSearch 节点。</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>.getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/InvoiceSearch.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>InvoiceSearch</code><br><small style="color:var(--muted)">MercadoPago/Resources/InvoiceSearch.php</small></td>
+  <td>无直接出边</td>
+  <td>MercadoPago/Resources/InvoiceSearch.php 中的 .getMap() 节点。</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>MerchantOrder.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/MerchantOrder.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
+  <td>无直接出边</td>
+  <td>MercadoPago/Resources/MerchantOrder.php 中的 MerchantOrder.php 节点。</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>OAuth.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/OAuth.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
+  <td>无直接出边</td>
+  <td>MercadoPago/Resources/OAuth.php 中的 OAuth.php 节点。</td>
 </tr>
 </table>
 
@@ -3121,50 +3122,50 @@ flowchart LR
     <h4>关键文件</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>覆盖节点</th></tr>
-      <tr><td><code>MercadoPago/Resources/AdvancedPaymentSearch.php</code></td><td>3 个节点</td></tr>
-<tr><td><code>MercadoPago/Resources/CardToken.php</code></td><td>3 个节点</td></tr>
+      <tr><td><code>MercadoPago/Resources/CardToken.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>MercadoPago/Resources/CustomerCardResult.php</code></td><td>3 个节点</td></tr>
-<tr><td><code>MercadoPago/Resources/CustomerSearch.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>MercadoPago/Resources/DisbursementRefundList.php</code></td><td>3 个节点</td></tr>
+<tr><td><code>MercadoPago/Resources/IdentificationTypeResult.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>MercadoPago/Resources/Invoice.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>MercadoPago/Resources/InvoiceSearch.php</code></td><td>3 个节点</td></tr>
-<tr><td><code>MercadoPago/Resources/MerchantOrderSearch.php</code></td><td>3 个节点</td></tr>
+<tr><td><code>MercadoPago/Resources/Order.php</code></td><td>3 个节点</td></tr>
+<tr><td><code>MercadoPago/Resources/OrderSearch.php</code></td><td>3 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：导入 x31, 包含 x22, inherits x21, 方法 x15。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：导入 x30, 包含 x21, inherits x20, 方法 x14。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 12. PoC 分类与模板 ====== -->
 <h2 id="poc">12. PoC 分类与模板</h2>
-<p>PoC 分类与模板 汇集了与 mercadopago、vendor、php、resources 相关的实现，主要分布在 Resources/Customer/Cardholder.php、Resources/Customer/CustomerSearchResult.php、Resources/Invoice/InvoiceSearchResult.php。本节覆盖 61 个节点、80 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>PoC 分类与模板 汇集了与 mercadopago、vendor、php、resources 相关的实现，主要分布在 Resources/Customer/CustomerSearchResult.php、Resources/MerchantOrder/MerchantOrderSearchResult.php、Resources/MerchantOrder/ReceiverAddress.php。本节覆盖 57 个节点、74 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: PoC 分类与模板 (61 nodes, 80 edges)
-    subgraph poc_Resources_Customer_Cardholder_php_c8b4e587["Resources/Customer/Cardholder.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_resour_a05cd2fb("Cardholder<br/><small>Resources/Customer/Cardholder.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_resour_7ce8d917("getMap()<br/><small>Resources/Customer/Cardholder.php</small>")
-    end
+    %% Section: PoC 分类与模板 (57 nodes, 74 edges)
     subgraph poc_Resources_Customer_CustomerSearchResult_php_0581a3dd["Resources/Customer/CustomerSearchResult.php"]
         vendor_mercadopago_dx_php_src_mercadopago_resour_fd126f8c("CustomerSearchResult<br/><small>Resources/Customer/CustomerSearchResult.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_resour_bcdda5d9("getMap()<br/><small>Resources/Customer/CustomerSearchResult.php</small>")
     end
-    subgraph poc_Resources_Invoice_InvoiceSearchResult_php_aa508ccd["Resources/Invoice/InvoiceSearchResult.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_resour_0efc6daa("InvoiceSearchResult<br/><small>Resources/Invoice/InvoiceSearchResult.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_resour_cf895dff("getMap()<br/><small>Resources/Invoice/InvoiceSearchResult.php</small>")
+    subgraph poc_Resources_MerchantOrder_MerchantOrderSearchR_846ec83c["Resources/MerchantOrder/MerchantOrderSearchResult.php"]
+        vendor_mercadopago_dx_php_src_mercadopago_resour_a2c8484e("MerchantOrderSearchResult<br/><small>Resources/MerchantOrder/MerchantOrderSearchResult.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_resour_b4aeb9b6("getMap()<br/><small>Resources/MerchantOrder/MerchantOrderSearchResult.php</small>")
     end
-    subgraph poc_Resources_MerchantOrder_Shipment_php_702b392d["Resources/MerchantOrder/Shipment.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_resour_cac3fb37("Shipment<br/><small>Resources/MerchantOrder/Shipment.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_resour_c55ad747("getMap()<br/><small>Resources/MerchantOrder/Shipment.php</small>")
+    subgraph poc_Resources_MerchantOrder_ReceiverAddress_php_70b2b73a["Resources/MerchantOrder/ReceiverAddress.php"]
+        vendor_mercadopago_dx_php_src_mercadopago_resour_b060ce6e("ReceiverAddress<br/><small>Resources/MerchantOrder/ReceiverAddress.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_resour_711ffd8f("getMap()<br/><small>Resources/MerchantOrder/ReceiverAddress.php</small>")
     end
-    subgraph poc_Resources_Order_Items_php_72266d75["Resources/Order/Items.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_resour_47a6698d("Items<br/><small>Resources/Order/Items.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_resour_6084a588("getMap()<br/><small>Resources/Order/Items.php</small>")
+    subgraph poc_Resources_Order_Config_php_05e6e04c["Resources/Order/Config.php"]
+        vendor_mercadopago_dx_php_src_mercadopago_resour_d70b75f7("Config<br/><small>Resources/Order/Config.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_resour_f1dcb531("getMap()<br/><small>Resources/Order/Config.php</small>")
+    end
+    subgraph poc_Resources_Order_Discounts_php_1161013e["Resources/Order/Discounts.php"]
+        vendor_mercadopago_dx_php_src_mercadopago_resour_6b177bf2("Discounts<br/><small>Resources/Order/Discounts.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_resour_1d353a84("getMap()<br/><small>Resources/Order/Discounts.php</small>")
     end
     subgraph poc_Resources_Order_Payer_php_43e943ae["Resources/Order/Payer.php"]
         vendor_mercadopago_dx_php_src_mercadopago_resour_9d99a490("Payer<br/><small>Resources/Order/Payer.php</small>")
@@ -3174,39 +3175,39 @@ flowchart LR
         vendor_mercadopago_dx_php_src_mercadopago_resour_a2bc3628("Payment<br/><small>Resources/Order/Payment.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_resour_8969d7a5("getMap()<br/><small>Resources/Order/Payment.php</small>")
     end
-    subgraph poc_Resources_Order_PaymentMethodConfig_php_bcee5c63["Resources/Order/PaymentMethodConfig.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_resour_5c67bdbe("PaymentMethodConfig<br/><small>Resources/Order/PaymentMethodConfig.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_resour_1f83dfc7("getMap()<br/><small>Resources/Order/PaymentMethodConfig.php</small>")
+    subgraph poc_Resources_Order_PaymentMethod_php_ad98124c["Resources/Order/PaymentMethod.php"]
+        vendor_mercadopago_dx_php_src_mercadopago_resour_ab5fdc44("PaymentMethod<br/><small>Resources/Order/PaymentMethod.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_resour_41d7c9a0("getMap()<br/><small>Resources/Order/PaymentMethod.php</small>")
     end
     mapper_4f7bd6b6("Mapper")
-    vendor_mercadopago_dx_php_src_mercadopago_resour_4550ed9b("Refund<br/><small>Resources/Order/Refund.php</small>")
-    vendor_mercadopago_dx_php_src_mercadopago_resour_a05cd2fb -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_7ce8d917
+    vendor_mercadopago_dx_php_src_mercadopago_resour_85a3ce91("Shipment<br/><small>Resources/Order/Shipment.php</small>")
     vendor_mercadopago_dx_php_src_mercadopago_resour_fd126f8c -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_bcdda5d9
-    vendor_mercadopago_dx_php_src_mercadopago_resour_0efc6daa -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_cf895dff
-    vendor_mercadopago_dx_php_src_mercadopago_resour_cac3fb37 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_c55ad747
-    vendor_mercadopago_dx_php_src_mercadopago_resour_47a6698d -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_6084a588
+    vendor_mercadopago_dx_php_src_mercadopago_resour_a2c8484e -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_b4aeb9b6
+    vendor_mercadopago_dx_php_src_mercadopago_resour_b060ce6e -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_711ffd8f
+    vendor_mercadopago_dx_php_src_mercadopago_resour_d70b75f7 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_f1dcb531
+    vendor_mercadopago_dx_php_src_mercadopago_resour_6b177bf2 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_1d353a84
     vendor_mercadopago_dx_php_src_mercadopago_resour_9d99a490 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_cadc1269
     vendor_mercadopago_dx_php_src_mercadopago_resour_a2bc3628 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_8969d7a5
-    vendor_mercadopago_dx_php_src_mercadopago_resour_5c67bdbe -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_1f83dfc7
-    %% Omitted for readability: 43 nodes, 0 edges
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_a05cd2fb klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_7ce8d917 function;
+    vendor_mercadopago_dx_php_src_mercadopago_resour_ab5fdc44 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_41d7c9a0
+    %% Omitted for readability: 39 nodes, 0 edges
     class vendor_mercadopago_dx_php_src_mercadopago_resour_fd126f8c klass;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_bcdda5d9 function;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_0efc6daa klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_cf895dff function;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_cac3fb37 klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_c55ad747 function;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_47a6698d klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_6084a588 function;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_a2c8484e klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_b4aeb9b6 function;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_b060ce6e klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_711ffd8f function;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_d70b75f7 klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_f1dcb531 function;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_6b177bf2 klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_1d353a84 function;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_9d99a490 klass;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_cadc1269 function;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_a2bc3628 klass;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_8969d7a5 function;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_5c67bdbe klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_1f83dfc7 function;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_ab5fdc44 klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_41d7c9a0 function;
     class mapper_4f7bd6b6 klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_4550ed9b klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_85a3ce91 klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -3233,35 +3234,11 @@ flowchart LR
   <td><code>Mapper</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>BankInfo.php</code><br><small style="color:var(--muted)">Resources/Payment/BankInfo.php</small><br><code>BuyerReputation.php</code><br><small style="color:var(--muted)">Resources/User/BuyerReputation.php</small><br><code>Cardholder.php</code><br><small style="color:var(--muted)">Resources/Customer/Cardholder.php</small><br>+17 个更多</td>
+  <td><code>Cardholder.php</code><br><small style="color:var(--muted)">Resources/Payment/Cardholder.php</small><br><code>CategoryDescriptor.php</code><br><small style="color:var(--muted)">Resources/Preference/CategoryDescriptor.php</small><br><code>Config.php</code><br><small style="color:var(--muted)">Resources/Order/Config.php</small><br>+16 个更多</td>
   <td>项目 中的 Mapper 节点。</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>Cardholder.php</code><br><small style="color:var(--muted)">Resources/Customer/Cardholder.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>Mapper</code></td>
-  <td>无直接出边</td>
-  <td>Resources/Customer/Cardholder.php 中的 Cardholder.php 节点。</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>Cardholder</code><br><small style="color:var(--muted)">Resources/Customer/Cardholder.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/Customer/Cardholder.php</small></td>
-  <td>Resources/Customer/Cardholder.php 中的 Cardholder 节点。</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/Customer/Cardholder.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Cardholder</code><br><small style="color:var(--muted)">Resources/Customer/Cardholder.php</small></td>
-  <td>无直接出边</td>
-  <td>Resources/Customer/Cardholder.php 中的 .getMap() 节点。</td>
-</tr>
-<tr>
-  <td>5</td>
   <td><code>CustomerSearchResult.php</code><br><small style="color:var(--muted)">Resources/Customer/CustomerSearchResult.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>Mapper</code></td>
@@ -3269,7 +3246,7 @@ flowchart LR
   <td>Resources/Customer/CustomerSearchResult.php 中的 CustomerSearchResult.php 节点。</td>
 </tr>
 <tr>
-  <td>6</td>
+  <td>3</td>
   <td><code>CustomerSearchResult</code><br><small style="color:var(--muted)">Resources/Customer/CustomerSearchResult.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -3277,7 +3254,7 @@ flowchart LR
   <td>Resources/Customer/CustomerSearchResult.php 中的 CustomerSearchResult 节点。</td>
 </tr>
 <tr>
-  <td>7</td>
+  <td>4</td>
   <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/Customer/CustomerSearchResult.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>CustomerSearchResult</code><br><small style="color:var(--muted)">Resources/Customer/CustomerSearchResult.php</small></td>
@@ -3285,76 +3262,100 @@ flowchart LR
   <td>Resources/Customer/CustomerSearchResult.php 中的 .getMap() 节点。</td>
 </tr>
 <tr>
-  <td>8</td>
-  <td><code>InvoiceSearchResult.php</code><br><small style="color:var(--muted)">Resources/Invoice/InvoiceSearchResult.php</small></td>
+  <td>5</td>
+  <td><code>MerchantOrderSearchResult.php</code><br><small style="color:var(--muted)">Resources/MerchantOrder/MerchantOrderSearchResult.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>Mapper</code></td>
   <td>无直接出边</td>
-  <td>Resources/Invoice/InvoiceSearchResult.php 中的 InvoiceSearchResult.php 节点。</td>
+  <td>Resources/MerchantOrder/MerchantOrderSearchResult.php 中的 MerchantOrderSearchResult.php 节点。</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>MerchantOrderSearchResult</code><br><small style="color:var(--muted)">Resources/MerchantOrder/MerchantOrderSearchResult.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/MerchantOrder/MerchantOrderSearchResult.php</small></td>
+  <td>Resources/MerchantOrder/MerchantOrderSearchResult.php 中的 MerchantOrderSearchResult 节点。</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/MerchantOrder/MerchantOrderSearchResult.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>MerchantOrderSearchResult</code><br><small style="color:var(--muted)">Resources/MerchantOrder/MerchantOrderSearchResult.php</small></td>
+  <td>无直接出边</td>
+  <td>Resources/MerchantOrder/MerchantOrderSearchResult.php 中的 .getMap() 节点。</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>ReceiverAddress.php</code><br><small style="color:var(--muted)">Resources/MerchantOrder/ReceiverAddress.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>Mapper</code></td>
+  <td>无直接出边</td>
+  <td>Resources/MerchantOrder/ReceiverAddress.php 中的 ReceiverAddress.php 节点。</td>
 </tr>
 <tr>
   <td>9</td>
-  <td><code>InvoiceSearchResult</code><br><small style="color:var(--muted)">Resources/Invoice/InvoiceSearchResult.php</small></td>
+  <td><code>ReceiverAddress</code><br><small style="color:var(--muted)">Resources/MerchantOrder/ReceiverAddress.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/Invoice/InvoiceSearchResult.php</small></td>
-  <td>Resources/Invoice/InvoiceSearchResult.php 中的 InvoiceSearchResult 节点。</td>
+  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/MerchantOrder/ReceiverAddress.php</small></td>
+  <td>Resources/MerchantOrder/ReceiverAddress.php 中的 ReceiverAddress 节点。</td>
 </tr>
 <tr>
   <td>10</td>
-  <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/Invoice/InvoiceSearchResult.php</small></td>
+  <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/MerchantOrder/ReceiverAddress.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>InvoiceSearchResult</code><br><small style="color:var(--muted)">Resources/Invoice/InvoiceSearchResult.php</small></td>
+  <td><code>ReceiverAddress</code><br><small style="color:var(--muted)">Resources/MerchantOrder/ReceiverAddress.php</small></td>
   <td>无直接出边</td>
-  <td>Resources/Invoice/InvoiceSearchResult.php 中的 .getMap() 节点。</td>
+  <td>Resources/MerchantOrder/ReceiverAddress.php 中的 .getMap() 节点。</td>
 </tr>
 <tr>
   <td>11</td>
-  <td><code>Shipment.php</code><br><small style="color:var(--muted)">Resources/MerchantOrder/Shipment.php</small></td>
+  <td><code>Config.php</code><br><small style="color:var(--muted)">Resources/Order/Config.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>Mapper</code></td>
   <td>无直接出边</td>
-  <td>Resources/MerchantOrder/Shipment.php 中的 Shipment.php 节点。</td>
+  <td>读取、解析或持久化项目配置。</td>
 </tr>
 <tr>
   <td>12</td>
-  <td><code>Shipment</code><br><small style="color:var(--muted)">Resources/MerchantOrder/Shipment.php</small></td>
+  <td><code>Config</code><br><small style="color:var(--muted)">Resources/Order/Config.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/MerchantOrder/Shipment.php</small></td>
-  <td>Resources/MerchantOrder/Shipment.php 中的 Shipment 节点。</td>
+  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/Order/Config.php</small></td>
+  <td>读取、解析或持久化项目配置。</td>
 </tr>
 <tr>
   <td>13</td>
-  <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/MerchantOrder/Shipment.php</small></td>
+  <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/Order/Config.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>Shipment</code><br><small style="color:var(--muted)">Resources/MerchantOrder/Shipment.php</small></td>
+  <td><code>Config</code><br><small style="color:var(--muted)">Resources/Order/Config.php</small></td>
   <td>无直接出边</td>
-  <td>Resources/MerchantOrder/Shipment.php 中的 .getMap() 节点。</td>
+  <td>Resources/Order/Config.php 中的 .getMap() 节点。</td>
 </tr>
 <tr>
   <td>14</td>
-  <td><code>Items.php</code><br><small style="color:var(--muted)">Resources/Order/Items.php</small></td>
+  <td><code>Discounts.php</code><br><small style="color:var(--muted)">Resources/Order/Discounts.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>Mapper</code></td>
   <td>无直接出边</td>
-  <td>Resources/Order/Items.php 中的 Items.php 节点。</td>
+  <td>Resources/Order/Discounts.php 中的 Discounts.php 节点。</td>
 </tr>
 <tr>
   <td>15</td>
-  <td><code>Items</code><br><small style="color:var(--muted)">Resources/Order/Items.php</small></td>
+  <td><code>Discounts</code><br><small style="color:var(--muted)">Resources/Order/Discounts.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/Order/Items.php</small></td>
-  <td>Resources/Order/Items.php 中的 Items 节点。</td>
+  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/Order/Discounts.php</small></td>
+  <td>Resources/Order/Discounts.php 中的 Discounts 节点。</td>
 </tr>
 <tr>
   <td>16</td>
-  <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/Order/Items.php</small></td>
+  <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/Order/Discounts.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>Items</code><br><small style="color:var(--muted)">Resources/Order/Items.php</small></td>
+  <td><code>Discounts</code><br><small style="color:var(--muted)">Resources/Order/Discounts.php</small></td>
   <td>无直接出边</td>
-  <td>Resources/Order/Items.php 中的 .getMap() 节点。</td>
+  <td>Resources/Order/Discounts.php 中的 .getMap() 节点。</td>
 </tr>
 <tr>
   <td>17</td>
@@ -3406,67 +3407,67 @@ flowchart LR
 </tr>
 <tr>
   <td>23</td>
-  <td><code>PaymentMethodConfig.php</code><br><small style="color:var(--muted)">Resources/Order/PaymentMethodConfig.php</small></td>
+  <td><code>PaymentMethod.php</code><br><small style="color:var(--muted)">Resources/Order/PaymentMethod.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>Mapper</code></td>
   <td>无直接出边</td>
-  <td>读取、解析或持久化项目配置。</td>
+  <td>Resources/Order/PaymentMethod.php 中的 PaymentMethod.php 节点。</td>
 </tr>
 <tr>
   <td>24</td>
-  <td><code>PaymentMethodConfig</code><br><small style="color:var(--muted)">Resources/Order/PaymentMethodConfig.php</small></td>
+  <td><code>PaymentMethod</code><br><small style="color:var(--muted)">Resources/Order/PaymentMethod.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/Order/PaymentMethodConfig.php</small></td>
-  <td>读取、解析或持久化项目配置。</td>
+  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/Order/PaymentMethod.php</small></td>
+  <td>Resources/Order/PaymentMethod.php 中的 PaymentMethod 节点。</td>
 </tr>
 <tr>
   <td>25</td>
-  <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/Order/PaymentMethodConfig.php</small></td>
+  <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/Order/PaymentMethod.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>PaymentMethodConfig</code><br><small style="color:var(--muted)">Resources/Order/PaymentMethodConfig.php</small></td>
+  <td><code>PaymentMethod</code><br><small style="color:var(--muted)">Resources/Order/PaymentMethod.php</small></td>
   <td>无直接出边</td>
-  <td>Resources/Order/PaymentMethodConfig.php 中的 .getMap() 节点。</td>
+  <td>Resources/Order/PaymentMethod.php 中的 .getMap() 节点。</td>
 </tr>
 <tr>
   <td>26</td>
-  <td><code>Refund.php</code><br><small style="color:var(--muted)">Resources/Order/Refund.php</small></td>
+  <td><code>Shipment.php</code><br><small style="color:var(--muted)">Resources/Order/Shipment.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>Mapper</code></td>
   <td>无直接出边</td>
-  <td>Resources/Order/Refund.php 中的 Refund.php 节点。</td>
+  <td>Resources/Order/Shipment.php 中的 Shipment.php 节点。</td>
 </tr>
 <tr>
   <td>27</td>
-  <td><code>Refund</code><br><small style="color:var(--muted)">Resources/Order/Refund.php</small></td>
+  <td><code>Shipment</code><br><small style="color:var(--muted)">Resources/Order/Shipment.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/Order/Refund.php</small></td>
-  <td>Resources/Order/Refund.php 中的 Refund 节点。</td>
+  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/Order/Shipment.php</small></td>
+  <td>Resources/Order/Shipment.php 中的 Shipment 节点。</td>
 </tr>
 <tr>
   <td>28</td>
-  <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/Order/Refund.php</small></td>
+  <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/Order/Shipment.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>Refund</code><br><small style="color:var(--muted)">Resources/Order/Refund.php</small></td>
+  <td><code>Shipment</code><br><small style="color:var(--muted)">Resources/Order/Shipment.php</small></td>
   <td>无直接出边</td>
-  <td>Resources/Order/Refund.php 中的 .getMap() 节点。</td>
+  <td>Resources/Order/Shipment.php 中的 .getMap() 节点。</td>
 </tr>
 <tr>
   <td>29</td>
-  <td><code>BankInfo.php</code><br><small style="color:var(--muted)">Resources/Payment/BankInfo.php</small></td>
+  <td><code>SubscriptionData.php</code><br><small style="color:var(--muted)">Resources/Order/SubscriptionData.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>Mapper</code></td>
   <td>无直接出边</td>
-  <td>Resources/Payment/BankInfo.php 中的 BankInfo.php 节点。</td>
+  <td>Resources/Order/SubscriptionData.php 中的 SubscriptionData.php 节点。</td>
 </tr>
 <tr>
   <td>30</td>
-  <td><code>BankInfo</code><br><small style="color:var(--muted)">Resources/Payment/BankInfo.php</small></td>
+  <td><code>SubscriptionData</code><br><small style="color:var(--muted)">Resources/Order/SubscriptionData.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/Payment/BankInfo.php</small></td>
-  <td>Resources/Payment/BankInfo.php 中的 BankInfo 节点。</td>
+  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/Order/SubscriptionData.php</small></td>
+  <td>Resources/Order/SubscriptionData.php 中的 SubscriptionData 节点。</td>
 </tr>
 </table>
 
@@ -3475,19 +3476,19 @@ flowchart LR
     <h4>关键文件</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>覆盖节点</th></tr>
-      <tr><td><code>Resources/Customer/Cardholder.php</code></td><td>3 个节点</td></tr>
-<tr><td><code>Resources/Customer/CustomerSearchResult.php</code></td><td>3 个节点</td></tr>
-<tr><td><code>Resources/Invoice/InvoiceSearchResult.php</code></td><td>3 个节点</td></tr>
-<tr><td><code>Resources/MerchantOrder/Shipment.php</code></td><td>3 个节点</td></tr>
-<tr><td><code>Resources/Order/Items.php</code></td><td>3 个节点</td></tr>
+      <tr><td><code>Resources/Customer/CustomerSearchResult.php</code></td><td>3 个节点</td></tr>
+<tr><td><code>Resources/MerchantOrder/MerchantOrderSearchResult.php</code></td><td>3 个节点</td></tr>
+<tr><td><code>Resources/MerchantOrder/ReceiverAddress.php</code></td><td>3 个节点</td></tr>
+<tr><td><code>Resources/Order/Config.php</code></td><td>3 个节点</td></tr>
+<tr><td><code>Resources/Order/Discounts.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>Resources/Order/Payer.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>Resources/Order/Payment.php</code></td><td>3 个节点</td></tr>
-<tr><td><code>Resources/Order/PaymentMethodConfig.php</code></td><td>3 个节点</td></tr>
+<tr><td><code>Resources/Order/PaymentMethod.php</code></td><td>3 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：导入 x20, mixes in x20, 包含 x20, 方法 x20。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：导入 x19, 包含 x19, mixes in x18, 方法 x18。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -4531,20 +4532,22 @@ flowchart LR
 
 <!-- ====== 16. 其他 ====== -->
 <h2 id="other">16. 其他</h2>
-<p>其他 汇集了与 mercadopago、vendor、php、resources 相关的实现，主要分布在 .agents/BRAND.md、vendor/composer/ClassLoader.php、mercadopago/dx-php/CHANGELOG.md。本节覆盖 1192 个节点、1138 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>其他 汇集了与 mercadopago、vendor、php、resources 相关的实现，主要分布在 .agents/BRAND.md、vendor/composer/ClassLoader.php、mercadopago/dx-php/CHANGELOG.md。本节覆盖 1211 个节点、1165 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 其他 (1192 nodes, 1138 edges)
-    subgraph other_Shared_Adapters_MercadoPagoAdapter_php_e83fa5f7["Shared/Adapters/MercadoPagoAdapter.php"]
-        app_features_shared_adapters_mercadopagoadapter_3f9c2328("MercadoPagoAdapter<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
-        app_features_shared_adapters_mercadopagoadapter_bf98f842("__construct()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
-        app_features_shared_adapters_mercadopagoadapter_a02420d0("createPreference()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
-        app_features_shared_adapters_mercadopagoadapter_9a465b4b("getPaymentDetails()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
-        app_features_shared_adapters_mercadopagoadapter_da648d7f("isValidToken()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
-        app_features_shared_adapters_mercadopagoadapter_c5c22b50("verifyNotification()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
-        app_features_shared_adapters_mercadopagoadapter_e888d20c("verifySignature()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
+    %% Section: 其他 (1211 nodes, 1165 edges)
+    subgraph other_Features_Auth_User_php_f124a5f0["Features/Auth/User.php"]
+        app_features_auth_user_user_3ef48886("User<br/><small>Features/Auth/User.php</small>")
+        app_features_auth_user_user_construct_98121005("__construct()<br/><small>Features/Auth/User.php</small>")
+        app_features_auth_user_user_createfromemail_f3e66e20("createFromEmail()<br/><small>Features/Auth/User.php</small>")
+        app_features_auth_user_user_createfromoauth_310d2934("createFromOAuth()<br/><small>Features/Auth/User.php</small>")
+        app_features_auth_user_user_ensuretableexists_30fc2790("ensureTableExists()<br/><small>Features/Auth/User.php</small>")
+        app_features_auth_user_user_findbyemail_a54be23e("findByEmail()<br/><small>Features/Auth/User.php</small>")
+        app_features_auth_user_user_findbyid_67a4d2cf("findById()<br/><small>Features/Auth/User.php</small>")
+        app_features_auth_user_user_findbyprovider_dc33f241("findByProvider()<br/><small>Features/Auth/User.php</small>")
+        app_features_auth_user_user_getbookings_21b8b7fb("getBookings()<br/><small>Features/Auth/User.php</small>")
     end
     subgraph other_Webhooks_Actions_HandleMercadoPagoWebhookA_32741e89["Webhooks/Actions/HandleMercadoPagoWebhookAction.php"]
         app_features_webhooks_actions_handlemercadopagow_1a4fd5e2("HandleMercadoPagoWebhookAction<br/><small>Webhooks/Actions/HandleMercadoPagoWebhookAction.php</small>")
@@ -4552,43 +4555,40 @@ flowchart LR
         app_features_webhooks_actions_handlemercadopagow_7e95c00d("__invoke()<br/><small>Webhooks/Actions/HandleMercadoPagoWebhookAction.php</small>")
         app_features_webhooks_actions_handlemercadopagow_763406f0("sanitizeForLog()<br/><small>Webhooks/Actions/HandleMercadoPagoWebhookAction.php</small>")
     end
-    subgraph other_Features_Auth_User_php_f124a5f0["Features/Auth/User.php"]
-        app_features_auth_user_user_3ef48886("User<br/><small>Features/Auth/User.php</small>")
-        app_features_auth_user_user_construct_98121005("__construct()<br/><small>Features/Auth/User.php</small>")
-    end
     vendor_mercadopago_dx_php_src_mercadopago_client_82a91635("MercadoPagoClient<br/><small>MercadoPago/Client/MercadoPagoClient.php</small>")
     app_features_shared_adapters_channexadapter_chan_746f9773("ChannexAdapter<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
     app_core_config_config_fc55d656("Config<br/><small>app/Core/Config.php</small>")
     vendor_hybridauth_hybridauth_src_adapter_oauth2_7a401bb8("OAuth2<br/><small>src/Adapter/OAuth2.php</small>")
     vendor_composer_classloader_classloader_e26637a6("ClassLoader<br/><small>vendor/composer/ClassLoader.php</small>")
-    app_features_shared_adapters_mercadopagoadapter_3f9c2328 -->|方法| app_features_shared_adapters_mercadopagoadapter_bf98f842
-    app_features_shared_adapters_mercadopagoadapter_3f9c2328 -->|方法| app_features_shared_adapters_mercadopagoadapter_a02420d0
-    app_features_shared_adapters_mercadopagoadapter_3f9c2328 -->|方法| app_features_shared_adapters_mercadopagoadapter_9a465b4b
-    app_features_shared_adapters_mercadopagoadapter_3f9c2328 -->|方法| app_features_shared_adapters_mercadopagoadapter_da648d7f
-    app_features_shared_adapters_mercadopagoadapter_3f9c2328 -->|方法| app_features_shared_adapters_mercadopagoadapter_c5c22b50
-    app_features_shared_adapters_mercadopagoadapter_3f9c2328 -->|方法| app_features_shared_adapters_mercadopagoadapter_e888d20c
-    app_features_shared_adapters_mercadopagoadapter_a02420d0 -->|调用| app_features_shared_adapters_mercadopagoadapter_da648d7f
-    app_features_shared_adapters_mercadopagoadapter_c5c22b50 -->|调用| app_features_shared_adapters_mercadopagoadapter_9a465b4b
-    app_features_shared_adapters_mercadopagoadapter_c5c22b50 -->|调用| app_features_shared_adapters_mercadopagoadapter_e888d20c
     app_features_webhooks_actions_handlemercadopagow_1a4fd5e2 -->|方法| app_features_webhooks_actions_handlemercadopagow_e812acfb
     app_features_webhooks_actions_handlemercadopagow_1a4fd5e2 -->|方法| app_features_webhooks_actions_handlemercadopagow_7e95c00d
     app_features_webhooks_actions_handlemercadopagow_1a4fd5e2 -->|方法| app_features_webhooks_actions_handlemercadopagow_763406f0
     app_features_webhooks_actions_handlemercadopagow_7e95c00d -->|调用| app_features_webhooks_actions_handlemercadopagow_763406f0
     app_features_auth_user_user_3ef48886 -->|方法| app_features_auth_user_user_construct_98121005
-    %% Omitted for readability: 1174 nodes, 0 edges
-    class app_features_shared_adapters_mercadopagoadapter_3f9c2328 klass;
-    class app_features_shared_adapters_mercadopagoadapter_bf98f842 function;
-    class app_features_shared_adapters_mercadopagoadapter_a02420d0 function;
-    class app_features_shared_adapters_mercadopagoadapter_9a465b4b function;
-    class app_features_shared_adapters_mercadopagoadapter_da648d7f function;
-    class app_features_shared_adapters_mercadopagoadapter_c5c22b50 function;
-    class app_features_shared_adapters_mercadopagoadapter_e888d20c function;
+    app_features_auth_user_user_3ef48886 -->|方法| app_features_auth_user_user_createfromemail_f3e66e20
+    app_features_auth_user_user_3ef48886 -->|方法| app_features_auth_user_user_createfromoauth_310d2934
+    app_features_auth_user_user_3ef48886 -->|方法| app_features_auth_user_user_ensuretableexists_30fc2790
+    app_features_auth_user_user_3ef48886 -->|方法| app_features_auth_user_user_findbyemail_a54be23e
+    app_features_auth_user_user_3ef48886 -->|方法| app_features_auth_user_user_findbyid_67a4d2cf
+    app_features_auth_user_user_3ef48886 -->|方法| app_features_auth_user_user_findbyprovider_dc33f241
+    app_features_auth_user_user_3ef48886 -->|方法| app_features_auth_user_user_getbookings_21b8b7fb
+    app_features_auth_user_user_construct_98121005 -->|调用| app_features_auth_user_user_ensuretableexists_30fc2790
+    app_features_auth_user_user_findbyemail_a54be23e -->|调用| app_features_auth_user_user_createfromemail_f3e66e20
+    app_features_auth_user_user_findbyemail_a54be23e -->|调用| app_features_auth_user_user_createfromoauth_310d2934
+    %% Omitted for readability: 1193 nodes, 0 edges
+    class app_features_auth_user_user_3ef48886 klass;
+    class app_features_auth_user_user_construct_98121005 function;
+    class app_features_auth_user_user_createfromemail_f3e66e20 function;
+    class app_features_auth_user_user_createfromoauth_310d2934 function;
+    class app_features_auth_user_user_ensuretableexists_30fc2790 function;
+    class app_features_auth_user_user_findbyemail_a54be23e function;
+    class app_features_auth_user_user_findbyid_67a4d2cf function;
+    class app_features_auth_user_user_findbyprovider_dc33f241 function;
+    class app_features_auth_user_user_getbookings_21b8b7fb function;
     class app_features_webhooks_actions_handlemercadopagow_1a4fd5e2 ui;
     class app_features_webhooks_actions_handlemercadopagow_e812acfb function;
     class app_features_webhooks_actions_handlemercadopagow_7e95c00d function;
     class app_features_webhooks_actions_handlemercadopagow_763406f0 function;
-    class app_features_auth_user_user_3ef48886 klass;
-    class app_features_auth_user_user_construct_98121005 function;
     class vendor_mercadopago_dx_php_src_mercadopago_client_82a91635 entry;
     class app_features_shared_adapters_channexadapter_chan_746f9773 klass;
     class app_core_config_config_fc55d656 klass;
@@ -4617,243 +4617,243 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>CardTokenClient</code><br><small style="color:var(--muted)">Client/CardToken/CardTokenClient.php</small></td>
-  <td><span class="tag tag-cmd">入口</span></td>
+  <td><code>MPApiException</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small></td>
+  <td><span class="tag tag-endpoint">API</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>__construct()</code><br><small style="color:var(--muted)">Client/CardToken/CardTokenClient.php</small><br><code>create()</code><br><small style="color:var(--muted)">Client/CardToken/CardTokenClient.php</small></td>
-  <td>Client/CardToken/CardTokenClient.php 中的 CardTokenClient 节点。</td>
+  <td><code>__construct()</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>getApiResponse()</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>getStatusCode()</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small></td>
+  <td>MercadoPago/Exceptions/MPApiException.php 中的 MPApiException 节点。</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>.__construct()</code><br><small style="color:var(--muted)">Client/CardToken/CardTokenClient.php</small></td>
+  <td><code>.__construct()</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>CardTokenClient</code><br><small style="color:var(--muted)">Client/CardToken/CardTokenClient.php</small></td>
-  <td>无直接出边</td>
-  <td>Client/CardToken/CardTokenClient.php 中的 .__construct() 节点。</td>
+  <td><code>MPApiException</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small></td>
+  <td><code>getStatusCode()</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small></td>
+  <td>MercadoPago/Exceptions/MPApiException.php 中的 .__construct() 节点。</td>
 </tr>
 <tr>
   <td>3</td>
-  <td><code>MPHttpClient</code><br><small style="color:var(--muted)"></small></td>
-  <td><span class="tag tag-cmd">入口</span></td>
-  <td>外部入口 / 无直接入边</td>
+  <td><code>.getApiResponse()</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small></td>
+  <td><span class="tag tag-endpoint">API</span></td>
+  <td><code>MPApiException</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small></td>
   <td>无直接出边</td>
-  <td>项目 中的 MPHttpClient 节点。</td>
+  <td>MercadoPago/Exceptions/MPApiException.php 中的 .getApiResponse() 节点。</td>
 </tr>
 <tr>
   <td>4</td>
-  <td><code>.create()</code><br><small style="color:var(--muted)">Client/CardToken/CardTokenClient.php</small></td>
+  <td><code>.getStatusCode()</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>CardTokenClient</code><br><small style="color:var(--muted)">Client/CardToken/CardTokenClient.php</small></td>
+  <td><code>__construct()</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>MPApiException</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small></td>
   <td>无直接出边</td>
-  <td>Client/CardToken/CardTokenClient.php 中的 .create() 节点。</td>
+  <td>MercadoPago/Exceptions/MPApiException.php 中的 .getStatusCode() 节点。</td>
 </tr>
 <tr>
   <td>5</td>
-  <td><code>MercadoPagoClient.php</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>MPDefaultHttpClient</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
   <td><span class="tag tag-cmd">入口</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>HttpMethod.php</code><br><small style="color:var(--muted)">MercadoPago/Net/HttpMethod.php</small><br><code>MPHttpClient</code><br><code>MPRequest</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small><br>+1 个更多</td>
-  <td>MercadoPago/Client/MercadoPagoClient.php 中的 MercadoPagoClient.php 节点。</td>
+  <td><code>__construct()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small><br><code>createHttpRequestOptions()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small><br><code>doExponentialBackoff()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small><br>+5 个更多</td>
+  <td>MercadoPago/Net/MPDefaultHttpClient.php 中的 MPDefaultHttpClient 节点。</td>
 </tr>
 <tr>
   <td>6</td>
-  <td><code>MercadoPagoClient</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>MPHttpClient</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-cmd">入口</span></td>
-  <td><code>AdvancedPaymentClient.php</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small><br><code>CustomerCardClient.php</code><br><small style="color:var(--muted)">Client/Customer/CustomerCardClient.php</small><br><code>CustomerClient.php</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small><br>+2 个更多</td>
-  <td><code>__construct()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>addConnectionTimeout()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>addCustomHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br>+18 个更多</td>
-  <td>MercadoPago/Client/MercadoPagoClient.php 中的 MercadoPagoClient 节点。</td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>项目 中的 MPHttpClient 节点。</td>
 </tr>
 <tr>
   <td>7</td>
-  <td><code>.__construct()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>MercadoPagoClient</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>HttpRequest</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>MercadoPago/Client/MercadoPagoClient.php 中的 .__construct() 节点。</td>
+  <td>项目 中的 HttpRequest 节点。</td>
 </tr>
 <tr>
   <td>8</td>
-  <td><code>MPHttpClient</code><br><small style="color:var(--muted)"></small></td>
-  <td><span class="tag tag-cmd">入口</span></td>
-  <td><code>MercadoPagoClient.php</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>.__construct()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>MPDefaultHttpClient</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
   <td>无直接出边</td>
-  <td>项目 中的 MPHttpClient 节点。</td>
+  <td>MercadoPago/Net/MPDefaultHttpClient.php 中的 .__construct() 节点。</td>
 </tr>
 <tr>
   <td>9</td>
-  <td><code>.send()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>.send()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>MercadoPagoClient</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td><code>buildRequest()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td>MercadoPago/Client/MercadoPagoClient.php 中的 .send() 节点。</td>
+  <td><code>MPDefaultHttpClient</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
+  <td><code>doExponentialBackoff()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small><br><code>isLastRetry()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small><br><code>isServerError()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small><br>+1 个更多</td>
+  <td>MercadoPago/Net/MPDefaultHttpClient.php 中的 .send() 节点。</td>
 </tr>
 <tr>
   <td>10</td>
-  <td><code>.buildRequest()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>.makeRequest()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>MercadoPagoClient</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>send()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td><code>addConnectionTimeout()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>addHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>formatUrlWithQueryParams()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td>MercadoPago/Client/MercadoPagoClient.php 中的 .buildRequest() 节点。</td>
+  <td><code>MPDefaultHttpClient</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small><br><code>send()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
+  <td><code>createHttpRequestOptions()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small><br><code>isApiError()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
+  <td>MercadoPago/Net/MPDefaultHttpClient.php 中的 .makeRequest() 节点。</td>
 </tr>
 <tr>
   <td>11</td>
-  <td><code>.formatUrlWithQueryParams()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>.doExponentialBackoff()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>buildRequest()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>MercadoPagoClient</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>MPDefaultHttpClient</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small><br><code>send()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
   <td>无直接出边</td>
-  <td>MercadoPago/Client/MercadoPagoClient.php 中的 .formatUrlWithQueryParams() 节点。</td>
+  <td>MercadoPago/Net/MPDefaultHttpClient.php 中的 .doExponentialBackoff() 节点。</td>
 </tr>
 <tr>
   <td>12</td>
-  <td><code>.addHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>.createHttpRequestOptions()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>buildRequest()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>MercadoPagoClient</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td><code>addCustomHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>addDefaultHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>addTrackingHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td>MercadoPago/Client/MercadoPagoClient.php 中的 .addHeaders() 节点。</td>
+  <td><code>makeRequest()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small><br><code>MPDefaultHttpClient</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
+  <td>无直接出边</td>
+  <td>MercadoPago/Net/MPDefaultHttpClient.php 中的 .createHttpRequestOptions() 节点。</td>
 </tr>
 <tr>
   <td>13</td>
-  <td><code>.addCustomHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>addHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>MercadoPagoClient</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>.isServerError()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
+  <td><span class="tag tag-async">异步</span></td>
+  <td><code>MPDefaultHttpClient</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small><br><code>send()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
   <td>无直接出边</td>
-  <td>MercadoPago/Client/MercadoPagoClient.php 中的 .addCustomHeaders() 节点。</td>
+  <td>MercadoPago/Net/MPDefaultHttpClient.php 中的 .isServerError() 节点。</td>
 </tr>
 <tr>
   <td>14</td>
-  <td><code>.addDefaultHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>addHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>MercadoPagoClient</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td><code>getAccessToken()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>getIdempotencyKey()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>headerExists()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br>+1 个更多</td>
-  <td>MercadoPago/Client/MercadoPagoClient.php 中的 .addDefaultHeaders() 节点。</td>
+  <td><code>.isApiError()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
+  <td><span class="tag tag-endpoint">API</span></td>
+  <td><code>makeRequest()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small><br><code>MPDefaultHttpClient</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
+  <td>无直接出边</td>
+  <td>MercadoPago/Net/MPDefaultHttpClient.php 中的 .isApiError() 节点。</td>
 </tr>
 <tr>
   <td>15</td>
-  <td><code>.addTrackingHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>.isLastRetry()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>addHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>MercadoPagoClient</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td><code>headerExists()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td>MercadoPago/Client/MercadoPagoClient.php 中的 .addTrackingHeaders() 节点。</td>
+  <td><code>MPDefaultHttpClient</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small><br><code>send()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
+  <td>无直接出边</td>
+  <td>MercadoPago/Net/MPDefaultHttpClient.php 中的 .isLastRetry() 节点。</td>
 </tr>
 <tr>
   <td>16</td>
-  <td><code>.headerExists()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>addDefaultHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>addTrackingHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>MercadoPagoClient</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>MPHttpClient.php</code><br><small style="color:var(--muted)">MercadoPago/Net/MPHttpClient.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>MercadoPago/Client/MercadoPagoClient.php 中的 .headerExists() 节点。</td>
+  <td>MercadoPago/Net/MPHttpClient.php 中的 MPHttpClient.php 节点。</td>
 </tr>
 <tr>
   <td>17</td>
-  <td><code>.getAccessToken()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>send()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPHttpClient.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>addDefaultHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>MercadoPagoClient</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>MercadoPago/Client/MercadoPagoClient.php 中的 .getAccessToken() 节点。</td>
+  <td>MercadoPago/Net/MPHttpClient.php 中的 send() 节点。</td>
 </tr>
 <tr>
   <td>18</td>
-  <td><code>.shouldAddIdempotencyKey()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>addDefaultHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>MercadoPagoClient</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>MPRequest.php</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>MercadoPago/Client/MercadoPagoClient.php 中的 .shouldAddIdempotencyKey() 节点。</td>
+  <td>MercadoPago/Net/MPRequest.php 中的 MPRequest.php 节点。</td>
 </tr>
 <tr>
   <td>19</td>
-  <td><code>.getIdempotencyKey()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>addDefaultHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>MercadoPagoClient</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td><code>generateUUID()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td>MercadoPago/Client/MercadoPagoClient.php 中的 .getIdempotencyKey() 节点。</td>
+  <td><code>MPRequest</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>MercadoPagoClient.php</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>__construct()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small><br><code>getConnectionTimeout()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small><br><code>getHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small><br>+3 个更多</td>
+  <td>MercadoPago/Net/MPRequest.php 中的 MPRequest 节点。</td>
 </tr>
 <tr>
   <td>20</td>
-  <td><code>.addConnectionTimeout()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>.__construct()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>buildRequest()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>MercadoPagoClient</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>MPRequest</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small></td>
   <td>无直接出边</td>
-  <td>MercadoPago/Client/MercadoPagoClient.php 中的 .addConnectionTimeout() 节点。</td>
+  <td>MercadoPago/Net/MPRequest.php 中的 .__construct() 节点。</td>
 </tr>
 <tr>
   <td>21</td>
-  <td><code>.generateUUID()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>.getMethod()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>getIdempotencyKey()</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small><br><code>MercadoPagoClient</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>MPRequest</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small></td>
   <td>无直接出边</td>
-  <td>MercadoPago/Client/MercadoPagoClient.php 中的 .generateUUID() 节点。</td>
+  <td>MercadoPago/Net/MPRequest.php 中的 .getMethod() 节点。</td>
 </tr>
 <tr>
   <td>22</td>
-  <td><code>UserClient.php</code><br><small style="color:var(--muted)">Client/User/UserClient.php</small></td>
-  <td><span class="tag tag-cmd">入口</span></td>
-  <td><code>MercadoPagoClient</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
-  <td><code>HttpMethod.php</code><br><small style="color:var(--muted)">MercadoPago/Net/HttpMethod.php</small><br><code>MPHttpClient</code><br><code>Serializer.php</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small><br>+1 个更多</td>
-  <td>Client/User/UserClient.php 中的 UserClient.php 节点。</td>
+  <td><code>.getUri()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>MPRequest</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small></td>
+  <td>无直接出边</td>
+  <td>MercadoPago/Net/MPRequest.php 中的 .getUri() 节点。</td>
 </tr>
 <tr>
   <td>23</td>
-  <td><code>UserClient</code><br><small style="color:var(--muted)">Client/User/UserClient.php</small></td>
-  <td><span class="tag tag-cmd">入口</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>__construct()</code><br><small style="color:var(--muted)">Client/User/UserClient.php</small><br><code>get()</code><br><small style="color:var(--muted)">Client/User/UserClient.php</small></td>
-  <td>Client/User/UserClient.php 中的 UserClient 节点。</td>
+  <td><code>.getHeaders()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>MPRequest</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small></td>
+  <td>无直接出边</td>
+  <td>MercadoPago/Net/MPRequest.php 中的 .getHeaders() 节点。</td>
 </tr>
 <tr>
   <td>24</td>
-  <td><code>.__construct()</code><br><small style="color:var(--muted)">Client/User/UserClient.php</small></td>
+  <td><code>.getPayload()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>UserClient</code><br><small style="color:var(--muted)">Client/User/UserClient.php</small></td>
+  <td><code>MPRequest</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small></td>
   <td>无直接出边</td>
-  <td>Client/User/UserClient.php 中的 .__construct() 节点。</td>
+  <td>MercadoPago/Net/MPRequest.php 中的 .getPayload() 节点。</td>
 </tr>
 <tr>
   <td>25</td>
-  <td><code>MPHttpClient</code><br><small style="color:var(--muted)"></small></td>
-  <td><span class="tag tag-cmd">入口</span></td>
-  <td><code>UserClient.php</code><br><small style="color:var(--muted)">Client/User/UserClient.php</small></td>
+  <td><code>.getConnectionTimeout()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>MPRequest</code><br><small style="color:var(--muted)">MercadoPago/Net/MPRequest.php</small></td>
   <td>无直接出边</td>
-  <td>项目 中的 MPHttpClient 节点。</td>
+  <td>MercadoPago/Net/MPRequest.php 中的 .getConnectionTimeout() 节点。</td>
 </tr>
 <tr>
   <td>26</td>
-  <td><code>.get()</code><br><small style="color:var(--muted)">Client/User/UserClient.php</small></td>
+  <td><code>.setResponse()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>UserClient</code><br><small style="color:var(--muted)">Client/User/UserClient.php</small></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>Client/User/UserClient.php 中的 .get() 节点。</td>
+  <td>MercadoPago/Net/MPResource.php 中的 .setResponse() 节点。</td>
 </tr>
 <tr>
   <td>27</td>
-  <td><code>User</code><br><small style="color:var(--muted)"></small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>UserClient.php</code><br><small style="color:var(--muted)">Client/User/UserClient.php</small></td>
+  <td><code>.getResponse()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>项目 中的 User 节点。</td>
+  <td>MercadoPago/Net/MPResource.php 中的 .getResponse() 节点。</td>
 </tr>
 <tr>
   <td>28</td>
-  <td><code>ClassLoader.php</code><br><small style="color:var(--muted)">vendor/composer/ClassLoader.php</small></td>
+  <td><code>MPResponse.php</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResponse.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
-  <td>vendor/composer/ClassLoader.php 中的 ClassLoader.php 节点。</td>
+  <td>MercadoPago/Net/MPResponse.php 中的 MPResponse.php 节点。</td>
 </tr>
 <tr>
   <td>29</td>
-  <td><code>ClassLoader</code><br><small style="color:var(--muted)">vendor/composer/ClassLoader.php</small></td>
+  <td><code>MPResponse</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResponse.php</small></td>
   <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>__construct()</code><br><small style="color:var(--muted)">vendor/composer/ClassLoader.php</small><br><code>add()</code><br><small style="color:var(--muted)">vendor/composer/ClassLoader.php</small><br><code>addClassMap()</code><br><small style="color:var(--muted)">vendor/composer/ClassLoader.php</small><br>+21 个更多</td>
-  <td>vendor/composer/ClassLoader.php 中的 ClassLoader 节点。</td>
+  <td><code>MercadoPagoClient.php</code><br><small style="color:var(--muted)">MercadoPago/Client/MercadoPagoClient.php</small></td>
+  <td><code>__construct()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResponse.php</small><br><code>getContent()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResponse.php</small><br><code>getStatusCode()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResponse.php</small></td>
+  <td>MercadoPago/Net/MPResponse.php 中的 MPResponse 节点。</td>
 </tr>
 <tr>
   <td>30</td>
-  <td><code>.__construct()</code><br><small style="color:var(--muted)">vendor/composer/ClassLoader.php</small></td>
+  <td><code>.__construct()</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResponse.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>ClassLoader</code><br><small style="color:var(--muted)">vendor/composer/ClassLoader.php</small></td>
+  <td><code>MPResponse</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResponse.php</small></td>
   <td>无直接出边</td>
-  <td>vendor/composer/ClassLoader.php 中的 .__construct() 节点。</td>
+  <td>MercadoPago/Net/MPResponse.php 中的 .__construct() 节点。</td>
 </tr>
 </table>
 
@@ -4863,7 +4863,7 @@ flowchart LR
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>覆盖节点</th></tr>
       <tr><td><code>.agents/BRAND.md</code></td><td>52 个节点</td></tr>
-<tr><td><code>vendor/composer/ClassLoader.php</code></td><td>26 个节点</td></tr>
+<tr><td><code>vendor/composer/ClassLoader.php</code></td><td>25 个节点</td></tr>
 <tr><td><code>mercadopago/dx-php/CHANGELOG.md</code></td><td>25 个节点</td></tr>
 <tr><td><code>src/Adapter/AdapterInterface.php</code></td><td>20 个节点</td></tr>
 <tr><td><code>src/Adapter/OAuth2.php</code></td><td>16 个节点</td></tr>
@@ -4874,7 +4874,7 @@ flowchart LR
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x421, 方法 x305, 导入 x110, 调用 x87。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x429, 方法 x315, 导入 x119, references x83。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -4885,17 +4885,17 @@ flowchart LR
   <div class="card">
     <h4>Graph</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>Nodes</td><td>3047</td></tr>
-      <tr><td>Edges</td><td>4587</td></tr>
+      <tr><td>Nodes</td><td>3050</td></tr>
+      <tr><td>Edges</td><td>4595</td></tr>
       <tr><td>Hyperedges</td><td>0</td></tr>
-      <tr><td>Communities</td><td>457</td></tr>
+      <tr><td>Communities</td><td>455</td></tr>
       <tr><td>Documented Sections</td><td>15</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Edge Confidence</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>EXTRACTED</td><td>4294</td></tr>
+      <tr><td>EXTRACTED</td><td>4302</td></tr>
       <tr><td>INFERRED</td><td>293</td></tr>
       <tr><td>AMBIGUOUS</td><td>0</td></tr>
     </table>
@@ -4904,7 +4904,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>usgar-redesign — Architecture Documentation</p>
-  <p>Generated: 2026-07-29 15:57 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-07-29 16:12 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

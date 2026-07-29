@@ -515,8 +515,8 @@
     "semantic_hash": ""
   },
   "public/index.php": {
-    "mtime": 1785339384.8471968,
-    "ast_hash": "91b3992430c180eec9121de123e8ab32",
+    "mtime": 1785341409.4907827,
+    "ast_hash": "8b24e6ab514fa3dc2cb7831b21f492b4",
     "semantic_hash": ""
   },
   "scripts/run-exhaustive-tests.php": {
@@ -3617,6 +3617,11 @@
   "tests/test_sdk_webhook.php": {
     "mtime": 1785340444.463566,
     "ast_hash": "0a35dcc7cd213fa943934233111b7d21",
+    "semantic_hash": ""
+  },
+  "app/Features/Health/Actions/WebhookDebugAction.php": {
+    "mtime": 1785341310.5464764,
+    "ast_hash": "09e1cc6b9334d252cd7d50b395f31984",
     "semantic_hash": ""
   }
 }

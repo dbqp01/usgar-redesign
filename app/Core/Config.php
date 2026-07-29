@@ -11,6 +11,7 @@ namespace App\Core;
 class Config {
     private static ?Config $instance = null;
     private array $cache = [];
+    private bool $envFileFound = false;
 
     private function __construct() {
         $this->loadEnv();
@@ -59,9 +60,26 @@ class Config {
 
     /**
      * Verifica si el entorno actual es produccion.
+     * Auto-detecta produccion como safety net:
+     * Si ENVIRONMENT no fue configurado explicitamente y estamos en un servidor
+     * con 'public_html' en DOCUMENT_ROOT (Hostinger/shared hosting), asume produccion.
      */
     public static function isProduction(): bool {
-        return self::get('ENVIRONMENT', 'development') === 'production';
+        $env = self::get('ENVIRONMENT');
+
+        // Si fue configurado explicitamente, respetar
+        if ($env !== null && $env !== '') {
+            return $env === 'production';
+        }
+
+        // Auto-deteccion: si DOCUMENT_ROOT contiene 'public_html', estamos en hosting
+        $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
+        if (str_contains($docRoot, 'public_html')) {
+            return true;
+        }
+
+        // Fallback: development
+        return false;
     }
 
     /**
@@ -107,8 +125,14 @@ class Config {
         }
 
         if (!$path) {
+            // No .env file found - log warning in case this is a production server
+            $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
+            if (str_contains($docRoot, 'public_html')) {
+                error_log('[Config] WARNING: No .env file found on what appears to be a production server. Checked: ' . implode(', ', $possiblePaths));
+            }
             return;
         }
+        $this->envFileFound = true;
 
         $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if ($lines === false) {
