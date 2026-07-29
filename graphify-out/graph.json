@@ -4,6 +4,47 @@
   "graph": {},
   "nodes": [
     {
+      "label": "pre-commit",
+      "file_type": "code",
+      "source_file": ".githooks/pre-commit",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "githooks_pre_commit",
+      "community": 54,
+      "community_name": "Spring Boot Security Audit Guide",
+      "norm_label": "pre-commit"
+    },
+    {
+      "label": "pre-commit script",
+      "file_type": "code",
+      "source_file": ".githooks/pre-commit",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "githooks_pre_commit__entry",
+      "community": 54,
+      "community_name": "Spring Boot Security Audit Guide",
+      "norm_label": "pre-commit script"
+    },
+    {
+      "label": "astro.config.mjs",
+      "file_type": "code",
+      "source_file": "astro.config.mjs",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "astro_config",
+      "community": 22,
+      "community_name": "Phase 1: \u6761\u4ef6\u5206\u6790 (Pre-Verification)",
+      "norm_label": "astro.config.mjs"
+    },
+    {
       "label": "../components/FAQSection.astro",
       "file_type": "code",
       "source_file": "src/components/FAQSection.astro",
@@ -785,8 +826,8 @@
       "source_file": "app/Core/Validator.php",
       "source_location": "L11",
       "_origin": "ast",
-      "community": 112,
-      "community_name": "Validator",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": "validator",
       "id": "app_core_validator_validator"
     },
@@ -796,8 +837,8 @@
       "source_file": "app/Core/Validator.php",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 112,
-      "community_name": "Validator",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": ".requirefields()",
       "id": "app_core_validator_validator_requirefields"
     },
@@ -807,8 +848,8 @@
       "source_file": "app/Core/Validator.php",
       "source_location": "L39",
       "_origin": "ast",
-      "community": 112,
-      "community_name": "Validator",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": ".daterange()",
       "id": "app_core_validator_validator_daterange"
     },
@@ -818,8 +859,8 @@
       "source_file": "app/Core/Validator.php",
       "source_location": "L81",
       "_origin": "ast",
-      "community": 112,
-      "community_name": "Validator",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": ".email()",
       "id": "app_core_validator_validator_email"
     },
@@ -829,8 +870,8 @@
       "source_file": "app/Core/Validator.php",
       "source_location": "L94",
       "_origin": "ast",
-      "community": 112,
-      "community_name": "Validator",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": ".positiveint()",
       "id": "app_core_validator_validator_positiveint"
     },
@@ -840,8 +881,8 @@
       "source_file": "app/Core/Validator.php",
       "source_location": "L105",
       "_origin": "ast",
-      "community": 112,
-      "community_name": "Validator",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": ".isrealdate()",
       "id": "app_core_validator_validator_isrealdate"
     },
@@ -2165,8 +2206,8 @@
       "source_file": "app/Features/Booking/Domain/Listeners/SyncChannexBookingListener.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 54,
-      "community_name": "Spring Boot Security Audit Guide",
+      "community": 85,
+      "community_name": "Sinks & Sources Reference",
       "norm_label": "syncchannexbookinglistener.php",
       "id": "app_features_booking_domain_listeners_syncchannexbookinglistener"
     },
@@ -2176,8 +2217,8 @@
       "source_file": "app/Features/Booking/Domain/Listeners/SyncChannexBookingListener.php",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 54,
-      "community_name": "Spring Boot Security Audit Guide",
+      "community": 85,
+      "community_name": "Sinks & Sources Reference",
       "norm_label": "syncchannexbookinglistener",
       "id": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener"
     },
@@ -2187,8 +2228,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 54,
-      "community_name": "Spring Boot Security Audit Guide",
+      "community": 85,
+      "community_name": "Sinks & Sources Reference",
       "norm_label": "listenerinterface",
       "id": "listenerinterface"
     },
@@ -2198,8 +2239,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 54,
-      "community_name": "Spring Boot Security Audit Guide",
+      "community": 85,
+      "community_name": "Sinks & Sources Reference",
       "norm_label": "channelmanagerportinterface",
       "id": "app_features_booking_domain_listeners_syncchannexbookinglistener_php_channelmanagerportinterface"
     },
@@ -2209,8 +2250,8 @@
       "source_file": "app/Features/Booking/Domain/Listeners/SyncChannexBookingListener.php",
       "source_location": "L20",
       "_origin": "ast",
-      "community": 54,
-      "community_name": "Spring Boot Security Audit Guide",
+      "community": 85,
+      "community_name": "Sinks & Sources Reference",
       "norm_label": ".__construct()",
       "id": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener_construct"
     },
@@ -2220,8 +2261,8 @@
       "source_file": "app/Features/Booking/Domain/Listeners/SyncChannexBookingListener.php",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 54,
-      "community_name": "Spring Boot Security Audit Guide",
+      "community": 85,
+      "community_name": "Sinks & Sources Reference",
       "norm_label": ".handle()",
       "id": "app_features_booking_domain_listeners_syncchannexbookinglistener_syncchannexbookinglistener_handle"
     },
@@ -2231,8 +2272,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 54,
-      "community_name": "Spring Boot Security Audit Guide",
+      "community": 85,
+      "community_name": "Sinks & Sources Reference",
       "norm_label": "eventinterface",
       "id": "eventinterface"
     },
@@ -2484,8 +2525,8 @@
       "source_file": "app/Features/Shared/Adapters/QloAppAdapter.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
+      "community": 15,
+      "community_name": "\u52a8\u6001\u4ee3\u7801\u5ba1\u8ba1\u6307\u5357 (Dynamic Code Audit Guide)",
       "norm_label": "qloappadapter.php",
       "id": "app_features_shared_adapters_qloappadapter"
     },
@@ -2506,8 +2547,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 85,
-      "community_name": "Sinks & Sources Reference",
+      "community": 15,
+      "community_name": "\u52a8\u6001\u4ee3\u7801\u5ba1\u8ba1\u6307\u5357 (Dynamic Code Audit Guide)",
       "norm_label": "pmsportinterface",
       "id": "pmsportinterface"
     },
@@ -3278,8 +3319,8 @@
       "source_file": "public/index.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "index.php",
       "id": "public_index"
     },
@@ -3762,8 +3803,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLogoutAction.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "authlogoutaction.php",
       "id": "app_features_auth_actions_authlogoutaction"
     },
@@ -3773,8 +3814,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLogoutAction.php",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "authlogoutaction",
       "id": "app_features_auth_actions_authlogoutaction_authlogoutaction"
     },
@@ -3784,8 +3825,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLogoutAction.php",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": ".__invoke()",
       "id": "app_features_auth_actions_authlogoutaction_authlogoutaction_invoke"
     },
@@ -3795,8 +3836,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "request",
       "id": "app_features_auth_actions_authlogoutaction_php_request"
     },
@@ -7623,8 +7664,8 @@
       "source_file": "app/Core/BookingStatus.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 120,
-      "community_name": "BookingStatus.php",
+      "community": 106,
+      "community_name": "ExtendHoldAction.php",
       "norm_label": "bookingstatus.php",
       "id": "app_core_bookingstatus"
     },
@@ -7634,8 +7675,8 @@
       "source_file": "app/Core/BookingStatus.php",
       "source_location": "L20",
       "_origin": "ast",
-      "community": 120,
-      "community_name": "BookingStatus.php",
+      "community": 106,
+      "community_name": "ExtendHoldAction.php",
       "norm_label": "isextendable()",
       "id": "app_core_bookingstatus_isextendable"
     },
@@ -7645,8 +7686,8 @@
       "source_file": "app/Core/BookingStatus.php",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 120,
-      "community_name": "BookingStatus.php",
+      "community": 106,
+      "community_name": "ExtendHoldAction.php",
       "norm_label": "isterminal()",
       "id": "app_core_bookingstatus_isterminal"
     },
@@ -7667,8 +7708,8 @@
       "source_file": "app/Core/Container.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 105,
-      "community_name": "Container",
+      "community": 0,
+      "community_name": "python.md",
       "norm_label": "container.php",
       "id": "app_core_container"
     },
@@ -7678,8 +7719,8 @@
       "source_file": "app/Core/Container.php",
       "source_location": "L13",
       "_origin": "ast",
-      "community": 105,
-      "community_name": "Container",
+      "community": 0,
+      "community_name": "python.md",
       "norm_label": "container",
       "id": "app_core_container_container"
     },
@@ -7689,8 +7730,8 @@
       "source_file": "app/Core/Container.php",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 105,
-      "community_name": "Container",
+      "community": 0,
+      "community_name": "python.md",
       "norm_label": ".getinstance()",
       "id": "app_core_container_container_getinstance"
     },
@@ -7700,8 +7741,8 @@
       "source_file": "app/Core/Container.php",
       "source_location": "L25",
       "_origin": "ast",
-      "community": 105,
-      "community_name": "Container",
+      "community": 0,
+      "community_name": "python.md",
       "norm_label": ".setinstance()",
       "id": "app_core_container_container_setinstance"
     },
@@ -7711,8 +7752,8 @@
       "source_file": "app/Core/Container.php",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 105,
-      "community_name": "Container",
+      "community": 0,
+      "community_name": "python.md",
       "norm_label": ".set()",
       "id": "app_core_container_container_set"
     },
@@ -7722,8 +7763,8 @@
       "source_file": "app/Core/Container.php",
       "source_location": "L33",
       "_origin": "ast",
-      "community": 105,
-      "community_name": "Container",
+      "community": 0,
+      "community_name": "python.md",
       "norm_label": ".bind()",
       "id": "app_core_container_container_bind"
     },
@@ -7733,8 +7774,8 @@
       "source_file": "app/Core/Container.php",
       "source_location": "L37",
       "_origin": "ast",
-      "community": 105,
-      "community_name": "Container",
+      "community": 0,
+      "community_name": "python.md",
       "norm_label": ".has()",
       "id": "app_core_container_container_has"
     },
@@ -7744,8 +7785,8 @@
       "source_file": "app/Core/Container.php",
       "source_location": "L41",
       "_origin": "ast",
-      "community": 105,
-      "community_name": "Container",
+      "community": 0,
+      "community_name": "python.md",
       "norm_label": ".get()",
       "id": "app_core_container_container_get"
     },
@@ -7777,8 +7818,8 @@
       "source_file": "app/Core/HttpException.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": "httpexception.php",
       "id": "app_core_httpexception"
     },
@@ -8217,8 +8258,8 @@
       "source_file": "app/Features/Auth/Actions/AuthMeAction.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "authmeaction.php",
       "id": "app_features_auth_actions_authmeaction"
     },
@@ -8228,8 +8269,8 @@
       "source_file": "app/Features/Auth/Actions/AuthMeAction.php",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "authmeaction",
       "id": "app_features_auth_actions_authmeaction_authmeaction"
     },
@@ -8239,8 +8280,8 @@
       "source_file": "app/Features/Auth/Actions/AuthMeAction.php",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": ".__invoke()",
       "id": "app_features_auth_actions_authmeaction_authmeaction_invoke"
     },
@@ -8250,8 +8291,8 @@
       "source_file": "app/Features/Auth/Actions/GetUserBookingsAction.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "getuserbookingsaction.php",
       "id": "app_features_auth_actions_getuserbookingsaction"
     },
@@ -8261,8 +8302,8 @@
       "source_file": "app/Features/Auth/Actions/GetUserBookingsAction.php",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "getuserbookingsaction",
       "id": "app_features_auth_actions_getuserbookingsaction_getuserbookingsaction"
     },
@@ -8272,8 +8313,8 @@
       "source_file": "app/Features/Auth/Actions/GetUserBookingsAction.php",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": ".__invoke()",
       "id": "app_features_auth_actions_getuserbookingsaction_getuserbookingsaction_invoke"
     },
@@ -8283,8 +8324,8 @@
       "source_file": "app/Features/Auth/SessionService.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "sessionservice.php",
       "id": "app_features_auth_sessionservice"
     },
@@ -9889,8 +9930,8 @@
       "source_file": "scripts/test_endpoints.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 120,
-      "community_name": "BookingStatus.php",
+      "community": 106,
+      "community_name": "ExtendHoldAction.php",
       "norm_label": "test_endpoints.php",
       "id": "scripts_test_endpoints"
     },
@@ -9988,8 +10029,8 @@
       "source_file": "tests/Unit/TestCase.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 85,
-      "community_name": "Sinks & Sources Reference",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": "testcase.php",
       "id": "tests_unit_testcase"
     },
@@ -10400,17 +10441,6 @@
       "community_name": "NestJS \u7279\u5b9a\u6f0f\u6d1e",
       "norm_label": "../frontend/services/bookingservice",
       "id": "c_users_akim_desktop_usgar_redesign_src_frontend_services_bookingservice"
-    },
-    {
-      "label": "astro.config.mjs",
-      "file_type": "code",
-      "source_file": "astro.config.mjs",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 22,
-      "community_name": "Phase 1: \u6761\u4ef6\u5206\u6790 (Pre-Verification)",
-      "norm_label": "astro.config.mjs",
-      "id": "astro_config"
     },
     {
       "label": "[slug].astro",
@@ -16424,8 +16454,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "middleware",
       "id": "middleware"
     },
@@ -16633,8 +16663,8 @@
       "source_file": "tests/Unit/Features/HandleMercadoPagoWebhookActionTest.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 85,
-      "community_name": "Sinks & Sources Reference",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": "handlemercadopagowebhookactiontest.php",
       "id": "tests_unit_features_handlemercadopagowebhookactiontest"
     },
@@ -16644,8 +16674,8 @@
       "source_file": "tests/Unit/Features/HandleMercadoPagoWebhookActionTest.php",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 85,
-      "community_name": "Sinks & Sources Reference",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": "handlemercadopagowebhookactiontest",
       "id": "tests_unit_features_handlemercadopagowebhookactiontest_handlemercadopagowebhookactiontest"
     },
@@ -16655,8 +16685,8 @@
       "source_file": "tests/Unit/Features/HandleMercadoPagoWebhookActionTest.php",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 85,
-      "community_name": "Sinks & Sources Reference",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": ".testpaymentgatewayportinterfacemethods()",
       "id": "tests_unit_features_handlemercadopagowebhookactiontest_handlemercadopagowebhookactiontest_testpaymentgatewayportinterfacemethods"
     },
@@ -16666,8 +16696,8 @@
       "source_file": "tests/Unit/Features/HandleMercadoPagoWebhookActionTest.php",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 85,
-      "community_name": "Sinks & Sources Reference",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": ".testchannelmanagerportinterfacecreatebooking()",
       "id": "tests_unit_features_handlemercadopagowebhookactiontest_handlemercadopagowebhookactiontest_testchannelmanagerportinterfacecreatebooking"
     },
@@ -17786,36 +17816,6 @@
       "community_name": "\u6587\u4ef6\u5305\u542b",
       "norm_label": "graphify_rebuild_log",
       "id": "githooks_post_commit_graphify_rebuild_log"
-    },
-    {
-      "label": "pre-commit",
-      "file_type": "code",
-      "source_file": ".githooks/pre-commit",
-      "source_location": "L1",
-      "metadata": {
-        "language": "bash",
-        "kind": "file"
-      },
-      "_origin": "ast",
-      "community": 471,
-      "community_name": "pre-commit",
-      "norm_label": "pre-commit",
-      "id": "c_users_akim_desktop_migracion_a_php_githooks_pre_commit"
-    },
-    {
-      "label": "pre-commit script",
-      "file_type": "code",
-      "source_file": ".githooks/pre-commit",
-      "source_location": "L1",
-      "metadata": {
-        "language": "bash",
-        "kind": "bash_entrypoint"
-      },
-      "_origin": "ast",
-      "community": 471,
-      "community_name": "pre-commit",
-      "norm_label": "pre-commit script",
-      "id": "c_users_akim_desktop_migracion_a_php_githooks_pre_commit__entry"
     },
     {
       "label": "compress-images.js",
@@ -19414,6 +19414,17 @@
     }
   ],
   "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".githooks/pre-commit",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "githooks_pre_commit",
+      "target": "githooks_pre_commit__entry",
+      "confidence_score": 1.0
+    },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
@@ -43441,17 +43452,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": ".githooks/pre-commit",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "c_users_akim_desktop_migracion_a_php_githooks_pre_commit",
-      "target": "c_users_akim_desktop_migracion_a_php_githooks_pre_commit__entry"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "scripts/compress-images.js",
       "source_location": "L16",
       "weight": 1.0,
@@ -44772,5 +44772,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "8feb1323b781dc6d68bdfd409f7c072fbf7a7742"
+  "built_at_commit": "84235c731523f55fb66f67c5ce2e08a9a908ca8d"
 }

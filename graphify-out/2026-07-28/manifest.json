@@ -225,7 +225,7 @@
     "semantic_hash": ""
   },
   "src/pages/index.astro": {
-    "mtime": 1785288295.5495148,
+    "mtime": 1785296744.437496,
     "ast_hash": "e92bd74b5259964aab8f462d188dccf7",
     "semantic_hash": ""
   },
@@ -430,9 +430,9 @@
     "semantic_hash": "07eebc830e6c1f722896500652320485"
   },
   "src/assets/logos/Logo usgar.png": {
-    "mtime": 1784492176.75273,
-    "ast_hash": "6869633c9ade8403f5970122b61a3440",
-    "semantic_hash": "6869633c9ade8403f5970122b61a3440"
+    "mtime": 1784492176.282991,
+    "ast_hash": "07eebc830e6c1f722896500652320485",
+    "semantic_hash": ""
   },
   "src/assets/rooms/doble-superior/01-doble-camas.jpg": {
     "mtime": 1784492177.2298708,
@@ -475,9 +475,9 @@
     "semantic_hash": "00c8b5ad3e78b4a5d2547c79e534af3e"
   },
   "public/videos/hero-video.mp4": {
-    "mtime": 1784492167.997527,
-    "ast_hash": "9ce23b2bdf8b4d588ade7184ce96550a",
-    "semantic_hash": "9ce23b2bdf8b4d588ade7184ce96550a"
+    "mtime": 1785296857.8435042,
+    "ast_hash": "d2c38b0117c4dd90ea8cff018bc66ca4",
+    "semantic_hash": ""
   },
   "public/videos/rooms/doble-superior.mp4": {
     "mtime": 1784492168.7638552,
@@ -535,8 +535,8 @@
     "semantic_hash": ""
   },
   "src/content/services/services.json": {
-    "mtime": 1784824377.1969824,
-    "ast_hash": "b27b5d4cbab45f48e9584051d740164b",
+    "mtime": 1785291050.601777,
+    "ast_hash": "57a87165b92f71e182660fb4c7d488e2",
     "semantic_hash": ""
   },
   "src/content/settings/settings.json": {

@@ -1,9 +1,9 @@
 {
   "hotelName": "USGAR Hotels",
-  "phone": "+51 984 000 000",
-  "phoneRaw": "51984000000",
-  "email": "info@usgarhotels.com",
-  "whatsappNumber": "51984000000",
+  "phone": "+51 992 559 943",
+  "phoneRaw": "51992559943",
+  "email": "info@usgarhoteles.com",
+  "whatsappNumber": "51992559943",
   "streetAddress": "759 Calle Hospital",
   "city": "Cusco",
   "region": "Cusco",
@@ -26,7 +26,7 @@
   "socialLinks": [
     {
       "platform": "instagram",
-      "url": "https://instagram.com/usgarhotels",
+      "url": "https://www.instagram.com/hotelesusgar/",
       "label": "Instagram"
     },
     {
@@ -36,12 +36,12 @@
     },
     {
       "platform": "tripadvisor",
-      "url": "https://tripadvisor.com/usgarhotels",
+      "url": "https://www.tripadvisor.com.pe/Hotel_Review-g294314-d12461523-Reviews-Usgar_San_Pedro_Boutique-Cusco_Cusco_Region.html",
       "label": "TripAdvisor"
     },
     {
       "platform": "booking",
-      "url": "https://booking.com/usgarhotels",
+      "url": "https://www.booking.com/hotel/pe/chavin-imperio-del-sol.es.html?aid=311839&label=chavin-imperio-del-sol-zuUKmuTcIrFOMWxyHhV97gS539509797055%3Apl%3Ata%3Ap1%3Ap2%3Aac%3Aap%3Aneg%3Afi%3Atiaud-2395231936498%3Akwd-2440927734184%3Alp9060927%3Ali%3Adec%3Adm%3Appccp%3DUmFuZG9tSVYkc2RlIyh9YcUc3ZfdbbfEuXomSVxn0TU&sid=cde5b6d1678ed661cd007c4cc75870a4&dest_id=-345275&dest_type=city&dist=0&group_adults=2&group_children=0&hapos=1&hpos=1&no_rooms=1&req_adults=2&req_children=0&room1=A%2CA&sb_price_type=total&sr_order=popularity&srepoch=1782702781&srpvid=7032169be43f00ba&type=total&ucfs=1&",
       "label": "Booking.com"
     }
   ]

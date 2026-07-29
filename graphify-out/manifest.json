@@ -1,8 +1,8 @@
 {
   ".githooks/pre-commit": {
-    "mtime": 1784492136.760771,
-    "ast_hash": "3c82cb24f7644ab50c047970c2c2cc70",
-    "semantic_hash": "3c82cb24f7644ab50c047970c2c2cc70"
+    "mtime": 1785297389.2946286,
+    "ast_hash": "77222115d5ceb9feb315c7dd7ac5a7ef",
+    "semantic_hash": ""
   },
   ".vscode/settings.json": {
     "mtime": 1784492138.8896902,
@@ -10,8 +10,8 @@
     "semantic_hash": "36bb78d8017a7890cb547609c3a30d60"
   },
   "astro.config.mjs": {
-    "mtime": 1784823617.0312357,
-    "ast_hash": "45f49e6a2052d05aac22f9c92b1ff04c",
+    "mtime": 1785297092.239596,
+    "ast_hash": "dc011ef50d0e85ead58e72e20c904daa",
     "semantic_hash": ""
   },
   "package.json": {
@@ -475,8 +475,8 @@
     "semantic_hash": "00c8b5ad3e78b4a5d2547c79e534af3e"
   },
   "public/videos/hero-video.mp4": {
-    "mtime": 1785296857.8435042,
-    "ast_hash": "d2c38b0117c4dd90ea8cff018bc66ca4",
+    "mtime": 1785298018.8900778,
+    "ast_hash": "2eca4572150bb6d486bea1e66dd3d3b5",
     "semantic_hash": ""
   },
   "public/videos/rooms/doble-superior.mp4": {

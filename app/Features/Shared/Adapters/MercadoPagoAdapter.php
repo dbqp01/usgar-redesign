@@ -26,7 +26,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         if (Config::isProduction() && str_starts_with($url, 'http://')) {
             $url = str_replace('http://', 'https://', $url);
         }
-        $this->siteUrl = $url;
+        $this->siteUrl = rtrim($url, '/');
     }
 
     public function createPreference(

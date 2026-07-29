@@ -84,6 +84,13 @@ class HandleMercadoPagoWebhookAction {
             return;
         }
 
+        // 1.5 Interceptar el botón "Simular Notificación" de Mercado Pago
+        if ($paymentIdStr === '123456') {
+            Logger::info("HandleMercadoPagoWebhookAction: Simulación de Mercado Pago recibida y validada correctamente.");
+            Response::json(['success' => true, 'message' => '¡Simulación de Mercado Pago exitosa! La firma fue validada correctamente.']);
+            return;
+        }
+
         // Obtener detalles del pago desde la API de Mercado Pago
         $paymentDetails = $this->paymentGateway->getPaymentDetails($paymentIdStr);
         if (!$paymentDetails) {
