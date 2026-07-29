@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "src/pages/book/success.astro": {
-    "mtime": 1785047230.3772075,
-    "ast_hash": "6a6c4313213e2324a47f5d577d75472c",
+    "mtime": 1785347971.6004133,
+    "ast_hash": "155ab23697e0d6743edea636939df6fb",
     "semantic_hash": ""
   },
   "src/pages/contact.astro": {
@@ -283,71 +283,6 @@
     "mtime": 1785130426.5768795,
     "ast_hash": "a5734afb75c0b68d8484b10ca165febc",
     "semantic_hash": ""
-  },
-  ".agents/skills/mercadopago-mp-integrate/SKILL.md": {
-    "mtime": 1784908642.9442377,
-    "ast_hash": "f9618fcc7317f1547971c80f0fd0d315",
-    "semantic_hash": ""
-  },
-  ".agents/skills/mercadopago-mp-integrate/references/guides/bricks.md": {
-    "mtime": 1784908642.9482322,
-    "ast_hash": "72bd34378c003f2dabfbb6d625738930",
-    "semantic_hash": ""
-  },
-  ".agents/skills/mercadopago-mp-integrate/references/guides/checkout-api.md": {
-    "mtime": 1784908642.9492333,
-    "ast_hash": "1234785c4fd273031c28cc007700babc",
-    "semantic_hash": ""
-  },
-  ".agents/skills/mercadopago-mp-integrate/references/guides/checkout-pro.md": {
-    "mtime": 1784908642.9502325,
-    "ast_hash": "a4a69ddc094a5eb12d90a385dccd645e",
-    "semantic_hash": ""
-  },
-  ".agents/skills/mercadopago-mp-integrate/references/guides/marketplace.md": {
-    "mtime": 1784908642.9512308,
-    "ast_hash": "bb23fc49eece42a791c8e390c980d83c",
-    "semantic_hash": ""
-  },
-  ".agents/skills/mercadopago-mp-integrate/references/guides/point.md": {
-    "mtime": 1784908642.9522345,
-    "ast_hash": "b31bd6297fd8d3819113d1b3f8e7bbcd",
-    "semantic_hash": ""
-  },
-  ".agents/skills/mercadopago-mp-integrate/references/guides/qr.md": {
-    "mtime": 1784908642.9522345,
-    "ast_hash": "a15e4da4a84ae7870d357b41f0e38a5d",
-    "semantic_hash": ""
-  },
-  ".agents/skills/mercadopago-mp-integrate/references/guides/subscriptions.md": {
-    "mtime": 1784908642.953232,
-    "ast_hash": "8392a728d6d7b967eff2c3b8e72ce980",
-    "semantic_hash": ""
-  },
-  ".agents/skills/mercadopago-mp-integrate/references/guides/webhooks.md": {
-    "mtime": 1784908642.953232,
-    "ast_hash": "9b6f3d2cfb613e4a74675adc9a9d42ad",
-    "semantic_hash": ""
-  },
-  ".agents/skills/mercadopago-mp-integrate/references/products.md": {
-    "mtime": 1783914015.3586087,
-    "ast_hash": "4e846cb4d09cf2b61a7f204b9efe16cd",
-    "semantic_hash": "4e846cb4d09cf2b61a7f204b9efe16cd"
-  },
-  ".agents/skills/mercadopago-mp-integrate/references/recommendation-template.md": {
-    "mtime": 1784908642.9462292,
-    "ast_hash": "e98d5a5aee2cfc44613587f3e3c5556f",
-    "semantic_hash": ""
-  },
-  ".agents/skills/mercadopago-mp-integrate/references/terminology-rules.md": {
-    "mtime": 1784908642.9462292,
-    "ast_hash": "634527635206ac015e27a2e592dc8d04",
-    "semantic_hash": ""
-  },
-  ".agents/skills/mercadopago-mp-webhooks/SKILL.md": {
-    "mtime": 1783914073.2554798,
-    "ast_hash": "6b504f9e5c7c13f336e587334aebd632",
-    "semantic_hash": "6b504f9e5c7c13f336e587334aebd632"
   },
   ".agents/skills/php-8-modern/SKILL.md": {
     "mtime": 1783914335.400207,
@@ -515,8 +450,8 @@
     "semantic_hash": ""
   },
   "public/index.php": {
-    "mtime": 1785341409.4907827,
-    "ast_hash": "8b24e6ab514fa3dc2cb7831b21f492b4",
+    "mtime": 1785347934.337973,
+    "ast_hash": "1b9621d30748a4f0625a505177c05ef6",
     "semantic_hash": ""
   },
   "scripts/run-exhaustive-tests.php": {
@@ -1445,13 +1380,13 @@
     "semantic_hash": ""
   },
   "app/Core/BookingStatus.php": {
-    "mtime": 1784908675.138114,
-    "ast_hash": "988d24683e2d9eab6a69e22615fb532f",
+    "mtime": 1785347931.5610743,
+    "ast_hash": "52fb19c29a8f7460f34de05782ac40fe",
     "semantic_hash": ""
   },
   "app/Core/Config.php": {
-    "mtime": 1785342172.5089784,
-    "ast_hash": "66a4bc864930e06f7ff1ab59844ea36e",
+    "mtime": 1785347934.9375243,
+    "ast_hash": "2a9e26dbda8ff16b17e7ba267e5c6bce",
     "semantic_hash": ""
   },
   "app/Core/Container.php": {
@@ -1465,8 +1400,8 @@
     "semantic_hash": ""
   },
   "app/Core/Events/EventDispatcher.php": {
-    "mtime": 1784874878.8220086,
-    "ast_hash": "eafc4ea34cd536f0aaed199f5e5959e7",
+    "mtime": 1785347931.4395747,
+    "ast_hash": "dc6e188fd3c3baa660b81cf1c69ffc94",
     "semantic_hash": ""
   },
   "app/Core/Events/EventInterface.php": {
@@ -1570,8 +1505,8 @@
     "semantic_hash": ""
   },
   "app/Features/Booking/Actions/CreateBookingAction.php": {
-    "mtime": 1785214190.505901,
-    "ast_hash": "f29ba8986c7453ef4f9a57e5b7816e24",
+    "mtime": 1785347931.9038815,
+    "ast_hash": "9d6033a1bd282da82b7fe845190b7954",
     "semantic_hash": ""
   },
   "app/Features/Booking/Actions/ExtendHoldAction.php": {
@@ -1580,8 +1515,8 @@
     "semantic_hash": ""
   },
   "app/Features/Booking/Actions/GetBookingStatusAction.php": {
-    "mtime": 1785214197.2118876,
-    "ast_hash": "1b0583c99e85ccf312d65df653a58eb8",
+    "mtime": 1785347936.1953635,
+    "ast_hash": "a76b55d8cffc5904462463e07ae92fa3",
     "semantic_hash": ""
   },
   "app/Features/Booking/Domain/Events/BookingPaidEvent.php": {
@@ -1604,11 +1539,6 @@
     "ast_hash": "955c5d07f76154a70b01fed747750876",
     "semantic_hash": ""
   },
-  "app/Features/Booking/ProvisionalBooking.php": {
-    "mtime": 1784908675.1530764,
-    "ast_hash": "29d52094b282bcf1d749f907c837b50e",
-    "semantic_hash": ""
-  },
   "app/Features/Cron/Actions/CleanExpiredCartsAction.php": {
     "mtime": 1784908675.1580343,
     "ast_hash": "41a994953c6333af8ad5f29f85e1e8ea",
@@ -1620,23 +1550,23 @@
     "semantic_hash": ""
   },
   "app/Features/Rooms/Actions/GetRoomsAction.php": {
-    "mtime": 1785214226.4409003,
-    "ast_hash": "be0adffa67f0f1929d32b591a8c26d8d",
+    "mtime": 1785347941.4401014,
+    "ast_hash": "f0e5215673185ea0dd8d088d23fce620",
     "semantic_hash": ""
   },
   "app/Features/Shared/Adapters/ChannexAdapter.php": {
-    "mtime": 1785167947.8224754,
-    "ast_hash": "d2c19e1c6d38eb334ed59df694daffcd",
+    "mtime": 1785347931.8424554,
+    "ast_hash": "56f422feccfc57ab928db6dfd22edec7",
     "semantic_hash": ""
   },
   "app/Features/Shared/Adapters/MercadoPagoAdapter.php": {
-    "mtime": 1785345970.162719,
-    "ast_hash": "33c5e2edcebe572199b4991b3c7c816f",
+    "mtime": 1785347931.4107697,
+    "ast_hash": "fc2fb966873f554e3cc37a70f6925a4f",
     "semantic_hash": ""
   },
   "app/Features/Shared/Adapters/QloAppAdapter.php": {
-    "mtime": 1785202993.8220766,
-    "ast_hash": "cfe513a46e8763b07b7662b57f43cac2",
+    "mtime": 1785347933.0067532,
+    "ast_hash": "e32e0745cb4a6547b10371e8e0bedde8",
     "semantic_hash": ""
   },
   "app/Features/Shared/ChannexRoomMapper.php": {
@@ -1670,8 +1600,8 @@
     "semantic_hash": ""
   },
   "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php": {
-    "mtime": 1785345254.3071654,
-    "ast_hash": "f5b97a02c6d30cf574ac11fa58502fb8",
+    "mtime": 1785347922.9501405,
+    "ast_hash": "e37cef8f93476eace64e7bbf5e1b301d",
     "semantic_hash": ""
   },
   "src/services/bookingService.ts": {

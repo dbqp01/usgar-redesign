@@ -1,7 +1,7 @@
 # Graph Report - usgar-redesign  (2026-07-29)
 
 ## Corpus Check
-- 663 files · ~595,253 words
+- 663 files · ~595,275 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `2b6abad3`
+- Built from commit: `2db1040a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

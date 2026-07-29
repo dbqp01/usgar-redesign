@@ -65,13 +65,22 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         $firstName = $nameParts[0] ?? $guestName;
         $lastName = $nameParts[1] ?? '';
 
+        $currencyId = Config::get('MERCADO_PAGO_CURRENCY', 'PEN');
+        $finalPrice = $totalPrice;
+
+        // QloApps prices are in USD. If MP requires PEN, we must convert it.
+        if ($currencyId === 'PEN') {
+            $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN', 3.80);
+            $finalPrice = $totalPrice * $exchangeRate;
+        }
+
         $payload = [
             'items' => [[
                 'title'       => "Reserva USGAR Hotels — Habitacion " . $idRoomType,
                 'description' => "{$nights} noches ({$checkIn} → {$checkOut})",
                 'quantity'    => 1,
-                'unit_price'  => (float) round($totalPrice, 2),
-                'currency_id' => Config::get('MERCADO_PAGO_CURRENCY', 'PEN'),
+                'unit_price'  => (float) round($finalPrice, 2),
+                'currency_id' => $currencyId,
             ]],
             'payer' => [
                 'name'    => $firstName,
