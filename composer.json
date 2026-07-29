@@ -1,5 +1,6 @@
 {
     "require": {
-        "hybridauth/hybridauth": "^3.13"
+        "hybridauth/hybridauth": "^3.13",
+        "mercadopago/dx-php": "^3.12"
     }
 }

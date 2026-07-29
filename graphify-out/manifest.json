@@ -155,8 +155,8 @@
     "semantic_hash": ""
   },
   "src/pages/contact.astro": {
-    "mtime": 1785287966.3339438,
-    "ast_hash": "8b745b59325018602214bfefd3ce3d21",
+    "mtime": 1785298532.5469425,
+    "ast_hash": "787e95120c214ba6e2cff59fba7815ef",
     "semantic_hash": ""
   },
   "src/pages/es/book.astro": {
@@ -540,8 +540,8 @@
     "semantic_hash": ""
   },
   "src/content/settings/settings.json": {
-    "mtime": 1784824377.1974475,
-    "ast_hash": "5234b6f51ceb64f27d4f89b9607a3e80",
+    "mtime": 1785300522.158681,
+    "ast_hash": "da8b5e51ced1b3aed98ea19c876aef9e",
     "semantic_hash": ""
   },
   "src/data/attractions.ts": {
@@ -1630,8 +1630,8 @@
     "semantic_hash": ""
   },
   "app/Features/Shared/Adapters/MercadoPagoAdapter.php": {
-    "mtime": 1785198469.2402964,
-    "ast_hash": "7154e5714c8243c10ab9176ede12be02",
+    "mtime": 1785306223.0580175,
+    "ast_hash": "a01294b587e126f87ab8b449ea9d375a",
     "semantic_hash": ""
   },
   "app/Features/Shared/Adapters/QloAppAdapter.php": {
@@ -1670,8 +1670,8 @@
     "semantic_hash": ""
   },
   "app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php": {
-    "mtime": 1785215648.9337852,
-    "ast_hash": "60d6b8366c06e45ea1342a74ca5cff97",
+    "mtime": 1785305500.2322123,
+    "ast_hash": "3c8445b56c034e0a878c1c07ac1e5b41",
     "semantic_hash": ""
   },
   "src/services/bookingService.ts": {

@@ -6,5 +6,6 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'MercadoPago\\' => array($vendorDir . '/mercadopago/dx-php/src/MercadoPago'),
     'Hybridauth\\' => array($vendorDir . '/hybridauth/hybridauth/src'),
 );

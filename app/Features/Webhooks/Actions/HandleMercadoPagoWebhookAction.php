@@ -61,18 +61,28 @@ class HandleMercadoPagoWebhookAction {
 
         $signatureHeader = $request->getHeader('x-signature') ?? '';
         $requestId = $request->getHeader('x-request-id') ?? '';
-        $paymentId = $body['data']['id'] ?? ($body['id'] ?? null);
-        $paymentIdStr = $paymentId ? (string)$paymentId : '';
+        
+        // El estandar de Mercado Pago dicta que data.id se extraiga del query string
+        $dataId = $request->getQuery('data_id') ?? $request->getQuery('data.id') ?? $body['data']['id'] ?? ($body['id'] ?? null);
+        $paymentIdStr = $dataId ? (string)$dataId : '';
+
+        // Filtrar silenciosamente las notificaciones antiguas IPN (topic=payment/merchant_order) que no traen firma
+        $topic = $request->getQuery('topic');
+        if (empty($signatureHeader) && ($topic === 'payment' || $topic === 'merchant_order')) {
+            Logger::info("HandleMercadoPagoWebhookAction: Ignorando notificación IPN legacy (topic={$topic})");
+            Response::json(['success' => true, 'message' => 'Legacy IPN ignored.']);
+            return;
+        }
 
         if (empty($signatureHeader) || !$this->paymentGateway->verifySignature($signatureHeader, $requestId, $paymentIdStr)) {
-            Logger::error("HandleMercadoPagoWebhookAction: Firma de webhook ausente o inválida detectada.");
+            Logger::error("HandleMercadoPagoWebhookAction: Firma de webhook ausente o inválida detectada. DataID: {$paymentIdStr}");
             Response::unauthorized('Firma de webhook inválida o ausente.');
             return;
         }
 
-        $type = $body['type'] ?? ($body['topic'] ?? ($body['action'] ?? null));
-
-        if (($type !== 'payment' && !str_contains((string)$type, 'payment')) || !$paymentId) {
+        $type = $body['type'] ?? ($body['action'] ?? null);
+        // Si el type viene como 'payment.created', str_contains lo valida
+        if (!$type || (!str_contains((string)$type, 'payment') && $type !== 'payment') || !$paymentIdStr) {
             Response::json(['success' => true, 'message' => 'Notification ignored (not a payment event).']);
             return;
         }
@@ -85,7 +95,7 @@ class HandleMercadoPagoWebhookAction {
         }
 
         // 1.5 Interceptar el botón "Simular Notificación" de Mercado Pago
-        if ($paymentIdStr === '123456') {
+        if ($paymentIdStr === '123456' && !Config::isProduction()) {
             Logger::info("HandleMercadoPagoWebhookAction: Simulación de Mercado Pago recibida y validada correctamente.");
             Response::json(['success' => true, 'message' => '¡Simulación de Mercado Pago exitosa! La firma fue validada correctamente.']);
             return;
@@ -100,13 +110,14 @@ class HandleMercadoPagoWebhookAction {
 
         $status = $paymentDetails['status'] ?? 'pending';
         $cartId = $paymentDetails['external_reference'] ?? null;
-        $amountPen = (float)($paymentDetails['transaction_amount'] ?? 0.0);
-        $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
-        $amount = round($amountPen / $exchangeRate, 2);
 
         if ($status !== 'approved' || !$cartId) {
             Logger::info("HandleMercadoPagoWebhookAction: Pago ID {$paymentIdStr} tiene estado '{$status}'. Omitiendo confirmación.");
+            if (in_array($status, ['refunded', 'charged_back', 'cancelled'], true) && $cartId) {
+                $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::Failed->value);
+            }
             Response::json(['success' => true, 'status' => $status, 'message' => 'Payment status is not approved.']);
+            return;
         }
 
         try {
@@ -136,6 +147,8 @@ class HandleMercadoPagoWebhookAction {
             Logger::info("HandleMercadoPagoWebhookAction: Transacción en BD local confirmada para Cart ID {$cartId}");
 
             // 3. Emision de Evento de Dominio Desacoplado
+            $amount = (float)($hold['price_snapshot'] ?? 0.0);
+            
             $event = new BookingPaidEvent(
                 (string)$cartId,
                 $paymentIdStr,

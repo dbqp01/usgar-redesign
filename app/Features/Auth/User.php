@@ -241,7 +241,7 @@ class User {
         try {
             $stmt = $this->pdo->prepare('
                 SELECT cart_id, id_room_type, room_data, guest_data, price_snapshot,
-                       checkin, checkout, status, preference_id, qlo_order_id, created_at
+                       checkin, checkout, status, preference_id, created_at
                 FROM provisional_bookings
                 WHERE user_id = :user_id
                 ORDER BY created_at DESC

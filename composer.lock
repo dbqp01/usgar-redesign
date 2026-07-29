@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "72537231d6a195cd28d511ebd3752efa",
+    "content-hash": "2336c52af24daa20917aac26eed9b8c8",
     "packages": [
         {
             "name": "hybridauth/hybridauth",
@@ -67,6 +67,47 @@
                 "source": "https://github.com/hybridauth/hybridauth/tree/v3.13.0"
             },
             "time": "2026-04-02T19:11:26+00:00"
+        },
+        {
+            "name": "mercadopago/dx-php",
+            "version": "3.12.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mercadopago/sdk-php.git",
+                "reference": "2ffde09aecec141f4739a5dd86f6369374e6cff6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mercadopago/sdk-php/zipball/2ffde09aecec141f4739a5dd86f6369374e6cff6",
+                "reference": "2ffde09aecec141f4739a5dd86f6369374e6cff6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.22",
+                "phpunit/phpunit": "^11.0",
+                "squizlabs/php_codesniffer": "3.*",
+                "symfony/console": "^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MercadoPago\\": "src/MercadoPago"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Mercado Pago PHP SDK",
+            "homepage": "https://github.com/mercadopago/sdk-php",
+            "support": {
+                "issues": "https://github.com/mercadopago/sdk-php/issues",
+                "source": "https://github.com/mercadopago/sdk-php/tree/3.12.1"
+            },
+            "time": "2026-07-23T00:11:41+00:00"
         }
     ],
     "packages-dev": [],

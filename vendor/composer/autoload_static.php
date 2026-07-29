@@ -7,6 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
 {
     public static $prefixLengthsPsr4 = array (
+        'M' =>
+        array (
+            'MercadoPago\\' => 12,
+        ),
         'H' =>
         array (
             'Hybridauth\\' => 11,
@@ -14,6 +18,10 @@ class ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
     );
 
     public static $prefixDirsPsr4 = array (
+        'MercadoPago\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/mercadopago/dx-php/src/MercadoPago',
+        ),
         'Hybridauth\\' =>
         array (
             0 => __DIR__ . '/..' . '/hybridauth/hybridauth/src',

@@ -6,6 +6,10 @@ namespace App\Features\Shared\Adapters;
 use App\Features\Shared\Ports\PaymentGatewayPortInterface;
 use App\Core\Config;
 use App\Core\Logger;
+use MercadoPago\MercadoPagoConfig;
+use MercadoPago\Client\Preference\PreferenceClient;
+use MercadoPago\Client\Payment\PaymentClient;
+use MercadoPago\Client\Common\RequestOptions;
 use Exception;
 use JsonException;
 
@@ -19,7 +23,9 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
     private readonly string $siteUrl;
 
     public function __construct() {
-        $this->accessToken = Config::get('MERCADO_PAGO_ACCESS_TOKEN');
+        $this->accessToken = Config::isProduction() 
+            ? Config::get('MP_PROD_ACCESS_TOKEN', Config::get('MERCADO_PAGO_ACCESS_TOKEN'))
+            : Config::get('MP_TEST_ACCESS_TOKEN', Config::get('MERCADO_PAGO_ACCESS_TOKEN'));
         $this->webhookSecret = Config::get('MERCADO_PAGO_WEBHOOK_SECRET');
         
         $url = Config::get('SITE_URL', 'http://localhost:8000');
@@ -89,17 +95,19 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
 
         try {
             $idempotencyKey = 'pref_' . $cartId;
-            $response = $this->curlPost(
-                'https://api.mercadopago.com/checkout/preferences',
-                $payload,
-                $idempotencyKey
-            );
+            MercadoPagoConfig::setAccessToken($this->accessToken);
+            $client = new PreferenceClient();
+            $requestOptions = new RequestOptions();
+            $requestOptions->setCustomHeaders(["X-Idempotency-Key: {$idempotencyKey}"]);
+            
+            $preference = $client->create($payload, $requestOptions);
 
-            return json_decode($response, true, 512, JSON_THROW_ON_ERROR);
+            return [
+                'id'                 => $preference->id,
+                'init_point'         => $preference->init_point,
+                'sandbox_init_point' => $preference->sandbox_init_point,
+            ];
 
-        } catch (JsonException $e) {
-            Logger::error('MercadoPagoAdapter: Error parseando respuesta de preferencia: ' . $e->getMessage());
-            throw new Exception('Respuesta inválida desde la API de Mercado Pago.');
         } catch (Exception $e) {
             Logger::error('MercadoPagoAdapter Exception: ' . $e->getMessage());
             throw $e;
@@ -144,39 +152,43 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         }
 
         $ts = '';
-        $v1 = '';
+        $v1s = [];
         $parts = explode(',', $signatureHeader);
         foreach ($parts as $part) {
             $kv = explode('=', trim($part), 2);
             if (count($kv) === 2) {
                 $key = trim($kv[0]);
                 $val = trim($kv[1]);
-                match ($key) {
-                    'ts' => $ts = $val,
-                    'v1' => $v1 = $val,
-                    default => null,
-                };
+                if ($key === 'ts') {
+                    $ts = $val;
+                } elseif ($key === 'v1') {
+                    $v1s[] = $val;
+                }
             }
         }
 
-        if ($ts === '' || $v1 === '') {
-            Logger::error("MercadoPagoAdapter: Cabecera x-signature malformada: '{$signatureHeader}'");
+        if (empty($ts) || empty($v1s)) {
+            Logger::error('MercadoPagoAdapter: Cabecera x-signature malformada.');
             return false;
         }
 
-        $manifestParts = [];
-        if ($dataId !== '') {
-            $manifestParts[] = 'id:' . $dataId;
-        }
-        if ($requestId !== '') {
-            $manifestParts[] = 'request-id:' . $requestId;
-        }
-        $manifestParts[] = 'ts:' . $ts;
-
+        $manifestParts = [
+            'id:' . $dataId,
+            'request-id:' . $requestId,
+            'ts:' . $ts,
+        ];
         $manifest = implode(';', $manifestParts) . ';';
+        
         $computed = hash_hmac('sha256', $manifest, $this->webhookSecret);
 
-        return hash_equals($computed, $v1);
+        foreach ($v1s as $v1) {
+            if (hash_equals($computed, $v1)) {
+                return true;
+            }
+        }
+
+        Logger::error("MercadoPagoAdapter: Signature match failed. DataId: {$dataId}");
+        return false;
     }
 
     public function getPaymentDetails(string $paymentId): ?array {
@@ -200,36 +212,22 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         }
 
         try {
-            $ch = curl_init("https://api.mercadopago.com/v1/payments/{$paymentId}");
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                "Authorization: Bearer {$this->accessToken}",
-            ]);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+            MercadoPagoConfig::setAccessToken($this->accessToken);
+            $client = new PaymentClient();
+            $payment = $client->get((int)$paymentId);
 
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            $curlError = curl_error($ch);
-            curl_close($ch);
-
-            if ($curlError !== '') {
-                Logger::error("MercadoPagoAdapter: cURL error: {$curlError}");
+            if (!$payment) {
+                Logger::error("MercadoPagoAdapter: Error al obtener pago.");
                 return null;
             }
 
-            if ($httpCode >= 400 || !$response) {
-                Logger::error("MercadoPagoAdapter: Error al obtener pago. HTTP: {$httpCode}");
-                return null;
-            }
+            return [
+                'id' => $payment->id,
+                'status' => $payment->status,
+                'external_reference' => $payment->external_reference,
+                'transaction_amount' => $payment->transaction_amount,
+            ];
 
-            return json_decode($response, true, 512, JSON_THROW_ON_ERROR);
-
-        } catch (JsonException $e) {
-            Logger::error('MercadoPagoAdapter: JSON parse error en getPaymentDetails: ' . $e->getMessage());
-            return null;
         } catch (Exception $e) {
             Logger::error('MercadoPagoAdapter Exception en getPaymentDetails: ' . $e->getMessage());
             return null;
@@ -240,40 +238,5 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         return str_starts_with($token, 'APP_USR') || str_starts_with($token, 'TEST-');
     }
 
-    private function curlPost(string $url, array $payload, ?string $idempotencyKey = null): string {
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        
-        $headers = [
-            "Authorization: Bearer {$this->accessToken}",
-            'Content-Type: application/json',
-        ];
-        if ($idempotencyKey !== null) {
-            $headers[] = "X-Idempotency-Key: {$idempotencyKey}";
-        }
-        
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload, JSON_THROW_ON_ERROR));
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $curlError = curl_error($ch);
-        curl_close($ch);
-
-        if ($curlError !== '') {
-            throw new Exception("cURL error: {$curlError}");
-        }
-
-        if ($httpCode >= 400 || !$response) {
-            Logger::error("MercadoPagoAdapter: HTTP {$httpCode}. Respuesta: " . ($response ?: 'sin respuesta'));
-            throw new Exception('Fallo en la comunicación con la API de Mercado Pago.');
-        }
-
-        return $response;
-    }
 }
