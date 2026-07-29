@@ -1233,3 +1233,4 @@
 [2026-07-28 00:14:37] [ERROR] HandleMercadoPagoWebhookAction: Firma de webhook ausente o inválida detectada.
 [2026-07-28 00:14:38] [INFO] HandleChannexWebhookAction: Evento recibido [booking_created]
 [2026-07-28 00:14:38] [ERROR] HandleChannexWebhookAction: Secreto de webhook Channex inválido o ausente.
+[2026-07-29 10:54:11] [ERROR] MercadoPagoAdapter: SDK Signature validation failed - Reason: Invalid webhook signature: SignatureMismatch, DataId: data-456, RequestId: req-123

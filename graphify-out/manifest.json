@@ -515,8 +515,8 @@
     "semantic_hash": ""
   },
   "public/index.php": {
-    "mtime": 1785135858.2297802,
-    "ast_hash": "d8563b85930a0ed2762f38ddb626d3c3",
+    "mtime": 1785339384.8471968,
+    "ast_hash": "91b3992430c180eec9121de123e8ab32",
     "semantic_hash": ""
   },
   "scripts/run-exhaustive-tests.php": {

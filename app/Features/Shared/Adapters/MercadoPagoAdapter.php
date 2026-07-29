@@ -10,12 +10,14 @@ use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\Client\Payment\PaymentClient;
 use MercadoPago\Client\Common\RequestOptions;
+use MercadoPago\Webhook\WebhookSignatureValidator;
+use MercadoPago\Exceptions\InvalidWebhookSignatureException;
 use Exception;
-use JsonException;
 
 /**
  * Adaptador Hexagonal para la integracion con Mercado Pago.
  * Cumple con PaymentGatewayPortInterface.
+ * Usa el SDK oficial dx-php v3 para verificacion de firma de webhooks.
  */
 class MercadoPagoAdapter implements PaymentGatewayPortInterface {
     private readonly ?string $accessToken;
@@ -64,7 +66,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
 
         $payload = [
             'items' => [[
-                'title'       => "Reserva USGAR Hotels — Habitación " . $idRoomType,
+                'title'       => "Reserva USGAR Hotels — Habitacion " . $idRoomType,
                 'description' => "{$nights} noches ({$checkIn} → {$checkOut})",
                 'quantity'    => 1,
                 'unit_price'  => (float) round($totalPrice, 2),
@@ -125,7 +127,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         // Si se configuro webhookSecret, validar firma HMAC
         if (!empty($this->webhookSecret)) {
             if (!$this->verifySignature($signatureHeader, $requestId, (string)$dataId)) {
-                Logger::error('MercadoPagoAdapter: Firma de webhook inválida.');
+                Logger::error('MercadoPagoAdapter: Firma de webhook invalida.');
                 return null;
             }
         }
@@ -137,55 +139,32 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         return null;
     }
 
+    /**
+     * Valida la firma del webhook usando el WebhookSignatureValidator oficial del SDK.
+     * Esto garantiza paridad algoritmica exacta con lo que Mercado Pago computa.
+     */
     public function verifySignature(?string $signatureHeader, ?string $requestId, ?string $dataId): bool {
         if (empty($this->webhookSecret)) {
             Logger::error('MercadoPagoAdapter: Webhook Secret is not configured.');
             return false;
         }
 
-        if (empty($signatureHeader) || empty($requestId) || empty($dataId)) {
-            Logger::error('MercadoPagoAdapter: Headers requeridos ausentes en verifySignature.');
+        try {
+            WebhookSignatureValidator::validate(
+                $signatureHeader,
+                $requestId,
+                $dataId,
+                $this->webhookSecret
+            );
+            Logger::info("MercadoPagoAdapter: Firma de webhook validada correctamente. DataId: {$dataId}");
+            return true;
+        } catch (InvalidWebhookSignatureException $e) {
+            Logger::error("MercadoPagoAdapter: SDK Signature validation failed - Reason: {$e->getMessage()}, DataId: {$dataId}, RequestId: {$requestId}");
+            return false;
+        } catch (\InvalidArgumentException $e) {
+            Logger::error("MercadoPagoAdapter: Invalid argument in signature validation - {$e->getMessage()}");
             return false;
         }
-
-        $ts = '';
-        $v1s = [];
-        $parts = explode(',', $signatureHeader);
-        foreach ($parts as $part) {
-            $kv = explode('=', trim($part), 2);
-            if (count($kv) === 2) {
-                $key = trim($kv[0]);
-                $val = trim($kv[1]);
-                if ($key === 'ts') {
-                    $ts = $val;
-                } elseif ($key === 'v1') {
-                    $v1s[] = $val;
-                }
-            }
-        }
-
-        if (empty($ts) || empty($v1s)) {
-            Logger::error('MercadoPagoAdapter: Cabecera x-signature malformada.');
-            return false;
-        }
-
-        $manifestParts = [
-            'id:' . $dataId,
-            'request-id:' . $requestId,
-            'ts:' . $ts,
-        ];
-        $manifest = implode(';', $manifestParts) . ';';
-        
-        $computed = hash_hmac('sha256', $manifest, $this->webhookSecret);
-
-        foreach ($v1s as $v1) {
-            if (hash_equals($computed, $v1)) {
-                return true;
-            }
-        }
-
-        Logger::error("MercadoPagoAdapter: Signature match failed. DataId: {$dataId}");
-        return false;
     }
 
     public function getPaymentDetails(string $paymentId): ?array {
@@ -234,6 +213,4 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
     private function isValidToken(string $token): bool {
         return str_starts_with($token, 'APP_USR') || str_starts_with($token, 'TEST-');
     }
-
-
 }
