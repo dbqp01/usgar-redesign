@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>usgar-redesign — 完整调用流程与架构文档</h1>
-<p class="subtitle">由 graphify 知识图谱生成：3050 个节点、4595 条边、455 个社区。Commit: db912c5</p>
+<p class="subtitle">由 graphify 知识图谱生成：3050 个节点、4596 条边、455 个社区。Commit: 17ee346</p>
 
 <div class="nav">
     <a href="#overview">架构总览</a>
@@ -98,13 +98,13 @@ flowchart LR
     class OUTPUTS_DOCS_ED82387C module;
     CLI_SKILLS_9964CBB8("CLI 与技能安装<br/><small>138 nodes</small>")
     class CLI_SKILLS_9964CBB8 module;
-    INGEST_CACHE_UPDATE_FF457338("摄取与增量更新<br/><small>113 nodes</small>")
+    INGEST_CACHE_UPDATE_FF457338("摄取与增量更新<br/><small>101 nodes</small>")
     class INGEST_CACHE_UPDATE_FF457338 module;
-    SERVE_API_35EC8E86("服务 API<br/><small>383 nodes</small>")
+    SERVE_API_35EC8E86("服务 API<br/><small>366 nodes</small>")
     class SERVE_API_35EC8E86 module;
     SECURITY_GLOBAL_5B9C6A04("安全与全局图<br/><small>27 nodes</small>")
     class SECURITY_GLOBAL_5B9C6A04 module;
-    TESTS_FIXTURES_B84B1DCC("测试与样例<br/><small>703 nodes</small>")
+    TESTS_FIXTURES_B84B1DCC("测试与样例<br/><small>712 nodes</small>")
     class TESTS_FIXTURES_B84B1DCC module;
     RUST_SECURITY_AUDIT_CB3475E2("Rust Security Audit<br/><small>67 nodes</small>")
     class RUST_SECURITY_AUDIT_CB3475E2 module;
@@ -116,20 +116,20 @@ flowchart LR
     class FILE_CREATION_CHECKLIST_6769FDE4 module;
     REQUIRED_FILES_MANDATORY_21AA3DB6("Required Files (MANDATORY)<br/><small>33 nodes</small>")
     class REQUIRED_FILES_MANDATORY_21AA3DB6 module;
-    OTHER_D0941E68("其他<br/><small>1211 nodes</small>")
+    OTHER_D0941E68("其他<br/><small>1231 nodes</small>")
     class OTHER_D0941E68 module;
     POC_E7C4E8B6 -->|mixes in x110| OTHER_D0941E68
-    INGEST_CACHE_UPDATE_FF457338 -->|references x83| OTHER_D0941E68
-    TESTS_FIXTURES_B84B1DCC -->|导入 x71| OTHER_D0941E68
-    OTHER_D0941E68 -->|导入 x70| TESTS_FIXTURES_B84B1DCC
+    INGEST_CACHE_UPDATE_FF457338 -->|references x82| OTHER_D0941E68
+    OTHER_D0941E68 -->|导入 x73| TESTS_FIXTURES_B84B1DCC
+    TESTS_FIXTURES_B84B1DCC -->|导入 x70| OTHER_D0941E68
     RUST_SECURITY_AUDIT_CB3475E2 -->|inherits x42| OTHER_D0941E68
-    SERVE_API_35EC8E86 -->|导入 x36| OTHER_D0941E68
     POC_E7C4E8B6 -->|导入 x35| RUST_SECURITY_AUDIT_CB3475E2
-    OTHER_D0941E68 -->|导入 x26| SERVE_API_35EC8E86
+    SERVE_API_35EC8E86 -->|导入 x29| OTHER_D0941E68
+    OTHER_D0941E68 -->|导入 x23| SERVE_API_35EC8E86
     TESTS_FIXTURES_B84B1DCC -->|导入 x22| BUILD_GRAPH_321CBB04
     TESTS_FIXTURES_B84B1DCC -->|导入 x21| SERVE_API_35EC8E86
-    INGEST_CACHE_UPDATE_FF457338 -->|导入 x19| TESTS_FIXTURES_B84B1DCC
     TESTS_FIXTURES_B84B1DCC -->|导入 x17| INGEST_CACHE_UPDATE_FF457338
+    INGEST_CACHE_UPDATE_FF457338 -->|导入 x15| TESTS_FIXTURES_B84B1DCC
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -146,7 +146,7 @@ flowchart LR
     <h4>架构层次</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>层</th><th>节点</th><th>社区</th></tr>
-      <tr><td>提取管线</td><td>12</td><td><code>38</code></td></tr><tr><td>图谱构建</td><td>209</td><td><code>543, 5, 108, 134, 128, 140, 143, 4, 26, 11, 595</code></td></tr><tr><td>分析聚类</td><td>4</td><td><code>590</code></td></tr><tr><td>输出文档</td><td>22</td><td><code>125, 589</code></td></tr><tr><td>CLI 与技能安装</td><td>138</td><td><code>35, 101, 135, 144, 148, 173, 174, 251, 275, 40</code></td></tr><tr><td>摄取与增量更新</td><td>113</td><td><code>14, 127, 37, 86, 187, 343</code></td></tr><tr><td>服务 API</td><td>383</td><td><code>24, 113, 508, 0, 13, 119, 84, 92, 93, 100, 117, 118, 121, 7, 141, 142, 159, 167, 188, 48, 52, 513, 528, 616, 90</code></td></tr><tr><td>安全与全局图</td><td>27</td><td><code>484, 47</code></td></tr><tr><td>测试与样例</td><td>703</td><td><code>501, 30, 486, 584, 36, 85, 115, 126, 123, 124, 475, 34, 130, 131, 133, 136, 138, 139, 145, 146, 147, 9, 106, 156, 94, 162, 552, 546, 171, 172, 175, 176, 177, 178, 179, 180, 185, 576, 161, 189, 109, 192, 193, 194, 195, 97, 246, 249, 111, 323, 465, 511, 57</code></td></tr><tr><td>Rust Security Audit</td><td>67</td><td><code>6</code></td></tr><tr><td>PoC 分类与模板</td><td>57</td><td><code>25</code></td></tr><tr><td>External Security Tools Integration Guide</td><td>37</td><td><code>2</code></td></tr><tr><td>File Creation Checklist</td><td>34</td><td><code>534</code></td></tr><tr><td>Required Files (MANDATORY)</td><td>33</td><td><code>489</code></td></tr><tr><td>其他</td><td>1211</td><td><code>122, 49, 540, 3, 120, 541, 17, 232, 18, 8, 104, 496, 554, 129, 33, 10, 132, 137, 45, 105, 114, 15, 153, 98, 151, 157, 158, 19, 96, 16, 163, 211, 43, 166, 21, 558, 559, 169, 170, 29, 452, 482, 181, 182, 183, 184, 280, 31, 310, 483, 55, 569, 572, 573, 575, 12, 186, 27, 28, 311, 312, 313, 314, 32, 364, 39, 582, 160, 164, 191, 365, 366, 41, 439, 588, 152, 154, 155, 165, 168, 190, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 247, 248, 309, 363, 434, 46, 461, 567, 597, 99, 20, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 276, 277, 278, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 315, 316, 317, 318, 319, 320, 321, 322, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 339, 340, 342, 344, 345, 346, 347, 348, 349, 350, 466, 469, 54, 599, 1, 102, 103, 107, 110, 112, 116, 149, 150, 22, 23, 253, 279, 338, 341, 409, 411, 42, 429, 435, 436, 44, 472, 473, 474, 476, 481, 485, 488, 490, 491, 492, 495, 498, 499, 50, 504, 506, 507, 51, 510, 512, 514, 518, 519, 520, 521, 523, 524, 525, 526, 527, 529, 53, 537, 545, 56, 568, 58, 59, 60, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 61, 610, 611, 612, 613, 614, 615, 617, 618, 619, 62, 620, 625, 626, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 87, 88, 89, 91, 95</code></td></tr>
+      <tr><td>提取管线</td><td>12</td><td><code>38</code></td></tr><tr><td>图谱构建</td><td>209</td><td><code>543, 5, 108, 134, 128, 140, 143, 4, 26, 11, 595</code></td></tr><tr><td>分析聚类</td><td>4</td><td><code>590</code></td></tr><tr><td>输出文档</td><td>22</td><td><code>125, 589</code></td></tr><tr><td>CLI 与技能安装</td><td>138</td><td><code>35, 101, 135, 144, 148, 173, 174, 251, 275, 40</code></td></tr><tr><td>摄取与增量更新</td><td>101</td><td><code>14, 127, 86, 187, 343</code></td></tr><tr><td>服务 API</td><td>366</td><td><code>24, 113, 508, 0, 119, 84, 92, 93, 100, 117, 118, 121, 7, 141, 142, 159, 167, 43, 188, 48, 52, 513, 528, 616, 90</code></td></tr><tr><td>安全与全局图</td><td>27</td><td><code>484, 47</code></td></tr><tr><td>测试与样例</td><td>712</td><td><code>501, 30, 486, 584, 36, 85, 115, 126, 123, 124, 34, 475, 130, 131, 133, 136, 138, 139, 145, 146, 147, 546, 9, 106, 156, 94, 162, 552, 171, 172, 175, 176, 177, 178, 179, 180, 185, 576, 161, 189, 109, 192, 193, 194, 195, 97, 246, 249, 111, 323, 465, 511, 57</code></td></tr><tr><td>Rust Security Audit</td><td>67</td><td><code>6</code></td></tr><tr><td>PoC 分类与模板</td><td>57</td><td><code>25</code></td></tr><tr><td>External Security Tools Integration Guide</td><td>37</td><td><code>2</code></td></tr><tr><td>File Creation Checklist</td><td>34</td><td><code>534</code></td></tr><tr><td>Required Files (MANDATORY)</td><td>33</td><td><code>489</code></td></tr><tr><td>其他</td><td>1231</td><td><code>122, 49, 540, 3, 120, 541, 17, 13, 18, 37, 232, 8, 104, 496, 554, 129, 33, 10, 132, 137, 45, 105, 114, 15, 153, 98, 151, 157, 158, 19, 96, 16, 163, 211, 166, 21, 558, 559, 169, 170, 29, 452, 482, 181, 182, 183, 184, 280, 31, 310, 483, 55, 569, 572, 573, 575, 12, 186, 27, 28, 311, 312, 313, 314, 32, 364, 39, 582, 160, 164, 191, 365, 366, 41, 439, 588, 152, 154, 155, 165, 168, 190, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 247, 248, 309, 363, 434, 46, 461, 567, 597, 99, 20, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 276, 277, 278, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 315, 316, 317, 318, 319, 320, 321, 322, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 339, 340, 342, 344, 345, 346, 347, 348, 349, 350, 466, 469, 54, 599, 1, 102, 103, 107, 110, 112, 116, 149, 150, 22, 23, 253, 279, 338, 341, 409, 411, 42, 429, 435, 436, 44, 472, 473, 474, 476, 481, 485, 488, 490, 491, 492, 495, 498, 499, 50, 504, 506, 507, 51, 510, 512, 514, 518, 519, 520, 521, 523, 524, 525, 526, 527, 529, 53, 537, 545, 56, 568, 58, 59, 60, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 61, 610, 611, 612, 613, 614, 615, 617, 618, 619, 62, 620, 625, 626, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 87, 88, 89, 91, 95</code></td></tr>
     </table>
   </div>
   <div class="card">
@@ -158,8 +158,8 @@ flowchart LR
   <div class="card">
     <h4>图谱报告摘要</h4>
     <ul>
-      <li>3050 nodes · 4595 edges · 455 communities (169 shown, 286 thin omitted)</li>
-      <li>Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 293 edges (avg confidence: 0.8)</li>
+      <li>3050 nodes · 4596 edges · 455 communities (168 shown, 287 thin omitted)</li>
+      <li>Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 294 edges (avg confidence: 0.8)</li>
       <li>Token cost: 0 input · 0 output</li>
       <li>1. `MercadoPagoConfig` - 141 edges</li>
       <li>2. `RequestOptions` - 109 edges</li>
@@ -1426,12 +1426,12 @@ flowchart LR
 
 <!-- ====== 7. 摄取与增量更新 ====== -->
 <h2 id="ingest-cache-update">7. 摄取与增量更新</h2>
-<p>摄取与增量更新 汇集了与 mercadopago、vendor、php、client 相关的实现，主要分布在 mercadopago/dx-php/MIGRATION_GUIDE.md、.agents/BRAND.md、Client/Point/PointClient.php。本节覆盖 113 个节点、180 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>摄取与增量更新 汇集了与 mercadopago、vendor、php、client 相关的实现，主要分布在 mercadopago/dx-php/MIGRATION_GUIDE.md、.agents/BRAND.md、Client/Point/PointClient.php。本节覆盖 101 个节点、166 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 摄取与增量更新 (113 nodes, 180 edges)
+    %% Section: 摄取与增量更新 (101 nodes, 166 edges)
     subgraph ingest_cache_update_Client_AdvancedPayment_Advan_34abcc38["Client/AdvancedPayment/AdvancedPaymentClient.php"]
         vendor_mercadopago_dx_php_src_mercadopago_client_a7fcc0a1("AdvancedPaymentClient<br/><small>Client/AdvancedPayment/AdvancedPaymentClient.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_client_394847e1("cancel()<br/><small>Client/AdvancedPayment/AdvancedPaymentClient.php</small>")
@@ -1466,7 +1466,7 @@ flowchart LR
     vendor_mercadopago_dx_php_src_mercadopago_client_ea2f6f44 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_80295b37
     vendor_mercadopago_dx_php_src_mercadopago_client_ea2f6f44 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_583655b3
     vendor_mercadopago_dx_php_src_mercadopago_client_ea2f6f44 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_90acb655
-    %% Omitted for readability: 95 nodes, 0 edges
+    %% Omitted for readability: 83 nodes, 0 edges
     class vendor_mercadopago_dx_php_src_mercadopago_client_a7fcc0a1 entry;
     class vendor_mercadopago_dx_php_src_mercadopago_client_394847e1 function;
     class vendor_mercadopago_dx_php_src_mercadopago_client_c03ad64e function;
@@ -1765,19 +1765,19 @@ flowchart LR
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：方法 x48, 包含 x36, references x34, references constant x17。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：方法 x47, references x34, 包含 x31, references constant x17。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 8. 服务 API ====== -->
 <h2 id="serve-api">8. 服务 API</h2>
-<p>服务 API 汇集了与 mercadopago、agents、skills、references 相关的实现，主要分布在 mercadopago-mp-integrate/references/products.md、Thirdparty/OpenID/LightOpenID.php、README.md。本节覆盖 383 个节点、473 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>服务 API 汇集了与 mercadopago、agents、skills、references 相关的实现，主要分布在 mercadopago-mp-integrate/references/products.md、Thirdparty/OpenID/LightOpenID.php、README.md。本节覆盖 366 个节点、440 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 服务 API (383 nodes, 473 edges)
+    %% Section: 服务 API (366 nodes, 440 edges)
     subgraph serve_api_Client_Chargeback_ChargebackClient_php_244629c5["Client/Chargeback/ChargebackClient.php"]
         vendor_mercadopago_dx_php_src_mercadopago_client_6d770b20("ChargebackClient<br/><small>Client/Chargeback/ChargebackClient.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_client_0b19fcfd("__construct()<br/><small>Client/Chargeback/ChargebackClient.php</small>")
@@ -1798,12 +1798,14 @@ flowchart LR
         vendor_mercadopago_dx_php_src_mercadopago_net_mp_31c764b5("MPSearchRequest<br/><small>MercadoPago/Net/MPSearchRequest.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_net_mp_d3d5f868("__construct()<br/><small>MercadoPago/Net/MPSearchRequest.php</small>")
     end
+    subgraph serve_api_app_Core_Response_php_b72df6f9["app/Core/Response.php"]
+        app_core_response_8a158d30("Response.php")
+        app_core_response_response_5eed53b1("Response<br/><small>app/Core/Response.php</small>")
+    end
     vendor_hybridauth_hybridauth_src_thirdparty_open_893dd73b("LightOpenID<br/><small>Thirdparty/OpenID/LightOpenID.php</small>")
     app_core_httpexception_httpexception_75382b3b("HttpException<br/><small>app/Core/HttpException.php</small>")
     app_core_request_request_d11f3b0f("Request<br/><small>app/Core/Request.php</small>")
-    app_core_response_8a158d30("Response.php")
     public_index_c7d833a6("index.php")
-    vendor_composer_installedversions_installedversi_a8e4badf("InstalledVersions<br/><small>vendor/composer/InstalledVersions.php</small>")
     app_features_health_actions_webhookdebugaction_w_a5cf12f6 -->|方法| app_features_health_actions_webhookdebugaction_w_7befe7ea
     vendor_mercadopago_dx_php_src_mercadopago_client_6d770b20 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_0b19fcfd
     vendor_mercadopago_dx_php_src_mercadopago_client_6d770b20 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_e89de79a
@@ -1812,7 +1814,7 @@ flowchart LR
     vendor_mercadopago_dx_php_src_mercadopago_client_4eb91127 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_3a185822
     vendor_mercadopago_dx_php_src_mercadopago_client_4eb91127 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_92c90070
     vendor_mercadopago_dx_php_src_mercadopago_net_mp_31c764b5 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_net_mp_d3d5f868
-    %% Omitted for readability: 365 nodes, 0 edges
+    %% Omitted for readability: 348 nodes, 0 edges
     class vendor_mercadopago_dx_php_src_mercadopago_client_6d770b20 entry;
     class vendor_mercadopago_dx_php_src_mercadopago_client_0b19fcfd function;
     class vendor_mercadopago_dx_php_src_mercadopago_client_e89de79a function;
@@ -1825,12 +1827,12 @@ flowchart LR
     class app_features_health_actions_webhookdebugaction_w_7befe7ea function;
     class vendor_mercadopago_dx_php_src_mercadopago_net_mp_31c764b5 klass;
     class vendor_mercadopago_dx_php_src_mercadopago_net_mp_d3d5f868 function;
+    class app_core_response_8a158d30 klass;
+    class app_core_response_response_5eed53b1 klass;
     class vendor_hybridauth_hybridauth_src_thirdparty_open_893dd73b klass;
     class app_core_httpexception_httpexception_75382b3b klass;
     class app_core_request_request_d11f3b0f klass;
-    class app_core_response_8a158d30 klass;
     class public_index_c7d833a6 module;
-    class vendor_composer_installedversions_installedversi_a8e4badf klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -2111,7 +2113,7 @@ flowchart LR
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x213, 方法 x106, 导入 x65, 调用 x38。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x213, 方法 x92, 导入 x65, 调用 x38。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -2440,12 +2442,12 @@ flowchart LR
 
 <!-- ====== 10. 测试与样例 ====== -->
 <h2 id="tests-fixtures">10. 测试与样例</h2>
-<p>测试与样例 汇集了与 mercadopago、vendor、tests、php 相关的实现，主要分布在 src/MercadoPago/MercadoPagoConfig.php、Unit/Order/OrderClientUnitTest.php、Integration/Point/PointClientITTest.php。本节覆盖 703 个节点、1244 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>测试与样例 汇集了与 mercadopago、vendor、tests、php 相关的实现，主要分布在 src/MercadoPago/MercadoPagoConfig.php、Unit/Order/OrderClientUnitTest.php、Integration/Point/PointClientITTest.php。本节覆盖 712 个节点、1263 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 测试与样例 (703 nodes, 1244 edges)
+    %% Section: 测试与样例 (712 nodes, 1263 edges)
     subgraph tests_fixtures_Shared_Adapters_MercadoPagoAdapte_82b8fd1d["Shared/Adapters/MercadoPagoAdapter.php"]
         app_features_shared_adapters_mercadopagoadapter_3f9c2328("MercadoPagoAdapter<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
         app_features_shared_adapters_mercadopagoadapter_bf98f842("__construct()<br/><small>Shared/Adapters/MercadoPagoAdapter.php</small>")
@@ -2481,7 +2483,7 @@ flowchart LR
     vendor_mercadopago_dx_php_src_mercadopago_except_c75c6cee -->|方法| vendor_mercadopago_dx_php_src_mercadopago_except_b2f638f6
     vendor_mercadopago_dx_php_src_mercadopago_except_c75c6cee -->|方法| vendor_mercadopago_dx_php_src_mercadopago_except_e0383124
     vendor_mercadopago_dx_php_src_mercadopago_except_c75c6cee -->|方法| vendor_mercadopago_dx_php_src_mercadopago_except_191a91dc
-    %% Omitted for readability: 685 nodes, 0 edges
+    %% Omitted for readability: 694 nodes, 0 edges
     class app_features_shared_adapters_mercadopagoadapter_3f9c2328 klass;
     class app_features_shared_adapters_mercadopagoadapter_bf98f842 function;
     class app_features_shared_adapters_mercadopagoadapter_a02420d0 function;
@@ -2780,7 +2782,7 @@ flowchart LR
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：方法 x426, 导入 x273, 调用 x191, 包含 x90。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：方法 x435, 导入 x273, 调用 x200, 包含 x91。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -4532,68 +4534,68 @@ flowchart LR
 
 <!-- ====== 16. 其他 ====== -->
 <h2 id="other">16. 其他</h2>
-<p>其他 汇集了与 mercadopago、vendor、php、resources 相关的实现，主要分布在 .agents/BRAND.md、vendor/composer/ClassLoader.php、mercadopago/dx-php/CHANGELOG.md。本节覆盖 1211 个节点、1165 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>其他 汇集了与 mercadopago、vendor、php、resources 相关的实现，主要分布在 .agents/BRAND.md、vendor/composer/ClassLoader.php、mercadopago/dx-php/CHANGELOG.md。本节覆盖 1231 个节点、1203 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 其他 (1211 nodes, 1165 edges)
-    subgraph other_Features_Auth_User_php_f124a5f0["Features/Auth/User.php"]
-        app_features_auth_user_user_3ef48886("User<br/><small>Features/Auth/User.php</small>")
-        app_features_auth_user_user_construct_98121005("__construct()<br/><small>Features/Auth/User.php</small>")
-        app_features_auth_user_user_createfromemail_f3e66e20("createFromEmail()<br/><small>Features/Auth/User.php</small>")
-        app_features_auth_user_user_createfromoauth_310d2934("createFromOAuth()<br/><small>Features/Auth/User.php</small>")
-        app_features_auth_user_user_ensuretableexists_30fc2790("ensureTableExists()<br/><small>Features/Auth/User.php</small>")
-        app_features_auth_user_user_findbyemail_a54be23e("findByEmail()<br/><small>Features/Auth/User.php</small>")
-        app_features_auth_user_user_findbyid_67a4d2cf("findById()<br/><small>Features/Auth/User.php</small>")
-        app_features_auth_user_user_findbyprovider_dc33f241("findByProvider()<br/><small>Features/Auth/User.php</small>")
-        app_features_auth_user_user_getbookings_21b8b7fb("getBookings()<br/><small>Features/Auth/User.php</small>")
+    %% Section: 其他 (1231 nodes, 1203 edges)
+    subgraph other_app_Core_Config_php_81aa340a["app/Core/Config.php"]
+        app_core_config_config_fc55d656("Config<br/><small>app/Core/Config.php</small>")
+        app_core_config_config_boot_6a1dd654("boot()<br/><small>app/Core/Config.php</small>")
+        app_core_config_config_construct_ba19f25c("__construct()<br/><small>app/Core/Config.php</small>")
+        app_core_config_config_get_2e11c8f6("get()<br/><small>app/Core/Config.php</small>")
+        app_core_config_config_getallowedorigins_3a36a21a("getAllowedOrigins()<br/><small>app/Core/Config.php</small>")
+        app_core_config_config_gettrustedproxies_e62dff8e("getTrustedProxies()<br/><small>app/Core/Config.php</small>")
+        app_core_config_config_isproduction_61502680("isProduction()<br/><small>app/Core/Config.php</small>")
+        app_core_config_config_loadenv_cee558d4("loadEnv()<br/><small>app/Core/Config.php</small>")
+        app_core_config_config_set_60d44a3c("set()<br/><small>app/Core/Config.php</small>")
     end
     subgraph other_Webhooks_Actions_HandleMercadoPagoWebhookA_32741e89["Webhooks/Actions/HandleMercadoPagoWebhookAction.php"]
         app_features_webhooks_actions_handlemercadopagow_1a4fd5e2("HandleMercadoPagoWebhookAction<br/><small>Webhooks/Actions/HandleMercadoPagoWebhookAction.php</small>")
         app_features_webhooks_actions_handlemercadopagow_e812acfb("__construct()<br/><small>Webhooks/Actions/HandleMercadoPagoWebhookAction.php</small>")
-        app_features_webhooks_actions_handlemercadopagow_7e95c00d("__invoke()<br/><small>Webhooks/Actions/HandleMercadoPagoWebhookAction.php</small>")
-        app_features_webhooks_actions_handlemercadopagow_763406f0("sanitizeForLog()<br/><small>Webhooks/Actions/HandleMercadoPagoWebhookAction.php</small>")
     end
+    self_40380bc1("self")
+    app_features_auth_user_user_3ef48886("User<br/><small>Features/Auth/User.php</small>")
     vendor_mercadopago_dx_php_src_mercadopago_client_82a91635("MercadoPagoClient<br/><small>MercadoPago/Client/MercadoPagoClient.php</small>")
     app_features_shared_adapters_channexadapter_chan_746f9773("ChannexAdapter<br/><small>Shared/Adapters/ChannexAdapter.php</small>")
-    app_core_config_config_fc55d656("Config<br/><small>app/Core/Config.php</small>")
     vendor_hybridauth_hybridauth_src_adapter_oauth2_7a401bb8("OAuth2<br/><small>src/Adapter/OAuth2.php</small>")
     vendor_composer_classloader_classloader_e26637a6("ClassLoader<br/><small>vendor/composer/ClassLoader.php</small>")
+    vendor_composer_installedversions_installedversi_a8e4badf("InstalledVersions<br/><small>vendor/composer/InstalledVersions.php</small>")
+    app_core_config_config_fc55d656 -->|方法| app_core_config_config_boot_6a1dd654
+    app_core_config_config_fc55d656 -->|方法| app_core_config_config_construct_ba19f25c
+    app_core_config_config_fc55d656 -->|方法| app_core_config_config_get_2e11c8f6
+    app_core_config_config_fc55d656 -->|方法| app_core_config_config_getallowedorigins_3a36a21a
+    app_core_config_config_fc55d656 -->|方法| app_core_config_config_gettrustedproxies_e62dff8e
+    app_core_config_config_fc55d656 -->|方法| app_core_config_config_isproduction_61502680
+    app_core_config_config_fc55d656 -->|方法| app_core_config_config_loadenv_cee558d4
+    app_core_config_config_fc55d656 -->|方法| app_core_config_config_set_60d44a3c
+    app_core_config_config_construct_ba19f25c -->|调用| app_core_config_config_loadenv_cee558d4
+    self_40380bc1 -->|调用| app_core_config_config_get_2e11c8f6
+    self_40380bc1 -->|调用| app_core_config_config_getallowedorigins_3a36a21a
+    self_40380bc1 -->|调用| app_core_config_config_gettrustedproxies_e62dff8e
+    self_40380bc1 -->|调用| app_core_config_config_isproduction_61502680
+    self_40380bc1 -->|调用| app_core_config_config_set_60d44a3c
     app_features_webhooks_actions_handlemercadopagow_1a4fd5e2 -->|方法| app_features_webhooks_actions_handlemercadopagow_e812acfb
-    app_features_webhooks_actions_handlemercadopagow_1a4fd5e2 -->|方法| app_features_webhooks_actions_handlemercadopagow_7e95c00d
-    app_features_webhooks_actions_handlemercadopagow_1a4fd5e2 -->|方法| app_features_webhooks_actions_handlemercadopagow_763406f0
-    app_features_webhooks_actions_handlemercadopagow_7e95c00d -->|调用| app_features_webhooks_actions_handlemercadopagow_763406f0
-    app_features_auth_user_user_3ef48886 -->|方法| app_features_auth_user_user_construct_98121005
-    app_features_auth_user_user_3ef48886 -->|方法| app_features_auth_user_user_createfromemail_f3e66e20
-    app_features_auth_user_user_3ef48886 -->|方法| app_features_auth_user_user_createfromoauth_310d2934
-    app_features_auth_user_user_3ef48886 -->|方法| app_features_auth_user_user_ensuretableexists_30fc2790
-    app_features_auth_user_user_3ef48886 -->|方法| app_features_auth_user_user_findbyemail_a54be23e
-    app_features_auth_user_user_3ef48886 -->|方法| app_features_auth_user_user_findbyid_67a4d2cf
-    app_features_auth_user_user_3ef48886 -->|方法| app_features_auth_user_user_findbyprovider_dc33f241
-    app_features_auth_user_user_3ef48886 -->|方法| app_features_auth_user_user_getbookings_21b8b7fb
-    app_features_auth_user_user_construct_98121005 -->|调用| app_features_auth_user_user_ensuretableexists_30fc2790
-    app_features_auth_user_user_findbyemail_a54be23e -->|调用| app_features_auth_user_user_createfromemail_f3e66e20
-    app_features_auth_user_user_findbyemail_a54be23e -->|调用| app_features_auth_user_user_createfromoauth_310d2934
-    %% Omitted for readability: 1193 nodes, 0 edges
-    class app_features_auth_user_user_3ef48886 klass;
-    class app_features_auth_user_user_construct_98121005 function;
-    class app_features_auth_user_user_createfromemail_f3e66e20 function;
-    class app_features_auth_user_user_createfromoauth_310d2934 function;
-    class app_features_auth_user_user_ensuretableexists_30fc2790 function;
-    class app_features_auth_user_user_findbyemail_a54be23e function;
-    class app_features_auth_user_user_findbyid_67a4d2cf function;
-    class app_features_auth_user_user_findbyprovider_dc33f241 function;
-    class app_features_auth_user_user_getbookings_21b8b7fb function;
+    %% Omitted for readability: 1213 nodes, 0 edges
+    class app_core_config_config_fc55d656 klass;
+    class app_core_config_config_boot_6a1dd654 function;
+    class app_core_config_config_construct_ba19f25c function;
+    class app_core_config_config_get_2e11c8f6 function;
+    class app_core_config_config_getallowedorigins_3a36a21a function;
+    class app_core_config_config_gettrustedproxies_e62dff8e function;
+    class app_core_config_config_isproduction_61502680 function;
+    class app_core_config_config_loadenv_cee558d4 function;
+    class app_core_config_config_set_60d44a3c function;
     class app_features_webhooks_actions_handlemercadopagow_1a4fd5e2 ui;
     class app_features_webhooks_actions_handlemercadopagow_e812acfb function;
-    class app_features_webhooks_actions_handlemercadopagow_7e95c00d function;
-    class app_features_webhooks_actions_handlemercadopagow_763406f0 function;
+    class self_40380bc1 function;
+    class app_features_auth_user_user_3ef48886 klass;
     class vendor_mercadopago_dx_php_src_mercadopago_client_82a91635 entry;
     class app_features_shared_adapters_channexadapter_chan_746f9773 klass;
-    class app_core_config_config_fc55d656 klass;
     class vendor_hybridauth_hybridauth_src_adapter_oauth2_7a401bb8 klass;
     class vendor_composer_classloader_classloader_e26637a6 klass;
+    class vendor_composer_installedversions_installedversi_a8e4badf klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -4863,18 +4865,18 @@ flowchart LR
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>覆盖节点</th></tr>
       <tr><td><code>.agents/BRAND.md</code></td><td>52 个节点</td></tr>
-<tr><td><code>vendor/composer/ClassLoader.php</code></td><td>25 个节点</td></tr>
+<tr><td><code>vendor/composer/ClassLoader.php</code></td><td>26 个节点</td></tr>
 <tr><td><code>mercadopago/dx-php/CHANGELOG.md</code></td><td>25 个节点</td></tr>
 <tr><td><code>src/Adapter/AdapterInterface.php</code></td><td>20 个节点</td></tr>
+<tr><td><code>vendor/composer/InstalledVersions.php</code></td><td>17 个节点</td></tr>
 <tr><td><code>src/Adapter/OAuth2.php</code></td><td>16 个节点</td></tr>
 <tr><td><code>MercadoPago/Client/MercadoPagoClient.php</code></td><td>16 个节点</td></tr>
 <tr><td><code>mercadopago/dx-php/README.md</code></td><td>14 个节点</td></tr>
-<tr><td><code>services/contracts/IBookingService.ts</code></td><td>13 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x429, 方法 x315, 导入 x119, references x83。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x435, 方法 x324, 导入 x125, references x83。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -4886,7 +4888,7 @@ flowchart LR
     <h4>Graph</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><td>Nodes</td><td>3050</td></tr>
-      <tr><td>Edges</td><td>4595</td></tr>
+      <tr><td>Edges</td><td>4596</td></tr>
       <tr><td>Hyperedges</td><td>0</td></tr>
       <tr><td>Communities</td><td>455</td></tr>
       <tr><td>Documented Sections</td><td>15</td></tr>
@@ -4896,7 +4898,7 @@ flowchart LR
     <h4>Edge Confidence</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><td>EXTRACTED</td><td>4302</td></tr>
-      <tr><td>INFERRED</td><td>293</td></tr>
+      <tr><td>INFERRED</td><td>294</td></tr>
       <tr><td>AMBIGUOUS</td><td>0</td></tr>
     </table>
   </div>
@@ -4904,7 +4906,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>usgar-redesign — Architecture Documentation</p>
-  <p>Generated: 2026-07-29 16:12 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-07-29 16:27 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

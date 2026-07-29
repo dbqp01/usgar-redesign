@@ -110,27 +110,74 @@ class WebhookDebugAction {
             $diagnostics['hmac_self_test'] = 'SKIPPED (SDK not loaded or secret missing)';
         }
 
-        // 10. Verificar logs directory
+        // 10. Verificar y crear logs directory
         $logsDir = dirname(__DIR__, 4) . '/logs';
         $diagnostics['logs_dir'] = $logsDir;
-        $diagnostics['logs_dir_exists'] = is_dir($logsDir);
+        $diagnostics['logs_dir_existed_before'] = is_dir($logsDir);
+
+        // Intentar crear si no existe
+        if (!is_dir($logsDir)) {
+            $diagnostics['logs_dir_mkdir_result'] = @mkdir($logsDir, 0755, true) ? 'CREATED' : 'FAILED';
+            if (is_dir($logsDir)) {
+                @file_put_contents($logsDir . '/.htaccess', "Deny from all\n");
+            }
+        }
+
+        $diagnostics['logs_dir_exists_now'] = is_dir($logsDir);
         $diagnostics['logs_dir_writable'] = is_writable($logsDir);
 
-        // 11. Check DB connection
+        // Intentar escribir un test log
+        if (is_dir($logsDir) && is_writable($logsDir)) {
+            $testFile = $logsDir . '/app.log';
+            $testEntry = json_encode(['timestamp' => date('Y-m-d H:i:s'), 'level' => 'INFO', 'message' => 'WEBHOOK_DEBUG_TEST_WRITE']) . "\n";
+            $written = @file_put_contents($testFile, $testEntry, FILE_APPEND | LOCK_EX);
+            $diagnostics['logs_test_write'] = $written !== false ? 'OK (' . $written . ' bytes)' : 'FAILED';
+        } else {
+            $diagnostics['logs_test_write'] = 'SKIPPED (dir not writable)';
+            $diagnostics['error_log_fallback'] = 'Logger will use PHP error_log() as fallback';
+        }
+
+        // 11. Check DB connection and tables
         try {
             $db = \App\Core\Database::getInstance();
             $conn = $db->getConnection();
             $diagnostics['db_connected'] = $conn !== null;
+
+            if ($conn) {
+                // Verificar que las tablas necesarias existen
+                $tables = ['provisional_bookings', 'processed_payments'];
+                foreach ($tables as $table) {
+                    try {
+                        $stmt = $conn->query("SELECT COUNT(*) FROM {$table}");
+                        $count = $stmt->fetchColumn();
+                        $diagnostics["table_{$table}"] = "EXISTS ({$count} rows)";
+                    } catch (\Throwable $e) {
+                        $diagnostics["table_{$table}"] = "NOT_FOUND: " . $e->getMessage();
+                    }
+                }
+            }
         } catch (\Throwable $e) {
             $diagnostics['db_connected'] = false;
             $diagnostics['db_error'] = $e->getMessage();
         }
 
-        // 12. Verificar PHP version
+        // 12. Verificar Event Listeners registrados
+        $dispatcher = \App\Core\Events\EventDispatcher::getInstance();
+        $ref = new \ReflectionClass($dispatcher);
+        $listenersProperty = $ref->getProperty('listeners');
+        $listenersProperty->setAccessible(true);
+        $listeners = $listenersProperty->getValue($dispatcher);
+        $diagnostics['event_listeners'] = [];
+        foreach ($listeners as $eventName => $eventListeners) {
+            $diagnostics['event_listeners'][$eventName] = array_map(fn($l) => get_class($l), $eventListeners);
+        }
+        $diagnostics['booking_paid_listeners_count'] = count($listeners['booking.paid'] ?? []);
+
+        // 13. Verificar PHP version
         $diagnostics['php_version'] = PHP_VERSION;
         $diagnostics['server_software'] = $_SERVER['SERVER_SOFTWARE'] ?? 'unknown';
 
-        // 13. Query params recibidos
+        // 14. Query params recibidos
         $diagnostics['query_params'] = $_GET;
 
         Response::json([
