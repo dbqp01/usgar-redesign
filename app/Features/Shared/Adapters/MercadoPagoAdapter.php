@@ -70,7 +70,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
 
         // QloApps prices are in USD. If MP requires PEN, we must convert it.
         if ($currencyId === 'PEN') {
-            $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN', 3.80);
+            $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
             $finalPrice = $totalPrice * $exchangeRate;
         }
 
