@@ -221,12 +221,60 @@
       "name_es": "Cambio de Moneda",
       "name_en": "Currency Exchange",
       "name_fr": "Bureau de Change",
-      "name_pt": "Cambio de Moedas",
-      "description_es": "Cambia dolares y soles de forma facil en recepcion",
+      "name_pt": "Câmbio de Moedas",
+      "description_es": "Cambia dólares y soles de forma fácil en recepción",
       "description_en": "Exchange dollars and soles easily at the reception",
-      "description_fr": "Changez vos devises facilement a la reception",
-      "description_pt": "Troque dolares e soles facilmente na recepcao",
+      "description_fr": "Changez vos devises facilement à la réception",
+      "description_pt": "Troque dólares e soles facilmente na recepção",
       "icon": "cambio-moneda"
+    },
+    {
+      "id": "room-service",
+      "name_es": "Servicio a la Habitación",
+      "name_en": "Room Service",
+      "name_fr": "Service d'Étage",
+      "name_pt": "Serviço de Quarto",
+      "description_es": "Disfruta de nuestras delicias directamente en la comodidad de tu habitación",
+      "description_en": "Enjoy our delicious food directly in the comfort of your room",
+      "description_fr": "Profitez de nos délices directement dans le confort de votre chambre",
+      "description_pt": "Desfrute de nossas delícias diretamente no conforto do seu quarto",
+      "icon": "room-service"
+    },
+    {
+      "id": "garden",
+      "name_es": "Jardín y Patio",
+      "name_en": "Garden & Courtyard",
+      "name_fr": "Jardin & Cour",
+      "name_pt": "Jardim e Pátio",
+      "description_es": "Hermosos jardines andinos para relajarse después de un día de turismo",
+      "description_en": "Beautiful Andean gardens to relax after a day of sightseeing",
+      "description_fr": "De magnifiques jardins andins pour se détendre après une journée de visites",
+      "description_pt": "Lindos jardins andinos para relaxar após um dia de passeios",
+      "icon": "garden"
+    },
+    {
+      "id": "pets",
+      "name_es": "Mascotas Permitidas (Gratis)",
+      "name_en": "Pets Allowed (Free)",
+      "name_fr": "Animaux Acceptés (Gratuit)",
+      "name_pt": "Animais de Estimação Permitidos (Grátis)",
+      "description_es": "Tus amigos de cuatro patas son bienvenidos sin cargos adicionales",
+      "description_en": "Your four-legged friends are welcome at no extra charge",
+      "description_fr": "Vos amis à quatre pattes sont les bienvenus sans frais supplémentaires",
+      "description_pt": "Seus amigos de quatro patas são bem-vindos sem custo extra",
+      "icon": "pets"
+    },
+    {
+      "id": "wake-up",
+      "name_es": "Servicio de Despertador",
+      "name_en": "Wake-up Service",
+      "name_fr": "Service de Réveil",
+      "name_pt": "Serviço de Despertar",
+      "description_es": "Te despertamos a la hora que necesites para tus tours",
+      "description_en": "We wake you up at the time you need for your tours",
+      "description_fr": "Nous vous réveillons à l'heure souhaitée pour vos excursions",
+      "description_pt": "Acordamos você no horário que precisar para seus passeios",
+      "icon": "wake-up"
     }
   ]
 }

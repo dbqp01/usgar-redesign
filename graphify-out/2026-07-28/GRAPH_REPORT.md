@@ -1,16 +1,16 @@
 # Graph Report - usgar-redesign  (2026-07-28)
 
 ## Corpus Check
-- 308 files · ~528,212 words
+- 308 files · ~528,267 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1752 nodes · 2251 edges · 253 communities (138 shown, 115 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 92 edges (avg confidence: 0.79)
+- 1752 nodes · 2250 edges · 258 communities (137 shown, 121 thin omitted)
+- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 91 edges (avg confidence: 0.79)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3939c64e`
+- Built from commit: `54664f07`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -109,8 +109,13 @@
 - GetRoomsAction.php
 - Container
 - ExtendHoldAction.php
+- Request
 - ChannexRoomMapper
 - ProvisionalBookingRepository
+- RoomTypeRegistry
+- AuthRegisterAction
+- ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
+- InstalledVersions.php
 - Mobile Security Audit Guide
 - 十二、华云数据案例分析 (wooyun-2015-0124527)
 - Complete working app (Node.js + Express)
@@ -245,7 +250,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (253 total, 115 thin omitted)
+## Communities (258 total, 121 thin omitted)
 
 ### Community 0 - "python.md"
 Cohesion: 0.10
@@ -264,8 +269,8 @@ Cohesion: 0.04
 Nodes (44): @astrojs/check, @astrojs/sitemap, allowScripts, esbuild@0.28.1, sharp@0.35.3, dependencies, @astrojs/check, @astrojs/sitemap (+36 more)
 
 ### Community 6 - "Rust Security Audit"
-Cohesion: 0.14
-Nodes (8): AuthCallbackAction, AuthLoginAction, Request, AuthProvidersAction, UpdateUserProfileAction, Exception, Middleware, Request
+Cohesion: 0.17
+Nodes (7): AuthCallbackAction, AuthLogoutAction, Request, AuthProvidersAction, UpdateUserProfileAction, Middleware, Request
 
 ### Community 7 - "全面审计方法论 - 避免遗漏的系统性框架"
 Cohesion: 0.13
@@ -280,8 +285,8 @@ Cohesion: 0.17
 Nodes (11): API Testing Harness — USGAR Hotels, Auth Me (sin token), Auth Register (validación), Booking (validación de campos), Health Check, Interpretación de Resultados, Prerrequisitos, Rooms (con fechas) (+3 more)
 
 ### Community 10 - "Docker 部署验证指南"
-Cohesion: 0.53
-Nodes (3): GetBookingStatusAction, ProvisionalBookingRepository, Request
+Cohesion: 0.25
+Nodes (5): AuthLoginAction, Request, GetBookingStatusAction, ProvisionalBookingRepository, Request
 
 ### Community 11 - "C/C++ Security Audit"
 Cohesion: 0.40
@@ -291,12 +296,12 @@ Nodes (4): compilerOptions, paths, extends, astro/tsconfigs/strict
 Cohesion: 0.60
 Nodes (4): compressImage(), files, run(), SUPPORTED_EXTENSIONS
 
-### Community 13 - "数据流分析方法论"
-Cohesion: 0.18
-Nodes (3): self, InstalledVersions, VersionParser
+### Community 14 - "Python Deserialization Deep Dive"
+Cohesion: 0.15
+Nodes (3): AuthMeAction, GetUserBookingsAction, SessionService
 
 ### Community 15 - "动态代码审计指南 (Dynamic Code Audit Guide)"
-Cohesion: 0.21
+Cohesion: 0.29
 Nodes (4): PDO, QloAppAdapter, PmsPortInterface, SimpleXMLElement
 
 ### Community 16 - "版本边界速查表 (Version Boundaries Reference)"
@@ -312,8 +317,8 @@ Cohesion: 0.40
 Nodes (8): HandleMercadoPagoWebhookAction, ChannelManagerPortInterface, PaymentGatewayPortInterface, PDO, PmsPortInterface, ProvisionalBookingRepository, Request, EventDispatcher
 
 ### Community 21 - "Real World Vulnerabilities Case Study"
-Cohesion: 0.47
-Nodes (6): CreateBookingAction, PaymentGatewayPortInterface, PDO, PmsPortInterface, ProvisionalBookingRepository, Request
+Cohesion: 0.32
+Nodes (7): CreateBookingAction, PaymentGatewayPortInterface, PDO, PmsPortInterface, ProvisionalBookingRepository, Request, Exception
 
 ### Community 24 - "Gotchas Bank"
 Cohesion: 0.05
@@ -324,8 +329,8 @@ Cohesion: 0.40
 Nodes (5): checkHtmlFile(), __dirname, distDir, __filename, traverseDir()
 
 ### Community 29 - "Naming Conventions"
-Cohesion: 0.08
-Nodes (7): Database, Request, AuthMeAction, GetUserBookingsAction, User, HealthCheckAction, PDO
+Cohesion: 0.20
+Nodes (3): Database, User, PDO
 
 ### Community 30 - "Templates, Views, CSS & JavaScript"
 Cohesion: 0.29
@@ -375,10 +380,6 @@ Nodes (12): 12. SEO, 13. Pagos, 16. Tokens CSS / Tailwind v4 — Referencia Comp
 Cohesion: 0.10
 Nodes (19): Backend — install & server.js, Bricks uses Payments API (/v1/payments), NOT Orders API., CardForm does NOT exist — use CardPayment., Complete working app (React + Express), Critical gotchas, Environment files, Frontend — full Vite project, Guide: Checkout Bricks (+11 more)
 
-### Community 93 - "index.php"
-Cohesion: 0.17
-Nodes (6): AuthLoginEmailAction, Request, AuthLogoutAction, Request, AuthRegisterAction, Request
-
 ### Community 94 - "HandleChannexWebhookAction.php"
 Cohesion: 0.28
 Nodes (6): HandleChannexWebhookAction, ChannelManagerPortInterface, PDO, ProvisionalBookingRepository, Request, ChannexRoomMapper
@@ -400,11 +401,11 @@ Cohesion: 0.11
 Nodes (17): Based on the Stripe agent-toolkit recommendation-template pattern., How to use this template, Output structure (copy this verbatim, fill in the blanks), PURPOSE: Defines the mandatory output structure for every bundle generated by mp-integrate., Read this BEFORE assembling the final output. Follow it exactly — no sections are optional., Recommendation Template — Integration Bundle, Section 1 — Install, Section 2 — Credentials (+9 more)
 
 ### Community 104 - "GetRoomsAction.php"
-Cohesion: 0.19
+Cohesion: 0.12
 Nodes (4): Validator, GetRoomsAction, PmsPortInterface, Request
 
 ### Community 106 - "ExtendHoldAction.php"
-Cohesion: 0.27
+Cohesion: 0.52
 Nodes (4): ExtendHoldAction, PmsPortInterface, ProvisionalBookingRepository, Request
 
 ### Community 117 - "Mobile Security Audit Guide"
@@ -598,19 +599,19 @@ Nodes (3): Bug, feature or question?, Reproduction, Version and provider
 ## Knowledge Gaps
 - **470 isolated node(s):** `../content/about/about.json`, `../assets/hotel/fallback-room-fachada.jpg`, `t`, `t`, `culinaryOffers` (+465 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **115 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **121 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Config` connect `逻辑漏洞深度分析手册` to `python.md`, `External Security Tools Integration Guide`, `Performance optimization`, `GetRoomsAction.php`, `Docker 部署验证指南`, `ChannexRoomMapper`, `Python Deserialization Deep Dive`, `动态代码审计指南 (Dynamic Code Audit Guide)`, `Database Operations & Security`, `SEO optimization`, `Real World Vulnerabilities Case Study`, `PoC 分类与模板`, `Naming Conventions`, `HandleChannexWebhookAction.php`?**
-  _High betweenness centrality (0.055) - this node is a cross-community bridge._
+- **Why does `Config` connect `逻辑漏洞深度分析手册` to `python.md`, `External Security Tools Integration Guide`, `Performance optimization`, `GetRoomsAction.php`, `Docker 部署验证指南`, `Request`, `ChannexRoomMapper`, `Python Deserialization Deep Dive`, `动态代码审计指南 (Dynamic Code Audit Guide)`, `RoomTypeRegistry`, `Database Operations & Security`, `SEO optimization`, `Real World Vulnerabilities Case Study`, `PoC 分类与模板`, `HandleChannexWebhookAction.php`?**
+  _High betweenness centrality (0.058) - this node is a cross-community bridge._
 - **Why does `Exception` connect `Templates, Views, CSS & JavaScript` to `OAuth1.php`, `Hybridauth.php`, `File Creation Checklist`?**
   _High betweenness centrality (0.030) - this node is a cross-community bridge._
 - **Are the 24 inferred relationships involving `Config` (e.g. with `.formatEntry()` and `.getIp()`) actually correct?**
   _`Config` has 24 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 23 inferred relationships involving `self` (e.g. with `.badRequest()` and `.error()`) actually correct?**
-  _`self` has 23 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 22 inferred relationships involving `self` (e.g. with `.badRequest()` and `.error()`) actually correct?**
+  _`self` has 22 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `../content/about/about.json`, `../assets/hotel/fallback-room-fachada.jpg`, `t` to the rest of the system?**
   _470 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `python.md` be split into smaller, more focused modules?**
