@@ -62,6 +62,15 @@ if ($dbConnection !== null) {
     $container->set(PDO::class, $dbConnection);
 }
 
+// 2.5 Registrar Event Listeners para el flujo Webhook → PMS/Channel Manager
+use App\Core\Events\EventDispatcher;
+use App\Features\Booking\Domain\Listeners\ConfirmQloAppsOrderListener;
+use App\Features\Booking\Domain\Listeners\SyncChannexBookingListener;
+
+$eventDispatcher = EventDispatcher::getInstance();
+$eventDispatcher->subscribe('booking.paid', new ConfirmQloAppsOrderListener());
+$eventDispatcher->subscribe('booking.paid', new SyncChannexBookingListener());
+
 // 3. Soporte para ejecuciones desde la linea de comandos (Cron Jobs)
 if (PHP_SAPI === 'cli') {
     global $argv;
@@ -96,6 +105,7 @@ $router->post('/api/webhook/channex', HandleChannexWebhookAction::class);
 $router->post('/api/cron/cleanup',    CleanExpiredCartsAction::class);
 
 use App\Features\Auth\Actions\UpdateUserProfileAction;
+use App\Features\Health\Actions\WebhookDebugAction;
 
 // Endpoints de Autenticacion y Panel de Huespedes
 $router->get('/api/auth/providers',    AuthProvidersAction::class);
@@ -109,5 +119,9 @@ $router->get('/api/auth/logout',       AuthLogoutAction::class);
 $router->get('/api/user/bookings',     GetUserBookingsAction::class);
 $router->post('/api/user/profile',     UpdateUserProfileAction::class);
 
+// TEMPORAL: Endpoint de diagnostico de webhooks (ELIMINAR despues de depurar)
+$router->get('/api/webhook-debug',     WebhookDebugAction::class);
+
 // 7. Despachar la peticion actual
 $router->dispatch($request);
+
