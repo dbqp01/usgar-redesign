@@ -1,16 +1,16 @@
 # Graph Report - usgar-redesign  (2026-07-29)
 
 ## Corpus Check
-- 308 files · ~528,979 words
+- 661 files · ~599,050 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1760 nodes · 2254 edges · 256 communities (138 shown, 118 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 87 edges (avg confidence: 0.79)
+- 3045 nodes · 4588 edges · 457 communities (168 shown, 289 thin omitted)
+- Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 299 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c94d540d`
+- Built from commit: `82c558f2`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -119,35 +119,237 @@
 - AuthLoginEmailAction.php
 - Mobile Security Audit Guide
 - 十二、华云数据案例分析 (wooyun-2015-0124527)
+- MPSearchRequest
+- HttpMethod.php
 - Complete working app (Node.js + Express)
+- MPRequest
+- BaseClient
+- PointClientITTest
+- 🆘 Support and Help
+- ProvisionalBookingRepository
+- Migration Guide from MercadoPago PHP SDK v2 to v3
 - SQL注入漏洞分析方法论
+- Mercado Pago SDK for PHP
+- CustomerCardClientITTest
+- OrderClientITTest
+- OAuthClient.php
+- CustomerClientITTest
 - .NET/C# 安全审计语义提示 (Semantic Hints)
 - Go 安全审计语义提示 (Semantic Hints)
+- MerchantOrderClientITTest
+- [3.5.1] - 2025-08-28
+- PaymentRefundClientITTest
+- PreApprovalClientITTest
 - Ruby/Rails 安全审计语义提示 (Semantic Hints)
 - Java Sink Patterns
 - CodeScan Pattern Library
 - 🚀 改进的传播路径分析 (基于RuoYi审计经验)
 - 轨道B: 数据流分析法 (注入类漏洞)
+- PreApprovalPlanClientITTest
+- PreferenceClientITTest
+- PointClientUnitTest
 - 4. 通用移动安全问题
 - 6.1 反弹Shell
 - 12.4 文件头检测绕过详解
+- MerchantOrderClient.php
+- PaymentRefundClient.php
+- PreApprovalClient.php
+- PreferenceClient.php
+- MPResponse
+- PaymentClientITTest
+- Database.php
+- PaymentClient.php
+- Contributing to the Mercado Pago PHP SDK
+- CustomerClient.php
+- PreApprovalPlanClient.php
+- OrderTransactionClientITTest
+- CurlRequest
+- Container
+- Middleware
+- Code of Conduct
+- 🌟 Getting Started with payment via your own website forms
+- .dispatch
+- [3.6.0] - 2025-09-01
+- Coding Guidelines
+- CustomerCardClientUnitTest
+- CustomerClientUnitTest
 - 追踪操作指南
 - 轨道B: 数据流分析法 (注入类漏洞)
+- MerchantOrderClientUnitTest
+- OrderTransactionClientUnitTest
+- PaymentClientUnitTest
+- PreApprovalClientUnitTest
+- PreApprovalPlanClientUnitTest
+- PreferenceClientUnitTest
+- [3.7.1] - 2025-10-30
+- Expanded.php
+- Urls
+- OAuthClientUnitTest
+- Address
+- Google
+- PULL_REQUEST_TEMPLATE.md
+- CardTokenClientITTest
+- PaymentRefundClientUnitTest
+- ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
+- IdentificationTypeClientITTest
+- PaymentMethodClientITTest
+- UserClientITTest
+- AdvancedPaymentClientUnitTest
+- Phone
+- SubMerchant
+- CardToken
+- ChargebackSearch
+- Address
+- Cardholder
+- Invoice
+- InvoiceSearchResult
+- ReceiverAddress
+- Shipment
+- ShippingOption
+- MerchantOrderSearch
+- Discounts
+- Installments
+- IntegrationData
 - 9.1 短信接口泄露模式
+- Items
+- OnlineConfig
+- Refund
+- UpdateTransaction
+- Transactions
+- TransactionSecurity
+- AdditionalInfo
+- AdditionalInfoPayer
+- BankInfo
+- Card
+- ForwardData
+- Payer
+- PaymentMethod
+- PaymentMethodData
+- PaymentMethodRules
+- PaymentRefundListResult
+- PaymentSearchResult
+- PointOfInteraction
+- Shipments
+- TransactionData
 - 3.1 上下文类型识别
+- PaymentIntentList
+- PaymentMethodListResult
+- Settings
+- PaymentRefundResult
+- PreApprovalListResult
+- PreApprovalPlanListResult
+- PreApprovalPlanSearch
+- CategoryDescriptor
+- Item
+- PaymentMethods
+- Shipments
+- Track
+- User
+- BuyerReputation
+- StatusList
+- Mapper.php
+- CardTokenClientUnitTest
+- ChargebackClientUnitTest
 - 6.2 绕过场景与方法
+- DisbursementRefundClientUnitTest
+- InvoiceClientUnitTest
+- CustomerCreateRequest.php
+- PaymentCancelRequest.php
+- PaymentCaptureRequest.php
+- PaymentRefundCreateRequest.php
+- City.php
+- DifferentialPricing.php
+- Identification.php
+- Paging.php
+- Phone.php
+- Source.php
+- Issuer.php
+- PaymentMethod.php
+- SecurityCode.php
+- IdentificationTypeListResult.php
+- Payment.php
+- Collector.php
+- Item.php
+- Payer.php
+- Payment.php
+- ReceiverAddressCity.php
+- ReceiverAddressCountry.php
 - 🔍 文件下载安全检测
+- ReceiverAddressState.php
+- ShippingEstimatedDelivery.php
+- ShippingSpeed.php
 - 三、敏感文件读取目标
 - 信息泄露漏洞分析知识库
+- AutomaticPayments.php
+- Chargeback.php
+- ExternalCategory.php
+- InstallmentsAvailable.php
+- InstallmentsInterestFree.php
+- InvoicePeriod.php
+- PaymentDiscount.php
+- PaymentMethodDiscount.php
+- Retries.php
+- Sponsor.php
+- StoredCredential.php
+- SubscriptionSequence.php
+- Taxes.php
+- Track.php
+- TypeResponse.php
+- ApplicationData.php
+- BankInfoCollector.php
+- BankInfoPayer.php
+- Barcode.php
+- FeeDetails.php
+- Metadata.php
+- NetworkTransactionData.php
+- Order.php
+- PaymentDiscounts.php
+- PaymentFee.php
+- ThreeDSInfo.php
+- Bin.php
+- CardNumber.php
 - 文件操作审计
 - 授权检查缺失审计 (Authorization Gap)
 - 一键检测命令
 - Systematic Methodology
 - High-Value Target Categories
 - Detection Patterns
+- FinancialInstitutions.php
+- SecurityCode.php
+- Device.php
+- Events.php
+- PaymentIntentAdditionalInfo.php
+- PaymentIntentPayment.php
+- AutoRecurring.php
+- Summarized.php
+- FreeTrial.php
+- PaymentMethodsAllowed.php
+- FreeMethod.php
+- PaymentMethod.php
+- PaymentType.php
+- Route.php
+- Tax.php
+- TrackValues.php
+- Address.php
+- AlternativePhone.php
+- BillData.php
+- BuyerReputationCancelled.php
+- BuyerReputationNotYetRated.php
+- BuyerReputationUnrated.php
+- Cancellations.php
 - Validation Checklist
+- Claims.php
+- Company.php
 - Component Composition Patterns
+- Context.php
 - Framework-Specific Considerations
+- Credit.php
+- DelayedHandlingTime.php
+- Ratings.php
+- Sales.php
+- StatusBilling.php
+- StatusBuyImmediatePayment.php
+- StatusShoppingCart.php
 - Open Redirect (开放重定向)
 - 文件包含
 - 文件上传
@@ -201,13 +403,11 @@
 - OpenID
 - TestCase
 - ActivityTest
-- CollectionTest
 - OAuth1.php
 - Contributor Covenant Code of Conduct
 - [Hybridauth](https://hybridauth.github.io/) 3.12
 - GetBookingStatusAction.php
 - DataStoreTrait.php
-- ParserTest
 - Util
 - ContactTest
 - ProfileTest
@@ -222,41 +422,37 @@
 - ProvisionalBookingRepository
 
 ## God Nodes (most connected - your core abstractions)
-1. `AbstractAdapter` - 32 edges
-2. `LightOpenID` - 31 edges
-3. `Config` - 29 edges
-4. `ClassLoader` - 28 edges
-5. `Logger` - 27 edges
-6. `../layouts/Layout.astro` - 25 edges
-7. `@/i18n/utils` - 25 edges
-8. `OAuth2` - 24 edges
-9. `Request` - 23 edges
-10. `OAuthRequest` - 21 edges
+1. `MercadoPagoConfig` - 143 edges
+2. `RequestOptions` - 109 edges
+3. `MPResource` - 88 edges
+4. `Serializer` - 74 edges
+5. `MercadoPagoClient` - 56 edges
+6. `BaseClient` - 43 edges
+7. `MPSearchRequest` - 32 edges
+8. `AbstractAdapter` - 32 edges
+9. `LightOpenID` - 31 edges
+10. `Config` - 29 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `../components/MapSection.astro` --dynamic_import--> `leaflet/dist/leaflet.css`  [EXTRACTED]
   src/components/MapSection.astro → leaflet/dist/leaflet.css
 - `../components/MapSection.astro` --dynamic_import--> `../assets/logos/Logo usgar isotipo.png`  [EXTRACTED]
   src/components/MapSection.astro → src/assets/logos/Logo usgar isotipo.png
-- `OAuth1` --inherits--> `AbstractAdapter`  [EXTRACTED]
-  vendor/hybridauth/hybridauth/src/Adapter/OAuth1.php → vendor/hybridauth/hybridauth/src/Adapter/AbstractAdapter.php
-- `OAuth2` --inherits--> `AbstractAdapter`  [EXTRACTED]
-  vendor/hybridauth/hybridauth/src/Adapter/OAuth2.php → vendor/hybridauth/hybridauth/src/Adapter/AbstractAdapter.php
-- `OpenID` --inherits--> `AbstractAdapter`  [EXTRACTED]
-  vendor/hybridauth/hybridauth/src/Adapter/OpenID.php → vendor/hybridauth/hybridauth/src/Adapter/AbstractAdapter.php
+- `AdvancedPaymentClient` --inherits--> `MercadoPagoClient`  [EXTRACTED]
+  vendor/mercadopago/dx-php/src/MercadoPago/Client/AdvancedPayment/AdvancedPaymentClient.php → vendor/mercadopago/dx-php/src/MercadoPago/Client/MercadoPagoClient.php
+- `ChargebackClient` --inherits--> `MercadoPagoClient`  [EXTRACTED]
+  vendor/mercadopago/dx-php/src/MercadoPago/Client/Chargeback/ChargebackClient.php → vendor/mercadopago/dx-php/src/MercadoPago/Client/MercadoPagoClient.php
+- `CustomerCardClient` --inherits--> `MercadoPagoClient`  [EXTRACTED]
+  vendor/mercadopago/dx-php/src/MercadoPago/Client/Customer/CustomerCardClient.php → vendor/mercadopago/dx-php/src/MercadoPago/Client/MercadoPagoClient.php
 
 ## Import Cycles
 - None detected.
 
-## Communities (256 total, 118 thin omitted)
-
-### Community 0 - "python.md"
-Cohesion: 0.07
-Nodes (5): Container, HttpException, self, Middleware, Router
+## Communities (457 total, 289 thin omitted)
 
 ### Community 2 - "External Security Tools Integration Guide"
-Cohesion: 0.09
-Nodes (6): Logger, PDO, ProvisionalBookingRepository, PDO, ProvisionalBooking, CleanExpiredCartsAction
+Cohesion: 0.13
+Nodes (3): Logger, PDO, ProvisionalBooking
 
 ### Community 4 - "绕过策略方法论 (Bypass Strategies)"
 Cohesion: 0.20
@@ -267,8 +463,8 @@ Cohesion: 0.04
 Nodes (44): @astrojs/check, @astrojs/sitemap, allowScripts, esbuild@0.28.1, sharp@0.35.3, dependencies, @astrojs/check, @astrojs/sitemap (+36 more)
 
 ### Community 6 - "Rust Security Audit"
-Cohesion: 0.16
-Nodes (6): AuthCallbackAction, AuthLoginAction, Request, AuthProvidersAction, UpdateUserProfileAction, Request
+Cohesion: 0.04
+Nodes (22): MPResource, Disbursement, AdvancedPaymentSearch, Chargeback, CustomerCardResult, CustomerSearch, DisbursementRefundList, IdentificationTypeResult (+14 more)
 
 ### Community 7 - "全面审计方法论 - 避免遗漏的系统性框架"
 Cohesion: 0.13
@@ -295,8 +491,12 @@ Cohesion: 0.60
 Nodes (4): compressImage(), files, run(), SUPPORTED_EXTENSIONS
 
 ### Community 13 - "数据流分析方法论"
-Cohesion: 0.18
-Nodes (3): self, InstalledVersions, VersionParser
+Cohesion: 0.12
+Nodes (4): Response, self, InstalledVersions, VersionParser
+
+### Community 14 - "Python Deserialization Deep Dive"
+Cohesion: 0.06
+Nodes (17): Order, Transactions, AdvancedPaymentClient, RequestOptions, CustomerCardClient, MPHttpClient, OrderClient, MPHttpClient (+9 more)
 
 ### Community 15 - "动态代码审计指南 (Dynamic Code Audit Guide)"
 Cohesion: 0.31
@@ -311,8 +511,8 @@ Cohesion: 0.18
 Nodes (8): BookingService, ApiResult, BookingPayload, BookingResponseData, BookingStatusData, GuestDetails, IBookingService, RoomAvailability
 
 ### Community 18 - "Database Operations & Security"
-Cohesion: 0.26
-Nodes (7): HandleMercadoPagoWebhookAction, PaymentGatewayPortInterface, ChannelManagerPortInterface, EventDispatcher, PaymentGatewayPortInterface, PmsPortInterface, ProvisionalBookingRepository
+Cohesion: 0.33
+Nodes (9): HandleMercadoPagoWebhookAction, PaymentGatewayPortInterface, PDO, ChannelManagerPortInterface, EventDispatcher, Exception, PmsPortInterface, ProvisionalBookingRepository (+1 more)
 
 ### Community 21 - "Real World Vulnerabilities Case Study"
 Cohesion: 0.47
@@ -321,6 +521,10 @@ Nodes (6): CreateBookingAction, PaymentGatewayPortInterface, PDO, PmsPortInterfa
 ### Community 24 - "Gotchas Bank"
 Cohesion: 0.05
 Nodes (39): (1) WebFetch official llms.txt per country → (2) this file → (3) MCP search_documentation, API Reference, Argentina (MLA), Brazil (MLB), CardPayment Brick, Checkout API (Orders mode), Checkout API — Orders (new, recommended), Checkout Bricks (+31 more)
+
+### Community 25 - "PoC 分类与模板"
+Cohesion: 0.04
+Nodes (21): Mapper, CustomerCardListResult, CustomerSearchResult, MerchantOrderSearchResult, Attempt, Payer, Payment, PaymentMethod (+13 more)
 
 ### Community 26 - "Semantic Search Guide for Security Audit"
 Cohesion: 0.40
@@ -331,40 +535,44 @@ Cohesion: 0.48
 Nodes (4): ChannelManagerPortInterface, SyncChannexBookingListener, EventInterface, ListenerInterface
 
 ### Community 30 - "Templates, Views, CSS & JavaScript"
-Cohesion: 0.29
-Nodes (5): ExceptionInterface, AuthorizationDeniedException, Exception, InvalidOpenidIdentifierException, ErrorException
+Cohesion: 0.06
+Nodes (3): MercadoPagoConfig, MPHttpClient, OrderClientUnitTest
 
 ### Community 33 - "Cryptography Security Audit"
 Cohesion: 0.22
 Nodes (3): ../data/rooms, ../utils/helpers, ../components/MobileBookingBar.astro
 
 ### Community 34 - "Hybridauth.php"
-Cohesion: 0.21
-Nodes (3): HttpClientInterface, LoggerInterface, StorageInterface
+Cohesion: 0.16
+Nodes (4): HttpClientInterface, LoggerInterface, StorageInterface, HybridauthTest
 
 ### Community 35 - "Module Architecture & File Structure"
 Cohesion: 0.06
 Nodes (34): bricks, checkout-api, checkout-pro, Gotchas Bank, ️ HARD LOCKS — read before doing anything else, LOCK 1 — SDK is never a wizard question, LOCK 2 — Product → Mode availability table (NON-NEGOTIABLE), LOCK 3 — Always use `init_point`, never `sandbox_init_point` (+26 more)
 
+### Community 36 - "Performance optimization"
+Cohesion: 0.08
+Nodes (4): InvalidWebhookSignatureException, SignatureFailureReason, WebhookSignatureValidator, WebhookSignatureValidatorUnitTest
+
 ### Community 37 - "UnexpectedValueException"
-Cohesion: 0.22
-Nodes (4): HttpRequestFailedException, UnexpectedApiResponseException, UnexpectedValueException, Contact
+Cohesion: 0.18
+Nodes (5): HttpClientFailureException, HttpRequestFailedException, UnexpectedApiResponseException, UnexpectedValueException, Contact
 
 ### Community 40 - "Java Web框架安全检测模块"
 Cohesion: 0.29
 Nodes (5): Auditoría Visual y de Marca — USGAR Hotels, Formato de Reporte, MCPs Requeridos, Procedimiento: Leer BRAND.md Primero, Propósito
 
 ### Community 49 - "AbstractAdapter.php"
-Cohesion: 0.25
-Nodes (3): BadMethodCallException, HttpClientFailureException, NotImplementedException
+Cohesion: 0.13
+Nodes (7): User, CardTokenClient, MPHttpClient, MercadoPagoClient, MPHttpClient, MPHttpClient, UserClient
 
 ### Community 84 - "Request"
 Cohesion: 0.10
 Nodes (20): 1. Arquitectura General, 2. Estructura de Directorios, 3. Refactorizaciones y Mejoras Arquitectónicas Recientes, 4. Endpoints de la API REST (`public/index.php`), 5. Pautas de Desarrollo, 6. Entorno de Desarrollo y Variables de Entorno (.env), 7. Despliegue en Hostinger Shared Hosting, A. Inyección de Dependencias PSR-11 (DI Container) (+12 more)
 
 ### Community 85 - "Sinks & Sources Reference"
-Cohesion: 0.10
-Nodes (4): RouterTest, GetRoomsActionTest, HandleMercadoPagoWebhookActionTest, TestCase
+Cohesion: 0.07
+Nodes (7): MercadoPagoAdapter, PaymentGatewayPortInterface, RouterTest, GetRoomsActionTest, HandleMercadoPagoWebhookActionTest, TestCase, Config
 
 ### Community 86 - "Django特定漏洞"
 Cohesion: 0.17
@@ -373,10 +581,6 @@ Nodes (12): 12. SEO, 13. Pagos, 16. Tokens CSS / Tailwind v4 — Referencia Comp
 ### Community 92 - "消息队列 / 异步链路安全检测模块"
 Cohesion: 0.10
 Nodes (19): Backend — install & server.js, Bricks uses Payments API (/v1/payments), NOT Orders API., CardForm does NOT exist — use CardPayment., Complete working app (React + Express), Critical gotchas, Environment files, Frontend — full Vite project, Guide: Checkout Bricks (+11 more)
-
-### Community 93 - "User"
-Cohesion: 0.08
-Nodes (7): Database, Request, AuthMeAction, GetUserBookingsAction, User, HealthCheckAction, PDO
 
 ### Community 94 - "HandleChannexWebhookAction.php"
 Cohesion: 0.35
@@ -399,16 +603,20 @@ Cohesion: 0.11
 Nodes (17): Based on the Stripe agent-toolkit recommendation-template pattern., How to use this template, Output structure (copy this verbatim, fill in the blanks), PURPOSE: Defines the mandatory output structure for every bundle generated by mp-integrate., Read this BEFORE assembling the final output. Follow it exactly — no sections are optional., Recommendation Template — Integration Bundle, Section 1 — Install, Section 2 — Credentials (+9 more)
 
 ### Community 104 - "GetRoomsAction.php"
-Cohesion: 0.17
+Cohesion: 0.13
 Nodes (4): Validator, GetRoomsAction, PmsPortInterface, Request
 
 ### Community 106 - "ExtendHoldAction.php"
-Cohesion: 0.27
+Cohesion: 0.52
 Nodes (4): ExtendHoldAction, PmsPortInterface, ProvisionalBookingRepository, Request
 
+### Community 108 - "PDO"
+Cohesion: 0.08
+Nodes (23): autoload, autoload-dev, psr-4, psr-4, config, platform, description, homepage (+15 more)
+
 ### Community 113 - "AuthRegisterAction"
-Cohesion: 0.15
-Nodes (8): AuthLoginEmailAction, Request, AuthLogoutAction, Request, AuthRegisterAction, Request, Exception, Middleware
+Cohesion: 0.09
+Nodes (15): AuthCallbackAction, AuthLoginAction, Request, AuthLoginEmailAction, Request, AuthLogoutAction, Request, AuthMeAction (+7 more)
 
 ### Community 115 - "../components/MapSection.astro"
 Cohesion: 0.09
@@ -422,13 +630,49 @@ Nodes (15): Checkout Pro uses Preferences API (/v1/checkout/preferences), NOT Or
 Cohesion: 0.12
 Nodes (15): API mode naming, Card tokens, Checkout redirect URL, Credentials, Critical distinction — three types of credentials (never confuse them), Mercado Pago — Terminology Rules, Mode and Orders API availability, Product naming (+7 more)
 
+### Community 119 - "MPSearchRequest"
+Cohesion: 0.11
+Nodes (6): Chargeback, ChargebackClient, MPHttpClient, InvoiceClient, MPHttpClient, MPSearchRequest
+
+### Community 120 - "HttpMethod.php"
+Cohesion: 0.11
+Nodes (8): DisbursementRefundClient, MPHttpClient, IdentificationTypeClient, MPHttpClient, PaymentMethodClient, MPHttpClient, HttpMethod, DisbursementRefund
+
 ### Community 121 - "Complete working app (Node.js + Express)"
 Cohesion: 0.13
 Nodes (14): ARI (availability, rates, restrictions), Availability — per room type, Basics, Bookings (inbound), Channel connection (the Channel API), Channex API reference (verified shapes), Content entities, Operational notes (+6 more)
 
+### Community 122 - "MPRequest"
+Cohesion: 0.14
+Nodes (5): MPHttpClient, MPDefaultHttpClient, HttpRequest, send(), MPRequest
+
+### Community 123 - "BaseClient"
+Cohesion: 0.15
+Nodes (7): MockObject, MPHttpClient, BaseClient, HttpRequest, IdentificationTypeClientUnitTest, PaymentMethodClientUnitTest, UserClientUnitTest
+
+### Community 125 - "🆘 Support and Help"
+Cohesion: 0.11
+Nodes (18): 1. For Questions 💬, 2. For Bugs 🐛, 3. For Features ✨, 4. To Contribute 🤝, 📚 Before Creating an Issue, Community channels, 🏢 Contact Official MP Support for:, Documentation (+10 more)
+
+### Community 126 - "ProvisionalBookingRepository"
+Cohesion: 0.16
+Nodes (3): PDO, ProvisionalBookingRepository, CleanExpiredCartsAction
+
+### Community 127 - "Migration Guide from MercadoPago PHP SDK v2 to v3"
+Cohesion: 0.14
+Nodes (14): Conclusion, Dependency Update, Introduction, Major Changes, Migration Guide from MercadoPago PHP SDK v2 to v3, Motivation, SDK Structure, Step 1: SDK Installation (+6 more)
+
 ### Community 128 - "SQL注入漏洞分析方法论"
 Cohesion: 0.13
 Nodes (14): Complete working webhook receiver (Node.js / Express), Critical rules, .env, Guide: Webhooks, Install, Notification topics, package.json, Pre-production checklist (+6 more)
+
+### Community 129 - "Mercado Pago SDK for PHP"
+Cohesion: 0.14
+Nodes (14): 🤝 Contributing, 📚 Documentation, 🌟 Getting started with payment via Checkout Pro, 💻 Installation, 🏻 License, Mercado Pago SDK for PHP, Patches to version 2.x.x, 💡 Requirements (+6 more)
+
+### Community 132 - "OAuthClient.php"
+Cohesion: 0.22
+Nodes (5): OAuthClient, MPHttpClient, OAuthCreateRequest, OAuthRefreshRequest, OAuth
 
 ### Community 134 - ".NET/C# 安全审计语义提示 (Semantic Hints)"
 Cohesion: 0.12
@@ -437,6 +681,10 @@ Nodes (18): ../assets/hotel/fallback-room-oxigeno.jpg, ../assets/hotel/hero-slid
 ### Community 135 - "Go 安全审计语义提示 (Semantic Hints)"
 Cohesion: 0.14
 Nodes (13): Adapters, Astro Usage Guide, CLI Commands, Common Workflows, Core Config Options, Creating a Basic Page, Creating a Component, Deploying with an Adapter (+5 more)
+
+### Community 137 - "[3.5.1] - 2025-08-28"
+Cohesion: 0.17
+Nodes (11): [3.11.0] - 2026-05-27, [3.12.0] - 2026-06-27, [3.5.1] - 2025-08-28, Added, Added, Changed, Changed, Changelog (+3 more)
 
 ### Community 140 - "Ruby/Rails 安全审计语义提示 (Semantic Hints)"
 Cohesion: 0.14
@@ -462,6 +710,58 @@ Nodes (13): Canonical string, Gotchas, mp-webhooks, Reference snippet (Node.js, 
 Cohesion: 0.15
 Nodes (12): Auditoría Lógica — USGAR Hotels, Formato de Reporte, MCPs Requeridos, Paso 1: Verificar sincronización de habitaciones, Paso 2: Buscar precios hardcodeados, Paso 3: Verificar flujo de reserva completo, Paso 4: Verificar i18n, Paso 5: Verificar Schema.org (+4 more)
 
+### Community 151 - "MerchantOrderClient.php"
+Cohesion: 0.25
+Nodes (3): MerchantOrderClient, MPHttpClient, MerchantOrder
+
+### Community 152 - "PaymentRefundClient.php"
+Cohesion: 0.25
+Nodes (3): PaymentRefundClient, MPHttpClient, PaymentRefund
+
+### Community 153 - "PreApprovalClient.php"
+Cohesion: 0.25
+Nodes (3): MPHttpClient, PreApprovalClient, PreApproval
+
+### Community 154 - "PreferenceClient.php"
+Cohesion: 0.25
+Nodes (3): MPHttpClient, PreferenceClient, Preference
+
+### Community 157 - "Database.php"
+Cohesion: 0.29
+Nodes (3): Database, HealthCheckAction, PDO
+
+### Community 158 - "PaymentClient.php"
+Cohesion: 0.31
+Nodes (3): Payment, PaymentClient, MPHttpClient
+
+### Community 159 - "Contributing to the Mercado Pago PHP SDK"
+Cohesion: 0.20
+Nodes (6): Bug Reports, Coding Guidance, Contributing to the Mercado Pago PHP SDK, How to contribute, Pull Request, Request For Change / Feature Request
+
+### Community 160 - "CustomerClient.php"
+Cohesion: 0.31
+Nodes (3): CustomerClient, MPHttpClient, Customer
+
+### Community 161 - "PreApprovalPlanClient.php"
+Cohesion: 0.29
+Nodes (3): MPHttpClient, PreApprovalPlanClient, PreApprovalPlan
+
+### Community 166 - "Code of Conduct"
+Cohesion: 0.25
+Nodes (7): Attribution, Code of Conduct, Enforcement, Our Pledge, Our Responsibilities, Our Standards, Scope
+
+### Community 167 - "🌟 Getting Started with payment via your own website forms"
+Cohesion: 0.25
+Nodes (8): 🌟 Getting Started with payment via your own website forms, Step 1: Require the library from your Composer vendor folder, Step 2: Set production or sandbox access token, Step 3: Initialize the API client, Step 4: Create the request array, Step 5: Create the request options, setting X-Idempotency-Key, Step 6: Make the request, Step 7: Handle exceptions
+
+### Community 169 - "[3.6.0] - 2025-09-01"
+Cohesion: 0.29
+Nodes (7): [3.6.0] - 2025-09-01, Added, Changed, Deprecated, Fixed, Removed, Security
+
+### Community 170 - "Coding Guidelines"
+Cohesion: 0.29
+Nodes (6): Branching Guidelines, Code Guidelines, Coding Guidelines, Comment Guidelines, Git Guidelines, Language Guidelines
+
 ### Community 173 - "追踪操作指南"
 Cohesion: 0.18
 Nodes (11): 10. SEO (BRAND.md §12), 1. Paleta de Colores (BRAND.md §3), 2. Tipografías (BRAND.md §4), 3. Tema Dual (BRAND.md §10), 4. Logos (BRAND.md §2), 5. Contenido Institucional (BRAND.md §5), 6. Servicios (BRAND.md §7), 7. Habitaciones (BRAND.md §6) (+3 more)
@@ -470,13 +770,29 @@ Nodes (11): 10. SEO (BRAND.md §12), 1. Paleta de Colores (BRAND.md §3), 2. Tip
 Cohesion: 0.18
 Nodes (10): 1. API client, 2. ID mapping + content sync, 3. Outbound ARI push, 4. Inbound bookings, Before writing code: map their PMS, Common traps, Connecting OTA channels (the Channel API), Integrate a PMS with Channex (+2 more)
 
+### Community 181 - "[3.7.1] - 2025-10-30"
+Cohesion: 0.33
+Nodes (6): [3.7.1] - 2025-10-30, Added, Changed, Deprecated, Fixed, Security
+
+### Community 183 - "Expanded.php"
+Cohesion: 0.33
+Nodes (3): Expanded, ExpandedGateway, ExpandedGatewayReference
+
+### Community 184 - "Urls"
+Cohesion: 0.33
+Nodes (3): BackUrls, RedirectUrls, Urls
+
+### Community 186 - "Address"
+Cohesion: 0.60
+Nodes (3): Address, ReceiverAddress, ReceiverAddress
+
+### Community 188 - "PULL_REQUEST_TEMPLATE.md"
+Cohesion: 0.40
+Nodes (4): Changes made to the feature:, General changes, Issues closed, PR validation checklist:
+
 ### Community 211 - "9.1 短信接口泄露模式"
 Cohesion: 0.22
 Nodes (9): 9. UI Components — Especificaciones, Booking Widget, Botones, Footer, Galería (Página de Habitación), Mapa, Navbar, Room Cards (+1 more)
-
-### Community 232 - "3.1 上下文类型识别"
-Cohesion: 0.13
-Nodes (3): OAuth2, Google, MicrosoftGraph
 
 ### Community 251 - "6.2 绕过场景与方法"
 Cohesion: 0.25
@@ -544,7 +860,7 @@ Nodes (15): ../components/common/SmoothScroll.astro, ../components/Footer.astro,
 
 ### Community 486 - "Recuento de errores y propuestas de solucion -- usgar-redesign (implementacion pt/fr)"
 Cohesion: 0.06
-Nodes (6): HttpClientInterface, StorageInterface, Curl, Guzzle, StorageImpl, ProfileTest
+Nodes (7): HttpClientInterface, StorageInterface, Curl, Guzzle, StorageImpl, KeycloakTest, ProfileTest
 
 ### Community 489 - "Required Files (MANDATORY)"
 Cohesion: 0.08
@@ -555,12 +871,12 @@ Cohesion: 0.21
 Nodes (5): ../data/attractions, astro, Attraction, attractions, LocalizedField
 
 ### Community 501 - "SKILL.md"
-Cohesion: 0.06
-Nodes (6): AdapterInterface, OpenID, Collection, Facebook, Session, Profile
+Cohesion: 0.05
+Nodes (7): AdapterInterface, OpenID, Collection, Facebook, Session, Profile, CollectionTest
 
 ### Community 534 - "File Creation Checklist"
-Cohesion: 0.19
-Nodes (6): InvalidAccessTokenException, InvalidApplicationCredentialsException, InvalidArgumentException, InvalidAuthorizationCodeException, InvalidAuthorizationStateException, RuntimeException
+Cohesion: 0.11
+Nodes (14): ExceptionInterface, AuthorizationDeniedException, BadMethodCallException, Exception, InvalidAccessTokenException, InvalidApplicationCredentialsException, InvalidArgumentException, InvalidAuthorizationCodeException (+6 more)
 
 ### Community 541 - "AdapterInterface.php"
 Cohesion: 0.10
@@ -586,10 +902,6 @@ Nodes (7): [Hybridauth](https://hybridauth.github.io/) 3.12, Installation, Licen
 Cohesion: 0.67
 Nodes (5): clearStoredData(), deleteStoredData(), getStorage(), getStoredData(), storeData()
 
-### Community 584 - "ProfileTest"
-Cohesion: 0.25
-Nodes (3): TestCase, HybridauthTest, KeycloakTest
-
 ### Community 589 - "CONTRIBUTING.md"
 Cohesion: 0.50
 Nodes (3): Develop, Documentation, Report Problems
@@ -598,25 +910,29 @@ Nodes (3): Develop, Documentation, Report Problems
 Cohesion: 0.50
 Nodes (3): Bug, feature or question?, Reproduction, Version and provider
 
+### Community 595 - "require"
+Cohesion: 0.50
+Nodes (3): require, hybridauth/hybridauth, mercadopago/dx-php
+
 ## Knowledge Gaps
-- **478 isolated node(s):** `../layouts/Layout.astro`, `../components/MapSection.astro`, `t`, `leaflet/dist/leaflet.css`, `../assets/logos/Logo usgar isotipo.png` (+473 more)
+- **660 isolated node(s):** `hybridauth/hybridauth`, `mercadopago/dx-php`, `Changed`, `Added`, `Added` (+655 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **118 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **289 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `SessionTest` connect `TestCase` to `ProfileTest`, `Hybridauth.php`?**
-  _High betweenness centrality (0.109) - this node is a cross-community bridge._
-- **Why does `Config` connect `逻辑漏洞深度分析手册` to `python.md`, `External Security Tools Integration Guide`, `Performance optimization`, `GetRoomsAction.php`, `ChannexRoomMapper`, `Docker 部署验证指南`, `Python Deserialization Deep Dive`, `动态代码审计指南 (Dynamic Code Audit Guide)`, `RoomTypeRegistry`, `SEO optimization`, `Real World Vulnerabilities Case Study`, `User`, `HandleChannexWebhookAction.php`?**
-  _High betweenness centrality (0.056) - this node is a cross-community bridge._
-- **Why does `Response` connect `Performance optimization` to `AuthRegisterAction`?**
-  _High betweenness centrality (0.033) - this node is a cross-community bridge._
-- **Are the 22 inferred relationships involving `self` (e.g. with `.badRequest()` and `.error()`) actually correct?**
-  _`self` has 22 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 20 inferred relationships involving `Config` (e.g. with `.formatEntry()` and `.getIp()`) actually correct?**
-  _`Config` has 20 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `../layouts/Layout.astro`, `../components/MapSection.astro`, `t` to the rest of the system?**
-  _478 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `python.md` be split into smaller, more focused modules?**
-  _Cohesion score 0.0746031746031746 - nodes in this community are weakly interconnected._
+- **Why does `AbstractAdapter` connect `Required Files (MANDATORY)` to `3.1 上下文类型识别`, `SKILL.md`, `OAuthRequest`?**
+  _High betweenness centrality (0.039) - this node is a cross-community bridge._
+- **Why does `MercadoPagoConfig` connect `Templates, Views, CSS & JavaScript` to `CustomerCardClientITTest`, `OrderClientITTest`, `OAuthClient.php`, `CustomerClientITTest`, `MerchantOrderClientITTest`, `PaymentRefundClientITTest`, `PreApprovalClientITTest`, `Python Deserialization Deep Dive`, `PreApprovalPlanClientITTest`, `PreferenceClientITTest`, `PointClientUnitTest`, `MerchantOrderClient.php`, `PaymentRefundClient.php`, `PreApprovalClient.php`, `PreferenceClient.php`, `PaymentClientITTest`, `PaymentClient.php`, `CustomerClient.php`, `PreApprovalPlanClient.php`, `OrderTransactionClientITTest`, `CustomerCardClientUnitTest`, `CustomerClientUnitTest`, `MerchantOrderClientUnitTest`, `OrderTransactionClientUnitTest`, `AbstractAdapter.php`, `PaymentClientUnitTest`, `PreApprovalClientUnitTest`, `PreApprovalPlanClientUnitTest`, `PreferenceClientUnitTest`, `OAuthClientUnitTest`, `CardTokenClientITTest`, `PaymentRefundClientUnitTest`, `IdentificationTypeClientITTest`, `PaymentMethodClientITTest`, `UserClientITTest`, `AdvancedPaymentClientUnitTest`, `ProfileTest`, `Sinks & Sources Reference`, `ChargebackClientUnitTest`, `DisbursementRefundClientUnitTest`, `MPSearchRequest`, `HttpMethod.php`, `CardTokenClientUnitTest`, `MPRequest`, `BaseClient`, `PointClientITTest`, `InvoiceClientUnitTest`?**
+  _High betweenness centrality (0.037) - this node is a cross-community bridge._
+- **Why does `RuntimeException` connect `File Creation Checklist` to `Hybridauth.php`, `UnexpectedValueException`?**
+  _High betweenness centrality (0.025) - this node is a cross-community bridge._
+- **Are the 121 inferred relationships involving `MercadoPagoConfig` (e.g. with `.createPreference()` and `.getPaymentDetails()`) actually correct?**
+  _`MercadoPagoConfig` has 121 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 71 inferred relationships involving `Serializer` (e.g. with `.cancel()` and `.capture()`) actually correct?**
+  _`Serializer` has 71 INFERRED edges - model-reasoned connections that need verification._
+- **What connects `hybridauth/hybridauth`, `mercadopago/dx-php`, `Changed` to the rest of the system?**
+  _660 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `External Security Tools Integration Guide` be split into smaller, more focused modules?**
+  _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
