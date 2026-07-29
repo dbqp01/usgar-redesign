@@ -350,6 +350,8 @@
   "348": "StatusBilling.php",
   "349": "StatusBuyImmediatePayment.php",
   "350": "StatusShoppingCart.php",
+  "351": "ChannexRoomMapper",
+  "352": ".mockHttpRequest",
   "363": "Open Redirect (开放重定向)",
   "364": "文件包含",
   "365": "文件上传",

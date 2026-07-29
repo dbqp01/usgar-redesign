@@ -39,8 +39,8 @@ class WebhookDebugAction {
         // 4. Verificar tokens (solo tipo, no valor)
         $prodToken = Config::get('MP_PROD_ACCESS_TOKEN');
         $testToken = Config::get('MP_TEST_ACCESS_TOKEN');
-        $diagnostics['mp_prod_token_type'] = $prodToken ? (str_starts_with($prodToken, 'APP_USR') ? 'APP_USR (prod)' : 'unknown') : 'NOT_SET';
-        $diagnostics['mp_test_token_type'] = $testToken ? (str_starts_with($testToken, 'TEST-') ? 'TEST (test)' : 'unknown') : 'NOT_SET';
+        $diagnostics['mp_prod_token_type'] = $prodToken ? (str_starts_with($prodToken, 'APP_USR') ? 'APP_USR (prod)' : 'configured') : 'NOT_SET';
+        $diagnostics['mp_test_token_type'] = $testToken ? 'CONFIGURED (' . substr($testToken, 0, 7) . '...)' : 'NOT_SET';
         $diagnostics['active_token_type'] = Config::isProduction() ? 'prod' : 'test';
 
         // 5. Mostrar TODOS los headers HTTP que PHP recibe (para verificar si x-signature llega)

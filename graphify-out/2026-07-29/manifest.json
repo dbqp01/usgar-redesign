@@ -1485,8 +1485,8 @@
     "semantic_hash": ""
   },
   "app/Core/Logger.php": {
-    "mtime": 1784908675.1410964,
-    "ast_hash": "1b1cde88c2a5c95b55221af8a7bac573",
+    "mtime": 1785342904.1089625,
+    "ast_hash": "af06383c5b805a722955337eab1a3ae5",
     "semantic_hash": ""
   },
   "app/Core/Middleware.php": {
@@ -3620,8 +3620,8 @@
     "semantic_hash": ""
   },
   "app/Features/Health/Actions/WebhookDebugAction.php": {
-    "mtime": 1785342203.0673933,
-    "ast_hash": "881d80b3845685ccf27f7145093164a6",
+    "mtime": 1785342986.6418462,
+    "ast_hash": "aefe75762fc6e2de56399016df6ee784",
     "semantic_hash": ""
   }
 }
