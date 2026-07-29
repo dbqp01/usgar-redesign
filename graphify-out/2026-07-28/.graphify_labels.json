@@ -106,7 +106,6 @@
   "104": "GetRoomsAction.php",
   "105": "Container",
   "106": "ExtendHoldAction.php",
-  "107": "RoomTypeRegistry",
   "108": "ChannexRoomMapper",
   "109": "pentest.php",
   "110": "ProvisionalBookingRepository",

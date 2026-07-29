@@ -99,7 +99,12 @@ const t = useTranslations(lang);
 </section>
 
 <script>
+  let abortController = new AbortController();
+
   function initFAQAccordion() {
+    abortController.abort();
+    abortController = new AbortController();
+
     const accordion = document.getElementById('faq-accordion');
     if (!accordion) return;
 
@@ -114,7 +119,7 @@ const t = useTranslations(lang);
             }
           });
         }
-      });
+      }, { signal: abortController.signal });
     });
   }
 

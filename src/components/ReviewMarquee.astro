@@ -29,21 +29,18 @@ const t = useTranslations(lang);
     <div class="flex flex-wrap items-center justify-center gap-8 mt-10 pt-8 border-t border-black/10 dark:border-white/10 text-xs font-mono uppercase tracking-widest text-text-secondary-light dark:text-text-secondary-dark">
       <div class="flex items-center gap-2">
         <span class="text-[#059669] dark:text-[#34D399] font-bold">TRIPADVISOR</span>
-        <span class="text-slate-400">•</span>
         <span class="text-text-primary-light dark:text-white font-bold">5.0 / 5.0</span>
         <span class="text-slate-400">(240+ REVIEWS)</span>
       </div>
       <div class="hidden sm:block text-slate-300 dark:text-slate-700">|</div>
       <div class="flex items-center gap-2">
         <span class="text-[#2563EB] dark:text-[#60A5FA] font-bold">BOOKING.COM</span>
-        <span class="text-slate-400">•</span>
         <span class="text-text-primary-light dark:text-white font-bold">9.6 / 10</span>
         <span class="text-slate-400">(380+ REVIEWS)</span>
       </div>
       <div class="hidden sm:block text-slate-300 dark:text-slate-700">|</div>
       <div class="flex items-center gap-2">
         <span class="text-[#0284C7] dark:text-[#38BDF8] font-bold">GOOGLE</span>
-        <span class="text-slate-400">•</span>
         <span class="text-text-primary-light dark:text-white font-bold">4.9 / 5.0</span>
         <span class="text-slate-400">(190+ REVIEWS)</span>
       </div>
@@ -125,3 +122,21 @@ const t = useTranslations(lang);
     </div>
   </div>
 </section>
+
+<style>
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+#velocity-marquee-track {
+  animation: marquee-scroll 45s linear infinite;
+}
+#velocity-marquee-track:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  #velocity-marquee-track {
+    animation: none;
+  }
+}
+</style>

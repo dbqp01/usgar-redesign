@@ -361,26 +361,28 @@ const schemas = [hotelSchema, faqSchema];
       <div class="mt-12 max-w-[1400px] mx-auto bg-black rounded-3xl overflow-hidden shadow-2xl border border-white/10 relative h-[600px] lg:h-[700px] flex flex-col lg:flex-row group animate-on-scroll" id="cinematic-showcase">
         
         <!-- Left: Image Crossfade Container (70%) -->
-        <div class="relative w-full lg:w-2/3 h-[300px] lg:h-full overflow-hidden">
+        <div class="relative w-full lg:w-2/3 h-[400px] sm:h-[450px] lg:h-full overflow-hidden">
           {
             attractions.map((attraction, i) => {
               const imgPath = `../assets/explore/${attraction.id}.jpg`;
               const showcaseImage = exploreImages[imgPath]?.default || slide4;
               return (
                 <div 
-                  class={`showcase-slide absolute inset-0 transition-opacity duration-1000 ease-in-out ${i === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                  class={`showcase-slide absolute inset-0 transition-opacity duration-1000 ease-in-out ${i === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
                   data-index={i}
                 >
-                  <Image
-                    src={showcaseImage}
-                    alt={attraction.name[lang]}
-                    width={1200}
-                    height={800}
-                    format="webp"
-                    class="w-full h-full object-cover transform transition-transform duration-[10s] ease-out showcase-img scale-100"
-                    loading={i === 0 ? "eager" : "lazy"}
-                    decoding="async"
-                  />
+                  <a href={getRelativeLocaleUrl(lang, `explore/${attraction.id}`)} class="block w-full h-full">
+                    <Image
+                      src={showcaseImage}
+                      alt={attraction.name[lang]}
+                      width={1200}
+                      height={800}
+                      format="webp"
+                      class="w-full h-full object-cover transform transition-transform duration-[10s] ease-out showcase-img scale-100"
+                      loading={i === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                    />
+                  </a>
                   <!-- Gradient for text readability -->
                   <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                   
@@ -438,9 +440,16 @@ const schemas = [hotelSchema, faqSchema];
                   aria-label={`View ${attraction.name[lang]}`}
                 >
                   <span class="font-body text-sm lg:text-base font-medium truncate pr-2">{attraction.name[lang]}</span>
-                  <svg class={`w-4 h-4 lg:w-5 lg:h-5 text-secondary transition-opacity duration-300 flex-shrink-0 ${i === 0 ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-50'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
+                  <a 
+                    href={getRelativeLocaleUrl(lang, `explore/${attraction.id}`)}
+                    class="p-1 rounded-lg hover:bg-white/10 transition-colors flex-shrink-0"
+                    aria-label={`View ${attraction.name[lang]}`}
+                    data-stop-propagation
+                  >
+                    <svg class={`w-4 h-4 lg:w-5 lg:h-5 text-secondary transition-opacity duration-300 ${i === 0 ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-50'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </a>
                 </button>
               ))
             }
@@ -634,12 +643,12 @@ const schemas = [hotelSchema, faqSchema];
     let currentIndex = 0;
     let interval: ReturnType<typeof setInterval>;
 
-    function goToSlide(index: number) {
+    function goToSlide(index: number, shouldScroll = true) {
       if(index === currentIndex) return;
 
       // Hide current
       slides[currentIndex].classList.remove('opacity-100', 'z-10');
-      slides[currentIndex].classList.add('opacity-0', 'z-0');
+      slides[currentIndex].classList.add('opacity-0', 'z-0', 'pointer-events-none');
       
       btns[currentIndex].classList.remove('bg-white/10', 'text-white', 'shadow-inner');
       btns[currentIndex].classList.add('text-white/50');
@@ -648,7 +657,7 @@ const schemas = [hotelSchema, faqSchema];
 
       // Show new
       currentIndex = index;
-      slides[currentIndex].classList.remove('opacity-0', 'z-0');
+      slides[currentIndex].classList.remove('opacity-0', 'z-0', 'pointer-events-none');
       slides[currentIndex].classList.add('opacity-100', 'z-10');
       
       requestAnimationFrame(() => {
@@ -662,11 +671,13 @@ const schemas = [hotelSchema, faqSchema];
       btns[currentIndex].querySelector('svg')?.classList.add('opacity-100');
       
       // Auto-scroll ONLY the internal list, without scrolling the main window
-      const container = btns[currentIndex].parentElement;
-      if (container) {
-        const btnTop = (btns[currentIndex] as HTMLElement).offsetTop;
-        const containerTop = (container as HTMLElement).offsetTop;
-        container.scrollTo({ top: btnTop - containerTop - 20, behavior: 'smooth' });
+      if (shouldScroll) {
+        const container = btns[currentIndex].parentElement;
+        if (container) {
+          const btnTop = (btns[currentIndex] as HTMLElement).offsetTop;
+          const containerTop = (container as HTMLElement).offsetTop;
+          container.scrollTo({ top: btnTop - containerTop - 20, behavior: 'smooth' });
+        }
       }
     }
 
@@ -686,7 +697,7 @@ const schemas = [hotelSchema, faqSchema];
     // Interactions
     btns.forEach((btn, idx) => {
       btn.addEventListener('mouseenter', () => {
-        goToSlide(idx);
+        goToSlide(idx, false);
         stopAutoPlay();
       });
       btn.addEventListener('mouseleave', () => {
@@ -700,6 +711,11 @@ const schemas = [hotelSchema, faqSchema];
 
     showcase.addEventListener('mouseenter', stopAutoPlay);
     showcase.addEventListener('mouseleave', startAutoPlay);
+
+    // Stop propagation for navigation links inside buttons
+    showcase.querySelectorAll('[data-stop-propagation]').forEach(link => {
+      link.addEventListener('click', (e) => e.stopPropagation());
+    });
 
     // Initial state setup for first image animation
     setTimeout(() => {

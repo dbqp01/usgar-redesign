@@ -181,6 +181,14 @@ const attractionsSchema = {
 <script>
   let abortController = new AbortController();
 
+  function debounce<T extends (...args: any[]) => void>(fn: T, ms: number) {
+    let timer: ReturnType<typeof setTimeout>;
+    return (...args: Parameters<T>) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => fn(...args), ms);
+    };
+  }
+
   function initExploreFilters() {
     // Abort previous listeners to avoid duplicates
     abortController.abort();
@@ -266,10 +274,10 @@ const attractionsSchema = {
 
     // Search input typing
     if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
+      searchInput.addEventListener('input', debounce((e) => {
         searchQuery = (e.target as HTMLInputElement).value.toLowerCase().trim();
         applyFilter();
-      }, { signal });
+      }, 200), { signal });
     }
   }
 

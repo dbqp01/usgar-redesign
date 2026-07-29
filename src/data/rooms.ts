@@ -13,6 +13,8 @@ export interface Room {
   name: { en: string; es: string; fr: string; pt: string };
   description: { en: string; es: string; fr: string; pt: string };
   maxGuests: number;
+  baseOccupancy: number;
+  extraGuestCharge: number;
   beds: string;
   pricePerNight: number;
   amenities: string[];
@@ -28,6 +30,8 @@ export const rooms: Room[] = roomsData.rooms.map((r: any) => ({
   name: { en: r.name_en, es: r.name_es, fr: r.name_fr || r.name_en, pt: r.name_pt || r.name_es },
   description: { en: r.description_en, es: r.description_es, fr: r.description_fr || r.description_en, pt: r.description_pt || r.description_es },
   maxGuests: r.maxGuests,
+  baseOccupancy: r.baseOccupancy,
+  extraGuestCharge: r.extraGuestCharge,
   beds: r.beds,
   pricePerNight: r.pricePerNight,
   amenities: r.amenities,

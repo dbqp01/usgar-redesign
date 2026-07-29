@@ -20,7 +20,9 @@
         "hot_water",
         "heating",
         "tv",
-        "laundry"
+        "laundry",
+        "safe_box",
+        "hair_dryer"
       ],
       "images": [
         "/assets/rooms/doble-superior/01-doble.jpg",
@@ -66,8 +68,22 @@
           "en": "Laundry Service",
           "fr": "Service de blanchisserie",
           "pt": "Servico de lavanderia"
+        },
+        "safe_box": {
+          "es": "Caja de seguridad en habitacion",
+          "en": "In-Room Safe Box",
+          "fr": "Coffre-fort dans la chambre",
+          "pt": "Cofre no quarto"
+        },
+        "hair_dryer": {
+          "es": "Secadora de cabello",
+          "en": "Hair Dryer",
+          "fr": "Seche-cheveux",
+          "pt": "Secador de cabelo"
         }
-      }
+      },
+      "baseOccupancy": 2,
+      "extraGuestCharge": 30
     },
     {
       "id": "matrimonial",
@@ -89,7 +105,9 @@
         "hot_water",
         "heating",
         "tv",
-        "laundry"
+        "laundry",
+        "safe_box",
+        "hair_dryer"
       ],
       "images": [
         "/assets/rooms/matrimonial/01-matr-cama.jpg",
@@ -135,8 +153,22 @@
           "en": "Laundry Service",
           "fr": "Service de blanchisserie",
           "pt": "Servico de lavanderia"
+        },
+        "safe_box": {
+          "es": "Caja de seguridad en habitacion",
+          "en": "In-Room Safe Box",
+          "fr": "Coffre-fort dans la chambre",
+          "pt": "Cofre no quarto"
+        },
+        "hair_dryer": {
+          "es": "Secadora de cabello",
+          "en": "Hair Dryer",
+          "fr": "Seche-cheveux",
+          "pt": "Secador de cabelo"
         }
-      }
+      },
+      "baseOccupancy": 2,
+      "extraGuestCharge": 30
     },
     {
       "id": "familiar-superior",
@@ -158,7 +190,9 @@
         "hot_water",
         "heating",
         "tv",
-        "laundry"
+        "laundry",
+        "safe_box",
+        "hair_dryer"
       ],
       "images": [
         "/assets/rooms/familiar-superior/01-familiar.jpg",
@@ -202,8 +236,22 @@
           "en": "Laundry Service",
           "fr": "Service de blanchisserie",
           "pt": "Servico de lavanderia"
+        },
+        "safe_box": {
+          "es": "Caja de seguridad en habitacion",
+          "en": "In-Room Safe Box",
+          "fr": "Coffre-fort dans la chambre",
+          "pt": "Cofre no quarto"
+        },
+        "hair_dryer": {
+          "es": "Secadora de cabello",
+          "en": "Hair Dryer",
+          "fr": "Seche-cheveux",
+          "pt": "Secador de cabelo"
         }
-      }
+      },
+      "baseOccupancy": 7,
+      "extraGuestCharge": 30
     },
     {
       "id": "triple-standar",
@@ -224,7 +272,9 @@
         "breakfast",
         "hot_water",
         "heating",
-        "tv"
+        "tv",
+        "safe_box",
+        "hair_dryer"
       ],
       "images": [
         "/assets/rooms/triple-standar/01-triple.jpg",
@@ -262,8 +312,22 @@
           "en": "Cable TV",
           "fr": "TV par cable",
           "pt": "TV a cabo"
+        },
+        "safe_box": {
+          "es": "Caja de seguridad en habitacion",
+          "en": "In-Room Safe Box",
+          "fr": "Coffre-fort dans la chambre",
+          "pt": "Cofre no quarto"
+        },
+        "hair_dryer": {
+          "es": "Secadora de cabello",
+          "en": "Hair Dryer",
+          "fr": "Seche-cheveux",
+          "pt": "Secador de cabelo"
         }
-      }
+      },
+      "baseOccupancy": 3,
+      "extraGuestCharge": 30
     }
   ]
 }

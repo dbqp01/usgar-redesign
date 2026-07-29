@@ -69,33 +69,33 @@
    ============================================ */
 @theme {
   /* === MORADOS (Familia Primaria) === */
-  --color-primary: #4A3056;          /* Morado Oscuro — headings, primary CTAs */
-  --color-primary-light: #9360AC;    /* Morado Medio — hover, active elements */
-  --color-primary-dark: #351C42;     /* Hover intenso */
-  --color-purple-soft: #A980BD;      /* Bordes decorativos, iconos secundarios */
-  --color-purple-pastel: #D4BFDE;    /* Dark mode secondary text, card bg */
-  --color-purple-bg: #E9DFEE;        /* Light mode section alternating bg */
+  --color-primary: #3D2B4A;          /* Morado Oscuro — headings, primary CTAs */
+  --color-primary-light: #7E628D;    /* Morado Medio — hover, active elements */
+  --color-primary-dark: #2E1A38;     /* Hover intenso */
+  --color-purple-soft: #8E7A9A;      /* Bordes decorativos, iconos secundarios */
+  --color-purple-pastel: #C8B8D0;    /* Dark mode secondary text, card bg */
+  --color-purple-bg: #F4F0F6;        /* Light mode section alternating bg */
 
   /* === AMARILLOS / DORADOS (Familia Secundaria) === */
-  --color-secondary: #EACA1C;       /* Amarillo Base — secondary CTAs */
-  --color-secondary-light: #F2DF77; /* Amarillo Suave — promotions */
-  --color-secondary-dark: #B09815;  /* Dorado Oscuro — prices, stars */
+  --color-secondary: #D4AF37;       /* Amarillo Base — secondary CTAs */
+  --color-secondary-light: #E8D48B; /* Amarillo Suave — promotions */
+  --color-secondary-dark: #99751C;  /* Dorado Oscuro — prices, stars */
   --color-cream-active: #F7EAA4;    /* Input focus ring */
 
   /* === VERDES / TURQUESAS (Familia Terciaria) === */
   --color-tertiary: #065952;         /* Verde Pino — booking/reserve buttons */
-  --color-tertiary-light: #0CB2A3;   /* Turquesa — links, interactive details */
+  --color-tertiary-light: #2A7B72;   /* Turquesa — links, interactive details */
   --color-tertiary-dark: #04403B;    /* Hover on tertiary elements */
-  --color-mint: #6DD1C8;             /* Service icons, amenity indicators */
+  --color-mint: #5BB5AC;             /* Service icons, amenity indicators */
   --color-green-pastel: #9EE0DA;     /* Room card borders */
-  --color-green-bg: #CEF0ED;         /* Service card backgrounds */
+  --color-green-bg: #F0F7F6;         /* Service card backgrounds */
 
   /* === FONDOS ESTÉTICOS (Nuevos — v2) === */
   --color-surface-light: #FFFFFF;         /* Pure White — light mode page bg (Reverted per user) */
   --color-surface-dark: #1C1917;          /* Stone Dark — dark mode page bg */
   --color-surface-light-alt: #FFFFFF;     /* White — testimonial blocks */
   --color-surface-card-light: #FFFFFF;
-  --color-surface-card-dark: #2B1D33;     /* Purple-Tinted Dark — dark card (BRAND.md) */
+  --color-surface-card-dark: #252028;     /* Purple-Tinted Dark — dark card (BRAND.md) */
 
   /* === TEXTO === */
   --color-text-primary-light: #333333;

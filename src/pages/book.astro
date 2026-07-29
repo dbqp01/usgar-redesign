@@ -180,6 +180,8 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
                           alt={r.name[lang]}
                           width={120}
                           height={120}
+                          loading="lazy"
+                          decoding="async"
                           class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
                         />
                       ) : (
@@ -487,7 +489,7 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
   </main>
 </Layout>
 
-<script is:inline define:vars={{ serializedRooms: JSON.stringify(rooms.map(r => ({ id: r.id, slug: r.slug, name: r.name, pricePerNight: r.pricePerNight, beds: r.beds }))), serializedLabels: JSON.stringify({ nights: t('book.nights'), night: t('book.night'), guest: t('booking.guest'), guests: t('booking.guests_plural'), selected: t('book.selected'), select: t('book.select'), fillAllFields: t('book.fillAllFields'), invalidEmail: t('book.invalidEmail'), processing: t('book.processing'), confirmAndPay: t('book.confirmAndPay'), noPaymentUrl: t('book.noPaymentUrl'), unexpectedError: t('book.unexpectedError') }) }}>
+<script is:inline define:vars={{ serializedRooms: JSON.stringify(rooms.map(r => ({ id: r.id, slug: r.slug, name: r.name, pricePerNight: r.pricePerNight, beds: r.beds, baseOccupancy: r.baseOccupancy, extraGuestCharge: r.extraGuestCharge, maxGuests: r.maxGuests }))), serializedLabels: JSON.stringify({ nights: t('book.nights'), night: t('book.night'), guest: t('booking.guest'), guests: t('booking.guests_plural'), selected: t('book.selected'), select: t('book.select'), fillAllFields: t('book.fillAllFields'), invalidEmail: t('book.invalidEmail'), processing: t('book.processing'), confirmAndPay: t('book.confirmAndPay'), noPaymentUrl: t('book.noPaymentUrl'), unexpectedError: t('book.unexpectedError') }) }}>
   // Parse server-serialized data (single source of truth)
   window.__ROOMS_DATA = JSON.parse(serializedRooms);
   window.__LABELS = JSON.parse(serializedLabels);
@@ -551,7 +553,11 @@ import type { Locale } from '@/i18n/utils';
       if (!room) return;
 
       const nights = daysBetween(checkInDate, checkOutDate);
-      const totalPrice = room.pricePerNight * nights;
+      const guests = parseInt(guestsCount || '2', 10);
+      const extraGuests = Math.max(0, guests - room.baseOccupancy);
+      const extraCharge = extraGuests * room.extraGuestCharge;
+      const nightlyRate = room.pricePerNight + extraCharge;
+      const totalPrice = nightlyRate * nights;
 
       // Update summary fields
       if (summaryRoomName) summaryRoomName.textContent = room.name[lang];
@@ -566,7 +572,7 @@ import type { Locale } from '@/i18n/utils';
         summaryGuests.textContent = guestText;
       }
       if (summaryTotalPrice) summaryTotalPrice.textContent = totalPrice.toString();
-      if (summaryPricePerNight) summaryPricePerNight.textContent = room.pricePerNight.toString();
+      if (summaryPricePerNight) summaryPricePerNight.textContent = nightlyRate.toString();
     }
 
     // Visual Room Selection Logic
@@ -721,30 +727,43 @@ import type { Locale } from '@/i18n/utils';
         4: 'familiar-superior',
       };
 
-      const unsubscribe = bookingService.subscribeToRoomAvailability(
-        checkinInput?.value,
-        checkoutInput?.value,
-        (availableRooms) => {
-          if (!Array.isArray(availableRooms)) return;
-          availableRooms.forEach((r: any) => {
-            const slug = r.slug || slugMap[r.id_room_type];
-            if (!slug) return;
-            const badge = document.querySelector(`[data-room-qty-slug="${slug}"]`);
-            if (badge) {
-              const qty = r.available_qty ?? 0;
-              badge.textContent = `${qty} disponibles`;
-              if (qty === 0) {
-                badge.className = 'available-qty-badge ml-2 text-[10px] font-mono font-bold text-red-600 dark:text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20 whitespace-nowrap';
-              } else {
-                badge.className = 'available-qty-badge ml-2 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 whitespace-nowrap';
+      const startAvailabilityPolling = () => {
+        return bookingService.subscribeToRoomAvailability(
+          checkinInput?.value,
+          checkoutInput?.value,
+          (availableRooms) => {
+            if (!Array.isArray(availableRooms)) return;
+            availableRooms.forEach((r: any) => {
+              const slug = r.slug || slugMap[r.id_room_type];
+              if (!slug) return;
+              const badge = document.querySelector(`[data-room-qty-slug="${slug}"]`);
+              if (badge) {
+                const qty = r.available_qty ?? 0;
+                badge.textContent = `${qty} disponibles`;
+                if (qty === 0) {
+                  badge.className = 'available-qty-badge ml-2 text-[10px] font-mono font-bold text-red-600 dark:text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20 whitespace-nowrap';
+                } else {
+                  badge.className = 'available-qty-badge ml-2 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 whitespace-nowrap';
+                }
               }
-            }
-          });
-        },
-        3000
-      );
+            });
+          },
+          30000
+        );
+      };
 
-      signal.addEventListener('abort', unsubscribe);
+      let unsubscribe = startAvailabilityPolling();
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+          unsubscribe?.();
+        } else {
+          // Re-subscribe when tab becomes visible
+          unsubscribe = startAvailabilityPolling();
+        }
+      }, { signal });
+
+      signal.addEventListener('abort', () => unsubscribe?.());
     }
 
     // Form Submission

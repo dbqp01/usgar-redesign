@@ -4,16 +4,126 @@
   "graph": {},
   "nodes": [
     {
+      "label": "Validator.php",
+      "file_type": "code",
+      "source_file": "app/Core/Validator.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "app_core_validator",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
+      "norm_label": "validator.php"
+    },
+    {
+      "label": "Validator",
+      "file_type": "code",
+      "source_file": "app/Core/Validator.php",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "app_core_validator_validator",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
+      "norm_label": "validator"
+    },
+    {
+      "label": ".requireFields()",
+      "file_type": "code",
+      "source_file": "app/Core/Validator.php",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "app_core_validator_validator_requirefields",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
+      "norm_label": ".requirefields()"
+    },
+    {
+      "label": ".dateRange()",
+      "file_type": "code",
+      "source_file": "app/Core/Validator.php",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "app_core_validator_validator_daterange",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
+      "norm_label": ".daterange()"
+    },
+    {
+      "label": ".email()",
+      "file_type": "code",
+      "source_file": "app/Core/Validator.php",
+      "source_location": "L81",
+      "_origin": "ast",
+      "id": "app_core_validator_validator_email",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
+      "norm_label": ".email()"
+    },
+    {
+      "label": ".positiveInt()",
+      "file_type": "code",
+      "source_file": "app/Core/Validator.php",
+      "source_location": "L94",
+      "_origin": "ast",
+      "id": "app_core_validator_validator_positiveint",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
+      "norm_label": ".positiveint()"
+    },
+    {
+      "label": ".isRealDate()",
+      "file_type": "code",
+      "source_file": "app/Core/Validator.php",
+      "source_location": "L105",
+      "_origin": "ast",
+      "id": "app_core_validator_validator_isrealdate",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
+      "norm_label": ".isrealdate()"
+    },
+    {
+      "label": "run-exhaustive-tests.php",
+      "file_type": "code",
+      "source_file": "scripts/run-exhaustive-tests.php",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "scripts_run_exhaustive_tests",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
+      "norm_label": "run-exhaustive-tests.php"
+    },
+    {
+      "label": "assertTest()",
+      "file_type": "code",
+      "source_file": "scripts/run-exhaustive-tests.php",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "scripts_run_exhaustive_tests_asserttest",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
+      "norm_label": "asserttest()"
+    },
+    {
+      "label": "httpGet()",
+      "file_type": "code",
+      "source_file": "scripts/run-exhaustive-tests.php",
+      "source_location": "L162",
+      "_origin": "ast",
+      "id": "scripts_run_exhaustive_tests_httpget",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
+      "norm_label": "httpget()"
+    },
+    {
       "label": "../components/AboutSection.astro",
       "file_type": "code",
       "source_file": "src/components/AboutSection.astro",
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "id": "src_components_aboutsection",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../components/aboutsection.astro"
+      "norm_label": "../components/aboutsection.astro",
+      "id": "src_components_aboutsection"
     },
     {
       "label": "astro:assets",
@@ -21,10 +131,10 @@
       "source_file": "astro:assets",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "astro_assets",
       "community": 475,
       "community_name": "../../book/success.astro",
-      "norm_label": "astro:assets"
+      "norm_label": "astro:assets",
+      "id": "astro_assets"
     },
     {
       "label": "../i18n/utils",
@@ -32,10 +142,10 @@
       "source_file": "src/i18n/utils",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
       "community": 33,
       "community_name": "Cryptography Security Audit",
-      "norm_label": "../i18n/utils"
+      "norm_label": "../i18n/utils",
+      "id": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "label": "../content/about/about.json",
@@ -43,10 +153,10 @@
       "source_file": "src/content/about/about.json",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_content_about_about_json",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../content/about/about.json"
+      "norm_label": "../content/about/about.json",
+      "id": "c_users_akim_desktop_usgar_redesign_src_content_about_about_json"
     },
     {
       "label": "../assets/hotel/hero-slide-patio.jpg",
@@ -54,10 +164,10 @@
       "source_file": "src/assets/hotel/hero-slide-patio.jpg",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_patio_jpg",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../assets/hotel/hero-slide-patio.jpg"
+      "norm_label": "../assets/hotel/hero-slide-patio.jpg",
+      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_patio_jpg"
     },
     {
       "label": "../assets/hotel/fallback-room-fachada.jpg",
@@ -65,10 +175,10 @@
       "source_file": "src/assets/hotel/fallback-room-fachada.jpg",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_fallback_room_fachada_jpg",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../assets/hotel/fallback-room-fachada.jpg"
+      "norm_label": "../assets/hotel/fallback-room-fachada.jpg",
+      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_fallback_room_fachada_jpg"
     },
     {
       "label": "../components/BookingWidget.astro",
@@ -77,10 +187,10 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "id": "src_components_bookingwidget",
       "community": 4,
       "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
-      "norm_label": "../components/bookingwidget.astro"
+      "norm_label": "../components/bookingwidget.astro",
+      "id": "src_components_bookingwidget"
     },
     {
       "label": "../data/rooms",
@@ -88,10 +198,10 @@
       "source_file": "src/data/rooms",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_data_rooms",
       "community": 33,
       "community_name": "Cryptography Security Audit",
-      "norm_label": "../data/rooms"
+      "norm_label": "../data/rooms",
+      "id": "c_users_akim_desktop_usgar_redesign_src_data_rooms"
     },
     {
       "label": "../components/FAQSection.astro",
@@ -100,10 +210,10 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "id": "src_components_faqsection",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../components/faqsection.astro"
+      "norm_label": "../components/faqsection.astro",
+      "id": "src_components_faqsection"
     },
     {
       "label": "t",
@@ -111,10 +221,10 @@
       "source_file": "src/components/FAQSection.astro",
       "source_location": "L15",
       "_origin": "ast",
-      "id": "src_components_faqsection_t",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "t"
+      "norm_label": "t",
+      "id": "src_components_faqsection_t"
     },
     {
       "label": "../content/faq/faq.json",
@@ -122,10 +232,10 @@
       "source_file": "src/content/faq/faq.json",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_content_faq_faq_json",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../content/faq/faq.json"
+      "norm_label": "../content/faq/faq.json",
+      "id": "c_users_akim_desktop_usgar_redesign_src_content_faq_faq_json"
     },
     {
       "label": "../assets/hotel/hero-slide-recepcion.jpg",
@@ -133,10 +243,10 @@
       "source_file": "src/assets/hotel/hero-slide-recepcion.jpg",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_recepcion_jpg",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../assets/hotel/hero-slide-recepcion.jpg"
+      "norm_label": "../assets/hotel/hero-slide-recepcion.jpg",
+      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_recepcion_jpg"
     },
     {
       "label": "../data/settings",
@@ -144,10 +254,10 @@
       "source_file": "src/data/settings",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_data_settings",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "../data/settings"
+      "norm_label": "../data/settings",
+      "id": "c_users_akim_desktop_usgar_redesign_src_data_settings"
     },
     {
       "label": "../components/GastronomySection.astro",
@@ -156,10 +266,10 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "id": "src_components_gastronomysection",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../components/gastronomysection.astro"
+      "norm_label": "../components/gastronomysection.astro",
+      "id": "src_components_gastronomysection"
     },
     {
       "label": "t",
@@ -167,10 +277,10 @@
       "source_file": "src/components/GastronomySection.astro",
       "source_location": "L11",
       "_origin": "ast",
-      "id": "src_components_gastronomysection_t",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "t"
+      "norm_label": "t",
+      "id": "src_components_gastronomysection_t"
     },
     {
       "label": "culinaryOffers",
@@ -178,10 +288,10 @@
       "source_file": "src/components/GastronomySection.astro",
       "source_location": "L13",
       "_origin": "ast",
-      "id": "src_components_gastronomysection_culinaryoffers",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "culinaryoffers"
+      "norm_label": "culinaryoffers",
+      "id": "src_components_gastronomysection_culinaryoffers"
     },
     {
       "label": "../assets/hotel/fallback-room-desayuno.jpg",
@@ -189,10 +299,10 @@
       "source_file": "src/assets/hotel/fallback-room-desayuno.jpg",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_fallback_room_desayuno_jpg",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../assets/hotel/fallback-room-desayuno.jpg"
+      "norm_label": "../assets/hotel/fallback-room-desayuno.jpg",
+      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_fallback_room_desayuno_jpg"
     },
     {
       "label": "../components/HeritageSection.astro",
@@ -201,10 +311,10 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "id": "src_components_heritagesection",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../components/heritagesection.astro"
+      "norm_label": "../components/heritagesection.astro",
+      "id": "src_components_heritagesection"
     },
     {
       "label": "../assets/hotel/fallback-room-pasillo.jpg",
@@ -212,10 +322,10 @@
       "source_file": "src/assets/hotel/fallback-room-pasillo.jpg",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_fallback_room_pasillo_jpg",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../assets/hotel/fallback-room-pasillo.jpg"
+      "norm_label": "../assets/hotel/fallback-room-pasillo.jpg",
+      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_fallback_room_pasillo_jpg"
     },
     {
       "label": "../components/InteractiveRoomsSection.astro",
@@ -224,10 +334,10 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "id": "src_components_interactiveroomssection",
       "community": 33,
       "community_name": "Cryptography Security Audit",
-      "norm_label": "../components/interactiveroomssection.astro"
+      "norm_label": "../components/interactiveroomssection.astro",
+      "id": "src_components_interactiveroomssection"
     },
     {
       "label": "astro:i18n",
@@ -235,10 +345,10 @@
       "source_file": "astro:i18n",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "astro_i18n",
       "community": 33,
       "community_name": "Cryptography Security Audit",
-      "norm_label": "astro:i18n"
+      "norm_label": "astro:i18n",
+      "id": "astro_i18n"
     },
     {
       "label": "../utils/helpers",
@@ -246,10 +356,10 @@
       "source_file": "src/utils/helpers",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_utils_helpers",
       "community": 33,
       "community_name": "Cryptography Security Audit",
-      "norm_label": "../utils/helpers"
+      "norm_label": "../utils/helpers",
+      "id": "c_users_akim_desktop_usgar_redesign_src_utils_helpers"
     },
     {
       "label": "../components/MapSection.astro",
@@ -258,10 +368,10 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "id": "src_components_mapsection",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "../components/mapsection.astro"
+      "norm_label": "../components/mapsection.astro",
+      "id": "src_components_mapsection"
     },
     {
       "label": "String()",
@@ -269,10 +379,10 @@
       "source_file": "src/components/MapSection.astro",
       "source_location": "L30",
       "_origin": "ast",
-      "id": "src_components_mapsection_string",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "string()"
+      "norm_label": "string()",
+      "id": "src_components_mapsection_string"
     },
     {
       "label": "leaflet",
@@ -280,10 +390,10 @@
       "source_file": "leaflet",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "leaflet",
       "community": 5,
       "community_name": "Best practices",
-      "norm_label": "leaflet"
+      "norm_label": "leaflet",
+      "id": "leaflet"
     },
     {
       "label": "leaflet/dist/leaflet.css",
@@ -291,10 +401,10 @@
       "source_file": "leaflet/dist/leaflet.css",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "leaflet_css",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "leaflet/dist/leaflet.css"
+      "norm_label": "leaflet/dist/leaflet.css",
+      "id": "leaflet_css"
     },
     {
       "label": "../assets/logos/Logo usgar isotipo.png",
@@ -302,10 +412,10 @@
       "source_file": "src/assets/logos/Logo usgar isotipo.png",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_assets_logos_logo_usgar_isotipo_png",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "../assets/logos/logo usgar isotipo.png"
+      "norm_label": "../assets/logos/logo usgar isotipo.png",
+      "id": "c_users_akim_desktop_usgar_redesign_src_assets_logos_logo_usgar_isotipo_png"
     },
     {
       "label": "../components/ReviewMarquee.astro",
@@ -314,10 +424,10 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "id": "src_components_reviewmarquee",
       "community": 4,
       "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
-      "norm_label": "../components/reviewmarquee.astro"
+      "norm_label": "../components/reviewmarquee.astro",
+      "id": "src_components_reviewmarquee"
     },
     {
       "label": "../data/reviews",
@@ -325,10 +435,10 @@
       "source_file": "src/data/reviews",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_data_reviews",
       "community": 4,
       "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
-      "norm_label": "../data/reviews"
+      "norm_label": "../data/reviews",
+      "id": "c_users_akim_desktop_usgar_redesign_src_data_reviews"
     },
     {
       "label": "../components/ServiceGrid.astro",
@@ -337,10 +447,10 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "id": "src_components_servicegrid",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../components/servicegrid.astro"
+      "norm_label": "../components/servicegrid.astro",
+      "id": "src_components_servicegrid"
     },
     {
       "label": "t",
@@ -348,10 +458,10 @@
       "source_file": "src/components/ServiceGrid.astro",
       "source_location": "L15",
       "_origin": "ast",
-      "id": "src_components_servicegrid_t",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "t"
+      "norm_label": "t",
+      "id": "src_components_servicegrid_t"
     },
     {
       "label": "../data/services",
@@ -359,10 +469,10 @@
       "source_file": "src/data/services",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_data_services",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../data/services"
+      "norm_label": "../data/services",
+      "id": "c_users_akim_desktop_usgar_redesign_src_data_services"
     },
     {
       "label": "../assets/hotel/fallback-room-oxigeno.jpg",
@@ -370,10 +480,10 @@
       "source_file": "src/assets/hotel/fallback-room-oxigeno.jpg",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_fallback_room_oxigeno_jpg",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../assets/hotel/fallback-room-oxigeno.jpg"
+      "norm_label": "../assets/hotel/fallback-room-oxigeno.jpg",
+      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_fallback_room_oxigeno_jpg"
     },
     {
       "label": "../assets/hotel/hero-slide-cusco.jpg",
@@ -381,10 +491,10 @@
       "source_file": "src/assets/hotel/hero-slide-cusco.jpg",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_cusco_jpg",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../assets/hotel/hero-slide-cusco.jpg"
+      "norm_label": "../assets/hotel/hero-slide-cusco.jpg",
+      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_cusco_jpg"
     },
     {
       "label": "../assets/hotel/hero-slide-matrimonial.jpg",
@@ -392,10 +502,10 @@
       "source_file": "src/assets/hotel/hero-slide-matrimonial.jpg",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_matrimonial_jpg",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../assets/hotel/hero-slide-matrimonial.jpg"
+      "norm_label": "../assets/hotel/hero-slide-matrimonial.jpg",
+      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_matrimonial_jpg"
     },
     {
       "label": "SmoothScroll.astro",
@@ -403,10 +513,10 @@
       "source_file": "src/components/common/SmoothScroll.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_components_common_smoothscroll",
       "community": 32,
       "community_name": ".audit",
-      "norm_label": "smoothscroll.astro"
+      "norm_label": "smoothscroll.astro",
+      "id": "src_components_common_smoothscroll"
     },
     {
       "label": "lenis",
@@ -414,10 +524,10 @@
       "source_file": "lenis",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "lenis",
       "community": 32,
       "community_name": ".audit",
-      "norm_label": "lenis"
+      "norm_label": "lenis",
+      "id": "lenis"
     },
     {
       "label": "gsap",
@@ -425,10 +535,10 @@
       "source_file": "gsap",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "gsap",
       "community": 32,
       "community_name": ".audit",
-      "norm_label": "gsap"
+      "norm_label": "gsap",
+      "id": "gsap"
     },
     {
       "label": "gsap/ScrollTrigger",
@@ -436,10 +546,10 @@
       "source_file": "gsap/ScrollTrigger",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "scrolltrigger",
       "community": 32,
       "community_name": ".audit",
-      "norm_label": "gsap/scrolltrigger"
+      "norm_label": "gsap/scrolltrigger",
+      "id": "scrolltrigger"
     },
     {
       "label": "../../utils/scrollStoryEngine",
@@ -447,10 +557,10 @@
       "source_file": "src/utils/scrollStoryEngine",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_utils_scrollstoryengine",
       "community": 32,
       "community_name": ".audit",
-      "norm_label": "../../utils/scrollstoryengine"
+      "norm_label": "../../utils/scrollstoryengine",
+      "id": "c_users_akim_desktop_usgar_redesign_src_utils_scrollstoryengine"
     },
     {
       "label": "index.astro",
@@ -458,10 +568,10 @@
       "source_file": "src/pages/index.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_pages_index",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "index.astro"
+      "norm_label": "index.astro",
+      "id": "src_pages_index"
     },
     {
       "label": "nextSlide()",
@@ -469,10 +579,10 @@
       "source_file": "src/pages/index.astro",
       "source_location": "L673",
       "_origin": "ast",
-      "id": "src_pages_index_nextslide",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "nextslide()"
+      "norm_label": "nextslide()",
+      "id": "src_pages_index_nextslide"
     },
     {
       "label": "startAutoPlay()",
@@ -480,10 +590,10 @@
       "source_file": "src/pages/index.astro",
       "source_location": "L677",
       "_origin": "ast",
-      "id": "src_pages_index_startautoplay",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "startautoplay()"
+      "norm_label": "startautoplay()",
+      "id": "src_pages_index_startautoplay"
     },
     {
       "label": "stopAutoPlay()",
@@ -491,10 +601,10 @@
       "source_file": "src/pages/index.astro",
       "source_location": "L682",
       "_origin": "ast",
-      "id": "src_pages_index_stopautoplay",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "stopautoplay()"
+      "norm_label": "stopautoplay()",
+      "id": "src_pages_index_stopautoplay"
     },
     {
       "label": "../layouts/Layout.astro",
@@ -502,10 +612,10 @@
       "source_file": "src/layouts/Layout.astro",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_layouts_layout_astro",
       "community": 8,
       "community_name": "Java JNDI Injection - JNDI \u6ce8\u5165\u5b8c\u6574\u5ba1\u8ba1\u89c4\u5219",
-      "norm_label": "../layouts/layout.astro"
+      "norm_label": "../layouts/layout.astro",
+      "id": "c_users_akim_desktop_usgar_redesign_src_layouts_layout_astro"
     },
     {
       "label": "../data/attractions",
@@ -513,10 +623,10 @@
       "source_file": "src/data/attractions",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_data_attractions",
       "community": 496,
       "community_name": "attractions.ts",
-      "norm_label": "../data/attractions"
+      "norm_label": "../data/attractions",
+      "id": "c_users_akim_desktop_usgar_redesign_src_data_attractions"
     },
     {
       "label": "astro",
@@ -524,10 +634,10 @@
       "source_file": "astro",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "astro",
       "community": 496,
       "community_name": "attractions.ts",
-      "norm_label": "astro"
+      "norm_label": "astro",
+      "id": "astro"
     },
     {
       "label": "scrollStoryEngine.ts",
@@ -535,10 +645,10 @@
       "source_file": "src/utils/scrollStoryEngine.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_utils_scrollstoryengine",
       "community": 96,
       "community_name": "my-bookings.astro",
-      "norm_label": "scrollstoryengine.ts"
+      "norm_label": "scrollstoryengine.ts",
+      "id": "src_utils_scrollstoryengine"
     },
     {
       "label": "ScrollStoryEngine",
@@ -546,10 +656,10 @@
       "source_file": "src/utils/scrollStoryEngine.ts",
       "source_location": "L11",
       "_origin": "ast",
-      "id": "src_utils_scrollstoryengine_scrollstoryengine",
       "community": 96,
       "community_name": "my-bookings.astro",
-      "norm_label": "scrollstoryengine"
+      "norm_label": "scrollstoryengine",
+      "id": "src_utils_scrollstoryengine_scrollstoryengine"
     },
     {
       "label": ".cleanup()",
@@ -557,10 +667,10 @@
       "source_file": "src/utils/scrollStoryEngine.ts",
       "source_location": "L16",
       "_origin": "ast",
-      "id": "src_utils_scrollstoryengine_scrollstoryengine_cleanup",
       "community": 96,
       "community_name": "my-bookings.astro",
-      "norm_label": ".cleanup()"
+      "norm_label": ".cleanup()",
+      "id": "src_utils_scrollstoryengine_scrollstoryengine_cleanup"
     },
     {
       "label": ".initHomePageStory()",
@@ -568,10 +678,10 @@
       "source_file": "src/utils/scrollStoryEngine.ts",
       "source_location": "L24",
       "_origin": "ast",
-      "id": "src_utils_scrollstoryengine_scrollstoryengine_inithomepagestory",
       "community": 96,
       "community_name": "my-bookings.astro",
-      "norm_label": ".inithomepagestory()"
+      "norm_label": ".inithomepagestory()",
+      "id": "src_utils_scrollstoryengine_scrollstoryengine_inithomepagestory"
     },
     {
       "label": ".initVelocityMarquee()",
@@ -579,10 +689,10 @@
       "source_file": "src/utils/scrollStoryEngine.ts",
       "source_location": "L61",
       "_origin": "ast",
-      "id": "src_utils_scrollstoryengine_scrollstoryengine_initvelocitymarquee",
       "community": 96,
       "community_name": "my-bookings.astro",
-      "norm_label": ".initvelocitymarquee()"
+      "norm_label": ".initvelocitymarquee()",
+      "id": "src_utils_scrollstoryengine_scrollstoryengine_initvelocitymarquee"
     },
     {
       "label": ".initMouseTilt()",
@@ -590,10 +700,10 @@
       "source_file": "src/utils/scrollStoryEngine.ts",
       "source_location": "L113",
       "_origin": "ast",
-      "id": "src_utils_scrollstoryengine_scrollstoryengine_initmousetilt",
       "community": 96,
       "community_name": "my-bookings.astro",
-      "norm_label": ".initmousetilt()"
+      "norm_label": ".initmousetilt()",
+      "id": "src_utils_scrollstoryengine_scrollstoryengine_initmousetilt"
     },
     {
       "label": ".initHeroStory()",
@@ -601,10 +711,10 @@
       "source_file": "src/utils/scrollStoryEngine.ts",
       "source_location": "L156",
       "_origin": "ast",
-      "id": "src_utils_scrollstoryengine_scrollstoryengine_initherostory",
       "community": 96,
       "community_name": "my-bookings.astro",
-      "norm_label": ".initherostory()"
+      "norm_label": ".initherostory()",
+      "id": "src_utils_scrollstoryengine_scrollstoryengine_initherostory"
     },
     {
       "label": ".initRoomsStory()",
@@ -612,10 +722,10 @@
       "source_file": "src/utils/scrollStoryEngine.ts",
       "source_location": "L193",
       "_origin": "ast",
-      "id": "src_utils_scrollstoryengine_scrollstoryengine_initroomsstory",
       "community": 96,
       "community_name": "my-bookings.astro",
-      "norm_label": ".initroomsstory()"
+      "norm_label": ".initroomsstory()",
+      "id": "src_utils_scrollstoryengine_scrollstoryengine_initroomsstory"
     },
     {
       "label": ".initHeritageStory()",
@@ -623,10 +733,10 @@
       "source_file": "src/utils/scrollStoryEngine.ts",
       "source_location": "L243",
       "_origin": "ast",
-      "id": "src_utils_scrollstoryengine_scrollstoryengine_initheritagestory",
       "community": 96,
       "community_name": "my-bookings.astro",
-      "norm_label": ".initheritagestory()"
+      "norm_label": ".initheritagestory()",
+      "id": "src_utils_scrollstoryengine_scrollstoryengine_initheritagestory"
     },
     {
       "label": ".initParallaxCards()",
@@ -634,10 +744,10 @@
       "source_file": "src/utils/scrollStoryEngine.ts",
       "source_location": "L268",
       "_origin": "ast",
-      "id": "src_utils_scrollstoryengine_scrollstoryengine_initparallaxcards",
       "community": 96,
       "community_name": "my-bookings.astro",
-      "norm_label": ".initparallaxcards()"
+      "norm_label": ".initparallaxcards()",
+      "id": "src_utils_scrollstoryengine_scrollstoryengine_initparallaxcards"
     },
     {
       "label": "Config.php",
@@ -759,83 +869,6 @@
       "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
       "norm_label": ".loadenv()",
       "id": "app_core_config_config_loadenv"
-    },
-    {
-      "label": "Validator.php",
-      "file_type": "code",
-      "source_file": "app/Core/Validator.php",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
-      "norm_label": "validator.php",
-      "id": "app_core_validator"
-    },
-    {
-      "label": "Validator",
-      "file_type": "code",
-      "source_file": "app/Core/Validator.php",
-      "source_location": "L11",
-      "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
-      "norm_label": "validator",
-      "id": "app_core_validator_validator"
-    },
-    {
-      "label": ".requireFields()",
-      "file_type": "code",
-      "source_file": "app/Core/Validator.php",
-      "source_location": "L19",
-      "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
-      "norm_label": ".requirefields()",
-      "id": "app_core_validator_validator_requirefields"
-    },
-    {
-      "label": ".dateRange()",
-      "file_type": "code",
-      "source_file": "app/Core/Validator.php",
-      "source_location": "L39",
-      "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
-      "norm_label": ".daterange()",
-      "id": "app_core_validator_validator_daterange"
-    },
-    {
-      "label": ".email()",
-      "file_type": "code",
-      "source_file": "app/Core/Validator.php",
-      "source_location": "L68",
-      "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
-      "norm_label": ".email()",
-      "id": "app_core_validator_validator_email"
-    },
-    {
-      "label": ".positiveInt()",
-      "file_type": "code",
-      "source_file": "app/Core/Validator.php",
-      "source_location": "L81",
-      "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
-      "norm_label": ".positiveint()",
-      "id": "app_core_validator_validator_positiveint"
-    },
-    {
-      "label": ".isRealDate()",
-      "file_type": "code",
-      "source_file": "app/Core/Validator.php",
-      "source_location": "L92",
-      "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
-      "norm_label": ".isrealdate()",
-      "id": "app_core_validator_validator_isrealdate"
     },
     {
       "label": "CreateBookingAction.php",
@@ -1426,8 +1459,8 @@
       "source_file": "app/Core/Request.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": "request.php",
       "id": "app_core_request"
     },
@@ -1437,8 +1470,8 @@
       "source_file": "app/Core/Request.php",
       "source_location": "L11",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": "request",
       "id": "app_core_request_request"
     },
@@ -1448,8 +1481,8 @@
       "source_file": "app/Core/Request.php",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": ".__construct()",
       "id": "app_core_request_request_construct"
     },
@@ -1459,8 +1492,8 @@
       "source_file": "app/Core/Request.php",
       "source_location": "L46",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": ".getmethod()",
       "id": "app_core_request_request_getmethod"
     },
@@ -1470,8 +1503,8 @@
       "source_file": "app/Core/Request.php",
       "source_location": "L50",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": ".getpath()",
       "id": "app_core_request_request_getpath"
     },
@@ -1481,8 +1514,8 @@
       "source_file": "app/Core/Request.php",
       "source_location": "L54",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": ".getqueryparams()",
       "id": "app_core_request_request_getqueryparams"
     },
@@ -1492,8 +1525,8 @@
       "source_file": "app/Core/Request.php",
       "source_location": "L58",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": ".getquery()",
       "id": "app_core_request_request_getquery"
     },
@@ -1503,8 +1536,8 @@
       "source_file": "app/Core/Request.php",
       "source_location": "L62",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": ".getheaders()",
       "id": "app_core_request_request_getheaders"
     },
@@ -1514,8 +1547,8 @@
       "source_file": "app/Core/Request.php",
       "source_location": "L66",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": ".getheader()",
       "id": "app_core_request_request_getheader"
     },
@@ -1525,8 +1558,8 @@
       "source_file": "app/Core/Request.php",
       "source_location": "L71",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": ".getbody()",
       "id": "app_core_request_request_getbody"
     },
@@ -1536,8 +1569,8 @@
       "source_file": "app/Core/Request.php",
       "source_location": "L75",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": ".get()",
       "id": "app_core_request_request_get"
     },
@@ -1547,8 +1580,8 @@
       "source_file": "app/Core/Request.php",
       "source_location": "L83",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": ".getip()",
       "id": "app_core_request_request_getip"
     },
@@ -1558,8 +1591,8 @@
       "source_file": "app/Core/Request.php",
       "source_location": "L107",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": ".parsebody()",
       "id": "app_core_request_request_parsebody"
     },
@@ -1569,8 +1602,8 @@
       "source_file": "app/Core/Request.php",
       "source_location": "L133",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": ".extractheaders()",
       "id": "app_core_request_request_extractheaders"
     },
@@ -1580,8 +1613,8 @@
       "source_file": "app/Core/Response.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 93,
-      "community_name": "index.php",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "response.php",
       "id": "app_core_response"
     },
@@ -2702,8 +2735,8 @@
       "source_file": "app/Features/Auth/User.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 93,
-      "community_name": "index.php",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "user.php",
       "id": "app_features_auth_user"
     },
@@ -3168,8 +3201,8 @@
       "source_file": "app/Core/Database.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 15,
-      "community_name": "\u52a8\u6001\u4ee3\u7801\u5ba1\u8ba1\u6307\u5357 (Dynamic Code Audit Guide)",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "database.php",
       "id": "app_core_database"
     },
@@ -3322,8 +3355,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLoginAction.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 10,
+      "community_name": "Docker \u90e8\u7f72\u9a8c\u8bc1\u6307\u5357",
       "norm_label": "authloginaction.php",
       "id": "app_features_auth_actions_authloginaction"
     },
@@ -3333,8 +3366,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLoginAction.php",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 10,
+      "community_name": "Docker \u90e8\u7f72\u9a8c\u8bc1\u6307\u5357",
       "norm_label": "authloginaction",
       "id": "app_features_auth_actions_authloginaction_authloginaction"
     },
@@ -3344,8 +3377,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLoginAction.php",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 10,
+      "community_name": "Docker \u90e8\u7f72\u9a8c\u8bc1\u6307\u5357",
       "norm_label": ".__invoke()",
       "id": "app_features_auth_actions_authloginaction_authloginaction_invoke"
     },
@@ -3355,8 +3388,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 10,
+      "community_name": "Docker \u90e8\u7f72\u9a8c\u8bc1\u6307\u5357",
       "norm_label": "request",
       "id": "app_features_auth_actions_authloginaction_php_request"
     },
@@ -3366,8 +3399,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLoginEmailAction.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 93,
-      "community_name": "index.php",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "authloginemailaction.php",
       "id": "app_features_auth_actions_authloginemailaction"
     },
@@ -3421,8 +3454,8 @@
       "source_file": "app/Features/Auth/Actions/AuthRegisterAction.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 93,
-      "community_name": "index.php",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "authregisteraction.php",
       "id": "app_features_auth_actions_authregisteraction"
     },
@@ -3432,8 +3465,8 @@
       "source_file": "app/Features/Auth/Actions/AuthRegisterAction.php",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 93,
-      "community_name": "index.php",
+      "community": 113,
+      "community_name": "AuthRegisterAction",
       "norm_label": "authregisteraction",
       "id": "app_features_auth_actions_authregisteraction_authregisteraction"
     },
@@ -3443,8 +3476,8 @@
       "source_file": "app/Features/Auth/Actions/AuthRegisterAction.php",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 93,
-      "community_name": "index.php",
+      "community": 113,
+      "community_name": "AuthRegisterAction",
       "norm_label": ".__invoke()",
       "id": "app_features_auth_actions_authregisteraction_authregisteraction_invoke"
     },
@@ -3454,8 +3487,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 93,
-      "community_name": "index.php",
+      "community": 113,
+      "community_name": "AuthRegisterAction",
       "norm_label": "request",
       "id": "app_features_auth_actions_authregisteraction_php_request"
     },
@@ -3465,8 +3498,8 @@
       "source_file": "app/Features/Auth/Actions/AuthRegisterAction.php",
       "source_location": "L108",
       "_origin": "ast",
-      "community": 93,
-      "community_name": "index.php",
+      "community": 113,
+      "community_name": "AuthRegisterAction",
       "norm_label": ".ishtmlrequest()",
       "id": "app_features_auth_actions_authregisteraction_authregisteraction_ishtmlrequest"
     },
@@ -3564,8 +3597,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLogoutAction.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 93,
-      "community_name": "index.php",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "authlogoutaction.php",
       "id": "app_features_auth_actions_authlogoutaction"
     },
@@ -3575,8 +3608,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLogoutAction.php",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 93,
-      "community_name": "index.php",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "authlogoutaction",
       "id": "app_features_auth_actions_authlogoutaction_authlogoutaction"
     },
@@ -3586,8 +3619,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLogoutAction.php",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 93,
-      "community_name": "index.php",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": ".__invoke()",
       "id": "app_features_auth_actions_authlogoutaction_authlogoutaction_invoke"
     },
@@ -3597,8 +3630,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 93,
-      "community_name": "index.php",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "request",
       "id": "app_features_auth_actions_authlogoutaction_php_request"
     },
@@ -7425,8 +7458,8 @@
       "source_file": "app/Core/BookingStatus.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 106,
-      "community_name": "ExtendHoldAction.php",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": "bookingstatus.php",
       "id": "app_core_bookingstatus"
     },
@@ -7436,8 +7469,8 @@
       "source_file": "app/Core/BookingStatus.php",
       "source_location": "L20",
       "_origin": "ast",
-      "community": 106,
-      "community_name": "ExtendHoldAction.php",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": "isextendable()",
       "id": "app_core_bookingstatus_isextendable"
     },
@@ -7447,8 +7480,8 @@
       "source_file": "app/Core/BookingStatus.php",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 106,
-      "community_name": "ExtendHoldAction.php",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": "isterminal()",
       "id": "app_core_bookingstatus_isterminal"
     },
@@ -7469,8 +7502,8 @@
       "source_file": "app/Core/Container.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 21,
+      "community_name": "Real World Vulnerabilities Case Study",
       "norm_label": "container.php",
       "id": "app_core_container"
     },
@@ -7579,8 +7612,8 @@
       "source_file": "app/Core/HttpException.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 10,
+      "community_name": "Docker \u90e8\u7f72\u9a8c\u8bc1\u6307\u5357",
       "norm_label": "httpexception.php",
       "id": "app_core_httpexception"
     },
@@ -7601,8 +7634,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 21,
+      "community_name": "Real World Vulnerabilities Case Study",
       "norm_label": "exception",
       "id": "exception"
     },
@@ -8019,8 +8052,8 @@
       "source_file": "app/Features/Auth/Actions/AuthMeAction.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 93,
-      "community_name": "index.php",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "authmeaction.php",
       "id": "app_features_auth_actions_authmeaction"
     },
@@ -8030,8 +8063,8 @@
       "source_file": "app/Features/Auth/Actions/AuthMeAction.php",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 14,
+      "community_name": "Python Deserialization Deep Dive",
       "norm_label": "authmeaction",
       "id": "app_features_auth_actions_authmeaction_authmeaction"
     },
@@ -8041,8 +8074,8 @@
       "source_file": "app/Features/Auth/Actions/AuthMeAction.php",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 14,
+      "community_name": "Python Deserialization Deep Dive",
       "norm_label": ".__invoke()",
       "id": "app_features_auth_actions_authmeaction_authmeaction_invoke"
     },
@@ -8052,8 +8085,8 @@
       "source_file": "app/Features/Auth/Actions/GetUserBookingsAction.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 93,
-      "community_name": "index.php",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "getuserbookingsaction.php",
       "id": "app_features_auth_actions_getuserbookingsaction"
     },
@@ -8063,8 +8096,8 @@
       "source_file": "app/Features/Auth/Actions/GetUserBookingsAction.php",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 14,
+      "community_name": "Python Deserialization Deep Dive",
       "norm_label": "getuserbookingsaction",
       "id": "app_features_auth_actions_getuserbookingsaction_getuserbookingsaction"
     },
@@ -8074,8 +8107,8 @@
       "source_file": "app/Features/Auth/Actions/GetUserBookingsAction.php",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 14,
+      "community_name": "Python Deserialization Deep Dive",
       "norm_label": ".__invoke()",
       "id": "app_features_auth_actions_getuserbookingsaction_getuserbookingsaction_invoke"
     },
@@ -8085,8 +8118,8 @@
       "source_file": "app/Features/Auth/SessionService.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 93,
-      "community_name": "index.php",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "sessionservice.php",
       "id": "app_features_auth_sessionservice"
     },
@@ -8470,8 +8503,8 @@
       "source_file": "app/Features/Cron/Actions/CleanExpiredCartsAction.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 93,
-      "community_name": "index.php",
+      "community": 2,
+      "community_name": "External Security Tools Integration Guide",
       "norm_label": "cleanexpiredcartsaction.php",
       "id": "app_features_cron_actions_cleanexpiredcartsaction"
     },
@@ -8503,8 +8536,8 @@
       "source_file": "app/Features/Cron/Actions/CleanExpiredCartsAction.php",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": ".__invoke()",
       "id": "app_features_cron_actions_cleanexpiredcartsaction_cleanexpiredcartsaction_invoke"
     },
@@ -8525,8 +8558,8 @@
       "source_file": "app/Features/Health/Actions/HealthCheckAction.php",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 3,
+      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
       "norm_label": "healthcheckaction",
       "id": "app_features_health_actions_healthcheckaction_healthcheckaction"
     },
@@ -8536,8 +8569,8 @@
       "source_file": "app/Features/Health/Actions/HealthCheckAction.php",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 29,
-      "community_name": "Naming Conventions",
+      "community": 3,
+      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
       "norm_label": ".__invoke()",
       "id": "app_features_health_actions_healthcheckaction_healthcheckaction_invoke"
     },
@@ -8668,8 +8701,8 @@
       "source_file": "app/Features/Shared/RoomTypeRegistry.php",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
+      "community": 112,
+      "community_name": "RoomTypeRegistry",
       "norm_label": "roomtyperegistry",
       "id": "app_features_shared_roomtyperegistry_roomtyperegistry"
     },
@@ -8679,8 +8712,8 @@
       "source_file": "app/Features/Shared/RoomTypeRegistry.php",
       "source_location": "L31",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
+      "community": 112,
+      "community_name": "RoomTypeRegistry",
       "norm_label": ".getslugbyid()",
       "id": "app_features_shared_roomtyperegistry_roomtyperegistry_getslugbyid"
     },
@@ -8690,8 +8723,8 @@
       "source_file": "app/Features/Shared/RoomTypeRegistry.php",
       "source_location": "L39",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
+      "community": 112,
+      "community_name": "RoomTypeRegistry",
       "norm_label": ".getidbyslug()",
       "id": "app_features_shared_roomtyperegistry_roomtyperegistry_getidbyslug"
     },
@@ -8701,8 +8734,8 @@
       "source_file": "app/Features/Shared/RoomTypeRegistry.php",
       "source_location": "L49",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
+      "community": 112,
+      "community_name": "RoomTypeRegistry",
       "norm_label": ".all()",
       "id": "app_features_shared_roomtyperegistry_roomtyperegistry_all"
     },
@@ -8712,8 +8745,8 @@
       "source_file": "app/Features/Shared/RoomTypeRegistry.php",
       "source_location": "L57",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
+      "community": 112,
+      "community_name": "RoomTypeRegistry",
       "norm_label": ".getchannexroomid()",
       "id": "app_features_shared_roomtyperegistry_roomtyperegistry_getchannexroomid"
     },
@@ -8723,8 +8756,8 @@
       "source_file": "app/Features/Shared/RoomTypeRegistry.php",
       "source_location": "L68",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
+      "community": 112,
+      "community_name": "RoomTypeRegistry",
       "norm_label": ".getchannexrateplanid()",
       "id": "app_features_shared_roomtyperegistry_roomtyperegistry_getchannexrateplanid"
     },
@@ -9664,39 +9697,6 @@
       "id": "scripts_dev_cleanup"
     },
     {
-      "label": "run-exhaustive-tests.php",
-      "file_type": "code",
-      "source_file": "scripts/run-exhaustive-tests.php",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 15,
-      "community_name": "\u52a8\u6001\u4ee3\u7801\u5ba1\u8ba1\u6307\u5357 (Dynamic Code Audit Guide)",
-      "norm_label": "run-exhaustive-tests.php",
-      "id": "scripts_run_exhaustive_tests"
-    },
-    {
-      "label": "assertTest()",
-      "file_type": "code",
-      "source_file": "scripts/run-exhaustive-tests.php",
-      "source_location": "L27",
-      "_origin": "ast",
-      "community": 15,
-      "community_name": "\u52a8\u6001\u4ee3\u7801\u5ba1\u8ba1\u6307\u5357 (Dynamic Code Audit Guide)",
-      "norm_label": "asserttest()",
-      "id": "scripts_run_exhaustive_tests_asserttest"
-    },
-    {
-      "label": "httpGet()",
-      "file_type": "code",
-      "source_file": "scripts/run-exhaustive-tests.php",
-      "source_location": "L158",
-      "_origin": "ast",
-      "community": 15,
-      "community_name": "\u52a8\u6001\u4ee3\u7801\u5ba1\u8ba1\u6307\u5357 (Dynamic Code Audit Guide)",
-      "norm_label": "httpget()",
-      "id": "scripts_run_exhaustive_tests_httpget"
-    },
-    {
       "label": "seed-database.php",
       "file_type": "code",
       "source_file": "scripts/seed-database.php",
@@ -9724,8 +9724,8 @@
       "source_file": "scripts/test_endpoints.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 106,
-      "community_name": "ExtendHoldAction.php",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": "test_endpoints.php",
       "id": "scripts_test_endpoints"
     },
@@ -9823,8 +9823,8 @@
       "source_file": "tests/Unit/TestCase.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 21,
+      "community_name": "Real World Vulnerabilities Case Study",
       "norm_label": "testcase.php",
       "id": "tests_unit_testcase"
     },
@@ -10407,8 +10407,8 @@
       "source_file": "vendor/composer/ClassLoader.php",
       "source_location": "L106",
       "_origin": "ast",
-      "community": 540,
-      "community_name": "ClassLoader",
+      "community": 13,
+      "community_name": "\u6570\u636e\u6d41\u5206\u6790\u65b9\u6cd5\u8bba",
       "norm_label": ".__construct()",
       "id": "vendor_composer_classloader_classloader_construct"
     },
@@ -10671,8 +10671,8 @@
       "source_file": "vendor/composer/InstalledVersions.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 13,
-      "community_name": "\u6570\u636e\u6d41\u5206\u6790\u65b9\u6cd5\u8bba",
+      "community": 115,
+      "community_name": "InstalledVersions.php",
       "norm_label": "installedversions.php",
       "id": "vendor_composer_installedversions"
     },
@@ -10726,8 +10726,8 @@
       "source_file": "vendor/composer/InstalledVersions.php",
       "source_location": "L131",
       "_origin": "ast",
-      "community": 13,
-      "community_name": "\u6570\u636e\u6d41\u5206\u6790\u65b9\u6cd5\u8bba",
+      "community": 115,
+      "community_name": "InstalledVersions.php",
       "norm_label": ".satisfies()",
       "id": "vendor_composer_installedversions_installedversions_satisfies"
     },
@@ -10737,8 +10737,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 13,
-      "community_name": "\u6570\u636e\u6d41\u5206\u6790\u65b9\u6cd5\u8bba",
+      "community": 115,
+      "community_name": "InstalledVersions.php",
       "norm_label": "versionparser",
       "id": "versionparser"
     },
@@ -10946,8 +10946,8 @@
       "source_file": "vendor/composer/autoload_static.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 540,
-      "community_name": "ClassLoader",
+      "community": 114,
+      "community_name": "ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686",
       "norm_label": "autoload_static.php",
       "id": "vendor_composer_autoload_static"
     },
@@ -10957,8 +10957,8 @@
       "source_file": "vendor/composer/autoload_static.php",
       "source_location": "L7",
       "_origin": "ast",
-      "community": 540,
-      "community_name": "ClassLoader",
+      "community": 114,
+      "community_name": "ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686",
       "norm_label": "composerstaticinit66501ca8fa27c2f60c8a58c36c7c5686",
       "id": "vendor_composer_autoload_static_composerstaticinit66501ca8fa27c2f60c8a58c36c7c5686"
     },
@@ -10968,8 +10968,8 @@
       "source_file": "vendor/composer/autoload_static.php",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 540,
-      "community_name": "ClassLoader",
+      "community": 114,
+      "community_name": "ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686",
       "norm_label": ".getinitializer()",
       "id": "vendor_composer_autoload_static_composerstaticinit66501ca8fa27c2f60c8a58c36c7c5686_getinitializer"
     },
@@ -19349,13 +19349,257 @@
   ],
   "links": [
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Core/Validator.php",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_core_validator",
+      "target": "app_core_validator_validator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Booking/Actions/CreateBookingAction.php",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_features_booking_actions_createbookingaction",
+      "target": "app_core_validator"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Features/Rooms/Actions/GetRoomsAction.php",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "app_features_rooms_actions_getroomsaction",
+      "target": "app_core_validator"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/run-exhaustive-tests.php",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_run_exhaustive_tests",
+      "target": "app_core_validator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Core/Validator.php",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_core_validator_validator",
+      "target": "app_core_validator_validator_daterange",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Core/Validator.php",
+      "source_location": "L81",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_core_validator_validator",
+      "target": "app_core_validator_validator_email",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Core/Validator.php",
+      "source_location": "L105",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_core_validator_validator",
+      "target": "app_core_validator_validator_isrealdate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Core/Validator.php",
+      "source_location": "L94",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_core_validator_validator",
+      "target": "app_core_validator_validator_positiveint",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Core/Validator.php",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_core_validator_validator",
+      "target": "app_core_validator_validator_requirefields",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app/Features/Booking/Actions/CreateBookingAction.php",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_booking_actions_createbookingaction_createbookingaction_invoke",
+      "target": "app_core_validator_validator"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "app/Features/Rooms/Actions/GetRoomsAction.php",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "app_features_rooms_actions_getroomsaction_getroomsaction_invoke",
+      "target": "app_core_validator_validator"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/run-exhaustive-tests.php",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_run_exhaustive_tests",
+      "target": "app_core_bookingstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/run-exhaustive-tests.php",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_run_exhaustive_tests",
+      "target": "channelmanagerportinterface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/run-exhaustive-tests.php",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_run_exhaustive_tests",
+      "target": "app_core_database",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/run-exhaustive-tests.php",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_run_exhaustive_tests",
+      "target": "app_features_rooms_actions_getroomsaction",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/run-exhaustive-tests.php",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_run_exhaustive_tests",
+      "target": "app_core_httpexception",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/run-exhaustive-tests.php",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_run_exhaustive_tests",
+      "target": "paymentgatewayportinterface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/run-exhaustive-tests.php",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_run_exhaustive_tests",
+      "target": "pmsportinterface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/run-exhaustive-tests.php",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_run_exhaustive_tests",
+      "target": "app_features_shared_adapters_qloappadapter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/run-exhaustive-tests.php",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_run_exhaustive_tests",
+      "target": "scripts_run_exhaustive_tests_asserttest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/run-exhaustive-tests.php",
+      "source_location": "L162",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_run_exhaustive_tests",
+      "target": "scripts_run_exhaustive_tests_httpget",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/AboutSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_aboutsection",
-      "target": "astro_assets",
-      "confidence_score": 1.0
+      "target": "astro_assets"
     },
     {
       "relation": "imports_from",
@@ -19365,9 +19609,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_aboutsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_fallback_room_fachada_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_fallback_room_fachada_jpg"
     },
     {
       "relation": "imports_from",
@@ -19377,9 +19621,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_aboutsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_patio_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_patio_jpg"
     },
     {
       "relation": "imports_from",
@@ -19389,18 +19633,18 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_aboutsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_content_about_about_json",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_content_about_about_json"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/AboutSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_aboutsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
@@ -19410,9 +19654,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_aboutsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "imports_from",
@@ -19422,18 +19666,18 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_components_aboutsection",
-      "confidence_score": 1.0
+      "target": "src_components_aboutsection"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/FAQSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_faqsection",
-      "target": "astro_assets",
-      "confidence_score": 1.0
+      "target": "astro_assets"
     },
     {
       "relation": "imports_from",
@@ -19449,27 +19693,27 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/GastronomySection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_gastronomysection",
-      "target": "astro_assets",
-      "confidence_score": 1.0
+      "target": "astro_assets"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/HeritageSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_heritagesection",
-      "target": "astro_assets",
-      "confidence_score": 1.0
+      "target": "astro_assets"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/InteractiveRoomsSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_interactiveroomssection",
-      "target": "astro_assets",
-      "confidence_score": 1.0
+      "target": "astro_assets"
     },
     {
       "relation": "imports_from",
@@ -19503,9 +19747,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/ServiceGrid.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_servicegrid",
-      "target": "astro_assets",
-      "confidence_score": 1.0
+      "target": "astro_assets"
     },
     {
       "relation": "imports_from",
@@ -19539,27 +19783,27 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/index.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "astro_assets",
-      "confidence_score": 1.0
+      "target": "astro_assets"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/BookingWidget.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_bookingwidget",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/FAQSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_faqsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
@@ -19575,36 +19819,36 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/GastronomySection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_gastronomysection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/HeritageSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_heritagesection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/InteractiveRoomsSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_interactiveroomssection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/MapSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_mapsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
@@ -19629,9 +19873,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/ReviewMarquee.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_reviewmarquee",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
@@ -19665,9 +19909,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/ServiceGrid.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_servicegrid",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
@@ -19755,9 +19999,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/index.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
@@ -19812,9 +20056,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_gastronomysection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_patio_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_patio_jpg"
     },
     {
       "relation": "imports_from",
@@ -19824,9 +20068,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_heritagesection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_patio_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_patio_jpg"
     },
     {
       "relation": "imports_from",
@@ -19836,9 +20080,9 @@
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_servicegrid",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_patio_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_patio_jpg"
     },
     {
       "relation": "imports_from",
@@ -19848,18 +20092,18 @@
       "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_patio_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_patio_jpg"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/BookingWidget.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_bookingwidget",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_rooms",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_rooms"
     },
     {
       "relation": "imports_from",
@@ -19869,9 +20113,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_bookingwidget",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "imports_from",
@@ -19881,18 +20125,18 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_components_bookingwidget",
-      "confidence_score": 1.0
+      "target": "src_components_bookingwidget"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/InteractiveRoomsSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_interactiveroomssection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_rooms",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_rooms"
     },
     {
       "relation": "imports_from",
@@ -19953,9 +20197,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/index.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_rooms",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_rooms"
     },
     {
       "relation": "imports_from",
@@ -19992,9 +20236,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_faqsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_recepcion_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_recepcion_jpg"
     },
     {
       "relation": "imports_from",
@@ -20004,18 +20248,18 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_faqsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_content_faq_faq_json",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_content_faq_faq_json"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/FAQSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_faqsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_settings",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_settings"
     },
     {
       "relation": "imports_from",
@@ -20025,9 +20269,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_faqsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "contains",
@@ -20036,9 +20280,9 @@
       "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_faqsection",
-      "target": "src_components_faqsection_t",
-      "confidence_score": 1.0
+      "target": "src_components_faqsection_t"
     },
     {
       "relation": "imports_from",
@@ -20048,9 +20292,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_components_faqsection",
-      "confidence_score": 1.0
+      "target": "src_components_faqsection"
     },
     {
       "relation": "imports_from",
@@ -20060,9 +20304,9 @@
       "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_content_faq_faq_json",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_content_faq_faq_json"
     },
     {
       "relation": "imports_from",
@@ -20072,9 +20316,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_gastronomysection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_recepcion_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_recepcion_jpg"
     },
     {
       "relation": "imports_from",
@@ -20084,9 +20328,9 @@
       "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_recepcion_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_recepcion_jpg"
     },
     {
       "relation": "imports_from",
@@ -20102,9 +20346,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/MapSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_mapsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_settings",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_settings"
     },
     {
       "relation": "imports_from",
@@ -20147,9 +20391,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/index.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_settings",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_settings"
     },
     {
       "relation": "imports_from",
@@ -20159,9 +20403,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_gastronomysection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_fallback_room_desayuno_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_fallback_room_desayuno_jpg"
     },
     {
       "relation": "imports_from",
@@ -20171,9 +20415,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_gastronomysection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "contains",
@@ -20182,9 +20426,9 @@
       "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_gastronomysection",
-      "target": "src_components_gastronomysection_culinaryoffers",
-      "confidence_score": 1.0
+      "target": "src_components_gastronomysection_culinaryoffers"
     },
     {
       "relation": "contains",
@@ -20193,9 +20437,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_gastronomysection",
-      "target": "src_components_gastronomysection_t",
-      "confidence_score": 1.0
+      "target": "src_components_gastronomysection_t"
     },
     {
       "relation": "imports_from",
@@ -20205,9 +20449,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_components_gastronomysection",
-      "confidence_score": 1.0
+      "target": "src_components_gastronomysection"
     },
     {
       "relation": "imports_from",
@@ -20217,9 +20461,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_heritagesection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_fallback_room_pasillo_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_fallback_room_pasillo_jpg"
     },
     {
       "relation": "imports_from",
@@ -20229,9 +20473,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_heritagesection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "imports_from",
@@ -20241,18 +20485,18 @@
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_components_heritagesection",
-      "confidence_score": 1.0
+      "target": "src_components_heritagesection"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/InteractiveRoomsSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_interactiveroomssection",
-      "target": "astro_i18n",
-      "confidence_score": 1.0
+      "target": "astro_i18n"
     },
     {
       "relation": "imports_from",
@@ -20262,18 +20506,18 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_interactiveroomssection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/InteractiveRoomsSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_interactiveroomssection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_utils_helpers",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_utils_helpers"
     },
     {
       "relation": "imports_from",
@@ -20283,9 +20527,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_components_interactiveroomssection",
-      "confidence_score": 1.0
+      "target": "src_components_interactiveroomssection"
     },
     {
       "relation": "imports_from",
@@ -20364,9 +20608,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/index.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "astro_i18n",
-      "confidence_score": 1.0
+      "target": "astro_i18n"
     },
     {
       "relation": "imports_from",
@@ -20400,9 +20644,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/MapSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_mapsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_logos_logo_usgar_isotipo_png",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_logos_logo_usgar_isotipo_png"
     },
     {
       "relation": "imports_from",
@@ -20412,27 +20656,27 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_mapsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "dynamic_import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/MapSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_mapsection",
-      "target": "leaflet",
-      "confidence_score": 1.0
+      "target": "leaflet"
     },
     {
       "relation": "dynamic_import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/MapSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_mapsection",
-      "target": "leaflet_css",
-      "confidence_score": 1.0
+      "target": "leaflet_css"
     },
     {
       "relation": "contains",
@@ -20441,9 +20685,9 @@
       "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_mapsection",
-      "target": "src_components_mapsection_string",
-      "confidence_score": 1.0
+      "target": "src_components_mapsection_string"
     },
     {
       "relation": "imports_from",
@@ -20453,9 +20697,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_components_mapsection",
-      "confidence_score": 1.0
+      "target": "src_components_mapsection"
     },
     {
       "relation": "imports",
@@ -20474,9 +20718,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/ReviewMarquee.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_reviewmarquee",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_reviews",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_reviews"
     },
     {
       "relation": "imports_from",
@@ -20486,9 +20730,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_reviewmarquee",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "imports_from",
@@ -20498,9 +20742,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_components_reviewmarquee",
-      "confidence_score": 1.0
+      "target": "src_components_reviewmarquee"
     },
     {
       "relation": "imports_from",
@@ -20510,9 +20754,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_servicegrid",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_fallback_room_oxigeno_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_fallback_room_oxigeno_jpg"
     },
     {
       "relation": "imports_from",
@@ -20522,9 +20766,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_servicegrid",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_cusco_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_cusco_jpg"
     },
     {
       "relation": "imports_from",
@@ -20534,18 +20778,18 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_servicegrid",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_matrimonial_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_matrimonial_jpg"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/ServiceGrid.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_servicegrid",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_services",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_services"
     },
     {
       "relation": "imports_from",
@@ -20555,9 +20799,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_servicegrid",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "contains",
@@ -20566,9 +20810,9 @@
       "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_servicegrid",
-      "target": "src_components_servicegrid_t",
-      "confidence_score": 1.0
+      "target": "src_components_servicegrid_t"
     },
     {
       "relation": "imports_from",
@@ -20578,9 +20822,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_components_servicegrid",
-      "confidence_score": 1.0
+      "target": "src_components_servicegrid"
     },
     {
       "relation": "imports_from",
@@ -20590,9 +20834,9 @@
       "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_cusco_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_cusco_jpg"
     },
     {
       "relation": "imports_from",
@@ -20602,45 +20846,45 @@
       "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_matrimonial_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_matrimonial_jpg"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/common/SmoothScroll.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_common_smoothscroll",
-      "target": "c_users_akim_desktop_usgar_redesign_src_utils_scrollstoryengine",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_utils_scrollstoryengine"
     },
     {
       "relation": "dynamic_import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/common/SmoothScroll.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_common_smoothscroll",
-      "target": "gsap",
-      "confidence_score": 1.0
+      "target": "gsap"
     },
     {
       "relation": "dynamic_import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/common/SmoothScroll.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_common_smoothscroll",
-      "target": "lenis",
-      "confidence_score": 1.0
+      "target": "lenis"
     },
     {
       "relation": "dynamic_import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/common/SmoothScroll.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_common_smoothscroll",
-      "target": "scrolltrigger",
-      "confidence_score": 1.0
+      "target": "scrolltrigger"
     },
     {
       "relation": "imports_from",
@@ -20656,18 +20900,18 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/index.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "astro",
-      "confidence_score": 1.0
+      "target": "astro"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/index.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_attractions",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_attractions"
     },
     {
       "relation": "imports_from",
@@ -20677,18 +20921,18 @@
       "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/index.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_layouts_layout_astro",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_layouts_layout_astro"
     },
     {
       "relation": "contains",
@@ -20697,9 +20941,9 @@
       "source_location": "L673",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_pages_index_nextslide",
-      "confidence_score": 1.0
+      "target": "src_pages_index_nextslide"
     },
     {
       "relation": "contains",
@@ -20708,9 +20952,9 @@
       "source_location": "L677",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_pages_index_startautoplay",
-      "confidence_score": 1.0
+      "target": "src_pages_index_startautoplay"
     },
     {
       "relation": "contains",
@@ -20719,9 +20963,9 @@
       "source_location": "L682",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_pages_index_stopautoplay",
-      "confidence_score": 1.0
+      "target": "src_pages_index_stopautoplay"
     },
     {
       "relation": "imports_from",
@@ -20740,9 +20984,9 @@
       "source_location": "L679",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 0.5,
       "source": "src_pages_index_startautoplay",
-      "target": "src_pages_index_nextslide",
-      "confidence_score": 0.5
+      "target": "src_pages_index_nextslide"
     },
     {
       "relation": "calls",
@@ -20752,9 +20996,9 @@
       "source_location": "L678",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index_startautoplay",
-      "target": "src_pages_index_stopautoplay",
-      "confidence_score": 1.0
+      "target": "src_pages_index_stopautoplay"
     },
     {
       "relation": "imports_from",
@@ -20838,9 +21082,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_utils_scrollstoryengine",
-      "target": "src_utils_scrollstoryengine_scrollstoryengine",
-      "confidence_score": 1.0
+      "target": "src_utils_scrollstoryengine_scrollstoryengine"
     },
     {
       "relation": "method",
@@ -20849,9 +21093,9 @@
       "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_utils_scrollstoryengine_scrollstoryengine",
-      "target": "src_utils_scrollstoryengine_scrollstoryengine_cleanup",
-      "confidence_score": 1.0
+      "target": "src_utils_scrollstoryengine_scrollstoryengine_cleanup"
     },
     {
       "relation": "method",
@@ -20860,9 +21104,9 @@
       "source_location": "L243",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_utils_scrollstoryengine_scrollstoryengine",
-      "target": "src_utils_scrollstoryengine_scrollstoryengine_initheritagestory",
-      "confidence_score": 1.0
+      "target": "src_utils_scrollstoryengine_scrollstoryengine_initheritagestory"
     },
     {
       "relation": "method",
@@ -20871,9 +21115,9 @@
       "source_location": "L156",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_utils_scrollstoryengine_scrollstoryengine",
-      "target": "src_utils_scrollstoryengine_scrollstoryengine_initherostory",
-      "confidence_score": 1.0
+      "target": "src_utils_scrollstoryengine_scrollstoryengine_initherostory"
     },
     {
       "relation": "method",
@@ -20882,9 +21126,9 @@
       "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_utils_scrollstoryengine_scrollstoryengine",
-      "target": "src_utils_scrollstoryengine_scrollstoryengine_inithomepagestory",
-      "confidence_score": 1.0
+      "target": "src_utils_scrollstoryengine_scrollstoryengine_inithomepagestory"
     },
     {
       "relation": "method",
@@ -20893,9 +21137,9 @@
       "source_location": "L113",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_utils_scrollstoryengine_scrollstoryengine",
-      "target": "src_utils_scrollstoryengine_scrollstoryengine_initmousetilt",
-      "confidence_score": 1.0
+      "target": "src_utils_scrollstoryengine_scrollstoryengine_initmousetilt"
     },
     {
       "relation": "method",
@@ -20904,9 +21148,9 @@
       "source_location": "L268",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_utils_scrollstoryengine_scrollstoryengine",
-      "target": "src_utils_scrollstoryengine_scrollstoryengine_initparallaxcards",
-      "confidence_score": 1.0
+      "target": "src_utils_scrollstoryengine_scrollstoryengine_initparallaxcards"
     },
     {
       "relation": "method",
@@ -20915,9 +21159,9 @@
       "source_location": "L193",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_utils_scrollstoryengine_scrollstoryengine",
-      "target": "src_utils_scrollstoryengine_scrollstoryengine_initroomsstory",
-      "confidence_score": 1.0
+      "target": "src_utils_scrollstoryengine_scrollstoryengine_initroomsstory"
     },
     {
       "relation": "method",
@@ -20926,9 +21170,9 @@
       "source_location": "L61",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_utils_scrollstoryengine_scrollstoryengine",
-      "target": "src_utils_scrollstoryengine_scrollstoryengine_initvelocitymarquee",
-      "confidence_score": 1.0
+      "target": "src_utils_scrollstoryengine_scrollstoryengine_initvelocitymarquee"
     },
     {
       "relation": "calls",
@@ -20938,9 +21182,9 @@
       "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_utils_scrollstoryengine_scrollstoryengine_inithomepagestory",
-      "target": "src_utils_scrollstoryengine_scrollstoryengine_cleanup",
-      "confidence_score": 1.0
+      "target": "src_utils_scrollstoryengine_scrollstoryengine_cleanup"
     },
     {
       "relation": "calls",
@@ -20950,9 +21194,9 @@
       "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_utils_scrollstoryengine_scrollstoryengine_inithomepagestory",
-      "target": "src_utils_scrollstoryengine_scrollstoryengine_initheritagestory",
-      "confidence_score": 1.0
+      "target": "src_utils_scrollstoryengine_scrollstoryengine_initheritagestory"
     },
     {
       "relation": "calls",
@@ -20962,9 +21206,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_utils_scrollstoryengine_scrollstoryengine_inithomepagestory",
-      "target": "src_utils_scrollstoryengine_scrollstoryengine_initherostory",
-      "confidence_score": 1.0
+      "target": "src_utils_scrollstoryengine_scrollstoryengine_initherostory"
     },
     {
       "relation": "calls",
@@ -20974,9 +21218,9 @@
       "source_location": "L44",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_utils_scrollstoryengine_scrollstoryengine_inithomepagestory",
-      "target": "src_utils_scrollstoryengine_scrollstoryengine_initmousetilt",
-      "confidence_score": 1.0
+      "target": "src_utils_scrollstoryengine_scrollstoryengine_initmousetilt"
     },
     {
       "relation": "calls",
@@ -20986,9 +21230,9 @@
       "source_location": "L41",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_utils_scrollstoryengine_scrollstoryengine_inithomepagestory",
-      "target": "src_utils_scrollstoryengine_scrollstoryengine_initparallaxcards",
-      "confidence_score": 1.0
+      "target": "src_utils_scrollstoryengine_scrollstoryengine_initparallaxcards"
     },
     {
       "relation": "calls",
@@ -20998,9 +21242,9 @@
       "source_location": "L35",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_utils_scrollstoryengine_scrollstoryengine_inithomepagestory",
-      "target": "src_utils_scrollstoryengine_scrollstoryengine_initroomsstory",
-      "confidence_score": 1.0
+      "target": "src_utils_scrollstoryengine_scrollstoryengine_initroomsstory"
     },
     {
       "relation": "calls",
@@ -21010,9 +21254,9 @@
       "source_location": "L47",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_utils_scrollstoryengine_scrollstoryengine_inithomepagestory",
-      "target": "src_utils_scrollstoryengine_scrollstoryengine_initvelocitymarquee",
-      "confidence_score": 1.0
+      "target": "src_utils_scrollstoryengine_scrollstoryengine_initvelocitymarquee"
     },
     {
       "relation": "contains",
@@ -21586,18 +21830,6 @@
       "context": "call",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
-      "source_file": "app/Core/Validator.php",
-      "source_location": "L47",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_core_validator_validator_daterange",
-      "target": "self"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
       "source_file": "app/Features/Auth/AuthService.php",
       "source_location": "L86",
       "weight": 1.0,
@@ -21784,132 +22016,6 @@
       "_origin": "ast",
       "source": "vendor_hybridauth_hybridauth_tests_storage_sessiontest_sessiontest_testcleardatabulk",
       "target": "self"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Core/Validator.php",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "app_core_validator",
-      "target": "app_core_validator_validator"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Booking/Actions/CreateBookingAction.php",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "app_features_booking_actions_createbookingaction",
-      "target": "app_core_validator"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Features/Rooms/Actions/GetRoomsAction.php",
-      "source_location": "L8",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "app_features_rooms_actions_getroomsaction",
-      "target": "app_core_validator"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/run-exhaustive-tests.php",
-      "source_location": "L12",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_run_exhaustive_tests",
-      "target": "app_core_validator"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Core/Validator.php",
-      "source_location": "L39",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "app_core_validator_validator",
-      "target": "app_core_validator_validator_daterange"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Core/Validator.php",
-      "source_location": "L68",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "app_core_validator_validator",
-      "target": "app_core_validator_validator_email"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Core/Validator.php",
-      "source_location": "L92",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "app_core_validator_validator",
-      "target": "app_core_validator_validator_isrealdate"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Core/Validator.php",
-      "source_location": "L81",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "app_core_validator_validator",
-      "target": "app_core_validator_validator_positiveint"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Core/Validator.php",
-      "source_location": "L19",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "app_core_validator_validator",
-      "target": "app_core_validator_validator_requirefields"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "app/Features/Booking/Actions/CreateBookingAction.php",
-      "source_location": "L70",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_booking_actions_createbookingaction_createbookingaction_invoke",
-      "target": "app_core_validator_validator"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "app/Features/Rooms/Actions/GetRoomsAction.php",
-      "source_location": "L37",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "app_features_rooms_actions_getroomsaction_getroomsaction_invoke",
-      "target": "app_core_validator_validator"
     },
     {
       "relation": "imports",
@@ -22679,18 +22785,6 @@
       "_origin": "ast",
       "confidence_score": 1.0,
       "source": "public_index",
-      "target": "app_features_rooms_actions_getroomsaction"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/run-exhaustive-tests.php",
-      "source_location": "L14",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_run_exhaustive_tests",
       "target": "app_features_rooms_actions_getroomsaction"
     },
     {
@@ -24270,18 +24364,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "scripts/run-exhaustive-tests.php",
-      "source_location": "L17",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_run_exhaustive_tests",
-      "target": "channelmanagerportinterface"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "tests/Unit/Features/HandleMercadoPagoWebhookActionTest.php",
       "source_location": "L13",
       "weight": 1.0,
@@ -24477,18 +24559,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "scripts/run-exhaustive-tests.php",
-      "source_location": "L16",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_run_exhaustive_tests",
-      "target": "paymentgatewayportinterface"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "tests/Unit/Features/HandleMercadoPagoWebhookActionTest.php",
       "source_location": "L12",
       "weight": 1.0,
@@ -24620,18 +24690,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "scripts/run-exhaustive-tests.php",
-      "source_location": "L18",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_run_exhaustive_tests",
-      "target": "app_features_shared_adapters_qloappadapter"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "tests/live-realtime-verification.php",
       "source_location": "L20",
       "weight": 1.0,
@@ -24738,18 +24796,6 @@
       "_origin": "ast",
       "confidence_score": 1.0,
       "source": "app_features_shared_adapters_qloappadapter_qloappadapter",
-      "target": "pmsportinterface"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/run-exhaustive-tests.php",
-      "source_location": "L15",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_run_exhaustive_tests",
       "target": "pmsportinterface"
     },
     {
@@ -26820,18 +26866,6 @@
       "_origin": "ast",
       "confidence_score": 1.0,
       "source": "app_features_health_actions_healthcheckaction",
-      "target": "app_core_database"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/run-exhaustive-tests.php",
-      "source_location": "L10",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_run_exhaustive_tests",
       "target": "app_core_database"
     },
     {
@@ -31089,18 +31123,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "scripts/run-exhaustive-tests.php",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_run_exhaustive_tests",
-      "target": "app_core_bookingstatus"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "scripts/test_endpoints.php",
       "source_location": "L20",
       "weight": 1.0,
@@ -31234,18 +31256,6 @@
       "confidence_score": 1.0,
       "source": "app_core_httpexception",
       "target": "exception"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/run-exhaustive-tests.php",
-      "source_location": "L13",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_run_exhaustive_tests",
-      "target": "app_core_httpexception"
     },
     {
       "relation": "method",
@@ -33648,28 +33658,6 @@
       "confidence_score": 1.0,
       "source": "scripts_dev",
       "target": "scripts_dev_rootdir"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/run-exhaustive-tests.php",
-      "source_location": "L27",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_run_exhaustive_tests",
-      "target": "scripts_run_exhaustive_tests_asserttest"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "scripts/run-exhaustive-tests.php",
-      "source_location": "L158",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "scripts_run_exhaustive_tests",
-      "target": "scripts_run_exhaustive_tests_httpget"
     },
     {
       "relation": "contains",
@@ -44626,5 +44614,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "3939c64e2a5ad0ee9556dc293b312831781b0e6b"
+  "built_at_commit": "54664f0770045eb04a4397c582b1f3860a344365"
 }

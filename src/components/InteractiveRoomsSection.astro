@@ -50,12 +50,12 @@ const roomsWithPhotos = await Promise.all(
     </div>
 
     <!-- Accordion Layout with Viewport-Constrained Height -->
-    <div class="flex flex-col lg:flex-row h-[550px] lg:h-[500px] max-h-[62vh] w-full gap-2 lg:gap-4 animate-on-scroll">
+    <div class="flex flex-col lg:flex-row h-[650px] lg:h-[500px] max-h-[62vh] w-full gap-2 lg:gap-4 animate-on-scroll">
       {roomsWithPhotos.map((room) => (
         <a
           href={getRelativeLocaleUrl(lang, `rooms/${room.slug}`)}
           data-astro-prefetch="tap"
-          class="room-accordion-item relative group flex-1 hover:flex-[3] transition-[flex] duration-700 ease-in-out overflow-hidden rounded-2xl border border-black/5 dark:border-white/5 shadow-xl bg-surface-dark cursor-pointer block"
+          class="room-accordion-item relative group flex-1 hover:flex-[3] transition-[flex] will-change-[flex] duration-700 ease-in-out overflow-hidden rounded-2xl border border-black/5 dark:border-white/5 shadow-xl bg-surface-dark cursor-pointer block"
         >
           <!-- Background Image -->
           {room.photo ? (
@@ -80,7 +80,7 @@ const roomsWithPhotos = await Promise.all(
           <div class="absolute inset-0 p-6 sm:p-8 flex flex-col justify-end">
             <!-- Non-hovered state text (Vertical on Desktop, Horizontal on Mobile) -->
             <div class="lg:-rotate-90 lg:origin-bottom-left lg:absolute lg:bottom-12 lg:left-14 whitespace-nowrap lg:group-hover:opacity-0 transition-opacity duration-300">
-               <h3 class="font-display text-2xl sm:text-3xl text-white tracking-wide shadow-black/50 drop-shadow-md">
+               <h3 class="font-display text-2xl sm:text-3xl text-white tracking-wide shadow-black/50 drop-shadow-md max-w-[220px] truncate">
                  {room.name[lang]}
                </h3>
             </div>
