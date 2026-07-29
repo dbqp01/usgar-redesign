@@ -10,6 +10,8 @@ if (PHP_SAPI !== 'cli') {
 $vendorAutoload = dirname(__DIR__) . '/vendor/autoload.php';
 if (file_exists($vendorAutoload)) {
     require_once $vendorAutoload;
+} elseif (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
 }
 
 // Cargar el Autoloader personalizado (Compatibilidad nativa con Hostinger sin Composer)
