@@ -75,7 +75,8 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             'payer' => [
                 'name'    => $firstName,
                 'surname' => $lastName,
-                'email'   => $guestEmail,
+                // Omitimos el email. En Sandbox de Mercado Pago, enviar un email distinto 
+                // al del test user que hace login genera un bucle de redirecciones (ERR_TOO_MANY_REDIRECTS).
             ],
             'external_reference' => $cartId,
             'back_urls' => [
@@ -95,7 +96,6 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         try {
             $idempotencyKey = 'pref_' . $cartId . '_' . time();
             MercadoPagoConfig::setAccessToken($this->accessToken);
-            MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
             
             $client = new PreferenceClient();
             $requestOptions = new RequestOptions();
@@ -196,7 +196,6 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
 
         try {
             MercadoPagoConfig::setAccessToken($this->accessToken);
-            MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
             $client = new PaymentClient();
             $requestOptions = new RequestOptions();
             $requestOptions->setConnectionTimeout(10000); // 10s
