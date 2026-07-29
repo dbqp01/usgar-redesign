@@ -70,7 +70,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
                 'description' => "{$nights} noches ({$checkIn} → {$checkOut})",
                 'quantity'    => 1,
                 'unit_price'  => (float) round($totalPrice, 2),
-                'currency_id' => 'USD',
+                'currency_id' => Config::get('MERCADO_PAGO_CURRENCY', 'USD'),
             ]],
             'payer' => [
                 'name'    => $firstName,
@@ -93,11 +93,14 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         }
 
         try {
-            $idempotencyKey = 'pref_' . $cartId;
+            $idempotencyKey = 'pref_' . $cartId . '_' . time();
             MercadoPagoConfig::setAccessToken($this->accessToken);
+            MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
+            
             $client = new PreferenceClient();
             $requestOptions = new RequestOptions();
             $requestOptions->setCustomHeaders(["X-Idempotency-Key: {$idempotencyKey}"]);
+            $requestOptions->setConnectionTimeout(10000); // 10s
             
             $preference = $client->create($payload, $requestOptions);
 
@@ -193,8 +196,12 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
 
         try {
             MercadoPagoConfig::setAccessToken($this->accessToken);
+            MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
             $client = new PaymentClient();
-            $payment = $client->get((int)$paymentId);
+            $requestOptions = new RequestOptions();
+            $requestOptions->setConnectionTimeout(10000); // 10s
+            
+            $payment = $client->get((int)$paymentId, $requestOptions);
 
             if (!$payment) {
                 Logger::error("MercadoPagoAdapter: Error al obtener pago.");

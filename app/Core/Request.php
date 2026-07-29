@@ -132,13 +132,28 @@ class Request {
 
     private function extractHeaders(): array {
         $headers = [];
+        
+        // 1. Fallback primario para entornos FastCGI (LiteSpeed/Apache) que omiten headers en $_SERVER
+        if (function_exists('getallheaders')) {
+            $all = getallheaders();
+            if (is_array($all)) {
+                foreach ($all as $k => $v) {
+                    $headers[strtolower((string)$k)] = (string)$v;
+                }
+            }
+        }
+
+        // 2. Procesamiento estándar de $_SERVER
         foreach ($_SERVER as $name => $value) {
             if (str_starts_with($name, 'HTTP_')) {
                 $key = strtolower(str_replace('_', '-', substr($name, 5)));
-                $headers[$key] = $value;
-            } elseif ($name === 'CONTENT_TYPE') {
+                // No sobreescribir si ya lo capturó getallheaders()
+                if (!isset($headers[$key])) {
+                    $headers[$key] = $value;
+                }
+            } elseif ($name === 'CONTENT_TYPE' && !isset($headers['content-type'])) {
                 $headers['content-type'] = $value;
-            } elseif ($name === 'CONTENT_LENGTH') {
+            } elseif ($name === 'CONTENT_LENGTH' && !isset($headers['content-length'])) {
                 $headers['content-length'] = $value;
             }
         }

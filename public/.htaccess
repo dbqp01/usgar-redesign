@@ -12,6 +12,13 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^api/(.*)$ index.php [L,QSA]
 
+# Fix para Hostinger/FastCGI: Preservar cabeceras personalizadas que Apache suele omitir
+<IfModule mod_env.c>
+    SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+    SetEnvIf X-Signature "(.*)" HTTP_X_SIGNATURE=$1
+    SetEnvIf X-Request-Id "(.*)" HTTP_X_REQUEST_ID=$1
+</IfModule>
+
 <IfModule mod_headers.c>
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"

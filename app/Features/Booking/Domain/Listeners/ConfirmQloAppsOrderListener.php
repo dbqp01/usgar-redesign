@@ -36,17 +36,30 @@ class ConfirmQloAppsOrderListener implements ListenerInterface {
 
         Logger::info("ConfirmQloAppsOrderListener: Procesando confirmación en QloApps para Cart ID {$cartId} (Monto: {$amount})");
 
-        try {
-            $orderResult = $this->pmsAdapter->confirmOrder($cartId, $amount, $guestName, $guestEmail);
-            Logger::info("ConfirmQloAppsOrderListener: Orden generada en QloApps exitosamente para Cart ID {$cartId}", [
-                'order_result' => $orderResult
-            ]);
-        } catch (Exception $e) {
-            Logger::error("ConfirmQloAppsOrderListener Error al confirmar orden en QloApps PMS: " . $e->getMessage(), [
-                'cart_id'    => $cartId,
-                'payment_id' => $paymentId,
-            ]);
-            throw $e;
+        $maxRetries = 3;
+        $attempt = 0;
+        $success = false;
+
+        while ($attempt < $maxRetries && !$success) {
+            $attempt++;
+            try {
+                $orderResult = $this->pmsAdapter->confirmOrder($cartId, $amount, $guestName, $guestEmail);
+                Logger::info("ConfirmQloAppsOrderListener: Orden generada en QloApps exitosamente para Cart ID {$cartId} (Intento {$attempt})", [
+                    'order_result' => $orderResult
+                ]);
+                $success = true;
+            } catch (Exception $e) {
+                Logger::error("ConfirmQloAppsOrderListener Error al confirmar orden en QloApps PMS (Intento {$attempt}/{$maxRetries}): " . $e->getMessage(), [
+                    'cart_id'    => $cartId,
+                    'payment_id' => $paymentId,
+                ]);
+                
+                if ($attempt >= $maxRetries) {
+                    throw $e;
+                }
+                // Backoff exponencial simple: 1s, 2s, 4s...
+                sleep(2 ** ($attempt - 1));
+            }
         }
     }
 }

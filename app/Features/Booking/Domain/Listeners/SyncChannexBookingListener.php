@@ -47,26 +47,40 @@ class SyncChannexBookingListener implements ListenerInterface {
 
         Logger::info("SyncChannexBookingListener: Notificando reserva a Channex para Cart ID {$cartId}");
 
-        try {
-            $channexResult = $this->channexAdapter->createBooking(
-                $cartId,
-                $checkIn,
-                $checkOut,
-                $idRoomType,
-                $amount,
-                $guestName,
-                $guestEmail,
-                $guestPhone,
-                $adults
-            );
+        $maxRetries = 3;
+        $attempt = 0;
+        $success = false;
 
-            Logger::info("SyncChannexBookingListener: Reserva sincronizada en Channex exitosamente para Cart ID {$cartId}", [
-                'channex_result' => $channexResult
-            ]);
-        } catch (Exception $e) {
-            Logger::error("SyncChannexBookingListener Error al sincronizar reserva en Channex: " . $e->getMessage(), [
-                'cart_id' => $cartId,
-            ]);
+        while ($attempt < $maxRetries && !$success) {
+            $attempt++;
+            try {
+                $channexResult = $this->channexAdapter->createBooking(
+                    $cartId,
+                    $checkIn,
+                    $checkOut,
+                    $idRoomType,
+                    $amount,
+                    $guestName,
+                    $guestEmail,
+                    $guestPhone,
+                    $adults
+                );
+
+                Logger::info("SyncChannexBookingListener: Reserva sincronizada en Channex exitosamente para Cart ID {$cartId} (Intento {$attempt})", [
+                    'channex_result' => $channexResult
+                ]);
+                $success = true;
+            } catch (Exception $e) {
+                Logger::error("SyncChannexBookingListener Error al sincronizar reserva en Channex (Intento {$attempt}/{$maxRetries}): " . $e->getMessage(), [
+                    'cart_id' => $cartId,
+                ]);
+                
+                if ($attempt >= $maxRetries) {
+                    throw $e;
+                }
+                // Backoff exponencial simple
+                sleep(2 ** ($attempt - 1));
+            }
         }
     }
 }

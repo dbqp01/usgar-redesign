@@ -40,6 +40,45 @@ class Response {
     }
 
     /**
+     * Envia una respuesta JSON y cierra la conexión HTTP con el cliente sin detener el script PHP.
+     * Ideal para webhooks en entornos FastCGI, permitiendo tareas pesadas en background.
+     */
+    public static function jsonAsync(array $data, int $statusCode = 200): void {
+        if (ob_get_length()) {
+            ob_clean();
+        }
+
+        if (!headers_sent()) {
+            http_response_code($statusCode);
+            header('Content-Type: application/json; charset=utf-8');
+            header('Connection: close');
+        }
+
+        try {
+            $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+            // Si no hay fastcgi_finish_request, enviamos Content-Length para ayudar a que el cliente cierre
+            if (!function_exists('fastcgi_finish_request') && !headers_sent()) {
+                header('Content-Length: ' . strlen($json));
+            }
+            echo $json;
+        } catch (\JsonException $e) {
+            Logger::error('[Response] JSON encode error async: ' . $e->getMessage());
+            echo '{"success":false}';
+        }
+
+        // Vaciar todos los búferes de salida
+        while (ob_get_level() > 0) {
+            ob_end_flush();
+        }
+        flush();
+
+        // Si usamos FPM/LiteSpeed, esto cierra la conexión instantáneamente.
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        }
+    }
+
+    /**
      * Envia una respuesta de error uniforme.
      */
     public static function error(string $message, int $statusCode = 500, string $code = 'ERROR', array $details = []): void {

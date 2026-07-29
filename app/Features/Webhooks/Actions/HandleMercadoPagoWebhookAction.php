@@ -153,6 +153,7 @@ class HandleMercadoPagoWebhookAction {
 
         $status = $paymentDetails['status'] ?? 'pending';
         $cartId = $paymentDetails['external_reference'] ?? null;
+        $transactionAmount = (float)($paymentDetails['transaction_amount'] ?? 0.0);
 
         if ($status !== 'approved' || !$cartId) {
             Logger::info("HandleMercadoPagoWebhookAction: Pago ID {$paymentIdStr} tiene estado '{$status}'. Omitiendo confirmacion.");
@@ -184,14 +185,33 @@ class HandleMercadoPagoWebhookAction {
                 return;
             }
 
+            // 5.5 VALIDACION DE SEGURIDAD ESTRICTA (Amount Mismatch)
+            $expectedAmount = (float)($hold['price_snapshot'] ?? 0.0);
+            if ($transactionAmount < $expectedAmount) {
+                Logger::error("HandleMercadoPagoWebhookAction ALERTA FRAUDE: Monto cobrado ({$transactionAmount}) es menor al esperado ({$expectedAmount}) para Cart ID {$cartId}");
+                $this->pdo->rollBack();
+                $this->bookingRepo->updateStatus((string)$cartId, 'fraud_review');
+                Response::error("El monto de la transacción no coincide con el valor de la reserva.", 400);
+                return;
+            }
+
             // Marcar reserva como pagada en MySQL local y registrar idempotencia
             $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::Paid->value);
             $this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, 'approved');
 
             $this->pdo->commit();
             Logger::info("HandleMercadoPagoWebhookAction: Transaccion en BD local confirmada para Cart ID {$cartId}");
+            
+            // 6. CERRAR CONEXION HTTP TEMPRANAMENTE (Evitar timeout de Mercado Pago)
+            // Se responde 200 OK inmediatamente a MP para que no reintente
+            Response::jsonAsync([
+                'success' => true,
+                'cart_id' => $cartId,
+                'status'  => 'approved',
+                'message' => 'Payment processed locally. Dispatching external sync.'
+            ]);
 
-            // 6. Emision de Evento de Dominio Desacoplado
+            // 7. Emision de Evento de Dominio Desacoplado (Ahora ejecutado en Background)
             $amount = (float)($hold['price_snapshot'] ?? 0.0);
             
             $event = new BookingPaidEvent(
@@ -209,22 +229,14 @@ class HandleMercadoPagoWebhookAction {
                 $this->eventDispatcher->dispatch($event);
             } catch (Exception $e) {
                 Logger::error("HandleMercadoPagoWebhookAction: Fallo en integracion externa durante la dispatch del evento: " . $e->getMessage());
-                // En Hostinger, actualizar inmediatamente a manual_review en MySQL (<5ms)
+                // En background, actualizar a manual_review si los reintentos locales fallaron
                 $this->bookingRepo->updateStatus((string)$cartId, 'manual_review');
-                Response::json([
-                    'success' => true,
-                    'status'  => 'manual_review',
-                    'message' => 'Payment recorded, but external PMS sync flagged for manual review.'
-                ]);
+                // Nota: La respuesta HTTP 200 ya fue enviada a MP, no podemos usar Response::json() aquí.
                 return;
             }
 
-            Response::json([
-                'success' => true,
-                'cart_id' => $cartId,
-                'status'  => 'approved',
-                'message' => 'Payment processed and booking confirmed.'
-            ]);
+            // Terminamos el script en background
+            return;
 
         } catch (Exception $e) {
             if ($this->pdo->inTransaction()) {
