@@ -10,10 +10,10 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "id": "src_components_faqsection",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../components/faqsection.astro"
+      "norm_label": "../components/faqsection.astro",
+      "id": "src_components_faqsection"
     },
     {
       "label": "t",
@@ -21,10 +21,10 @@
       "source_file": "src/components/FAQSection.astro",
       "source_location": "L15",
       "_origin": "ast",
-      "id": "src_components_faqsection_t",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "t"
+      "norm_label": "t",
+      "id": "src_components_faqsection_t"
     },
     {
       "label": "astro:assets",
@@ -32,10 +32,10 @@
       "source_file": "astro:assets",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "astro_assets",
       "community": 475,
       "community_name": "../../book/success.astro",
-      "norm_label": "astro:assets"
+      "norm_label": "astro:assets",
+      "id": "astro_assets"
     },
     {
       "label": "../content/faq/faq.json",
@@ -43,10 +43,10 @@
       "source_file": "src/content/faq/faq.json",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_content_faq_faq_json",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../content/faq/faq.json"
+      "norm_label": "../content/faq/faq.json",
+      "id": "c_users_akim_desktop_usgar_redesign_src_content_faq_faq_json"
     },
     {
       "label": "../i18n/utils",
@@ -54,10 +54,10 @@
       "source_file": "src/i18n/utils",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "community": 4,
-      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
-      "norm_label": "../i18n/utils"
+      "community": 33,
+      "community_name": "Cryptography Security Audit",
+      "norm_label": "../i18n/utils",
+      "id": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "label": "../assets/hotel/hero-slide-recepcion.jpg",
@@ -65,10 +65,10 @@
       "source_file": "src/assets/hotel/hero-slide-recepcion.jpg",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_recepcion_jpg",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../assets/hotel/hero-slide-recepcion.jpg"
+      "norm_label": "../assets/hotel/hero-slide-recepcion.jpg",
+      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_recepcion_jpg"
     },
     {
       "label": "../data/settings",
@@ -76,10 +76,10 @@
       "source_file": "src/data/settings",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_data_settings",
-      "community": 484,
-      "community_name": "../layouts/Layout.astro",
-      "norm_label": "../data/settings"
+      "community": 475,
+      "community_name": "../../book/success.astro",
+      "norm_label": "../data/settings",
+      "id": "c_users_akim_desktop_usgar_redesign_src_data_settings"
     },
     {
       "label": "../components/InteractiveRoomsSection.astro",
@@ -88,10 +88,10 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "id": "src_components_interactiveroomssection",
       "community": 8,
       "community_name": "Java JNDI Injection - JNDI \u6ce8\u5165\u5b8c\u6574\u5ba1\u8ba1\u89c4\u5219",
-      "norm_label": "../components/interactiveroomssection.astro"
+      "norm_label": "../components/interactiveroomssection.astro",
+      "id": "src_components_interactiveroomssection"
     },
     {
       "label": "astro:i18n",
@@ -99,10 +99,10 @@
       "source_file": "astro:i18n",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "astro_i18n",
       "community": 33,
       "community_name": "Cryptography Security Audit",
-      "norm_label": "astro:i18n"
+      "norm_label": "astro:i18n",
+      "id": "astro_i18n"
     },
     {
       "label": "../data/rooms",
@@ -110,10 +110,10 @@
       "source_file": "src/data/rooms",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_data_rooms",
       "community": 33,
       "community_name": "Cryptography Security Audit",
-      "norm_label": "../data/rooms"
+      "norm_label": "../data/rooms",
+      "id": "c_users_akim_desktop_usgar_redesign_src_data_rooms"
     },
     {
       "label": "../utils/helpers",
@@ -121,10 +121,10 @@
       "source_file": "src/utils/helpers",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_utils_helpers",
       "community": 33,
       "community_name": "Cryptography Security Audit",
-      "norm_label": "../utils/helpers"
+      "norm_label": "../utils/helpers",
+      "id": "c_users_akim_desktop_usgar_redesign_src_utils_helpers"
     },
     {
       "label": "../components/MapSection.astro",
@@ -133,10 +133,10 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "id": "src_components_mapsection",
-      "community": 484,
-      "community_name": "../layouts/Layout.astro",
-      "norm_label": "../components/mapsection.astro"
+      "community": 115,
+      "community_name": "../components/MapSection.astro",
+      "norm_label": "../components/mapsection.astro",
+      "id": "src_components_mapsection"
     },
     {
       "label": "String()",
@@ -144,10 +144,10 @@
       "source_file": "src/components/MapSection.astro",
       "source_location": "L30",
       "_origin": "ast",
-      "id": "src_components_mapsection_string",
-      "community": 484,
-      "community_name": "../layouts/Layout.astro",
-      "norm_label": "string()"
+      "community": 115,
+      "community_name": "../components/MapSection.astro",
+      "norm_label": "string()",
+      "id": "src_components_mapsection_string"
     },
     {
       "label": "leaflet",
@@ -155,10 +155,10 @@
       "source_file": "leaflet",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "leaflet",
       "community": 5,
       "community_name": "Best practices",
-      "norm_label": "leaflet"
+      "norm_label": "leaflet",
+      "id": "leaflet"
     },
     {
       "label": "leaflet/dist/leaflet.css",
@@ -166,10 +166,10 @@
       "source_file": "leaflet/dist/leaflet.css",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "leaflet_css",
-      "community": 484,
-      "community_name": "../layouts/Layout.astro",
-      "norm_label": "leaflet/dist/leaflet.css"
+      "community": 115,
+      "community_name": "../components/MapSection.astro",
+      "norm_label": "leaflet/dist/leaflet.css",
+      "id": "leaflet_css"
     },
     {
       "label": "../assets/logos/Logo usgar isotipo.png",
@@ -177,10 +177,10 @@
       "source_file": "src/assets/logos/Logo usgar isotipo.png",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_assets_logos_logo_usgar_isotipo_png",
-      "community": 484,
-      "community_name": "../layouts/Layout.astro",
-      "norm_label": "../assets/logos/logo usgar isotipo.png"
+      "community": 115,
+      "community_name": "../components/MapSection.astro",
+      "norm_label": "../assets/logos/logo usgar isotipo.png",
+      "id": "c_users_akim_desktop_usgar_redesign_src_assets_logos_logo_usgar_isotipo_png"
     },
     {
       "label": "../components/Navbar.astro",
@@ -189,10 +189,10 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "id": "src_components_navbar",
       "community": 475,
       "community_name": "../../book/success.astro",
-      "norm_label": "../components/navbar.astro"
+      "norm_label": "../components/navbar.astro",
+      "id": "src_components_navbar"
     },
     {
       "label": "getLocaleUrl()",
@@ -200,10 +200,10 @@
       "source_file": "src/components/Navbar.astro",
       "source_location": "L21",
       "_origin": "ast",
-      "id": "src_components_navbar_getlocaleurl",
       "community": 475,
       "community_name": "../../book/success.astro",
-      "norm_label": "getlocaleurl()"
+      "norm_label": "getlocaleurl()",
+      "id": "src_components_navbar_getlocaleurl"
     },
     {
       "label": "../assets/logos/Logo usgar morado.png",
@@ -211,21 +211,10 @@
       "source_file": "src/assets/logos/Logo usgar morado.png",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_assets_logos_logo_usgar_morado_png",
       "community": 475,
       "community_name": "../../book/success.astro",
-      "norm_label": "../assets/logos/logo usgar morado.png"
-    },
-    {
-      "label": "../assets/logos/Logo usgar.png",
-      "file_type": "code",
-      "source_file": "src/assets/logos/Logo usgar.png",
-      "confidence": "EXTRACTED",
-      "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_assets_logos_logo_usgar_png",
-      "community": 475,
-      "community_name": "../../book/success.astro",
-      "norm_label": "../assets/logos/logo usgar.png"
+      "norm_label": "../assets/logos/logo usgar morado.png",
+      "id": "c_users_akim_desktop_usgar_redesign_src_assets_logos_logo_usgar_morado_png"
     },
     {
       "label": "../utils/auth-client",
@@ -233,10 +222,10 @@
       "source_file": "src/utils/auth-client",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_utils_auth_client",
       "community": 475,
       "community_name": "../../book/success.astro",
-      "norm_label": "../utils/auth-client"
+      "norm_label": "../utils/auth-client",
+      "id": "c_users_akim_desktop_usgar_redesign_src_utils_auth_client"
     },
     {
       "label": "../components/ReviewMarquee.astro",
@@ -245,10 +234,10 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "id": "src_components_reviewmarquee",
       "community": 4,
       "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
-      "norm_label": "../components/reviewmarquee.astro"
+      "norm_label": "../components/reviewmarquee.astro",
+      "id": "src_components_reviewmarquee"
     },
     {
       "label": "../data/reviews",
@@ -256,10 +245,10 @@
       "source_file": "src/data/reviews",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_data_reviews",
       "community": 4,
       "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
-      "norm_label": "../data/reviews"
+      "norm_label": "../data/reviews",
+      "id": "c_users_akim_desktop_usgar_redesign_src_data_reviews"
     },
     {
       "label": "SVGIcons.astro",
@@ -267,10 +256,10 @@
       "source_file": "src/components/icons/SVGIcons.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_components_icons_svgicons",
       "community": 485,
       "community_name": "3.3 \u5173\u952e\u5b57\u7ed5\u8fc7",
-      "norm_label": "svgicons.astro"
+      "norm_label": "svgicons.astro",
+      "id": "src_components_icons_svgicons"
     },
     {
       "label": "rooms.ts",
@@ -278,10 +267,10 @@
       "source_file": "src/data/rooms.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_data_rooms",
       "community": 8,
       "community_name": "Java JNDI Injection - JNDI \u6ce8\u5165\u5b8c\u6574\u5ba1\u8ba1\u89c4\u5219",
-      "norm_label": "rooms.ts"
+      "norm_label": "rooms.ts",
+      "id": "src_data_rooms"
     },
     {
       "label": "AmenityLabel",
@@ -289,10 +278,10 @@
       "source_file": "src/data/rooms.ts",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "src_data_rooms_amenitylabel",
       "community": 8,
       "community_name": "Java JNDI Injection - JNDI \u6ce8\u5165\u5b8c\u6574\u5ba1\u8ba1\u89c4\u5219",
-      "norm_label": "amenitylabel"
+      "norm_label": "amenitylabel",
+      "id": "src_data_rooms_amenitylabel"
     },
     {
       "label": "Room",
@@ -300,10 +289,10 @@
       "source_file": "src/data/rooms.ts",
       "source_location": "L10",
       "_origin": "ast",
-      "id": "src_data_rooms_room",
       "community": 8,
       "community_name": "Java JNDI Injection - JNDI \u6ce8\u5165\u5b8c\u6574\u5ba1\u8ba1\u89c4\u5219",
-      "norm_label": "room"
+      "norm_label": "room",
+      "id": "src_data_rooms_room"
     },
     {
       "label": "rooms",
@@ -311,10 +300,10 @@
       "source_file": "src/data/rooms.ts",
       "source_location": "L27",
       "_origin": "ast",
-      "id": "src_data_rooms_rooms",
       "community": 8,
       "community_name": "Java JNDI Injection - JNDI \u6ce8\u5165\u5b8c\u6574\u5ba1\u8ba1\u89c4\u5219",
-      "norm_label": "rooms"
+      "norm_label": "rooms",
+      "id": "src_data_rooms_rooms"
     },
     {
       "label": "getRoomBySlug()",
@@ -322,10 +311,10 @@
       "source_file": "src/data/rooms.ts",
       "source_location": "L54",
       "_origin": "ast",
-      "id": "src_data_rooms_getroombyslug",
       "community": 8,
       "community_name": "Java JNDI Injection - JNDI \u6ce8\u5165\u5b8c\u6574\u5ba1\u8ba1\u89c4\u5219",
-      "norm_label": "getroombyslug()"
+      "norm_label": "getroombyslug()",
+      "id": "src_data_rooms_getroombyslug"
     },
     {
       "label": "../layouts/Layout.astro",
@@ -334,10 +323,10 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "id": "src_layouts_layout",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "../layouts/layout.astro"
+      "norm_label": "../layouts/layout.astro",
+      "id": "src_layouts_layout"
     },
     {
       "label": "t",
@@ -345,10 +334,10 @@
       "source_file": "src/layouts/Layout.astro",
       "source_location": "L24",
       "_origin": "ast",
-      "id": "src_layouts_layout_t",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "t"
+      "norm_label": "t",
+      "id": "src_layouts_layout_t"
     },
     {
       "label": "canonicalURL",
@@ -356,10 +345,10 @@
       "source_file": "src/layouts/Layout.astro",
       "source_location": "L35",
       "_origin": "ast",
-      "id": "src_layouts_layout_canonicalurl",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "canonicalurl"
+      "norm_label": "canonicalurl",
+      "id": "src_layouts_layout_canonicalurl"
     },
     {
       "label": "pathWithoutLocale",
@@ -367,10 +356,10 @@
       "source_file": "src/layouts/Layout.astro",
       "source_location": "L38",
       "_origin": "ast",
-      "id": "src_layouts_layout_pathwithoutlocale",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "pathwithoutlocale"
+      "norm_label": "pathwithoutlocale",
+      "id": "src_layouts_layout_pathwithoutlocale"
     },
     {
       "label": "enURL",
@@ -378,10 +367,10 @@
       "source_file": "src/layouts/Layout.astro",
       "source_location": "L41",
       "_origin": "ast",
-      "id": "src_layouts_layout_enurl",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "enurl"
+      "norm_label": "enurl",
+      "id": "src_layouts_layout_enurl"
     },
     {
       "label": "esURL",
@@ -389,10 +378,10 @@
       "source_file": "src/layouts/Layout.astro",
       "source_location": "L42",
       "_origin": "ast",
-      "id": "src_layouts_layout_esurl",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "esurl"
+      "norm_label": "esurl",
+      "id": "src_layouts_layout_esurl"
     },
     {
       "label": "frURL",
@@ -400,10 +389,10 @@
       "source_file": "src/layouts/Layout.astro",
       "source_location": "L43",
       "_origin": "ast",
-      "id": "src_layouts_layout_frurl",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "frurl"
+      "norm_label": "frurl",
+      "id": "src_layouts_layout_frurl"
     },
     {
       "label": "ptURL",
@@ -411,10 +400,10 @@
       "source_file": "src/layouts/Layout.astro",
       "source_location": "L44",
       "_origin": "ast",
-      "id": "src_layouts_layout_pturl",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "pturl"
+      "norm_label": "pturl",
+      "id": "src_layouts_layout_pturl"
     },
     {
       "label": "string",
@@ -422,10 +411,10 @@
       "source_file": "src/layouts/Layout.astro",
       "source_location": "L46",
       "_origin": "ast",
-      "id": "src_layouts_layout_string",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "string"
+      "norm_label": "string",
+      "id": "src_layouts_layout_string"
     },
     {
       "label": "astro:transitions",
@@ -433,10 +422,10 @@
       "source_file": "astro:transitions",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "astro_transitions",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "astro:transitions"
+      "norm_label": "astro:transitions",
+      "id": "astro_transitions"
     },
     {
       "label": "../components/Footer.astro",
@@ -444,10 +433,10 @@
       "source_file": "src/components/Footer.astro",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_components_footer_astro",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "../components/footer.astro"
+      "norm_label": "../components/footer.astro",
+      "id": "c_users_akim_desktop_usgar_redesign_src_components_footer_astro"
     },
     {
       "label": "../components/WhatsAppButton.astro",
@@ -455,10 +444,10 @@
       "source_file": "src/components/WhatsAppButton.astro",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_components_whatsappbutton_astro",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "../components/whatsappbutton.astro"
+      "norm_label": "../components/whatsappbutton.astro",
+      "id": "c_users_akim_desktop_usgar_redesign_src_components_whatsappbutton_astro"
     },
     {
       "label": "../components/MobileBookingBar.astro",
@@ -466,10 +455,10 @@
       "source_file": "src/components/MobileBookingBar.astro",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_components_mobilebookingbar_astro",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "../components/mobilebookingbar.astro"
+      "norm_label": "../components/mobilebookingbar.astro",
+      "id": "c_users_akim_desktop_usgar_redesign_src_components_mobilebookingbar_astro"
     },
     {
       "label": "../styles/global.css",
@@ -477,10 +466,10 @@
       "source_file": "src/styles/global.css",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_styles_global_css",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "../styles/global.css"
+      "norm_label": "../styles/global.css",
+      "id": "c_users_akim_desktop_usgar_redesign_src_styles_global_css"
     },
     {
       "label": "../components/ui/StatusBanner.astro",
@@ -488,10 +477,10 @@
       "source_file": "src/components/ui/StatusBanner.astro",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_components_ui_statusbanner_astro",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "../components/ui/statusbanner.astro"
+      "norm_label": "../components/ui/statusbanner.astro",
+      "id": "c_users_akim_desktop_usgar_redesign_src_components_ui_statusbanner_astro"
     },
     {
       "label": "../components/common/SmoothScroll.astro",
@@ -499,10 +488,10 @@
       "source_file": "src/components/common/SmoothScroll.astro",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_components_common_smoothscroll_astro",
       "community": 484,
       "community_name": "../layouts/Layout.astro",
-      "norm_label": "../components/common/smoothscroll.astro"
+      "norm_label": "../components/common/smoothscroll.astro",
+      "id": "c_users_akim_desktop_usgar_redesign_src_components_common_smoothscroll_astro"
     },
     {
       "label": "book.astro",
@@ -510,10 +499,10 @@
       "source_file": "src/pages/book.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_pages_book",
       "community": 8,
       "community_name": "Java JNDI Injection - JNDI \u6ce8\u5165\u5b8c\u6574\u5ba1\u8ba1\u89c4\u5219",
-      "norm_label": "book.astro"
+      "norm_label": "book.astro",
+      "id": "src_pages_book"
     },
     {
       "label": "updatePricing()",
@@ -521,10 +510,10 @@
       "source_file": "src/pages/book.astro",
       "source_location": "L539",
       "_origin": "ast",
-      "id": "src_pages_book_updatepricing",
       "community": 8,
       "community_name": "Java JNDI Injection - JNDI \u6ce8\u5165\u5b8c\u6574\u5ba1\u8ba1\u89c4\u5219",
-      "norm_label": "updatepricing()"
+      "norm_label": "updatepricing()",
+      "id": "src_pages_book_updatepricing"
     },
     {
       "label": "selectRoomCard()",
@@ -532,10 +521,10 @@
       "source_file": "src/pages/book.astro",
       "source_location": "L582",
       "_origin": "ast",
-      "id": "src_pages_book_selectroomcard",
       "community": 8,
       "community_name": "Java JNDI Injection - JNDI \u6ce8\u5165\u5b8c\u6574\u5ba1\u8ba1\u89c4\u5219",
-      "norm_label": "selectroomcard()"
+      "norm_label": "selectroomcard()",
+      "id": "src_pages_book_selectroomcard"
     },
     {
       "label": "applyUserData()",
@@ -543,10 +532,10 @@
       "source_file": "src/pages/book.astro",
       "source_location": "L856",
       "_origin": "ast",
-      "id": "src_pages_book_applyuserdata",
       "community": 8,
       "community_name": "Java JNDI Injection - JNDI \u6ce8\u5165\u5b8c\u6574\u5ba1\u8ba1\u89c4\u5219",
-      "norm_label": "applyuserdata()"
+      "norm_label": "applyuserdata()",
+      "id": "src_pages_book_applyuserdata"
     },
     {
       "label": "autoFillUser()",
@@ -554,10 +543,10 @@
       "source_file": "src/pages/book.astro",
       "source_location": "L871",
       "_origin": "ast",
-      "id": "src_pages_book_autofilluser",
       "community": 8,
       "community_name": "Java JNDI Injection - JNDI \u6ce8\u5165\u5b8c\u6574\u5ba1\u8ba1\u89c4\u5219",
-      "norm_label": "autofilluser()"
+      "norm_label": "autofilluser()",
+      "id": "src_pages_book_autofilluser"
     },
     {
       "label": "showError()",
@@ -565,10 +554,10 @@
       "source_file": "src/pages/book.astro",
       "source_location": "L895",
       "_origin": "ast",
-      "id": "src_pages_book_showerror",
       "community": 8,
       "community_name": "Java JNDI Injection - JNDI \u6ce8\u5165\u5b8c\u6574\u5ba1\u8ba1\u89c4\u5219",
-      "norm_label": "showerror()"
+      "norm_label": "showerror()",
+      "id": "src_pages_book_showerror"
     },
     {
       "label": "../services/bookingService",
@@ -576,10 +565,10 @@
       "source_file": "src/services/bookingService",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_services_bookingservice",
       "community": 8,
       "community_name": "Java JNDI Injection - JNDI \u6ce8\u5165\u5b8c\u6574\u5ba1\u8ba1\u89c4\u5219",
-      "norm_label": "../services/bookingservice"
+      "norm_label": "../services/bookingservice",
+      "id": "c_users_akim_desktop_usgar_redesign_src_services_bookingservice"
     },
     {
       "label": "@/i18n/utils",
@@ -587,10 +576,10 @@
       "source_file": "src/i18n/utils.ts",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
       "community": 4,
       "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
-      "norm_label": "@/i18n/utils"
+      "norm_label": "@/i18n/utils",
+      "id": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "label": "contact.astro",
@@ -598,10 +587,10 @@
       "source_file": "src/pages/contact.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_pages_contact",
-      "community": 484,
-      "community_name": "../layouts/Layout.astro",
-      "norm_label": "contact.astro"
+      "community": 115,
+      "community_name": "../components/MapSection.astro",
+      "norm_label": "contact.astro",
+      "id": "src_pages_contact"
     },
     {
       "label": "explore.astro",
@@ -609,10 +598,10 @@
       "source_file": "src/pages/explore.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_pages_explore",
-      "community": 496,
-      "community_name": "attractions.ts",
-      "norm_label": "explore.astro"
+      "community": 33,
+      "community_name": "Cryptography Security Audit",
+      "norm_label": "explore.astro",
+      "id": "src_pages_explore"
     },
     {
       "label": "applyFilter()",
@@ -620,10 +609,10 @@
       "source_file": "src/pages/explore.astro",
       "source_location": "L220",
       "_origin": "ast",
-      "id": "src_pages_explore_applyfilter",
-      "community": 496,
-      "community_name": "attractions.ts",
-      "norm_label": "applyfilter()"
+      "community": 33,
+      "community_name": "Cryptography Security Audit",
+      "norm_label": "applyfilter()",
+      "id": "src_pages_explore_applyfilter"
     },
     {
       "label": "../data/attractions",
@@ -631,10 +620,10 @@
       "source_file": "src/data/attractions",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_data_attractions",
       "community": 496,
       "community_name": "attractions.ts",
-      "norm_label": "../data/attractions"
+      "norm_label": "../data/attractions",
+      "id": "c_users_akim_desktop_usgar_redesign_src_data_attractions"
     },
     {
       "label": "index.astro",
@@ -642,10 +631,10 @@
       "source_file": "src/pages/index.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_pages_index",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "index.astro"
+      "norm_label": "index.astro",
+      "id": "src_pages_index"
     },
     {
       "label": "nextSlide()",
@@ -653,10 +642,10 @@
       "source_file": "src/pages/index.astro",
       "source_location": "L684",
       "_origin": "ast",
-      "id": "src_pages_index_nextslide",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "nextslide()"
+      "norm_label": "nextslide()",
+      "id": "src_pages_index_nextslide"
     },
     {
       "label": "startAutoPlay()",
@@ -664,10 +653,10 @@
       "source_file": "src/pages/index.astro",
       "source_location": "L688",
       "_origin": "ast",
-      "id": "src_pages_index_startautoplay",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "startautoplay()"
+      "norm_label": "startautoplay()",
+      "id": "src_pages_index_startautoplay"
     },
     {
       "label": "stopAutoPlay()",
@@ -675,10 +664,10 @@
       "source_file": "src/pages/index.astro",
       "source_location": "L693",
       "_origin": "ast",
-      "id": "src_pages_index_stopautoplay",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "stopautoplay()"
+      "norm_label": "stopautoplay()",
+      "id": "src_pages_index_stopautoplay"
     },
     {
       "label": "../components/BookingWidget.astro",
@@ -686,10 +675,10 @@
       "source_file": "src/components/BookingWidget.astro",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_components_bookingwidget_astro",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../components/bookingwidget.astro"
+      "norm_label": "../components/bookingwidget.astro",
+      "id": "c_users_akim_desktop_usgar_redesign_src_components_bookingwidget_astro"
     },
     {
       "label": "../components/ServiceGrid.astro",
@@ -697,10 +686,10 @@
       "source_file": "src/components/ServiceGrid.astro",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_components_servicegrid_astro",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../components/servicegrid.astro"
+      "norm_label": "../components/servicegrid.astro",
+      "id": "c_users_akim_desktop_usgar_redesign_src_components_servicegrid_astro"
     },
     {
       "label": "../components/AboutSection.astro",
@@ -708,10 +697,10 @@
       "source_file": "src/components/AboutSection.astro",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_components_aboutsection_astro",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../components/aboutsection.astro"
+      "norm_label": "../components/aboutsection.astro",
+      "id": "c_users_akim_desktop_usgar_redesign_src_components_aboutsection_astro"
     },
     {
       "label": "../components/HeritageSection.astro",
@@ -719,10 +708,10 @@
       "source_file": "src/components/HeritageSection.astro",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_components_heritagesection_astro",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../components/heritagesection.astro"
+      "norm_label": "../components/heritagesection.astro",
+      "id": "c_users_akim_desktop_usgar_redesign_src_components_heritagesection_astro"
     },
     {
       "label": "../components/GastronomySection.astro",
@@ -730,10 +719,10 @@
       "source_file": "src/components/GastronomySection.astro",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_components_gastronomysection_astro",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../components/gastronomysection.astro"
+      "norm_label": "../components/gastronomysection.astro",
+      "id": "c_users_akim_desktop_usgar_redesign_src_components_gastronomysection_astro"
     },
     {
       "label": "astro",
@@ -741,10 +730,10 @@
       "source_file": "astro",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "astro",
       "community": 496,
       "community_name": "attractions.ts",
-      "norm_label": "astro"
+      "norm_label": "astro",
+      "id": "astro"
     },
     {
       "label": "../assets/hotel/hero-slide-patio.jpg",
@@ -752,10 +741,10 @@
       "source_file": "src/assets/hotel/hero-slide-patio.jpg",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_patio_jpg",
       "community": 4,
       "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
-      "norm_label": "../assets/hotel/hero-slide-patio.jpg"
+      "norm_label": "../assets/hotel/hero-slide-patio.jpg",
+      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_patio_jpg"
     },
     {
       "label": "../assets/hotel/hero-slide-matrimonial.jpg",
@@ -763,10 +752,10 @@
       "source_file": "src/assets/hotel/hero-slide-matrimonial.jpg",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_matrimonial_jpg",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../assets/hotel/hero-slide-matrimonial.jpg"
+      "norm_label": "../assets/hotel/hero-slide-matrimonial.jpg",
+      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_matrimonial_jpg"
     },
     {
       "label": "../assets/hotel/hero-slide-cusco.jpg",
@@ -774,10 +763,10 @@
       "source_file": "src/assets/hotel/hero-slide-cusco.jpg",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_cusco_jpg",
       "community": 134,
       "community_name": ".NET/C# \u5b89\u5168\u5ba1\u8ba1\u8bed\u4e49\u63d0\u793a (Semantic Hints)",
-      "norm_label": "../assets/hotel/hero-slide-cusco.jpg"
+      "norm_label": "../assets/hotel/hero-slide-cusco.jpg",
+      "id": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_cusco_jpg"
     },
     {
       "label": "Validator.php",
@@ -796,8 +785,8 @@
       "source_file": "app/Core/Validator.php",
       "source_location": "L11",
       "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
+      "community": 112,
+      "community_name": "Validator",
       "norm_label": "validator",
       "id": "app_core_validator_validator"
     },
@@ -807,8 +796,8 @@
       "source_file": "app/Core/Validator.php",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
+      "community": 112,
+      "community_name": "Validator",
       "norm_label": ".requirefields()",
       "id": "app_core_validator_validator_requirefields"
     },
@@ -818,8 +807,8 @@
       "source_file": "app/Core/Validator.php",
       "source_location": "L39",
       "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
+      "community": 112,
+      "community_name": "Validator",
       "norm_label": ".daterange()",
       "id": "app_core_validator_validator_daterange"
     },
@@ -829,8 +818,8 @@
       "source_file": "app/Core/Validator.php",
       "source_location": "L81",
       "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
+      "community": 112,
+      "community_name": "Validator",
       "norm_label": ".email()",
       "id": "app_core_validator_validator_email"
     },
@@ -840,8 +829,8 @@
       "source_file": "app/Core/Validator.php",
       "source_location": "L94",
       "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
+      "community": 112,
+      "community_name": "Validator",
       "norm_label": ".positiveint()",
       "id": "app_core_validator_validator_positiveint"
     },
@@ -851,8 +840,8 @@
       "source_file": "app/Core/Validator.php",
       "source_location": "L105",
       "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
+      "community": 112,
+      "community_name": "Validator",
       "norm_label": ".isrealdate()",
       "id": "app_core_validator_validator_isrealdate"
     },
@@ -930,8 +919,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "community": 4,
-      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
+      "community": 33,
+      "community_name": "Cryptography Security Audit",
       "norm_label": "../components/bookingwidget.astro",
       "id": "src_components_bookingwidget"
     },
@@ -2253,8 +2242,8 @@
       "source_file": "app/Features/Shared/Adapters/ChannexAdapter.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "Real World Vulnerabilities Case Study",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": "channexadapter.php",
       "id": "app_features_shared_adapters_channexadapter"
     },
@@ -2275,8 +2264,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 85,
-      "community_name": "Sinks & Sources Reference",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": "channelmanagerportinterface",
       "id": "channelmanagerportinterface"
     },
@@ -2385,8 +2374,8 @@
       "source_file": "app/Features/Shared/Adapters/MercadoPagoAdapter.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 25,
-      "community_name": "PoC \u5206\u7c7b\u4e0e\u6a21\u677f",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": "mercadopagoadapter.php",
       "id": "app_features_shared_adapters_mercadopagoadapter"
     },
@@ -2407,8 +2396,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 25,
-      "community_name": "PoC \u5206\u7c7b\u4e0e\u6a21\u677f",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": "paymentgatewayportinterface",
       "id": "paymentgatewayportinterface"
     },
@@ -2495,8 +2484,8 @@
       "source_file": "app/Features/Shared/Adapters/QloAppAdapter.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 15,
-      "community_name": "\u52a8\u6001\u4ee3\u7801\u5ba1\u8ba1\u6307\u5357 (Dynamic Code Audit Guide)",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": "qloappadapter.php",
       "id": "app_features_shared_adapters_qloappadapter"
     },
@@ -2517,8 +2506,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 15,
-      "community_name": "\u52a8\u6001\u4ee3\u7801\u5ba1\u8ba1\u6307\u5357 (Dynamic Code Audit Guide)",
+      "community": 85,
+      "community_name": "Sinks & Sources Reference",
       "norm_label": "pmsportinterface",
       "id": "pmsportinterface"
     },
@@ -2627,8 +2616,8 @@
       "source_file": "app/Features/Shared/ChannexRoomMapper.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 3,
+      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
       "norm_label": "channexroommapper.php",
       "id": "app_features_shared_channexroommapper"
     },
@@ -2638,8 +2627,8 @@
       "source_file": "app/Features/Shared/ChannexRoomMapper.php",
       "source_location": "L13",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 3,
+      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
       "norm_label": "channexroommapper",
       "id": "app_features_shared_channexroommapper_channexroommapper"
     },
@@ -2649,8 +2638,8 @@
       "source_file": "app/Features/Shared/ChannexRoomMapper.php",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 3,
+      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
       "norm_label": ".__construct()",
       "id": "app_features_shared_channexroommapper_channexroommapper_construct"
     },
@@ -2660,8 +2649,8 @@
       "source_file": "app/Features/Shared/ChannexRoomMapper.php",
       "source_location": "L44",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 3,
+      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
       "norm_label": ".resolveroomtypeid()",
       "id": "app_features_shared_channexroommapper_channexroommapper_resolveroomtypeid"
     },
@@ -2671,8 +2660,8 @@
       "source_file": "app/Features/Shared/ChannexRoomMapper.php",
       "source_location": "L83",
       "_origin": "ast",
-      "community": 108,
-      "community_name": "ChannexRoomMapper",
+      "community": 3,
+      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
       "norm_label": ".getdefaultmapping()",
       "id": "app_features_shared_channexroommapper_channexroommapper_getdefaultmapping"
     },
@@ -2990,8 +2979,8 @@
       "source_file": "tests/channex-stress-harness.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 94,
+      "community_name": "HandleChannexWebhookAction.php",
       "norm_label": "channex-stress-harness.php",
       "id": "tests_channex_stress_harness"
     },
@@ -3001,8 +2990,8 @@
       "source_file": "tests/channex-stress-harness.php",
       "source_location": "L30",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 94,
+      "community_name": "HandleChannexWebhookAction.php",
       "norm_label": "asserttest()",
       "id": "tests_channex_stress_harness_asserttest"
     },
@@ -3122,8 +3111,8 @@
       "source_file": "app/Features/Auth/User.php",
       "source_location": "L21",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": "user",
       "id": "app_features_auth_user_user"
     },
@@ -3133,8 +3122,8 @@
       "source_file": "app/Features/Auth/User.php",
       "source_location": "L22",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": ".__construct()",
       "id": "app_features_auth_user_user_construct"
     },
@@ -3144,8 +3133,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": "pdo",
       "id": "pdo"
     },
@@ -3155,8 +3144,8 @@
       "source_file": "app/Features/Auth/User.php",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": ".ensuretableexists()",
       "id": "app_features_auth_user_user_ensuretableexists"
     },
@@ -3166,8 +3155,8 @@
       "source_file": "app/Features/Auth/User.php",
       "source_location": "L56",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": ".findbyemail()",
       "id": "app_features_auth_user_user_findbyemail"
     },
@@ -3177,8 +3166,8 @@
       "source_file": "app/Features/Auth/User.php",
       "source_location": "L71",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": ".findbyprovider()",
       "id": "app_features_auth_user_user_findbyprovider"
     },
@@ -3188,8 +3177,8 @@
       "source_file": "app/Features/Auth/User.php",
       "source_location": "L88",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": ".findbyid()",
       "id": "app_features_auth_user_user_findbyid"
     },
@@ -3199,8 +3188,8 @@
       "source_file": "app/Features/Auth/User.php",
       "source_location": "L107",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": ".createfromoauth()",
       "id": "app_features_auth_user_user_createfromoauth"
     },
@@ -3210,8 +3199,8 @@
       "source_file": "app/Features/Auth/User.php",
       "source_location": "L166",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": ".createfromemail()",
       "id": "app_features_auth_user_user_createfromemail"
     },
@@ -3221,8 +3210,8 @@
       "source_file": "app/Features/Auth/User.php",
       "source_location": "L216",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": ".verifypassword()",
       "id": "app_features_auth_user_user_verifypassword"
     },
@@ -3232,8 +3221,8 @@
       "source_file": "app/Features/Auth/User.php",
       "source_location": "L240",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": ".getbookings()",
       "id": "app_features_auth_user_user_getbookings"
     },
@@ -3243,8 +3232,8 @@
       "source_file": "app/Features/Auth/User.php",
       "source_location": "L265",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": ".updateprofile()",
       "id": "app_features_auth_user_user_updateprofile"
     },
@@ -3278,8 +3267,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "confidence": "EXTRACTED",
-      "community": 484,
-      "community_name": "../layouts/Layout.astro",
+      "community": 4,
+      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
       "norm_label": "../components/whatsappbutton.astro",
       "id": "src_components_whatsappbutton"
     },
@@ -3289,8 +3278,8 @@
       "source_file": "public/index.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 108,
+      "community_name": "ChannexRoomMapper",
       "norm_label": "index.php",
       "id": "public_index"
     },
@@ -3300,8 +3289,8 @@
       "source_file": "src/pages/profile.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 4,
-      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
+      "community": 484,
+      "community_name": "../layouts/Layout.astro",
       "norm_label": "profile.astro",
       "id": "src_pages_profile"
     },
@@ -3311,8 +3300,8 @@
       "source_file": "src/pages/profile.astro",
       "source_location": "L303",
       "_origin": "ast",
-      "community": 4,
-      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
+      "community": 484,
+      "community_name": "../layouts/Layout.astro",
       "norm_label": "showalert()",
       "id": "src_pages_profile_showalert"
     },
@@ -3322,8 +3311,8 @@
       "source_file": "src/pages/profile.astro",
       "source_location": "L313",
       "_origin": "ast",
-      "community": 4,
-      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
+      "community": 484,
+      "community_name": "../layouts/Layout.astro",
       "norm_label": "switchtab()",
       "id": "src_pages_profile_switchtab"
     },
@@ -3333,8 +3322,8 @@
       "source_file": "src/pages/profile.astro",
       "source_location": "L344",
       "_origin": "ast",
-      "community": 4,
-      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
+      "community": 484,
+      "community_name": "../layouts/Layout.astro",
       "norm_label": "loadprofile()",
       "id": "src_pages_profile_loadprofile"
     },
@@ -3377,8 +3366,8 @@
       "source_file": "app/Core/Database.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 94,
+      "community_name": "HandleChannexWebhookAction.php",
       "norm_label": "database.php",
       "id": "app_core_database"
     },
@@ -3388,8 +3377,8 @@
       "source_file": "app/Core/Database.php",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": "database",
       "id": "app_core_database_database"
     },
@@ -3399,8 +3388,8 @@
       "source_file": "app/Core/Database.php",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": ".__construct()",
       "id": "app_core_database_database_construct"
     },
@@ -3410,8 +3399,8 @@
       "source_file": "app/Core/Database.php",
       "source_location": "L59",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": ".getinstance()",
       "id": "app_core_database_database_getinstance"
     },
@@ -3421,8 +3410,8 @@
       "source_file": "app/Core/Database.php",
       "source_location": "L69",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": ".getconnection()",
       "id": "app_core_database_database_getconnection"
     },
@@ -3432,8 +3421,8 @@
       "source_file": "app/Core/Database.php",
       "source_location": "L76",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "External Security Tools Integration Guide",
+      "community": 93,
+      "community_name": "User",
       "norm_label": ".isconnected()",
       "id": "app_core_database_database_isconnected"
     },
@@ -3531,8 +3520,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLoginAction.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 10,
-      "community_name": "Docker \u90e8\u7f72\u9a8c\u8bc1\u6307\u5357",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "authloginaction.php",
       "id": "app_features_auth_actions_authloginaction"
     },
@@ -3542,8 +3531,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLoginAction.php",
       "source_location": "L18",
       "_origin": "ast",
-      "community": 10,
-      "community_name": "Docker \u90e8\u7f72\u9a8c\u8bc1\u6307\u5357",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "authloginaction",
       "id": "app_features_auth_actions_authloginaction_authloginaction"
     },
@@ -3553,8 +3542,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLoginAction.php",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 10,
-      "community_name": "Docker \u90e8\u7f72\u9a8c\u8bc1\u6307\u5357",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": ".__invoke()",
       "id": "app_features_auth_actions_authloginaction_authloginaction_invoke"
     },
@@ -3564,8 +3553,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 10,
-      "community_name": "Docker \u90e8\u7f72\u9a8c\u8bc1\u6307\u5357",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "request",
       "id": "app_features_auth_actions_authloginaction_php_request"
     },
@@ -3575,8 +3564,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLoginEmailAction.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 116,
+      "community_name": "AuthLoginEmailAction.php",
       "norm_label": "authloginemailaction.php",
       "id": "app_features_auth_actions_authloginemailaction"
     },
@@ -3586,8 +3575,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLoginEmailAction.php",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 116,
+      "community_name": "AuthLoginEmailAction.php",
       "norm_label": "authloginemailaction",
       "id": "app_features_auth_actions_authloginemailaction_authloginemailaction"
     },
@@ -3597,8 +3586,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLoginEmailAction.php",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 116,
+      "community_name": "AuthLoginEmailAction.php",
       "norm_label": ".__invoke()",
       "id": "app_features_auth_actions_authloginemailaction_authloginemailaction_invoke"
     },
@@ -3608,8 +3597,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 116,
+      "community_name": "AuthLoginEmailAction.php",
       "norm_label": "request",
       "id": "app_features_auth_actions_authloginemailaction_php_request"
     },
@@ -3619,8 +3608,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLoginEmailAction.php",
       "source_location": "L95",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 116,
+      "community_name": "AuthLoginEmailAction.php",
       "norm_label": ".ishtmlrequest()",
       "id": "app_features_auth_actions_authloginemailaction_authloginemailaction_ishtmlrequest"
     },
@@ -3696,8 +3685,8 @@
       "source_file": "src/pages/my-bookings.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 4,
-      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
+      "community": 119,
+      "community_name": "my-bookings.astro",
       "norm_label": "my-bookings.astro",
       "id": "src_pages_my_bookings"
     },
@@ -3707,8 +3696,8 @@
       "source_file": "src/pages/my-bookings.astro",
       "source_location": "L82",
       "_origin": "ast",
-      "community": 4,
-      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
+      "community": 119,
+      "community_name": "my-bookings.astro",
       "norm_label": "initmybookings()",
       "id": "src_pages_my_bookings_initmybookings"
     },
@@ -3773,8 +3762,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLogoutAction.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 108,
+      "community_name": "ChannexRoomMapper",
       "norm_label": "authlogoutaction.php",
       "id": "app_features_auth_actions_authlogoutaction"
     },
@@ -3784,8 +3773,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLogoutAction.php",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 108,
+      "community_name": "ChannexRoomMapper",
       "norm_label": "authlogoutaction",
       "id": "app_features_auth_actions_authlogoutaction_authlogoutaction"
     },
@@ -3795,8 +3784,8 @@
       "source_file": "app/Features/Auth/Actions/AuthLogoutAction.php",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 108,
+      "community_name": "ChannexRoomMapper",
       "norm_label": ".__invoke()",
       "id": "app_features_auth_actions_authlogoutaction_authlogoutaction_invoke"
     },
@@ -3806,8 +3795,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 108,
+      "community_name": "ChannexRoomMapper",
       "norm_label": "request",
       "id": "app_features_auth_actions_authlogoutaction_php_request"
     },
@@ -7634,8 +7623,8 @@
       "source_file": "app/Core/BookingStatus.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
+      "community": 120,
+      "community_name": "BookingStatus.php",
       "norm_label": "bookingstatus.php",
       "id": "app_core_bookingstatus"
     },
@@ -7645,8 +7634,8 @@
       "source_file": "app/Core/BookingStatus.php",
       "source_location": "L20",
       "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
+      "community": 120,
+      "community_name": "BookingStatus.php",
       "norm_label": "isextendable()",
       "id": "app_core_bookingstatus_isextendable"
     },
@@ -7656,8 +7645,8 @@
       "source_file": "app/Core/BookingStatus.php",
       "source_location": "L27",
       "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
+      "community": 120,
+      "community_name": "BookingStatus.php",
       "norm_label": "isterminal()",
       "id": "app_core_bookingstatus_isterminal"
     },
@@ -7678,8 +7667,8 @@
       "source_file": "app/Core/Container.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "Real World Vulnerabilities Case Study",
+      "community": 105,
+      "community_name": "Container",
       "norm_label": "container.php",
       "id": "app_core_container"
     },
@@ -7788,8 +7777,8 @@
       "source_file": "app/Core/HttpException.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 10,
-      "community_name": "Docker \u90e8\u7f72\u9a8c\u8bc1\u6307\u5357",
+      "community": 6,
+      "community_name": "Rust Security Audit",
       "norm_label": "httpexception.php",
       "id": "app_core_httpexception"
     },
@@ -7810,8 +7799,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "Real World Vulnerabilities Case Study",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": "exception",
       "id": "exception"
     },
@@ -8228,8 +8217,8 @@
       "source_file": "app/Features/Auth/Actions/AuthMeAction.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 108,
+      "community_name": "ChannexRoomMapper",
       "norm_label": "authmeaction.php",
       "id": "app_features_auth_actions_authmeaction"
     },
@@ -8239,8 +8228,8 @@
       "source_file": "app/Features/Auth/Actions/AuthMeAction.php",
       "source_location": "L14",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 108,
+      "community_name": "ChannexRoomMapper",
       "norm_label": "authmeaction",
       "id": "app_features_auth_actions_authmeaction_authmeaction"
     },
@@ -8250,8 +8239,8 @@
       "source_file": "app/Features/Auth/Actions/AuthMeAction.php",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 108,
+      "community_name": "ChannexRoomMapper",
       "norm_label": ".__invoke()",
       "id": "app_features_auth_actions_authmeaction_authmeaction_invoke"
     },
@@ -8261,8 +8250,8 @@
       "source_file": "app/Features/Auth/Actions/GetUserBookingsAction.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 108,
+      "community_name": "ChannexRoomMapper",
       "norm_label": "getuserbookingsaction.php",
       "id": "app_features_auth_actions_getuserbookingsaction"
     },
@@ -8272,8 +8261,8 @@
       "source_file": "app/Features/Auth/Actions/GetUserBookingsAction.php",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 108,
+      "community_name": "ChannexRoomMapper",
       "norm_label": "getuserbookingsaction",
       "id": "app_features_auth_actions_getuserbookingsaction_getuserbookingsaction"
     },
@@ -8283,8 +8272,8 @@
       "source_file": "app/Features/Auth/Actions/GetUserBookingsAction.php",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 108,
+      "community_name": "ChannexRoomMapper",
       "norm_label": ".__invoke()",
       "id": "app_features_auth_actions_getuserbookingsaction_getuserbookingsaction_invoke"
     },
@@ -8294,8 +8283,8 @@
       "source_file": "app/Features/Auth/SessionService.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 108,
+      "community_name": "ChannexRoomMapper",
       "norm_label": "sessionservice.php",
       "id": "app_features_auth_sessionservice"
     },
@@ -8723,8 +8712,8 @@
       "source_file": "app/Features/Health/Actions/HealthCheckAction.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": "healthcheckaction.php",
       "id": "app_features_health_actions_healthcheckaction"
     },
@@ -8734,8 +8723,8 @@
       "source_file": "app/Features/Health/Actions/HealthCheckAction.php",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": "healthcheckaction",
       "id": "app_features_health_actions_healthcheckaction_healthcheckaction"
     },
@@ -8745,8 +8734,8 @@
       "source_file": "app/Features/Health/Actions/HealthCheckAction.php",
       "source_location": "L17",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 107,
+      "community_name": "Request",
       "norm_label": ".__invoke()",
       "id": "app_features_health_actions_healthcheckaction_healthcheckaction_invoke"
     },
@@ -8866,8 +8855,8 @@
       "source_file": "app/Features/Shared/RoomTypeRegistry.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "Real World Vulnerabilities Case Study",
+      "community": 104,
+      "community_name": "GetRoomsAction.php",
       "norm_label": "roomtyperegistry.php",
       "id": "app_features_shared_roomtyperegistry"
     },
@@ -8877,8 +8866,8 @@
       "source_file": "app/Features/Shared/RoomTypeRegistry.php",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
+      "community": 114,
+      "community_name": "RoomTypeRegistry",
       "norm_label": "roomtyperegistry",
       "id": "app_features_shared_roomtyperegistry_roomtyperegistry"
     },
@@ -8888,8 +8877,8 @@
       "source_file": "app/Features/Shared/RoomTypeRegistry.php",
       "source_location": "L31",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
+      "community": 114,
+      "community_name": "RoomTypeRegistry",
       "norm_label": ".getslugbyid()",
       "id": "app_features_shared_roomtyperegistry_roomtyperegistry_getslugbyid"
     },
@@ -8899,8 +8888,8 @@
       "source_file": "app/Features/Shared/RoomTypeRegistry.php",
       "source_location": "L39",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
+      "community": 114,
+      "community_name": "RoomTypeRegistry",
       "norm_label": ".getidbyslug()",
       "id": "app_features_shared_roomtyperegistry_roomtyperegistry_getidbyslug"
     },
@@ -8910,8 +8899,8 @@
       "source_file": "app/Features/Shared/RoomTypeRegistry.php",
       "source_location": "L49",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
+      "community": 114,
+      "community_name": "RoomTypeRegistry",
       "norm_label": ".all()",
       "id": "app_features_shared_roomtyperegistry_roomtyperegistry_all"
     },
@@ -8921,8 +8910,8 @@
       "source_file": "app/Features/Shared/RoomTypeRegistry.php",
       "source_location": "L57",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
+      "community": 114,
+      "community_name": "RoomTypeRegistry",
       "norm_label": ".getchannexroomid()",
       "id": "app_features_shared_roomtyperegistry_roomtyperegistry_getchannexroomid"
     },
@@ -8932,8 +8921,8 @@
       "source_file": "app/Features/Shared/RoomTypeRegistry.php",
       "source_location": "L68",
       "_origin": "ast",
-      "community": 3,
-      "community_name": "\u903b\u8f91\u6f0f\u6d1e\u6df1\u5ea6\u5206\u6790\u624b\u518c",
+      "community": 114,
+      "community_name": "RoomTypeRegistry",
       "norm_label": ".getchannexrateplanid()",
       "id": "app_features_shared_roomtyperegistry_roomtyperegistry_getchannexrateplanid"
     },
@@ -9900,8 +9889,8 @@
       "source_file": "scripts/test_endpoints.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 104,
-      "community_name": "GetRoomsAction.php",
+      "community": 120,
+      "community_name": "BookingStatus.php",
       "norm_label": "test_endpoints.php",
       "id": "scripts_test_endpoints"
     },
@@ -9933,8 +9922,8 @@
       "source_file": "src/pages/rooms/index.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 4,
-      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
+      "community": 33,
+      "community_name": "Cryptography Security Audit",
       "norm_label": "index.astro",
       "id": "src_pages_rooms_index"
     },
@@ -9944,8 +9933,8 @@
       "source_file": "src/pages/rooms/index.astro",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 4,
-      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
+      "community": 33,
+      "community_name": "Cryptography Security Audit",
       "norm_label": "t",
       "id": "src_pages_rooms_index_t"
     },
@@ -9955,8 +9944,8 @@
       "source_file": "src/pages/rooms/index.astro",
       "source_location": "L11",
       "_origin": "ast",
-      "community": 4,
-      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
+      "community": 33,
+      "community_name": "Cryptography Security Audit",
       "norm_label": "capacities",
       "id": "src_pages_rooms_index_capacities"
     },
@@ -9999,8 +9988,8 @@
       "source_file": "tests/Unit/TestCase.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 21,
-      "community_name": "Real World Vulnerabilities Case Study",
+      "community": 85,
+      "community_name": "Sinks & Sources Reference",
       "norm_label": "testcase.php",
       "id": "tests_unit_testcase"
     },
@@ -14422,8 +14411,8 @@
       "source_file": "vendor/hybridauth/hybridauth/src/Provider/Google.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 232,
-      "community_name": "3.1 \u4e0a\u4e0b\u6587\u7c7b\u578b\u8bc6\u522b",
+      "community": 37,
+      "community_name": "UnexpectedValueException",
       "norm_label": "google.php",
       "id": "vendor_hybridauth_hybridauth_src_provider_google"
     },
@@ -14488,8 +14477,8 @@
       "source_file": "vendor/hybridauth/hybridauth/src/Provider/MicrosoftGraph.php",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 37,
-      "community_name": "UnexpectedValueException",
+      "community": 232,
+      "community_name": "3.1 \u4e0a\u4e0b\u6587\u7c7b\u578b\u8bc6\u522b",
       "norm_label": "microsoftgraph.php",
       "id": "vendor_hybridauth_hybridauth_src_provider_microsoftgraph"
     },
@@ -16391,8 +16380,8 @@
       "source_file": "src/components/room/RoomAmenitiesGrid.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 4,
-      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
+      "community": 33,
+      "community_name": "Cryptography Security Audit",
       "norm_label": "roomamenitiesgrid.astro",
       "id": "src_components_room_roomamenitiesgrid"
     },
@@ -16402,8 +16391,8 @@
       "source_file": "astro/types",
       "confidence": "EXTRACTED",
       "_origin": "ast",
-      "community": 4,
-      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
+      "community": 33,
+      "community_name": "Cryptography Security Audit",
       "norm_label": "astro/types",
       "id": "types"
     },
@@ -16435,8 +16424,8 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "community": 6,
-      "community_name": "Rust Security Audit",
+      "community": 108,
+      "community_name": "ChannexRoomMapper",
       "norm_label": "middleware",
       "id": "middleware"
     },
@@ -16710,8 +16699,8 @@
       "source_file": "src/components/RoomDetail.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 33,
-      "community_name": "Cryptography Security Audit",
+      "community": 475,
+      "community_name": "../../book/success.astro",
       "norm_label": "roomdetail.astro",
       "id": "src_components_roomdetail"
     },
@@ -16798,8 +16787,8 @@
       "source_file": "src/pages/fr/explore.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 496,
-      "community_name": "attractions.ts",
+      "community": 33,
+      "community_name": "Cryptography Security Audit",
       "norm_label": "explore.astro",
       "id": "src_pages_fr_explore"
     },
@@ -16853,8 +16842,8 @@
       "source_file": "src/pages/fr/my-bookings.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 4,
-      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
+      "community": 119,
+      "community_name": "my-bookings.astro",
       "norm_label": "my-bookings.astro",
       "id": "src_pages_fr_my_bookings"
     },
@@ -16886,8 +16875,8 @@
       "source_file": "src/pages/pt/explore.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 496,
-      "community_name": "attractions.ts",
+      "community": 33,
+      "community_name": "Cryptography Security Audit",
       "norm_label": "explore.astro",
       "id": "src_pages_pt_explore"
     },
@@ -16930,8 +16919,8 @@
       "source_file": "src/pages/pt/my-bookings.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 4,
-      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
+      "community": 119,
+      "community_name": "my-bookings.astro",
       "norm_label": "my-bookings.astro",
       "id": "src_pages_pt_my_bookings"
     },
@@ -17251,8 +17240,8 @@
       "source_file": "src/pages/fr/rooms/[slug].astro",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 33,
-      "community_name": "Cryptography Security Audit",
+      "community": 475,
+      "community_name": "../../book/success.astro",
       "norm_label": "[slug].astro",
       "id": "src_pages_fr_rooms_slug"
     },
@@ -17262,8 +17251,8 @@
       "source_file": "src/pages/fr/rooms/[slug].astro",
       "source_location": "L5",
       "_origin": "ast",
-      "community": 33,
-      "community_name": "Cryptography Security Audit",
+      "community": 475,
+      "community_name": "../../book/success.astro",
       "norm_label": "getstaticpaths()",
       "id": "src_pages_fr_rooms_slug_getstaticpaths"
     },
@@ -17328,8 +17317,8 @@
       "source_file": "src/pages/pt/rooms/[slug].astro",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 33,
-      "community_name": "Cryptography Security Audit",
+      "community": 475,
+      "community_name": "../../book/success.astro",
       "norm_label": "[slug].astro",
       "id": "src_pages_pt_rooms_slug"
     },
@@ -17339,8 +17328,8 @@
       "source_file": "src/pages/pt/rooms/[slug].astro",
       "source_location": "L5",
       "_origin": "ast",
-      "community": 33,
-      "community_name": "Cryptography Security Audit",
+      "community": 475,
+      "community_name": "../../book/success.astro",
       "norm_label": "getstaticpaths()",
       "id": "src_pages_pt_rooms_slug_getstaticpaths"
     },
@@ -17427,8 +17416,8 @@
       "source_file": "src/pages/es/my-bookings.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 4,
-      "community_name": "\u7ed5\u8fc7\u7b56\u7565\u65b9\u6cd5\u8bba (Bypass Strategies)",
+      "community": 119,
+      "community_name": "my-bookings.astro",
       "norm_label": "my-bookings.astro",
       "id": "src_pages_es_my_bookings"
     },
@@ -17999,8 +17988,8 @@
       "source_file": "src/pages/es/contact.astro",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 484,
-      "community_name": "../layouts/Layout.astro",
+      "community": 115,
+      "community_name": "../components/MapSection.astro",
       "norm_label": "contact.astro",
       "id": "src_pages_es_contact"
     },
@@ -19430,9 +19419,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/FAQSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_faqsection",
-      "target": "astro_assets",
-      "confidence_score": 1.0
+      "target": "astro_assets"
     },
     {
       "relation": "imports_from",
@@ -19442,9 +19431,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_faqsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_recepcion_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_recepcion_jpg"
     },
     {
       "relation": "imports_from",
@@ -19454,27 +19443,27 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_faqsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_content_faq_faq_json",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_content_faq_faq_json"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/FAQSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_faqsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_settings",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_settings"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/FAQSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_faqsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
@@ -19484,9 +19473,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_faqsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "contains",
@@ -19495,9 +19484,9 @@
       "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_faqsection",
-      "target": "src_components_faqsection_t",
-      "confidence_score": 1.0
+      "target": "src_components_faqsection_t"
     },
     {
       "relation": "imports_from",
@@ -19507,9 +19496,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_components_faqsection",
-      "confidence_score": 1.0
+      "target": "src_components_faqsection"
     },
     {
       "relation": "imports_from",
@@ -19552,18 +19541,18 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/InteractiveRoomsSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_interactiveroomssection",
-      "target": "astro_assets",
-      "confidence_score": 1.0
+      "target": "astro_assets"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/Navbar.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_navbar",
-      "target": "astro_assets",
-      "confidence_score": 1.0
+      "target": "astro_assets"
     },
     {
       "relation": "imports_from",
@@ -19597,9 +19586,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/book.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_book",
-      "target": "astro_assets",
-      "confidence_score": 1.0
+      "target": "astro_assets"
     },
     {
       "relation": "imports_from",
@@ -19624,9 +19613,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/index.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "astro_assets",
-      "confidence_score": 1.0
+      "target": "astro_assets"
     },
     {
       "relation": "imports_from",
@@ -19636,9 +19625,9 @@
       "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_content_faq_faq_json",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_content_faq_faq_json"
     },
     {
       "relation": "imports_from",
@@ -19690,18 +19679,18 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/InteractiveRoomsSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_interactiveroomssection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/MapSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_mapsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
@@ -19717,18 +19706,18 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/Navbar.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_navbar",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/ReviewMarquee.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_reviewmarquee",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
@@ -19780,18 +19769,18 @@
       "confidence": "EXTRACTED",
       "source_file": "src/layouts/Layout.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/book.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_book",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
@@ -19816,18 +19805,18 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/contact.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_contact",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/explore.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_explore",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
@@ -19852,9 +19841,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/index.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils"
     },
     {
       "relation": "imports_from",
@@ -19921,9 +19910,9 @@
       "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_recepcion_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_recepcion_jpg"
     },
     {
       "relation": "imports_from",
@@ -19939,9 +19928,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/MapSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_mapsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_settings",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_settings"
     },
     {
       "relation": "imports_from",
@@ -19966,45 +19955,45 @@
       "confidence": "EXTRACTED",
       "source_file": "src/layouts/Layout.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_settings",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_settings"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/contact.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_contact",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_settings",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_settings"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/index.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_settings",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_settings"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/InteractiveRoomsSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_interactiveroomssection",
-      "target": "astro_i18n",
-      "confidence_score": 1.0
+      "target": "astro_i18n"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/InteractiveRoomsSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_interactiveroomssection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_rooms",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_rooms"
     },
     {
       "relation": "imports_from",
@@ -20014,18 +20003,18 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_interactiveroomssection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/InteractiveRoomsSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_interactiveroomssection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_utils_helpers",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_utils_helpers"
     },
     {
       "relation": "imports_from",
@@ -20035,9 +20024,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_interactiveroomssection",
-      "target": "src_data_rooms",
-      "confidence_score": 1.0
+      "target": "src_data_rooms"
     },
     {
       "relation": "imports",
@@ -20047,9 +20036,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_interactiveroomssection",
-      "target": "src_data_rooms_rooms",
-      "confidence_score": 1.0
+      "target": "src_data_rooms_rooms"
     },
     {
       "relation": "imports_from",
@@ -20059,9 +20048,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_components_interactiveroomssection",
-      "confidence_score": 1.0
+      "target": "src_components_interactiveroomssection"
     },
     {
       "relation": "imports_from",
@@ -20086,9 +20075,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/Navbar.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_navbar",
-      "target": "astro_i18n",
-      "confidence_score": 1.0
+      "target": "astro_i18n"
     },
     {
       "relation": "imports_from",
@@ -20122,9 +20111,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/explore.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_explore",
-      "target": "astro_i18n",
-      "confidence_score": 1.0
+      "target": "astro_i18n"
     },
     {
       "relation": "imports_from",
@@ -20140,9 +20129,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/index.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "astro_i18n",
-      "confidence_score": 1.0
+      "target": "astro_i18n"
     },
     {
       "relation": "imports_from",
@@ -20185,9 +20174,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/book.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_book",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_rooms",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_rooms"
     },
     {
       "relation": "imports_from",
@@ -20212,9 +20201,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/index.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_rooms",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_rooms"
     },
     {
       "relation": "imports_from",
@@ -20266,18 +20255,18 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/book.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_book",
-      "target": "c_users_akim_desktop_usgar_redesign_src_utils_helpers",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_utils_helpers"
     },
     {
       "relation": "dynamic_import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/MapSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_mapsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_logos_logo_usgar_isotipo_png",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_logos_logo_usgar_isotipo_png"
     },
     {
       "relation": "imports_from",
@@ -20287,27 +20276,27 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_mapsection",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "dynamic_import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/MapSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_mapsection",
-      "target": "leaflet",
-      "confidence_score": 1.0
+      "target": "leaflet"
     },
     {
       "relation": "dynamic_import",
       "confidence": "EXTRACTED",
       "source_file": "src/components/MapSection.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_mapsection",
-      "target": "leaflet_css",
-      "confidence_score": 1.0
+      "target": "leaflet_css"
     },
     {
       "relation": "contains",
@@ -20316,9 +20305,9 @@
       "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_mapsection",
-      "target": "src_components_mapsection_string",
-      "confidence_score": 1.0
+      "target": "src_components_mapsection_string"
     },
     {
       "relation": "imports_from",
@@ -20328,9 +20317,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_contact",
-      "target": "src_components_mapsection",
-      "confidence_score": 1.0
+      "target": "src_components_mapsection"
     },
     {
       "relation": "imports_from",
@@ -20340,9 +20329,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_components_mapsection",
-      "confidence_score": 1.0
+      "target": "src_components_mapsection"
     },
     {
       "relation": "imports",
@@ -20364,21 +20353,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_navbar",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_logos_logo_usgar_morado_png",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/components/Navbar.astro",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_components_navbar",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_logos_logo_usgar_png",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_logos_logo_usgar_morado_png"
     },
     {
       "relation": "imports_from",
@@ -20388,18 +20365,18 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_navbar",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/components/Navbar.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_navbar",
-      "target": "c_users_akim_desktop_usgar_redesign_src_utils_auth_client",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_utils_auth_client"
     },
     {
       "relation": "contains",
@@ -20408,9 +20385,9 @@
       "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_navbar",
-      "target": "src_components_navbar_getlocaleurl",
-      "confidence_score": 1.0
+      "target": "src_components_navbar_getlocaleurl"
     },
     {
       "relation": "imports_from",
@@ -20420,9 +20397,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "src_components_navbar",
-      "confidence_score": 1.0
+      "target": "src_components_navbar"
     },
     {
       "relation": "imports_from",
@@ -20441,9 +20418,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/components/ReviewMarquee.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_reviewmarquee",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_reviews",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_reviews"
     },
     {
       "relation": "imports_from",
@@ -20453,9 +20430,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_components_reviewmarquee",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "imports_from",
@@ -20465,9 +20442,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_components_reviewmarquee",
-      "confidence_score": 1.0
+      "target": "src_components_reviewmarquee"
     },
     {
       "relation": "contains",
@@ -20476,9 +20453,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_data_rooms",
-      "target": "src_data_rooms_amenitylabel",
-      "confidence_score": 1.0
+      "target": "src_data_rooms_amenitylabel"
     },
     {
       "relation": "contains",
@@ -20487,9 +20464,9 @@
       "source_location": "L54",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_data_rooms",
-      "target": "src_data_rooms_getroombyslug",
-      "confidence_score": 1.0
+      "target": "src_data_rooms_getroombyslug"
     },
     {
       "relation": "contains",
@@ -20498,9 +20475,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_data_rooms",
-      "target": "src_data_rooms_room",
-      "confidence_score": 1.0
+      "target": "src_data_rooms_room"
     },
     {
       "relation": "contains",
@@ -20509,9 +20486,9 @@
       "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_data_rooms",
-      "target": "src_data_rooms_rooms",
-      "confidence_score": 1.0
+      "target": "src_data_rooms_rooms"
     },
     {
       "relation": "imports_from",
@@ -20521,9 +20498,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_book",
-      "target": "src_data_rooms",
-      "confidence_score": 1.0
+      "target": "src_data_rooms"
     },
     {
       "relation": "imports_from",
@@ -20533,9 +20510,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_data_rooms",
-      "confidence_score": 1.0
+      "target": "src_data_rooms"
     },
     {
       "relation": "imports",
@@ -20545,9 +20522,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_book",
-      "target": "src_data_rooms_rooms",
-      "confidence_score": 1.0
+      "target": "src_data_rooms_rooms"
     },
     {
       "relation": "imports",
@@ -20557,9 +20534,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_data_rooms_rooms",
-      "confidence_score": 1.0
+      "target": "src_data_rooms_rooms"
     },
     {
       "relation": "imports_from",
@@ -20578,9 +20555,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/layouts/Layout.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "astro_transitions",
-      "confidence_score": 1.0
+      "target": "astro_transitions"
     },
     {
       "relation": "imports_from",
@@ -20590,9 +20567,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "c_users_akim_desktop_usgar_redesign_src_components_common_smoothscroll_astro",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_components_common_smoothscroll_astro"
     },
     {
       "relation": "imports_from",
@@ -20602,9 +20579,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "c_users_akim_desktop_usgar_redesign_src_components_footer_astro",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_components_footer_astro"
     },
     {
       "relation": "imports_from",
@@ -20614,9 +20591,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "c_users_akim_desktop_usgar_redesign_src_components_mobilebookingbar_astro",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_components_mobilebookingbar_astro"
     },
     {
       "relation": "imports_from",
@@ -20626,9 +20603,9 @@
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "c_users_akim_desktop_usgar_redesign_src_components_ui_statusbanner_astro",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_components_ui_statusbanner_astro"
     },
     {
       "relation": "imports_from",
@@ -20638,9 +20615,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "c_users_akim_desktop_usgar_redesign_src_components_whatsappbutton_astro",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_components_whatsappbutton_astro"
     },
     {
       "relation": "imports_from",
@@ -20650,9 +20627,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "imports_from",
@@ -20662,9 +20639,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "c_users_akim_desktop_usgar_redesign_src_styles_global_css",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_styles_global_css"
     },
     {
       "relation": "contains",
@@ -20673,9 +20650,9 @@
       "source_location": "L35",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "src_layouts_layout_canonicalurl",
-      "confidence_score": 1.0
+      "target": "src_layouts_layout_canonicalurl"
     },
     {
       "relation": "contains",
@@ -20684,9 +20661,9 @@
       "source_location": "L41",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "src_layouts_layout_enurl",
-      "confidence_score": 1.0
+      "target": "src_layouts_layout_enurl"
     },
     {
       "relation": "contains",
@@ -20695,9 +20672,9 @@
       "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "src_layouts_layout_esurl",
-      "confidence_score": 1.0
+      "target": "src_layouts_layout_esurl"
     },
     {
       "relation": "contains",
@@ -20706,9 +20683,9 @@
       "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "src_layouts_layout_frurl",
-      "confidence_score": 1.0
+      "target": "src_layouts_layout_frurl"
     },
     {
       "relation": "contains",
@@ -20717,9 +20694,9 @@
       "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "src_layouts_layout_pathwithoutlocale",
-      "confidence_score": 1.0
+      "target": "src_layouts_layout_pathwithoutlocale"
     },
     {
       "relation": "contains",
@@ -20728,9 +20705,9 @@
       "source_location": "L44",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "src_layouts_layout_pturl",
-      "confidence_score": 1.0
+      "target": "src_layouts_layout_pturl"
     },
     {
       "relation": "contains",
@@ -20739,9 +20716,9 @@
       "source_location": "L46",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "src_layouts_layout_string",
-      "confidence_score": 1.0
+      "target": "src_layouts_layout_string"
     },
     {
       "relation": "contains",
@@ -20750,36 +20727,36 @@
       "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_layouts_layout",
-      "target": "src_layouts_layout_t",
-      "confidence_score": 1.0
+      "target": "src_layouts_layout_t"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/book.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_book",
-      "target": "src_layouts_layout",
-      "confidence_score": 1.0
+      "target": "src_layouts_layout"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/contact.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_contact",
-      "target": "src_layouts_layout",
-      "confidence_score": 1.0
+      "target": "src_layouts_layout"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/explore.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_explore",
-      "target": "src_layouts_layout",
-      "confidence_score": 1.0
+      "target": "src_layouts_layout"
     },
     {
       "relation": "imports_from",
@@ -20795,9 +20772,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/index.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_layouts_layout",
-      "confidence_score": 1.0
+      "target": "src_layouts_layout"
     },
     {
       "relation": "imports_from",
@@ -20816,18 +20793,18 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_book",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "imports_from",
       "confidence": "EXTRACTED",
       "source_file": "src/pages/book.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_book",
-      "target": "c_users_akim_desktop_usgar_redesign_src_services_bookingservice",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_services_bookingservice"
     },
     {
       "relation": "contains",
@@ -20836,9 +20813,9 @@
       "source_location": "L856",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_book",
-      "target": "src_pages_book_applyuserdata",
-      "confidence_score": 1.0
+      "target": "src_pages_book_applyuserdata"
     },
     {
       "relation": "contains",
@@ -20847,9 +20824,9 @@
       "source_location": "L871",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_book",
-      "target": "src_pages_book_autofilluser",
-      "confidence_score": 1.0
+      "target": "src_pages_book_autofilluser"
     },
     {
       "relation": "contains",
@@ -20858,9 +20835,9 @@
       "source_location": "L582",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_book",
-      "target": "src_pages_book_selectroomcard",
-      "confidence_score": 1.0
+      "target": "src_pages_book_selectroomcard"
     },
     {
       "relation": "contains",
@@ -20869,9 +20846,9 @@
       "source_location": "L895",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_book",
-      "target": "src_pages_book_showerror",
-      "confidence_score": 1.0
+      "target": "src_pages_book_showerror"
     },
     {
       "relation": "contains",
@@ -20880,9 +20857,9 @@
       "source_location": "L539",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_book",
-      "target": "src_pages_book_updatepricing",
-      "confidence_score": 1.0
+      "target": "src_pages_book_updatepricing"
     },
     {
       "relation": "imports_from",
@@ -20919,9 +20896,9 @@
       "source_location": "L617",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_book_selectroomcard",
-      "target": "src_pages_book_updatepricing",
-      "confidence_score": 1.0
+      "target": "src_pages_book_updatepricing"
     },
     {
       "relation": "calls",
@@ -20931,9 +20908,9 @@
       "source_location": "L875",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_book_autofilluser",
-      "target": "src_pages_book_applyuserdata",
-      "confidence_score": 1.0
+      "target": "src_pages_book_applyuserdata"
     },
     {
       "relation": "imports_from",
@@ -21063,9 +21040,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_contact",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "imports_from",
@@ -21075,9 +21052,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_explore",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "imports_from",
@@ -21099,9 +21076,9 @@
       "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_i18n_utils_ts"
     },
     {
       "relation": "imports_from",
@@ -21165,9 +21142,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/explore.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_explore",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_attractions",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_attractions"
     },
     {
       "relation": "contains",
@@ -21176,9 +21153,9 @@
       "source_location": "L220",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_explore",
-      "target": "src_pages_explore_applyfilter",
-      "confidence_score": 1.0
+      "target": "src_pages_explore_applyfilter"
     },
     {
       "relation": "imports_from",
@@ -21230,9 +21207,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/index.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_data_attractions",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_data_attractions"
     },
     {
       "relation": "imports_from",
@@ -21257,9 +21234,9 @@
       "confidence": "EXTRACTED",
       "source_file": "src/pages/index.astro",
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "astro",
-      "confidence_score": 1.0
+      "target": "astro"
     },
     {
       "relation": "imports_from",
@@ -21269,9 +21246,9 @@
       "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_cusco_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_cusco_jpg"
     },
     {
       "relation": "imports_from",
@@ -21281,9 +21258,9 @@
       "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_matrimonial_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_matrimonial_jpg"
     },
     {
       "relation": "imports_from",
@@ -21293,9 +21270,9 @@
       "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_patio_jpg",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_assets_hotel_hero_slide_patio_jpg"
     },
     {
       "relation": "imports_from",
@@ -21305,9 +21282,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_components_aboutsection_astro",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_components_aboutsection_astro"
     },
     {
       "relation": "imports_from",
@@ -21317,9 +21294,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_components_bookingwidget_astro",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_components_bookingwidget_astro"
     },
     {
       "relation": "imports_from",
@@ -21329,9 +21306,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_components_gastronomysection_astro",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_components_gastronomysection_astro"
     },
     {
       "relation": "imports_from",
@@ -21341,9 +21318,9 @@
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_components_heritagesection_astro",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_components_heritagesection_astro"
     },
     {
       "relation": "imports_from",
@@ -21353,9 +21330,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "c_users_akim_desktop_usgar_redesign_src_components_servicegrid_astro",
-      "confidence_score": 1.0
+      "target": "c_users_akim_desktop_usgar_redesign_src_components_servicegrid_astro"
     },
     {
       "relation": "contains",
@@ -21364,9 +21341,9 @@
       "source_location": "L684",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_pages_index_nextslide",
-      "confidence_score": 1.0
+      "target": "src_pages_index_nextslide"
     },
     {
       "relation": "contains",
@@ -21375,9 +21352,9 @@
       "source_location": "L688",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_pages_index_startautoplay",
-      "confidence_score": 1.0
+      "target": "src_pages_index_startautoplay"
     },
     {
       "relation": "contains",
@@ -21386,9 +21363,9 @@
       "source_location": "L693",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index",
-      "target": "src_pages_index_stopautoplay",
-      "confidence_score": 1.0
+      "target": "src_pages_index_stopautoplay"
     },
     {
       "relation": "imports_from",
@@ -21407,9 +21384,9 @@
       "source_location": "L690",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 0.5,
       "source": "src_pages_index_startautoplay",
-      "target": "src_pages_index_nextslide",
-      "confidence_score": 0.5
+      "target": "src_pages_index_nextslide"
     },
     {
       "relation": "calls",
@@ -21419,9 +21396,9 @@
       "source_location": "L689",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_pages_index_startautoplay",
-      "target": "src_pages_index_stopautoplay",
-      "confidence_score": 1.0
+      "target": "src_pages_index_stopautoplay"
     },
     {
       "relation": "imports",
@@ -44795,5 +44772,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "d0edb64133cf92959889e135af8b366c3e153692"
+  "built_at_commit": "8feb1323b781dc6d68bdfd409f7c072fbf7a7742"
 }

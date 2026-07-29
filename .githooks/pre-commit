@@ -18,7 +18,8 @@ if [ -n "$STAGED_VIDEOS" ]; then
         else
             echo "  - Compressing $FILE..."
             TEMP_FILE="${FILE%.*}-temp.mp4"
-            ffmpeg -y -i "$FILE" -vcodec libx264 -crf 28 -preset medium -pix_fmt yuv420p -vf "scale='min(1280,iw)':-2" -c:a aac -b:a 128k -metadata comment="USGAR_COMPRESSED" -movflags +faststart "$TEMP_FILE" > /dev/null 2>&1
+            ffmpeg -y -i "$FILE" -vcodec libx264 -crf 28 -preset medium -pix_fmt yuv420p -vf "scale='min(1280,iw)':-2,minterpolate=fps=60:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1" -c:a aac -b:a 128k -metadata comment="USGAR_COMPRESSED" -movflags +faststart "$TEMP_FILE" > /dev/null 2>&1
+
             
             if [ $? -eq 0 ] && [ -f "$TEMP_FILE" ]; then
                 mv "$TEMP_FILE" "$FILE"
