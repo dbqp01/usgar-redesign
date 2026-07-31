@@ -110,7 +110,7 @@ class CreateBookingAction {
             $pricePerNight = (float)$targetRoom['price'];
             $totalPrice = round($pricePerNight * $nights, 2);
 
-            $cartId = $this->pms->createCart($hotelId, $idProduct, $checkIn, $checkOut, $guests);
+            $cartId = $this->pms->createCart($hotelId, $idProduct, $checkIn, $checkOut, $guests, $totalPrice, $guestName, $guestEmail, $guestPhone);
             $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
             $currentUser = SessionService::getUserFromRequest();
 
@@ -149,24 +149,6 @@ class CreateBookingAction {
 
             $accessToken = hash_hmac('sha256', $cartId . ':' . $guestEmail, $secretKey);
 
-            $preference = $this->paymentGateway->createPreference(
-                $cartId,
-                $idRoomType,
-                $checkIn,
-                $checkOut,
-                $totalPrice,
-                $guestName,
-                $guestEmail
-            );
-
-            $preferenceId = $preference['id'] ?? null;
-            $initPoint = $preference['init_point'] ?? '';
-
-            if (empty($preferenceId)) {
-                throw new Exception('No se pudo obtener el Preference ID desde Mercado Pago.');
-            }
-
-            $this->bookingRepo->updatePreferenceId($cartId, $preferenceId);
             $this->pdo->commit();
 
             $timeLeftSeconds = max(0, strtotime($expiresAt) - time());
@@ -176,8 +158,7 @@ class CreateBookingAction {
                 'success'           => true,
                 'cart_id'           => $cartId,
                 'access_token'      => $accessToken,
-                'preference_id'     => $preferenceId,
-                'init_point'        => $initPoint,
+                'init_point'        => "/book/checkout?cart_id={$cartId}&token={$accessToken}",
                 'currency'          => Config::get('MERCADO_PAGO_CURRENCY', 'PEN'),
                 'price'             => $totalPrice,
                 'expires_at'        => $expiresAt,
@@ -208,9 +189,7 @@ class CreateBookingAction {
                 'api_response' => is_array($apiBody) ? json_encode($apiBody) : $apiBody,
             ]);
 
-            $clientMessage = Config::isProduction()
-                ? 'No se pudo procesar la reserva. Intente nuevamente.'
-                : 'Error de Mercado Pago (HTTP ' . $statusCode . '): ' . (is_array($apiBody) ? json_encode($apiBody) : $apiBody);
+            $clientMessage = 'Error de Mercado Pago (HTTP ' . $statusCode . '): ' . (is_array($apiBody) ? json_encode($apiBody) : $apiBody);
 
             Response::error($clientMessage, 500, 'PAYMENT_GATEWAY_ERROR');
         } catch (Exception $e) {
@@ -223,9 +202,7 @@ class CreateBookingAction {
                 throw HttpException::missingCredentials('Faltan credenciales de configuracion (Mercado Pago / QloApps) en el backend para procesar la transaccion.');
             }
 
-            $clientMessage = Config::isProduction()
-                ? 'No se pudo procesar la reserva. Intente nuevamente.'
-                : 'Error: ' . $e->getMessage();
+            $clientMessage = 'Error: ' . $e->getMessage();
 
             Response::error($clientMessage, 500, 'SERVER_ERROR');
         }

@@ -1432,3 +1432,426 @@
 [2026-07-29 13:07:38] [ERROR] CreateBookingAction MPApiException {"status_code":403,"api_response":"{\"status\":403,\"blocked_by\":\"PolicyAgent\",\"message\":\"At least one policy returned UNAUTHORIZED.\",\"code\":\"PA_UNAUTHORIZED_RESULT_FROM_POLICIES\"}"}
 [2026-07-29 13:07:39] [ERROR] MercadoPagoAdapter API Error {"status_code":403,"api_response":"{\"code\":\"PA_UNAUTHORIZED_RESULT_FROM_POLICIES\",\"message\":\"At least one policy returned UNAUTHORIZED.\",\"status\":403,\"blocked_by\":\"PolicyAgent\"}","cart_id":"USGAR-2cf3e793fa92"}
 [2026-07-29 13:07:39] [ERROR] CreateBookingAction MPApiException {"status_code":403,"api_response":"{\"code\":\"PA_UNAUTHORIZED_RESULT_FROM_POLICIES\",\"message\":\"At least one policy returned UNAUTHORIZED.\",\"status\":403,\"blocked_by\":\"PolicyAgent\"}"}
+[2026-07-29 14:25:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-29 14:25:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-29 14:25:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-29 14:25:08] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-29 14:25:12] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-29 14:25:12] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-29 14:38:42] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-29 14:38:46] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-29 14:38:46] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-29 14:38:48] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-29 14:38:52] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-29 14:38:52] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-29 14:38:55] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-29 14:38:59] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-29 14:38:59] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-29 14:39:01] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-29 14:39:05] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-29 14:39:05] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-29 14:40:46] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-29 14:40:50] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-29 14:40:50] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:39:08] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:39:12] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:39:12] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:39:14] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:39:18] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:39:18] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:39:20] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:39:24] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:39:24] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:40:39] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:40:43] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:40:43] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:40:45] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:40:49] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:40:49] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:43:22] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:43:26] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:43:26] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:43:28] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:43:32] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:43:32] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:43:32] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:43:34] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:43:39] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:43:39] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:43:41] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:43:45] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:43:45] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:43:58] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:44:02] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:44:02] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:44:04] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:44:08] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:44:08] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:44:08] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:44:10] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:44:14] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:44:14] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:44:16] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:44:20] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:44:20] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:44:22] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:44:26] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:44:26] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:44:26] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:44:29] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:44:33] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:44:33] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:44:35] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:44:39] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:44:39] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:44:47] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:44:51] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:44:51] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:44:51] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:45:17] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:45:21] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:45:21] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:45:21] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:45:47] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:45:51] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:45:51] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:45:51] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:46:17] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:46:21] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:46:21] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:46:21] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:46:47] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:46:51] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:46:51] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:46:51] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:47:17] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:47:21] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:47:21] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:47:21] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:48:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:48:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:48:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:48:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:49:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:49:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:49:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:49:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:50:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:50:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:50:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:50:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:51:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:51:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:51:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:51:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:51:25] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:51:29] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:51:29] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:51:29] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:51:32] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:51:36] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:51:36] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:51:36] [ERROR] Unhandled exception in Router: Core Container: No se pudo resolver el parámetro 'dsn' para la clase 'PDO'. {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Core\\Container.php","line":82}
+[2026-07-30 21:51:39] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:51:43] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:51:43] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:51:43] [ERROR] Unhandled exception in Router: Call to a member function prepare() on null {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Features\\Booking\\Domain\\ProvisionalBookingRepository.php","line":121}
+[2026-07-30 21:51:46] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:51:51] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:51:51] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:51:51] [ERROR] Unhandled exception in Router: Cannot assign null to property App\Features\Webhooks\Actions\HandleMercadoPagoWebhookAction::$pdo of type PDO {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Features\\Webhooks\\Actions\\HandleMercadoPagoWebhookAction.php","line":45}
+[2026-07-30 21:52:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:52:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:52:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:52:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:53:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:53:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:53:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:53:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:54:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:54:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:54:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:54:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:55:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:55:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:55:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:55:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:56:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:56:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:56:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:56:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:56:08] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:56:12] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:56:12] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:56:12] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:56:15] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:56:20] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:56:20] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:56:20] [ERROR] Unhandled exception in Router: Core Container: No se pudo resolver el parámetro 'dsn' para la clase 'PDO'. {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Core\\Container.php","line":82}
+[2026-07-30 21:56:23] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:56:27] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:56:27] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:56:27] [ERROR] Unhandled exception in Router: Call to a member function prepare() on null {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Features\\Booking\\Domain\\ProvisionalBookingRepository.php","line":121}
+[2026-07-30 21:56:30] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:56:34] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:56:34] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:56:34] [ERROR] Unhandled exception in Router: Cannot assign null to property App\Features\Webhooks\Actions\HandleMercadoPagoWebhookAction::$pdo of type PDO {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Features\\Webhooks\\Actions\\HandleMercadoPagoWebhookAction.php","line":45}
+[2026-07-30 21:57:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:57:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:57:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:57:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:58:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:58:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:58:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:58:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 21:59:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:59:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 21:59:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 21:59:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 22:00:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:00:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:00:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:00:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 22:01:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:01:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:01:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:01:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 22:02:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:02:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:02:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:02:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 22:03:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:03:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:03:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:03:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 22:04:02] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:04:06] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:04:06] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:04:06] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 22:04:54] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:04:58] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:04:58] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:05:00] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:04] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:04] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:05:04] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 22:05:06] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:10] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:10] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:05:12] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:16] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:16] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:05:24] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:28] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:28] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:05:30] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:34] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:34] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:05:34] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 22:05:36] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:41] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:41] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:05:43] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:47] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:47] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:05:47] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 22:05:49] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:53] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:53] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:05:55] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:59] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:05:59] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:06:01] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:06:05] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:06:05] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:06:07] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:06:11] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:06:11] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:06:14] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:06:18] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:06:18] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:07:36] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:07:40] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:07:40] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:07:42] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:07:46] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:07:46] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:08:10] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:08:14] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:08:14] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:08:16] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:08:20] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:08:20] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:08:46] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:08:50] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:08:50] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:08:52] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:08:57] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:08:57] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:08:59] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:09:03] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:09:03] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:09:05] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:09:09] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:09:09] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:09:11] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:09:15] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:09:15] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:10:32] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:10:36] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:10:36] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:10:38] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:10:42] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:10:42] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:10:44] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:10:49] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:10:49] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:18:25] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:18:29] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:18:29] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:18:31] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:18:35] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:18:35] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:19:34] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:19:38] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:19:38] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:19:40] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:19:44] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:19:44] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:19:59] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:20:04] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:20:04] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:20:06] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:20:10] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:20:10] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:20:46] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:20:50] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:20:50] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:20:52] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:20:56] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:20:56] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:21:22] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:21:26] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:21:26] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:21:28] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:21:33] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:21:33] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:21:54] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:21:58] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:21:58] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:22:00] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:22:04] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:22:04] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:22:49] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:22:53] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:22:53] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:22:55] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:22:59] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:22:59] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:23:01] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:23:05] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:23:05] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:23:07] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:23:11] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:23:11] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:23:54] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:23:58] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:23:58] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:24:00] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:24:04] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:24:04] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:24:20] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:24:24] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:24:24] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:24:27] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:24:31] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:24:31] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:24:41] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:24:45] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:24:45] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:24:47] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:24:51] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:24:51] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:25:54] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:25:59] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:25:59] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:26:01] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:26:05] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:26:05] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:26:20] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:26:24] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:26:24] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:36:40] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:36:44] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:36:44] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:36:46] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:36:50] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:36:50] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:36:54] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:36:58] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:36:58] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:37:00] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:37:04] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:37:04] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:37:06] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:37:10] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:37:10] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:37:12] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:37:16] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:37:16] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:45:09] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:45:14] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:45:14] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:45:16] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:45:20] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:45:20] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:46:14] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:46:18] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:46:18] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:46:29] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:46:33] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:46:33] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:46:36] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:46:40] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:46:40] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:46:42] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:46:46] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:46:46] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:46:46] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 22:46:52] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:46:56] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:46:56] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:47:03] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:47:07] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:47:07] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:47:07] [WARNING] QloAppAdapter: DB Connection is offline. Returning mock availability.
+[2026-07-30 22:47:10] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:47:15] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:47:15] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:47:15] [ERROR] Unhandled exception in Router: Core Container: No se pudo resolver el parámetro 'dsn' para la clase 'PDO'. {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Core\\Container.php","line":82}
+[2026-07-30 22:47:18] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:47:22] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:47:22] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:47:22] [ERROR] Unhandled exception in Router: Call to a member function prepare() on null {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Features\\Booking\\Domain\\ProvisionalBookingRepository.php","line":121}
+[2026-07-30 22:47:25] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:47:29] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:47:29] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:47:29] [ERROR] Unhandled exception in Router: Cannot assign null to property App\Features\Webhooks\Actions\HandleMercadoPagoWebhookAction::$pdo of type PDO {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Features\\Webhooks\\Actions\\HandleMercadoPagoWebhookAction.php","line":45}
+[2026-07-30 22:48:14] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:48:18] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:48:18] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:48:18] [ERROR] Unhandled exception in Router: Core Container: No se pudo resolver el parámetro 'dsn' para la clase 'PDO'. {"file":"C:\\Users\\akim\\Desktop\\usgar-redesign\\app\\Core\\Container.php","line":82}
+[2026-07-30 22:49:21] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:49:25] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:49:25] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:49:33] [WARNING] [Database Connection Attempt Failed on host 127.0.0.1]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:49:37] [WARNING] [Database Connection Attempt Failed on host localhost]: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[2026-07-30 22:49:37] [ERROR] [Database Connection Error] Could not connect to any DB host. Running in offline mode.
+[2026-07-30 22:52:15] [ERROR] QloAppAdapter: cURL error: Could not resolve host: cms.hotelesusgar.com
+[2026-07-30 22:52:15] [ERROR] QloAppAdapter: Error al crear Cart/Booking en QloApps, fallback a USGAR- local.
+[2026-07-30 22:52:19] [INFO] WEBHOOK DIAGNOSTICS {"headers":{"x-signature":"ts=1774000000,v1=f6d8d1b62541b...[TRUNCATED]","x-request-id":"req-12345","content-type":"application\/json","user-agent":"PostmanRuntime\/7.39.1","accept":"*\/*","cache-control":"no-cache","postman-token":"bf7c92c9-6ae1-4407-ada2-e89469dfff84","host":"localhost:8000","accept-encoding":"gzip, deflate, br","connection":"close","content-length":"196"},"query_params":[],"body_keys":["action","api_version","data","date_created","id","live_mode","type"],"body_type":"payment","body_data_id":"999888777","has_x_signature":"YES","has_x_request_id":"YES","raw_server_http_x_signature":"ts=1774000000,v1=f6d8d1b62541b8985e692dc4c8097eddce118926ebcd4bfc89dd2d28d3cffdfe"}
+[2026-07-30 22:52:19] [INFO] HandleMercadoPagoWebhookAction: Validando firma. DataId: 999888777, RequestId: req-12345, SignaturePresent: YES
+[2026-07-30 22:52:19] [INFO] MercadoPagoAdapter: Firma de webhook validada correctamente. DataId: 999888777
+[2026-07-30 22:52:19] [INFO] HandleMercadoPagoWebhookAction: Firma validada OK para Payment ID 999888777
+[2026-07-30 22:52:20] [ERROR] MercadoPagoAdapter API Error en getPaymentDetails {"status_code":404,"api_response":"{\"message\":\"Payment not found\",\"error\":\"not_found\",\"status\":404,\"cause\":[{\"code\":2000,\"description\":\"Payment not found\",\"data\":\"31-07-2026T03:52:20UTC;cf1a5bcd-7119-4f59-8121-06c74848d5ab\"}]}","payment_id":"999888777"}
+[2026-07-30 22:52:20] [ERROR] HandleMercadoPagoWebhookAction Error: No se pudieron obtener detalles para Pago ID 999888777

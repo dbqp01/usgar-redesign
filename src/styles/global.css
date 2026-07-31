@@ -92,16 +92,16 @@
 
   /* === FONDOS ESTÉTICOS (Nuevos — v2) === */
   --color-surface-light: #FFFFFF;         /* Pure White — light mode page bg (Reverted per user) */
-  --color-surface-dark: #1C1917;          /* Stone Dark — dark mode page bg */
+  --color-surface-dark: #121214;          /* Deep Charcoal — quiet luxury dark mode bg */
   --color-surface-light-alt: #FFFFFF;     /* White — testimonial blocks */
   --color-surface-card-light: #FFFFFF;
-  --color-surface-card-dark: #252028;     /* Purple-Tinted Dark — dark card (BRAND.md) */
+  --color-surface-card-dark: #1A1A1E;     /* Deep Slate/Onyx — dark card (toned down purple) */
 
   /* === TEXTO === */
   --color-text-primary-light: #333333;
   --color-text-primary-dark: #FAFAF9;
   --color-text-secondary-light: #57534E;
-  --color-text-secondary-dark: #D4BFDE;   /* Morado Pastel */
+  --color-text-secondary-dark: #C6B5CD;   /* Sophisticated Lavender/Silver */
 
   /* === TIPOGRAFÍA === */
   --font-display: 'A Akhin Tahun', 'Playfair Display', serif;
@@ -279,7 +279,7 @@ h3, h4 {
 }
 
 .dark .glass {
-  background: rgba(43, 29, 51, 0.85); /* surface-card-dark #2B1D33 with transparency */
+  background: rgba(26, 26, 30, 0.85); /* surface-card-dark #1A1A1E with transparency */
   border: 0.5px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -358,7 +358,6 @@ h3, h4 {
   opacity: 0;
   transform: translate3d(0, 40px, 0);
   will-change: transform, opacity;
-  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .animate-on-scroll.visible {

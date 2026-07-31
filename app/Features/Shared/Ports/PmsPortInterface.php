@@ -8,7 +8,7 @@ namespace App\Features\Shared\Ports;
  */
 interface PmsPortInterface {
     public function getAvailableRooms(string $checkIn, string $checkOut, int $idHotel = 1): array;
-    public function createCart(int $idHotel, int $idProduct, string $checkIn, string $checkOut, int $guests = 1): string;
+    public function createCart(int $idHotel, int $idProduct, string $checkIn, string $checkOut, int $guests = 1, float $totalPrice = 0, string $guestName = '', string $guestEmail = '', string $guestPhone = ''): string;
     public function extendCartSession(string $cartId): bool;
     public function confirmOrder(string $cartId, float $totalPrice, string $guestName, string $guestEmail): ?string;
 }

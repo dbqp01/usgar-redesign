@@ -36,12 +36,17 @@ class WebhookDebugAction {
         $diagnostics['production_source'] = Config::get('ENVIRONMENT') ? 'explicit' : 'auto-detected (public_html)';
         $diagnostics['site_url'] = Config::get('SITE_URL', 'NOT_SET');
 
-        // 4. Verificar tokens (solo tipo, no valor)
-        $prodToken = Config::get('MP_PROD_ACCESS_TOKEN');
-        $testToken = Config::get('MP_TEST_ACCESS_TOKEN');
-        $diagnostics['mp_prod_token_type'] = $prodToken ? (str_starts_with($prodToken, 'APP_USR') ? 'APP_USR (prod)' : 'configured') : 'NOT_SET';
-        $diagnostics['mp_test_token_type'] = $testToken ? 'CONFIGURED (' . substr($testToken, 0, 7) . '...)' : 'NOT_SET';
-        $diagnostics['active_token_type'] = Config::isProduction() ? 'prod' : 'test';
+        // 4. Verificar token (solo tipo, no valor)
+        $token = Config::get('MERCADO_PAGO_ACCESS_TOKEN');
+        if ($token) {
+            $tokenPrefix = substr($token, 0, 7);
+            $diagnostics['mp_token_type'] = str_starts_with($token, 'APP_USR') ? 'APP_USR (production)' : 'TEST (sandbox)';
+            $diagnostics['mp_token_prefix'] = $tokenPrefix . '...';
+        } else {
+            $diagnostics['mp_token_type'] = 'NOT_SET';
+            $diagnostics['mp_token_prefix'] = 'N/A';
+        }
+        $diagnostics['active_token_type'] = $token ? (str_starts_with($token, 'TEST') ? 'test' : 'prod') : 'none';
 
         // 5. Mostrar TODOS los headers HTTP que PHP recibe (para verificar si x-signature llega)
         $httpHeaders = [];

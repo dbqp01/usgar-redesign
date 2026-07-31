@@ -137,7 +137,8 @@ class HandleMercadoPagoWebhookAction {
         }
 
         // 3.5 Interceptar el boton "Simular Notificacion" de Mercado Pago
-        if ($paymentIdStr === '123456' && !Config::isProduction()) {
+        // MP envia payment_id '123456' como notificacion de prueba desde el dashboard.
+        if ($paymentIdStr === '123456') {
             Logger::info("HandleMercadoPagoWebhookAction: Simulacion de Mercado Pago recibida y validada correctamente.");
             Response::json(['success' => true, 'message' => 'Simulacion de Mercado Pago exitosa! La firma fue validada correctamente.']);
             return;

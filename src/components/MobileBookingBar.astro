@@ -49,12 +49,13 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
   class="fixed inset-0 z-50 hidden lg:hidden"
 >
   <!-- Backdrop -->
-  <div id="mobile-sheet-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+  <div id="mobile-sheet-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 hidden"></div>
 
   <!-- Modal Sheet Panel -->
   <div
     id="mobile-sheet-panel"
-    class="absolute bottom-0 left-0 right-0 max-h-[90dvh] bg-surface-card-light dark:bg-surface-card-dark rounded-t-3xl shadow-2xl translate-y-full transition-transform duration-300 ease-out flex flex-col pb-safe overflow-y-auto"
+    class="absolute bottom-0 left-0 right-0 max-h-[90dvh] bg-surface-card-light dark:bg-surface-card-dark rounded-t-3xl shadow-2xl flex flex-col pb-safe overflow-y-auto"
+    style="transform: translateY(100%);"
   >
     <!-- Handle indicator & Header -->
     <div class="sticky top-0 z-10 bg-surface-card-light dark:bg-surface-card-dark pt-3 pb-2 px-6 border-b border-black/10 dark:border-white/10 flex flex-col items-center">
@@ -157,11 +158,14 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
 </div>
 
 <script>
-  let abortController = new AbortController();
+  import gsap from 'gsap';
+
+  let ctx: gsap.Context;
 
   function initMobileBookingBar() {
-    abortController.abort();
-    abortController = new AbortController();
+    if (ctx) ctx.revert();
+    
+    const abortController = new AbortController();
     const signal = abortController.signal;
 
     const openBtn = document.getElementById('open-mobile-booking-sheet');
@@ -203,50 +207,57 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
       }, { signal });
     }
 
-    // Hide bottom bar on /book page so it doesn't overlap checkout summary
+    // Hide bottom bar on /book page
     const isBookPage = window.location.pathname.includes('/book');
     const bottomBar = document.getElementById('mobile-bottom-bar');
     if (isBookPage && bottomBar) {
       bottomBar.classList.add('hidden');
     }
 
-    let isSheetOpen = false;
+    ctx = gsap.context(() => {
+      let isSheetOpen = false;
+      const tl = gsap.timeline({ paused: true });
 
-    function openSheet() {
-      if (!sheet || !backdrop || !panel) return;
-      isSheetOpen = true;
-      sheet.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-      requestAnimationFrame(() => {
-        backdrop.classList.remove('opacity-0');
-        backdrop.classList.add('opacity-100');
-        panel.classList.remove('translate-y-full');
-        panel.classList.add('translate-y-0');
-      });
-    }
+      if (sheet && backdrop && panel) {
+        tl.set(sheet, { display: 'block' })
+          .set(backdrop, { display: 'block' })
+          .to(backdrop, { opacity: 1, duration: 0.3, ease: 'power2.out' })
+          .to(panel, { y: '0%', duration: 0.5, ease: 'power4.out' }, '<0.1');
+      }
 
-    function closeSheet() {
-      if (!sheet || !backdrop || !panel) return;
-      isSheetOpen = false;
-      backdrop.classList.remove('opacity-100');
-      backdrop.classList.add('opacity-0');
-      panel.classList.remove('translate-y-0');
-      panel.classList.add('translate-y-full');
-      document.body.style.overflow = '';
-      setTimeout(() => {
-        if (!isSheetOpen) sheet.classList.add('hidden');
-      }, 300);
-    }
+      function openSheet() {
+        if (!sheet) return;
+        isSheetOpen = true;
+        document.body.style.overflow = 'hidden';
+        tl.timeScale(1).play();
+      }
 
-    openBtn?.addEventListener('click', openSheet, { signal });
-    closeBtn?.addEventListener('click', closeSheet, { signal });
-    backdrop?.addEventListener('click', closeSheet, { signal });
+      function closeSheet() {
+        if (!sheet) return;
+        isSheetOpen = false;
+        document.body.style.overflow = '';
+        tl.timeScale(2).reverse();
+      }
+
+      function forceCloseInstant() {
+        if (isSheetOpen) {
+          isSheetOpen = false;
+          document.body.style.overflow = '';
+          tl.progress(0).pause();
+        }
+      }
+
+      openBtn?.addEventListener('click', openSheet, { signal });
+      closeBtn?.addEventListener('click', closeSheet, { signal });
+      backdrop?.addEventListener('click', closeSheet, { signal });
+
+      // Clean up smoothly on Astro ViewTransitions
+      document.addEventListener('astro:before-preparation', () => {
+        forceCloseInstant();
+        abortController.abort();
+      }, { once: true });
+    });
   }
 
   document.addEventListener('astro:page-load', initMobileBookingBar);
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMobileBookingBar);
-  } else {
-    initMobileBookingBar();
-  }
 </script>

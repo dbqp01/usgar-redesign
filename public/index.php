@@ -95,6 +95,7 @@ $router->setMiddleware($middleware);
 $router->get('/api/health',           HealthCheckAction::class);
 $router->get('/api/rooms',            GetRoomsAction::class);
 $router->post('/api/booking',         CreateBookingAction::class);
+$router->post('/api/process-payment', \App\Features\Booking\Actions\ProcessPaymentAction::class);
 $router->post('/api/extend-hold',     ExtendHoldAction::class);
 $router->get('/api/booking-status',   GetBookingStatusAction::class);
 $router->post('/api/webhook',         HandleMercadoPagoWebhookAction::class);

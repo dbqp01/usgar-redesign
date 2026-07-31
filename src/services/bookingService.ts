@@ -79,6 +79,32 @@ export class BookingService implements IBookingService {
     };
   }
 
+  async processPayment(cartId: string, accessToken: string, paymentData: any): Promise<ApiResult<any>> {
+    const url = `${this.baseUrl}/process-payment`;
+    const response = await this.httpClient.post<any>(url, {
+      cart_id: cartId,
+      access_token: accessToken,
+      payment_data: paymentData
+    });
+
+    if (!response.ok || !response.data?.success) {
+      const err = response.data?.error || {};
+      return {
+        success: false,
+        error: {
+          code: err.code || 'PAYMENT_FAILED',
+          message: err.message || 'Error al procesar el pago.',
+          status: response.status,
+        },
+      };
+    }
+
+    return {
+      success: true,
+      data: response.data,
+    };
+  }
+
   async extendHoldSession(bookingId: string): Promise<ApiResult<{ extended: boolean; new_expires_at: string }>> {
     const url = `${this.baseUrl}/extend-hold`;
     const response = await this.httpClient.post<any>(url, { cart_id: bookingId });

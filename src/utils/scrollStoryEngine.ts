@@ -1,7 +1,8 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { SplitText } from 'gsap/SplitText';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 /**
  * USGAR Hotels — Interactive Scroll Story Engine
@@ -9,13 +10,21 @@ gsap.registerPlugin(ScrollTrigger);
  * optimizadas para Astro v7 ViewTransitions.
  */
 export class ScrollStoryEngine {
+  private static ctx: gsap.Context | null = null;
+
   /**
    * Limpia y destruye todas las instancias previas de ScrollTrigger
    * Evita memory leaks y desalineacion de coordenadas al navegar con ViewTransitions.
    */
   public static cleanup(): void {
     if (typeof window === 'undefined') return;
-    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    
+    if (this.ctx) {
+      this.ctx.revert();
+      this.ctx = null;
+    } else {
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    }
   }
 
   /**
@@ -28,29 +37,31 @@ export class ScrollStoryEngine {
     // Destruir triggers existentes antes de re-inicializar
     this.cleanup();
 
-    // 1. Hero Pin & Parallax Depth Shrink
-    this.initHeroStory();
+    this.ctx = gsap.context(() => {
+      // 1. Hero Pin & Parallax Depth Shrink
+      this.initHeroStory();
 
-    // 2. Room Explorer Pinned Horizontal Slider
-    this.initRoomsStory();
+      // 2. Room Explorer Pinned Horizontal Slider
+      this.initRoomsStory();
 
-    // 3. Heritage Inca Path SVG Stroke Drawing
-    this.initHeritageStory();
+      // 3. Heritage Inca Path SVG Stroke Drawing
+      this.initHeritageStory();
 
-    // 4. Floating Magnets & Cards Parallax
-    this.initParallaxCards();
+      // 4. Floating Magnets & Cards Parallax
+      this.initParallaxCards();
 
-    // 5. 3D Mouse Tilt Interactive Layers
-    this.initMouseTilt();
+      // 5. 3D Mouse Tilt Interactive Layers
+      this.initMouseTilt();
 
-    // 6. GSAP Velocity-Driven Scroll Marquee
-    this.initVelocityMarquee();
+      // 6. GSAP Velocity-Driven Scroll Marquee
+      this.initVelocityMarquee();
 
-    // 7. Section reveals handled by CSS .animate-on-scroll + IntersectionObserver
-    // (GSAP reveals removed — they conflict with CSS transition system)
+      // 7. Global Scroll Reveals (replaces manual CSS Observer)
+      this.initGlobalReveals();
 
-    // Refresh triggers despues de layout render
-    ScrollTrigger.refresh();
+      // Refresh triggers despues de layout render
+      ScrollTrigger.refresh();
+    });
   }
 
   /**
@@ -71,6 +82,9 @@ export class ScrollStoryEngine {
     let baseSpeed = 1;
     let currentX = 0;
 
+    // Optimización: quickSetter en lugar de gsap.set
+    const setX = gsap.quickSetter(track, 'x', 'px');
+
     // GSAP Ticker continuo
     const updateMarquee = () => {
       currentX -= baseSpeed;
@@ -79,7 +93,7 @@ export class ScrollStoryEngine {
       } else if (currentX >= 0) {
         currentX -= totalWidth;
       }
-      gsap.set(track, { x: currentX });
+      setX(currentX);
     };
 
     gsap.ticker.add(updateMarquee);
@@ -108,6 +122,33 @@ export class ScrollStoryEngine {
   }
 
   /**
+   * 7. Global Reveals con ScrollTrigger.batch
+   * Maneja las animaciones de entrada de forma elegante y sincronizada
+   */
+  private static initGlobalReveals(): void {
+    const elements = gsap.utils.toArray('.animate-on-scroll') as HTMLElement[];
+    if (!elements.length) return;
+
+    ScrollTrigger.batch(elements, {
+      interval: 0.1,
+      batchMax: 5,
+      start: 'top 85%',
+      onEnter: (batch) => {
+        gsap.to(batch, {
+          opacity: 1,
+          y: 0,
+          stagger: 0.15,
+          duration: 1.2,
+          ease: 'power3.out',
+          overwrite: true
+        });
+        // Marcar como completado para remover will-change (limpieza)
+        batch.forEach((el: any) => el.classList.add('visible'));
+      }
+    });
+  }
+
+  /**
    * 5. 3D Mouse Tilt for Interactive Image Containers
    */
   private static initMouseTilt(): void {
@@ -118,10 +159,12 @@ export class ScrollStoryEngine {
       if (!layers.length) return;
 
       const setters = Array.from(layers).map((layer) => {
-        const factor = parseFloat(layer.getAttribute('data-tilt-layer') || '1');
+        const el = layer as HTMLElement;
+        el.style.willChange = 'transform'; // Optimización de capa GPU
+        const factor = parseFloat(el.getAttribute('data-tilt-layer') || '1');
         return {
-          xTo: gsap.quickTo(layer, 'x', { duration: 0.5, ease: 'power2.out' }),
-          yTo: gsap.quickTo(layer, 'y', { duration: 0.5, ease: 'power2.out' }),
+          xTo: gsap.quickTo(el, 'x', { duration: 0.5, ease: 'power2.out' }),
+          yTo: gsap.quickTo(el, 'y', { duration: 0.5, ease: 'power2.out' }),
           factor
         };
       });
@@ -178,10 +221,87 @@ export class ScrollStoryEngine {
       ease: 'none'
     }, 0);
 
+    // SplitText for Hero Title
+    const title = heroSec.querySelector('h1');
+    const subtitle = heroSec.querySelector('p');
+    const buttons = heroSec.querySelector('.flex-col.sm\\:flex-row');
+
+    if (title && subtitle && buttons) {
+      // Remover clases de CSS manuales si existieran
+      title.classList.remove('animate-fade-in');
+      subtitle.classList.remove('animate-slide-up');
+      buttons.classList.remove('animate-slide-up');
+      (subtitle as HTMLElement).style.animation = 'none';
+      (buttons as HTMLElement).style.animation = 'none';
+
+      // Configurar estado inicial
+      gsap.set([subtitle, buttons], { opacity: 0, y: 30 });
+      
+      const splitTitle = new SplitText(title, { type: 'words,chars' });
+      // GSAP Core Optimization: Removed rotateX (3D flip) for a cleaner, luxurious fade-up
+      gsap.set(splitTitle.chars, { opacity: 0, y: 40 });
+
+      // Coreografía: Preloader -> Hero Text
+      const isFirstLoad = !sessionStorage.getItem('usgar_loaded');
+      const entryTl = gsap.timeline();
+
+      if (isFirstLoad) {
+        // Animación del Preloader solo en primera visita
+        const preloader = document.getElementById('cinematic-preloader');
+        const preloaderText = document.getElementById('preloader-text');
+        const preloaderLine = document.getElementById('preloader-line');
+
+        if (preloader && preloaderText && preloaderLine) {
+          entryTl.to(preloaderText, {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            ease: 'power3.out'
+          })
+          .to(preloaderLine, {
+            scaleX: 1, // Layout Thrashing Fix: Use scaleX instead of width
+            duration: 0.8,
+            ease: 'power3.inOut'
+          }, '-=0.5')
+          .to(preloader, {
+            yPercent: -100,
+            duration: 1.2,
+            ease: 'power4.inOut',
+            delay: 0.5
+          })
+          .set(preloader, { display: 'none' }); // Cleanup visual
+
+          // Marcar como cargado para futuras navegaciones SPA
+          sessionStorage.setItem('usgar_loaded', 'true');
+        }
+      }
+
+      // Animación de entrada premium (Hero)
+      entryTl.to(splitTitle.chars, {
+        duration: 1.2,
+        opacity: 1,
+        y: 0,
+        stagger: 0.04,
+        ease: 'power3.out', // Softer curve for Quiet Luxury
+      }, isFirstLoad ? '-=0.5' : '0') // Si hay preloader, se entrelaza, si no, arranca de inmediato
+      .to(subtitle, {
+        duration: 1.2,
+        opacity: 0.9,
+        y: 0,
+        ease: 'power3.out'
+      }, '-=0.8')
+      .to(buttons, {
+        duration: 1.2,
+        opacity: 1,
+        y: 0,
+        ease: 'power3.out'
+      }, '-=1');
+    }
+
     if (heroContent) {
       heroTl.to(heroContent, {
-        y: -60,
-        opacity: 0.2,
+        y: -100, // Slightly more travel
+        opacity: 0,
         ease: 'none'
       }, 0);
     }
@@ -210,6 +330,9 @@ export class ScrollStoryEngine {
         invalidateOnRefresh: true,
       }
     });
+
+    // Optimización: will-change para el scroll horizontal
+    (track as HTMLElement).style.willChange = 'transform';
 
     roomsTl.to(track, {
       x: () => -totalWidth,

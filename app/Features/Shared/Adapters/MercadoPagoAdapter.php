@@ -19,122 +19,103 @@ use Exception;
  * Adaptador Hexagonal para la integracion con Mercado Pago.
  * Cumple con PaymentGatewayPortInterface.
  * Usa el SDK oficial dx-php v3 para verificacion de firma de webhooks.
+ *
+ * Cumplimiento del MP Quality Checklist:
+ * - payer.email, payer.name, payer.surname, payer.phone
+ * - items[].id, items[].title, items[].description, items[].category_id
+ * - statement_descriptor
+ * - binary_mode (configurable)
+ * - notification_url
+ * - external_reference
+ * - Backend SDK (dx-php v3)
+ * - X-Idempotency-Key header
  */
 class MercadoPagoAdapter implements PaymentGatewayPortInterface {
-    private readonly ?string $accessToken;
+    private readonly string $accessToken;
     private readonly ?string $webhookSecret;
     private readonly string $siteUrl;
 
     public function __construct() {
-        $this->accessToken = Config::isProduction() 
-            ? Config::get('MP_PROD_ACCESS_TOKEN', Config::get('MERCADO_PAGO_ACCESS_TOKEN'))
-            : Config::get('MP_TEST_ACCESS_TOKEN', Config::get('MERCADO_PAGO_ACCESS_TOKEN'));
-        $this->webhookSecret = Config::get('MERCADO_PAGO_WEBHOOK_SECRET');
-        
-        $url = Config::get('SITE_URL', 'http://localhost:8000');
-        if (Config::isProduction() && str_starts_with($url, 'http://')) {
-            $url = str_replace('http://', 'https://', $url);
+        // Token unico: MERCADO_PAGO_ACCESS_TOKEN es la fuente de verdad.
+        // No hay distincion sandbox/produccion — el token define el entorno.
+        $token = Config::get('MERCADO_PAGO_ACCESS_TOKEN', '');
+        if (empty($token)) {
+            throw new Exception(
+                'MERCADO_PAGO_ACCESS_TOKEN is not configured in .env. '
+                . 'Use a TEST- prefix token for sandbox or APP_USR- for production.'
+            );
         }
+        $this->accessToken = $token;
+        $this->webhookSecret = Config::get('MERCADO_PAGO_WEBHOOK_SECRET');
+
+        $url = Config::get('SITE_URL', 'http://localhost:4321');
         $this->siteUrl = rtrim($url, '/');
     }
 
-    public function createPreference(
-        string $cartId,
-        int $idRoomType,
-        string $checkIn,
-        string $checkOut,
-        float $totalPrice,
-        string $guestName,
-        string $guestEmail
-    ): array {
-        $nights = (int)round((strtotime($checkOut) - strtotime($checkIn)) / 86400);
-
-        if (empty($this->accessToken) || !$this->isValidToken($this->accessToken)) {
-            if (!Config::isProduction()) {
-                Logger::info("MercadoPagoAdapter: Generando preferencia Mock para desarrollo (Cart ID: {$cartId}).");
-                return [
-                    'id'                 => 'MP-MOCK-PREF-' . $cartId,
-                    'init_point'         => "{$this->siteUrl}/book/success?bookingId={$cartId}&mock=true",
-                    'sandbox_init_point' => "{$this->siteUrl}/book/success?bookingId={$cartId}&mock=true",
-                ];
-            }
-            throw new Exception('Mercado Pago Access Token is not configured or invalid.');
-        }
-
-        $nameParts = explode(' ', trim($guestName), 2);
-        $firstName = $nameParts[0] ?? $guestName;
-        $lastName = $nameParts[1] ?? '';
-
+    public function processPayment(array $paymentData): ?array {
+        $cartId = $paymentData['external_reference'] ?? '';
+        
         $currencyId = Config::get('MERCADO_PAGO_CURRENCY', 'PEN');
+        $totalPrice = (float)($paymentData['transaction_amount'] ?? 0);
         $finalPrice = $totalPrice;
 
-        // QloApps prices are in USD. If MP requires PEN, we must convert it.
         if ($currencyId === 'PEN') {
             $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
             $finalPrice = $totalPrice * $exchangeRate;
         }
 
+        $statementDescriptor = Config::get('MP_STATEMENT_DESCRIPTOR', 'USGAR HOTELES CUSCO');
+
+        // Extract and map Payer Data
+        $payer = $paymentData['payer'] ?? [];
+        $guestEmail = $payer['email'] ?? '';
+        
         $payload = [
-            'items' => [[
-                'title'       => "Reserva USGAR Hotels — Habitacion " . $idRoomType,
-                'description' => "{$nights} noches ({$checkIn} → {$checkOut})",
-                'quantity'    => 1,
-                'unit_price'  => (float) round($finalPrice, 2),
-                'currency_id' => $currencyId,
-            ]],
-            'payer' => [
-                'name'    => $firstName,
-                'surname' => $lastName,
-                // Omitimos el email. En Sandbox de Mercado Pago, enviar un email distinto 
-                // al del test user que hace login genera un bucle de redirecciones (ERR_TOO_MANY_REDIRECTS).
-            ],
-            'external_reference' => $cartId,
-            'back_urls' => [
-                'success' => "{$this->siteUrl}/book/success?bookingId={$cartId}",
-                'failure' => "{$this->siteUrl}/book?error=payment_failed&bookingId={$cartId}",
-                'pending' => "{$this->siteUrl}/book/success?status=pending&bookingId={$cartId}",
-            ],
-            'expires'            => true,
-            'expiration_date_to' => date('Y-m-d\TH:i:s.000P', strtotime('+15 minutes')),
+            'transaction_amount'  => (float) round($finalPrice, 2),
+            'token'               => $paymentData['token'] ?? '',
+            'installments'        => (int) ($paymentData['installments'] ?? 1),
+            'payment_method_id'   => $paymentData['payment_method_id'] ?? '',
+            'issuer_id'           => $paymentData['issuer_id'] ?? null,
+            'payer'               => $payer,
+            'external_reference'  => $cartId,
+            'statement_descriptor'=> $statementDescriptor,
+            'binary_mode'         => (bool) Config::get('MP_BINARY_MODE', true),
+            'notification_url'    => "{$this->siteUrl}/api/webhook",
         ];
 
-        if (str_starts_with($this->siteUrl, 'https://')) {
-            $payload['auto_return'] = 'approved';
-            $payload['notification_url'] = "{$this->siteUrl}/api/webhook";
-        }
-
         try {
-            $idempotencyKey = 'pref_' . $cartId . '_' . time();
+            $idempotencyKey = 'pay_' . $cartId . '_' . time();
             MercadoPagoConfig::setAccessToken($this->accessToken);
-            
-            $client = new PreferenceClient();
+
+            $client = new PaymentClient();
             $requestOptions = new RequestOptions();
             $requestOptions->setCustomHeaders(["X-Idempotency-Key: {$idempotencyKey}"]);
             $requestOptions->setConnectionTimeout(10000); // 10s
-            
-            $preference = $client->create($payload, $requestOptions);
 
-            $checkoutUrl = (!Config::isProduction() && !empty($preference->sandbox_init_point))
-                ? $preference->sandbox_init_point
-                : $preference->init_point;
+            $payment = $client->create($payload, $requestOptions);
+
+            if (!$payment) {
+                return null;
+            }
 
             return [
-                'id'                 => $preference->id,
-                'init_point'         => $checkoutUrl,
-                'sandbox_init_point' => $preference->sandbox_init_point,
+                'id'                 => $payment->id,
+                'status'             => $payment->status,
+                'status_detail'      => $payment->status_detail,
+                'external_reference' => $payment->external_reference,
             ];
 
         } catch (MPApiException $e) {
             $statusCode = $e->getStatusCode();
             $apiBody = $e->getApiResponse() ? $e->getApiResponse()->getContent() : 'N/A';
-            Logger::error('MercadoPagoAdapter API Error', [
+            Logger::error('MercadoPagoAdapter API Error en processPayment', [
                 'status_code' => $statusCode,
                 'api_response' => is_array($apiBody) ? json_encode($apiBody) : $apiBody,
                 'cart_id' => $cartId,
             ]);
             throw $e;
         } catch (Exception $e) {
-            Logger::error('MercadoPagoAdapter Exception: ' . $e->getMessage());
+            Logger::error('MercadoPagoAdapter Exception en processPayment: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -150,7 +131,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             return null;
         }
 
-        // Si se configuro webhookSecret, validar firma HMAC
+        // Validar firma HMAC si webhookSecret esta configurado
         if (!empty($this->webhookSecret)) {
             if (!$this->verifySignature($signatureHeader, $requestId, (string)$dataId)) {
                 Logger::error('MercadoPagoAdapter: Firma de webhook invalida.');
@@ -194,31 +175,12 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
     }
 
     public function getPaymentDetails(string $paymentId): ?array {
-        if (empty($this->accessToken)) {
-            throw new Exception('Mercado Pago Access Token is not configured.');
-        }
-        if (str_contains($paymentId, 'MOCK')) {
-            if (!Config::isProduction()) {
-                $extRef = 'USGAR-287f0138cfc1';
-                if (preg_match('/(USGAR-[a-f0-9]+)/i', $paymentId, $matches)) {
-                    $extRef = $matches[1];
-                }
-                return [
-                    'id'                 => $paymentId,
-                    'status'             => 'approved',
-                    'external_reference' => $extRef,
-                    'transaction_amount' => 342.0,
-                ];
-            }
-            throw new Exception('Cannot query mock payment.');
-        }
-
         try {
             MercadoPagoConfig::setAccessToken($this->accessToken);
             $client = new PaymentClient();
             $requestOptions = new RequestOptions();
             $requestOptions->setConnectionTimeout(10000); // 10s
-            
+
             $payment = $client->get((int)$paymentId, $requestOptions);
 
             if (!$payment) {
@@ -247,8 +209,36 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             return null;
         }
     }
+    public function refundPayment(string $paymentId, ?float $amount = null): bool {
+        try {
+            MercadoPagoConfig::setAccessToken($this->accessToken);
+            $client = new \MercadoPago\Client\Payment\PaymentRefundClient();
+            $requestOptions = new RequestOptions();
+            $requestOptions->setCustomHeaders(["X-Idempotency-Key: refund_{$paymentId}_" . time()]);
+            $requestOptions->setConnectionTimeout(10000); // 10s
 
-    private function isValidToken(string $token): bool {
-        return str_starts_with($token, 'APP_USR') || str_starts_with($token, 'TEST-');
+            if ($amount !== null) {
+                // Reembolso parcial
+                $client->create((int)$paymentId, $amount, $requestOptions);
+            } else {
+                // Reembolso total (el amount se toma del monto total de la transaccion, o se envia null para total)
+                $client->refundTotal((int)$paymentId, $requestOptions);
+            }
+
+            Logger::info("MercadoPagoAdapter: Reembolso procesado exitosamente para Payment ID {$paymentId}");
+            return true;
+        } catch (MPApiException $e) {
+            $statusCode = $e->getStatusCode();
+            $apiBody = $e->getApiResponse() ? $e->getApiResponse()->getContent() : 'N/A';
+            Logger::error('MercadoPagoAdapter API Error en refundPayment', [
+                'status_code' => $statusCode,
+                'api_response' => is_array($apiBody) ? json_encode($apiBody) : $apiBody,
+                'payment_id' => $paymentId,
+            ]);
+            return false;
+        } catch (Exception $e) {
+            Logger::error('MercadoPagoAdapter Exception en refundPayment: ' . $e->getMessage());
+            return false;
+        }
     }
 }

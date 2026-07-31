@@ -193,9 +193,68 @@ class QloAppAdapter implements PmsPortInterface {
         return $result;
     }
 
-    public function createCart(int $idHotel, int $idProduct, string $checkIn, string $checkOut, int $guests = 1): string {
-        // USGAR is the PMS front. We generate a local cart ID and block availability in provisional_bookings locally.
-        // We will push the actual booking to QloApps advanced /api/bookings in confirmOrder.
+    public function createCart(int $idHotel, int $idProduct, string $checkIn, string $checkOut, int $guests = 1, float $totalPrice = 0, string $guestName = '', string $guestEmail = '', string $guestPhone = ''): string {
+        if (empty($this->apiKey) || empty($this->apiUrl)) {
+            Logger::error('QloAppAdapter: QloApps API key or API URL is not configured. Falling back to local cart.');
+            return 'USGAR-' . bin2hex(random_bytes(6));
+        }
+
+        $nameParts = explode(' ', $guestName, 2);
+        $firstName = htmlspecialchars($nameParts[0] ?: 'Guest', ENT_XML1);
+        $lastName = htmlspecialchars($nameParts[1] ?? 'Guest', ENT_XML1);
+        $safeEmail = htmlspecialchars($guestEmail ?: 'no-reply@hotelesusgar.com', ENT_XML1);
+        $phone = htmlspecialchars($guestPhone ?: '000000000', ENT_XML1);
+        $currency = Config::get('MERCADO_PAGO_CURRENCY', 'PEN');
+        
+        // payment_status 2 is generally Pending in QloApps/PrestaShop
+        $xmlData = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<qloapps xmlns:xlink="http://www.w3.org/1999/xlink">
+    <booking>
+        <id_property>{$idHotel}</id_property>
+        <currency>{$currency}</currency>
+        <booking_status>1</booking_status>
+        <payment_status>0</payment_status>
+        <source>website</source>
+        <booking_date>MERCADO PAGO (HOLD)</booking_date>
+        <id_language>1</id_language>
+        <associations>
+            <customer_detail api="customer_detail">
+                <firstname>{$firstName}</firstname>
+                <lastname>{$lastName}</lastname>
+                <email>{$safeEmail}</email>
+                <phone>{$phone}</phone>
+            </customer_detail>
+            <price_details api="price_details">
+                <total_paid>0</total_paid>
+                <total_price_with_tax>{$totalPrice}</total_price_with_tax>
+            </price_details>
+            <room_types nodeType="room_type" api="room_types">
+                <room_type>
+                    <id_room_type>{$idProduct}</id_room_type>
+                    <checkin_date>{$checkIn} 12:00:00</checkin_date>
+                    <checkout_date>{$checkOut} 10:00:00</checkout_date>
+                    <number_of_rooms>1</number_of_rooms>
+                    <rooms>
+                        <room>
+                            <adults>{$guests}</adults>
+                            <child>0</child>
+                            <unit_price_without_tax>{$totalPrice}</unit_price_without_tax>
+                        </room>
+                    </rooms>
+                </room_type>
+            </room_types>
+        </associations>
+    </booking>
+</qloapps>
+XML;
+
+        $xml = $this->executeRequest('bookings', 'POST', $xmlData);
+        if ($xml && isset($xml->booking->id)) {
+            return (string)$xml->booking->id;
+        }
+
+        Logger::error("QloAppAdapter: Error al crear Cart/Booking en QloApps, fallback a USGAR- local.");
         return 'USGAR-' . bin2hex(random_bytes(6));
     }
 
@@ -204,32 +263,33 @@ class QloAppAdapter implements PmsPortInterface {
             throw new Exception('QloApps API key or API URL is not configured.');
         }
 
-        // Recuperamos los datos locales guardados durante createCart
-        $stmt = $this->pdo->prepare("SELECT * FROM provisional_bookings WHERE cart_id = :cartId");
-        $stmt->execute([':cartId' => $cartId]);
-        $hold = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Si el cartId es el fallback local (USGAR-), tenemos que usar el flujo antiguo (crearlo de cero)
+        if (str_starts_with($cartId, 'USGAR-')) {
+            $stmt = $this->pdo->prepare("SELECT * FROM provisional_bookings WHERE cart_id = :cartId");
+            $stmt->execute([':cartId' => $cartId]);
+            $hold = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$hold) {
-            Logger::error("QloAppAdapter: No se encontró la reserva provisional local para {$cartId}");
-            return null;
-        }
+            if (!$hold) {
+                Logger::error("QloAppAdapter: No se encontró la reserva provisional local para {$cartId}");
+                return null;
+            }
 
-        $idHotel = $hold['id_hotel'] ?? 1;
-        $idProduct = $hold['id_room_type'];
-        $checkIn = $hold['checkin'];
-        $checkOut = $hold['checkout'];
-        
-        $guestData = json_decode((string)$hold['guest_data'], true) ?? [];
-        $guests = $guestData['guests'] ?? 1;
-        $phone = $guestData['phone'] ?? '000000000';
-        
-        $nameParts = explode(' ', $guestName, 2);
-        $firstName = htmlspecialchars($nameParts[0] ?? $guestName, ENT_XML1);
-        $lastName = htmlspecialchars($nameParts[1] ?? 'Guest', ENT_XML1);
-        $safeEmail = htmlspecialchars($guestEmail, ENT_XML1);
-        $currency = Config::get('MERCADO_PAGO_CURRENCY', 'PEN');
+            $idHotel = $hold['id_hotel'] ?? 1;
+            $idProduct = $hold['id_room_type'];
+            $checkIn = $hold['checkin'];
+            $checkOut = $hold['checkout'];
+            
+            $guestData = json_decode((string)$hold['guest_data'], true) ?? [];
+            $guests = $guestData['guests'] ?? 1;
+            $phone = $guestData['phone'] ?? '000000000';
+            
+            $nameParts = explode(' ', $guestName, 2);
+            $firstName = htmlspecialchars($nameParts[0] ?? $guestName, ENT_XML1);
+            $lastName = htmlspecialchars($nameParts[1] ?? 'Guest', ENT_XML1);
+            $safeEmail = htmlspecialchars($guestEmail, ENT_XML1);
+            $currency = Config::get('MERCADO_PAGO_CURRENCY', 'PEN');
 
-        $xmlData = <<<XML
+            $xmlData = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <qloapps xmlns:xlink="http://www.w3.org/1999/xlink">
     <booking>
@@ -270,15 +330,37 @@ class QloAppAdapter implements PmsPortInterface {
     </booking>
 </qloapps>
 XML;
+            $xml = $this->executeRequest('bookings', 'POST', $xmlData);
+            if ($xml && isset($xml->booking->id)) {
+                return (string)$xml->booking->id;
+            }
+            return null;
+        }
 
-        $xml = $this->executeRequest('bookings', 'POST', $xmlData);
+        // El cartId es un ID real numérico de QloApps, hacemos PUT para actualizar el pago
+        $currency = Config::get('MERCADO_PAGO_CURRENCY', 'PEN');
+        $xmlData = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<qloapps xmlns:xlink="http://www.w3.org/1999/xlink">
+    <booking>
+        <id>{$cartId}</id>
+        <payment_status>1</payment_status>
+        <price_details api="price_details">
+            <total_paid>{$totalPrice}</total_paid>
+            <total_price_with_tax>{$totalPrice}</total_price_with_tax>
+        </price_details>
+    </booking>
+</qloapps>
+XML;
+        $xml = $this->executeRequest('bookings/' . $cartId, 'PUT', $xmlData);
         if ($xml && isset($xml->booking->id)) {
             return (string)$xml->booking->id;
         }
 
-        Logger::error("QloAppAdapter: Error al confirmar la Reserva {$cartId} en /api/bookings");
+        Logger::error("QloAppAdapter: Error al actualizar la reserva {$cartId} a pagada.");
         return null;
     }
+
 
     public function extendCartSession(string $cartId): bool {
         if (!$this->pdo) {

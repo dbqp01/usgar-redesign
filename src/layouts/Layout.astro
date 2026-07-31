@@ -8,6 +8,9 @@ import { siteSettings } from '../data/settings';
 import '../styles/global.css';
 import StatusBanner from '../components/ui/StatusBanner.astro';
 import SmoothScroll from '../components/common/SmoothScroll.astro';
+import Preloader from '../components/common/Preloader.astro';
+import CustomCursor from '../components/common/CustomCursor.astro';
+import NoiseOverlay from '../components/common/NoiseOverlay.astro';
 import { useTranslations } from '../i18n/utils';
 import type { Locale } from '../i18n/utils';
 
@@ -136,60 +139,6 @@ const localeMap: Record<Locale, string> = {
     <!-- View Transitions -->
     <ClientRouter />
 
-    <!-- Global Scroll Animations Observer -->
-    <script>
-      function initScrollAnimations() {
-        const elements = document.querySelectorAll('.animate-on-scroll:not(.visible)');
-        if (!elements.length) return;
-
-        // Respect prefers-reduced-motion: make all visible immediately
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          elements.forEach(el => el.classList.add('visible'));
-          return;
-        }
-
-        let delayCount = 0;
-        let timeoutId: ReturnType<typeof setTimeout> | undefined;
-
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const target = entry.target as HTMLElement;
-              if (delayCount > 0) {
-                target.style.transitionDelay = `${delayCount * 0.15}s`;
-              }
-              
-              // Force browser repaint to ensure transition delay applies
-              
-              target.classList.add('visible');
-              observer.unobserve(entry.target);
-              
-              delayCount++;
-            }
-          });
-          
-          // Reset delay counter after a short grouping window
-          clearTimeout(timeoutId);
-          timeoutId = setTimeout(() => { delayCount = 0; }, 100);
-        }, {
-          threshold: 0.1,
-          rootMargin: "0px 0px -50px 0px"
-        });
-
-        elements.forEach(el => {
-          observer.observe(el);
-        });
-
-        // Safety fallback: if any elements are still hidden after 4s, force them visible
-        setTimeout(() => {
-          document.querySelectorAll('.animate-on-scroll:not(.visible)').forEach(el => {
-            el.classList.add('visible');
-          });
-        }, 4000);
-      }
-
-      document.addEventListener('astro:page-load', initScrollAnimations);
-    </script>
   </head>
   <body class="bg-surface-light dark:bg-surface-dark text-text-primary-light dark:text-text-primary-dark transition-colors duration-300 min-h-screen flex flex-col">
     <!-- Skip to content (accessibility) -->
@@ -197,9 +146,15 @@ const localeMap: Record<Locale, string> = {
       {t('global.skipToContent')}
     </a>
 
+    <!-- Cinematic & Aesthetic Components -->
+    <Preloader />
+    <NoiseOverlay />
+    <CustomCursor />
+
     <Navbar />
 
-    <main id="main-content" class="flex-grow">
+    <!-- El main no usa transiciones de Astro para que GSAP tenga control total de entrada/salida -->
+    <main id="main-content" class="flex-grow pt-[72px]" transition:animate="none">
       <slot />
     </main>
 

@@ -218,12 +218,13 @@ const navLinks = [
     class="fixed inset-0 z-40 hidden lg:hidden"
   >
     <!-- Backdrop -->
-    <div id="mobile-backdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+    <div id="mobile-backdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0"></div>
 
     <!-- Panel -->
     <div
       id="mobile-panel"
-      class="absolute right-0 top-0 h-dvh w-80 max-w-[85vw] bg-surface-card-light dark:bg-surface-card-dark shadow-2xl translate-x-full transition-transform duration-300 ease-out flex flex-col pt-safe pb-safe overflow-y-auto"
+      class="absolute right-0 top-0 h-dvh w-80 max-w-[85vw] bg-surface-card-light dark:bg-surface-card-dark shadow-2xl flex flex-col pt-safe pb-safe overflow-y-auto"
+      style="transform: translateX(100%);"
     >
       <div class="flex flex-col h-full px-6 py-6">
         <!-- Drawer Header with close button -->
@@ -246,7 +247,7 @@ const navLinks = [
           {navLinks.map(link => (
             <a
               href={link.href}
-              class="text-base font-semibold py-3.5 px-4 rounded-xl hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center min-h-[48px]"
+              class="mobile-nav-link text-base font-semibold py-3.5 px-4 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors duration-200 flex items-center min-h-[48px]"
             >
               {link.label}
             </a>
@@ -263,7 +264,7 @@ const navLinks = [
               <a
                 href={getLocaleUrl(l.code)}
                 class:list={[
-                  'flex items-center gap-2 p-3 rounded-xl border text-sm font-medium transition-all',
+                  'mobile-lang-link flex items-center gap-2 p-3 rounded-xl border text-sm font-medium transition-colors',
                   l.code === lang ? 'border-primary bg-primary/10 text-primary' : 'border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5'
                 ]}
               >
@@ -283,7 +284,7 @@ const navLinks = [
           <a
             id="mobile-auth-login-btn"
             href={getRelativeLocaleUrl(lang, 'login')}
-            class="flex justify-center items-center gap-2 bg-stone-100 dark:bg-stone-800 text-text-primary-light dark:text-text-primary-dark font-medium py-3 rounded-xl transition-all duration-200"
+            class="mobile-auth-item flex justify-center items-center gap-2 bg-stone-100 dark:bg-stone-800 text-text-primary-light dark:text-text-primary-dark font-medium py-3 rounded-xl transition-colors duration-200"
           >
             {t('auth.signIn')}
           </a>
@@ -319,7 +320,7 @@ const navLinks = [
         <a
           href={getRelativeLocaleUrl(lang, 'book')}
           data-astro-prefetch="tap"
-          class="bg-primary hover:bg-primary-dark text-white font-semibold text-center py-4 rounded-2xl transition-all duration-300 text-lg"
+          class="mobile-cta-btn bg-primary hover:bg-primary-dark text-white font-semibold text-center py-4 rounded-2xl transition-colors duration-300 text-lg shadow-md"
         >
           {t('nav.bookNow')}
         </a>
@@ -330,8 +331,9 @@ const navLinks = [
 
 <script>
   import { getUser, logout } from '../utils/auth-client';
+  import gsap from 'gsap';
 
-  let abortController = new AbortController();
+  let ctx: gsap.Context;
 
   async function initAuth(signal: AbortSignal) {
     const loginBtn = document.getElementById('auth-login-btn');
@@ -390,8 +392,10 @@ const navLinks = [
   }
 
   function initNavbar() {
-    abortController.abort();
-    abortController = new AbortController();
+    if (ctx) ctx.revert();
+    
+    // El abort controller es nativo pero GSAP context es mejor para las animaciones
+    const abortController = new AbortController();
     const signal = abortController.signal;
 
     const navbar = document.getElementById('main-navbar');
@@ -401,11 +405,12 @@ const navLinks = [
     const mobilePanel = document.getElementById('mobile-panel');
     const hamburgerIcon = document.getElementById('hamburger-icon');
     const closeIcon = document.getElementById('close-icon');
+    const mobileMenuCloseBtn = document.getElementById('mobile-menu-close-btn');
 
     if (!navbar) return;
 
+    // --- 1. Sticky Navbar Logic ---
     let ticking = false;
-
     function handleScroll() {
       if (!ticking) {
         requestAnimationFrame(() => {
@@ -423,67 +428,84 @@ const navLinks = [
         ticking = true;
       }
     }
-    
     window.addEventListener('scroll', handleScroll, { passive: true, signal });
     handleScroll();
 
-    let isMenuOpen = false;
+    // --- 2. Mobile Menu GSAP Logic ---
+    ctx = gsap.context(() => {
+      let isMenuOpen = false;
+      const tl = gsap.timeline({ paused: true });
 
-    function openMenu() {
-      if (!mobileMenu || !mobileBackdrop || !mobilePanel || !hamburgerIcon || !closeIcon) return;
-      isMenuOpen = true;
-      mobileMenu.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-      requestAnimationFrame(() => {
-        mobileBackdrop.classList.remove('opacity-0');
-        mobileBackdrop.classList.add('opacity-100');
-        mobilePanel.classList.remove('translate-x-full');
-        mobilePanel.classList.add('translate-x-0');
+      // Coreografía Quiet Luxury
+      if (mobileMenu && mobileBackdrop && mobilePanel) {
+        tl.set(mobileMenu, { display: 'block' })
+          .to(mobileBackdrop, { opacity: 1, duration: 0.3, ease: 'power2.out' })
+          .to(mobilePanel, { x: '0%', duration: 0.5, ease: 'power4.out' }, '<0.1')
+          .fromTo('.mobile-nav-link', 
+            { x: 30, opacity: 0 }, 
+            { x: 0, opacity: 1, duration: 0.4, stagger: 0.05, ease: 'power3.out' }, 
+            '-=0.3'
+          )
+          .fromTo('.mobile-lang-link, .mobile-auth-item, .mobile-cta-btn',
+            { y: 20, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.4, stagger: 0.05, ease: 'power3.out' },
+            '-=0.3'
+          );
+      }
+
+      function openMenu() {
+        if (!mobileMenu) return;
+        isMenuOpen = true;
+        document.body.style.overflow = 'hidden';
+        hamburgerIcon?.classList.add('hidden');
+        closeIcon?.classList.remove('hidden');
+        tl.timeScale(1).play();
+      }
+
+      function closeMenu() {
+        if (!mobileMenu) return;
+        isMenuOpen = false;
+        document.body.style.overflow = '';
+        hamburgerIcon?.classList.remove('hidden');
+        closeIcon?.classList.add('hidden');
+        tl.timeScale(2).reverse(); // Reverse faster
+      }
+
+      function forceCloseInstant() {
+        if (isMenuOpen) {
+          isMenuOpen = false;
+          document.body.style.overflow = '';
+          tl.progress(0).pause();
+        }
+      }
+
+      mobileMenuBtn?.addEventListener('click', () => isMenuOpen ? closeMenu() : openMenu(), { signal });
+      mobileMenuCloseBtn?.addEventListener('click', closeMenu, { signal });
+      mobileBackdrop?.addEventListener('click', closeMenu, { signal });
+
+      mobileMenu?.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu, { signal });
       });
-      hamburgerIcon.classList.add('hidden');
-      closeIcon.classList.remove('hidden');
-    }
 
-    function closeMenu() {
-      if (!mobileMenu || !mobileBackdrop || !mobilePanel || !hamburgerIcon || !closeIcon) return;
-      isMenuOpen = false;
-      mobileBackdrop.classList.remove('opacity-100');
-      mobileBackdrop.classList.add('opacity-0');
-      mobilePanel.classList.remove('translate-x-0');
-      mobilePanel.classList.add('translate-x-full');
-      hamburgerIcon.classList.remove('hidden');
-      closeIcon.classList.add('hidden');
-      document.body.style.overflow = '';
-      setTimeout(() => {
-        if (!isMenuOpen) mobileMenu.classList.add('hidden');
-      }, 300);
-    }
-
-    mobileMenuBtn?.addEventListener('click', () => {
-      isMenuOpen ? closeMenu() : openMenu();
-    }, { signal });
-
-    const mobileMenuCloseBtn = document.getElementById('mobile-menu-close-btn');
-    mobileMenuCloseBtn?.addEventListener('click', closeMenu, { signal });
-
-    mobileBackdrop?.addEventListener('click', closeMenu, { signal });
-
-    mobileMenu?.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', closeMenu, { signal });
+      // ¡El gancho salvador de Astro! 
+      // Cuando Astro empieza a enrutar, matamos la animación instantáneamente y liberamos el scroll.
+      document.addEventListener('astro:before-preparation', () => {
+        forceCloseInstant();
+        abortController.abort();
+      }, { once: true });
     });
 
+    // --- 3. Theme Toggle ---
     function toggleTheme() {
       const isDark = document.documentElement.classList.toggle('dark');
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
     }
-
     document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme, { signal });
     document.getElementById('theme-toggle-mobile')?.addEventListener('click', toggleTheme, { signal });
 
-    // Initialize Auth state
+    // --- 4. Initialize Auth ---
     initAuth(signal);
   }
 
-  initNavbar();
   document.addEventListener('astro:page-load', initNavbar);
 </script>
