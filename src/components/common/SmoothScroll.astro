@@ -26,9 +26,12 @@
     try {
       gsap.registerPlugin(ScrollTrigger);
 
-      if (!lenisInstance) {
+      // Desactivar Lenis en dispositivos táctiles / móviles (tienen scroll inercial nativo)
+      const isMobileTouch = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 1024;
+
+      if (!isMobileTouch && !lenisInstance) {
         lenisInstance = new Lenis({
-          duration: 1.5,
+          duration: 1.2,
           easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
           smoothWheel: true,
         });
@@ -44,7 +47,7 @@
         (window as any).__lenis = lenisInstance;
       }
 
-      // Initialize story engine animations
+      // Initialize story engine animations for both desktop and mobile
       if (isHomePage()) {
         ScrollStoryEngine.initHomePageStory();
       } else {
@@ -58,17 +61,30 @@
 
   // Teardown ScrollTrigger on View Transitions before swap
   document.addEventListener('astro:before-preparation', () => {
+    // 1. Matar todas las animaciones de la página anterior
     ScrollStoryEngine.cleanup();
     
+    // 2. Destruir Lenis rigurosamente
     if (lenisInstance) {
       lenisInstance.destroy();
       lenisInstance = null;
+      (window as any).__lenis = null;
     }
 
+    // 3. Remover el ticker
     if (rafCallback) {
       gsap.ticker.remove(rafCallback);
       rafCallback = null;
     }
+
+    // 4. Limpiar memoria de scroll de ScrollTrigger y matar animaciones perdidas
+    ScrollTrigger.clearScrollMemory();
+    gsap.killTweensOf('*');
+  });
+
+  // Manejar el reset de scroll al cambiar de página (Astro a veces restaura mal con Lenis)
+  document.addEventListener('astro:after-swap', () => {
+    window.scrollTo(0, 0);
   });
 
   // Re-init on page load / transition completed

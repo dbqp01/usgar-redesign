@@ -10,8 +10,8 @@ const t = useTranslations(lang);
 ---
 
 <section id="map-section" class="py-12 sm:py-16 px-4 bg-surface-card-light dark:bg-surface-dark text-text-primary-light dark:text-white relative overflow-hidden transition-colors duration-500">
-  <div class="max-w-[1400px] mx-auto relative z-10">
-    <div class="text-center mb-16 animate-on-scroll space-y-3">
+  <div class="max-w-[1400px] mx-auto relative z-10 animate-on-scroll">
+    <div class="text-center mb-16 space-y-3">
       <span class="tag-dash-title block">
         {t('map.sectionLabel')}
       </span>
@@ -26,7 +26,7 @@ const t = useTranslations(lang);
     <!-- Map Container -->
     <div
       id="hotel-map"
-      class="w-full h-96 sm:h-[500px] lg:h-[600px] rounded-3xl overflow-hidden shadow-2xl animate-on-scroll relative z-10"
+      class="w-full h-96 sm:h-[500px] lg:h-[600px] rounded-3xl overflow-hidden shadow-2xl relative z-10"
       data-lat={String(siteSettings.latitude)}
       data-lng={String(siteSettings.longitude)}
       data-hotel-name={siteSettings.hotelName}

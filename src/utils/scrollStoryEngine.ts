@@ -35,9 +35,11 @@ export class ScrollStoryEngine {
     if (this.ctx) {
       this.ctx.revert();
       this.ctx = null;
-    } else {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    }
+    } 
+    
+    // Fallback: Ensure all ScrollTriggers are killed and memory is cleared
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    ScrollTrigger.clearScrollMemory();
   }
 
   /**
@@ -196,32 +198,24 @@ export class ScrollStoryEngine {
     if (!elements.length) return;
 
     ScrollTrigger.batch(elements, {
-      interval: 0.1,
-      batchMax: 5,
-      start: 'top 85%',
+      interval: 0.05,
+      batchMax: 6,
+      start: 'top bottom-=20px',
+      once: true,
       onEnter: (batch) => {
         gsap.to(batch, {
           autoAlpha: 1,
           y: 0,
-          stagger: 0.15,
+          stagger: 0.12,
           duration: 0.8,
           ease: 'power3.out',
           overwrite: true,
           onComplete: function() {
-            // Cleanup will-change after animation completes
             (this.targets() as HTMLElement[]).forEach((el: HTMLElement) => {
               el.style.willChange = 'auto';
               el.classList.add('visible');
             });
           }
-        });
-      },
-      onLeaveBack: (batch) => {
-        // Reset elements when scrolling back above viewport for re-entry animation
-        gsap.set(batch, { autoAlpha: 0, y: 40 });
-        batch.forEach((el: any) => {
-          el.style.willChange = 'transform, opacity';
-          el.classList.remove('visible');
         });
       }
     });

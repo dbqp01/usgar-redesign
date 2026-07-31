@@ -60,10 +60,10 @@ const culinaryOffers = [
 ---
 
 <section id="gastronomy" class="scroll-mt-28 sm:scroll-mt-32 py-12 sm:py-20 px-4 bg-surface-light dark:bg-surface-dark relative overflow-hidden transition-colors duration-500">
-  <div class="max-w-[1400px] mx-auto">
+  <div class="max-w-[1400px] mx-auto animate-on-scroll">
     
     <!-- Section Header -->
-    <div class="text-center max-w-3xl mx-auto mb-10 animate-on-scroll space-y-2">
+    <div class="text-center max-w-3xl mx-auto mb-10 space-y-2">
       <span class="tag-dash-title block">
         {t('gastronomy.sectionLabel')}
       </span>
@@ -76,7 +76,7 @@ const culinaryOffers = [
     </div>
 
     <!-- Bento Box Layout -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-[260px] sm:auto-rows-[300px] max-h-[70vh] gap-4 sm:gap-6 animate-on-scroll">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-[260px] sm:auto-rows-[300px] max-h-[70vh] gap-4 sm:gap-6">
       {culinaryOffers.map((offer) => (
         <div class={`group relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-black/5 dark:border-white/5 cursor-pointer ${offer.size}`}>
           <!-- Background Image -->

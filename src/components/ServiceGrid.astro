@@ -62,10 +62,10 @@ const highlights: Array<{
 
 <section id="services" class="scroll-mt-28 sm:scroll-mt-32 py-12 sm:py-16 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-500 relative overflow-hidden">
   
-  <div class="max-w-[1400px] mx-auto relative z-10">
+  <div class="max-w-[1400px] mx-auto relative z-10 animate-on-scroll">
     
     <!-- Section Header -->
-    <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll space-y-3">
+    <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
       <span class="tag-dash-title block">
         {t('services.sectionLabel')}
       </span>
@@ -78,7 +78,7 @@ const highlights: Array<{
     </div>
 
     <!-- Bento Box Grid Layout -->
-    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 auto-rows-[250px] gap-4 sm:gap-6 animate-on-scroll">
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 auto-rows-[250px] gap-4 sm:gap-6">
       
       {highlights.map((item) => (
         <div class={`group relative rounded-3xl overflow-hidden shadow-xl border border-black/5 dark:border-white/5 img-hover-zoom ${item.size}`}>

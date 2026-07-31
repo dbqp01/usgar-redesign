@@ -34,10 +34,10 @@ const roomsWithPhotos = await Promise.all(
 ---
 
 <section id="rooms" class="scroll-mt-28 sm:scroll-mt-32 py-12 sm:py-16 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-500 overflow-hidden">
-  <div class="max-w-[1400px] mx-auto">
+  <div class="max-w-[1400px] mx-auto animate-on-scroll">
     
     <!-- Header -->
-    <div class="text-center max-w-3xl mx-auto mb-10 animate-on-scroll space-y-2">
+    <div class="text-center max-w-3xl mx-auto mb-10 space-y-2">
       <span class="tag-dash-title block">
         {t('rooms.sectionLabel')}
       </span>
@@ -50,7 +50,7 @@ const roomsWithPhotos = await Promise.all(
     </div>
 
     <!-- Accordion Layout with Viewport-Constrained Height -->
-    <div class="flex flex-col lg:flex-row h-[650px] lg:h-[500px] max-h-[62vh] w-full gap-2 lg:gap-4 animate-on-scroll">
+    <div class="flex flex-col lg:flex-row h-[650px] lg:h-[500px] max-h-[62vh] w-full gap-2 lg:gap-4">
       {roomsWithPhotos.map((room) => (
         <a
           href={getRelativeLocaleUrl(lang, `rooms/${room.slug}`)}

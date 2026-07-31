@@ -18,10 +18,10 @@ const t = useTranslations(lang);
 <section id="faq-section" class="scroll-mt-28 sm:scroll-mt-32 py-12 sm:py-16 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-500 overflow-hidden">
   <div class="max-w-[1400px] mx-auto">
     
-    <div class="grid grid-cols-1 xl:grid-cols-12 gap-16 items-start">
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-16 items-start animate-on-scroll">
       
       <!-- Massive Photo Left -->
-      <div class="xl:col-span-5 h-[600px] xl:h-[800px] sticky top-24 animate-on-scroll">
+      <div class="xl:col-span-5 h-[600px] xl:h-[800px] sticky top-24">
         <div class="w-full h-full rounded-3xl overflow-hidden shadow-2xl img-hover-zoom relative">
           <Image
             src={recepcionImg}
@@ -52,7 +52,7 @@ const t = useTranslations(lang);
       </div>
       
       <!-- FAQ Accordions Right -->
-      <div class="xl:col-span-7 xl:pl-10 pt-10 xl:pt-20 space-y-12 animate-on-scroll" style="transition-delay: 0.1s;" id="faq-accordion">
+      <div class="xl:col-span-7 xl:pl-10 pt-10 xl:pt-20 space-y-12" id="faq-accordion">
         
         <!-- Header -->
         <div class="space-y-4 mb-12">

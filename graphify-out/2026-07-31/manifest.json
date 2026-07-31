@@ -70,8 +70,8 @@
     "semantic_hash": ""
   },
   "src/components/Navbar.astro": {
-    "mtime": 1785473985.4153998,
-    "ast_hash": "3d941d1f5aa7cc619986c08f33f1b126",
+    "mtime": 1785469508.268079,
+    "ast_hash": "85840a085f983c29861e004c1c8281ab",
     "semantic_hash": ""
   },
   "src/components/ReviewMarquee.astro": {
@@ -80,8 +80,8 @@
     "semantic_hash": ""
   },
   "src/components/RoomCard.astro": {
-    "mtime": 1785476801.097139,
-    "ast_hash": "641295381bf779fe866469cd335f1f4f",
+    "mtime": 1785253215.024278,
+    "ast_hash": "0dfb7460762663b49f2b81e3d0f72d72",
     "semantic_hash": ""
   },
   "src/components/RoomDetail.astro": {
@@ -120,13 +120,13 @@
     "semantic_hash": ""
   },
   "src/i18n/en.json": {
-    "mtime": 1785476069.461108,
-    "ast_hash": "acd48c060e9fe5de82efd11e8277d79e",
+    "mtime": 1785137241.0462072,
+    "ast_hash": "f8884ec7e1818e1328cca6072943e65a",
     "semantic_hash": ""
   },
   "src/i18n/es.json": {
-    "mtime": 1785476074.7939937,
-    "ast_hash": "f63e0e2e4eb50c75272569330c72d414",
+    "mtime": 1785137234.9549103,
+    "ast_hash": "7428818d53518ad8c3c10069e5b04493",
     "semantic_hash": ""
   },
   "src/i18n/utils.ts": {
@@ -135,8 +135,8 @@
     "semantic_hash": ""
   },
   "src/layouts/Layout.astro": {
-    "mtime": 1785475906.4325073,
-    "ast_hash": "2d5c96bb05b62dbfe54eb541fcc290b3",
+    "mtime": 1785470007.9574585,
+    "ast_hash": "c5d929b23ba592c8777a8fc3968e62ef",
     "semantic_hash": ""
   },
   "src/pages/book.astro": {
@@ -235,8 +235,8 @@
     "semantic_hash": ""
   },
   "src/pages/rooms/index.astro": {
-    "mtime": 1785476819.0009968,
-    "ast_hash": "4d492cbc0964c3007450723c9288bdcd",
+    "mtime": 1784908642.9919975,
+    "ast_hash": "ae1fd0513ece53b8cb54343731ef406e",
     "semantic_hash": ""
   },
   "src/utils/helpers.ts": {
@@ -250,8 +250,8 @@
     "semantic_hash": ""
   },
   ".agents/AGENTS.md": {
-    "mtime": 1785474406.2646809,
-    "ast_hash": "14815406f6e2d28be6e0d7c7b594d0d3",
+    "mtime": 1785130426.5734985,
+    "ast_hash": "a27b0b43882b84d13c4855c6f18ae85c",
     "semantic_hash": ""
   },
   ".agents/BRAND.md": {
@@ -745,13 +745,13 @@
     "semantic_hash": ""
   },
   "src/i18n/fr.json": {
-    "mtime": 1785476098.31402,
-    "ast_hash": "a4bbc96dc9f33bd33115b20a38be8138",
+    "mtime": 1785137246.689651,
+    "ast_hash": "7909320143a6a88f62614766416c48f8",
     "semantic_hash": ""
   },
   "src/i18n/pt.json": {
-    "mtime": 1785476080.1997805,
-    "ast_hash": "900ec26b04541de0211eeb71b5b77196",
+    "mtime": 1785137253.60526,
+    "ast_hash": "16053e112648e76ebda2c09c186cc0c3",
     "semantic_hash": ""
   },
   "src/pages/fr/book.astro": {
@@ -1675,8 +1675,8 @@
     "semantic_hash": ""
   },
   "src/components/common/SmoothScroll.astro": {
-    "mtime": 1785474080.7413733,
-    "ast_hash": "2597547333e178427d9958dffc6403f8",
+    "mtime": 1785469015.2296817,
+    "ast_hash": "ddab078d442b841495b1574c73ed964e",
     "semantic_hash": ""
   },
   "src/components/ui/StatusBanner.astro": {
@@ -1710,8 +1710,8 @@
     "semantic_hash": ""
   },
   "src/components/MobileBookingBar.astro": {
-    "mtime": 1785474388.8044884,
-    "ast_hash": "6151c6fbcec41c10915bc663cac144ad",
+    "mtime": 1785469568.3342862,
+    "ast_hash": "90314ccc17b1ebadb83e4ad6b04be8ed",
     "semantic_hash": ""
   },
   "tests/channex-stress-harness.php": {
@@ -1740,8 +1740,8 @@
     "semantic_hash": ""
   },
   "src/utils/scrollStoryEngine.ts": {
-    "mtime": 1785474442.6117303,
-    "ast_hash": "0726b1b9638f86168dedcc2ba0893331",
+    "mtime": 1785470025.4981892,
+    "ast_hash": "f5ae3bb44cb858969a3eee3fb9d83159",
     "semantic_hash": ""
   },
   "vendor/mercadopago/dx-php/composer.json": {
@@ -3570,8 +3570,8 @@
     "semantic_hash": ""
   },
   "src/components/common/CustomCursor.astro": {
-    "mtime": 1785474071.3031318,
-    "ast_hash": "2b77750be2a5bf72200b8cacf405eebb",
+    "mtime": 1785470046.1400492,
+    "ast_hash": "3fa91212c75da4e9cec1da08835520ba",
     "semantic_hash": ""
   },
   "src/components/common/NoiseOverlay.astro": {
@@ -3580,8 +3580,8 @@
     "semantic_hash": ""
   },
   "src/components/common/Preloader.astro": {
-    "mtime": 1785473359.4826362,
-    "ast_hash": "4d122c866fd6dceceec0ac4340785045",
+    "mtime": 1785470009.4684968,
+    "ast_hash": "03d93f2f3edf23be8aed537769e3c68d",
     "semantic_hash": ""
   },
   "src/pages/book/checkout.astro": {
