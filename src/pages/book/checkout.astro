@@ -1,0 +1,176 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { useTranslations, type Locale } from '../../i18n/utils';
+
+export const prerender = true;
+
+const lang = (Astro.currentLocale || 'en') as Locale;
+const t = useTranslations(lang);
+---
+
+<Layout title={`${t('book.title')} - Checkout`} lang={lang}>
+  <main class="py-12 sm:py-24 px-4 max-w-4xl mx-auto flex-1 animate-fade-in">
+    <div class="mb-8 text-center">
+      <h1 class="font-display text-4xl mt-2 mb-2">Completar Pago</h1>
+      <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">
+        Estás a un paso de confirmar tu reserva
+      </p>
+    </div>
+
+    <!-- Error Banner -->
+    <div id="error-banner" class="hidden max-w-2xl mx-auto mb-8 p-4 rounded-xl border border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-medium flex items-center gap-3">
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+      <span id="error-message"></span>
+    </div>
+
+    <!-- Reservation Summary skeleton -->
+    <div id="reservation-summary" class="bg-surface-card-light dark:bg-surface-card-dark p-6 rounded-3xl border border-black/5 dark:border-white/5 shadow-sm mb-8 animate-pulse">
+      <div class="h-6 bg-stone-200 dark:bg-stone-700 rounded w-1/3 mb-4"></div>
+      <div class="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/2 mb-2"></div>
+      <div class="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/4"></div>
+    </div>
+
+    <!-- Mercado Pago Payment Brick Container -->
+    <div id="paymentBrick_container" class="max-w-2xl mx-auto min-h-[400px]"></div>
+  </main>
+</Layout>
+
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script>
+  import { bookingService } from '../../services/bookingService';
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const cartId = urlParams.get('cart_id');
+    const token = urlParams.get('token');
+
+    const errorBanner = document.getElementById('error-banner');
+    const errorMessage = document.getElementById('error-message');
+    const summaryEl = document.getElementById('reservation-summary');
+
+    function showError(msg: string) {
+      if (errorBanner && errorMessage) {
+        errorMessage.textContent = msg;
+        errorBanner.classList.remove('hidden');
+      }
+    }
+
+    if (!cartId || !token) {
+      showError('No se encontraron los parámetros de pago en la URL.');
+      if (summaryEl) summaryEl.style.display = 'none';
+      return;
+    }
+
+    // 1. Fetch Reservation details
+    try {
+      const response = await fetch(`/api/booking-status?cart_id=${cartId}&token=${token}`);
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Error al obtener los detalles de la reserva.');
+      }
+
+      if (data.status !== 'pending' && !data.is_expired) {
+        window.location.href = `/book/success?bookingId=${cartId}`;
+        return;
+      }
+
+      if (data.is_expired) {
+        throw new Error('La reserva ha expirado. Por favor, intenta de nuevo.');
+      }
+
+      // Update Summary UI
+      if (summaryEl) {
+        summaryEl.classList.remove('animate-pulse');
+        summaryEl.innerHTML = `
+          <h2 class="font-display text-xl mb-4 border-b border-black/5 dark:border-white/5 pb-2">Resumen de la Reserva</h2>
+          <div class="grid grid-cols-2 gap-4 text-sm text-text-secondary-light dark:text-text-secondary-dark">
+            <div>
+              <p class="font-semibold text-text-primary-light dark:text-text-primary-dark">Habitación</p>
+              <p>${data.room_name}</p>
+            </div>
+            <div>
+              <p class="font-semibold text-text-primary-light dark:text-text-primary-dark">Fechas</p>
+              <p>${data.checkin} - ${data.checkout}</p>
+            </div>
+            <div>
+              <p class="font-semibold text-text-primary-light dark:text-text-primary-dark">Total a pagar</p>
+              <p class="text-lg font-bold text-primary">${data.currency} ${data.price.toFixed(2)}</p>
+            </div>
+          </div>
+        `;
+      }
+
+      // 2. Initialize Mercado Pago SDK
+      const mpPublicKey = import.meta.env.PUBLIC_MERCADO_PAGO_PUBLIC_KEY || 'APP_USR-xxxx'; 
+      // @ts-ignore
+      const mp = new window.MercadoPago(mpPublicKey, {
+        locale: 'es-PE' // Locale for Peru
+      });
+      // @ts-ignore
+      const bricksBuilder = mp.bricks();
+
+      const settings = {
+        initialization: {
+          amount: data.price,
+          payer: {
+            email: data.guest_email || '',
+          }
+        },
+        customization: {
+          paymentMethods: {
+            creditCard: 'all',
+            debitCard: 'all',
+          },
+        },
+        callbacks: {
+          onReady: () => {
+            // Brick is ready
+          },
+          onSubmit: ({ selectedPaymentMethod, formData }: any) => {
+            return new Promise((resolve, reject) => {
+              bookingService.processPayment(cartId, token, formData)
+                .then((res) => {
+                  if (res.success) {
+                    window.location.href = `/book/success?bookingId=${cartId}`;
+                    resolve(true);
+                  } else {
+                    showError(res.error.message || 'Error procesando el pago.');
+                    reject(new Error(res.error.message));
+                  }
+                })
+                .catch((err) => {
+                  showError('Error de red al procesar el pago.');
+                  reject(err);
+                });
+            });
+          },
+          onError: (error: any) => {
+            console.error('Mercado Pago Brick Error:', error);
+            showError('Ocurrió un error al cargar el formulario de pago.');
+          },
+        },
+      };
+
+      // @ts-ignore
+      window.paymentBrickController = await bricksBuilder.create(
+        'payment',
+        'paymentBrick_container',
+        settings
+      );
+
+    } catch (err: any) {
+      showError(err.message || 'Error inesperado.');
+      if (summaryEl) summaryEl.style.display = 'none';
+    }
+  });
+</script>
+
+<style>
+  /* Fix some default MP Brick styles on dark mode if needed */
+  :global(.dark #paymentBrick_container) {
+    color-scheme: dark;
+  }
+</style>
