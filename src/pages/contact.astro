@@ -85,7 +85,7 @@ const contactSchema = {
           href={`https://wa.me/${siteSettings.whatsappNumber}?text=${encodeURIComponent(t("contact.whatsappQuery"))}`}
           target="_blank"
           rel="noopener noreferrer"
-          class="glass px-4 py-2.5 rounded-full text-xs font-semibold flex items-center gap-2 text-text-primary-light dark:text-white hover:border-[#2DB5A0]/40 transition-all duration-300 group shadow-sm hover:scale-105"
+          class="glass px-4 py-2.5 rounded-full text-xs font-semibold flex items-center gap-2 text-text-primary-light dark:text-white hover:border-[#2DB5A0]/40 transition-[border-color,transform,box-shadow] duration-300 group shadow-sm lg:hover:scale-105"
         >
           <span class="w-2 h-2 rounded-full bg-[#2DB5A0] animate-pulse"></span>
           <span>WhatsApp Direct</span>
@@ -105,7 +105,7 @@ const contactSchema = {
 
         <a
           href={`tel:+${siteSettings.phoneRaw}`}
-          class="glass px-4 py-2.5 rounded-full text-xs font-semibold flex items-center gap-2 text-text-primary-light dark:text-white hover:border-secondary/40 transition-all duration-300 group shadow-sm hover:scale-105"
+          class="glass px-4 py-2.5 rounded-full text-xs font-semibold flex items-center gap-2 text-text-primary-light dark:text-white hover:border-secondary/40 transition-[border-color,transform,box-shadow] duration-300 group shadow-sm lg:hover:scale-105"
         >
           <svg
             class="w-3.5 h-3.5 text-secondary"
@@ -177,7 +177,7 @@ const contactSchema = {
               name="name"
               required
               placeholder="e.g. Alexander Humboldt"
-              class="w-full px-4 py-3.5 rounded-xl bg-white/70 dark:bg-stone-900/60 border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all placeholder:text-stone-400"
+              class="w-full px-4 py-3.5 rounded-xl bg-white/70 dark:bg-stone-900/60 border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-[border-color,box-shadow] placeholder:text-stone-400"
             />
           </div>
 
@@ -195,7 +195,7 @@ const contactSchema = {
               name="email"
               required
               placeholder="e.g. alexander@example.com"
-              class="w-full px-4 py-3.5 rounded-xl bg-white/70 dark:bg-stone-900/60 border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all placeholder:text-stone-400"
+              class="w-full px-4 py-3.5 rounded-xl bg-white/70 dark:bg-stone-900/60 border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-[border-color,box-shadow] placeholder:text-stone-400"
             />
           </div>
 
@@ -210,7 +210,7 @@ const contactSchema = {
             <select
               id="contact-subject"
               name="subject"
-              class="w-full px-4 py-3.5 rounded-xl bg-white/70 dark:bg-stone-900/60 border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all cursor-pointer"
+              class="w-full px-4 py-3.5 rounded-xl bg-white/70 dark:bg-stone-900/60 border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-[border-color,box-shadow] cursor-pointer"
             >
               <option value="general">{t("contact.subjectGeneral")}</option>
               <option value="booking">{t("contact.subjectBooking")}</option>
@@ -235,7 +235,7 @@ const contactSchema = {
               required
               rows="4"
               placeholder={t("contact.messagePlaceholder")}
-              class="w-full px-4 py-3.5 rounded-xl bg-white/70 dark:bg-stone-900/60 border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all placeholder:text-stone-400 resize-none"
+              class="w-full px-4 py-3.5 rounded-xl bg-white/70 dark:bg-stone-900/60 border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-[border-color,box-shadow] placeholder:text-stone-400 resize-none"
             ></textarea>
           </div>
 
@@ -243,7 +243,7 @@ const contactSchema = {
           <button
             type="submit"
             id="btn-contact-submit"
-            class="w-full bg-primary hover:bg-primary-dark text-white dark:bg-secondary dark:hover:bg-secondary-dark dark:text-stone-950 font-bold py-4 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 text-xs sm:text-sm uppercase tracking-wider cursor-pointer flex items-center justify-center gap-2"
+            class="w-full bg-primary hover:bg-primary-dark text-white dark:bg-secondary dark:hover:bg-secondary-dark dark:text-stone-950 font-bold py-4 rounded-xl transition-[transform,background-color,color,box-shadow] duration-300 hover:shadow-lg hover:shadow-primary/20 lg:hover:-translate-y-0.5 text-xs sm:text-sm uppercase tracking-wider cursor-pointer flex items-center justify-center gap-2"
           >
             <span>{t("contact.formSubmit")}</span>
             <!-- Spinner -->
@@ -313,7 +313,7 @@ const contactSchema = {
               href={`https://wa.me/${siteSettings.whatsappNumber}?text=${encodeURIComponent(t("contact.whatsappQuery"))}`}
               target="_blank"
               rel="noopener noreferrer"
-              class="flex items-center gap-4 p-4 rounded-2xl bg-stone-50/80 dark:bg-stone-900/50 border border-black/5 dark:border-white/5 hover:border-[#2DB5A0]/40 hover:bg-[#2DB5A0]/5 transition-all duration-300 group"
+              class="flex items-center gap-4 p-4 rounded-2xl bg-stone-50/80 dark:bg-stone-900/50 border border-black/5 dark:border-white/5 hover:border-[#2DB5A0]/40 hover:bg-[#2DB5A0]/5 transition-[border-color,background-color] duration-300 group"
             >
               <div
                 class="w-12 h-12 rounded-xl bg-[#2DB5A0]/15 text-[#2DB5A0] flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"
@@ -349,7 +349,7 @@ const contactSchema = {
             <!-- Email -->
             <a
               href={`mailto:${siteSettings.email}`}
-              class="flex items-center gap-4 p-4 rounded-2xl bg-stone-50/80 dark:bg-stone-900/50 border border-black/5 dark:border-white/5 hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 group"
+              class="flex items-center gap-4 p-4 rounded-2xl bg-stone-50/80 dark:bg-stone-900/50 border border-black/5 dark:border-white/5 hover:border-primary/40 hover:bg-primary/5 transition-[border-color,background-color] duration-300 group"
             >
               <div
                 class="w-12 h-12 rounded-xl bg-primary/15 dark:bg-primary-light/20 text-primary dark:text-purple-pastel flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"
@@ -385,7 +385,7 @@ const contactSchema = {
             <!-- Reception Phone -->
             <a
               href={`tel:+${siteSettings.phoneRaw}`}
-              class="flex items-center gap-4 p-4 rounded-2xl bg-stone-50/80 dark:bg-stone-900/50 border border-black/5 dark:border-white/5 hover:border-secondary/40 hover:bg-secondary/5 transition-all duration-300 group"
+              class="flex items-center gap-4 p-4 rounded-2xl bg-stone-50/80 dark:bg-stone-900/50 border border-black/5 dark:border-white/5 hover:border-secondary/40 hover:bg-secondary/5 transition-[border-color,background-color] duration-300 group"
             >
               <div
                 class="w-12 h-12 rounded-xl bg-secondary/15 text-secondary-dark dark:text-secondary flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"
@@ -431,7 +431,7 @@ const contactSchema = {
                   href="https://www.tripadvisor.com.pe/Hotel_Review-g294314-d12461523-Reviews-Usgar_San_Pedro_Boutique-Cusco_Cusco_Region.html"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-[11px] bg-stone-200/70 dark:bg-stone-800 hover:bg-secondary/20 dark:hover:bg-secondary/20 hover:text-secondary-dark dark:hover:text-secondary px-3 py-2 rounded-lg font-bold transition-all cursor-pointer"
+                  class="text-[11px] bg-stone-200/70 dark:bg-stone-800 hover:bg-secondary/20 dark:hover:bg-secondary/20 hover:text-secondary-dark dark:hover:text-secondary px-3 py-2 rounded-lg font-bold transition-[background-color,color] cursor-pointer"
                 >
                   TripAdvisor
                 </a>
@@ -439,7 +439,7 @@ const contactSchema = {
                   href="https://www.booking.com/hotel/pe/chavin-imperio-del-sol.es.html?aid=311839&label=chavin-imperio-del-sol-zuUKmuTcIrFOMWxyHhV97gS539509797055%3Apl%3Ata%3Ap1%3Ap2%3Aac%3Aap%3Aneg%3Afi%3Atiaud-2395231936498%3Akwd-2440927734184%3Alp9060927%3Ali%3Adec%3Adm%3Appccp%3DUmFuZG9tSVYkc2RlIyh9YcUc3ZfdbbfEuXomSVxn0TU&sid=cde5b6d1678ed661cd007c4cc75870a4&dest_id=-345275&dest_type=city&dist=0&group_adults=2&group_children=0&hapos=1&hpos=1&no_rooms=1&req_adults=2&req_children=0&room1=A%2CA&sb_price_type=total&sr_order=popularity&srepoch=1782702781&srpvid=7032169be43f00ba&type=total&ucfs=1&"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-[11px] bg-stone-200/70 dark:bg-stone-800 hover:bg-tertiary/20 dark:hover:bg-tertiary-light/20 hover:text-tertiary dark:hover:text-mint px-3 py-2 rounded-lg font-bold transition-all cursor-pointer"
+                  class="text-[11px] bg-stone-200/70 dark:bg-stone-800 hover:bg-tertiary/20 dark:hover:bg-tertiary-light/20 hover:text-tertiary dark:hover:text-mint px-3 py-2 rounded-lg font-bold transition-[background-color,color] cursor-pointer"
                 >
                   Booking.com
                 </a>
@@ -574,7 +574,7 @@ const contactSchema = {
 
     <div class="space-y-4">
       <details
-        class="group glass rounded-2xl p-5 border border-black/5 dark:border-white/10 transition-all duration-300 cursor-pointer"
+        class="group glass rounded-2xl p-5 border border-black/5 dark:border-white/10 transition-[border-color,background-color] duration-300 cursor-pointer"
       >
         <summary
           class="flex justify-between items-center font-bold text-sm sm:text-base text-text-primary-light dark:text-white list-none select-none"
@@ -601,7 +601,7 @@ const contactSchema = {
       </details>
 
       <details
-        class="group glass rounded-2xl p-5 border border-black/5 dark:border-white/10 transition-all duration-300 cursor-pointer"
+        class="group glass rounded-2xl p-5 border border-black/5 dark:border-white/10 transition-[border-color,background-color] duration-300 cursor-pointer"
       >
         <summary
           class="flex justify-between items-center font-bold text-sm sm:text-base text-text-primary-light dark:text-white list-none select-none"
@@ -628,7 +628,7 @@ const contactSchema = {
       </details>
 
       <details
-        class="group glass rounded-2xl p-5 border border-black/5 dark:border-white/10 transition-all duration-300 cursor-pointer"
+        class="group glass rounded-2xl p-5 border border-black/5 dark:border-white/10 transition-[border-color,background-color] duration-300 cursor-pointer"
       >
         <summary
           class="flex justify-between items-center font-bold text-sm sm:text-base text-text-primary-light dark:text-white list-none select-none"

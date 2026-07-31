@@ -33,7 +33,7 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
     <button
       id="open-mobile-booking-sheet"
       type="button"
-      class="bg-tertiary hover:bg-tertiary-dark active:scale-[0.98] text-white font-bold text-sm px-5 py-2.5 rounded-xl transition-all shadow-md shadow-tertiary/20 flex items-center gap-2 touch-target"
+      class="bg-tertiary hover:bg-tertiary-dark active:scale-[0.98] text-white font-bold text-sm px-5 py-2.5 rounded-xl transition-[transform,background-color] shadow-md shadow-tertiary/20 flex items-center gap-2 touch-target"
     >
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -149,7 +149,7 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
       <!-- Submit Button -->
       <button
         type="submit"
-        class="w-full mt-2 bg-secondary hover:bg-secondary-dark active:scale-[0.98] text-text-primary-light font-bold py-3.5 px-6 rounded-xl transition-all shadow-lg shadow-secondary/25 text-center text-sm uppercase tracking-wider cursor-pointer"
+        class="w-full mt-2 bg-secondary hover:bg-secondary-dark active:scale-[0.98] text-text-primary-light font-bold py-3.5 px-6 rounded-xl transition-[transform,background-color] shadow-lg shadow-secondary/25 text-center text-sm uppercase tracking-wider cursor-pointer"
       >
         {t('booking.search') || 'Buscar Disponibilidad'}
       </button>
@@ -255,6 +255,7 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
       document.addEventListener('astro:before-preparation', () => {
         forceCloseInstant();
         abortController.abort();
+        ctx?.revert();
       }, { once: true });
     });
   }

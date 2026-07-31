@@ -76,7 +76,7 @@ const attractionsSchema = {
       <div class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide snap-x snap-mandatory">
         {categories.map((cat) => (
           <button
-            class="flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all duration-300 cursor-pointer whitespace-nowrap snap-center select-none bg-stone-50 dark:bg-stone-900/40 border-stone-200 dark:border-stone-800 text-text-secondary-light dark:text-text-secondary-dark hover:border-primary/50 dark:hover:border-primary/50 hover:text-primary dark:hover:text-secondary hover:scale-[1.02]"
+            class="flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-[border-color,color,transform] duration-300 cursor-pointer whitespace-nowrap snap-center select-none bg-stone-50 dark:bg-stone-900/40 border-stone-200 dark:border-stone-800 text-text-secondary-light dark:text-text-secondary-dark hover:border-primary/50 dark:hover:border-primary/50 hover:text-primary dark:hover:text-secondary lg:hover:scale-[1.02]"
             data-category-filter={cat}
           >
             <span class="flex items-center text-current" aria-hidden="true" set:html={categoryIcons[cat]}></span>
@@ -96,7 +96,7 @@ const attractionsSchema = {
           type="text"
           id="explore-search"
           placeholder={t('explore.searchPlaceholder')}
-          class="w-full pl-10 pr-4 py-2.5 rounded-full border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900/40 text-stone-800 dark:text-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all placeholder:text-stone-400"
+          class="w-full pl-10 pr-4 py-2.5 rounded-full border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900/40 text-stone-800 dark:text-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-[border-color,box-shadow] placeholder:text-stone-400"
           aria-label="Search attractions"
         />
       </div>
@@ -107,7 +107,7 @@ const attractionsSchema = {
       {attractions.map((attraction, i) => (
         <a
           href={getRelativeLocaleUrl(lang, `explore/${attraction.id}`)}
-          class="p-6 rounded-2xl bg-surface-card-light dark:bg-surface-card-dark border border-black/5 dark:border-white/5 shadow-sm hover:shadow-lg hover:border-primary/20 dark:hover:border-primary/20 transition-all duration-500 hover:-translate-y-1 group flex flex-col justify-between"
+          class="p-6 rounded-2xl bg-surface-card-light dark:bg-surface-card-dark border border-black/5 dark:border-white/5 shadow-sm hover:shadow-lg hover:border-primary/20 dark:hover:border-primary/20 transition-[transform,box-shadow,border-color] duration-500 lg:hover:-translate-y-1 group flex flex-col justify-between"
           data-category={attraction.category}
           data-name-en={attraction.name.en.toLowerCase()}
           data-name-es={attraction.name.es.toLowerCase()}

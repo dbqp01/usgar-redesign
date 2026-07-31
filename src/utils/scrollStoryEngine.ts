@@ -166,24 +166,29 @@ export class ScrollStoryEngine {
     gsap.ticker.add(updateMarquee);
     this.tickerCallbacks.push(updateMarquee);
 
-    // Dynamic ScrollTrigger Velocity Observer
+    // Dynamic ScrollTrigger Velocity Observer — uses direct accumulation (no tween allocation)
+    let velocityBoost = 0;
+    const velocityDecay = 0.92; // Smooth exponential decay each frame
+
+    const applyVelocityDecay = () => {
+      if (Math.abs(velocityBoost) > 0.1) {
+        currentX -= velocityBoost;
+        velocityBoost *= velocityDecay;
+      } else {
+        velocityBoost = 0;
+      }
+    };
+    gsap.ticker.add(applyVelocityDecay);
+    this.tickerCallbacks.push(applyVelocityDecay);
+
     ScrollTrigger.create({
       trigger: container,
       start: 'top bottom',
       end: 'bottom top',
       onUpdate: (self) => {
         const velocity = self.getVelocity();
-        // Direccion e impulso de velocidad segun movimiento de scroll
         if (Math.abs(velocity) > 50) {
-          const impulse = velocity * 0.0025;
-          currentX -= impulse;
-
-          // Animacion suave de desaceleracion de vuelta a la velocidad base
-          gsap.to({ speed: impulse }, {
-            speed: 0,
-            duration: 0.8,
-            ease: 'power2.out',
-          });
+          velocityBoost = velocity * 0.0025;
         }
       }
     });

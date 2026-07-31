@@ -45,8 +45,8 @@
     "semantic_hash": ""
   },
   "src/components/AboutSection.astro": {
-    "mtime": 1785280029.9587061,
-    "ast_hash": "f55f5d26343f1b6f91dbfb857972b12c",
+    "mtime": 1785507768.4045918,
+    "ast_hash": "7118c7576ce1bd051c9e63a942bf8547",
     "semantic_hash": ""
   },
   "src/components/BookingWidget.astro": {
@@ -55,8 +55,8 @@
     "semantic_hash": ""
   },
   "src/components/FAQSection.astro": {
-    "mtime": 1785287966.289151,
-    "ast_hash": "19e3ec9a844d338074d183d88e6f7fdd",
+    "mtime": 1785507768.3311503,
+    "ast_hash": "15e98a50063ef972d5c00d35d4f1d327",
     "semantic_hash": ""
   },
   "src/components/Footer.astro": {
@@ -65,8 +65,8 @@
     "semantic_hash": ""
   },
   "src/components/MapSection.astro": {
-    "mtime": 1785287998.078321,
-    "ast_hash": "25a146404d7d26e531415c6b3266cffc",
+    "mtime": 1785507818.7034643,
+    "ast_hash": "81a4dd03a1bcbe4a6f17708a5007cef5",
     "semantic_hash": ""
   },
   "src/components/Navbar.astro": {
@@ -90,8 +90,8 @@
     "semantic_hash": ""
   },
   "src/components/ServiceGrid.astro": {
-    "mtime": 1785280029.969061,
-    "ast_hash": "490bbccb5611e1455cf9b8794618e7cf",
+    "mtime": 1785507818.8324244,
+    "ast_hash": "2526141837fccd8bd39f7bfed84c1af6",
     "semantic_hash": ""
   },
   "src/components/WhatsAppButton.astro": {
@@ -620,18 +620,18 @@
     "semantic_hash": ""
   },
   "src/components/GastronomySection.astro": {
-    "mtime": 1785280029.962586,
-    "ast_hash": "12766b17e47728fb183445999b557fd4",
+    "mtime": 1785507818.1078708,
+    "ast_hash": "eb94c84ccf274d38866634a3f5f24137",
     "semantic_hash": ""
   },
   "src/components/HeritageSection.astro": {
-    "mtime": 1785280029.9639976,
-    "ast_hash": "f4c6b61d4c18bc04c206e320fcbdbab9",
+    "mtime": 1785507768.2741027,
+    "ast_hash": "139ba35e4621eb1f53365dc2eb4ca089",
     "semantic_hash": ""
   },
   "src/components/InteractiveRoomsSection.astro": {
-    "mtime": 1785287998.1903906,
-    "ast_hash": "b10100f11f1ebc627d3e8fb0d69d1ee7",
+    "mtime": 1785507818.6478536,
+    "ast_hash": "7f7d152533c44c6313b06fbb404e0f8f",
     "semantic_hash": ""
   },
   "src/assets/explore/barrio-de-san-blas.jpg": {
@@ -1675,8 +1675,8 @@
     "semantic_hash": ""
   },
   "src/components/common/SmoothScroll.astro": {
-    "mtime": 1785474080.7413733,
-    "ast_hash": "2597547333e178427d9958dffc6403f8",
+    "mtime": 1785507541.9061277,
+    "ast_hash": "9faeac4f304b6fa74fc0a127f9a4bc2f",
     "semantic_hash": ""
   },
   "src/components/ui/StatusBanner.astro": {
@@ -1740,8 +1740,8 @@
     "semantic_hash": ""
   },
   "src/utils/scrollStoryEngine.ts": {
-    "mtime": 1785474442.6117303,
-    "ast_hash": "0726b1b9638f86168dedcc2ba0893331",
+    "mtime": 1785507767.4551039,
+    "ast_hash": "42adb03c7b0cb50ac428a02112928718",
     "semantic_hash": ""
   },
   "vendor/mercadopago/dx-php/composer.json": {

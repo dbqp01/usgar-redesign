@@ -1855,3 +1855,5 @@
 [2026-07-30 22:52:19] [INFO] HandleMercadoPagoWebhookAction: Firma validada OK para Payment ID 999888777
 [2026-07-30 22:52:20] [ERROR] MercadoPagoAdapter API Error en getPaymentDetails {"status_code":404,"api_response":"{\"message\":\"Payment not found\",\"error\":\"not_found\",\"status\":404,\"cause\":[{\"code\":2000,\"description\":\"Payment not found\",\"data\":\"31-07-2026T03:52:20UTC;cf1a5bcd-7119-4f59-8121-06c74848d5ab\"}]}","payment_id":"999888777"}
 [2026-07-30 22:52:20] [ERROR] HandleMercadoPagoWebhookAction Error: No se pudieron obtener detalles para Pago ID 999888777
+[2026-07-31 10:07:08] [INFO] WEBHOOK DIAGNOSTICS {"headers":{"host":"localhost:8000","content-type":"application\/json","accept":"application\/json","content-length":"2"},"query_params":[],"body_keys":[],"body_type":"N\/A","body_data_id":"N\/A","has_x_signature":"NO","has_x_request_id":"NO","raw_server_http_x_signature":"NOT_PRESENT"}
+[2026-07-31 10:07:08] [INFO] HandleMercadoPagoWebhookAction: Evento no-payment ignorado. Type: null, Topic: null

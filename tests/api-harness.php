@@ -49,6 +49,8 @@ $tests = [
     ['POST', '/api/booking',        400, '{}'],
     ['POST', '/api/extend-hold',    400, '{}'],
     ['GET',  '/api/booking-status', 400],
+    ['POST', '/api/process-payment', 400, '{}'],
+    ['POST', '/api/webhook',        400, '{}'],
     ['GET',  '/api/auth/me',        200],
     ['POST', '/api/auth/register',  400, '{}'],
     ['POST', '/api/auth/login-email', 400, '{}'],

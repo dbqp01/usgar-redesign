@@ -164,22 +164,33 @@
 }
 
 .animate-float {
-  animation: float-slow 5s ease-in-out infinite;
+  animation: none;
 }
 
 .gold-shimmer {
   background: linear-gradient(90deg, transparent 0%, rgba(234, 202, 28, 0.3) 50%, transparent 100%);
   background-size: 200% 100%;
-  animation: shimmer 3.5s ease-in-out infinite;
+  animation: none;
+}
+
+@media (min-width: 768px) {
+  .animate-float {
+    animation: float-slow 5s ease-in-out infinite;
+  }
+  .gold-shimmer {
+    animation: shimmer 3.5s ease-in-out infinite;
+  }
 }
 
 .glow-card-hover {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.glow-card-hover:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 40px -15px rgba(234, 202, 28, 0.25), 0 0 20px rgba(147, 96, 172, 0.2);
+@media (hover: hover) {
+  .glow-card-hover:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px -15px rgba(234, 202, 28, 0.25), 0 0 20px rgba(147, 96, 172, 0.2);
+  }
 }
 
 /* ============================================
@@ -287,6 +298,13 @@ h3, h4 {
   box-shadow: 0 4px 24px -4px rgba(234, 202, 28, 0.08);
 }
 
+@media (max-width: 767px) {
+  .glass {
+    backdrop-filter: blur(12px) saturate(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  }
+}
+
 /* ============================================
    Standardized Non-Oval Architectural Micro-Badges
    (Clean, handcrafted UI aesthetic without generic pill shapes)
@@ -343,12 +361,14 @@ h3, h4 {
 
 .img-hover-zoom img {
   transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), filter 0.7s ease;
-  will-change: transform;
 }
 
-.group:hover .img-hover-zoom img,
-.img-hover-zoom:hover img {
-  transform: scale(1.08) translate3d(0, 0, 0);
+@media (hover: hover) {
+  .group:hover .img-hover-zoom img,
+  .img-hover-zoom:hover img {
+    transform: scale(1.08) translate3d(0, 0, 0);
+    will-change: transform;
+  }
 }
 
 /* ============================================
@@ -358,7 +378,7 @@ h3, h4 {
   opacity: 0;
   visibility: hidden;
   transform: translate3d(0, 30px, 0);
-  will-change: transform, opacity;
+  /* will-change managed dynamically by GSAP ScrollTrigger.batch() */
 }
 
 .animate-on-scroll.visible {
@@ -385,7 +405,6 @@ h3, h4 {
 ::view-transition-new(root) {
   animation-duration: 140ms !important;
   animation-timing-function: cubic-bezier(0, 0, 0.2, 1) !important;
-  will-change: transform, opacity;
 }
 
 /* ============================================
@@ -478,6 +497,14 @@ h3, h4 {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Touch device hover protection — prevents sticky :hover on iOS/Android */
+@media (hover: none) {
+  .glow-card-hover:hover {
+    transform: none;
+    box-shadow: none;
   }
 }
 

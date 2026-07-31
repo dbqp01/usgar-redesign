@@ -164,7 +164,7 @@ const L = mockLabels[lang] || mockLabels.en;
           <button
             type="button"
             id="btn-decline"
-            class="flex-1 bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 font-semibold py-3.5 rounded-xl transition-all duration-200 text-sm cursor-pointer border border-black/5 dark:border-white/5"
+            class="flex-1 bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 font-semibold py-3.5 rounded-xl transition-[background-color,color] duration-200 text-sm cursor-pointer border border-black/5 dark:border-white/5"
           >
             {L.decline}
           </button>
@@ -173,7 +173,7 @@ const L = mockLabels[lang] || mockLabels.en;
           <button
             type="button"
             id="btn-approve"
-            class="flex-1 bg-[#009EE3] hover:bg-[#0087c4] text-white font-semibold py-3.5 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-[#009EE3]/25 hover:-translate-y-0.5 text-sm cursor-pointer flex items-center justify-center gap-2"
+            class="flex-1 bg-[#009EE3] hover:bg-[#0087c4] text-white font-semibold py-3.5 rounded-xl transition-[transform,background-color,box-shadow] duration-300 hover:shadow-lg hover:shadow-[#009EE3]/25 lg:hover:-translate-y-0.5 text-sm cursor-pointer flex items-center justify-center gap-2"
           >
             <span id="approve-text">{L.approve}</span>
             <!-- Spinner -->

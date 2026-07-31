@@ -87,10 +87,10 @@ const blogSchema = {
         format="webp"
         loading="eager"
         decoding="async"
-        class="w-full h-full object-cover filter brightness-[0.4] transition-all duration-500"
+        class="w-full h-full object-cover filter brightness-[0.4] transition-[filter,transform,opacity] duration-500"
       />
       <!-- Dark overlay -->
-      <div class="absolute inset-0 bg-black/50 z-10 transition-all duration-300"></div>
+      <div class="absolute inset-0 bg-black/50 z-10 transition-[opacity,background-color] duration-300"></div>
     </div>
 
     <div class="max-w-4xl mx-auto relative z-10 text-center text-white/90">
@@ -227,7 +227,7 @@ const blogSchema = {
           </p>
           <a
             href={getRelativeLocaleUrl(lang, "book")}
-            class="block w-full text-center bg-primary hover:bg-primary-dark text-white font-semibold py-3.5 px-6 rounded-full transition-all duration-300 hover:shadow-lg hover:scale-[1.02]"
+            class="block w-full text-center bg-primary hover:bg-primary-dark text-white font-semibold py-3.5 px-6 rounded-full transition-[background-color,color,transform,box-shadow] duration-300 hover:shadow-lg lg:hover:scale-[1.02]"
           >
             {t("nav.bookNow")}
           </a>

@@ -51,7 +51,7 @@ const filterLabels: Record<string, { en: string; es: string; fr: string; pt: str
       {
         capacities.map((cap) => (
           <button
-            class="px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer whitespace-nowrap select-none bg-surface-card-light dark:bg-surface-card-dark border border-stone-200 dark:border-stone-800 text-text-secondary-light dark:text-text-secondary-dark hover:border-primary/50 dark:hover:border-primary/50 hover:text-primary hover:scale-[1.02] shadow-sm"
+            class="px-5 py-2 rounded-full text-sm font-medium transition-[border-color,color,transform,box-shadow] duration-300 cursor-pointer whitespace-nowrap select-none bg-surface-card-light dark:bg-surface-card-dark border border-stone-200 dark:border-stone-800 text-text-secondary-light dark:text-text-secondary-dark hover:border-primary/50 dark:hover:border-primary/50 hover:text-primary lg:hover:scale-[1.02] shadow-sm"
             data-capacity-filter={cap}
           >
             {filterLabels[cap][lang]}
@@ -67,7 +67,7 @@ const filterLabels: Record<string, { en: string; es: string; fr: string; pt: str
     >
       {
         rooms.map((room, i) => (
-          <div data-guests={room.maxGuests} class="transition-all duration-500 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-22px)] max-w-sm flex">
+          <div data-guests={room.maxGuests} class="transition-[opacity,transform,width] duration-500 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-22px)] max-w-sm flex">
             <RoomCard room={room} index={i} animate={false} />
           </div>
         ))

@@ -71,7 +71,7 @@ const t = useTranslations(lang);
             const answer = faq[`answer_${lang}`] || faq.answer_en || faq.answer_es;
             return (
               <details
-                class="group border-b border-black/10 dark:border-white/10 open:border-b-transparent transition-all duration-300"
+                class="group border-b border-black/10 dark:border-white/10 open:border-b-transparent transition-colors duration-300"
                 data-faq-id={`faq-${i}`}
               >
                 <summary class="flex items-center justify-between py-6 cursor-pointer font-body text-lg sm:text-xl font-semibold list-none select-none [&::-webkit-details-marker]:hidden text-text-primary-light dark:text-white hover:text-primary-light dark:hover:text-secondary transition-colors">
@@ -84,7 +84,7 @@ const t = useTranslations(lang);
                   </span>
                 </summary>
                 
-                <div class="pb-8 pt-2 text-base sm:text-lg leading-relaxed text-text-secondary-light dark:text-text-secondary-dark font-body font-light details-content:mt-2 transition-all duration-500">
+                <div class="pb-8 pt-2 text-base sm:text-lg leading-relaxed text-text-secondary-light dark:text-text-secondary-dark font-body font-light details-content:mt-2">
                   {answer}
                 </div>
               </details>

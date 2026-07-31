@@ -37,18 +37,40 @@ const t = useTranslations(lang);
   </main>
 </Layout>
 
-<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script is:inline src="https://sdk.mercadopago.com/js/v2"></script>
 <script>
   import { bookingService } from '../../services/bookingService';
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const cartId = urlParams.get('cart_id');
-    const token = urlParams.get('token');
+  async function ensureMercadoPagoLoaded(): Promise<any> {
+    if (typeof window !== 'undefined' && (window as any).MercadoPago) {
+      return (window as any).MercadoPago;
+    }
 
+    return new Promise((resolve, reject) => {
+      let attempts = 0;
+      const interval = setInterval(() => {
+        attempts++;
+        if (typeof window !== 'undefined' && (window as any).MercadoPago) {
+          clearInterval(interval);
+          resolve((window as any).MercadoPago);
+        } else if (attempts > 50) { // 5 segundos max
+          clearInterval(interval);
+          reject(new Error('No se pudo cargar el SDK de Mercado Pago. Verifica tu conexión o desactivadores de anuncios.'));
+        }
+      }, 100);
+    });
+  }
+
+  async function initCheckout() {
     const errorBanner = document.getElementById('error-banner');
     const errorMessage = document.getElementById('error-message');
     const summaryEl = document.getElementById('reservation-summary');
+    const brickContainer = document.getElementById('paymentBrick_container');
+
+    if (!brickContainer) return;
+
+    // Ocultar banner de errores previo si existe
+    if (errorBanner) errorBanner.classList.add('hidden');
 
     function showError(msg: string) {
       if (errorBanner && errorMessage) {
@@ -56,6 +78,22 @@ const t = useTranslations(lang);
         errorBanner.classList.remove('hidden');
       }
     }
+
+    // Desinstalar controlador anterior si existe en el DOM (previene errores de contenedor duplicado)
+    if (typeof window !== 'undefined' && (window as any).paymentBrickController && typeof (window as any).paymentBrickController.unmount === 'function') {
+      try {
+        await (window as any).paymentBrickController.unmount();
+      } catch (e) {
+        // Ignorar advertencias si el brick ya estaba desmontado
+      }
+      (window as any).paymentBrickController = null;
+    }
+
+    brickContainer.innerHTML = '';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const cartId = urlParams.get('cart_id');
+    const token = urlParams.get('token');
 
     if (!cartId || !token) {
       showError('No se encontraron los parámetros de pago en la URL.');
@@ -103,13 +141,17 @@ const t = useTranslations(lang);
         `;
       }
 
-      // 2. Initialize Mercado Pago SDK
-      const mpPublicKey = import.meta.env.PUBLIC_MERCADO_PAGO_PUBLIC_KEY || 'APP_USR-xxxx'; 
-      // @ts-ignore
-      const mp = new window.MercadoPago(mpPublicKey, {
-        locale: 'es-PE' // Locale for Peru
+      // 2. Load & Initialize Mercado Pago SDK safely
+      const MercadoPagoSDK = await ensureMercadoPagoLoaded();
+      const mpPublicKey = import.meta.env.PUBLIC_MERCADO_PAGO_PUBLIC_KEY || import.meta.env.MERCADO_PAGO_PUBLIC_KEY;
+
+      if (!mpPublicKey || mpPublicKey === 'YOUR_MP_PUBLIC_KEY' || mpPublicKey === 'APP_USR-xxxx') {
+        throw new Error('Las credenciales de Mercado Pago no están configuradas correctamente.');
+      }
+
+      const mp = new MercadoPagoSDK(mpPublicKey, {
+        locale: 'es-PE' // Locale para Peru
       });
-      // @ts-ignore
       const bricksBuilder = mp.bricks();
 
       const settings = {
@@ -127,9 +169,9 @@ const t = useTranslations(lang);
         },
         callbacks: {
           onReady: () => {
-            // Brick is ready
+            // Brick renderizado correctamente
           },
-          onSubmit: ({ selectedPaymentMethod, formData }: any) => {
+          onSubmit: ({ formData }: any) => {
             return new Promise((resolve, reject) => {
               bookingService.processPayment(cartId, token, formData)
                 .then((res) => {
@@ -165,7 +207,15 @@ const t = useTranslations(lang);
       showError(err.message || 'Error inesperado.');
       if (summaryEl) summaryEl.style.display = 'none';
     }
-  });
+  }
+
+  // Sincronizar tanto con carga inicial DOM como con navegaciones client-side (Astro View Transitions)
+  document.addEventListener('astro:page-load', initCheckout);
+  if (document.readyState === 'interactive' || document.readyState === 'complete') {
+    initCheckout();
+  } else {
+    document.addEventListener('DOMContentLoaded', initCheckout);
+  }
 </script>
 
 <style>

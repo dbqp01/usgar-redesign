@@ -43,7 +43,7 @@ const purpose = (aboutData as any)[`purpose_${lang}`] || aboutData.purpose_en ||
                const valTitle = (valor as any)[`title_${lang}`] || valor.title_en || valor.title_es;
                return (
                  <div class="flex items-center gap-3 group">
-                   <div class="w-6 h-px bg-secondary transition-all duration-300 group-hover:w-10"></div>
+                   <div class="w-6 h-px bg-secondary transition-[width] duration-300 group-hover:w-10"></div>
                    <h3 class="font-display tracking-widest uppercase text-xs font-bold text-primary dark:text-white">
                      {valTitle}
                    </h3>

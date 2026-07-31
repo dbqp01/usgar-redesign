@@ -38,7 +38,7 @@ const translatedBeds = translateBeds(room.beds, lang);
 <a
   href={getRelativeLocaleUrl(lang, `rooms/${room.slug}`)}
   class:list={[
-    "group block rounded-2xl overflow-hidden bg-surface-card-light dark:bg-surface-card-dark shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1",
+    "group block rounded-2xl overflow-hidden bg-surface-card-light dark:bg-surface-card-dark shadow-sm hover:shadow-xl transition-[transform,box-shadow] duration-500 lg:hover:-translate-y-1",
     { "animate-on-scroll stagger-child": animate }
   ]}
   data-astro-prefetch="tap"
@@ -170,7 +170,7 @@ const translatedBeds = translateBeds(room.beds, lang);
           ${room.pricePerNight} <span class="text-xs font-normal text-text-secondary-light dark:text-text-secondary-dark">/{t('global.night')}</span>
         </span>
       </div>
-      <span class="inline-flex items-center gap-1 text-xs font-bold px-3 py-2 rounded-xl bg-primary/10 dark:bg-primary/20 text-primary dark:text-purple-pastel group-hover:bg-primary group-hover:text-white transition-all">
+      <span class="inline-flex items-center gap-1 text-xs font-bold px-3 py-2 rounded-xl bg-primary/10 dark:bg-primary/20 text-primary dark:text-purple-pastel group-hover:bg-primary group-hover:text-white transition-[background-color,color]">
         {t("rooms.viewDetails") || "Ver detalles"}
         <svg class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />

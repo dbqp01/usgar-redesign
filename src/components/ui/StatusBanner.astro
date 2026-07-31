@@ -13,7 +13,7 @@ const { id = "usgar-status-banner" } = Astro.props;
 
 <div
   id={id}
-  class="fixed bottom-6 left-6 z-50 hidden max-w-md items-center gap-3 rounded-lg bg-[#1C1917]/90 px-4 py-2.5 text-xs tracking-widest uppercase border border-[#A980BD]/25 backdrop-blur-2xl shadow-2xl transition-all duration-300 dark:bg-[#2B1D33]/95 dark:border-[#EACA1C]/30 text-stone-200 animate-[status-slide_0.4s_cubic-bezier(0.16,1,0.3,1)]"
+  class="fixed bottom-6 left-6 z-50 hidden max-w-md items-center gap-3 rounded-lg bg-[#1C1917]/90 px-4 py-2.5 text-xs tracking-widest uppercase border border-[#A980BD]/25 backdrop-blur-2xl shadow-2xl transition-[opacity,transform] duration-300 dark:bg-[#2B1D33]/95 dark:border-[#EACA1C]/30 text-stone-200 animate-[status-slide_0.4s_cubic-bezier(0.16,1,0.3,1)]"
   role="status"
   aria-live="polite"
 >

@@ -89,7 +89,7 @@ const navLinks = [
         <div class="relative group">
           <button
             type="button"
-            class="nav-link nav-link-text nav-btn-border text-sm font-medium px-3 py-1.5 rounded-full border border-current/20 hover:border-primary hover:text-primary transition-all duration-300 drop-shadow-md flex items-center gap-1.5"
+            class="nav-link nav-link-text nav-btn-border text-sm font-medium px-3 py-1.5 rounded-full border border-current/20 hover:border-primary hover:text-primary transition-[color,border-color] duration-300 drop-shadow-md flex items-center gap-1.5"
             aria-label="Select language"
           >
             <span>{locales.find(l => l.code === lang)?.flag}</span>
@@ -99,7 +99,7 @@ const navLinks = [
             </svg>
           </button>
           
-          <div class="absolute right-0 mt-2 w-40 rounded-2xl bg-surface-card-light dark:bg-surface-card-dark shadow-2xl border border-black/10 dark:border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 py-2">
+          <div class="absolute right-0 mt-2 w-40 rounded-2xl bg-surface-card-light dark:bg-surface-card-dark shadow-2xl border border-black/10 dark:border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-[opacity,visibility] duration-200 z-50 py-2">
             {locales.map(l => (
               <a
                 href={getLocaleUrl(l.code)}
@@ -137,7 +137,7 @@ const navLinks = [
           <a
             id="auth-login-btn"
             href={getRelativeLocaleUrl(lang, 'login')}
-            class="nav-link nav-link-text nav-btn-border text-sm font-medium px-4 py-2 rounded-full border border-current/20 hover:border-primary hover:text-primary transition-all duration-300 drop-shadow-md"
+            class="nav-link nav-link-text nav-btn-border text-sm font-medium px-4 py-2 rounded-full border border-current/20 hover:border-primary hover:text-primary transition-[color,border-color] duration-300 drop-shadow-md"
           >
             {t('auth.signIn')}
           </a>
@@ -155,7 +155,7 @@ const navLinks = [
               <span id="auth-user-name" class="max-w-[100px] truncate">User</span>
             </button>
             
-            <div class="absolute right-0 mt-2 w-48 rounded-2xl bg-surface-card-light dark:bg-surface-card-dark shadow-2xl border border-black/10 dark:border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 py-2">
+            <div class="absolute right-0 mt-2 w-48 rounded-2xl bg-surface-card-light dark:bg-surface-card-dark shadow-2xl border border-black/10 dark:border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-[opacity,visibility] duration-200 z-50 py-2">
               <a
                 href={getRelativeLocaleUrl(lang, 'profile')}
                 class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-text-primary-light dark:text-text-primary-dark hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
@@ -180,7 +180,7 @@ const navLinks = [
         <a
           href={getRelativeLocaleUrl(lang, 'book')}
           data-astro-prefetch="tap"
-          class="bg-primary hover:bg-primary-dark text-white font-semibold text-sm px-6 py-2.5 rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5"
+          class="bg-primary hover:bg-primary-dark text-white font-semibold text-sm px-6 py-2.5 rounded-full transition-[transform,background-color,box-shadow] duration-300 lg:hover:shadow-lg lg:hover:shadow-primary/25 lg:hover:-translate-y-0.5"
         >
           {t('nav.bookNow')}
         </a>
@@ -497,6 +497,7 @@ const navLinks = [
       document.addEventListener('astro:before-preparation', () => {
         forceCloseInstant();
         abortController.abort();
+        ctx?.revert();
       }, { once: true });
     });
 
