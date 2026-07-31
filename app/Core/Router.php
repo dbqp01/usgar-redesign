@@ -123,8 +123,7 @@ class Router {
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
             ]);
-            $msg = Config::isProduction() ? 'Internal Server Error' : $e->getMessage();
-            Response::error($msg, 500, 'UNHANDLED_EXCEPTION');
+            Response::error('Internal Server Error', 500, 'UNHANDLED_EXCEPTION');
         }
     }
 

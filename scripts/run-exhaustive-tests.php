@@ -57,7 +57,6 @@ assertTest("ChannelManagerPortInterface declara 'createBooking'", method_exists(
 // 1.3 Config
 Config::boot();
 assertTest("Config carga valores por defecto", Config::get('SITE_URL') !== null);
-assertTest("Config detecta modo desarrollo por defecto", Config::isProduction() === false);
 
 // 1.4 BookingStatus Enum
 $status = BookingStatus::Pending;

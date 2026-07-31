@@ -76,25 +76,18 @@ class Logger {
     }
 
     /**
-     * Formatea la entrada de log. JSON en produccion, texto plano en desarrollo.
+     * Formatea la entrada de log como JSON estructurado.
      */
     private static function formatEntry(string $level, string $message, array $context): string {
-        $date = date('Y-m-d H:i:s');
-
-        if (Config::isProduction()) {
-            $entry = [
-                'timestamp' => $date,
-                'level'     => $level,
-                'message'   => $message,
-            ];
-            if (!empty($context)) {
-                $entry['context'] = $context;
-            }
-            return json_encode($entry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL;
+        $entry = [
+            'timestamp' => date('Y-m-d H:i:s'),
+            'level'     => $level,
+            'message'   => $message,
+        ];
+        if (!empty($context)) {
+            $entry['context'] = $context;
         }
-
-        $contextStr = !empty($context) ? ' ' . json_encode($context, JSON_UNESCAPED_UNICODE) : '';
-        return "[{$date}] [{$level}] {$message}{$contextStr}" . PHP_EOL;
+        return json_encode($entry, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL;
     }
 
     /**

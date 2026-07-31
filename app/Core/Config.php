@@ -29,8 +29,7 @@ class Config {
     }
 
     private const DEFAULTS = [
-        'SITE_URL'             => 'https://sanpedro.hotelesusgar.com',
-        'ENVIRONMENT'          => 'development',
+        'SITE_URL'             => 'https://usgarhoteles.com',
         'TIMEZONE'             => 'America/Lima',
         'DB_HOST'              => '127.0.0.1',
         'DB_PORT'              => '3306',
@@ -55,30 +54,6 @@ class Config {
         $instance = self::boot();
         $instance->cache[$key] = $value;
         putenv("{$key}={$value}");
-    }
-
-    /**
-     * Verifica si el entorno actual es produccion.
-     * Auto-detecta produccion como safety net:
-     * Si ENVIRONMENT no fue configurado explicitamente y estamos en un servidor
-     * con 'public_html' en DOCUMENT_ROOT (Hostinger/shared hosting), asume produccion.
-     */
-    public static function isProduction(): bool {
-        $env = self::get('ENVIRONMENT');
-
-        // Si fue configurado explicitamente, respetar
-        if ($env !== null && $env !== '') {
-            return $env === 'production';
-        }
-
-        // Auto-deteccion: si DOCUMENT_ROOT contiene 'public_html', estamos en hosting
-        $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
-        if (str_contains($docRoot, 'public_html')) {
-            return true;
-        }
-
-        // Fallback: development
-        return false;
     }
 
     /**

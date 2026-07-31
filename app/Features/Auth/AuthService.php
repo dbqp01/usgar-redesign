@@ -32,7 +32,7 @@ class AuthService {
         if ($host) {
             $siteUrl = "{$scheme}://{$host}";
         } else {
-            $siteUrl = Config::get('SITE_URL', 'https://sanpedro.hotelesusgar.com');
+            $siteUrl = Config::get('SITE_URL', 'https://usgarhoteles.com');
         }
 
         $config = [

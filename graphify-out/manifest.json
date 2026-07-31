@@ -45,23 +45,23 @@
     "semantic_hash": ""
   },
   "src/components/AboutSection.astro": {
-    "mtime": 1785507768.4045918,
-    "ast_hash": "7118c7576ce1bd051c9e63a942bf8547",
+    "mtime": 1785510654.1377864,
+    "ast_hash": "eecd34f5aa9228669eaa6aa1a7a6fe2d",
     "semantic_hash": ""
   },
   "src/components/BookingWidget.astro": {
-    "mtime": 1785280029.9602213,
-    "ast_hash": "16081de21a9afe42e5cec11a531882b0",
+    "mtime": 1785510579.0831618,
+    "ast_hash": "4642ef47269103f0ba18365b072cd20d",
     "semantic_hash": ""
   },
   "src/components/FAQSection.astro": {
-    "mtime": 1785507768.3311503,
-    "ast_hash": "15e98a50063ef972d5c00d35d4f1d327",
+    "mtime": 1785510575.1302643,
+    "ast_hash": "ec98f9d771263bc0373c4d1a4669ef74",
     "semantic_hash": ""
   },
   "src/components/Footer.astro": {
-    "mtime": 1785253215.0094037,
-    "ast_hash": "94d2d6c44b8bda2c64ccb6d9327e6046",
+    "mtime": 1785510579.122367,
+    "ast_hash": "167d84c81ec4cf4a2c5de88db9aed268",
     "semantic_hash": ""
   },
   "src/components/MapSection.astro": {
@@ -70,23 +70,23 @@
     "semantic_hash": ""
   },
   "src/components/Navbar.astro": {
-    "mtime": 1785473985.4153998,
-    "ast_hash": "3d941d1f5aa7cc619986c08f33f1b126",
+    "mtime": 1785510568.5268464,
+    "ast_hash": "cc22dcb4a6830c323139f6f6a0d7fde5",
     "semantic_hash": ""
   },
   "src/components/ReviewMarquee.astro": {
-    "mtime": 1785467285.667976,
-    "ast_hash": "c49d9f0bcd9d3af70e02cd0ea048810f",
+    "mtime": 1785510568.7708323,
+    "ast_hash": "0ca9df28e812d8ef8f16c6a47f4e24a3",
     "semantic_hash": ""
   },
   "src/components/RoomCard.astro": {
-    "mtime": 1785476801.097139,
-    "ast_hash": "641295381bf779fe866469cd335f1f4f",
+    "mtime": 1785510577.1930616,
+    "ast_hash": "0ed9a956e9c7c61808dc6c0a9e2d4cd1",
     "semantic_hash": ""
   },
   "src/components/RoomDetail.astro": {
-    "mtime": 1785253215.0252995,
-    "ast_hash": "f920c07f9658d6e20e5f1a1d9d35e7d6",
+    "mtime": 1785510658.7807693,
+    "ast_hash": "b9bcb7541ddfcbcae5b64bddf7100aab",
     "semantic_hash": ""
   },
   "src/components/ServiceGrid.astro": {
@@ -95,8 +95,8 @@
     "semantic_hash": ""
   },
   "src/components/WhatsAppButton.astro": {
-    "mtime": 1785253215.0312772,
-    "ast_hash": "f438a0fa72b95d2a0e3c4f2d264194b2",
+    "mtime": 1785510579.2558217,
+    "ast_hash": "14a431b1aa0587d3fa5acd07e1fed124",
     "semantic_hash": ""
   },
   "src/components/icons/SVGIcons.astro": {
@@ -140,23 +140,23 @@
     "semantic_hash": ""
   },
   "src/pages/book.astro": {
-    "mtime": 1785288017.765569,
-    "ast_hash": "bfda3273846654ef5e3445ef9e7176fa",
+    "mtime": 1785510734.8193717,
+    "ast_hash": "3c5ecab36e98899a4181924a8158e937",
     "semantic_hash": ""
   },
   "src/pages/book/mock-payment.astro": {
-    "mtime": 1784908642.9860015,
-    "ast_hash": "82fb6e8a14af2530590e1b7a026d2931",
+    "mtime": 1785510746.0669422,
+    "ast_hash": "a10258afc01d17a52101298174a0306c",
     "semantic_hash": ""
   },
   "src/pages/book/success.astro": {
-    "mtime": 1785347971.6004133,
-    "ast_hash": "155ab23697e0d6743edea636939df6fb",
+    "mtime": 1785510754.4199476,
+    "ast_hash": "91f52f3a38f247bd5d5002ba8debbd82",
     "semantic_hash": ""
   },
   "src/pages/contact.astro": {
-    "mtime": 1785298532.5469425,
-    "ast_hash": "787e95120c214ba6e2cff59fba7815ef",
+    "mtime": 1785510784.9602487,
+    "ast_hash": "1f72f11a8d536497f61aaca4147e8487",
     "semantic_hash": ""
   },
   "src/pages/es/book.astro": {
@@ -210,23 +210,23 @@
     "semantic_hash": "a4c571a358d4c893a59d0a0d62c3eecf"
   },
   "src/pages/explore.astro": {
-    "mtime": 1785288151.0028849,
-    "ast_hash": "068f2e847ba4d74b8221e01c4a0c08d2",
+    "mtime": 1785510796.4074557,
+    "ast_hash": "b509e6697d3cc2d30ea5a0b333f4c3ad",
     "semantic_hash": ""
   },
   "src/pages/explore/[slug].astro": {
-    "mtime": 1784823652.8681169,
-    "ast_hash": "83c86b58198bc072a6c0d4f0a9f8bab4",
+    "mtime": 1785510804.2921596,
+    "ast_hash": "41b5d9935bc9843d05f9dee5dc13f691",
     "semantic_hash": ""
   },
   "src/pages/gallery.astro": {
-    "mtime": 1784613660.1734242,
-    "ast_hash": "25cdd7182807d1ddc509bbe135d9d76c",
+    "mtime": 1785510823.257253,
+    "ast_hash": "74a2555777af2e2c8580addb39bb8da5",
     "semantic_hash": ""
   },
   "src/pages/index.astro": {
-    "mtime": 1785467195.7152052,
-    "ast_hash": "5ddb5eb426e4ce0e17892eb75a038e26",
+    "mtime": 1785510838.76536,
+    "ast_hash": "ccc876cff916b62eb66c6ee54d3243f6",
     "semantic_hash": ""
   },
   "src/pages/rooms/[slug].astro": {
@@ -235,8 +235,8 @@
     "semantic_hash": ""
   },
   "src/pages/rooms/index.astro": {
-    "mtime": 1785476819.0009968,
-    "ast_hash": "4d492cbc0964c3007450723c9288bdcd",
+    "mtime": 1785510864.1683638,
+    "ast_hash": "44314e87fbe265b3d407e86d025b1947",
     "semantic_hash": ""
   },
   "src/utils/helpers.ts": {
@@ -575,13 +575,13 @@
     "semantic_hash": ""
   },
   "src/pages/login.astro": {
-    "mtime": 1785288198.8492377,
-    "ast_hash": "44d5b1975931d7b4fc7e2596da3b08e6",
+    "mtime": 1785510887.8180149,
+    "ast_hash": "8085f9465f0cccf3aaf03d6198325072",
     "semantic_hash": ""
   },
   "src/pages/my-bookings.astro": {
-    "mtime": 1785288198.8492377,
-    "ast_hash": "f9e8ae3fb49ad461cddafee5fe5a8df2",
+    "mtime": 1785510851.1477408,
+    "ast_hash": "8a9c5d270c6d9b051647213f7e21e555",
     "semantic_hash": ""
   },
   "src/utils/auth-client.ts": {
@@ -630,8 +630,8 @@
     "semantic_hash": ""
   },
   "src/components/InteractiveRoomsSection.astro": {
-    "mtime": 1785507818.6478536,
-    "ast_hash": "7f7d152533c44c6313b06fbb404e0f8f",
+    "mtime": 1785510556.495979,
+    "ast_hash": "d479853dc16fe94a909d17c0be98b9a5",
     "semantic_hash": ""
   },
   "src/assets/explore/barrio-de-san-blas.jpg": {
@@ -1630,8 +1630,8 @@
     "semantic_hash": ""
   },
   "tests/api-harness.php": {
-    "mtime": 1785130426.6523702,
-    "ast_hash": "f4d368627e36e209c6087b16fb24ca7e",
+    "mtime": 1785510378.7990189,
+    "ast_hash": "eef80064fd8aa4bc52e0351ac2843cc7",
     "semantic_hash": ""
   },
   "tests/api-harness.sh": {
@@ -1680,8 +1680,8 @@
     "semantic_hash": ""
   },
   "src/components/ui/StatusBanner.astro": {
-    "mtime": 1785130426.6391444,
-    "ast_hash": "9afacab810e5d54640addc82ceb669ea",
+    "mtime": 1785510658.8883693,
+    "ast_hash": "aa242eff49de34494020603f7cb75373",
     "semantic_hash": ""
   },
   "src/pages/es/profile.astro": {
@@ -1695,8 +1695,8 @@
     "semantic_hash": ""
   },
   "src/pages/profile.astro": {
-    "mtime": 1785288198.8517613,
-    "ast_hash": "ee297326aeb4752af9338e53573529c3",
+    "mtime": 1785510925.997523,
+    "ast_hash": "05485f65ce027a955b396c632f941262",
     "semantic_hash": ""
   },
   "src/pages/pt/profile.astro": {
@@ -1710,8 +1710,8 @@
     "semantic_hash": ""
   },
   "src/components/MobileBookingBar.astro": {
-    "mtime": 1785474388.8044884,
-    "ast_hash": "6151c6fbcec41c10915bc663cac144ad",
+    "mtime": 1785510568.6649103,
+    "ast_hash": "ef45c5ef04c91097257a6141baf67f64",
     "semantic_hash": ""
   },
   "tests/channex-stress-harness.php": {
@@ -1740,8 +1740,8 @@
     "semantic_hash": ""
   },
   "src/utils/scrollStoryEngine.ts": {
-    "mtime": 1785507767.4551039,
-    "ast_hash": "42adb03c7b0cb50ac428a02112928718",
+    "mtime": 1785510561.8826883,
+    "ast_hash": "c9eec62aca563cea857528ea049bd7fc",
     "semantic_hash": ""
   },
   "vendor/mercadopago/dx-php/composer.json": {
@@ -3575,8 +3575,8 @@
     "semantic_hash": ""
   },
   "src/components/common/NoiseOverlay.astro": {
-    "mtime": 1785468976.9988573,
-    "ast_hash": "58109e1324e19c197e5e25e860d20161",
+    "mtime": 1785510556.447039,
+    "ast_hash": "61d29458721a2eee9f7b31e4c92393a0",
     "semantic_hash": ""
   },
   "src/components/common/Preloader.astro": {
@@ -3585,8 +3585,8 @@
     "semantic_hash": ""
   },
   "src/pages/book/checkout.astro": {
-    "mtime": 1785468472.1321046,
-    "ast_hash": "86c1fb9c922203e4c960c8635e15c777",
+    "mtime": 1785510870.804708,
+    "ast_hash": "32c1ae79e16f2a49d15ef2374dc17576",
     "semantic_hash": ""
   },
   "src/pages/es/book/checkout.astro": {

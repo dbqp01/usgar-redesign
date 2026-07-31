@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>usgar-redesign — 完整调用流程与架构文档</h1>
-<p class="subtitle">由 graphify 知识图谱生成：2981 个节点、4543 条边、455 个社区。Commit: ca9b0c1</p>
+<p class="subtitle">由 graphify 知识图谱生成：2986 个节点、4547 条边、457 个社区。Commit: c82e569</p>
 
 <div class="nav">
     <a href="#overview">架构总览</a>
@@ -98,17 +98,17 @@ flowchart LR
     class OUTPUTS_DOCS_ED82387C module;
     CLI_SKILLS_9964CBB8("CLI 与技能安装<br/><small>223 nodes</small>")
     class CLI_SKILLS_9964CBB8 module;
-    INGEST_CACHE_UPDATE_FF457338("摄取与增量更新<br/><small>35 nodes</small>")
+    INGEST_CACHE_UPDATE_FF457338("摄取与增量更新<br/><small>47 nodes</small>")
     class INGEST_CACHE_UPDATE_FF457338 module;
-    SERVE_API_35EC8E86("服务 API<br/><small>327 nodes</small>")
+    SERVE_API_35EC8E86("服务 API<br/><small>347 nodes</small>")
     class SERVE_API_35EC8E86 module;
     SECURITY_GLOBAL_5B9C6A04("安全与全局图<br/><small>3 nodes</small>")
     class SECURITY_GLOBAL_5B9C6A04 module;
-    TESTS_FIXTURES_B84B1DCC("测试与样例<br/><small>689 nodes</small>")
+    TESTS_FIXTURES_B84B1DCC("测试与样例<br/><small>652 nodes</small>")
     class TESTS_FIXTURES_B84B1DCC module;
-    RUST_SECURITY_AUDIT_CB3475E2("Rust Security Audit<br/><small>67 nodes</small>")
+    RUST_SECURITY_AUDIT_CB3475E2("Rust Security Audit<br/><small>66 nodes</small>")
     class RUST_SECURITY_AUDIT_CB3475E2 module;
-    POC_E7C4E8B6("PoC 分类与模板<br/><small>57 nodes</small>")
+    POC_E7C4E8B6("PoC 分类与模板<br/><small>55 nodes</small>")
     class POC_E7C4E8B6 module;
     SECTION_13_F7143222("逻辑漏洞深度分析手册<br/><small>41 nodes</small>")
     class SECTION_13_F7143222 module;
@@ -116,20 +116,20 @@ flowchart LR
     class ABSTRACTADAPTER_PHP_45341CA7 module;
     FILE_CREATION_CHECKLIST_6769FDE4("File Creation Checklist<br/><small>34 nodes</small>")
     class FILE_CREATION_CHECKLIST_6769FDE4 module;
-    OTHER_D0941E68("其他<br/><small>1269 nodes</small>")
+    OTHER_D0941E68("其他<br/><small>1282 nodes</small>")
     class OTHER_D0941E68 module;
-    POC_E7C4E8B6 -->|mixes in x110| OTHER_D0941E68
-    OTHER_D0941E68 -->|导入 x76| TESTS_FIXTURES_B84B1DCC
-    TESTS_FIXTURES_B84B1DCC -->|导入 x71| OTHER_D0941E68
-    SERVE_API_35EC8E86 -->|references x70| OTHER_D0941E68
-    OTHER_D0941E68 -->|导入 x43| SERVE_API_35EC8E86
-    RUST_SECURITY_AUDIT_CB3475E2 -->|inherits x42| OTHER_D0941E68
-    POC_E7C4E8B6 -->|导入 x35| RUST_SECURITY_AUDIT_CB3475E2
-    SERVE_API_35EC8E86 -->|导入 x26| TESTS_FIXTURES_B84B1DCC
-    TESTS_FIXTURES_B84B1DCC -->|导入 x26| SERVE_API_35EC8E86
-    SERVE_API_35EC8E86 -->|references x19| ABSTRACTADAPTER_PHP_45341CA7
-    ABSTRACTADAPTER_PHP_45341CA7 -->|导入 x19| OTHER_D0941E68
-    OTHER_D0941E68 -->|导入 x18| ABSTRACTADAPTER_PHP_45341CA7
+    POC_E7C4E8B6 -->|mixes in x111| OTHER_D0941E68
+    OTHER_D0941E68 -->|导入 x68| TESTS_FIXTURES_B84B1DCC
+    TESTS_FIXTURES_B84B1DCC -->|导入 x60| OTHER_D0941E68
+    SERVE_API_35EC8E86 -->|references x57| OTHER_D0941E68
+    OTHER_D0941E68 -->|导入 x40| SERVE_API_35EC8E86
+    RUST_SECURITY_AUDIT_CB3475E2 -->|inherits x40| OTHER_D0941E68
+    TESTS_FIXTURES_B84B1DCC -->|导入 x33| SERVE_API_35EC8E86
+    POC_E7C4E8B6 -->|导入 x33| RUST_SECURITY_AUDIT_CB3475E2
+    SERVE_API_35EC8E86 -->|导入 x29| TESTS_FIXTURES_B84B1DCC
+    SERVE_API_35EC8E86 -->|导入 x25| ABSTRACTADAPTER_PHP_45341CA7
+    OTHER_D0941E68 -->|导入 x20| BUILD_GRAPH_321CBB04
+    SERVE_API_35EC8E86 -->|references constant x20| RUST_SECURITY_AUDIT_CB3475E2
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -146,20 +146,20 @@ flowchart LR
     <h4>架构层次</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>层</th><th>节点</th><th>社区</th></tr>
-      <tr><td>提取管线</td><td>12</td><td><code>38</code></td></tr><tr><td>图谱构建</td><td>163</td><td><code>543, 5, 108, 134, 0, 26, 11, 595</code></td></tr><tr><td>分析聚类</td><td>4</td><td><code>590</code></td></tr><tr><td>输出文档</td><td>22</td><td><code>125, 589</code></td></tr><tr><td>CLI 与技能安装</td><td>223</td><td><code>19, 24, 92, 123, 135, 141, 143, 148, 165, 168, 173, 174, 251, 275, 40</code></td></tr><tr><td>摄取与增量更新</td><td>35</td><td><code>127, 86, 187, 343</code></td></tr><tr><td>服务 API</td><td>327</td><td><code>14, 2, 508, 93, 119, 113, 84, 121, 7, 29, 159, 151, 167, 188, 48, 52, 513, 528, 616, 90</code></td></tr><tr><td>安全与全局图</td><td>3</td><td><code>47</code></td></tr><tr><td>测试与样例</td><td>689</td><td><code>501, 584, 30, 486, 36, 115, 85, 126, 124, 114, 475, 130, 131, 34, 133, 136, 138, 139, 145, 146, 147, 9, 156, 94, 162, 552, 546, 171, 172, 175, 176, 177, 178, 179, 180, 185, 576, 100, 189, 109, 116, 192, 193, 194, 97, 244, 249, 250, 111, 246, 247, 323, 465, 511, 57</code></td></tr><tr><td>Rust Security Audit</td><td>67</td><td><code>6</code></td></tr><tr><td>PoC 分类与模板</td><td>57</td><td><code>25</code></td></tr><tr><td>逻辑漏洞深度分析手册</td><td>41</td><td><code>3</code></td></tr><tr><td>AbstractAdapter.php</td><td>35</td><td><code>49</code></td></tr><tr><td>File Creation Checklist</td><td>34</td><td><code>534</code></td></tr><tr><td>其他</td><td>1269</td><td><code>489, 122, 484, 540, 17, 541, 8, 13, 161, 37, 232, 496, 554, 129, 98, 132, 96, 112, 137, 18, 190, 41, 45, 110, 120, 15, 153, 157, 4, 16, 163, 21, 211, 43, 166, 203, 558, 559, 10, 106, 169, 170, 212, 32, 452, 482, 181, 182, 183, 184, 27, 280, 31, 310, 483, 55, 569, 572, 573, 575, 12, 164, 186, 28, 311, 312, 313, 314, 364, 39, 582, 101, 104, 105, 107, 191, 214, 33, 365, 366, 439, 588, 117, 118, 128, 140, 142, 144, 154, 155, 158, 160, 195, 196, 197, 198, 199, 200, 201, 202, 204, 205, 206, 207, 208, 209, 210, 213, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 245, 248, 309, 35, 363, 434, 44, 46, 461, 567, 597, 99, 20, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 276, 277, 278, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 315, 316, 317, 318, 319, 320, 321, 322, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 339, 340, 342, 344, 345, 346, 347, 348, 349, 350, 466, 469, 54, 599, 1, 102, 103, 149, 150, 152, 215, 22, 23, 279, 338, 341, 409, 411, 42, 429, 435, 436, 472, 473, 474, 476, 481, 485, 488, 490, 491, 492, 495, 498, 499, 50, 504, 506, 507, 51, 510, 512, 514, 518, 519, 520, 521, 523, 524, 525, 526, 527, 529, 53, 537, 545, 56, 568, 58, 59, 60, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 61, 610, 611, 612, 613, 614, 615, 617, 618, 619, 62, 620, 625, 626, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 87, 88, 89, 91, 95</code></td></tr>
+      <tr><td>提取管线</td><td>12</td><td><code>38</code></td></tr><tr><td>图谱构建</td><td>163</td><td><code>543, 5, 134, 108, 26, 11, 595</code></td></tr><tr><td>分析聚类</td><td>4</td><td><code>590</code></td></tr><tr><td>输出文档</td><td>22</td><td><code>125, 589</code></td></tr><tr><td>CLI 与技能安装</td><td>223</td><td><code>19, 24, 92, 123, 135, 141, 143, 148, 165, 168, 173, 174, 251, 275, 40</code></td></tr><tr><td>摄取与增量更新</td><td>47</td><td><code>127, 37, 86, 187, 343</code></td></tr><tr><td>服务 API</td><td>347</td><td><code>14, 2, 113, 508, 119, 84, 93, 121, 7, 29, 10, 159, 151, 167, 188, 48, 52, 513, 528, 616, 90</code></td></tr><tr><td>安全与全局图</td><td>3</td><td><code>47</code></td></tr><tr><td>测试与样例</td><td>652</td><td><code>584, 501, 30, 486, 36, 85, 161, 124, 104, 34, 130, 131, 133, 136, 138, 139, 145, 146, 147, 9, 156, 94, 162, 552, 546, 171, 172, 175, 176, 177, 178, 179, 180, 475, 185, 576, 100, 189, 109, 116, 192, 193, 194, 97, 244, 249, 250, 111, 246, 247, 323, 465, 511, 57</code></td></tr><tr><td>Rust Security Audit</td><td>66</td><td><code>6</code></td></tr><tr><td>PoC 分类与模板</td><td>55</td><td><code>25</code></td></tr><tr><td>逻辑漏洞深度分析手册</td><td>41</td><td><code>3</code></td></tr><tr><td>AbstractAdapter.php</td><td>35</td><td><code>49</code></td></tr><tr><td>File Creation Checklist</td><td>34</td><td><code>534</code></td></tr><tr><td>其他</td><td>1282</td><td><code>489, 122, 484, 540, 101, 17, 541, 232, 115, 13, 8, 496, 554, 126, 129, 98, 105, 132, 96, 110, 112, 137, 15, 153, 18, 190, 41, 45, 120, 4, 16, 163, 21, 211, 43, 166, 558, 559, 106, 114, 169, 170, 212, 32, 452, 482, 181, 182, 183, 184, 27, 280, 31, 310, 483, 55, 569, 572, 573, 575, 117, 12, 186, 28, 311, 312, 313, 314, 364, 39, 582, 0, 107, 191, 214, 33, 365, 366, 439, 588, 118, 128, 140, 142, 144, 154, 155, 157, 158, 160, 164, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 213, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 233, 234, 235, 236, 237, 240, 241, 242, 243, 245, 248, 309, 35, 363, 44, 46, 461, 567, 597, 99, 20, 238, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 276, 277, 278, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 315, 316, 317, 318, 319, 320, 321, 322, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 339, 340, 342, 344, 345, 346, 347, 348, 349, 350, 466, 469, 54, 599, 1, 102, 103, 149, 150, 152, 215, 22, 23, 239, 252, 253, 279, 338, 341, 409, 411, 42, 429, 434, 435, 436, 472, 473, 474, 476, 481, 485, 488, 490, 491, 492, 495, 498, 499, 50, 504, 506, 507, 51, 510, 512, 514, 518, 519, 520, 521, 523, 524, 525, 526, 527, 529, 53, 537, 545, 56, 568, 58, 59, 60, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 61, 610, 611, 612, 613, 614, 615, 617, 618, 619, 62, 620, 625, 626, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 87, 88, 89, 91, 95</code></td></tr>
     </table>
   </div>
   <div class="card">
     <h4>核心数据流</h4>
-    <div class="arrow-chain">分析聚类 -&gt; 提取管线 -&gt; 图谱构建 -&gt; 测试与样例 -&gt; 其他 -&gt; 服务 API -&gt; AbstractAdapter.php</div>
+    <div class="arrow-chain">分析聚类 -&gt; 提取管线 -&gt; 图谱构建 -&gt; 其他 -&gt; 测试与样例 -&gt; 服务 API -&gt; AbstractAdapter.php</div>
   </div>
 </div>
 <div class="grid">
   <div class="card">
     <h4>图谱报告摘要</h4>
     <ul>
-      <li>2981 nodes · 4543 edges · 455 communities (169 shown, 286 thin omitted)</li>
-      <li>Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 273 edges (avg confidence: 0.8)</li>
+      <li>2986 nodes · 4547 edges · 457 communities (172 shown, 285 thin omitted)</li>
+      <li>Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 275 edges (avg confidence: 0.8)</li>
       <li>Token cost: 0 input · 0 output</li>
       <li>1. `MercadoPagoConfig` - 141 edges</li>
       <li>2. `RequestOptions` - 109 edges</li>
@@ -353,12 +353,12 @@ flowchart LR
 
 <!-- ====== 3. 图谱构建 ====== -->
 <h2 id="build-graph">3. 图谱构建</h2>
-<p>图谱构建 汇集了与 hybridauth、vendor、packagejson、thirdparty 相关的实现，主要分布在 package.json、mercadopago/dx-php/composer.json、Thirdparty/OAuth/OAuthRequest.php。本节覆盖 163 个节点、191 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>图谱构建 汇集了与 hybridauth、vendor、packagejson、thirdparty 相关的实现，主要分布在 package.json、mercadopago/dx-php/composer.json、Thirdparty/OAuth/OAuthRequest.php。本节覆盖 163 个节点、197 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 图谱构建 (163 nodes, 191 edges)
+    %% Section: 图谱构建 (163 nodes, 197 edges)
     subgraph build_graph_src_Adapter_OAuth1_php_5494c84e["src/Adapter/OAuth1.php"]
         vendor_hybridauth_hybridauth_src_adapter_oauth1_a9b7ba30("OAuth1<br/><small>src/Adapter/OAuth1.php</small>")
         vendor_hybridauth_hybridauth_src_adapter_oauth1_17d4de53("apiRequest()<br/><small>src/Adapter/OAuth1.php</small>")
@@ -379,10 +379,10 @@ flowchart LR
         src_pages_index_stopautoplay_4b967bfc("stopAutoPlay()<br/><small>src/pages/index.astro</small>")
     end
     vendor_hybridauth_hybridauth_src_thirdparty_oaut_91a91d50("OAuthRequest<br/><small>Thirdparty/OAuth/OAuthRequest.php</small>")
+    vendor_hybridauth_hybridauth_src_thirdparty_oaut_1fbea2f1("OAuthSignatureMethod<br/><small>Thirdparty/OAuth/OAuthSignatureMethod.php</small>")
     vendor_hybridauth_hybridauth_src_thirdparty_oaut_c6d5dbb0("OAuthUtil<br/><small>Thirdparty/OAuth/OAuthUtil.php</small>")
-    c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b("../assets/hotel/hero-slide-patio.jpg")
-    src_components_aboutsection_cd8d0c2c("AboutSection.astro")
-    src_components_servicegrid_70ff2fdc("ServiceGrid.astro")
+    astro_assets_b0866f09("astro:assets")
+    src_components_aboutsection_cd8d0c2c("../components/AboutSection.astro")
     src_pages_index_startautoplay_2f4eb08b -->|调用| src_pages_index_stopautoplay_4b967bfc
     scripts_audit_seo_schema_checkhtmlfile_cf0aac72 -->|调用| scripts_audit_seo_schema_traversedir_c4faeeac
     vendor_hybridauth_hybridauth_src_adapter_oauth1_a9b7ba30 -->|方法| vendor_hybridauth_hybridauth_src_adapter_oauth1_17d4de53
@@ -398,8 +398,7 @@ flowchart LR
     vendor_hybridauth_hybridauth_src_adapter_oauth1_b4aa0c5d -->|调用| vendor_hybridauth_hybridauth_src_adapter_oauth1_4fc3317c
     vendor_hybridauth_hybridauth_src_adapter_oauth1_2b51a749 -->|调用| vendor_hybridauth_hybridauth_src_adapter_oauth1_bed76fec
     vendor_hybridauth_hybridauth_src_adapter_oauth1_4fc3317c -->|调用| vendor_hybridauth_hybridauth_src_adapter_oauth1_3c3fca29
-    src_components_aboutsection_cd8d0c2c -->|导入| c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b
-    c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b -->|导入| src_components_servicegrid_70ff2fdc
+    src_components_aboutsection_cd8d0c2c -->|导入| astro_assets_b0866f09
     %% Omitted for readability: 145 nodes, 0 edges
     class vendor_hybridauth_hybridauth_src_adapter_oauth1_a9b7ba30 klass;
     class vendor_hybridauth_hybridauth_src_adapter_oauth1_17d4de53 api;
@@ -415,10 +414,10 @@ flowchart LR
     class src_pages_index_startautoplay_2f4eb08b function;
     class src_pages_index_stopautoplay_4b967bfc function;
     class vendor_hybridauth_hybridauth_src_thirdparty_oaut_91a91d50 klass;
+    class vendor_hybridauth_hybridauth_src_thirdparty_oaut_1fbea2f1 klass;
     class vendor_hybridauth_hybridauth_src_thirdparty_oaut_c6d5dbb0 klass;
-    class c_users_akim_desktop_usgar_redesign_src_assets_h_37625f5b async;
-    class src_components_aboutsection_cd8d0c2c klass;
-    class src_components_servicegrid_70ff2fdc klass;
+    class astro_assets_b0866f09 async;
+    class src_components_aboutsection_cd8d0c2c ui;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -699,7 +698,7 @@ flowchart LR
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x79, 方法 x38, 调用 x26, 导入 x23。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x77, 方法 x38, 导入 x31, 调用 x26。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -1421,23 +1420,12 @@ flowchart LR
 
 <!-- ====== 7. 摄取与增量更新 ====== -->
 <h2 id="ingest-cache-update">7. 摄取与增量更新</h2>
-<p>摄取与增量更新 汇集了与 vendor、migration、mercadopago、php 相关的实现，主要分布在 mercadopago/dx-php/MIGRATION_GUIDE.md、.agents/BRAND.md、src/Provider/Google.php。本节覆盖 35 个节点、32 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>摄取与增量更新 汇集了与 hybridauth、vendor、migration、mercadopago 相关的实现，主要分布在 mercadopago/dx-php/MIGRATION_GUIDE.md、.agents/BRAND.md、src/Provider/Google.php。本节覆盖 47 个节点、46 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 摄取与增量更新 (35 nodes, 32 edges)
-    subgraph ingest_cache_update_agents_BRAND_md_b3bcf5b4[".agents/BRAND.md"]
-        agents_brand_1_identidad_del_hotel_115f5c0a("1. Identidad del Hotel<br/><small>.agents/BRAND.md</small>")
-        agents_brand_12_seo_a77cc9bb("12. SEO<br/><small>.agents/BRAND.md</small>")
-        agents_brand_13_pagos_58ae42ce("13. Pagos<br/><small>.agents/BRAND.md</small>")
-        agents_brand_16_tokens_css_tailwind_v4_referenci_fce623f9("16. Tokens CSS / Tailwind v4 — Referenc...<br/><small>.agents/BRAND.md</small>")
-        agents_brand_7_servicios_e09d8eb8("7. Servicios<br/><small>.agents/BRAND.md</small>")
-        agents_brand_8_video_del_hero_p_gina_principal_23ecc0f7("8. Video del Hero (Página Principal)<br/><small>.agents/BRAND.md</small>")
-        agents_brand_amenidades_en_la_habitaci_n_11_42565079("Amenidades en la Habitación (11)<br/><small>.agents/BRAND.md</small>")
-        agents_brand_reglas_de_audio_video_a36a2276("Reglas de Audio/Video<br/><small>.agents/BRAND.md</small>")
-        agents_brand_schema_org_valores_correctos_3ddd2cec("Schema.org — Valores Correctos<br/><small>.agents/BRAND.md</small>")
-    end
+    %% Section: 摄取与增量更新 (47 nodes, 46 edges)
     subgraph ingest_cache_update_src_Provider_Google_php_759efc53["src/Provider/Google.php"]
         vendor_hybridauth_hybridauth_src_provider_google_6b86faf8("Google<br/><small>src/Provider/Google.php</small>")
         vendor_hybridauth_hybridauth_src_provider_google_fdfc789a("getUserContacts()<br/><small>src/Provider/Google.php</small>")
@@ -1451,21 +1439,31 @@ flowchart LR
         scripts_update_i18n_newkeys_43fbeeec("newKeys<br/><small>scripts/update-i18n.js</small>")
         scripts_update_i18n_330639de("update-i18n.js")
     end
+    subgraph ingest_cache_update_src_User_Contact_php_b07d0313["src/User/Contact.php"]
+        vendor_hybridauth_hybridauth_src_user_contact_co_25829ff4("Contact<br/><small>src/User/Contact.php</small>")
+        vendor_hybridauth_hybridauth_src_user_contact_co_206eed73("__set()<br/><small>src/User/Contact.php</small>")
+        vendor_hybridauth_hybridauth_src_user_contact_c86a64b1("Contact.php")
+    end
+    subgraph ingest_cache_update_src_Exception_HttpClientFail_e3ccfaf5["src/Exception/HttpClientFailureException.php"]
+        vendor_hybridauth_hybridauth_src_exception_httpc_0b54f99f("HttpClientFailureException<br/><small>src/Exception/HttpClientFailureException.php</small>")
+        vendor_hybridauth_hybridauth_src_exception_httpc_6e8fbac7("HttpClientFailureException.php")
+    end
+    vendor_hybridauth_hybridauth_src_exception_httpr_eabbca47("HttpRequestFailedException.php")
+    vendor_hybridauth_hybridauth_src_exception_unexp_24c7d36d("UnexpectedApiResponseException.php")
+    vendor_hybridauth_hybridauth_src_exception_unexp_3381d335("UnexpectedValueException<br/><small>src/Exception/UnexpectedValueException.php</small>")
+    vendor_hybridauth_hybridauth_src_provider_facebo_e100a382("Facebook.php")
     vendor_hybridauth_hybridauth_src_provider_google_6b86faf8 -->|方法| vendor_hybridauth_hybridauth_src_provider_google_92f4831e
     vendor_hybridauth_hybridauth_src_provider_google_6b86faf8 -->|方法| vendor_hybridauth_hybridauth_src_provider_google_fdfc789a
     vendor_hybridauth_hybridauth_src_provider_google_6b86faf8 -->|方法| vendor_hybridauth_hybridauth_src_provider_google_1cc9ecc6
     vendor_hybridauth_hybridauth_src_provider_google_6b86faf8 -->|方法| vendor_hybridauth_hybridauth_src_provider_google_f42abbea
     vendor_hybridauth_hybridauth_src_provider_google_fdfc789a -->|调用| vendor_hybridauth_hybridauth_src_provider_google_92f4831e
-    %% Omitted for readability: 17 nodes, 0 edges
-    class agents_brand_1_identidad_del_hotel_115f5c0a concept;
-    class agents_brand_12_seo_a77cc9bb concept;
-    class agents_brand_13_pagos_58ae42ce concept;
-    class agents_brand_16_tokens_css_tailwind_v4_referenci_fce623f9 concept;
-    class agents_brand_7_servicios_e09d8eb8 concept;
-    class agents_brand_8_video_del_hero_p_gina_principal_23ecc0f7 concept;
-    class agents_brand_amenidades_en_la_habitaci_n_11_42565079 concept;
-    class agents_brand_reglas_de_audio_video_a36a2276 concept;
-    class agents_brand_schema_org_valores_correctos_3ddd2cec concept;
+    vendor_hybridauth_hybridauth_src_user_contact_co_25829ff4 -->|方法| vendor_hybridauth_hybridauth_src_user_contact_co_206eed73
+    vendor_hybridauth_hybridauth_src_exception_httpr_eabbca47 -->|导入| vendor_hybridauth_hybridauth_src_provider_facebo_e100a382
+    vendor_hybridauth_hybridauth_src_exception_unexp_24c7d36d -->|导入| vendor_hybridauth_hybridauth_src_provider_facebo_e100a382
+    vendor_hybridauth_hybridauth_src_exception_unexp_24c7d36d -->|导入| vendor_hybridauth_hybridauth_src_provider_google_c6dc7b03
+    vendor_hybridauth_hybridauth_src_exception_unexp_3381d335 -->|导入| vendor_hybridauth_hybridauth_src_provider_facebo_e100a382
+    vendor_hybridauth_hybridauth_src_exception_unexp_3381d335 -->|导入| vendor_hybridauth_hybridauth_src_user_contact_c86a64b1
+    %% Omitted for readability: 29 nodes, 0 edges
     class vendor_hybridauth_hybridauth_src_provider_google_6b86faf8 klass;
     class vendor_hybridauth_hybridauth_src_provider_google_fdfc789a function;
     class vendor_hybridauth_hybridauth_src_provider_google_92f4831e function;
@@ -1475,6 +1473,15 @@ flowchart LR
     class scripts_update_i18n_i18ndir_357028d1 function;
     class scripts_update_i18n_newkeys_43fbeeec function;
     class scripts_update_i18n_330639de module;
+    class vendor_hybridauth_hybridauth_src_user_contact_co_25829ff4 klass;
+    class vendor_hybridauth_hybridauth_src_user_contact_co_206eed73 function;
+    class vendor_hybridauth_hybridauth_src_user_contact_c86a64b1 klass;
+    class vendor_hybridauth_hybridauth_src_exception_httpc_0b54f99f entry;
+    class vendor_hybridauth_hybridauth_src_exception_httpc_6e8fbac7 entry;
+    class vendor_hybridauth_hybridauth_src_exception_httpr_eabbca47 klass;
+    class vendor_hybridauth_hybridauth_src_exception_unexp_24c7d36d api;
+    class vendor_hybridauth_hybridauth_src_exception_unexp_3381d335 klass;
+    class vendor_hybridauth_hybridauth_src_provider_facebo_e100a382 klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -1610,6 +1617,110 @@ flowchart LR
 </tr>
 <tr>
   <td>15</td>
+  <td><code>HttpClientFailureException.php</code><br><small style="color:var(--muted)">src/Exception/HttpClientFailureException.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>src/Exception/HttpClientFailureException.php 中的 HttpClientFailureException.php 节点。</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>HttpClientFailureException</code><br><small style="color:var(--muted)">src/Exception/HttpClientFailureException.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>src/Exception/HttpClientFailureException.php 中的 HttpClientFailureException 节点。</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>HttpRequestFailedException.php</code><br><small style="color:var(--muted)">src/Exception/HttpRequestFailedException.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>Facebook.php</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small></td>
+  <td>src/Exception/HttpRequestFailedException.php 中的 HttpRequestFailedException.php 节点。</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>HttpRequestFailedException</code><br><small style="color:var(--muted)">src/Exception/HttpRequestFailedException.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>src/Exception/HttpRequestFailedException.php 中的 HttpRequestFailedException 节点。</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>UnexpectedApiResponseException.php</code><br><small style="color:var(--muted)">src/Exception/UnexpectedApiResponseException.php</small></td>
+  <td><span class="tag tag-endpoint">API</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>Facebook.php</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small><br><code>Google.php</code><br><small style="color:var(--muted)">src/Provider/Google.php</small></td>
+  <td>src/Exception/UnexpectedApiResponseException.php 中的 UnexpectedApiResponseException.php 节点。</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>UnexpectedApiResponseException</code><br><small style="color:var(--muted)">src/Exception/UnexpectedApiResponseException.php</small></td>
+  <td><span class="tag tag-endpoint">API</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>src/Exception/UnexpectedApiResponseException.php 中的 UnexpectedApiResponseException 节点。</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>UnexpectedValueException.php</code><br><small style="color:var(--muted)">src/Exception/UnexpectedValueException.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>src/Exception/UnexpectedValueException.php 中的 UnexpectedValueException.php 节点。</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>UnexpectedValueException</code><br><small style="color:var(--muted)">src/Exception/UnexpectedValueException.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>Contact.php</code><br><small style="color:var(--muted)">src/User/Contact.php</small><br><code>Facebook.php</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small></td>
+  <td>src/Exception/UnexpectedValueException.php 中的 UnexpectedValueException 节点。</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>Facebook.php</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>HttpRequestFailedException.php</code><br><small style="color:var(--muted)">src/Exception/HttpRequestFailedException.php</small><br><code>UnexpectedApiResponseException.php</code><br><small style="color:var(--muted)">src/Exception/UnexpectedApiResponseException.php</small><br><code>UnexpectedValueException</code><br><small style="color:var(--muted)">src/Exception/UnexpectedValueException.php</small></td>
+  <td>无直接出边</td>
+  <td>src/Provider/Facebook.php 中的 Facebook.php 节点。</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>Google.php</code><br><small style="color:var(--muted)">src/Provider/Google.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>UnexpectedApiResponseException.php</code><br><small style="color:var(--muted)">src/Exception/UnexpectedApiResponseException.php</small></td>
+  <td>无直接出边</td>
+  <td>src/Provider/Google.php 中的 Google.php 节点。</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>Contact.php</code><br><small style="color:var(--muted)">src/User/Contact.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>UnexpectedValueException</code><br><small style="color:var(--muted)">src/Exception/UnexpectedValueException.php</small></td>
+  <td>无直接出边</td>
+  <td>src/User/Contact.php 中的 Contact.php 节点。</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>Contact</code><br><small style="color:var(--muted)">src/User/Contact.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>__set()</code><br><small style="color:var(--muted)">src/User/Contact.php</small></td>
+  <td>src/User/Contact.php 中的 Contact 节点。</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>.__set()</code><br><small style="color:var(--muted)">src/User/Contact.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>Contact</code><br><small style="color:var(--muted)">src/User/Contact.php</small></td>
+  <td>无直接出边</td>
+  <td>src/User/Contact.php 中的 .__set() 节点。</td>
+</tr>
+<tr>
+  <td>28</td>
   <td><code>USGAR Hotels — Manual de Marca Oficial</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
   <td><span class="tag tag-func">概念</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -1617,7 +1728,7 @@ flowchart LR
   <td>文档入口，描述 USGAR Hotels — Manual de Marca Oficial 相关能力。</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>29</td>
   <td><code>1. Identidad del Hotel</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
   <td><span class="tag tag-func">概念</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -1625,116 +1736,12 @@ flowchart LR
   <td>文档入口，描述 1. Identidad del Hotel 相关能力。</td>
 </tr>
 <tr>
-  <td>17</td>
+  <td>30</td>
   <td><code>7. Servicios</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
   <td><span class="tag tag-func">概念</span></td>
   <td>外部入口 / 无直接入边</td>
   <td>无直接出边</td>
   <td>文档入口，描述 7. Servicios 相关能力。</td>
-</tr>
-<tr>
-  <td>18</td>
-  <td><code>Servicios Generales del Hotel (18)</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Servicios Generales del Hotel (18) 相关能力。</td>
-</tr>
-<tr>
-  <td>19</td>
-  <td><code>Amenidades en la Habitación (11)</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Amenidades en la Habitación (11) 相关能力。</td>
-</tr>
-<tr>
-  <td>20</td>
-  <td><code>8. Video del Hero (Página Principal)</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 8. Video del Hero (Página Principal) 相关能力。</td>
-</tr>
-<tr>
-  <td>21</td>
-  <td><code>Secuencia Obligatoria del Video/Slideshow</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Secuencia Obligatoria del Video/Slideshow 相关能力。</td>
-</tr>
-<tr>
-  <td>22</td>
-  <td><code>Reglas de Audio/Video</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Reglas de Audio/Video 相关能力。</td>
-</tr>
-<tr>
-  <td>23</td>
-  <td><code>12. SEO</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 12. SEO 相关能力。</td>
-</tr>
-<tr>
-  <td>24</td>
-  <td><code>Schema.org — Valores Correctos</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 Schema.org — Valores Correctos 相关能力。</td>
-</tr>
-<tr>
-  <td>25</td>
-  <td><code>13. Pagos</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 13. Pagos 相关能力。</td>
-</tr>
-<tr>
-  <td>26</td>
-  <td><code>16. Tokens CSS / Tailwind v4 — Referencia Completa</code><br><small style="color:var(--muted)">.agents/BRAND.md</small></td>
-  <td><span class="tag tag-func">概念</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>文档入口，描述 16. Tokens CSS / Tailwind v4 — Referencia Completa 相关能力。</td>
-</tr>
-<tr>
-  <td>27</td>
-  <td><code>Google.php</code><br><small style="color:var(--muted)">src/Provider/Google.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>src/Provider/Google.php 中的 Google.php 节点。</td>
-</tr>
-<tr>
-  <td>28</td>
-  <td><code>Google</code><br><small style="color:var(--muted)">src/Provider/Google.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>getGmailContacts()</code><br><small style="color:var(--muted)">src/Provider/Google.php</small><br><code>getUserContacts()</code><br><small style="color:var(--muted)">src/Provider/Google.php</small><br><code>getUserProfile()</code><br><small style="color:var(--muted)">src/Provider/Google.php</small><br>+1 个更多</td>
-  <td>src/Provider/Google.php 中的 Google 节点。</td>
-</tr>
-<tr>
-  <td>29</td>
-  <td><code>.initialize()</code><br><small style="color:var(--muted)">src/Provider/Google.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Google</code><br><small style="color:var(--muted)">src/Provider/Google.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Provider/Google.php 中的 .initialize() 节点。</td>
-</tr>
-<tr>
-  <td>30</td>
-  <td><code>.getUserProfile()</code><br><small style="color:var(--muted)">src/Provider/Google.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Google</code><br><small style="color:var(--muted)">src/Provider/Google.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Provider/Google.php 中的 .getUserProfile() 节点。</td>
 </tr>
 </table>
 
@@ -1747,23 +1754,27 @@ flowchart LR
 <tr><td><code>.agents/BRAND.md</code></td><td>12 个节点</td></tr>
 <tr><td><code>src/Provider/Google.php</code></td><td>6 个节点</td></tr>
 <tr><td><code>scripts/update-i18n.js</code></td><td>3 个节点</td></tr>
+<tr><td><code>src/User/Contact.php</code></td><td>3 个节点</td></tr>
+<tr><td><code>src/Exception/HttpClientFailureException.php</code></td><td>2 个节点</td></tr>
+<tr><td><code>src/Exception/HttpRequestFailedException.php</code></td><td>2 个节点</td></tr>
+<tr><td><code>src/Exception/UnexpectedApiResponseException.php</code></td><td>2 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x27, 方法 x4, 调用 x1。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x32, 导入 x5, 方法 x5, inherits x3。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 8. 服务 API ====== -->
 <h2 id="serve-api">8. 服务 API</h2>
-<p>服务 API 汇集了与 mercadopago、vendor、app、php 相关的实现，主要分布在 Thirdparty/OpenID/LightOpenID.php、README.md、channex-pms-integration/references/api.md。本节覆盖 327 个节点、508 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>服务 API 汇集了与 mercadopago、vendor、app、php 相关的实现，主要分布在 Thirdparty/OpenID/LightOpenID.php、README.md、channex-pms-integration/references/api.md。本节覆盖 347 个节点、547 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 服务 API (327 nodes, 508 edges)
+    %% Section: 服务 API (347 nodes, 547 edges)
     subgraph serve_api_app_Core_Request_php_99b0f8b1["app/Core/Request.php"]
         app_core_request_request_d11f3b0f("Request<br/><small>app/Core/Request.php</small>")
         app_core_request_request_construct_fd7e8ed1("__construct()<br/><small>app/Core/Request.php</small>")
@@ -1775,15 +1786,19 @@ flowchart LR
         app_core_request_request_getip_fdeef8eb("getIp()<br/><small>app/Core/Request.php</small>")
         app_core_request_request_getmethod_251a4e09("getMethod()<br/><small>app/Core/Request.php</small>")
         app_core_request_request_getpath_85835de6("getPath()<br/><small>app/Core/Request.php</small>")
-        app_core_request_request_getquery_62ed3544("getQuery()<br/><small>app/Core/Request.php</small>")
-        app_core_request_request_getqueryparams_23d7f967("getQueryParams()<br/><small>app/Core/Request.php</small>")
-        app_core_request_request_parsebody_bb511ab5("parseBody()<br/><small>app/Core/Request.php</small>")
+    end
+    subgraph serve_api_Booking_Actions_GetBookingStatusAction_df77a2e9["Booking/Actions/GetBookingStatusAction.php"]
+        app_features_booking_actions_getbookingstatusact_a3de231f("GetBookingStatusAction<br/><small>Booking/Actions/GetBookingStatusAction.php</small>")
+        app_features_booking_actions_getbookingstatusact_b97517a2("__construct()<br/><small>Booking/Actions/GetBookingStatusAction.php</small>")
+        app_features_booking_actions_getbookingstatusact_3f995070("__invoke()<br/><small>Booking/Actions/GetBookingStatusAction.php</small>")
     end
     app_features_booking_domain_provisionalbookingre_330585fb("ProvisionalBookingRepository<br/><small>Booking/Domain/ProvisionalBookingRepository.php</small>")
     vendor_hybridauth_hybridauth_src_thirdparty_open_893dd73b("LightOpenID<br/><small>Thirdparty/OpenID/LightOpenID.php</small>")
     app_core_httpexception_httpexception_75382b3b("HttpException<br/><small>app/Core/HttpException.php</small>")
-    app_core_logger_logger_dbd13d55("Logger<br/><small>app/Core/Logger.php</small>")
+    app_core_response_8a158d30("Response.php")
     public_index_c7d833a6("index.php")
+    app_features_booking_actions_getbookingstatusact_a3de231f -->|方法| app_features_booking_actions_getbookingstatusact_b97517a2
+    app_features_booking_actions_getbookingstatusact_a3de231f -->|方法| app_features_booking_actions_getbookingstatusact_3f995070
     app_core_request_request_d11f3b0f -->|方法| app_core_request_request_construct_fd7e8ed1
     app_core_request_request_d11f3b0f -->|方法| app_core_request_request_extractheaders_94da94d6
     app_core_request_request_d11f3b0f -->|方法| app_core_request_request_get_75822ab1
@@ -1793,12 +1808,8 @@ flowchart LR
     app_core_request_request_d11f3b0f -->|方法| app_core_request_request_getip_fdeef8eb
     app_core_request_request_d11f3b0f -->|方法| app_core_request_request_getmethod_251a4e09
     app_core_request_request_d11f3b0f -->|方法| app_core_request_request_getpath_85835de6
-    app_core_request_request_d11f3b0f -->|方法| app_core_request_request_getquery_62ed3544
-    app_core_request_request_d11f3b0f -->|方法| app_core_request_request_getqueryparams_23d7f967
-    app_core_request_request_d11f3b0f -->|方法| app_core_request_request_parsebody_bb511ab5
     app_core_request_request_construct_fd7e8ed1 -->|调用| app_core_request_request_extractheaders_94da94d6
-    app_core_request_request_construct_fd7e8ed1 -->|调用| app_core_request_request_parsebody_bb511ab5
-    %% Omitted for readability: 309 nodes, 0 edges
+    %% Omitted for readability: 329 nodes, 0 edges
     class app_core_request_request_d11f3b0f klass;
     class app_core_request_request_construct_fd7e8ed1 function;
     class app_core_request_request_extractheaders_94da94d6 function;
@@ -1809,13 +1820,13 @@ flowchart LR
     class app_core_request_request_getip_fdeef8eb function;
     class app_core_request_request_getmethod_251a4e09 function;
     class app_core_request_request_getpath_85835de6 function;
-    class app_core_request_request_getquery_62ed3544 function;
-    class app_core_request_request_getqueryparams_23d7f967 function;
-    class app_core_request_request_parsebody_bb511ab5 function;
+    class app_features_booking_actions_getbookingstatusact_a3de231f klass;
+    class app_features_booking_actions_getbookingstatusact_b97517a2 function;
+    class app_features_booking_actions_getbookingstatusact_3f995070 function;
     class app_features_booking_domain_provisionalbookingre_330585fb klass;
     class vendor_hybridauth_hybridauth_src_thirdparty_open_893dd73b klass;
     class app_core_httpexception_httpexception_75382b3b klass;
-    class app_core_logger_logger_dbd13d55 klass;
+    class app_core_response_8a158d30 klass;
     class public_index_c7d833a6 module;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
@@ -1840,102 +1851,14 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>create_advanced_payment.php</code><br><small style="color:var(--muted)">examples/AdvancedPayment/create_advanced_payment.php</small></td>
-  <td><span class="tag tag-class">模块</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>AdvancedPaymentClient.php</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td>examples/AdvancedPayment/create_advanced_payment.php 中的 create_advanced_payment.php 节点。</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>AdvancedPaymentClient.php</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td><span class="tag tag-cmd">入口</span></td>
-  <td><code>create_advanced_payment.php</code><br><small style="color:var(--muted)">examples/AdvancedPayment/create_advanced_payment.php</small></td>
-  <td><code>AdvancedPayment</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPayment.php</small><br><code>MPHttpClient</code><br><code>MPSearchRequest</code><br><small style="color:var(--muted)">MercadoPago/Net/MPSearchRequest.php</small><br>+1 个更多</td>
-  <td>Client/AdvancedPayment/AdvancedPaymentClient.php 中的 AdvancedPaymentClient.php 节点。</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>AdvancedPaymentClient</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td><span class="tag tag-cmd">入口</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>__construct()</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small><br><code>cancel()</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small><br><code>capture()</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small><br>+5 个更多</td>
-  <td>Client/AdvancedPayment/AdvancedPaymentClient.php 中的 AdvancedPaymentClient 节点。</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>.__construct()</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>AdvancedPaymentClient</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td>无直接出边</td>
-  <td>Client/AdvancedPayment/AdvancedPaymentClient.php 中的 .__construct() 节点。</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>MPHttpClient</code><br><small style="color:var(--muted)"></small></td>
-  <td><span class="tag tag-cmd">入口</span></td>
-  <td><code>AdvancedPaymentClient.php</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td>无直接出边</td>
-  <td>项目 中的 MPHttpClient 节点。</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>.create()</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>AdvancedPaymentClient</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
-  <td>Client/AdvancedPayment/AdvancedPaymentClient.php 中的 .create() 节点。</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>.get()</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>AdvancedPaymentClient</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
-  <td>Client/AdvancedPayment/AdvancedPaymentClient.php 中的 .get() 节点。</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>.update()</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>AdvancedPaymentClient</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
-  <td>Client/AdvancedPayment/AdvancedPaymentClient.php 中的 .update() 节点。</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>.capture()</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>AdvancedPaymentClient</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
-  <td>Client/AdvancedPayment/AdvancedPaymentClient.php 中的 .capture() 节点。</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>.cancel()</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>AdvancedPaymentClient</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
-  <td>Client/AdvancedPayment/AdvancedPaymentClient.php 中的 .cancel() 节点。</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>.updateReleaseDate()</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>AdvancedPaymentClient</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
-  <td>Client/AdvancedPayment/AdvancedPaymentClient.php 中的 .updateReleaseDate() 节点。</td>
-</tr>
-<tr>
-  <td>12</td>
   <td><code>RequestOptions</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
   <td><span class="tag tag-class">类</span></td>
-  <td><code>AdvancedPaymentClient.php</code><br><small style="color:var(--muted)">Client/AdvancedPayment/AdvancedPaymentClient.php</small></td>
-  <td><code>__construct()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small><br><code>getAccessToken()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small><br><code>getConnectionTimeout()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small><br>+5 个更多</td>
+  <td><code>ChargebackClient.php</code><br><small style="color:var(--muted)">Client/Chargeback/ChargebackClient.php</small></td>
+  <td><code>__construct()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small><br><code>CustomerClient.php</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small><br><code>getAccessToken()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small><br>+7 个更多</td>
   <td>Client/Common/RequestOptions.php 中的 RequestOptions 节点。</td>
 </tr>
 <tr>
-  <td>13</td>
+  <td>2</td>
   <td><code>.__construct()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>RequestOptions</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
@@ -1943,7 +1866,7 @@ flowchart LR
   <td>Client/Common/RequestOptions.php 中的 .__construct() 节点。</td>
 </tr>
 <tr>
-  <td>14</td>
+  <td>3</td>
   <td><code>.getAccessToken()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>RequestOptions</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
@@ -1951,7 +1874,7 @@ flowchart LR
   <td>Client/Common/RequestOptions.php 中的 .getAccessToken() 节点。</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>4</td>
   <td><code>.setAccessToken()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>RequestOptions</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
@@ -1959,7 +1882,7 @@ flowchart LR
   <td>Client/Common/RequestOptions.php 中的 .setAccessToken() 节点。</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>5</td>
   <td><code>.getConnectionTimeout()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>RequestOptions</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
@@ -1967,7 +1890,7 @@ flowchart LR
   <td>Client/Common/RequestOptions.php 中的 .getConnectionTimeout() 节点。</td>
 </tr>
 <tr>
-  <td>17</td>
+  <td>6</td>
   <td><code>.setConnectionTimeout()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>RequestOptions</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
@@ -1975,7 +1898,7 @@ flowchart LR
   <td>Client/Common/RequestOptions.php 中的 .setConnectionTimeout() 节点。</td>
 </tr>
 <tr>
-  <td>18</td>
+  <td>7</td>
   <td><code>.getCustomHeaders()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>RequestOptions</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
@@ -1983,7 +1906,7 @@ flowchart LR
   <td>Client/Common/RequestOptions.php 中的 .getCustomHeaders() 节点。</td>
 </tr>
 <tr>
-  <td>19</td>
+  <td>8</td>
   <td><code>.setCustomHeaders()</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>RequestOptions</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
@@ -1991,7 +1914,71 @@ flowchart LR
   <td>Client/Common/RequestOptions.php 中的 .setCustomHeaders() 节点。</td>
 </tr>
 <tr>
-  <td>20</td>
+  <td>9</td>
+  <td><code>CustomerClient.php</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td><code>RequestOptions</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
+  <td><code>Customer</code><br><small style="color:var(--muted)">MercadoPago/Resources/Customer.php</small><br><code>MPHttpClient</code><br><code>MPSearchRequest</code><br><small style="color:var(--muted)">MercadoPago/Net/MPSearchRequest.php</small></td>
+  <td>Client/Customer/CustomerClient.php 中的 CustomerClient.php 节点。</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>CustomerClient</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>__construct()</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small><br><code>create()</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small><br><code>createByEmail()</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small><br>+3 个更多</td>
+  <td>Client/Customer/CustomerClient.php 中的 CustomerClient 节点。</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>.__construct()</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>CustomerClient</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small></td>
+  <td>无直接出边</td>
+  <td>Client/Customer/CustomerClient.php 中的 .__construct() 节点。</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>MPHttpClient</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td><code>CustomerClient.php</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small></td>
+  <td>无直接出边</td>
+  <td>项目 中的 MPHttpClient 节点。</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>.create()</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>CustomerClient</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small></td>
+  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
+  <td>Client/Customer/CustomerClient.php 中的 .create() 节点。</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>.createByEmail()</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>CustomerClient</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small></td>
+  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
+  <td>Client/Customer/CustomerClient.php 中的 .createByEmail() 节点。</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>.get()</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>CustomerClient</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small></td>
+  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
+  <td>Client/Customer/CustomerClient.php 中的 .get() 节点。</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>.update()</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>CustomerClient</code><br><small style="color:var(--muted)">Client/Customer/CustomerClient.php</small></td>
+  <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
+  <td>Client/Customer/CustomerClient.php 中的 .update() 节点。</td>
+</tr>
+<tr>
+  <td>17</td>
   <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
   <td><span class="tag tag-cmd">入口</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -1999,7 +1986,7 @@ flowchart LR
   <td>Client/Order/OrderClient.php 中的 OrderClient 节点。</td>
 </tr>
 <tr>
-  <td>21</td>
+  <td>18</td>
   <td><code>.__construct()</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
@@ -2007,7 +1994,7 @@ flowchart LR
   <td>Client/Order/OrderClient.php 中的 .__construct() 节点。</td>
 </tr>
 <tr>
-  <td>22</td>
+  <td>19</td>
   <td><code>MPHttpClient</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-cmd">入口</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -2015,7 +2002,7 @@ flowchart LR
   <td>项目 中的 MPHttpClient 节点。</td>
 </tr>
 <tr>
-  <td>23</td>
+  <td>20</td>
   <td><code>.create()</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
@@ -2023,7 +2010,7 @@ flowchart LR
   <td>Client/Order/OrderClient.php 中的 .create() 节点。</td>
 </tr>
 <tr>
-  <td>24</td>
+  <td>21</td>
   <td><code>Order</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -2031,7 +2018,7 @@ flowchart LR
   <td>项目 中的 Order 节点。</td>
 </tr>
 <tr>
-  <td>25</td>
+  <td>22</td>
   <td><code>.capture()</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
@@ -2039,7 +2026,7 @@ flowchart LR
   <td>Client/Order/OrderClient.php 中的 .capture() 节点。</td>
 </tr>
 <tr>
-  <td>26</td>
+  <td>23</td>
   <td><code>.get()</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
@@ -2047,7 +2034,7 @@ flowchart LR
   <td>Client/Order/OrderClient.php 中的 .get() 节点。</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>24</td>
   <td><code>.cancel()</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
@@ -2055,7 +2042,7 @@ flowchart LR
   <td>Client/Order/OrderClient.php 中的 .cancel() 节点。</td>
 </tr>
 <tr>
-  <td>28</td>
+  <td>25</td>
   <td><code>.process()</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
@@ -2063,7 +2050,7 @@ flowchart LR
   <td>Client/Order/OrderClient.php 中的 .process() 节点。</td>
 </tr>
 <tr>
-  <td>29</td>
+  <td>26</td>
   <td><code>.refund()</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
@@ -2071,12 +2058,36 @@ flowchart LR
   <td>Client/Order/OrderClient.php 中的 .refund() 节点。</td>
 </tr>
 <tr>
-  <td>30</td>
+  <td>27</td>
   <td><code>.search()</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>OrderClient</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
   <td><code>Serializer</code><br><small style="color:var(--muted)">MercadoPago/Serialization/Serializer.php</small></td>
   <td>Client/Order/OrderClient.php 中的 .search() 节点。</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>PaymentClient</code><br><small style="color:var(--muted)">Client/Payment/PaymentClient.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>__construct()</code><br><small style="color:var(--muted)">Client/Payment/PaymentClient.php</small><br><code>cancel()</code><br><small style="color:var(--muted)">Client/Payment/PaymentClient.php</small><br><code>capture()</code><br><small style="color:var(--muted)">Client/Payment/PaymentClient.php</small><br>+3 个更多</td>
+  <td>Client/Payment/PaymentClient.php 中的 PaymentClient 节点。</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>.__construct()</code><br><small style="color:var(--muted)">Client/Payment/PaymentClient.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>PaymentClient</code><br><small style="color:var(--muted)">Client/Payment/PaymentClient.php</small></td>
+  <td>无直接出边</td>
+  <td>Client/Payment/PaymentClient.php 中的 .__construct() 节点。</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>MPHttpClient</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td>无直接出边</td>
+  <td>项目 中的 MPHttpClient 节点。</td>
 </tr>
 </table>
 
@@ -2097,7 +2108,7 @@ flowchart LR
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：方法 x161, 包含 x89, references x82, 导入 x66。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：方法 x166, 包含 x95, references x90, 导入 x87。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -2181,12 +2192,12 @@ flowchart LR
 
 <!-- ====== 10. 测试与样例 ====== -->
 <h2 id="tests-fixtures">10. 测试与样例</h2>
-<p>测试与样例 汇集了与 mercadopago、vendor、tests、php 相关的实现，主要分布在 src/MercadoPago/MercadoPagoConfig.php、Integration/Point/PointClientITTest.php、Unit/Order/OrderClientUnitTest.php。本节覆盖 689 个节点、1238 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>测试与样例 汇集了与 mercadopago、vendor、tests、php 相关的实现，主要分布在 src/MercadoPago/MercadoPagoConfig.php、Integration/Point/PointClientITTest.php、Unit/Order/OrderClientUnitTest.php。本节覆盖 652 个节点、1163 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 测试与样例 (689 nodes, 1238 edges)
+    %% Section: 测试与样例 (652 nodes, 1163 edges)
     subgraph tests_fixtures_MercadoPago_Exceptions_InvalidWeb_6ee157ba["MercadoPago/Exceptions/InvalidWebhookSignatureException.php"]
         vendor_mercadopago_dx_php_src_mercadopago_except_c75c6cee("InvalidWebhookSignatureException<br/><small>MercadoPago/Exceptions/InvalidWebhookSignatureException.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_except_a3e45655("__construct()<br/><small>MercadoPago/Exceptions/InvalidWebhookSignatureException.php</small>")
@@ -2194,51 +2205,53 @@ flowchart LR
         vendor_mercadopago_dx_php_src_mercadopago_except_e0383124("getRequestId()<br/><small>MercadoPago/Exceptions/InvalidWebhookSignatureException.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_except_191a91dc("getTimestamp()<br/><small>MercadoPago/Exceptions/InvalidWebhookSignatureException.php</small>")
     end
-    subgraph tests_fixtures_Client_Invoice_InvoiceClient_php_6f007d63["Client/Invoice/InvoiceClient.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_client_4eb91127("InvoiceClient<br/><small>Client/Invoice/InvoiceClient.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_client_5090dede("__construct()<br/><small>Client/Invoice/InvoiceClient.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_client_3a185822("get()<br/><small>Client/Invoice/InvoiceClient.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_client_92c90070("search()<br/><small>Client/Invoice/InvoiceClient.php</small>")
+    subgraph tests_fixtures_Booking_Actions_ProcessPaymentAct_fb7dd6bc["Booking/Actions/ProcessPaymentAction.php"]
+        app_features_booking_actions_processpaymentactio_15845bda("ProcessPaymentAction<br/><small>Booking/Actions/ProcessPaymentAction.php</small>")
+        app_features_booking_actions_processpaymentactio_e25fc2cf("__construct()<br/><small>Booking/Actions/ProcessPaymentAction.php</small>")
+        app_features_booking_actions_processpaymentactio_974d68c7("__invoke()<br/><small>Booking/Actions/ProcessPaymentAction.php</small>")
     end
-    subgraph tests_fixtures_Rooms_Actions_GetRoomsAction_php_6bd541b3["Rooms/Actions/GetRoomsAction.php"]
-        app_features_rooms_actions_getroomsaction_getroo_789bac19("GetRoomsAction<br/><small>Rooms/Actions/GetRoomsAction.php</small>")
-        app_features_rooms_actions_getroomsaction_getroo_5279f355("__construct()<br/><small>Rooms/Actions/GetRoomsAction.php</small>")
-        app_features_rooms_actions_getroomsaction_getroo_5fcba9e3("__invoke()<br/><small>Rooms/Actions/GetRoomsAction.php</small>")
+    subgraph tests_fixtures_src_MercadoPago_MercadoPagoConfig_5ea3b82d["src/MercadoPago/MercadoPagoConfig.php"]
+        vendor_mercadopago_dx_php_src_mercadopago_mercad_8384dbb8("MercadoPagoConfig<br/><small>src/MercadoPago/MercadoPagoConfig.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_mercad_22bbbc38("getAccessToken()<br/><small>src/MercadoPago/MercadoPagoConfig.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_mercad_f1880401("getConnectionTimeout()<br/><small>src/MercadoPago/MercadoPagoConfig.php</small>")
+    end
+    subgraph tests_fixtures_MercadoPago_Exceptions_SignatureF_580b46f8["MercadoPago/Exceptions/SignatureFailureReason.php"]
+        vendor_mercadopago_dx_php_src_mercadopago_except_7c84e0b5("SignatureFailureReason<br/><small>MercadoPago/Exceptions/SignatureFailureReason.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_except_22d59a5b("__construct()<br/><small>MercadoPago/Exceptions/SignatureFailureReason.php</small>")
     end
     testcase_fb0d5756("TestCase")
+    vendor_mercadopago_dx_php_tests_mercadopago_clie_eb4b7abd("CustomerCardClientITTest<br/><small>Integration/Customer/CustomerCardClientITTest.php</small>")
     vendor_mercadopago_dx_php_tests_mercadopago_clie_3c096e25("OrderClientUnitTest<br/><small>Unit/Order/OrderClientUnitTest.php</small>")
     vendor_mercadopago_dx_php_tests_mercadopago_webh_2f12a5a9("WebhookSignatureValidatorUnitTest<br/><small>Webhook/Unit/WebhookSignatureValidatorUnitTest.php</small>")
-    vendor_mercadopago_dx_php_src_mercadopago_mercad_8384dbb8("MercadoPagoConfig<br/><small>src/MercadoPago/MercadoPagoConfig.php</small>")
     vendor_hybridauth_hybridauth_src_provider_facebo_ce20562e("Facebook<br/><small>src/Provider/Facebook.php</small>")
-    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901("../i18n/utils")
-    app_features_rooms_actions_getroomsaction_getroo_789bac19 -->|方法| app_features_rooms_actions_getroomsaction_getroo_5279f355
-    app_features_rooms_actions_getroomsaction_getroo_789bac19 -->|方法| app_features_rooms_actions_getroomsaction_getroo_5fcba9e3
-    vendor_mercadopago_dx_php_src_mercadopago_client_4eb91127 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_5090dede
-    vendor_mercadopago_dx_php_src_mercadopago_client_4eb91127 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_3a185822
-    vendor_mercadopago_dx_php_src_mercadopago_client_4eb91127 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_client_92c90070
+    app_features_booking_actions_processpaymentactio_15845bda -->|方法| app_features_booking_actions_processpaymentactio_e25fc2cf
+    app_features_booking_actions_processpaymentactio_15845bda -->|方法| app_features_booking_actions_processpaymentactio_974d68c7
     vendor_mercadopago_dx_php_src_mercadopago_except_c75c6cee -->|方法| vendor_mercadopago_dx_php_src_mercadopago_except_a3e45655
     vendor_mercadopago_dx_php_src_mercadopago_except_c75c6cee -->|方法| vendor_mercadopago_dx_php_src_mercadopago_except_b2f638f6
     vendor_mercadopago_dx_php_src_mercadopago_except_c75c6cee -->|方法| vendor_mercadopago_dx_php_src_mercadopago_except_e0383124
     vendor_mercadopago_dx_php_src_mercadopago_except_c75c6cee -->|方法| vendor_mercadopago_dx_php_src_mercadopago_except_191a91dc
-    %% Omitted for readability: 671 nodes, 0 edges
+    vendor_mercadopago_dx_php_src_mercadopago_except_7c84e0b5 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_except_22d59a5b
+    vendor_mercadopago_dx_php_src_mercadopago_mercad_8384dbb8 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_mercad_22bbbc38
+    vendor_mercadopago_dx_php_src_mercadopago_mercad_8384dbb8 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_mercad_f1880401
+    %% Omitted for readability: 634 nodes, 0 edges
     class vendor_mercadopago_dx_php_src_mercadopago_except_c75c6cee ui;
     class vendor_mercadopago_dx_php_src_mercadopago_except_a3e45655 function;
     class vendor_mercadopago_dx_php_src_mercadopago_except_b2f638f6 function;
     class vendor_mercadopago_dx_php_src_mercadopago_except_e0383124 function;
     class vendor_mercadopago_dx_php_src_mercadopago_except_191a91dc function;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_4eb91127 entry;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_5090dede function;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_3a185822 function;
-    class vendor_mercadopago_dx_php_src_mercadopago_client_92c90070 function;
-    class app_features_rooms_actions_getroomsaction_getroo_789bac19 klass;
-    class app_features_rooms_actions_getroomsaction_getroo_5279f355 function;
-    class app_features_rooms_actions_getroomsaction_getroo_5fcba9e3 function;
+    class app_features_booking_actions_processpaymentactio_15845bda klass;
+    class app_features_booking_actions_processpaymentactio_e25fc2cf function;
+    class app_features_booking_actions_processpaymentactio_974d68c7 function;
+    class vendor_mercadopago_dx_php_src_mercadopago_mercad_8384dbb8 klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_mercad_22bbbc38 function;
+    class vendor_mercadopago_dx_php_src_mercadopago_mercad_f1880401 function;
+    class vendor_mercadopago_dx_php_src_mercadopago_except_7c84e0b5 klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_except_22d59a5b function;
     class testcase_fb0d5756 klass;
+    class vendor_mercadopago_dx_php_tests_mercadopago_clie_eb4b7abd test;
     class vendor_mercadopago_dx_php_tests_mercadopago_clie_3c096e25 test;
     class vendor_mercadopago_dx_php_tests_mercadopago_webh_2f12a5a9 test;
-    class vendor_mercadopago_dx_php_src_mercadopago_mercad_8384dbb8 klass;
     class vendor_hybridauth_hybridauth_src_provider_facebo_ce20562e klass;
-    class c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 function;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -2262,243 +2275,243 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>AdapterInterface</code><br><small style="color:var(--muted)"></small></td>
-  <td><span class="tag tag-class">类</span></td>
+  <td><code>mp-test-payment.php</code><br><small style="color:var(--muted)">tests/mp-test-payment.php</small></td>
+  <td><span class="tag tag-func">测试</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td>无直接出边</td>
-  <td>项目 中的 AdapterInterface 节点。</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>PaymentClient.php</code><br><small style="color:var(--muted)">Client/Payment/PaymentClient.php</small><br><code>RequestOptions.php</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
+  <td>验证导入、入口点或版本等基础行为。</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>OpenID</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
+  <td><code>MercadoPagoAdapter.php</code><br><small style="color:var(--muted)">Shared/Adapters/MercadoPagoAdapter.php</small></td>
   <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>authenticate()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small><br><code>authenticateBegin()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small><br><code>authenticateFinish()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small><br>+8 个更多</td>
-  <td>src/Adapter/OpenID.php 中的 OpenID 节点。</td>
+  <td><code>PaymentGatewayPortInterface</code><br><code>ProcessPaymentAction.php</code><br><small style="color:var(--muted)">Booking/Actions/ProcessPaymentAction.php</small></td>
+  <td><code>InvalidWebhookSignatureException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/InvalidWebhookSignatureException.php</small><br><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br>+4 个更多</td>
+  <td>Shared/Adapters/MercadoPagoAdapter.php 中的 MercadoPagoAdapter.php 节点。</td>
 </tr>
 <tr>
   <td>3</td>
-  <td><code>.configure()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>OpenID</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td>无直接出边</td>
-  <td>读取、解析或持久化项目配置。</td>
+  <td><code>search_chargeback.php</code><br><small style="color:var(--muted)">examples/Chargeback/search_chargeback.php</small></td>
+  <td><span class="tag tag-class">模块</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPSearchRequest.php</code><br><small style="color:var(--muted)">MercadoPago/Net/MPSearchRequest.php</small></td>
+  <td>examples/Chargeback/search_chargeback.php 中的 search_chargeback.php 节点。</td>
 </tr>
 <tr>
   <td>4</td>
-  <td><code>.initialize()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>OpenID</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Adapter/OpenID.php 中的 .initialize() 节点。</td>
+  <td><code>CancelOrderById.php</code><br><small style="color:var(--muted)">examples/Order/CancelOrderById.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>OrderClient.php</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small><br>+1 个更多</td>
+  <td>examples/Order/CancelOrderById.php 中的 CancelOrderById.php 节点。</td>
 </tr>
 <tr>
   <td>5</td>
-  <td><code>.authenticate()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>OpenID</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td><code>authenticateBegin()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small><br><code>authenticateFinish()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small><br><code>isConnected()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td>src/Adapter/OpenID.php 中的 .authenticate() 节点。</td>
+  <td><code>Capture.php</code><br><small style="color:var(--muted)">examples/Order/Capture.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>OrderClient.php</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small><br>+1 个更多</td>
+  <td>examples/Order/Capture.php 中的 Capture.php 节点。</td>
 </tr>
 <tr>
   <td>6</td>
-  <td><code>.isConnected()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>authenticate()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small><br><code>OpenID</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Adapter/OpenID.php 中的 .isConnected() 节点。</td>
+  <td><code>Create.php</code><br><small style="color:var(--muted)">examples/Order/Create.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>OrderClient.php</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small><br>+1 个更多</td>
+  <td>examples/Order/Create.php 中的 Create.php 节点。</td>
 </tr>
 <tr>
   <td>7</td>
-  <td><code>.disconnect()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>OpenID</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Adapter/OpenID.php 中的 .disconnect() 节点。</td>
+  <td><code>CreateCheckoutPRO.php</code><br><small style="color:var(--muted)">examples/Order/CreateCheckoutPRO.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>OrderClient.php</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small><br>+1 个更多</td>
+  <td>examples/Order/CreateCheckoutPRO.php 中的 CreateCheckoutPRO.php 节点。</td>
 </tr>
 <tr>
   <td>8</td>
-  <td><code>.authenticateBegin()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>authenticate()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small><br><code>OpenID</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Adapter/OpenID.php 中的 .authenticateBegin() 节点。</td>
+  <td><code>CreateOrderPSE.php</code><br><small style="color:var(--muted)">examples/Order/CreateOrderPSE.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>OrderClient.php</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small><br>+1 个更多</td>
+  <td>examples/Order/CreateOrderPSE.php 中的 CreateOrderPSE.php 节点。</td>
 </tr>
 <tr>
   <td>9</td>
-  <td><code>.authenticateFinish()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>authenticate()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small><br><code>OpenID</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td><code>fetchUserProfile()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td>src/Adapter/OpenID.php 中的 .authenticateFinish() 节点。</td>
+  <td><code>CreateOrderWith3DS.php</code><br><small style="color:var(--muted)">examples/Order/CreateOrderWith3DS.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>OrderClient.php</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small><br>+1 个更多</td>
+  <td>examples/Order/CreateOrderWith3DS.php 中的 CreateOrderWith3DS.php 节点。</td>
 </tr>
 <tr>
   <td>10</td>
-  <td><code>.fetchUserProfile()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>authenticateFinish()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small><br><code>OpenID</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td><code>fetchUserDisplayName()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small><br><code>fetchUserGender()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td>src/Adapter/OpenID.php 中的 .fetchUserProfile() 节点。</td>
+  <td><code>CreateOrderWithIndustryFields.php</code><br><small style="color:var(--muted)">examples/Order/CreateOrderWithIndustryFields.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>OrderClient.php</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small><br>+1 个更多</td>
+  <td>examples/Order/CreateOrderWithIndustryFields.php 中的 CreateOrderWithIndustryFields.php 节点。</td>
 </tr>
 <tr>
   <td>11</td>
-  <td><code>.fetchUserDisplayName()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>fetchUserProfile()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small><br><code>OpenID</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Adapter/OpenID.php 中的 .fetchUserDisplayName() 节点。</td>
+  <td><code>GetOrderById.php</code><br><small style="color:var(--muted)">examples/Order/GetOrderById.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>OrderClient.php</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small><br>+1 个更多</td>
+  <td>examples/Order/GetOrderById.php 中的 GetOrderById.php 节点。</td>
 </tr>
 <tr>
   <td>12</td>
-  <td><code>.fetchUserGender()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>fetchUserProfile()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small><br><code>OpenID</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Adapter/OpenID.php 中的 .fetchUserGender() 节点。</td>
+  <td><code>ProcessOrder.php</code><br><small style="color:var(--muted)">examples/Order/ProcessOrder.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>OrderClient.php</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small><br>+1 个更多</td>
+  <td>examples/Order/ProcessOrder.php 中的 ProcessOrder.php 节点。</td>
 </tr>
 <tr>
   <td>13</td>
-  <td><code>.getUserProfile()</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>OpenID</code><br><small style="color:var(--muted)">src/Adapter/OpenID.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Adapter/OpenID.php 中的 .getUserProfile() 节点。</td>
+  <td><code>RefundPartial.php</code><br><small style="color:var(--muted)">examples/Order/RefundPartial.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>OrderClient.php</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small><br>+1 个更多</td>
+  <td>examples/Order/RefundPartial.php 中的 RefundPartial.php 节点。</td>
 </tr>
 <tr>
   <td>14</td>
-  <td><code>Collection.php</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
+  <td><code>RefundTotal.php</code><br><small style="color:var(--muted)">examples/Order/RefundTotal.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>CollectionTest.php</code><br><small style="color:var(--muted)">tests/Data/CollectionTest.php</small></td>
-  <td>src/Data/Collection.php 中的 Collection.php 节点。</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>OrderClient.php</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small><br>+1 个更多</td>
+  <td>examples/Order/RefundTotal.php 中的 RefundTotal.php 节点。</td>
 </tr>
 <tr>
   <td>15</td>
-  <td><code>Collection</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
+  <td><code>Create.php</code><br><small style="color:var(--muted)">Order/Transaction/Create.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>__construct()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small><br><code>count()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small><br><code>exists()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small><br>+7 个更多</td>
-  <td>src/Data/Collection.php 中的 Collection 节点。</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>OrderTransactionClient.php</code><br><small style="color:var(--muted)">Client/Order/OrderTransactionClient.php</small><br>+1 个更多</td>
+  <td>Order/Transaction/Create.php 中的 Create.php 节点。</td>
 </tr>
 <tr>
   <td>16</td>
-  <td><code>.__construct()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Collection</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Data/Collection.php 中的 .__construct() 节点。</td>
+  <td><code>Delete.php</code><br><small style="color:var(--muted)">Order/Transaction/Delete.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>OrderClient.php</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small><br>+2 个更多</td>
+  <td>Order/Transaction/Delete.php 中的 Delete.php 节点。</td>
 </tr>
 <tr>
   <td>17</td>
-  <td><code>.toArray()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Collection</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Data/Collection.php 中的 .toArray() 节点。</td>
+  <td><code>Update.php</code><br><small style="color:var(--muted)">Order/Transaction/Update.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>OrderClient.php</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small><br>+2 个更多</td>
+  <td>Order/Transaction/Update.php 中的 Update.php 节点。</td>
 </tr>
 <tr>
   <td>18</td>
-  <td><code>.get()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Collection</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td><code>exists()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small><br><code>filter()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td>src/Data/Collection.php 中的 .get() 节点。</td>
+  <td><code>Create.php</code><br><small style="color:var(--muted)">examples/Payment/Create.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>PaymentClient.php</code><br><small style="color:var(--muted)">Client/Payment/PaymentClient.php</small><br>+1 个更多</td>
+  <td>examples/Payment/Create.php 中的 Create.php 节点。</td>
 </tr>
 <tr>
   <td>19</td>
-  <td><code>.set()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Collection</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Data/Collection.php 中的 .set() 节点。</td>
+  <td><code>Create.php</code><br><small style="color:var(--muted)">examples/Preference/Create.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br><code>PreferenceClient.php</code><br><small style="color:var(--muted)">Client/Preference/PreferenceClient.php</small><br>+1 个更多</td>
+  <td>examples/Preference/Create.php 中的 Create.php 节点。</td>
 </tr>
 <tr>
   <td>20</td>
-  <td><code>.filter()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Collection</code><br><small style="color:var(--muted)">src/Data/Collection.php</small><br><code>get()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td><code>exists()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td>src/Data/Collection.php 中的 .filter() 节点。</td>
+  <td><code>CardTokenClient.php</code><br><small style="color:var(--muted)">Client/CardToken/CardTokenClient.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>CardTokenClientITTest.php</code><br><small style="color:var(--muted)">Integration/CardToken/CardTokenClientITTest.php</small><br><code>CardTokenClientUnitTest.php</code><br><small style="color:var(--muted)">Unit/CardToken/CardTokenClientUnitTest.php</small><br><code>CustomerCardClientITTest.php</code><br><small style="color:var(--muted)">Integration/Customer/CustomerCardClientITTest.php</small><br>+4 个更多</td>
+  <td>Client/CardToken/CardTokenClient.php 中的 CardTokenClient.php 节点。</td>
 </tr>
 <tr>
   <td>21</td>
-  <td><code>.exists()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Collection</code><br><small style="color:var(--muted)">src/Data/Collection.php</small><br><code>filter()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small><br><code>get()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Data/Collection.php 中的 .exists() 节点。</td>
+  <td><code>RequestOptions.php</code><br><small style="color:var(--muted)">Client/Common/RequestOptions.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>CancelOrderById.php</code><br><small style="color:var(--muted)">examples/Order/CancelOrderById.php</small><br><code>Capture.php</code><br><small style="color:var(--muted)">examples/Order/Capture.php</small><br><code>Create.php</code><br><small style="color:var(--muted)">examples/Order/Create.php</small><br>+15 个更多</td>
+  <td><code>CardTokenClientITTest.php</code><br><small style="color:var(--muted)">Integration/CardToken/CardTokenClientITTest.php</small><br><code>CustomerCardClientITTest.php</code><br><small style="color:var(--muted)">Integration/Customer/CustomerCardClientITTest.php</small><br><code>CustomerClientITTest.php</code><br><small style="color:var(--muted)">Integration/Customer/CustomerClientITTest.php</small><br>+13 个更多</td>
+  <td>Client/Common/RequestOptions.php 中的 RequestOptions.php 节点。</td>
 </tr>
 <tr>
   <td>22</td>
-  <td><code>.isEmpty()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Collection</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td><code>count()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td>src/Data/Collection.php 中的 .isEmpty() 节点。</td>
+  <td><code>OrderClient.php</code><br><small style="color:var(--muted)">Client/Order/OrderClient.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td><code>CancelOrderById.php</code><br><small style="color:var(--muted)">examples/Order/CancelOrderById.php</small><br><code>Capture.php</code><br><small style="color:var(--muted)">examples/Order/Capture.php</small><br><code>Create.php</code><br><small style="color:var(--muted)">examples/Order/Create.php</small><br>+10 个更多</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>OrderClientITTest.php</code><br><small style="color:var(--muted)">Integration/Order/OrderClientITTest.php</small><br><code>OrderClientUnitTest.php</code><br><small style="color:var(--muted)">Unit/Order/OrderClientUnitTest.php</small><br>+1 个更多</td>
+  <td>Client/Order/OrderClient.php 中的 OrderClient.php 节点。</td>
 </tr>
 <tr>
   <td>23</td>
-  <td><code>.count()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Collection</code><br><small style="color:var(--muted)">src/Data/Collection.php</small><br><code>isEmpty()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td><code>deleteMatch()</code><br><small style="color:var(--muted)">src/Storage/Session.php</small><br><code>fetchUserRegion()</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small><br><code>getKidFromOLDCToken()</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small><br>+1 个更多</td>
-  <td>src/Data/Collection.php 中的 .count() 节点。</td>
+  <td><code>OrderTransactionClient.php</code><br><small style="color:var(--muted)">Client/Order/OrderTransactionClient.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td><code>Create.php</code><br><small style="color:var(--muted)">Order/Transaction/Create.php</small><br><code>Delete.php</code><br><small style="color:var(--muted)">Order/Transaction/Delete.php</small><br><code>Update.php</code><br><small style="color:var(--muted)">Order/Transaction/Update.php</small></td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>OrderTransactionClientITTest.php</code><br><small style="color:var(--muted)">Integration/Order/OrderTransactionClientITTest.php</small><br><code>OrderTransactionClientUnitTest.php</code><br><small style="color:var(--muted)">Unit/Order/OrderTransactionClientUnitTest.php</small></td>
+  <td>Client/Order/OrderTransactionClient.php 中的 OrderTransactionClient.php 节点。</td>
 </tr>
 <tr>
   <td>24</td>
-  <td><code>.properties()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Collection</code><br><small style="color:var(--muted)">src/Data/Collection.php</small><br><code>count()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Data/Collection.php 中的 .properties() 节点。</td>
+  <td><code>PaymentClient.php</code><br><small style="color:var(--muted)">Client/Payment/PaymentClient.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td><code>Create.php</code><br><small style="color:var(--muted)">examples/Payment/Create.php</small><br><code>MercadoPagoAdapter.php</code><br><small style="color:var(--muted)">Shared/Adapters/MercadoPagoAdapter.php</small><br><code>mp-test-payment.php</code><br><small style="color:var(--muted)">tests/mp-test-payment.php</small></td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>PaymentClientITTest.php</code><br><small style="color:var(--muted)">Integration/Payment/PaymentClientITTest.php</small><br><code>PaymentClientUnitTest.php</code><br><small style="color:var(--muted)">Unit/Payment/PaymentClientUnitTest.php</small><br>+1 个更多</td>
+  <td>Client/Payment/PaymentClient.php 中的 PaymentClient.php 节点。</td>
 </tr>
 <tr>
   <td>25</td>
-  <td><code>.values()</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Collection</code><br><small style="color:var(--muted)">src/Data/Collection.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Data/Collection.php 中的 .values() 节点。</td>
+  <td><code>PreferenceClient.php</code><br><small style="color:var(--muted)">Client/Preference/PreferenceClient.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td><code>Create.php</code><br><small style="color:var(--muted)">examples/Preference/Create.php</small><br><code>MercadoPagoAdapter.php</code><br><small style="color:var(--muted)">Shared/Adapters/MercadoPagoAdapter.php</small></td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MerchantOrderClientITTest.php</code><br><small style="color:var(--muted)">Integration/MerchantOrder/MerchantOrderClientITTest.php</small><br><code>PreferenceClientITTest.php</code><br><small style="color:var(--muted)">Integration/Preference/PreferenceClientITTest.php</small><br>+1 个更多</td>
+  <td>Client/Preference/PreferenceClient.php 中的 PreferenceClient.php 节点。</td>
 </tr>
 <tr>
   <td>26</td>
-  <td><code>Facebook</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>exchangeAccessToken()</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small><br><code>fetchBirthday()</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small><br><code>fetchUserActivity()</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small><br>+13 个更多</td>
-  <td>src/Provider/Facebook.php 中的 Facebook 节点。</td>
+  <td><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small></td>
+  <td><span class="tag tag-endpoint">API</span></td>
+  <td><code>CancelOrderById.php</code><br><small style="color:var(--muted)">examples/Order/CancelOrderById.php</small><br><code>Capture.php</code><br><small style="color:var(--muted)">examples/Order/Capture.php</small><br><code>Create.php</code><br><small style="color:var(--muted)">examples/Order/Create.php</small><br>+14 个更多</td>
+  <td><code>CardTokenClientITTest.php</code><br><small style="color:var(--muted)">Integration/CardToken/CardTokenClientITTest.php</small><br><code>CustomerCardClientITTest.php</code><br><small style="color:var(--muted)">Integration/Customer/CustomerCardClientITTest.php</small><br><code>CustomerClientITTest.php</code><br><small style="color:var(--muted)">Integration/Customer/CustomerClientITTest.php</small><br>+14 个更多</td>
+  <td>MercadoPago/Exceptions/MPApiException.php 中的 MPApiException.php 节点。</td>
 </tr>
 <tr>
   <td>27</td>
-  <td><code>.initialize()</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Facebook</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Provider/Facebook.php 中的 .initialize() 节点。</td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>CancelOrderById.php</code><br><small style="color:var(--muted)">examples/Order/CancelOrderById.php</small><br><code>Capture.php</code><br><small style="color:var(--muted)">examples/Order/Capture.php</small><br><code>CardTokenClient.php</code><br><small style="color:var(--muted)">Client/CardToken/CardTokenClient.php</small><br>+21 个更多</td>
+  <td><code>AdvancedPaymentClientUnitTest.php</code><br><small style="color:var(--muted)">Unit/AdvancedPayment/AdvancedPaymentClientUnitTest.php</small><br><code>CardTokenClientITTest.php</code><br><small style="color:var(--muted)">Integration/CardToken/CardTokenClientITTest.php</small><br><code>CardTokenClientUnitTest.php</code><br><small style="color:var(--muted)">Unit/CardToken/CardTokenClientUnitTest.php</small><br>+26 个更多</td>
+  <td>读取、解析或持久化项目配置。</td>
 </tr>
 <tr>
   <td>28</td>
-  <td><code>.maintainToken()</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Facebook</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small></td>
-  <td><code>exchangeAccessToken()</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small></td>
-  <td>src/Provider/Facebook.php 中的 .maintainToken() 节点。</td>
+  <td><code>MPDefaultHttpClient.php</code><br><small style="color:var(--muted)">MercadoPago/Net/MPDefaultHttpClient.php</small></td>
+  <td><span class="tag tag-cmd">入口</span></td>
+  <td><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small></td>
+  <td><code>AdvancedPaymentClientUnitTest.php</code><br><small style="color:var(--muted)">Unit/AdvancedPayment/AdvancedPaymentClientUnitTest.php</small><br><code>CardTokenClientUnitTest.php</code><br><small style="color:var(--muted)">Unit/CardToken/CardTokenClientUnitTest.php</small><br><code>ChargebackClientUnitTest.php</code><br><small style="color:var(--muted)">Unit/Chargeback/ChargebackClientUnitTest.php</small><br>+9 个更多</td>
+  <td>MercadoPago/Net/MPDefaultHttpClient.php 中的 MPDefaultHttpClient.php 节点。</td>
 </tr>
 <tr>
   <td>29</td>
-  <td><code>.exchangeAccessToken()</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Facebook</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small><br><code>maintainToken()</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small></td>
-  <td>无直接出边</td>
-  <td>src/Provider/Facebook.php 中的 .exchangeAccessToken() 节点。</td>
+  <td><code>MPSearchRequest.php</code><br><small style="color:var(--muted)">MercadoPago/Net/MPSearchRequest.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>search_chargeback.php</code><br><small style="color:var(--muted)">examples/Chargeback/search_chargeback.php</small></td>
+  <td><code>AdvancedPaymentClientUnitTest.php</code><br><small style="color:var(--muted)">Unit/AdvancedPayment/AdvancedPaymentClientUnitTest.php</small><br><code>ChargebackClientUnitTest.php</code><br><small style="color:var(--muted)">Unit/Chargeback/ChargebackClientUnitTest.php</small><br><code>CustomerClientITTest.php</code><br><small style="color:var(--muted)">Integration/Customer/CustomerClientITTest.php</small><br>+5 个更多</td>
+  <td>MercadoPago/Net/MPSearchRequest.php 中的 MPSearchRequest.php 节点。</td>
 </tr>
 <tr>
   <td>30</td>
-  <td><code>.getUserProfile()</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Facebook</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small></td>
-  <td><code>getUserProfileFromAccessToken()</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small><br><code>getUserProfileFromOIDCToken()</code><br><small style="color:var(--muted)">src/Provider/Facebook.php</small></td>
-  <td>src/Provider/Facebook.php 中的 .getUserProfile() 节点。</td>
+  <td><code>CardTokenClientITTest.php</code><br><small style="color:var(--muted)">Integration/CardToken/CardTokenClientITTest.php</small></td>
+  <td><span class="tag tag-func">测试</span></td>
+  <td><code>CardTokenClient.php</code><br><small style="color:var(--muted)">Client/CardToken/CardTokenClient.php</small><br><code>MercadoPagoConfig.php</code><br><small style="color:var(--muted)">src/MercadoPago/MercadoPagoConfig.php</small><br><code>MPApiException.php</code><br><small style="color:var(--muted)">MercadoPago/Exceptions/MPApiException.php</small><br>+1 个更多</td>
+  <td><code>TestCase</code></td>
+  <td>验证导入、入口点或版本等基础行为。</td>
 </tr>
 </table>
 
@@ -2519,26 +2532,26 @@ flowchart LR
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：方法 x418, 导入 x269, 调用 x186, 包含 x90。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：方法 x414, 导入 x263, 调用 x186, 包含 x82。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 11. Rust Security Audit ====== -->
 <h2 id="rust-security-audit">11. Rust Security Audit</h2>
-<p>Rust Security Audit 汇集了与 mercadopago、vendor、php、resources 相关的实现，主要分布在 MercadoPago/Resources/CardToken.php、MercadoPago/Resources/CustomerCardResult.php、MercadoPago/Resources/DisbursementRefundList.php。本节覆盖 67 个节点、86 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>Rust Security Audit 汇集了与 mercadopago、vendor、php、resources 相关的实现，主要分布在 MercadoPago/Resources/AdvancedPaymentSearch.php、MercadoPago/Resources/ChargebackSearch.php、MercadoPago/Resources/DisbursementRefundList.php。本节覆盖 66 个节点、86 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Rust Security Audit (67 nodes, 86 edges)
-    subgraph rust_security_audit_MercadoPago_Resources_CardTo_ad4b0f55["MercadoPago/Resources/CardToken.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_resour_ce910cc2("CardToken<br/><small>MercadoPago/Resources/CardToken.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_resour_9a2a7b36("getMap()<br/><small>MercadoPago/Resources/CardToken.php</small>")
+    %% Section: Rust Security Audit (66 nodes, 86 edges)
+    subgraph rust_security_audit_MercadoPago_Resources_Advanc_dcf67295["MercadoPago/Resources/AdvancedPaymentSearch.php"]
+        vendor_mercadopago_dx_php_src_mercadopago_resour_49d05948("AdvancedPaymentSearch<br/><small>MercadoPago/Resources/AdvancedPaymentSearch.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_resour_cf3bbc70("getMap()<br/><small>MercadoPago/Resources/AdvancedPaymentSearch.php</small>")
     end
-    subgraph rust_security_audit_MercadoPago_Resources_Custom_67d331b2["MercadoPago/Resources/CustomerCardResult.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_resour_5adeee29("CustomerCardResult<br/><small>MercadoPago/Resources/CustomerCardResult.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_resour_16035a62("getMap()<br/><small>MercadoPago/Resources/CustomerCardResult.php</small>")
+    subgraph rust_security_audit_MercadoPago_Resources_Charge_01b40503["MercadoPago/Resources/ChargebackSearch.php"]
+        vendor_mercadopago_dx_php_src_mercadopago_resour_0363580c("ChargebackSearch<br/><small>MercadoPago/Resources/ChargebackSearch.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_resour_4ffca045("getMap()<br/><small>MercadoPago/Resources/ChargebackSearch.php</small>")
     end
     subgraph rust_security_audit_MercadoPago_Resources_Disbur_b650d17b["MercadoPago/Resources/DisbursementRefundList.php"]
         vendor_mercadopago_dx_php_src_mercadopago_resour_b7520370("DisbursementRefundList<br/><small>MercadoPago/Resources/DisbursementRefundList.php</small>")
@@ -2556,29 +2569,29 @@ flowchart LR
         vendor_mercadopago_dx_php_src_mercadopago_resour_5c4d9d6e("InvoiceSearch<br/><small>MercadoPago/Resources/InvoiceSearch.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_resour_5b885313("getMap()<br/><small>MercadoPago/Resources/InvoiceSearch.php</small>")
     end
+    subgraph rust_security_audit_MercadoPago_Resources_Mercha_db38b7c8["MercadoPago/Resources/MerchantOrderSearch.php"]
+        vendor_mercadopago_dx_php_src_mercadopago_resour_b52c9f58("MerchantOrderSearch<br/><small>MercadoPago/Resources/MerchantOrderSearch.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_resour_8e4db3e9("getMap()<br/><small>MercadoPago/Resources/MerchantOrderSearch.php</small>")
+    end
     subgraph rust_security_audit_MercadoPago_Resources_Order_5ba9e602["MercadoPago/Resources/Order.php"]
         vendor_mercadopago_dx_php_src_mercadopago_resour_f93d814d("Order<br/><small>MercadoPago/Resources/Order.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_resour_719f93ab("getMap()<br/><small>MercadoPago/Resources/Order.php</small>")
     end
-    subgraph rust_security_audit_MercadoPago_Resources_OrderS_d82b80be["MercadoPago/Resources/OrderSearch.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_resour_4aab1516("OrderSearch<br/><small>MercadoPago/Resources/OrderSearch.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_resour_89e5f0ac("getMap()<br/><small>MercadoPago/Resources/OrderSearch.php</small>")
-    end
     vendor_mercadopago_dx_php_src_mercadopago_net_mp_3c1e6157("MPResource<br/><small>MercadoPago/Net/MPResource.php</small>")
-    vendor_mercadopago_dx_php_src_mercadopago_resour_bbcaf98a("Payment<br/><small>MercadoPago/Resources/Payment.php</small>")
-    vendor_mercadopago_dx_php_src_mercadopago_resour_ce910cc2 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_9a2a7b36
-    vendor_mercadopago_dx_php_src_mercadopago_resour_5adeee29 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_16035a62
+    vendor_mercadopago_dx_php_src_mercadopago_resour_4aab1516("OrderSearch<br/><small>MercadoPago/Resources/OrderSearch.php</small>")
+    vendor_mercadopago_dx_php_src_mercadopago_resour_49d05948 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_cf3bbc70
+    vendor_mercadopago_dx_php_src_mercadopago_resour_0363580c -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_4ffca045
     vendor_mercadopago_dx_php_src_mercadopago_resour_b7520370 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_9e46dde1
     vendor_mercadopago_dx_php_src_mercadopago_resour_153bbcad -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_c38bd2bb
     vendor_mercadopago_dx_php_src_mercadopago_resour_87a1a0cc -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_3b80b0cf
     vendor_mercadopago_dx_php_src_mercadopago_resour_5c4d9d6e -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_5b885313
+    vendor_mercadopago_dx_php_src_mercadopago_resour_b52c9f58 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_8e4db3e9
     vendor_mercadopago_dx_php_src_mercadopago_resour_f93d814d -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_719f93ab
-    vendor_mercadopago_dx_php_src_mercadopago_resour_4aab1516 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_89e5f0ac
-    %% Omitted for readability: 49 nodes, 0 edges
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_ce910cc2 klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_9a2a7b36 function;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_5adeee29 klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_16035a62 function;
+    %% Omitted for readability: 48 nodes, 0 edges
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_49d05948 klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_cf3bbc70 function;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_0363580c klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_4ffca045 function;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_b7520370 klass;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_9e46dde1 function;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_153bbcad entry;
@@ -2587,12 +2600,12 @@ flowchart LR
     class vendor_mercadopago_dx_php_src_mercadopago_resour_3b80b0cf function;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_5c4d9d6e klass;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_5b885313 function;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_b52c9f58 klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_8e4db3e9 function;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_f93d814d klass;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_719f93ab function;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_4aab1516 klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_89e5f0ac function;
     class vendor_mercadopago_dx_php_src_mercadopago_net_mp_3c1e6157 klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_bbcaf98a klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_4aab1516 klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -2627,7 +2640,7 @@ flowchart LR
   <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>AdvancedPayment.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPayment.php</small><br><code>CardToken.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/CardToken.php</small><br><code>Chargeback.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/Chargeback.php</small><br>+27 个更多</td>
+  <td><code>AdvancedPayment.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPayment.php</small><br><code>AdvancedPaymentSearch.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPaymentSearch.php</small><br><code>Chargeback.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/Chargeback.php</small><br>+24 个更多</td>
   <td>MercadoPago/Net/MPResource.php 中的 MPResource 节点。</td>
 </tr>
 <tr>
@@ -2656,27 +2669,27 @@ flowchart LR
 </tr>
 <tr>
   <td>6</td>
-  <td><code>CardToken.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/CardToken.php</small></td>
+  <td><code>AdvancedPaymentSearch.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPaymentSearch.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
   <td>无直接出边</td>
-  <td>MercadoPago/Resources/CardToken.php 中的 CardToken.php 节点。</td>
+  <td>MercadoPago/Resources/AdvancedPaymentSearch.php 中的 AdvancedPaymentSearch.php 节点。</td>
 </tr>
 <tr>
   <td>7</td>
-  <td><code>CardToken</code><br><small style="color:var(--muted)">MercadoPago/Resources/CardToken.php</small></td>
+  <td><code>AdvancedPaymentSearch</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPaymentSearch.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/CardToken.php</small></td>
-  <td>MercadoPago/Resources/CardToken.php 中的 CardToken 节点。</td>
+  <td><code>getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPaymentSearch.php</small></td>
+  <td>MercadoPago/Resources/AdvancedPaymentSearch.php 中的 AdvancedPaymentSearch 节点。</td>
 </tr>
 <tr>
   <td>8</td>
-  <td><code>.getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/CardToken.php</small></td>
+  <td><code>.getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPaymentSearch.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
-  <td><code>CardToken</code><br><small style="color:var(--muted)">MercadoPago/Resources/CardToken.php</small></td>
+  <td><code>AdvancedPaymentSearch</code><br><small style="color:var(--muted)">MercadoPago/Resources/AdvancedPaymentSearch.php</small></td>
   <td>无直接出边</td>
-  <td>MercadoPago/Resources/CardToken.php 中的 .getMap() 节点。</td>
+  <td>MercadoPago/Resources/AdvancedPaymentSearch.php 中的 .getMap() 节点。</td>
 </tr>
 <tr>
   <td>9</td>
@@ -2696,6 +2709,30 @@ flowchart LR
 </tr>
 <tr>
   <td>11</td>
+  <td><code>ChargebackSearch.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/ChargebackSearch.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
+  <td>无直接出边</td>
+  <td>MercadoPago/Resources/ChargebackSearch.php 中的 ChargebackSearch.php 节点。</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>ChargebackSearch</code><br><small style="color:var(--muted)">MercadoPago/Resources/ChargebackSearch.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/ChargebackSearch.php</small></td>
+  <td>MercadoPago/Resources/ChargebackSearch.php 中的 ChargebackSearch 节点。</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>.getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/ChargebackSearch.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>ChargebackSearch</code><br><small style="color:var(--muted)">MercadoPago/Resources/ChargebackSearch.php</small></td>
+  <td>无直接出边</td>
+  <td>MercadoPago/Resources/ChargebackSearch.php 中的 .getMap() 节点。</td>
+</tr>
+<tr>
+  <td>14</td>
   <td><code>Customer.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/Customer.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
@@ -2703,36 +2740,12 @@ flowchart LR
   <td>MercadoPago/Resources/Customer.php 中的 Customer.php 节点。</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>15</td>
   <td><code>CustomerCard.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerCard.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
   <td>无直接出边</td>
   <td>MercadoPago/Resources/CustomerCard.php 中的 CustomerCard.php 节点。</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>CustomerCardResult.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerCardResult.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
-  <td>无直接出边</td>
-  <td>MercadoPago/Resources/CustomerCardResult.php 中的 CustomerCardResult.php 节点。</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>CustomerCardResult</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerCardResult.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerCardResult.php</small></td>
-  <td>MercadoPago/Resources/CustomerCardResult.php 中的 CustomerCardResult 节点。</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>.getMap()</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerCardResult.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>CustomerCardResult</code><br><small style="color:var(--muted)">MercadoPago/Resources/CustomerCardResult.php</small></td>
-  <td>无直接出边</td>
-  <td>MercadoPago/Resources/CustomerCardResult.php 中的 .getMap() 节点。</td>
 </tr>
 <tr>
   <td>16</td>
@@ -2848,11 +2861,11 @@ flowchart LR
 </tr>
 <tr>
   <td>30</td>
-  <td><code>OAuth.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/OAuth.php</small></td>
+  <td><code>MerchantOrderSearch.php</code><br><small style="color:var(--muted)">MercadoPago/Resources/MerchantOrderSearch.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>MPResource</code><br><small style="color:var(--muted)">MercadoPago/Net/MPResource.php</small></td>
   <td>无直接出边</td>
-  <td>MercadoPago/Resources/OAuth.php 中的 OAuth.php 节点。</td>
+  <td>MercadoPago/Resources/MerchantOrderSearch.php 中的 MerchantOrderSearch.php 节点。</td>
 </tr>
 </table>
 
@@ -2861,31 +2874,31 @@ flowchart LR
     <h4>关键文件</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>覆盖节点</th></tr>
-      <tr><td><code>MercadoPago/Resources/CardToken.php</code></td><td>3 个节点</td></tr>
-<tr><td><code>MercadoPago/Resources/CustomerCardResult.php</code></td><td>3 个节点</td></tr>
+      <tr><td><code>MercadoPago/Resources/AdvancedPaymentSearch.php</code></td><td>3 个节点</td></tr>
+<tr><td><code>MercadoPago/Resources/ChargebackSearch.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>MercadoPago/Resources/DisbursementRefundList.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>MercadoPago/Resources/IdentificationTypeResult.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>MercadoPago/Resources/Invoice.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>MercadoPago/Resources/InvoiceSearch.php</code></td><td>3 个节点</td></tr>
+<tr><td><code>MercadoPago/Resources/MerchantOrderSearch.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>MercadoPago/Resources/Order.php</code></td><td>3 个节点</td></tr>
-<tr><td><code>MercadoPago/Resources/OrderSearch.php</code></td><td>3 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：导入 x30, 包含 x21, inherits x20, 方法 x14。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：导入 x27, 包含 x22, inherits x21, 方法 x15。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 12. PoC 分类与模板 ====== -->
 <h2 id="poc">12. PoC 分类与模板</h2>
-<p>PoC 分类与模板 汇集了与 mercadopago、vendor、php、resources 相关的实现，主要分布在 Resources/Customer/CustomerSearchResult.php、Resources/MerchantOrder/MerchantOrderSearchResult.php、Resources/MerchantOrder/ReceiverAddress.php。本节覆盖 57 个节点、74 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>PoC 分类与模板 汇集了与 mercadopago、vendor、php、resources 相关的实现，主要分布在 Resources/Customer/CustomerSearchResult.php、Resources/MerchantOrder/MerchantOrderSearchResult.php、Resources/MerchantOrder/ReceiverAddress.php。本节覆盖 55 个节点、72 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: PoC 分类与模板 (57 nodes, 74 edges)
+    %% Section: PoC 分类与模板 (55 nodes, 72 edges)
     subgraph poc_Resources_Customer_CustomerSearchResult_php_0581a3dd["Resources/Customer/CustomerSearchResult.php"]
         vendor_mercadopago_dx_php_src_mercadopago_resour_fd126f8c("CustomerSearchResult<br/><small>Resources/Customer/CustomerSearchResult.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_resour_bcdda5d9("getMap()<br/><small>Resources/Customer/CustomerSearchResult.php</small>")
@@ -2910,25 +2923,25 @@ flowchart LR
         vendor_mercadopago_dx_php_src_mercadopago_resour_9d99a490("Payer<br/><small>Resources/Order/Payer.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_resour_cadc1269("getMap()<br/><small>Resources/Order/Payer.php</small>")
     end
-    subgraph poc_Resources_Order_Payment_php_622f831d["Resources/Order/Payment.php"]
-        vendor_mercadopago_dx_php_src_mercadopago_resour_a2bc3628("Payment<br/><small>Resources/Order/Payment.php</small>")
-        vendor_mercadopago_dx_php_src_mercadopago_resour_8969d7a5("getMap()<br/><small>Resources/Order/Payment.php</small>")
-    end
     subgraph poc_Resources_Order_PaymentMethod_php_ad98124c["Resources/Order/PaymentMethod.php"]
         vendor_mercadopago_dx_php_src_mercadopago_resour_ab5fdc44("PaymentMethod<br/><small>Resources/Order/PaymentMethod.php</small>")
         vendor_mercadopago_dx_php_src_mercadopago_resour_41d7c9a0("getMap()<br/><small>Resources/Order/PaymentMethod.php</small>")
     end
+    subgraph poc_Resources_Order_SubscriptionData_php_0bc6c092["Resources/Order/SubscriptionData.php"]
+        vendor_mercadopago_dx_php_src_mercadopago_resour_9b160bd3("SubscriptionData<br/><small>Resources/Order/SubscriptionData.php</small>")
+        vendor_mercadopago_dx_php_src_mercadopago_resour_ff6975c4("getMap()<br/><small>Resources/Order/SubscriptionData.php</small>")
+    end
     mapper_4f7bd6b6("Mapper")
-    vendor_mercadopago_dx_php_src_mercadopago_resour_85a3ce91("Shipment<br/><small>Resources/Order/Shipment.php</small>")
+    vendor_mercadopago_dx_php_src_mercadopago_resour_202bd186("AdditionalInfoPayer<br/><small>Resources/Payment/AdditionalInfoPayer.php</small>")
     vendor_mercadopago_dx_php_src_mercadopago_resour_fd126f8c -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_bcdda5d9
     vendor_mercadopago_dx_php_src_mercadopago_resour_a2c8484e -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_b4aeb9b6
     vendor_mercadopago_dx_php_src_mercadopago_resour_b060ce6e -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_711ffd8f
     vendor_mercadopago_dx_php_src_mercadopago_resour_d70b75f7 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_f1dcb531
     vendor_mercadopago_dx_php_src_mercadopago_resour_6b177bf2 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_1d353a84
     vendor_mercadopago_dx_php_src_mercadopago_resour_9d99a490 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_cadc1269
-    vendor_mercadopago_dx_php_src_mercadopago_resour_a2bc3628 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_8969d7a5
     vendor_mercadopago_dx_php_src_mercadopago_resour_ab5fdc44 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_41d7c9a0
-    %% Omitted for readability: 39 nodes, 0 edges
+    vendor_mercadopago_dx_php_src_mercadopago_resour_9b160bd3 -->|方法| vendor_mercadopago_dx_php_src_mercadopago_resour_ff6975c4
+    %% Omitted for readability: 37 nodes, 0 edges
     class vendor_mercadopago_dx_php_src_mercadopago_resour_fd126f8c klass;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_bcdda5d9 function;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_a2c8484e klass;
@@ -2941,12 +2954,12 @@ flowchart LR
     class vendor_mercadopago_dx_php_src_mercadopago_resour_1d353a84 function;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_9d99a490 klass;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_cadc1269 function;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_a2bc3628 klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_8969d7a5 function;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_ab5fdc44 klass;
     class vendor_mercadopago_dx_php_src_mercadopago_resour_41d7c9a0 function;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_9b160bd3 klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_ff6975c4 function;
     class mapper_4f7bd6b6 klass;
-    class vendor_mercadopago_dx_php_src_mercadopago_resour_85a3ce91 klass;
+    class vendor_mercadopago_dx_php_src_mercadopago_resour_202bd186 klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -2973,7 +2986,7 @@ flowchart LR
   <td><code>Mapper</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>Cardholder.php</code><br><small style="color:var(--muted)">Resources/Payment/Cardholder.php</small><br><code>CategoryDescriptor.php</code><br><small style="color:var(--muted)">Resources/Preference/CategoryDescriptor.php</small><br><code>Config.php</code><br><small style="color:var(--muted)">Resources/Order/Config.php</small><br>+16 个更多</td>
+  <td><code>AdditionalInfoPayer.php</code><br><small style="color:var(--muted)">Resources/Payment/AdditionalInfoPayer.php</small><br><code>BankInfo.php</code><br><small style="color:var(--muted)">Resources/Payment/BankInfo.php</small><br><code>CategoryDescriptor.php</code><br><small style="color:var(--muted)">Resources/Preference/CategoryDescriptor.php</small><br>+15 个更多</td>
   <td>项目 中的 Mapper 节点。</td>
 </tr>
 <tr>
@@ -3122,30 +3135,6 @@ flowchart LR
 </tr>
 <tr>
   <td>20</td>
-  <td><code>Payment.php</code><br><small style="color:var(--muted)">Resources/Order/Payment.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>Mapper</code></td>
-  <td>无直接出边</td>
-  <td>Resources/Order/Payment.php 中的 Payment.php 节点。</td>
-</tr>
-<tr>
-  <td>21</td>
-  <td><code>Payment</code><br><small style="color:var(--muted)">Resources/Order/Payment.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/Order/Payment.php</small></td>
-  <td>Resources/Order/Payment.php 中的 Payment 节点。</td>
-</tr>
-<tr>
-  <td>22</td>
-  <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/Order/Payment.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Payment</code><br><small style="color:var(--muted)">Resources/Order/Payment.php</small></td>
-  <td>无直接出边</td>
-  <td>Resources/Order/Payment.php 中的 .getMap() 节点。</td>
-</tr>
-<tr>
-  <td>23</td>
   <td><code>PaymentMethod.php</code><br><small style="color:var(--muted)">Resources/Order/PaymentMethod.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>Mapper</code></td>
@@ -3153,7 +3142,7 @@ flowchart LR
   <td>Resources/Order/PaymentMethod.php 中的 PaymentMethod.php 节点。</td>
 </tr>
 <tr>
-  <td>24</td>
+  <td>21</td>
   <td><code>PaymentMethod</code><br><small style="color:var(--muted)">Resources/Order/PaymentMethod.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
@@ -3161,7 +3150,7 @@ flowchart LR
   <td>Resources/Order/PaymentMethod.php 中的 PaymentMethod 节点。</td>
 </tr>
 <tr>
-  <td>25</td>
+  <td>22</td>
   <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/Order/PaymentMethod.php</small></td>
   <td><span class="tag tag-func">函数</span></td>
   <td><code>PaymentMethod</code><br><small style="color:var(--muted)">Resources/Order/PaymentMethod.php</small></td>
@@ -3169,31 +3158,7 @@ flowchart LR
   <td>Resources/Order/PaymentMethod.php 中的 .getMap() 节点。</td>
 </tr>
 <tr>
-  <td>26</td>
-  <td><code>Shipment.php</code><br><small style="color:var(--muted)">Resources/Order/Shipment.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td><code>Mapper</code></td>
-  <td>无直接出边</td>
-  <td>Resources/Order/Shipment.php 中的 Shipment.php 节点。</td>
-</tr>
-<tr>
-  <td>27</td>
-  <td><code>Shipment</code><br><small style="color:var(--muted)">Resources/Order/Shipment.php</small></td>
-  <td><span class="tag tag-class">类</span></td>
-  <td>外部入口 / 无直接入边</td>
-  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/Order/Shipment.php</small></td>
-  <td>Resources/Order/Shipment.php 中的 Shipment 节点。</td>
-</tr>
-<tr>
-  <td>28</td>
-  <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/Order/Shipment.php</small></td>
-  <td><span class="tag tag-func">函数</span></td>
-  <td><code>Shipment</code><br><small style="color:var(--muted)">Resources/Order/Shipment.php</small></td>
-  <td>无直接出边</td>
-  <td>Resources/Order/Shipment.php 中的 .getMap() 节点。</td>
-</tr>
-<tr>
-  <td>29</td>
+  <td>23</td>
   <td><code>SubscriptionData.php</code><br><small style="color:var(--muted)">Resources/Order/SubscriptionData.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td><code>Mapper</code></td>
@@ -3201,12 +3166,60 @@ flowchart LR
   <td>Resources/Order/SubscriptionData.php 中的 SubscriptionData.php 节点。</td>
 </tr>
 <tr>
-  <td>30</td>
+  <td>24</td>
   <td><code>SubscriptionData</code><br><small style="color:var(--muted)">Resources/Order/SubscriptionData.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
   <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/Order/SubscriptionData.php</small></td>
   <td>Resources/Order/SubscriptionData.php 中的 SubscriptionData 节点。</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/Order/SubscriptionData.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>SubscriptionData</code><br><small style="color:var(--muted)">Resources/Order/SubscriptionData.php</small></td>
+  <td>无直接出边</td>
+  <td>Resources/Order/SubscriptionData.php 中的 .getMap() 节点。</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>AdditionalInfoPayer.php</code><br><small style="color:var(--muted)">Resources/Payment/AdditionalInfoPayer.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>Mapper</code></td>
+  <td>无直接出边</td>
+  <td>Resources/Payment/AdditionalInfoPayer.php 中的 AdditionalInfoPayer.php 节点。</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>AdditionalInfoPayer</code><br><small style="color:var(--muted)">Resources/Payment/AdditionalInfoPayer.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/Payment/AdditionalInfoPayer.php</small></td>
+  <td>Resources/Payment/AdditionalInfoPayer.php 中的 AdditionalInfoPayer 节点。</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>.getMap()</code><br><small style="color:var(--muted)">Resources/Payment/AdditionalInfoPayer.php</small></td>
+  <td><span class="tag tag-func">函数</span></td>
+  <td><code>AdditionalInfoPayer</code><br><small style="color:var(--muted)">Resources/Payment/AdditionalInfoPayer.php</small></td>
+  <td>无直接出边</td>
+  <td>Resources/Payment/AdditionalInfoPayer.php 中的 .getMap() 节点。</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>BankInfo.php</code><br><small style="color:var(--muted)">Resources/Payment/BankInfo.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td><code>Mapper</code></td>
+  <td>无直接出边</td>
+  <td>Resources/Payment/BankInfo.php 中的 BankInfo.php 节点。</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>BankInfo</code><br><small style="color:var(--muted)">Resources/Payment/BankInfo.php</small></td>
+  <td><span class="tag tag-class">类</span></td>
+  <td>外部入口 / 无直接入边</td>
+  <td><code>getMap()</code><br><small style="color:var(--muted)">Resources/Payment/BankInfo.php</small></td>
+  <td>Resources/Payment/BankInfo.php 中的 BankInfo 节点。</td>
 </tr>
 </table>
 
@@ -3221,13 +3234,13 @@ flowchart LR
 <tr><td><code>Resources/Order/Config.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>Resources/Order/Discounts.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>Resources/Order/Payer.php</code></td><td>3 个节点</td></tr>
-<tr><td><code>Resources/Order/Payment.php</code></td><td>3 个节点</td></tr>
 <tr><td><code>Resources/Order/PaymentMethod.php</code></td><td>3 个节点</td></tr>
+<tr><td><code>Resources/Order/SubscriptionData.php</code></td><td>3 个节点</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：导入 x19, 包含 x19, mixes in x18, 方法 x18。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：导入 x18, mixes in x18, 包含 x18, 方法 x18。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -4289,12 +4302,12 @@ flowchart LR
 
 <!-- ====== 16. 其他 ====== -->
 <h2 id="other">16. 其他</h2>
-<p>其他 汇集了与 mercadopago、vendor、php、resources 相关的实现，主要分布在 .agents/BRAND.md、src/Adapter/AbstractAdapter.php、vendor/composer/ClassLoader.php。本节覆盖 1269 个节点、1214 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
+<p>其他 汇集了与 mercadopago、vendor、php、resources 相关的实现，主要分布在 .agents/BRAND.md、src/Adapter/AbstractAdapter.php、vendor/composer/ClassLoader.php。本节覆盖 1282 个节点、1246 条内部边，图中只展示最有代表性的调用关系以保持可读性。</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: 其他 (1269 nodes, 1214 edges)
+    %% Section: 其他 (1282 nodes, 1246 edges)
     subgraph other_src_utils_scrollStoryEngine_ts_5c037854["src/utils/scrollStoryEngine.ts"]
         src_utils_scrollstoryengine_scrollstoryengine_3f12c8c1("ScrollStoryEngine<br/><small>src/utils/scrollStoryEngine.ts</small>")
         src_utils_scrollstoryengine_scrollstoryengine_cl_0a739760("cleanup()<br/><small>src/utils/scrollStoryEngine.ts</small>")
@@ -4305,16 +4318,20 @@ flowchart LR
         src_utils_scrollstoryengine_scrollstoryengine_in_f868aa82("initHomePageStory()<br/><small>src/utils/scrollStoryEngine.ts</small>")
         src_utils_scrollstoryengine_scrollstoryengine_in_b9098caa("initMouseTilt()<br/><small>src/utils/scrollStoryEngine.ts</small>")
         src_utils_scrollstoryengine_scrollstoryengine_in_c564d713("initPageReveals()<br/><small>src/utils/scrollStoryEngine.ts</small>")
-        src_utils_scrollstoryengine_scrollstoryengine_in_e0738206("initParallaxCards()<br/><small>src/utils/scrollStoryEngine.ts</small>")
-        src_utils_scrollstoryengine_scrollstoryengine_in_1b5fa882("initRoomsStory()<br/><small>src/utils/scrollStoryEngine.ts</small>")
-        src_utils_scrollstoryengine_scrollstoryengine_in_d39a2dcb("initVelocityMarquee()<br/><small>src/utils/scrollStoryEngine.ts</small>")
     end
-    app_features_booking_actions_processpaymentactio_15845bda("ProcessPaymentAction<br/><small>Booking/Actions/ProcessPaymentAction.php</small>")
-    app_features_auth_user_user_3ef48886("User<br/><small>Features/Auth/User.php</small>")
+    subgraph other_src_pages_book_astro_eacc7b7a["src/pages/book.astro"]
+        src_pages_book_updatepricing_3ba0ac7a("updatePricing()<br/><small>src/pages/book.astro</small>")
+        src_pages_book_selectroomcard_d53a9f19("selectRoomCard()<br/><small>src/pages/book.astro</small>")
+        src_pages_book_applyuserdata_0b753a4b("applyUserData()<br/><small>src/pages/book.astro</small>")
+        src_pages_book_autofilluser_27b42b8f("autoFillUser()<br/><small>src/pages/book.astro</small>")
+    end
     vendor_hybridauth_hybridauth_src_adapter_abstrac_3b1245f2("AbstractAdapter<br/><small>src/Adapter/AbstractAdapter.php</small>")
     vendor_hybridauth_hybridauth_src_adapter_oauth2_7a401bb8("OAuth2<br/><small>src/Adapter/OAuth2.php</small>")
+    c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901("../../i18n/utils")
     vendor_composer_classloader_classloader_e26637a6("ClassLoader<br/><small>vendor/composer/ClassLoader.php</small>")
     vendor_composer_installedversions_installedversi_a8e4badf("InstalledVersions<br/><small>vendor/composer/InstalledVersions.php</small>")
+    src_pages_book_updatepricing_3ba0ac7a -->|调用| src_pages_book_selectroomcard_d53a9f19
+    src_pages_book_applyuserdata_0b753a4b -->|调用| src_pages_book_autofilluser_27b42b8f
     src_utils_scrollstoryengine_scrollstoryengine_3f12c8c1 -->|方法| src_utils_scrollstoryengine_scrollstoryengine_cl_0a739760
     src_utils_scrollstoryengine_scrollstoryengine_3f12c8c1 -->|方法| src_utils_scrollstoryengine_scrollstoryengine_in_094f528d
     src_utils_scrollstoryengine_scrollstoryengine_3f12c8c1 -->|方法| src_utils_scrollstoryengine_scrollstoryengine_in_722f5b80
@@ -4323,9 +4340,6 @@ flowchart LR
     src_utils_scrollstoryengine_scrollstoryengine_3f12c8c1 -->|方法| src_utils_scrollstoryengine_scrollstoryengine_in_f868aa82
     src_utils_scrollstoryengine_scrollstoryengine_3f12c8c1 -->|方法| src_utils_scrollstoryengine_scrollstoryengine_in_b9098caa
     src_utils_scrollstoryengine_scrollstoryengine_3f12c8c1 -->|方法| src_utils_scrollstoryengine_scrollstoryengine_in_c564d713
-    src_utils_scrollstoryengine_scrollstoryengine_3f12c8c1 -->|方法| src_utils_scrollstoryengine_scrollstoryengine_in_e0738206
-    src_utils_scrollstoryengine_scrollstoryengine_3f12c8c1 -->|方法| src_utils_scrollstoryengine_scrollstoryengine_in_1b5fa882
-    src_utils_scrollstoryengine_scrollstoryengine_3f12c8c1 -->|方法| src_utils_scrollstoryengine_scrollstoryengine_in_d39a2dcb
     src_utils_scrollstoryengine_scrollstoryengine_cl_0a739760 -->|调用| src_utils_scrollstoryengine_scrollstoryengine_in_f868aa82
     src_utils_scrollstoryengine_scrollstoryengine_cl_0a739760 -->|调用| src_utils_scrollstoryengine_scrollstoryengine_in_c564d713
     src_utils_scrollstoryengine_scrollstoryengine_in_f868aa82 -->|调用| src_utils_scrollstoryengine_scrollstoryengine_in_094f528d
@@ -4333,12 +4347,9 @@ flowchart LR
     src_utils_scrollstoryengine_scrollstoryengine_in_f868aa82 -->|调用| src_utils_scrollstoryengine_scrollstoryengine_in_300ccc3e
     src_utils_scrollstoryengine_scrollstoryengine_in_f868aa82 -->|调用| src_utils_scrollstoryengine_scrollstoryengine_in_42a8cf4f
     src_utils_scrollstoryengine_scrollstoryengine_in_f868aa82 -->|调用| src_utils_scrollstoryengine_scrollstoryengine_in_b9098caa
-    src_utils_scrollstoryengine_scrollstoryengine_in_f868aa82 -->|调用| src_utils_scrollstoryengine_scrollstoryengine_in_e0738206
-    src_utils_scrollstoryengine_scrollstoryengine_in_f868aa82 -->|调用| src_utils_scrollstoryengine_scrollstoryengine_in_1b5fa882
-    src_utils_scrollstoryengine_scrollstoryengine_in_f868aa82 -->|调用| src_utils_scrollstoryengine_scrollstoryengine_in_d39a2dcb
     src_utils_scrollstoryengine_scrollstoryengine_in_c564d713 -->|调用| src_utils_scrollstoryengine_scrollstoryengine_in_094f528d
     src_utils_scrollstoryengine_scrollstoryengine_in_c564d713 -->|调用| src_utils_scrollstoryengine_scrollstoryengine_in_722f5b80
-    %% Omitted for readability: 1251 nodes, 0 edges
+    %% Omitted for readability: 1264 nodes, 0 edges
     class src_utils_scrollstoryengine_scrollstoryengine_3f12c8c1 klass;
     class src_utils_scrollstoryengine_scrollstoryengine_cl_0a739760 function;
     class src_utils_scrollstoryengine_scrollstoryengine_in_094f528d function;
@@ -4348,13 +4359,13 @@ flowchart LR
     class src_utils_scrollstoryengine_scrollstoryengine_in_f868aa82 function;
     class src_utils_scrollstoryengine_scrollstoryengine_in_b9098caa function;
     class src_utils_scrollstoryengine_scrollstoryengine_in_c564d713 function;
-    class src_utils_scrollstoryengine_scrollstoryengine_in_e0738206 function;
-    class src_utils_scrollstoryengine_scrollstoryengine_in_1b5fa882 function;
-    class src_utils_scrollstoryengine_scrollstoryengine_in_d39a2dcb function;
-    class app_features_booking_actions_processpaymentactio_15845bda klass;
-    class app_features_auth_user_user_3ef48886 klass;
+    class src_pages_book_updatepricing_3ba0ac7a function;
+    class src_pages_book_selectroomcard_d53a9f19 function;
+    class src_pages_book_applyuserdata_0b753a4b function;
+    class src_pages_book_autofilluser_27b42b8f function;
     class vendor_hybridauth_hybridauth_src_adapter_abstrac_3b1245f2 klass;
     class vendor_hybridauth_hybridauth_src_adapter_oauth2_7a401bb8 klass;
+    class c_users_akim_desktop_usgar_redesign_src_i18n_uti_484c6901 function;
     class vendor_composer_classloader_classloader_e26637a6 klass;
     class vendor_composer_installedversions_installedversi_a8e4badf klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
@@ -4383,7 +4394,7 @@ flowchart LR
   <td><code>AbstractAdapter.php</code><br><small style="color:var(--muted)">src/Adapter/AbstractAdapter.php</small></td>
   <td><span class="tag tag-class">类</span></td>
   <td>外部入口 / 无直接入边</td>
-  <td><code>Curl.php</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br><code>HttpClientFailureException.php</code><br><small style="color:var(--muted)">src/Exception/HttpClientFailureException.php</small><br><code>HttpClientInterface</code><br>+3 个更多</td>
+  <td><code>Curl.php</code><br><small style="color:var(--muted)">src/HttpClient/Curl.php</small><br><code>HttpClientInterface</code><br><code>LoggerInterface</code><br>+1 个更多</td>
   <td>src/Adapter/AbstractAdapter.php 中的 AbstractAdapter.php 节点。</td>
 </tr>
 <tr>
@@ -4637,7 +4648,7 @@ flowchart LR
   </div>
   <div class="card">
     <h4>设计备注</h4>
-    <p>本节由 graphify 社区聚类生成。关系概况：包含 x455, 方法 x321, 导入 x123, references x100。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
+    <p>本节由 graphify 社区聚类生成。关系概况：包含 x459, 方法 x318, 导入 x118, 导入 x99。图表优先展示高置信、跨节点调用或使用关系，完整节点清单位于表格中。</p>
   </div>
 </div>
 <hr>
@@ -4648,18 +4659,18 @@ flowchart LR
   <div class="card">
     <h4>Graph</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>Nodes</td><td>2981</td></tr>
-      <tr><td>Edges</td><td>4543</td></tr>
+      <tr><td>Nodes</td><td>2986</td></tr>
+      <tr><td>Edges</td><td>4547</td></tr>
       <tr><td>Hyperedges</td><td>0</td></tr>
-      <tr><td>Communities</td><td>455</td></tr>
+      <tr><td>Communities</td><td>457</td></tr>
       <tr><td>Documented Sections</td><td>15</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Edge Confidence</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>EXTRACTED</td><td>4270</td></tr>
-      <tr><td>INFERRED</td><td>273</td></tr>
+      <tr><td>EXTRACTED</td><td>4272</td></tr>
+      <tr><td>INFERRED</td><td>275</td></tr>
       <tr><td>AMBIGUOUS</td><td>0</td></tr>
     </table>
   </div>
@@ -4667,7 +4678,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>usgar-redesign — Architecture Documentation</p>
-  <p>Generated: 2026-07-31 14:51 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-07-31 15:20 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

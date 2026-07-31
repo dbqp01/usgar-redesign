@@ -251,6 +251,8 @@
   "249": "CardTokenClientUnitTest",
   "250": "DisbursementRefundClientUnitTest",
   "251": "6.2 绕过场景与方法",
+  "252": "StatusBanner.astro",
+  "253": "gallery.astro",
   "254": "CustomerCreateRequest.php",
   "255": "PaymentCancelRequest.php",
   "256": "PaymentCaptureRequest.php",

@@ -141,12 +141,11 @@ const t = useTranslations(lang);
         `;
       }
 
-      // 2. Load & Initialize Mercado Pago SDK safely
       const MercadoPagoSDK = await ensureMercadoPagoLoaded();
-      const mpPublicKey = import.meta.env.PUBLIC_MERCADO_PAGO_PUBLIC_KEY || import.meta.env.MERCADO_PAGO_PUBLIC_KEY;
+      const mpPublicKey = import.meta.env.PUBLIC_MERCADO_PAGO_PUBLIC_KEY;
 
-      if (!mpPublicKey || mpPublicKey === 'YOUR_MP_PUBLIC_KEY' || mpPublicKey === 'APP_USR-xxxx') {
-        throw new Error('Las credenciales de Mercado Pago no están configuradas correctamente.');
+      if (!mpPublicKey) {
+        throw new Error('La clave pública de Mercado Pago (PUBLIC_MERCADO_PAGO_PUBLIC_KEY) no está configurada.');
       }
 
       const mp = new MercadoPagoSDK(mpPublicKey, {

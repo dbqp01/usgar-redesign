@@ -23,7 +23,7 @@ class AuthCallbackAction {
                 'lifetime' => 0,
                 'path'     => '/',
                 'domain'   => '',
-                'secure'   => \App\Core\Config::isProduction(),
+                'secure'   => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? 80) == 443,
                 'httponly'  => true,
                 'samesite' => 'Lax'
             ]);

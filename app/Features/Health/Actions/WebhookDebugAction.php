@@ -30,10 +30,6 @@ class WebhookDebugAction {
             $diagnostics['webhook_secret_length'] = 0;
         }
 
-        // 3. Verificar Environment
-        $diagnostics['environment_raw'] = Config::get('ENVIRONMENT') ?? 'NOT_SET_ANYWHERE';
-        $diagnostics['is_production'] = Config::isProduction();
-        $diagnostics['production_source'] = Config::get('ENVIRONMENT') ? 'explicit' : 'auto-detected (public_html)';
         $diagnostics['site_url'] = Config::get('SITE_URL', 'NOT_SET');
 
         // 4. Verificar token (solo tipo, no valor)

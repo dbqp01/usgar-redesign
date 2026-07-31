@@ -17,12 +17,14 @@ use Throwable;
  */
 class AuthLoginAction {
     public function __invoke(Request $request): void {
+        $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? 80) == 443;
+
         if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
             session_set_cookie_params([
                 'lifetime' => 0,
                 'path'     => '/',
                 'domain'   => '',
-                'secure'   => Config::isProduction(),
+                'secure'   => $isSecure,
                 'httponly'  => true,
                 'samesite' => 'Lax'
             ]);
@@ -37,7 +39,7 @@ class AuthLoginAction {
         setcookie('usgar_auth_provider', $provider, [
             'expires'  => time() + 300,
             'path'     => '/',
-            'secure'   => Config::isProduction(),
+            'secure'   => $isSecure,
             'httponly'  => true,
             'samesite' => 'Lax',
         ]);
@@ -45,7 +47,7 @@ class AuthLoginAction {
         setcookie('usgar_auth_redirect', $redirect, [
             'expires'  => time() + 300,
             'path'     => '/',
-            'secure'   => Config::isProduction(),
+            'secure'   => $isSecure,
             'httponly'  => true,
             'samesite' => 'Lax',
         ]);

@@ -48,9 +48,7 @@ if ($paid->value === 'paid' && !$paid->isExtendable() && $paid->isTerminal()) {
     echo " BookingStatus enum: Paid OK" . PHP_EOL;
 }
 
-// 5. Probar Config
-$env = Config::get('ENVIRONMENT', 'development');
-echo " Config: ENVIRONMENT = {$env}" . PHP_EOL;
+
 
 // 6. Probar controladores y logica de BD
 echo PHP_EOL . "--- PROBANDO CONTROLADORES Y BASE DE DATOS ---" . PHP_EOL;

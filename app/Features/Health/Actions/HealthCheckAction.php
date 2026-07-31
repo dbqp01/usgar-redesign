@@ -26,11 +26,10 @@ class HealthCheckAction {
         }
 
         Response::json([
-            'success'     => true,
-            'status'      => 'healthy',
-            'environment' => Config::isProduction() ? 'production' : 'development',
-            'database'    => $dbStatus,
-            'timestamp'   => date('c'),
+            'success'   => true,
+            'status'    => 'healthy',
+            'database'  => $dbStatus,
+            'timestamp' => date('c'),
         ]);
     }
 }

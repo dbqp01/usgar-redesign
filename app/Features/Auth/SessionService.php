@@ -106,10 +106,11 @@ class SessionService {
      * Setea la cookie de sesion con el JWT.
      */
     public static function setAuthCookie(string $jwt): void {
+        $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? 80) == 443;
         setcookie(self::COOKIE_NAME, $jwt, [
             'expires'  => time() + (self::COOKIE_TTL_DAYS * 86400),
             'path'     => '/',
-            'secure'   => Config::isProduction(),
+            'secure'   => $isSecure,
             'httponly'  => true,
             'samesite' => 'Lax',
         ]);
@@ -119,10 +120,11 @@ class SessionService {
      * Elimina la cookie de sesion.
      */
     public static function clearAuthCookie(): void {
+        $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? 80) == 443;
         setcookie(self::COOKIE_NAME, '', [
             'expires'  => time() - 3600,
             'path'     => '/',
-            'secure'   => Config::isProduction(),
+            'secure'   => $isSecure,
             'httponly'  => true,
             'samesite' => 'Lax',
         ]);

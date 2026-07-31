@@ -69,11 +69,7 @@ class GetRoomsAction {
                 throw HttpException::internal('No se pudo consultar el servicio de habitaciones en este momento.');
             }
 
-            $clientMessage = Config::isProduction()
-                ? 'Error al consultar disponibilidad.'
-                : 'Error: ' . $e->getMessage();
-
-            Response::error($clientMessage, 500);
+            Response::error('Error al consultar disponibilidad de habitaciones.', 500);
         }
     }
 }
