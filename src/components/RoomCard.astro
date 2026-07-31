@@ -9,9 +9,10 @@ import { translateBeds } from "../utils/helpers";
 interface Props {
   room: Room;
   index?: number;
+  animate?: boolean;
 }
 
-const { room, index = 0 } = Astro.props;
+const { room, index = 0, animate = true } = Astro.props;
 
 const lang = (Astro.currentLocale || "en") as Locale;
 const t = useTranslations(lang);
@@ -37,9 +38,9 @@ const translatedBeds = translateBeds(room.beds, lang);
 <a
   href={getRelativeLocaleUrl(lang, `rooms/${room.slug}`)}
   class:list={[
-    "group block rounded-2xl overflow-hidden bg-surface-card-light dark:bg-surface-card-dark shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1 animate-on-scroll stagger-child",
+    "group block rounded-2xl overflow-hidden bg-surface-card-light dark:bg-surface-card-dark shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1",
+    { "animate-on-scroll stagger-child": animate }
   ]}
-  style={`transition-delay: ${index * 0.1}s`}
   data-astro-prefetch="tap"
 >
   <!-- Image -->

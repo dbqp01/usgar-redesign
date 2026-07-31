@@ -16,6 +16,8 @@
     "ctaSecondary": "Explore Rooms"
   },
   "booking": {
+    "title": "Direct Booking",
+    "bestRateGuaranteed": "Best Rate Guaranteed",
     "checkin": "Check-in",
     "checkout": "Check-out",
     "guests": "Guests",
@@ -260,6 +262,13 @@
     "invalidEmail": "Please enter a valid email address.",
     "noPaymentUrl": "No payment URL received from server.",
     "unexpectedError": "An unexpected error occurred."
+  },
+  "rooms": {
+    "viewDetails": "View Details",
+    "from": "From",
+    "upTo": "Up to",
+    "perNight": "per night",
+    "videoTour": "Video Tour"
   },
   "exploreDetail": {
     "home": "Home",

@@ -68,7 +68,7 @@ const filterLabels: Record<string, { en: string; es: string; fr: string; pt: str
       {
         rooms.map((room, i) => (
           <div data-guests={room.maxGuests} class="transition-all duration-500 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-22px)] max-w-sm flex">
-            <RoomCard room={room} index={i} />
+            <RoomCard room={room} index={i} animate={false} />
           </div>
         ))
       }

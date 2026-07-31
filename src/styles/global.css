@@ -356,13 +356,16 @@ h3, h4 {
    ============================================ */
 .animate-on-scroll {
   opacity: 0;
+  visibility: hidden;
   transform: translate3d(0, 40px, 0);
   will-change: transform, opacity;
 }
 
 .animate-on-scroll.visible {
   opacity: 1;
+  visibility: inherit;
   transform: translate3d(0, 0, 0);
+  will-change: auto;
 }
 
 /* Stagger children in grids */
@@ -458,8 +461,10 @@ h3, h4 {
 @media (prefers-reduced-motion: reduce) {
   .animate-on-scroll {
     opacity: 1;
+    visibility: inherit;
     transform: none;
     transition: none;
+    will-change: auto;
   }
 
   .marquee-content {

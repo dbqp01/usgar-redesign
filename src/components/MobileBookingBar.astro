@@ -220,8 +220,8 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
 
       if (sheet && backdrop && panel) {
         tl.set(sheet, { display: 'block' })
-          .set(backdrop, { display: 'block' })
-          .to(backdrop, { opacity: 1, duration: 0.3, ease: 'power2.out' })
+          .set(backdrop, { autoAlpha: 0, display: 'block' })
+          .to(backdrop, { autoAlpha: 1, duration: 0.3, ease: 'power2.out' })
           .to(panel, { y: '0%', duration: 0.5, ease: 'power4.out' }, '<0.1');
       }
 

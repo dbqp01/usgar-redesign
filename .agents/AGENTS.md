@@ -52,10 +52,15 @@ Si el usuario menciona cualquier servidor o herramienta MCP por su nombre en el 
 1. **Descomposicion Tecnica:** Hipotesis de solucion guiada con `sequential-thinking`.
 2. **Oportunidades de Mejora (Context7):** APIs y patrones actualizados de Astro v7.x.x, Tailwind CSS v4.3 y PHP 8.x ADR.
 3. **Investigacion de Estandares (Tavily & agent-skills MCP):** Consultar `web-quality-audit`, `perf-astro`, `security-best-practices`, `best-practices`, `coding-guidelines`, `accessibility`.
-4. **Analisis de Impacto en Red de Nodos (Graphify / Busqueda de Nodos):** Responder obligatoriamente:
+4. **Reglas Estrictas de Animacion GSAP (MANDATORIO):**
+   - **Cleanup:** TODO script de GSAP en Astro DEBE usar `gsap.context()` y limpiarse en el evento `astro:before-preparation`. (ej. `ctx.revert()`). NUNCA dejar callbacks huerfanos.
+   - **Visibilidad/Accesibilidad:** Usar `autoAlpha` en lugar de `opacity` (NUNCA animar opacidad sola). Elementos invisibles no deben ser focuseables por teclado.
+   - **Responsividad y Movimiento:** Usar `gsap.matchMedia()` SIEMPRE. Desactivar animaciones complejas (como scroll horizontal o parallax pesados) en pantallas menores a `768px` y respetar `(prefers-reduced-motion: reduce)`.
+   - **Rendimiento:** Evitar animar `top`, `left`, `width`, `height`, `borderRadius`. Usar SIEMPRE `x`, `y`, `scale`, `rotation` (transformaciones de hardware). Utilizar `xPercent`/`yPercent` en lugar de porcentajes en translaciones manuales.
+5. **Analisis de Impacto en Red de Nodos (Graphify / Busqueda de Nodos):** Responder obligatoriamente:
    > *"¿Si hago este cambio o refactorizacion, en que afectara al resto del proyecto?"*
-5. **Aplicacion Desacoplada (Zero-Hardcoding):** Implementar mediante `.env` o DB.
-6. **Depuracion Logica Profunda en Runtime:** Validar en ejecucion real (colecciones exhaustivas de **Postman MCP**, script unico `tests/api-harness.php`, inspeccion de payloads) superando simples comprobaciones estaticas (`npm build`/`check`).
+6. **Aplicacion Desacoplada (Zero-Hardcoding):** Implementar mediante `.env` o DB.
+7. **Depuracion Logica Profunda en Runtime:** Validar en ejecucion real (colecciones exhaustivas de **Postman MCP**, script unico `tests/api-harness.php`, inspeccion de payloads) superando simples comprobaciones estaticas (`npm build`/`check`).
 
 ## Reglas de Verificacion y Calidad
 - **Depuracion Logica Profunda en Runtime:** `npm run check` y `npm run build` son unicamente controles sintacticos/estaticos iniciales. TODO cambio debe validarse en tiempo de ejecucion via Postman MCP (todas las opciones y estres) y `tests/api-harness.php`.

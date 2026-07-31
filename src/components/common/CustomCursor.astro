@@ -5,11 +5,12 @@
 <div 
   id="custom-cursor" 
   class="fixed top-0 left-0 w-4 h-4 bg-white rounded-full pointer-events-none z-[110] mix-blend-difference hidden md:block will-change-transform" 
-  style="transform: translate(-50%, -50%); opacity: 0;"
 ></div>
 
 <script>
   import gsap from 'gsap';
+
+  let ctx: gsap.Context;
 
   function initCursor() {
     if (typeof window === 'undefined' || window.matchMedia('(pointer: coarse)').matches) return;
@@ -17,42 +18,50 @@
     const cursor = document.getElementById('custom-cursor');
     if (!cursor) return;
 
-    // quickTo is highly optimized for mouse tracking (0 memory leaks)
-    const xTo = gsap.quickTo(cursor, "x", { duration: 0.4, ease: "power3" });
-    const yTo = gsap.quickTo(cursor, "y", { duration: 0.4, ease: "power3" });
+    // Revert previous context if re-initializing (ViewTransitions)
+    if (ctx) ctx.revert();
 
-    // Show cursor on first move
-    let isVisible = false;
+    ctx = gsap.context(() => {
+      // Set centering via GSAP so quickTo preserves it
+      // (inline CSS translate(-50%, -50%) gets destroyed by quickTo's translate3d)
+      gsap.set(cursor, { xPercent: -50, yPercent: -50, autoAlpha: 0 });
 
-    // Delegación de eventos maestra
-    const onMouseMove = (e: MouseEvent) => {
-      xTo(e.clientX);
-      yTo(e.clientY);
+      // quickTo is highly optimized for mouse tracking (0 memory leaks)
+      const xTo = gsap.quickTo(cursor, "x", { duration: 0.4, ease: "power3" });
+      const yTo = gsap.quickTo(cursor, "y", { duration: 0.4, ease: "power3" });
 
-      if (!isVisible) {
-        gsap.to(cursor, { opacity: 1, duration: 0.3 });
-        isVisible = true;
-      }
+      // Show cursor on first move
+      let isVisible = false;
 
-      // Check if hovering interactive element
-      const target = e.target as HTMLElement;
-      const isInteractive = target.closest('a, button, input, [data-cursor-hover]');
-      
-      if (isInteractive) {
-        gsap.to(cursor, { scale: 3, duration: 0.3, ease: 'power2.out', overwrite: 'auto' });
-      } else {
-        gsap.to(cursor, { scale: 1, duration: 0.3, ease: 'power2.out', overwrite: 'auto' });
-      }
-    };
+      // Delegacion de eventos maestra
+      const onMouseMove = (e: MouseEvent) => {
+        xTo(e.clientX);
+        yTo(e.clientY);
 
-    // Listeners en window para que sobrevivan a Astro ViewTransitions
-    // o se reinstancian limpiamente
-    window.addEventListener('mousemove', onMouseMove);
+        if (!isVisible) {
+          gsap.to(cursor, { autoAlpha: 1, duration: 0.3 });
+          isVisible = true;
+        }
 
-    // Cleanup
-    document.addEventListener('astro:before-preparation', () => {
-      window.removeEventListener('mousemove', onMouseMove);
-    }, { once: true });
+        // Check if hovering interactive element
+        const target = e.target as HTMLElement;
+        const isInteractive = target.closest('a, button, input, select, textarea, [data-cursor-hover]');
+        
+        if (isInteractive) {
+          gsap.to(cursor, { scale: 3, duration: 0.3, ease: 'power2.out', overwrite: 'auto' });
+        } else {
+          gsap.to(cursor, { scale: 1, duration: 0.3, ease: 'power2.out', overwrite: 'auto' });
+        }
+      };
+
+      window.addEventListener('mousemove', onMouseMove);
+
+      // Cleanup on Astro ViewTransitions
+      document.addEventListener('astro:before-preparation', () => {
+        window.removeEventListener('mousemove', onMouseMove);
+        isVisible = false;
+      }, { once: true });
+    });
   }
 
   document.addEventListener('astro:page-load', initCursor);

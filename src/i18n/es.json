@@ -16,6 +16,8 @@
     "ctaSecondary": "Explorar Habitaciones"
   },
   "booking": {
+    "title": "Reserva Directa",
+    "bestRateGuaranteed": "Mejor Precio Garantizado",
     "checkin": "Llegada",
     "checkout": "Salida",
     "guests": "Huespedes",
@@ -260,6 +262,13 @@
     "invalidEmail": "Por favor ingrese un email valido.",
     "noPaymentUrl": "No se recibio la URL de pago desde el servidor.",
     "unexpectedError": "Ocurrio un error inesperado."
+  },
+  "rooms": {
+    "viewDetails": "Ver Detalles",
+    "from": "Desde",
+    "upTo": "Hasta",
+    "perNight": "por noche",
+    "videoTour": "Video Tour"
   },
   "exploreDetail": {
     "home": "Inicio",
