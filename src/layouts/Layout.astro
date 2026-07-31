@@ -8,9 +8,6 @@ import { siteSettings } from '../data/settings';
 import '../styles/global.css';
 import StatusBanner from '../components/ui/StatusBanner.astro';
 import SmoothScroll from '../components/common/SmoothScroll.astro';
-import Preloader from '../components/common/Preloader.astro';
-import CustomCursor from '../components/common/CustomCursor.astro';
-import NoiseOverlay from '../components/common/NoiseOverlay.astro';
 import { useTranslations } from '../i18n/utils';
 import type { Locale } from '../i18n/utils';
 
@@ -147,10 +144,6 @@ const localeMap: Record<Locale, string> = {
     </a>
 
     <!-- Cinematic & Aesthetic Components -->
-    <Preloader />
-    <NoiseOverlay />
-    <CustomCursor />
-
     <Navbar />
 
     <!-- El main no usa transiciones de Astro para que GSAP tenga control total de entrada/salida -->
