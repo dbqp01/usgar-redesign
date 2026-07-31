@@ -1,0 +1,59 @@
+---
+// src/components/common/CustomCursor.astro
+---
+
+<div 
+  id="custom-cursor" 
+  class="fixed top-0 left-0 w-4 h-4 bg-white rounded-full pointer-events-none z-[110] mix-blend-difference hidden md:block will-change-transform" 
+  style="transform: translate(-50%, -50%); opacity: 0;"
+></div>
+
+<script>
+  import gsap from 'gsap';
+
+  function initCursor() {
+    if (typeof window === 'undefined' || window.matchMedia('(pointer: coarse)').matches) return;
+
+    const cursor = document.getElementById('custom-cursor');
+    if (!cursor) return;
+
+    // quickTo is highly optimized for mouse tracking (0 memory leaks)
+    const xTo = gsap.quickTo(cursor, "x", { duration: 0.4, ease: "power3" });
+    const yTo = gsap.quickTo(cursor, "y", { duration: 0.4, ease: "power3" });
+
+    // Show cursor on first move
+    let isVisible = false;
+
+    // Delegación de eventos maestra
+    const onMouseMove = (e: MouseEvent) => {
+      xTo(e.clientX);
+      yTo(e.clientY);
+
+      if (!isVisible) {
+        gsap.to(cursor, { opacity: 1, duration: 0.3 });
+        isVisible = true;
+      }
+
+      // Check if hovering interactive element
+      const target = e.target as HTMLElement;
+      const isInteractive = target.closest('a, button, input, [data-cursor-hover]');
+      
+      if (isInteractive) {
+        gsap.to(cursor, { scale: 3, duration: 0.3, ease: 'power2.out', overwrite: 'auto' });
+      } else {
+        gsap.to(cursor, { scale: 1, duration: 0.3, ease: 'power2.out', overwrite: 'auto' });
+      }
+    };
+
+    // Listeners en window para que sobrevivan a Astro ViewTransitions
+    // o se reinstancian limpiamente
+    window.addEventListener('mousemove', onMouseMove);
+
+    // Cleanup
+    document.addEventListener('astro:before-preparation', () => {
+      window.removeEventListener('mousemove', onMouseMove);
+    }, { once: true });
+  }
+
+  document.addEventListener('astro:page-load', initCursor);
+</script>

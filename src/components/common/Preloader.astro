@@ -1,0 +1,28 @@
+---
+// src/components/common/Preloader.astro
+---
+<div id="cinematic-preloader" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#121214] text-white overflow-hidden pointer-events-none">
+  <div class="relative flex flex-col items-center">
+    <div class="overflow-hidden">
+      <h1 id="preloader-text" class="text-4xl md:text-6xl font-serif tracking-[0.2em] transform translate-y-full opacity-0">USGAR</h1>
+    </div>
+    <div 
+      id="preloader-line"
+      class="mt-4 h-[1px] bg-white opacity-60 rounded-full"
+      style="width: 100px; transform: scaleX(0); transform-origin: left; will-change: transform;"
+    ></div>
+  </div>
+</div>
+
+<script is:inline>
+  // Script bloqueante mínimo (se ejecuta inmediatamente)
+  (function() {
+    // Si ya cargó en esta sesión, ocultamos el preloader instantáneamente para no molestar la navegación SPA
+    if (sessionStorage.getItem('usgar_loaded')) {
+      const preloader = document.getElementById('cinematic-preloader');
+      if (preloader) {
+        preloader.style.display = 'none';
+      }
+    }
+  })();
+</script>
