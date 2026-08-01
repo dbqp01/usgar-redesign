@@ -95,26 +95,29 @@ Cambiar estos archivos puede romper toda la aplicación.
 ```
 1. Usuario busca disponibilidad
    book.astro → bookingService.getAvailableRooms()
-   → GET /api/rooms → GetRoomsAction → QloAppAdapter.getAvailability()
+   → GET /api/rooms → GetRoomsAction → QloAppAdapter.getAvailableRooms()
    → QloApps MySQL (SQL directo)
 
 2. Usuario inicia reserva
-   book.astro → bookingService.createHoldAndPreference()
+   book.astro → bookingService.createHold()
    → POST /api/booking → CreateBookingAction
-   → QloAppAdapter.createTemporaryHold() [bloqueo 15 min]
-   → MercadoPagoAdapter.createPaymentPreference()
+   → QloAppAdapter.createCart() [bloqueo 15 min en QloApps]
    → ProvisionalBookingRepository.create() [persiste en MySQL local]
-   → Redirige a Mercado Pago checkout
+   → Respuesta: cart_id + access_token (HMAC) + mp_public_key
 
-3. Mercado Pago notifica pago exitoso
+3. Usuario paga con tarjeta (Custom Checkout)
+   book.astro → MercadoPago.js cardForm → bookingService.processPayment()
+   → POST /api/process-payment → ProcessPaymentAction
+   → MercadoPagoAdapter.processPayment() [Checkout API]
+
+4. Mercado Pago notifica pago exitoso
    → POST /api/webhook → HandleMercadoPagoWebhookAction
-   → MercadoPagoAdapter.verifyPayment()
-   → QloAppAdapter.confirmBooking()
-   → ChannexAdapter.syncBooking()
-   → ProvisionalBookingRepository.updateStatus('CONFIRMED')
+   → MercadoPagoAdapter.getPaymentDetails() + firma HMAC
+   → EventDispatcher despacha booking.paid
+   → ConfirmQloAppsOrderListener → QloAppAdapter.confirmOrder()
+   → SyncChannexBookingListener → ChannexAdapter.createBooking()
+   → ProvisionalBookingRepository.updateStatus(BookingStatus::Paid)
+   (si el webhook no llega, el cron ReconcilePaymentsAction consulta a MP)
 
-4. Cron limpia carritos expirados
-   → POST /api/cron/cleanup → CleanExpiredCartsAction
-   → ProvisionalBookingRepository.findExpired()
-   → QloAppAdapter.releaseHold()
+5. Cron limpia carritos expirados
 ```

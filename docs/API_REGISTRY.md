@@ -59,6 +59,7 @@ Catálogo completo de endpoints del backend PHP. Todos los endpoints se sirven d
 | Method | Endpoint | Action | Auth |
 |--------|----------|--------|------|
 | POST | `/api/booking` | `CreateBookingAction` |  |
+| POST | `/api/process-payment` | `ProcessPaymentAction` | `access_token` (HMAC `cart_id:email`) |
 | POST | `/api/extend-hold` | `ExtendHoldAction` |  |
 | GET | `/api/booking-status` | `GetBookingStatusAction` |  |
 
@@ -80,9 +81,32 @@ Catálogo completo de endpoints del backend PHP. Todos los endpoints se sirven d
 }
 ```
 
-**Response:** `{ "success": true, "data": { "booking_id": "...", "status": "PENDING_PAYMENT", "expires_at": "...", "init_point": "https://mercadopago.com/..." } }`
+**Response:** `{ "success": true, "cart_id": "...", "access_token": "...", "currency": "USD", "price": 214.5, "exchange_rate": 3.75, "gateway_currency": "PEN", "gateway_price": 804.38, "mp_public_key": "APP_USR-...", "expires_at": "...", "time_left_seconds": 900, "room_summary": { "id_room_type": 1, "slug": "matrimonial", ... } }` (Custom Checkout API — sin preference_id/init_point)
 
-**Env vars:** `MP_ACCESS_TOKEN`, `QLOAPPS_DB_*`, `CHANNEX_*`
+**Env vars:** `MERCADO_PAGO_ACCESS_TOKEN`, `PUBLIC_MERCADO_PAGO_PUBLIC_KEY`, `QLOAPP_API_URL`, `QLOAPP_API_KEY`, `BOOKING_TOKEN_SECRET`, `EXCHANGE_RATE_USD_PEN`
+
+### POST `/api/process-payment`
+
+Procesa el pago con tarjeta vía Checkout API (Custom Checkout). Verifica `access_token` (HMAC `cart_id:email` con `BOOKING_TOKEN_SECRET`) y despacha `BookingPaidEvent` si el pago queda `approved`.
+
+**Request body:**
+```json
+{
+  "cart_id": "...",
+  "access_token": "...",
+  "payment_data": {
+    "token": "card_token_mp",
+    "issuer_id": "...",
+    "payment_method_id": "visa",
+    "installments": 3,
+    "payer": { "email": "john@example.com", "identification": { "type": "DNI", "number": "..." } }
+  }
+}
+```
+
+**Response:** `{ "success": true, "status": "approved", "payment_id": "...", "message": "Pago aprobado exitosamente." }` o `{ "success": false, "status": "rejected|pending", ... }`
+
+**Env vars:** `MERCADO_PAGO_ACCESS_TOKEN`, `EXCHANGE_RATE_USD_PEN`, `BOOKING_TOKEN_SECRET`
 
 ### POST `/api/extend-hold`
 

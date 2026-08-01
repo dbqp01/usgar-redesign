@@ -88,7 +88,7 @@ $resRooms = httpGet("{$baseUrl}/api/rooms?checkIn={$checkIn}&checkOut={$checkOut
 assertTest("1.1 GET /api/rooms retorna HTTP 200", $resRooms['code'] === 200);
 assertTest("1.1 GET /api/rooms contiene habitaciones", !empty($resRooms['body']['rooms']));
 
-// 1.2 Crear Reserva Provisional (Hold 15 min + MercadoPago Preference)
+// 1.2 Crear Reserva Provisional (Hold 15 min + Custom Checkout API)
 $bookingPayload = [
     'id_room_type' => 1,
     'roomSlug' => 'matrimonial',
@@ -109,9 +109,11 @@ $bookingPayload = [
 $resBooking = httpPostJson("{$baseUrl}/api/booking", $bookingPayload);
 assertTest("1.2 POST /api/booking retorna HTTP 200", $resBooking['code'] === 200, "Código: {$resBooking['code']} - Body: " . json_encode($resBooking['body']));
 $cartId = $resBooking['body']['cart_id'] ?? null;
-$prefId = $resBooking['body']['preference_id'] ?? null;
+$accessToken = $resBooking['body']['access_token'] ?? null;
+$mpPublicKey = $resBooking['body']['mp_public_key'] ?? null;
 assertTest("1.2 Cart ID de reserva generado", !empty($cartId), "Cart ID: {$cartId}");
-assertTest("1.2 Preference ID de Mercado Pago generado", !empty($prefId), "Pref ID: {$prefId}");
+assertTest("1.2 Access token de reserva generado (Custom Checkout)", !empty($accessToken), "Token: {$accessToken}");
+assertTest("1.2 Public key de Mercado Pago generada", !empty($mpPublicKey), "PK: {$mpPublicKey}");
 
 // 1.3 Verificar Estado Inicial (pending / PENDING_PAYMENT)
 if ($cartId) {
