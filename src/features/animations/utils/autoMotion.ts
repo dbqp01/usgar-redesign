@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 // Shared continuous-motion engine (the "reviews marquee" pattern):
 // - GSAP ticker drives position at a base speed (never pauses on hover)
 // - Scroll velocity injects a decaying boost (dynamic, scroll-driven feel)
+// - Optional pointer drag with inertia (carousels)
 // - IntersectionObserver pauses ONLY when offscreen (perf)
 // - transform-only (GPU), quickSetter, zero layout thrash
 
@@ -15,15 +16,26 @@ export interface AutoMotionOptions {
   velocityThreshold?: number;
   decay?: number;          // boost decay per frame
   seamless?: boolean;      // wrap at half scrollWidth (marquee loop)
+  draggable?: boolean;     // pointer drag with inertia (carousel)
+  dragFactor?: number;     // px moved per pointer px
+  clickThreshold?: number; // px of drag before a click is cancelled
 }
 
-const DEFAULTS: Required<Omit<AutoMotionOptions, 'seamless'>> & { seamless: boolean } = {
+const DEFAULTS: Required<Omit<AutoMotionOptions, 'seamless' | 'draggable' | 'dragFactor' | 'clickThreshold'>> & {
+  seamless: boolean;
+  draggable: boolean;
+  dragFactor: number;
+  clickThreshold: number;
+} = {
   baseSpeed: 1,
   direction: 1,
   velocityFactor: 0.0025,
   velocityThreshold: 50,
   decay: 0.92,
   seamless: true,
+  draggable: false,
+  dragFactor: 0.6,
+  clickThreshold: 8,
 };
 
 export function createAutoMotion(
@@ -72,6 +84,53 @@ export function createAutoMotion(
     gsap.ticker.remove(decayBoost);
     tickerRunning = false;
   };
+
+  // --- Optional pointer drag (mouse + touch) ---
+  let dragging = false;
+  let lastX = 0;
+  let pointerVelocity = 0;
+  let totalDrag = 0;
+
+  if (opts.draggable) {
+    const onDown = (e: PointerEvent) => {
+      dragging = true;
+      lastX = e.clientX;
+      pointerVelocity = 0;
+      totalDrag = 0;
+      stop();
+      container.setPointerCapture?.(e.pointerId);
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!dragging) return;
+      const dx = e.clientX - lastX;
+      lastX = e.clientX;
+      totalDrag += Math.abs(dx);
+      pointerVelocity = dx;
+      currentX += dx * opts.dragFactor;
+      setX(currentX);
+    };
+    const onUp = () => {
+      if (!dragging) return;
+      dragging = false;
+      boost = Math.abs(pointerVelocity) > 2 ? pointerVelocity * opts.dragFactor * 0.06 : 0;
+      start();
+    };
+    container.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    // Click cancellation after a real drag (nested <a> keep working)
+    container.addEventListener(
+      'click',
+      (e) => {
+        if (totalDrag > opts.clickThreshold) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          totalDrag = 0;
+        }
+      },
+      true
+    );
+  }
 
   start();
 
