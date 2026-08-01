@@ -12,6 +12,7 @@ import GastronomySection from "../components/GastronomySection.astro";
 import TypographicMarquee from "../components/TypographicMarquee.astro";
 import Hero from "../components/Hero.astro";
 import ExploreCarousel from "../components/ExploreCarousel.astro";
+import InstagramSection from "../components/InstagramSection.astro";
 import { rooms } from "../data/rooms";
 import { useTranslations } from "../i18n/utils";
 import faqData from "../content/faq/faq.json";
@@ -151,6 +152,8 @@ const schemas = [hotelSchema, faqSchema];
        EXPLORE CUSCO PREVIEW (Cinematic Showcase)
        ========================================== -->
   <ExploreCarousel lang={lang} />
+
+  <InstagramSection lang={lang} />
 
   <!-- ==========================================
        FAQ SECTION

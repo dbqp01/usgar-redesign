@@ -365,5 +365,18 @@
     "marquee2": "Cusco",
     "marquee3": "Machu Picchu",
     "marquee4": "Valle Sagrado"
+  },
+  "instagram": {
+    "sectionLabel": "Instagram",
+    "title": "Vive USGAR en Instagram",
+    "description": "Arte mural, mananas en el patio colonial y platos de Auka Restobar — sigue el dia a dia del hotel.",
+    "followCta": "Siguenos en Instagram",
+    "handle": "@hotelesusgar",
+    "altPatio": "Patio inca colonial de USGAR Hotels",
+    "altFacade": "Fachada colonial de USGAR Hotels",
+    "altBreakfast": "Desayuno buffet andino en USGAR",
+    "altRoom": "Habitacion con mural pintado a mano en USGAR",
+    "altCusco": "Vista de la ciudad de Cusco",
+    "altReception": "Recepcion de USGAR Hotels"
   }
 }
