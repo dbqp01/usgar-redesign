@@ -1,0 +1,270 @@
+﻿---
+// src/components/booking/PaymentStep.astro
+// Paso 3 del wizard: el flujo de pago MercadoPago EXISTENTE, intacto
+// (createHold -> cardForm -> processPayment). Solo maquetado editorial.
+// El backend de pagos NO se toca (no-go del spec).
+import { useTranslations, type Locale } from '../../i18n/utils';
+
+const lang = (Astro.currentLocale || 'en') as Locale;
+const t = useTranslations(lang);
+---
+
+<div data-payment-step class="space-y-6">
+  <div class="bg-surface-card-light dark:bg-surface-card-dark p-6 md:p-8 rounded-3xl border border-black/5 dark:border-white/5 shadow-sm space-y-6">
+    <h2 class="font-display text-2xl flex items-center gap-3 border-b border-black/5 dark:border-white/5 pb-3">
+      <span class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">3</span>
+      {t('book.paymentDetails') || 'Payment Details'}
+    </h2>
+
+    <div data-payment-note class="hidden p-4 rounded-xl border border-primary/20 bg-primary/5 text-primary text-sm"></div>
+
+    <form id="mp-payment-form" class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+          Card Number *
+        </label>
+        <div id="form-checkout__cardNumber" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm h-[46px] shadow-sm"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+            Expiration *
+          </label>
+          <div id="form-checkout__expirationDate" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm h-[46px] shadow-sm"></div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+            CVV *
+          </label>
+          <div id="form-checkout__securityCode" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm h-[46px] shadow-sm"></div>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+          Cardholder Name *
+        </label>
+        <input type="text" id="form-checkout__cardholderName" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none placeholder:text-stone-400" placeholder="John Doe" />
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+            Document Type *
+          </label>
+          <select id="form-checkout__identificationType" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none appearance-none"></select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+            Document Number *
+          </label>
+          <input type="text" id="form-checkout__identificationNumber" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none placeholder:text-stone-400" placeholder="12345678" />
+        </div>
+      </div>
+
+      <select id="form-checkout__issuer" class="hidden"></select>
+      <select id="form-checkout__installments" class="hidden"></select>
+      <input type="email" id="form-checkout__cardholderEmail" class="hidden" />
+
+      <button type="submit" id="btn-final-pay" class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-xl transition-[transform,background-color,box-shadow] duration-300 hover:shadow-lg hover:shadow-primary/25 lg:hover:-translate-y-0.5 text-lg cursor-pointer flex items-center justify-center gap-3 mt-6">
+        <span id="btn-final-text">Pay Now</span>
+        <svg id="btn-final-spinner" class="hidden animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </button>
+    </form>
+  </div>
+
+  <div class="flex items-center justify-between">
+    <button
+      type="button"
+      data-payment-back
+      class="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold uppercase tracking-wider border border-black/10 dark:border-white/10 text-text-secondary-light dark:text-text-secondary-dark hover:border-primary/40 transition-colors cursor-pointer"
+    >
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m6 6-6-6 6-6" />
+      </svg>
+      {t('wizard.back')}
+    </button>
+  </div>
+</div>
+
+<script>
+  import { wizardStore } from '../../features/booking/wizardStore';
+  import { bookingService } from '../../services/bookingService';
+  import type { Locale } from '@/i18n/utils';
+
+  let abortController = new AbortController();
+  let started = false;
+
+  function initPaymentStep() {
+    abortController.abort();
+    abortController = new AbortController();
+
+    const root = document.querySelector('[data-payment-step]') as HTMLElement | null;
+    if (!root) return;
+
+    const start = () => {
+      if (started) return;
+      const state = wizardStore.getState();
+      if (state.step !== 3) return;
+      started = true;
+      void runPaymentFlow(root, state);
+    };
+
+    const unsub = wizardStore.subscribe(() => start());
+    abortController.signal.addEventListener('abort', () => unsub());
+    start();
+  }
+
+  async function runPaymentFlow(root: HTMLElement, state: any) {
+    const allocation = state.allocation;
+    const errorBanner = document.getElementById('error-banner');
+    const errorMessage = document.getElementById('error-message');
+    const noteEl = root.querySelector('[data-payment-note]') as HTMLElement | null;
+    if (!allocation || allocation.rooms.length !== 1) return;
+
+    const room = allocation.rooms[0].room;
+    const lang = (document.documentElement.lang || 'en') as Locale;
+    const LABELS = (window as any).__LABELS || {};
+
+    function showError(msg: string) {
+      if (errorBanner && errorMessage) {
+        errorMessage.textContent = msg;
+        errorBanner.classList.remove('hidden');
+        errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    const guestNameInput = document.getElementById('guest-name') as HTMLInputElement | null;
+    const guestEmailInput = document.getElementById('guest-email') as HTMLInputElement | null;
+    const guestPhoneInput = document.getElementById('guest-phone') as HTMLInputElement | null;
+    const airportTransferCheckbox = document.getElementById('airport-transfer') as HTMLInputElement | null;
+    const flightTimeInput = document.getElementById('flight-time') as HTMLInputElement | null;
+
+    if (!guestNameInput?.value || !guestEmailInput?.value || !guestPhoneInput?.value) {
+      wizardStore.back();
+      return;
+    }
+
+    try {
+        const result = await bookingService.createHold({
+          roomSlug: room.slug,
+          checkIn: state.checkIn,
+          checkOut: state.checkOut,
+          guests: state.guests,
+          guestDetails: {
+            firstName: guestNameInput.value.split(' ')[0] || guestNameInput.value,
+            lastName: guestNameInput.value.split(' ').slice(1).join(' ') || guestNameInput.value,
+            email: guestEmailInput.value,
+            phone: guestPhoneInput.value,
+            specialRequests: airportTransferCheckbox?.checked ? `Airport transfer requested at ${flightTimeInput?.value || ''}` : '',
+          },
+        });
+
+        if (!result.success) {
+          showError(result.error.message);
+          return;
+        }
+
+        const data = result.data;
+        const mpPublicKey = data.mp_public_key;
+        const cartId = data.cart_id;
+        const accessToken = data.access_token;
+        const totalAmount = data.gateway_price || data.price || allocation.total;
+
+        if (!mpPublicKey || !cartId || !accessToken) {
+          showError(LABELS.noPaymentUrl || 'Missing required payment data from backend');
+          return;
+        }
+
+        if (typeof (window as any).MercadoPago === 'undefined') {
+          showError(LABELS.unexpectedError || 'Payment gateway could not load');
+          return;
+        }
+
+        const mp = new (window as any).MercadoPago(mpPublicKey, { locale: lang === 'es' ? 'es-PE' : 'en-US' });
+
+        const btnFinalPay = document.getElementById('btn-final-pay') as HTMLButtonElement | null;
+        const btnFinalSpinner = document.getElementById('btn-final-spinner');
+        const btnFinalText = document.getElementById('btn-final-text');
+
+        const cardForm = mp.cardForm({
+          amount: totalAmount.toString(),
+          iframe: true,
+          form: {
+            id: "mp-payment-form",
+            cardNumber: { id: "form-checkout__cardNumber", placeholder: "0000 0000 0000 0000" },
+            expirationDate: { id: "form-checkout__expirationDate", placeholder: "MM/YY" },
+            securityCode: { id: "form-checkout__securityCode", placeholder: "CVV" },
+            cardholderName: { id: "form-checkout__cardholderName" },
+            issuer: { id: "form-checkout__issuer" },
+            installments: { id: "form-checkout__installments" },
+            identificationType: { id: "form-checkout__identificationType" },
+            identificationNumber: { id: "form-checkout__identificationNumber" },
+            cardholderEmail: { id: "form-checkout__cardholderEmail" }
+          },
+          callbacks: {
+            onFormMounted: (error: any) => {
+              if (error) return console.warn("Form mounted error:", error);
+              const emailEl = document.getElementById('form-checkout__cardholderEmail') as HTMLInputElement | null;
+              if (emailEl && guestEmailInput) emailEl.value = guestEmailInput.value;
+            },
+            onSubmit: async (event: any) => {
+              event.preventDefault();
+              if (btnFinalPay) btnFinalPay.disabled = true;
+              if (btnFinalSpinner) btnFinalSpinner.classList.remove('hidden');
+              if (btnFinalText) btnFinalText.textContent = LABELS.processing || 'Processing...';
+              errorBanner?.classList.add('hidden');
+
+              try {
+                const formData = cardForm.getCardFormData();
+
+                const processRes = await bookingService.processPayment(cartId!, accessToken!, {
+                  token: formData.token,
+                  issuer_id: formData.issuerId,
+                  payment_method_id: formData.paymentMethodId,
+                  installments: Number(formData.installments),
+                  payer: {
+                    email: guestEmailInput?.value || '',
+                    identification: {
+                      type: formData.identificationType,
+                      number: formData.identificationNumber,
+                    }
+                  }
+                });
+
+                if (!processRes.success) {
+                  showError(processRes.error?.message || 'Payment failed');
+                  if (btnFinalPay) btnFinalPay.disabled = false;
+                  if (btnFinalSpinner) btnFinalSpinner.classList.add('hidden');
+                  if (btnFinalText) btnFinalText.textContent = 'Pay Now';
+                  return;
+                }
+
+                let successUrl = `/book/success?booking=${cartId}`;
+                if (lang !== 'en') successUrl = `/${lang}${successUrl}`;
+                window.location.href = successUrl;
+              } catch (err: any) {
+                console.error(err);
+                showError(err.message || 'Payment processing failed');
+                if (btnFinalPay) btnFinalPay.disabled = false;
+                if (btnFinalSpinner) btnFinalSpinner.classList.add('hidden');
+                if (btnFinalText) btnFinalText.textContent = 'Pay Now';
+              }
+            }
+          }
+        });
+      } catch (err: any) {
+        console.error(err);
+        showError(err.message || LABELS.unexpectedError);
+      }
+  }
+
+  document.addEventListener('astro:page-load', initPaymentStep);
+  document.addEventListener('astro:before-preparation', () => {
+    abortController.abort();
+  });
+</script>

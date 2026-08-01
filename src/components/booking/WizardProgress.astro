@@ -1,0 +1,36 @@
+---
+// src/components/booking/WizardProgress.astro
+// Indicador de 3 pasos del wizard. Los estados activo/completado los
+// actualiza el script del shell (data-wizard-progress) via el store.
+import { useTranslations, type Locale } from '../../i18n/utils';
+
+const lang = (Astro.currentLocale || 'en') as Locale;
+const t = useTranslations(lang);
+
+const stepLabels = [t('wizard.step1Label'), t('wizard.step2Label'), t('wizard.step3Label')];
+---
+
+<nav aria-label="Booking progress" class="mb-10" data-wizard-progress>
+  <ol class="flex items-center justify-center gap-2 sm:gap-4">
+    {stepLabels.map((label, i) => {
+      const n = i + 1;
+      return (
+        <li class="flex items-center gap-2 sm:gap-4" data-wizard-step-marker={n}>
+          <span
+            class="w-8 h-8 rounded-full border border-stone-300 dark:border-stone-700 text-text-secondary-light dark:text-text-secondary-dark flex items-center justify-center text-xs font-mono font-semibold transition-colors duration-300"
+            data-wizard-step-dot
+          >
+            {String(n).padStart(2, '0')}
+          </span>
+          <span class="text-[10px] font-mono uppercase tracking-[0.18em] text-text-secondary-light dark:text-text-secondary-dark hidden sm:block">
+            {label}
+          </span>
+          {n < 3 && <span class="h-px w-6 sm:w-12 bg-stone-300 dark:bg-stone-700" data-wizard-step-line={n}></span>}
+        </li>
+      );
+    })}
+  </ol>
+  <p class="mt-3 text-center text-xs font-mono text-text-secondary-light dark:text-text-secondary-dark" data-wizard-stepof>
+    {t('wizard.stepOf').replace('{n}', '1')}
+  </p>
+</nav>

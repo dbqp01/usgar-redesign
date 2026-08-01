@@ -1,4 +1,4 @@
-{
+﻿{
   "nav": {
     "home": "Home",
     "rooms": "Rooms",
@@ -416,6 +416,6 @@
     "back": "Back",
     "summary": "Your stay",
     "total": "Total",
-    "extras": "Extra guest"
+    "extras": "Extra guest", "multiRoomNote": "Multi-room combinations are shown for comparison. Select a single room to pay online."
   }
 }

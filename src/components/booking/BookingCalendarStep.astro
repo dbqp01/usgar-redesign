@@ -1,0 +1,340 @@
+﻿---
+// src/components/booking/BookingCalendarStep.astro
+// Paso 1 del wizard: calendario custom (dual-month desktop / single mobile),
+// rango por clic, disponibilidad via API con degradacion, y disparo del
+// algoritmo roomAllocator hacia el store.
+import { useTranslations, type Locale } from '../../i18n/utils';
+
+const lang = (Astro.currentLocale || 'en') as Locale;
+const t = useTranslations(lang);
+
+const weekDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
+---
+
+<div
+  data-booking-calendar
+  class="bg-surface-card-light dark:bg-surface-card-dark p-6 md:p-8 rounded-3xl border border-black/5 dark:border-white/5 shadow-sm space-y-6"
+>
+  <h2 class="font-display text-2xl flex items-center gap-3 border-b border-black/5 dark:border-white/5 pb-3">
+    <span class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">1</span>
+    {t('wizard.calendarTitle')}
+  </h2>
+
+  <div class="flex flex-col gap-8 lg:flex-row lg:gap-10">
+    <div class="flex-1 space-y-3" data-calendar-month="0"></div>
+    <div class="flex-1 space-y-3 hidden lg:block" data-calendar-month="1"></div>
+  </div>
+
+  <div class="flex flex-col sm:flex-row sm:items-end gap-4 border-t border-black/5 dark:border-white/5 pt-6">
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 flex-1">
+      <div>
+        <label for="checkin" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+          {t('wizard.checkIn')}
+        </label>
+        <input
+          type="date"
+          id="checkin"
+          name="checkin"
+          class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-[border-color,box-shadow] cursor-pointer"
+        />
+      </div>
+      <div>
+        <label for="checkout" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+          {t('wizard.checkOut')}
+        </label>
+        <input
+          type="date"
+          id="checkout"
+          name="checkout"
+          class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-[border-color,box-shadow] cursor-pointer"
+        />
+      </div>
+      <div>
+        <label for="guests" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+          {t('wizard.guestsLabel')}
+        </label>
+        <select
+          id="guests"
+          name="guests"
+          class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-[border-color,box-shadow] appearance-none cursor-pointer"
+        >
+          {guestOptions.map((g) => (
+            <option value={g} class="bg-white dark:bg-surface-card-dark">{g}</option>
+          ))}
+        </select>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      data-calendar-continue
+      disabled
+      class="w-full sm:w-auto inline-flex items-center justify-center gap-3 rounded-xl px-8 py-3.5 text-sm font-semibold uppercase tracking-wider btn-primary disabled:opacity-40 disabled:pointer-events-none"
+    >
+      <span>{t('wizard.continue')}</span>
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" />
+      </svg>
+    </button>
+  </div>
+
+  <div data-calendar-banner class="hidden p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 text-amber-700 dark:text-amber-300 text-sm"></div>
+  <div data-calendar-checking class="hidden p-4 rounded-xl border border-primary/20 bg-primary/5 text-primary text-sm flex items-center gap-2">
+    <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+    <span>{t('wizard.availabilityChecking')}</span>
+  </div>
+</div>
+
+<script>
+  import { gsap } from 'gsap';
+  import { buildMonthGrid, nightsBetween, clampRange, formatISODate } from '../../features/booking/calendar';
+  import { allocateRooms } from '../../features/booking/roomAllocator';
+  import { wizardStore } from '../../features/booking/wizardStore';
+  import { bookingService } from '../../services/bookingService';
+  import { animateCalendarDays } from '../../features/animations/modules/bookingCalendar';
+
+  let abortController = new AbortController();
+  let cleanupAnim: (() => void) | null = null;
+
+  interface SerializedRoom {
+    slug: string;
+    name: Record<string, string>;
+    pricePerNight: number;
+    beds: string;
+    baseOccupancy: number;
+    extraGuestCharge: number;
+    maxGuests: number;
+  }
+
+  function isPast(date: string): boolean {
+    return date < formatISODate(new Date());
+  }
+
+  function renderMonth(container: HTMLElement, year: number, month: number, opts: {
+    lang: string;
+    weekDays: string[];
+    checkIn: string;
+    checkOut: string;
+    onPick: (date: string) => void;
+  }) {
+    const cells = buildMonthGrid(year, month);
+    const monthName = new Date(year, month, 1).toLocaleDateString(opts.lang === 'es' ? 'es' : opts.lang === 'fr' ? 'fr' : opts.lang === 'pt' ? 'pt' : 'en', { month: 'long', year: 'numeric' });
+    const inRange = (d: string) => opts.checkIn && opts.checkOut && d > opts.checkIn && d < opts.checkOut;
+
+    container.innerHTML = `
+      <div class="flex items-center justify-between">
+        <span class="font-display text-lg capitalize">${monthName}</span>
+      </div>
+      <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-mono uppercase tracking-widest text-text-secondary-light dark:text-text-secondary-dark">
+        ${opts.weekDays.map((d) => `<span class="py-1">${d}</span>`).join('')}
+      </div>
+      <div class="grid grid-cols-7 gap-1" role="grid" aria-label="${monthName}">
+        ${cells.map((cell) => {
+          if (!cell.inMonth) return '<span></span>';
+          const past = cell.past;
+          const isStart = cell.date === opts.checkIn;
+          const isEnd = cell.date === opts.checkOut;
+          const range = inRange(cell.date);
+          const stateClass = past
+            ? 'opacity-25 pointer-events-none'
+            : isStart || isEnd
+              ? 'bg-primary text-white font-bold'
+              : range
+                ? 'bg-primary/15 text-primary'
+                : 'hover:bg-primary/10 hover:text-primary';
+          const dayNum = Number(cell.date.slice(-2));
+          const disabledAttr = past ? 'tabindex="-1" aria-disabled="true"' : '';
+          return `<button type="button" role="gridcell" data-calendar-day data-date="${cell.date}" data-past="${past}" ${disabledAttr} class="aspect-square rounded-lg text-sm flex items-center justify-center transition-colors duration-200 cursor-pointer select-none ${stateClass}">${dayNum}</button>`;
+        }).join('')}
+      </div>
+    `;
+
+    container.querySelectorAll<HTMLButtonElement>('[data-calendar-day]').forEach((btn) => {
+      btn.addEventListener('click', () => opts.onPick(btn.dataset.date || ''), { signal: abortController.signal });
+    });
+  }
+
+  function initCalendar() {
+    abortController.abort();
+    abortController = new AbortController();
+
+    const root = document.querySelector('[data-booking-calendar]') as HTMLElement | null;
+    if (!root) return;
+
+    const month0 = root.querySelector('[data-calendar-month="0"]') as HTMLElement | null;
+    const month1 = root.querySelector('[data-calendar-month="1"]') as HTMLElement | null;
+    const checkinInput = root.querySelector('#checkin') as HTMLInputElement | null;
+    const checkoutInput = root.querySelector('#checkout') as HTMLInputElement | null;
+    const guestsSelect = root.querySelector('#guests') as HTMLSelectElement | null;
+    const continueBtn = root.querySelector('[data-calendar-continue]') as HTMLButtonElement | null;
+    const banner = root.querySelector('[data-calendar-banner]') as HTMLElement | null;
+    const checking = root.querySelector('[data-calendar-checking]') as HTMLElement | null;
+    if (!month0 || !month1 || !checkinInput || !checkoutInput || !guestsSelect || !continueBtn || !banner || !checking) return;
+    const month0El = month0!;
+    const month1El = month1!;
+    const checkin = checkinInput!;
+    const checkout = checkoutInput!;
+    const guestsSel = guestsSelect!;
+    const continueBt = continueBtn!;
+    const bannerEl = banner!;
+    const checkingEl = checking!;
+
+    const lang = (document.documentElement.lang || 'en') as string;
+    const ROOMS = (window as any).__ROOMS_DATA as SerializedRoom[] || [];
+    const INVENTORY = (window as any).__ROOM_INVENTORY as Record<string, number> || {};
+    const L = (window as any).__LABELS || {};
+
+    const today = new Date();
+    const params = new URLSearchParams(window.location.search);
+
+    let checkIn = params.get('checkin') || params.get('checkIn') || '';
+    let checkOut = params.get('checkout') || params.get('checkOut') || '';
+    const guests = Number(params.get('guests')) || 2;
+    if (guestsSelect) guestsSel.value = String(guests);
+
+    const seedDates = () => {
+      if (!checkIn) {
+        const t = new Date(); t.setDate(t.getDate() + 1);
+        checkIn = formatISODate(t);
+      }
+      if (!checkOut) {
+        const t = new Date(checkIn + 'T00:00:00'); t.setDate(t.getDate() + 2);
+        checkOut = formatISODate(t);
+      }
+      const r = clampRange(checkIn, checkOut);
+      checkIn = r.checkIn;
+      checkOut = r.checkOut;
+      checkin.value = checkIn;
+      checkout.value = checkOut;
+    };
+    seedDates();
+
+    let viewYear = new Date(checkIn + 'T00:00:00').getFullYear();
+    let viewMonth = new Date(checkIn + 'T00:00:00').getMonth();
+    if (new Date().getMonth() === viewMonth && new Date().getFullYear() === viewYear) {
+      viewMonth = new Date().getMonth();
+    }
+
+    const render = () => {
+      renderMonth(month0, viewYear, viewMonth, { lang, weekDays: ['Su','Mo','Tu','We','Th','Fr','Sa'], checkIn, checkOut, onPick });
+      const next = new Date(viewYear, viewMonth + 1, 1);
+      renderMonth(month1, next.getFullYear(), next.getMonth(), { lang, weekDays: ['Su','Mo','Tu','We','Th','Fr','Sa'], checkIn, checkOut, onPick });
+      cleanupAnim?.();
+      cleanupAnim = animateCalendarDays(month0);
+    };
+
+    let picked: string | null = checkIn;
+
+    function onPick(date: string) {
+      if (isPast(date)) return;
+      if (!picked || (checkIn && checkOut)) {
+        picked = date;
+        checkIn = date;
+        checkOut = '';
+        checkin.value = date;
+        checkout.value = '';
+      } else {
+        checkOut = date;
+        const r = clampRange(checkIn, checkOut);
+        checkIn = r.checkIn;
+        checkOut = r.checkOut;
+        checkin.value = checkIn;
+        checkout.value = checkOut;
+        picked = null;
+        void computeAllocation();
+      }
+      render();
+    }
+
+    checkin.addEventListener('change', () => {
+      checkIn = checkin.value;
+      render();
+    }, { signal: abortController.signal });
+    checkout.addEventListener('change', () => {
+      checkOut = checkout.value;
+      if (checkIn && checkOut) {
+        const r = clampRange(checkIn, checkOut);
+        checkIn = r.checkIn;
+        checkOut = r.checkOut;
+        checkin.value = checkIn;
+        checkout.value = checkOut;
+        void computeAllocation();
+      }
+      render();
+    }, { signal: abortController.signal });
+    guestsSel.addEventListener('change', () => {
+      if (checkIn && checkOut) void computeAllocation();
+    }, { signal: abortController.signal });
+
+    async function computeAllocation() {
+      if (!checkIn || !checkOut) return;
+      const nights = nightsBetween(checkIn, checkOut);
+      if (nights < 1) return;
+
+      continueBt.disabled = true;
+      checkingEl.classList.remove('hidden');
+      bannerEl.classList.add('hidden');
+
+      wizardStore.setState({ checkIn, checkOut, guests: Number(guestsSel.value), selecting: true, error: null });
+
+      const allocatable = ROOMS.map((r) => ({
+        slug: r.slug,
+        displayName: r.name[lang] || r.slug,
+        baseOccupancy: r.baseOccupancy,
+        maxCapacity: r.maxGuests,
+        extraGuestCharge: r.extraGuestCharge,
+        pricePerNight: r.pricePerNight,
+        inventory: INVENTORY[r.slug] ?? 0,
+      }));
+
+      const res = await bookingService.getAvailableRooms(checkIn, checkOut);
+      const availability: Record<string, number> | null = res.success
+        ? Object.fromEntries((res.data ?? []).map((r: any) => [r.slug ?? r.room_slug, Number(r.available_qty ?? r.available ?? 0)]))
+        : null;
+
+      const allocation = allocateRooms({ guests: Number(guestsSel.value), nights, rooms: allocatable, availability });
+      const total = allocation.length > 0 ? allocation[0].total : 0;
+
+      wizardStore.setState({
+        selecting: false,
+        error: res.success ? null : (L.availabilityDegraded || ''),
+        allocation: allocation.length > 0 ? allocation[0] : null,
+        options: allocation.length > 0 ? allocation : null,
+      });
+
+      if (!res.success) {
+        bannerEl.textContent = L.availabilityDegraded || '';
+        bannerEl.classList.remove('hidden');
+      } else if (allocation.length === 0) {
+        bannerEl.textContent = L.rangeUnavailable || '';
+        bannerEl.classList.remove('hidden');
+      }
+
+      checkingEl.classList.add('hidden');
+      if (allocation.length > 0) {
+        continueBt.disabled = false;
+        continueBt.setAttribute('data-ready', 'true');
+        continueBt.dataset.total = String(total);
+      }
+    }
+
+    continueBt.addEventListener('click', () => {
+      if (continueBt.disabled) return;
+      wizardStore.next();
+    }, { signal: abortController.signal });
+
+    render();
+    if (checkIn && checkOut) void computeAllocation();
+  }
+
+  document.addEventListener('astro:page-load', initCalendar);
+  document.addEventListener('astro:before-preparation', () => {
+    abortController.abort();
+    cleanupAnim?.();
+    cleanupAnim = null;
+  });
+</script>

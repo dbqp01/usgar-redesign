@@ -420,6 +420,6 @@
     "back": "Atras",
     "summary": "Tu estancia",
     "total": "Total",
-    "extras": "Huesped extra"
+    "extras": "Huesped extra", "multiRoomNote": "Las combinaciones de varias habitaciones se muestran para comparar. Elige una habitacion para pagar online."
   }
 }

@@ -420,6 +420,6 @@
     "back": "Voltar",
     "summary": "Sua estadia",
     "total": "Total",
-    "extras": "Hospede extra"
+    "extras": "Hospede extra", "multiRoomNote": "Combinacoes de varios quartos sao exibidas para comparacao. Selecione um quarto para pagar online."
   }
 }

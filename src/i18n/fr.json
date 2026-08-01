@@ -420,6 +420,6 @@
     "back": "Retour",
     "summary": "Votre sejour",
     "total": "Total",
-    "extras": "Voyageur supplementaire"
+    "extras": "Voyageur supplementaire", "multiRoomNote": "Les combinaisons multi-chambres sont affichees a titre de comparaison. Selectionnez une chambre pour payer en ligne."
   }
 }

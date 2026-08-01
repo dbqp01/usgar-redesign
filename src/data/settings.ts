@@ -33,7 +33,7 @@ export interface SiteSettings {
 export const DEFAULT_ROOM_INVENTORY: Record<string, number> = {
   'doble-superior': 8,
   matrimonial: 6,
-  'triple-superior': 4,
+  'triple-standar': 4,
   'familiar-superior': 2,
 };
 

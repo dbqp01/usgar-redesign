@@ -1,0 +1,214 @@
+﻿---
+// src/components/booking/AllocationStep.astro
+// Paso 2 del wizard: opciones del algoritmo roomAllocator (top 4),
+// badge "Mejor precio", desglose de precios, preseleccion por ?roomType
+// con toggle "Ver alternativas". Solo opciones de UNA habitacion son
+// seleccionables para pago online (contrato del backend, ver DECISIONS).
+import { useTranslations, type Locale } from '../../i18n/utils';
+
+const lang = (Astro.currentLocale || 'en') as Locale;
+const t = useTranslations(lang);
+---
+
+<div
+  data-allocation-step
+  class="bg-surface-card-light dark:bg-surface-card-dark p-6 md:p-8 rounded-3xl border border-black/5 dark:border-white/5 shadow-sm space-y-6"
+>
+  <h2 class="font-display text-2xl flex items-center gap-3 border-b border-black/5 dark:border-white/5 pb-3">
+    <span class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">2</span>
+    {t('book.selectRoom')}
+  </h2>
+
+  <div data-allocation-options class="space-y-3"></div>
+
+  <div data-allocation-empty class="hidden p-4 rounded-xl border border-red-500/20 bg-red-500/5 text-red-600 dark:text-red-400 text-sm">
+    {t('wizard.rangeUnavailable')}
+  </div>
+
+  <div class="flex items-center justify-between border-t border-black/5 dark:border-white/5 pt-6">
+    <button
+      type="button"
+      data-allocation-back
+      class="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold uppercase tracking-wider border border-black/10 dark:border-white/10 text-text-secondary-light dark:text-text-secondary-dark hover:border-primary/40 transition-colors cursor-pointer"
+    >
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m6 6-6-6 6-6" />
+      </svg>
+      {t('wizard.back')}
+    </button>
+    <button
+      type="button"
+      data-allocation-next
+      disabled
+      class="inline-flex items-center gap-3 rounded-xl px-8 py-3 text-sm font-semibold uppercase tracking-wider btn-primary disabled:opacity-40 disabled:pointer-events-none"
+    >
+      <span>{t('wizard.continue')}</span>
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  import { wizardStore } from '../../features/booking/wizardStore';
+  import type { AllocationOption } from '../../features/booking/roomAllocator';
+
+  let abortController = new AbortController();
+
+  function initAllocation() {
+    abortController.abort();
+    abortController = new AbortController();
+    const signal = abortController.signal;
+
+    const root = document.querySelector('[data-allocation-step]') as HTMLElement | null;
+    const optionsEl = root?.querySelector('[data-allocation-options]') as HTMLElement | null;
+    const emptyEl = root?.querySelector('[data-allocation-empty]') as HTMLElement | null;
+    const nextBtn = root?.querySelector('[data-allocation-next]') as HTMLButtonElement | null;
+    const backBtn = root?.querySelector('[data-allocation-back]') as HTMLButtonElement | null;
+    if (!root || !optionsEl || !emptyEl || !nextBtn || !backBtn) return;
+    const optEl = optionsEl!;
+    const empty = emptyEl!;
+    const next = nextBtn!;
+    const back = backBtn!;
+
+    const lang = (document.documentElement.lang || 'en') as string;
+    const L = (window as any).__LABELS || {};
+
+    let selected: AllocationOption | null = null;
+    let showAlternatives = false;
+
+    function formatMoney(n: number): string {
+      return `$${n.toFixed(0)}`;
+    }
+
+    function render() {
+      const options = wizardStore.getState().options;
+      if (!options || options.length === 0) {
+        empty.classList.remove('hidden');
+        optEl.innerHTML = '';
+        next.disabled = true;
+        return;
+      }
+      empty.classList.add('hidden');
+
+      const roomType = wizardStore.getState().roomType;
+      let visible = options;
+      let alternativesAvailable = false;
+      if (roomType) {
+        const direct = options.filter((o) => o.rooms.length === 1 && o.rooms[0].room.slug === roomType);
+        if (direct.length > 0) {
+          alternativesAvailable = options.some((o) => !(o.rooms.length === 1 && o.rooms[0].room.slug === roomType));
+          visible = showAlternatives ? options : direct.slice(0, 1);
+        }
+      }
+      const top = visible.slice(0, 4);
+
+      optEl.innerHTML = top.map((opt, i) => {
+        const multi = opt.rooms.length > 1;
+        const payable = !multi;
+        const isSelected = selected === opt;
+        const roomNames = opt.rooms.map((e) => e.room.displayName).join(' + ');
+        const extrasLine = opt.extrasTotal > 0
+          ? `<span class="text-text-secondary-light dark:text-text-secondary-dark">${L.extras || 'Extra guest'}: +${formatMoney(opt.extrasTotal)}</span>`
+          : '';
+        return `
+          <label
+            data-allocation-option
+            data-option-index="${i}"
+            class="group flex flex-col sm:flex-row sm:items-center gap-4 p-5 rounded-2xl border transition-[border-color,background-color,box-shadow] duration-300 cursor-pointer ${
+              isSelected
+                ? 'border-primary bg-primary/5 shadow-md shadow-primary/5 ring-1 ring-primary'
+                : payable
+                  ? 'border-black/10 dark:border-white/10 bg-surface-light dark:bg-surface-dark hover:border-primary/50'
+                  : 'border-black/5 dark:border-white/5 bg-stone-50 dark:bg-stone-900/40 opacity-80'
+            }"
+          >
+            <span class="flex items-center gap-3 flex-1 min-w-0">
+              <input
+                type="radio"
+                name="allocation"
+                class="w-4 h-4 text-primary focus:ring-primary cursor-pointer"
+                ${isSelected ? 'checked' : ''}
+                ${payable ? '' : 'disabled aria-disabled="true"'}
+              />
+              <span class="min-w-0">
+                <span class="flex flex-wrap items-center gap-2">
+                  <span class="font-display text-lg text-text-primary-light dark:text-white">${roomNames}</span>
+                  ${opt.bestPrice ? `<span class="text-[10px] font-mono font-bold uppercase tracking-wider text-secondary bg-secondary/10 border border-secondary/30 rounded-full px-2 py-0.5">${L.bestPrice || 'Best price'}</span>` : ''}
+                  ${multi ? `<span class="text-[10px] font-mono uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark">${(L.roomsCount || '{n} rooms').replace('{n}', String(opt.rooms.length))}</span>` : ''}
+                </span>
+                <span class="block text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1">
+                  ${opt.nights} ${L.nights || 'nights'} - ${formatMoney(opt.roomTotal)} ${extrasLine ? ' · ' + extrasLine : ''}
+                </span>
+                ${multi ? `<span class="block text-[11px] text-amber-600 dark:text-amber-400 mt-1.5">${L.multiRoomNote || ''}</span>` : ''}
+              </span>
+            </span>
+            <span class="text-right flex-shrink-0">
+              <span class="block font-display text-2xl text-primary">${formatMoney(opt.total)}</span>
+              <span class="block text-[10px] font-mono uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark">${L.perNight || '/night'}</span>
+            </span>
+          </label>
+        `;
+      }).join('');
+
+      if (alternativesAvailable) {
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'mt-3 text-xs font-semibold uppercase tracking-wider text-primary hover:text-primary-dark underline underline-offset-4 cursor-pointer';
+        toggle.textContent = showAlternatives ? L.onlyThisRoom || '' : L.alternatives || '';
+        toggle.addEventListener('click', () => {
+          showAlternatives = !showAlternatives;
+          render();
+        }, { signal });
+        optEl.appendChild(toggle);
+      }
+
+      optEl.querySelectorAll<HTMLLabelElement>('[data-allocation-option]').forEach((label) => {
+        label.addEventListener('click', () => {
+          const idx = Number(label.dataset.optionIndex);
+          const opt = top[idx];
+          if (!opt || opt.rooms.length > 1) return;
+          selected = opt;
+          wizardStore.setState({ allocation: opt });
+          next.disabled = false;
+          render();
+        }, { signal });
+      });
+    }
+
+    back.addEventListener('click', () => wizardStore.back(), { signal });
+    next.addEventListener('click', () => {
+      if (next.disabled || !selected) return;
+      wizardStore.next();
+    }, { signal });
+
+    // Preseleccionar la mejor opcion pagable (o la del ?roomType)
+    function preselect() {
+      const options = wizardStore.getState().options;
+      if (!options || options.length === 0 || selected) return;
+      const roomType = wizardStore.getState().roomType;
+      const pre = roomType
+        ? options.find((o) => o.rooms.length === 1 && o.rooms[0].room.slug === roomType)
+        : options.find((o) => o.rooms.length === 1);
+      if (pre) {
+        selected = pre;
+        wizardStore.setState({ allocation: pre });
+        next.disabled = false;
+      }
+    }
+
+    preselect();
+    render();
+    const unsub = wizardStore.subscribe(() => {
+      preselect();
+      render();
+    });
+    signal.addEventListener('abort', () => unsub());
+  }
+
+  document.addEventListener('astro:page-load', initAllocation);
+  document.addEventListener('astro:before-preparation', () => {
+    abortController.abort();
+  });
+</script>

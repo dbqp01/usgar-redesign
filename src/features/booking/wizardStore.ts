@@ -14,6 +14,7 @@ export interface WizardState {
   guests: number;
   roomType: string | null;
   allocation: AllocationOption | null;
+  options: AllocationOption[] | null;
   selecting: boolean;
   error: string | null;
 }
@@ -33,6 +34,7 @@ const DEFAULT_STATE: WizardState = {
   guests: 2,
   roomType: null,
   allocation: null,
+  options: null,
   selecting: false,
   error: null,
 };
@@ -69,3 +71,6 @@ export function createWizardStore(initial?: Partial<WizardState>): WizardStore {
     },
   };
 }
+
+// Singleton compartido por los componentes del wizard de /book.
+export const wizardStore = createWizardStore();
