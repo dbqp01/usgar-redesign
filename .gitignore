@@ -5,7 +5,9 @@ dist/
 localhost_*.json
 original-assets/
 /data/
-graphify-out/cost.json
+graphify-out/
 graphify-out/.*
+graphify-out/cost.json
 graphify-out/transcripts/
 logs/
+*.map
