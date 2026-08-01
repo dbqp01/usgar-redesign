@@ -82,7 +82,7 @@ if ($otherErrors === 0 && ($successes + $rejectedFull) === $concurrencyCount) {
 // --------------------------------------------------------
 echo PHP_EOL . "---  PRUEBA 2: IDEMPOTENCIA EN BURSTS DE WEBHOOKS PARALELOS ---" . PHP_EOL;
 
-$secretKey = 'a8c54ec3d18c670bbfd25b10dc36758133080cb186d90d5818e25d6109c21b84';
+$secretKey = getenv('MP_WEBHOOK_SECRET') ?: 'test-secret-for-stress-tests';
 $testPaymentId = 'MOCK-STRESS-PAYMENT-' . time();
 $ts = (string)time();
 $requestId = 'req-stress-' . time();
