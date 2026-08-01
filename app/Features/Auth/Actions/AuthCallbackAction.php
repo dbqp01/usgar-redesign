@@ -83,8 +83,9 @@ class AuthCallbackAction {
 
         } catch (Throwable $e) {
             Logger::error("OAuth callback failed: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine());
-            $detail = $e->getMessage();
-            header('Location: /login?error=' . urlencode("Error en autenticación (" . $detail . ")"));
+            // No exponer el detalle interno (mensajes, rutas, hosts) al cliente:
+            // queda en el log del servidor, la URL solo lleva un mensaje generico.
+            header('Location: /login?error=' . urlencode('Error en autenticación. Intenta de nuevo.'));
             exit(0);
         }
     }
