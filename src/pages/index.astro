@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import BookingWidget from "../components/BookingWidget.astro";
 import ServiceGrid from "../components/ServiceGrid.astro";
 import FAQSection from "../components/FAQSection.astro";
-import MapSection from "../components/MapSection.astro";
+import CuscoMap from "../components/CuscoMap.astro";
 import ReviewMarquee from "../components/ReviewMarquee.astro";
 import AboutSection from "../components/AboutSection.astro";
 import HeritageSection from "../components/HeritageSection.astro";
@@ -163,7 +163,7 @@ const schemas = [hotelSchema, faqSchema];
   <!-- ==========================================
        MAP SECTION
        ========================================== -->
-  <MapSection />
+  <CuscoMap />
 
   <TypographicMarquee items={[t('global.marquee1'), t('global.marquee2'), t('global.marquee3'), t('global.marquee4')]} reverse />
 </Layout>

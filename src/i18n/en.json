@@ -94,7 +94,13 @@
     "sectionLabel": "Location",
     "title": "Find Us in Cusco",
     "description": "Located in the heart of San Pedro, steps from the historic market and a short walk to Plaza de Armas.",
-    "loading": "Interactive map loading..."
+    "hotelLabel": "USGAR HOTELS",
+    "here": "you are here",
+    "marketLabel": "San Pedro Market",
+    "plazaLabel": "Plaza de Armas",
+    "walkTime": "Walk",
+    "addressPrefix": "759 Calle Hospital",
+    "addressHotel": "San Pedro, Cusco"
   },
   "faq": {
     "sectionLabel": "FAQ",

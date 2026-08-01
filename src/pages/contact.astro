@@ -1,6 +1,6 @@
----
+﻿---
 import Layout from "../layouts/Layout.astro";
-import MapSection from "../components/MapSection.astro";
+import CuscoMap from "../components/CuscoMap.astro";
 import { useTranslations, type Locale } from "../i18n/utils";
 import { siteSettings } from "../data/settings";
 
@@ -10,7 +10,7 @@ const t = useTranslations(lang);
 const contactSchema = {
   "@context": "https://schema.org",
   "@type": "ContactPage",
-  name: `${t("contact.title")} — USGAR Hotels`,
+  name: `${t("contact.title")} â€” USGAR Hotels`,
   description: t("contact.subtitle"),
   url: `https://hotelesusgar.com/${lang !== "en" ? lang + "/" : ""}contact`,
   mainEntity: {
@@ -31,7 +31,7 @@ const contactSchema = {
 ---
 
 <Layout
-  title={`${t("contact.title")} — USGAR Hotels`}
+  title={`${t("contact.title")} â€” USGAR Hotels`}
   lang={lang}
   schema={contactSchema}
 >
@@ -657,7 +657,7 @@ const contactSchema = {
   </section>
 
   <!-- Leaflet Map Section -->
-  <MapSection />
+  <CuscoMap />
 </Layout>
 
 <script>
