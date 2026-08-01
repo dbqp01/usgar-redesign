@@ -1,13 +1,15 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import RoomCard from "../../components/RoomCard.astro";
+import { Picture } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import SectionHeader from "../../components/ui/SectionHeader.astro";
 import { rooms } from "../../data/rooms";
 import { useTranslations, type Locale } from "../../i18n/utils";
 
 const lang = (Astro.currentLocale || "en") as Locale;
 const t = useTranslations(lang);
 
-// Unique capacities for filters
 const capacities = ["all", "2", "3", "4", "7"];
 
 const filterLabels: Record<string, { en: string; es: string; fr: string; pt: string }> = {
@@ -15,39 +17,40 @@ const filterLabels: Record<string, { en: string; es: string; fr: string; pt: str
   "2": { en: "2 Guests", es: "2 Huespedes", fr: "2 Voyageurs", pt: "2 Hospedes" },
   "3": { en: "3 Guests", es: "3 Huespedes", fr: "3 Voyageurs", pt: "3 Hospedes" },
   "4": { en: "4 Guests", es: "4 Huespedes", fr: "4 Voyageurs", pt: "4 Hospedes" },
-  "7": { en: "7 Guests", es: "7 Huespedes", fr: "7 Voyageurs", pt: "7 Hospedes" }
+  "7": { en: "7 Guests", es: "7 Huespedes", fr: "7 Voyageurs", pt: "7 Hospedes" },
 };
+
+const imgGlob = import.meta.glob<{ default: ImageMetadata }>("../../assets/rooms/**/*.jpg", { eager: true });
+
+function firstImage(photoFolder: string): ImageMetadata | undefined {
+  const keys = Object.keys(imgGlob)
+    .filter((key) => key.includes(`/rooms/${photoFolder}/`))
+    .sort();
+  return keys.length ? imgGlob[keys[0]].default : undefined;
+}
+
+const galleryRooms = rooms.map((room) => ({
+  room,
+  image: firstImage(room.photoFolder),
+}));
 ---
 
-
 <Layout title={`${t("rooms.title")} - USGAR Hotels`} lang={lang}>
-  <!-- Header Banner -->
-  <section
-    class="relative pt-32 pb-16 px-4 bg-gradient-to-b from-primary/10 via-transparent to-transparent overflow-hidden"
-  >
-    <div class="max-w-4xl mx-auto text-center relative z-10">
-      <span class="text-sm font-semibold text-primary dark:text-purple-pastel uppercase tracking-widest"
-        >{t("rooms.sectionLabel")}</span
-      >
-      <h1
-        class="font-display text-4xl md:text-6xl mt-2 mb-6 leading-tight text-text-primary-light dark:text-text-primary-dark"
-      >
-        {t("rooms.title")}
-      </h1>
-      <p
-        class="text-lg md:text-xl text-text-secondary-light dark:text-text-secondary-dark max-w-2xl mx-auto font-body font-light leading-relaxed"
-      >
-        {t("rooms.description")}
-      </p>
+  <!-- Editorial Header -->
+  <section class="relative overflow-hidden bg-surface-light px-4 pb-8 pt-32 transition-colors duration-500 dark:bg-surface-dark sm:pt-36">
+    <div class="mx-auto max-w-[1400px]">
+      <SectionHeader
+        number="03"
+        eyebrow={t("rooms.sectionLabel")}
+        title={t("rooms.title")}
+        subtitle={t("rooms.description")}
+      />
     </div>
   </section>
 
-  <!-- Filter & Rooms Grid -->
-  <section class="pb-24 px-4 max-w-7xl mx-auto">
-    <!-- Filter Buttons -->
-    <div
-      class="mb-12 flex flex-wrap justify-center gap-2.5 max-w-2xl mx-auto px-4"
-    >
+  <!-- Filter & Editorial Grid -->
+  <section class="pb-24 px-4 max-w-[1400px] mx-auto">
+    <div class="mb-12 flex flex-wrap justify-center gap-2.5 max-w-2xl mx-auto px-4">
       {
         capacities.map((cap) => (
           <button
@@ -60,15 +63,63 @@ const filterLabels: Record<string, { en: string; es: string; fr: string; pt: str
       }
     </div>
 
-    <!-- Rooms Grid (Flexbox Centered) -->
-    <div
-      class="flex flex-wrap justify-center gap-6 md:gap-8"
-      id="rooms-grid"
-    >
+    <div class="grid grid-cols-1 gap-5 sm:gap-7 md:grid-cols-2" id="rooms-grid" data-rooms-gallery>
       {
-        rooms.map((room, i) => (
-          <div data-guests={room.maxGuests} class="transition-[opacity,transform,width] duration-500 w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-22px)] max-w-sm flex">
-            <RoomCard room={room} index={i} animate={false} />
+        galleryRooms.map(({ room, image }, index) => (
+          <div data-guests={room.maxGuests} class="transition-[opacity,transform] duration-500">
+            <div class="group relative isolate block min-h-[390px] overflow-hidden rounded-[1.75rem] border border-black/10 bg-surface-card-dark shadow-xl sm:min-h-[500px]">
+              {image && (
+                <Picture
+                  src={image}
+                  alt={room.name[lang]}
+                  formats={["avif", "webp"]}
+                  fallbackFormat="jpg"
+                  quality="high"
+                  widths={[480, 720, 960, 1200]}
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  pictureAttributes={{ class: "absolute inset-0 block h-full w-full" }}
+                  class="h-full w-full object-cover transition-transform duration-1000 ease-out will-change-transform motion-safe:group-hover:scale-[1.045]"
+                />
+              )}
+
+              <div class="absolute inset-0 -z-0 bg-gradient-to-t from-black/95 via-black/15 to-black/5"></div>
+              <div class="absolute inset-x-0 top-0 flex items-center justify-between p-5 text-[10px] font-mono uppercase tracking-[0.22em] text-white/80 sm:p-7">
+                <span class="text-secondary">{String(index + 1).padStart(2, "0")} / {String(galleryRooms.length).padStart(2, "0")}</span>
+                <span>{room.maxGuests} {t("room.guests")}</span>
+              </div>
+
+              <div class="absolute inset-x-0 bottom-0 z-10 p-5 sm:p-7">
+                <div class="mb-4 h-px w-12 bg-secondary transition-all duration-700 group-hover:w-24"></div>
+                <h3 class="max-w-[18ch] font-display text-3xl leading-[0.95] text-white transition-colors duration-500 group-hover:text-secondary sm:text-5xl">
+                  {room.name[lang]}
+                </h3>
+                <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10px] font-mono uppercase tracking-[0.18em] text-white/75">
+                  <span>{t("rooms.from")} ${room.pricePerNight} {t("rooms.perNight")}</span>
+                  <span>{room.amenityLabels[room.amenities[0]]?.[lang] || room.beds}</span>
+                </div>
+                <a
+                  href={getRelativeLocaleUrl(lang, `book?roomType=${room.slug}`)}
+                  data-astro-prefetch="tap"
+                  class="mt-6 inline-flex items-center gap-3 rounded-xl px-6 py-3 text-xs font-semibold uppercase tracking-wider btn-primary"
+                >
+                  <span>{t("book.title")}</span>
+                  <svg class="h-3.5 w-3.5 transition-transform duration-500 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" />
+                  </svg>
+                </a>
+              </div>
+
+              <a
+                href={getRelativeLocaleUrl(lang, `rooms/${room.slug}`)}
+                data-astro-prefetch="tap"
+                data-room-card
+                data-room-index={String(index + 1).padStart(2, "0")}
+                class="absolute inset-0 z-0"
+                aria-label={room.name[lang]}
+              ></a>
+            </div>
           </div>
         ))
       }
@@ -95,6 +146,17 @@ const filterLabels: Record<string, { en: string; es: string; fr: string; pt: str
 </Layout>
 
 <script>
+  import { initRoomsGallery } from "../../features/animations/modules/roomsGallery";
+
+  let cleanup: (() => void) | null = null;
+
+  function initAnimation() {
+    const root = document.querySelector("[data-rooms-gallery]") as HTMLElement | null;
+    if (!root) return;
+    cleanup?.();
+    cleanup = initRoomsGallery(root);
+  }
+
   function initRoomsFilter() {
     const filterButtons = document.querySelectorAll("[data-capacity-filter]");
     const grid = document.getElementById("rooms-grid");
@@ -105,7 +167,6 @@ const filterLabels: Record<string, { en: string; es: string; fr: string; pt: str
     const cards = Array.from(grid.children) as HTMLElement[];
     let activeFilter = "all";
 
-    // Set 'all' filter as active initially
     filterButtons.forEach((btn) => {
       const cap = btn.getAttribute("data-capacity-filter");
       if (cap === "all") {
@@ -146,7 +207,6 @@ const filterLabels: Record<string, { en: string; es: string; fr: string; pt: str
         }
       });
 
-      // Show/hide empty state
       if (visibleCount === 0) {
         emptyState!.classList.remove("hidden");
         grid!.classList.add("hidden");
@@ -171,11 +231,7 @@ const filterLabels: Record<string, { en: string; es: string; fr: string; pt: str
               "dark:text-stone-400",
             );
           } else {
-            b.classList.remove(
-              "border-primary",
-              "text-primary",
-              "bg-primary/5",
-            );
+            b.classList.remove("border-primary", "text-primary", "bg-primary/5");
             b.classList.add(
               "border-stone-200",
               "dark:border-stone-800",
@@ -190,5 +246,14 @@ const filterLabels: Record<string, { en: string; es: string; fr: string; pt: str
     });
   }
 
-  document.addEventListener("astro:page-load", initRoomsFilter);
+  function init() {
+    initAnimation();
+    initRoomsFilter();
+  }
+
+  document.addEventListener("astro:page-load", init);
+  document.addEventListener("astro:before-preparation", () => {
+    cleanup?.();
+    cleanup = null;
+  });
 </script>
