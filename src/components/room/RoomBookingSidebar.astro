@@ -1,0 +1,63 @@
+---
+// src/components/room/RoomBookingSidebar.astro
+// Sticky booking panel: price, specs quickbox, CTA -> /book?roomType=slug.
+import type { Room } from "../../data/rooms";
+import { useTranslations, type Locale } from "../../i18n/utils";
+import { translateBeds } from "../../utils/helpers";
+import { siteSettings } from "../../data/settings";
+import { getRelativeLocaleUrl } from "astro:i18n";
+
+interface Props {
+  room: Room;
+  lang: Locale;
+}
+
+const { room, lang } = Astro.props;
+const t = useTranslations(lang);
+const translatedBeds = translateBeds(room.beds, lang);
+---
+
+<div
+  class="lg:col-span-1 lg:sticky lg:top-24 bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-2xl border border-black/5 dark:border-white/5 shadow-lg space-y-6 animate-on-scroll"
+  style="transition-delay: 0.1s;"
+>
+  <div>
+    <span class="text-xs font-semibold uppercase tracking-wider text-text-secondary-dark">{t('room.baseRate')}</span>
+    <div class="flex items-baseline gap-1 mt-1">
+      <span class="text-5xl font-bold font-display text-primary">${room.pricePerNight}</span>
+      <span class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">{t("rooms.perNight")}</span>
+    </div>
+  </div>
+
+  <!-- Room Specs Quickbox -->
+  <div class="border-t border-b border-black/5 dark:border-white/5 py-4 space-y-3">
+    <div class="flex justify-between text-sm">
+      <span class="text-text-secondary-light dark:text-text-secondary-dark">{t('room.maxCapacity')}</span>
+      <span class="font-semibold">{room.maxGuests} {t('room.persons')}</span>
+    </div>
+    <div class="flex justify-between text-sm">
+      <span class="text-text-secondary-light dark:text-text-secondary-dark">{t('room.bedConfig')}</span>
+      <span class="font-semibold">{translatedBeds}</span>
+    </div>
+    <div class="flex justify-between text-sm">
+      <span class="text-text-secondary-light dark:text-text-secondary-dark">Check-in</span>
+      <span class="font-semibold">{siteSettings.checkinTime}</span>
+    </div>
+    <div class="flex justify-between text-sm">
+      <span class="text-text-secondary-light dark:text-text-secondary-dark">Check-out</span>
+      <span class="font-semibold">{siteSettings.checkoutTime}</span>
+    </div>
+  </div>
+
+  <!-- Booking Call to Action -->
+  <a
+    href={`${getRelativeLocaleUrl(lang, 'book')}?roomType=${room.slug}`}
+    class="block w-full text-center bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-xl transition-[transform,background-color,box-shadow] duration-300 lg:hover:shadow-lg lg:hover:shadow-primary/25 lg:hover:-translate-y-0.5 text-lg cursor-pointer"
+  >
+    {t('room.bookThisRoom')}
+  </a>
+
+  <p class="text-[11px] text-center text-text-secondary-light dark:text-text-secondary-dark leading-normal px-2">
+    {t('room.bestRateGuarantee')}
+  </p>
+</div>

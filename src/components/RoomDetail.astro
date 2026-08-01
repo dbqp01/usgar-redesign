@@ -1,10 +1,12 @@
 ---
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
+import RoomGallery from "./room/RoomGallery.astro";
+import RoomAmenities from "./room/RoomAmenities.astro";
+import RoomBookingSidebar from "./room/RoomBookingSidebar.astro";
 import type { Room } from "../data/rooms";
 import { useTranslations } from "../i18n/utils";
 import { translateBeds } from "../utils/helpers";
-import SVGIcons from "./icons/SVGIcons.astro";
 import { siteSettings } from "../data/settings";
 import { getRelativeLocaleUrl } from "astro:i18n";
 
@@ -52,25 +54,6 @@ const images = roomImages.map((img) => img.default);
 
 // Translate bedding info using shared utility
 const translatedBeds = translateBeds(room.beds, lang);
-
-// Build amenities map from room.amenityLabels
-const amenityIconNames: Record<string, "wifi" | "breakfast" | "hot-water" | "heating" | "tv" | "laundry"> = {
-  wifi: "wifi",
-  breakfast: "breakfast",
-  hot_water: "hot-water",
-  heating: "heating",
-  tv: "tv",
-  laundry: "laundry",
-};
-
-const amenitiesMap: Record<string, { label: Record<string, string>; iconName: "wifi" | "breakfast" | "hot-water" | "heating" | "tv" | "laundry" }> = {};
-for (const [key, labelObj] of Object.entries(room.amenityLabels || {})) {
-  amenitiesMap[key === 'hot_water' ? 'hot-water' : key] = {
-    label: labelObj as unknown as Record<string, string>,
-
-    iconName: amenityIconNames[key] || "wifi",
-  };
-}
 
 const roomSchema = {
   "@context": "https://schema.org",
@@ -184,85 +167,8 @@ const roomSchema = {
       </div>
     </div>
 
-    <!-- Interactive Room Slider / Gallery (Hero-style large view with thumbnails below) -->
-    <div
-      id="room-gallery-slider"
-      class="relative w-full mb-12 animate-on-scroll"
-      data-images={JSON.stringify(images.map(img => img.src))}
-    >
-      <!-- Large Active Image Display -->
-      <div class="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-lg border border-black/5 dark:border-white/5 group">
-        <div class="w-full h-full relative">
-          <!-- Active image element -->
-          <Image
-            id="active-gallery-image"
-            src={images[0]}
-            alt={room.name[lang]}
-            width={1200}
-            height={600}
-            format="avif"
-            quality={80}
-            loading="eager"
-            fetchpriority="high"
-            class="w-full h-full object-cover transition-opacity duration-300"
-          />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
-
-          <!-- Click to Zoom / Expand Indicator -->
-          <button
-            id="gallery-zoom-trigger"
-            class="absolute bottom-6 right-6 bg-black/45 hover:bg-primary/95 text-white backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10 flex items-center gap-2 lg:hover:scale-105 transition-[transform,background-color] duration-300 shadow-md text-sm cursor-pointer"
-            aria-label={t('room.expandPhoto')}
-          >
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
-            </svg>
-            <span>{t('room.zoom')}</span>
-          </button>
-
-          <!-- Navigation Arrows over main image -->
-          <button
-            id="slider-prev-arrow"
-            class="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/35 hover:bg-primary/90 text-white backdrop-blur-sm flex items-center justify-center border border-white/10 opacity-0 group-hover:opacity-100 transition-[opacity,transform,background-color] cursor-pointer lg:hover:scale-105"
-            aria-label="Previous image"
-          >
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <button
-            id="slider-next-arrow"
-            class="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/35 hover:bg-primary/90 text-white backdrop-blur-sm flex items-center justify-center border border-white/10 opacity-0 group-hover:opacity-100 transition-[opacity,transform,background-color] cursor-pointer lg:hover:scale-105"
-            aria-label="Next image"
-          >
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Thumbnails Row Below -->
-      <div class="mt-4 flex flex-wrap gap-2 md:gap-3 justify-center">
-        {images.map((img, idx) => (
-          <button
-            class={`gallery-thumb-selector-btn relative aspect-[4/3] w-20 sm:w-28 md:w-32 rounded-xl overflow-hidden border-2 cursor-pointer transition-[transform,border-color,opacity] duration-300 lg:hover:scale-105 shadow-sm ${idx === 0 ? 'border-primary' : 'border-transparent opacity-60 hover:opacity-100'}`}
-            data-thumb-index={idx}
-            aria-label={`View photo ${idx + 1}`}
-          >
-            <Image
-              src={img}
-              alt={`${room.name[lang]} thumb - ${idx + 1}`}
-              width={200}
-              height={150}
-              format="webp"
-              quality={60}
-              class="w-full h-full object-cover"
-            />
-          </button>
-        ))}
-      </div>
-    </div>
+    <!-- Interactive Room Gallery (slider + lightbox) -->
+    <RoomGallery images={images} room={room} lang={lang} />
 
     <!-- Room Main Layout Details -->
     <div
@@ -283,104 +189,11 @@ const roomSchema = {
         <hr class="border-black/5 dark:border-white/5" />
 
         <!-- Amenities -->
-        <div>
-          <h2 class="font-display text-2xl md:text-3xl mb-6">
-            {t('room.amenities')}
-          </h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {
-              room.amenities.map((amenityKey) => {
-                const amenity = amenitiesMap[amenityKey];
-                if (!amenity) return null;
-                return (
-                  <div class="flex items-start gap-4 p-4 rounded-xl bg-surface-card-light dark:bg-surface-card-dark border border-black/5 dark:border-white/5 shadow-sm">
-                    <div class="p-2.5 rounded-lg bg-[#2DB5A0]/10 dark:bg-[#2DB5A0]/15 flex items-center justify-center">
-                      <SVGIcons
-                        name={amenity.iconName}
-                        class="w-5 h-5 text-tertiary"
-                      />
-                    </div>
-                    <div>
-                      <h3 class="font-medium text-sm text-text-primary-light dark:text-text-primary-dark">
-                        {amenity.label[lang] || amenity.label.en || amenity.label.es}
-                      </h3>
-
-                      <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
-                        {t('room.includedFree')}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })
-            }
-          </div>
-        </div>
+        <RoomAmenities room={room} lang={lang} />
       </div>
 
-      <!-- Right: Sticky Booking Panel (1 column wide) -->
-      <div
-        class="lg:col-span-1 lg:sticky lg:top-24 bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-2xl border border-black/5 dark:border-white/5 shadow-lg space-y-6 animate-on-scroll"
-        style="transition-delay: 0.1s;"
-      >
-        <div>
-          <span
-            class="text-xs font-semibold uppercase tracking-wider text-text-secondary-dark"
-            >{t('room.baseRate')}</span
-          >
-          <div class="flex items-baseline gap-1 mt-1">
-            <span class="text-5xl font-bold font-display text-primary"
-              >${room.pricePerNight}</span
-            >
-            <span class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark"
-              >{t("rooms.perNight")}</span
-            >
-          </div>
-        </div>
-
-        <!-- Room Specs Quickbox -->
-        <div
-          class="border-t border-b border-black/5 dark:border-white/5 py-4 space-y-3"
-        >
-          <div class="flex justify-between text-sm">
-            <span class="text-text-secondary-light dark:text-text-secondary-dark"
-              >{t('room.maxCapacity')}</span
-            >
-            <span class="font-semibold"
-              >{room.maxGuests} {t('room.persons')}</span
-            >
-          </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-text-secondary-light dark:text-text-secondary-dark"
-              >{t('room.bedConfig')}</span
-            >
-            <span class="font-semibold">{translatedBeds}</span>
-          </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-text-secondary-light dark:text-text-secondary-dark">Check-in</span>
-            <span class="font-semibold">{siteSettings.checkinTime}</span>
-          </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-text-secondary-light dark:text-text-secondary-dark">Check-out</span>
-            <span class="font-semibold">{siteSettings.checkoutTime}</span>
-          </div>
-        </div>
-
-        <!-- Booking Call to Action (CTA) -->
-        <a
-          href={`${getRelativeLocaleUrl(lang, 'book')}?roomType=${room.slug}`}
-          class="block w-full text-center bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-xl transition-[transform,background-color,box-shadow] duration-300 lg:hover:shadow-lg lg:hover:shadow-primary/25 lg:hover:-translate-y-0.5 text-lg cursor-pointer"
-        >
-          {t('room.bookThisRoom')}
-        </a>
-
-        <p
-          class="text-[11px] text-center text-text-secondary-light dark:text-text-secondary-dark leading-normal px-2"
-        >
-          {
-            t('room.bestRateGuarantee')
-          }
-        </p>
-      </div>
+      <!-- Right: Sticky Booking Panel -->
+      <RoomBookingSidebar room={room} lang={lang} />
     </div>
 
     <!-- Interactive Room Video Tour Section -->
@@ -432,7 +245,6 @@ const roomSchema = {
                 width={1200}
                 height={800}
                 format="avif"
-                quality={70}
                 loading="lazy"
                 class="w-full h-full object-cover opacity-60"
               />
@@ -540,109 +352,6 @@ const roomSchema = {
       </section>
     )}
   </main>
-
-  <!-- Premium Fullscreen Lightbox Element -->
-  <div
-    id="gallery-lightbox"
-    class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex-col items-center justify-center select-none"
-    role="dialog"
-    aria-modal="true"
-    aria-label={t('room.photoGallery')}
-  >
-    <!-- Top toolbar -->
-    <div
-      class="absolute top-0 inset-x-0 p-5 flex items-center justify-between z-50 bg-gradient-to-b from-black/60 to-transparent"
-    >
-      <!-- Index Counter -->
-      <span
-        id="lightbox-counter"
-        class="text-white/80 text-sm font-semibold tracking-wider font-body"
-        >1 / 1</span
-      >
-
-      <!-- Close Button -->
-      <button
-        id="lightbox-close-btn"
-        class="w-11 h-11 rounded-full bg-white/5 hover:bg-white/15 text-white hover:text-secondary flex items-center justify-center transition-[background-color,color] duration-300 cursor-pointer border border-white/5 focus:outline-none"
-        aria-label="Close gallery"
-      >
-        <svg
-          class="w-6 h-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Slides Container -->
-    <div
-      class="relative w-full max-w-6xl max-h-[85vh] flex items-center justify-center px-6 md:px-24"
-    >
-      {
-        images.map((img, idx) => (
-          <div
-            class="lightbox-slide hidden w-full h-full flex items-center justify-center"
-            data-slide-index={idx}
-          >
-            <Image
-              src={img}
-              alt={`${room.name[lang]} - Lightbox Photo ${idx + 1}`}
-              width={1600}
-              height={1066}
-              format="avif"
-              quality={75}
-              loading="lazy"
-              class="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl transition-opacity duration-300"
-            />
-          </div>
-        ))
-      }
-    </div>
-
-    <!-- Navigation Arrows -->
-    <!-- Prev Arrow -->
-    <button
-      id="lightbox-prev-btn"
-      class="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/5 hover:bg-white/15 text-white hover:text-secondary flex items-center justify-center transition-[background-color,color] duration-300 cursor-pointer border border-white/5 focus:outline-none"
-      aria-label="Previous slide"
-    >
-      <svg
-        class="w-6 h-6 md:w-8 md:h-8"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"
-        ></path>
-      </svg>
-    </button>
-
-    <!-- Next Arrow -->
-    <button
-      id="lightbox-next-btn"
-      class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/5 hover:bg-white/15 text-white hover:text-secondary flex items-center justify-center transition-[background-color,color] duration-300 cursor-pointer border border-white/5 focus:outline-none"
-      aria-label="Next slide"
-    >
-      <svg
-        class="w-6 h-6 md:w-8 md:h-8"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-          >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"
-        ></path>
-      </svg>
-    </button>
-  </div>
 </Layout>
 
 <script>
