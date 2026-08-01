@@ -6,31 +6,35 @@ Estado global: **TODO** (nada completado).
 
 ---
 
-## 1. Pagos: MercadoPago → Stripe (DECIDIDO)
+## 1. Pagos: MercadoPago → Payoneer Checkout (DECIDIDO)
 
-**Decisión (jul 2026): Stripe con LLC en EEUU (Stripe Atlas).** TAB descartado: sin API pública + costo similar o mayor.
+**Decisión (jul 2026): Payoneer Checkout — sin entidad legal, menor comisión de las opciones plug-and-play desde Perú, y liquidación USD directa.** Stripe+LLC (Stripe Atlas, ~$900 año 1) descartado por ahora: no se conoce el volumen del hotel y el break-even de la LLC (~$700/año ÷ $5.64 de ahorro por reserva ≈ 125 reservas/año) no se justifica sin ese dato. TAB sin API pública.
 
-### Por qué Stripe (para el enfoque internacional del hotel)
-- **2.9% + $0.30** flat en línea (+1% tarjetas internacionales), **USD directo** (el repo ya cobra USD → cero conversión).
-- Acepta todas las marcas: Visa, MC, Amex, Diners, Discover, JCB, UnionPay.
-- API de referencia: SDK PHP oficial, Stripe.js, webhooks firmados — patrón 1:1 con la arquitectura actual (Ports/Adapters).
+### Por qué Payoneer Checkout
+- **Tarjeta: hasta 3.99% + $0.49** (mínimo $1 en pagos <$100) — la menor de las opciones sin entidad desde Perú (PayPal ≈ 4.4-6% efectivo; MercadoPago 4-5% + conversión).
+- **Liquidación en USD/EUR sin comisión de conversión** (1.5% solo otras divisas), T+2. El repo ya cobra USD → cero conversión.
+- Acepta Visa, Mastercard, **Amex** + métodos locales, 120+ divisas. Sin setup fees ni mensualidad ("pay as you go").
+- API REST oficial (Checkout API) + webhooks de pago; opciones **hosted payment page** (redirección, más simple) o **embedded payment page** (formulario embebido, patrón similar al actual).
+- Retiros a banco en Perú vía cuenta Payoneer normal (Payoneer opera en Perú).
 
-### Requisitos previos (fuera del repo)
-- [ ] Constituir LLC en EEUU vía **Stripe Atlas** (~$500 inicial + EIN) y revisar implicaciones fiscales con contador.
-- [ ] Crear cuenta Stripe y activar el modo de pago por tarjeta.
-- [ ] Obtener credenciales: `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET` (firmar en el dashboard: `whsec_...`).
+### ⚠️ Bloqueante 1 (fuera del repo) — confirmar elegibilidad ANTES de tocar código
+- [ ] Solicitar **Payoneer Checkout** desde la cuenta Payoneer peruana (la solicitud es **gratis**; el FAQ oficial indica que arrancó solo para entidades de APAC/Hong Kong y se extiende gradualmente — confirmar que aceptan Perú y el vertical hotel/travel, que pasa revisión de riesgo "subject to full risk assessment").
+- [ ] Si Payoneer Checkout rechaza/indispone Perú → **fallback**: PayPal Perú (funciona desde Perú, USD, REST API + webhooks; más caro ~4.4%+intl y con riesgo de holds) o mantener MercadoPago. Decidir al momento de la respuesta, no antes.
+- [ ] Obtener credenciales de sandbox y luego producción (API key / merchant id).
 
 ### Tareas técnicas (en el repo)
-- [ ] `composer require stripe/stripe-php` (última estable; API moderna: `StripeClient` + servicios, no el estilo legacy de `Stripe::setApiKey`).
-- [ ] `.env`: agregar las 3 credenciales de Stripe (nunca literales en código).
-- [ ] Crear `StripeAdapter` en `app/Features/Shared/Adapters/` implementando `PaymentGatewayPortInterface` (sustituir `MercadoPagoAdapter`). Inicializar `new StripeClient(['api_key' => ..., 'stripe_version' => ...])` con valores de `.env`.
-- [ ] Refactor `CreateBookingAction`: crear `PaymentIntent` con `amount` (en **centavos** de USD), `currency => 'usd'`, `automatic_payment_methods => ['enabled' => true, 'allowed' => ['card']]`, `metadata` con el id de reserva provisional; devolver `client_secret` (sustituir `cart_id`/`access_token`/`mp_public_key`/`gateway_price`).
-- [ ] Frontend (`src/pages/book.astro`): **Stripe.js + Payment Element** — `stripe.confirmPayment({ clientSecret, ... })`; reemplazar el SDK de MercadoPago.
-- [ ] Webhooks: adaptar `HandleMercadoPagoWebhookAction` → `Webhook::constructEvent($payload, $header['stripe-signature'], $secret)` (HMAC-SHA256, tolerancia 300s). Eventos: `payment_intent.succeeded`, `payment_intent.payment_failed`, `payment_intent.canceled`.
-- [ ] Confirmar orden: al `payment_intent.succeeded` → `ConfirmQloAppsOrderListener` (ya existe; solo cambia el disparador) + sync con Channex.
-- [ ] Tests locales de webhook: **Stripe CLI** (`stripe listen --forward-to localhost:8000/api/webhooks/stripe`) — no depender de URLs públicas.
-- [ ] Pruebas: tarjetas de test de Stripe (`4242 4242 4242 4242` = éxito; `4000 0000 0000 0002` = declinada; `4000 0025 0000 3155` = requires auth/3DS), flujo completo de reserva, reembolso (`paymentIntents->refund` o API de reembolsos).
+- [ ] `.env`: credenciales de Payoneer Checkout (API key, ids de store) — nunca literales en código.
+- [ ] Crear `PayoneerAdapter` en `app/Features/Shared/Adapters/` implementando `PaymentGatewayPortInterface` (sustituir `MercadoPagoAdapter`). Verificar docs oficiales de la Checkout API (hosted vs embedded) durante la implementación.
+- [ ] Refactor `CreateBookingAction`: crear el checkout/pago en Payoneer (monto USD en **centavos**, `metadata` con id de reserva provisional); devolver `payment_url` (hosted) o los datos del embedded form (sustituir `cart_id`/`access_token`/`mp_public_key`/`gateway_price`).
+- [ ] Frontend (`src/pages/book.astro`): redirigir a la hosted payment page o embeker el formulario de pago; reemplazar el SDK de MercadoPago.
+- [ ] Webhooks: adaptar `HandleMercadoPagoWebhookAction` → webhook de Payoneer Checkout (verificar esquema de firma/secret en docs oficiales al implementar). Eventos: pago exitoso / fallido / reembolso.
+- [ ] Confirmar orden: al pago exitoso → `ConfirmQloAppsOrderListener` (ya existe; solo cambia el disparador) + sync con Channex.
+- [ ] Tests locales de webhook: exponer endpoint en local (ngrok/tunnel) o usar entorno de test de Payoneer.
+- [ ] Pruebas: tarjetas de test de Payoneer sandbox (éxito, declinada, 3DS si aplica), flujo completo de reserva, reembolso.
 - [ ] Limpiar: quitar `mercadopago/dx-php` de `composer.json`, borrar `MercadoPagoAdapter` y vistas/flujo viejos de MP.
+
+### Nota a mediano plazo (no bloqueante)
+Stripe sigue siendo el mejor a largo plazo si el volumen sube (~10+ reservas online/mes lo justifican) o si se necesita cobertura Diners/Discover/JCB/UnionPay. No requiere acción ahora; reevaluar cuando haya datos de volumen.
 
 ## 2. Channel Manager: Channex → Nobeds
 
@@ -72,4 +76,4 @@ Estado global: **TODO** (nada completado).
 - Marcar `[x]` solo cuando esté hecho y verificado (tests pasando).
 - No mezclar migraciones en un mismo commit: una migración = una serie de commits `feat(migration-<nombre>):`.
 - Al terminar cada bloque: actualizar README y borrar esta sección completada.
-- Cualquier dependencia nueva (Laravel, Filament, SDK TAB, Nobeds) documentar versión exacta.
+- Cualquier dependencia nueva (Laravel, Filament, SDK Payoneer, Nobeds) documentar versión exacta.
