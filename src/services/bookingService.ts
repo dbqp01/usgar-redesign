@@ -1,4 +1,4 @@
-﻿import type { IHttpClient } from './contracts/IHttpClient';
+import type { IHttpClient } from './contracts/IHttpClient';
 import { defaultHttpClient } from './httpClient';
 import type {
   IBookingService,

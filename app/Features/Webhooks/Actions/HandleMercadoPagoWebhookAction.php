@@ -170,7 +170,7 @@ class HandleMercadoPagoWebhookAction {
 
             // 5.5 VALIDACION DE SEGURIDAD ESTRICTA (Amount Mismatch)
             // Usar bccomp para evitar falsos positivos por imprecision de punto flotante
-            $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
+            $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN');
             $expectedPen = (float)($hold['price_snapshot'] ?? 0.0) * $exchangeRate;
             $transactionStr = number_format($transactionAmount, 2, '.', '');
             $expectedStr = number_format($expectedPen, 2, '.', '');
@@ -223,7 +223,7 @@ class HandleMercadoPagoWebhookAction {
                 Logger::error("HandleMercadoPagoWebhookAction: Fallo en integracion externa durante la dispatch del evento: " . $e->getMessage());
                 // En background, actualizar a manual_review si los reintentos locales fallaron
                 $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::ManualReview->value);
-                // Nota: La respuesta HTTP 200 ya fue enviada a MP, no podemos usar Response::json() aquí.
+                // Nota: La respuesta HTTP 200 ya fue enviada a MP, no podemos usar Response::json() aquÃ­.
                 return;
             }
 

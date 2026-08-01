@@ -68,7 +68,7 @@ class CreateBookingAction {
 
         Validator::requireFields($body, ['id_room_type', 'checkIn', 'checkOut', 'guestName', 'guestEmail']);
 
-        $hotelId    = (int)($body['id_hotel'] ?? 1);
+        $hotelId    = (int)($body['id_hotel'] ?? Config::get('DEFAULT_HOTEL_ID', '1'));
         $idRoomType = Validator::positiveInt($body['id_room_type'], 'id_room_type');
         $guests     = max(1, (int)($body['guests'] ?? 2));
         $checkIn    = $body['checkIn'];
@@ -92,12 +92,12 @@ class CreateBookingAction {
             }
 
             if (!$targetRoom) {
-                throw HttpException::badRequest('La habitación seleccionada ya no está disponible para estas fechas.');
+                throw HttpException::badRequest('La habitaciÃ³n seleccionada ya no estÃ¡ disponible para estas fechas.');
             }
 
             $maxGuests = (int)($targetRoom['max_guests'] ?? 2);
             if ($guests > $maxGuests) {
-                throw HttpException::badRequest("El número de huéspedes ({$guests}) excede la capacidad máxima de esta habitación ({$maxGuests} personas).");
+                throw HttpException::badRequest("El nÃºmero de huÃ©spedes ({$guests}) excede la capacidad mÃ¡xima de esta habitaciÃ³n ({$maxGuests} personas).");
             }
 
             $idProduct = (int)($targetRoom['id_product'] ?? $idRoomType);
@@ -114,7 +114,7 @@ class CreateBookingAction {
 
             if ($targetRoom['available_qty'] <= 0) {
                 $this->pdo->rollBack();
-                throw HttpException::badRequest('La habitación seleccionada ya no está disponible para estas fechas.');
+                throw HttpException::badRequest('La habitaciÃ³n seleccionada ya no estÃ¡ disponible para estas fechas.');
             }
             $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
             $currentUser = SessionService::getUserFromRequest();
@@ -149,7 +149,7 @@ class CreateBookingAction {
             // Exigencia estricta de variables de entorno sin fallbacks inseguros
             $secretKey = Config::get('BOOKING_TOKEN_SECRET', Config::get('CRON_SECRET'));
             if (empty($secretKey)) {
-                throw HttpException::internal('Falta configuración obligatoria de BOOKING_TOKEN_SECRET en servidor .env');
+                throw HttpException::internal('Falta configuraciÃ³n obligatoria de BOOKING_TOKEN_SECRET en servidor .env');
             }
 
             $accessToken = hash_hmac('sha256', $cartId . ':' . $guestEmail, $secretKey);
@@ -159,7 +159,7 @@ class CreateBookingAction {
             $timeLeftSeconds = max(0, strtotime($expiresAt) - time());
             $roomSlug = RoomTypeRegistry::getSlugById($idRoomType);
 
-            $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
+            $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN');
             $gatewayPricePEN = round($totalPrice * $exchangeRate, 2);
 
             Response::json([

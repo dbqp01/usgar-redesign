@@ -82,7 +82,7 @@ class ProcessPaymentAction {
             $this->pdo->commit();
 
             $paymentData['external_reference'] = $cartId;
-            $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
+            $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN');
             $paymentData['transaction_amount'] = round($hold['price_snapshot'] * $exchangeRate, 2);
 
             $paymentResult = $this->paymentGateway->processPayment($paymentData);

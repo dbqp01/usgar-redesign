@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Interfaces y contratos de Dominio para Servicios de Reserva y Consulta de Disponibilidad.
  */
 

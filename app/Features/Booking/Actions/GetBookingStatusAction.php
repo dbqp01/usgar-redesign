@@ -28,7 +28,7 @@ class GetBookingStatusAction {
         $providedToken = $request->getQuery('token', '');
 
         if (!$cartId) {
-            throw HttpException::badRequest('Falta el parámetro cart_id.');
+            throw HttpException::badRequest('Falta el parÃ¡metro cart_id.');
         }
 
         $hold = $this->bookingRepo->getByCartId($cartId);
@@ -40,8 +40,8 @@ class GetBookingStatusAction {
         $guestEmail = $hold['guest_data']['email'] ?? '';
         $secretKey = Config::get('BOOKING_TOKEN_SECRET', Config::get('CRON_SECRET'));
         if (empty($secretKey)) {
-            Logger::error("GetBookingStatusAction: BOOKING_TOKEN_SECRET no está configurado en servidor.");
-            throw HttpException::internal("Configuración de seguridad de token no disponible.");
+            Logger::error("GetBookingStatusAction: BOOKING_TOKEN_SECRET no estÃ¡ configurado en servidor.");
+            throw HttpException::internal("ConfiguraciÃ³n de seguridad de token no disponible.");
         }
 
         $expectedToken = hash_hmac('sha256', $cartId . ':' . $guestEmail, $secretKey);
@@ -55,7 +55,7 @@ class GetBookingStatusAction {
         $idRoomType = (int)$hold['id_room_type'];
         $slug = RoomTypeRegistry::getSlugById($idRoomType);
 
-        $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
+        $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN');
         $priceUSD = (float)$hold['price_snapshot'];
         $gatewayPricePEN = round($priceUSD * $exchangeRate, 2);
 

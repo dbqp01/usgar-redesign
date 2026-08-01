@@ -2347,3 +2347,77 @@
 {"timestamp":"2026-08-01 09:12:03","level":"INFO","message":"HandleMercadoPagoWebhookAction: Validando firma. DataId: 555666777, RequestId: req-1, SignaturePresent: YES"}
 {"timestamp":"2026-08-01 09:12:03","level":"INFO","message":"HandleMercadoPagoWebhookAction: Firma validada OK para Payment ID 555666777"}
 {"timestamp":"2026-08-01 09:12:03","level":"ERROR","message":"HandleMercadoPagoWebhookAction ALERTA FRAUDE: Monto cobrado (50.00) es menor al esperado (285.00) para Cart ID CART-42"}
+{"timestamp":"2026-08-01 09:13:47","level":"INFO","message":"ReconcilePaymentsAction: checked=0, reconciled=0, skipped=0"}
+{"timestamp":"2026-08-01 09:13:47","level":"INFO","message":"ReconcilePaymentsAction: checked=1, reconciled=1, skipped=0"}
+{"timestamp":"2026-08-01 09:13:47","level":"INFO","message":"ReconcilePaymentsAction: Payment 777888999 estado 'pending'. Sin accion."}
+{"timestamp":"2026-08-01 09:13:47","level":"INFO","message":"ReconcilePaymentsAction: checked=1, reconciled=0, skipped=1"}
+{"timestamp":"2026-08-01 09:13:47","level":"INFO","message":"ReconcilePaymentsAction: Payment 777888999 ya procesado. Skip."}
+{"timestamp":"2026-08-01 09:13:47","level":"INFO","message":"ReconcilePaymentsAction: checked=1, reconciled=0, skipped=1"}
+{"timestamp":"2026-08-01 09:13:47","level":"INFO","message":"ReconcilePaymentsAction: checked=0, reconciled=0, skipped=1"}
+{"timestamp":"2026-08-01 09:13:47","level":"ERROR","message":"MercadoPagoAdapter API Error en getPaymentDetails","context":{"status_code":500,"api_response":"{\"error\":\"internal\"}","payment_id":"42424242"}}
+{"timestamp":"2026-08-01 09:13:47","level":"INFO","message":"MercadoPagoAdapter: Firma de webhook validada correctamente. DataId: 123456789"}
+{"timestamp":"2026-08-01 09:13:47","level":"ERROR","message":"MercadoPagoAdapter: SDK Signature validation failed - Reason: Invalid webhook signature: SignatureMismatch, DataId: 123456789, RequestId: "}
+{"timestamp":"2026-08-01 09:13:47","level":"INFO","message":"MercadoPagoAdapter: Firma de webhook validada correctamente. DataId: 555666777"}
+{"timestamp":"2026-08-01 09:13:47","level":"INFO","message":"MercadoPagoAdapter: Reembolso procesado exitosamente para Payment ID 42424242"}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"ReconcilePaymentsAction: checked=0, reconciled=0, skipped=0"}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"ReconcilePaymentsAction: checked=1, reconciled=1, skipped=0"}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"ReconcilePaymentsAction: Payment 777888999 estado 'pending'. Sin accion."}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"ReconcilePaymentsAction: checked=1, reconciled=0, skipped=1"}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"ReconcilePaymentsAction: Payment 777888999 ya procesado. Skip."}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"ReconcilePaymentsAction: checked=1, reconciled=0, skipped=1"}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"ReconcilePaymentsAction: checked=0, reconciled=0, skipped=1"}
+{"timestamp":"2026-08-01 09:14:11","level":"ERROR","message":"MercadoPagoAdapter API Error en getPaymentDetails","context":{"status_code":500,"api_response":"{\"error\":\"internal\"}","payment_id":"42424242"}}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"MercadoPagoAdapter: Firma de webhook validada correctamente. DataId: 123456789"}
+{"timestamp":"2026-08-01 09:14:11","level":"ERROR","message":"MercadoPagoAdapter: SDK Signature validation failed - Reason: Invalid webhook signature: SignatureMismatch, DataId: 123456789, RequestId: "}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"MercadoPagoAdapter: Firma de webhook validada correctamente. DataId: 555666777"}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"MercadoPagoAdapter: Reembolso procesado exitosamente para Payment ID 42424242"}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"WEBHOOK DIAGNOSTICS","context":{"headers":[],"query_params":[],"body_keys":["type"],"body_type":"merchant_order","body_data_id":"N/A","has_x_signature":"NO","has_x_request_id":"NO","raw_server_http_x_signature":"NOT_PRESENT"}}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"HandleMercadoPagoWebhookAction: Evento no-payment ignorado. Type: merchant_order, Topic: null"}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"WEBHOOK DIAGNOSTICS","context":{"headers":[],"query_params":[],"body_keys":["type","data"],"body_type":"payment","body_data_id":"N/A","has_x_signature":"NO","has_x_request_id":"NO","raw_server_http_x_signature":"NOT_PRESENT"}}
+{"timestamp":"2026-08-01 09:14:11","level":"ERROR","message":"HandleMercadoPagoWebhookAction: No se pudo extraer payment ID del webhook."}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"WEBHOOK DIAGNOSTICS","context":{"headers":{"x-signature":"ts=1,v1=invalid...[TRUNCATED]","x-request-id":"req-1"},"query_params":[],"body_keys":["type","data"],"body_type":"payment","body_data_id":"555666777","has_x_signature":"YES","has_x_request_id":"YES","raw_server_http_x_signature":"NOT_PRESENT"}}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"HandleMercadoPagoWebhookAction: Validando firma. DataId: 555666777, RequestId: req-1, SignaturePresent: YES"}
+{"timestamp":"2026-08-01 09:14:11","level":"ERROR","message":"HandleMercadoPagoWebhookAction: Firma de webhook ausente o invalida. DataID: 555666777, SignatureHeader: ts=1,v1=invalid..."}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"WEBHOOK DIAGNOSTICS","context":{"headers":{"x-signature":"ts=1,v1=valid...[TRUNCATED]","x-request-id":"req-1"},"query_params":[],"body_keys":["type","data"],"body_type":"payment","body_data_id":"555666777","has_x_signature":"YES","has_x_request_id":"YES","raw_server_http_x_signature":"NOT_PRESENT"}}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"HandleMercadoPagoWebhookAction: Validando firma. DataId: 555666777, RequestId: req-1, SignaturePresent: YES"}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"HandleMercadoPagoWebhookAction: Firma validada OK para Payment ID 555666777"}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"HandleMercadoPagoWebhookAction: Payment ID 555666777 ya consta como procesado en la tabla de idempotencia."}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"WEBHOOK DIAGNOSTICS","context":{"headers":{"x-signature":"ts=1,v1=valid...[TRUNCATED]","x-request-id":"req-1"},"query_params":[],"body_keys":["type","data"],"body_type":"payment","body_data_id":"555666777","has_x_signature":"YES","has_x_request_id":"YES","raw_server_http_x_signature":"NOT_PRESENT"}}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"HandleMercadoPagoWebhookAction: Validando firma. DataId: 555666777, RequestId: req-1, SignaturePresent: YES"}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"HandleMercadoPagoWebhookAction: Firma validada OK para Payment ID 555666777"}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"HandleMercadoPagoWebhookAction: Transaccion en BD local confirmada para Cart ID CART-42"}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"WEBHOOK DIAGNOSTICS","context":{"headers":{"x-signature":"ts=1,v1=valid...[TRUNCATED]","x-request-id":"req-1"},"query_params":[],"body_keys":["type","data"],"body_type":"payment","body_data_id":"555666777","has_x_signature":"YES","has_x_request_id":"YES","raw_server_http_x_signature":"NOT_PRESENT"}}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"HandleMercadoPagoWebhookAction: Validando firma. DataId: 555666777, RequestId: req-1, SignaturePresent: YES"}
+{"timestamp":"2026-08-01 09:14:11","level":"INFO","message":"HandleMercadoPagoWebhookAction: Firma validada OK para Payment ID 555666777"}
+{"timestamp":"2026-08-01 09:14:11","level":"ERROR","message":"HandleMercadoPagoWebhookAction ALERTA FRAUDE: Monto cobrado (50.00) es menor al esperado (285.00) para Cart ID CART-42"}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"ReconcilePaymentsAction: checked=0, reconciled=0, skipped=0"}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"ReconcilePaymentsAction: checked=1, reconciled=1, skipped=0"}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"ReconcilePaymentsAction: Payment 777888999 estado 'pending'. Sin accion."}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"ReconcilePaymentsAction: checked=1, reconciled=0, skipped=1"}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"ReconcilePaymentsAction: Payment 777888999 ya procesado. Skip."}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"ReconcilePaymentsAction: checked=1, reconciled=0, skipped=1"}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"ReconcilePaymentsAction: checked=0, reconciled=0, skipped=1"}
+{"timestamp":"2026-08-01 09:14:36","level":"ERROR","message":"MercadoPagoAdapter API Error en getPaymentDetails","context":{"status_code":500,"api_response":"{\"error\":\"internal\"}","payment_id":"42424242"}}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"MercadoPagoAdapter: Firma de webhook validada correctamente. DataId: 123456789"}
+{"timestamp":"2026-08-01 09:14:36","level":"ERROR","message":"MercadoPagoAdapter: SDK Signature validation failed - Reason: Invalid webhook signature: SignatureMismatch, DataId: 123456789, RequestId: "}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"MercadoPagoAdapter: Firma de webhook validada correctamente. DataId: 555666777"}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"MercadoPagoAdapter: Reembolso procesado exitosamente para Payment ID 42424242"}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"WEBHOOK DIAGNOSTICS","context":{"headers":[],"query_params":[],"body_keys":["type"],"body_type":"merchant_order","body_data_id":"N/A","has_x_signature":"NO","has_x_request_id":"NO","raw_server_http_x_signature":"NOT_PRESENT"}}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"HandleMercadoPagoWebhookAction: Evento no-payment ignorado. Type: merchant_order, Topic: null"}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"WEBHOOK DIAGNOSTICS","context":{"headers":[],"query_params":[],"body_keys":["type","data"],"body_type":"payment","body_data_id":"N/A","has_x_signature":"NO","has_x_request_id":"NO","raw_server_http_x_signature":"NOT_PRESENT"}}
+{"timestamp":"2026-08-01 09:14:36","level":"ERROR","message":"HandleMercadoPagoWebhookAction: No se pudo extraer payment ID del webhook."}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"WEBHOOK DIAGNOSTICS","context":{"headers":{"x-signature":"ts=1,v1=invalid...[TRUNCATED]","x-request-id":"req-1"},"query_params":[],"body_keys":["type","data"],"body_type":"payment","body_data_id":"555666777","has_x_signature":"YES","has_x_request_id":"YES","raw_server_http_x_signature":"NOT_PRESENT"}}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"HandleMercadoPagoWebhookAction: Validando firma. DataId: 555666777, RequestId: req-1, SignaturePresent: YES"}
+{"timestamp":"2026-08-01 09:14:36","level":"ERROR","message":"HandleMercadoPagoWebhookAction: Firma de webhook ausente o invalida. DataID: 555666777, SignatureHeader: ts=1,v1=invalid..."}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"WEBHOOK DIAGNOSTICS","context":{"headers":{"x-signature":"ts=1,v1=valid...[TRUNCATED]","x-request-id":"req-1"},"query_params":[],"body_keys":["type","data"],"body_type":"payment","body_data_id":"555666777","has_x_signature":"YES","has_x_request_id":"YES","raw_server_http_x_signature":"NOT_PRESENT"}}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"HandleMercadoPagoWebhookAction: Validando firma. DataId: 555666777, RequestId: req-1, SignaturePresent: YES"}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"HandleMercadoPagoWebhookAction: Firma validada OK para Payment ID 555666777"}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"HandleMercadoPagoWebhookAction: Payment ID 555666777 ya consta como procesado en la tabla de idempotencia."}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"WEBHOOK DIAGNOSTICS","context":{"headers":{"x-signature":"ts=1,v1=valid...[TRUNCATED]","x-request-id":"req-1"},"query_params":[],"body_keys":["type","data"],"body_type":"payment","body_data_id":"555666777","has_x_signature":"YES","has_x_request_id":"YES","raw_server_http_x_signature":"NOT_PRESENT"}}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"HandleMercadoPagoWebhookAction: Validando firma. DataId: 555666777, RequestId: req-1, SignaturePresent: YES"}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"HandleMercadoPagoWebhookAction: Firma validada OK para Payment ID 555666777"}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"HandleMercadoPagoWebhookAction: Transaccion en BD local confirmada para Cart ID CART-42"}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"WEBHOOK DIAGNOSTICS","context":{"headers":{"x-signature":"ts=1,v1=valid...[TRUNCATED]","x-request-id":"req-1"},"query_params":[],"body_keys":["type","data"],"body_type":"payment","body_data_id":"555666777","has_x_signature":"YES","has_x_request_id":"YES","raw_server_http_x_signature":"NOT_PRESENT"}}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"HandleMercadoPagoWebhookAction: Validando firma. DataId: 555666777, RequestId: req-1, SignaturePresent: YES"}
+{"timestamp":"2026-08-01 09:14:36","level":"INFO","message":"HandleMercadoPagoWebhookAction: Firma validada OK para Payment ID 555666777"}
+{"timestamp":"2026-08-01 09:14:36","level":"ERROR","message":"HandleMercadoPagoWebhookAction ALERTA FRAUDE: Monto cobrado (50.00) es menor al esperado (285.00) para Cart ID CART-42"}

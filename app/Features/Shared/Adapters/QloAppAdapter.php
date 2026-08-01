@@ -101,7 +101,7 @@ class QloAppAdapter implements PmsPortInterface {
         $nameParts = explode(' ', $guestName, 2);
         $firstName = htmlspecialchars($nameParts[0] ?: 'Guest', ENT_XML1);
         $lastName = htmlspecialchars($nameParts[1] ?? 'Guest', ENT_XML1);
-        $safeEmail = htmlspecialchars($guestEmail ?: 'no-reply@hotelesusgar.com', ENT_XML1);
+        $safeEmail = htmlspecialchars($guestEmail ?: Config::get('DEFAULT_REPLY_EMAIL'), ENT_XML1);
         $phone = htmlspecialchars($guestPhone ?: '000000000', ENT_XML1);
         $currency = Config::get('MERCADO_PAGO_CURRENCY', 'USD');
         
@@ -173,7 +173,7 @@ XML;
                 return null;
             }
 
-            $idHotel = $hold['id_hotel'] ?? 1;
+            $idHotel = (int)($hold['id_hotel'] ?? Config::get('DEFAULT_HOTEL_ID', '1'));
             $idProduct = $hold['id_room_type'];
             $checkIn = $hold['checkin'];
             $checkOut = $hold['checkout'];

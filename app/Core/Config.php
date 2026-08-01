@@ -35,6 +35,10 @@ class Config {
         'DB_PORT'              => '3306',
         'DB_NAME'              => 'usgar_hotels',
         'ALLOWED_ORIGINS'      => '*',
+        'DEFAULT_HOTEL_ID'     => '1',
+        'EXCHANGE_RATE_USD_PEN'=> '3.80',
+        'DEFAULT_GUEST_EMAIL'  => 'reserva@hotelesusgar.com',
+        'DEFAULT_REPLY_EMAIL'  => 'no-reply@hotelesusgar.com',
     ];
 
     /**

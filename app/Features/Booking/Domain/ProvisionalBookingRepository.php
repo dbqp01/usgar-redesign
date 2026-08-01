@@ -7,6 +7,7 @@ use PDO;
 use PDOException;
 use App\Core\Logger;
 use App\Core\Database;
+use App\Core\Config;
 
 /**
  * Repositorio de reservas provisionales (Holds temporales de 15 minutos).
@@ -33,7 +34,7 @@ class ProvisionalBookingRepository {
             return $stmt->execute([
                 ':cart_id'       => $data['cart_id'],
                 ':user_id'       => $data['user_id'] ?? null,
-                ':id_hotel'      => $data['id_hotel'] ?? 1,
+                        ':id_hotel'      => $data['id_hotel'] ?? Config::get('DEFAULT_HOTEL_ID', '1'),
                 ':id_room_type'  => $data['id_room_type'],
                 ':guest_data'    => json_encode($data['guest_data'] ?? [], JSON_THROW_ON_ERROR),
                 ':room_data'     => json_encode($data['room_data'] ?? [], JSON_THROW_ON_ERROR),
@@ -61,7 +62,7 @@ class ProvisionalBookingRepository {
                     return $stmt->execute([
                         ':cart_id'       => $data['cart_id'],
                         ':user_id'       => $data['user_id'] ?? null,
-                        ':id_hotel'      => $data['id_hotel'] ?? 1,
+                ':id_hotel'      => $data['id_hotel'] ?? Config::get('DEFAULT_HOTEL_ID', '1'),
                         ':id_room_type'  => $data['id_room_type'],
                         ':guest_data'    => json_encode($data['guest_data'] ?? [], JSON_THROW_ON_ERROR),
                         ':room_data'     => json_encode($data['room_data'] ?? [], JSON_THROW_ON_ERROR),

@@ -6,6 +6,7 @@ namespace App\Features\Booking\Domain\Listeners;
 use App\Core\Events\EventInterface;
 use App\Core\Events\ListenerInterface;
 use App\Core\Logger;
+use App\Core\Config;
 use App\Features\Booking\Domain\Events\BookingPaidEvent;
 use App\Features\Shared\Ports\PmsPortInterface;
 use Exception;
@@ -31,7 +32,7 @@ class ConfirmQloAppsOrderListener implements ListenerInterface {
         $guestData = $event->getGuestData();
 
         $guestName  = (string)($guestData['name'] ?? 'Huésped USGAR');
-        $guestEmail = (string)($guestData['email'] ?? 'reserva@hotelesusgar.com');
+        $guestEmail = (string)($guestData['email'] ?? Config::get('DEFAULT_GUEST_EMAIL'));
 
         Logger::info("ConfirmQloAppsOrderListener: Procesando confirmación en QloApps para Cart ID {$cartId} (Monto: {$amount})");
 
