@@ -110,6 +110,21 @@ class ProvisionalBookingRepository {
                     processed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             ");
+
+            // Auto-heal: garantizar columna payment_id (necesaria para
+            // attachPaymentId y la reconciliacion de pagos). Migracion
+            // documentada en docs/refactoring/CRON.md.
+            $stmt = $this->pdo->prepare("
+                SELECT COUNT(*) FROM information_schema.COLUMNS
+                WHERE TABLE_SCHEMA = DATABASE()
+                  AND TABLE_NAME = 'provisional_bookings'
+                  AND COLUMN_NAME = 'payment_id'
+            ");
+            $stmt->execute();
+            if ((int)$stmt->fetchColumn() === 0) {
+                $this->pdo->exec("ALTER TABLE provisional_bookings ADD COLUMN payment_id VARCHAR(64) NULL AFTER status");
+                Logger::info('ProvisionalBookingRepository: Columna payment_id creada automaticamente en provisional_bookings.');
+            }
         } catch (PDOException $e) {
             Logger::error('ProvisionalBookingRepository::ensureTablesExist Error: ' . $e->getMessage());
         }
