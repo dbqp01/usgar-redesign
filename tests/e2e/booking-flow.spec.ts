@@ -7,17 +7,16 @@ test.describe('USGAR Hotels - Booking Flow E2E', () => {
     // Check title
     await expect(page).toHaveTitle(/USGAR Hotels/i);
 
-    // Verify main navigation links
-    const bookLink = page.locator('nav a[href*="/book"]').first();
+    // Verify main navigation links (desktop nav or mobile booking bar)
+    const bookLink = page.locator('a[href*="/book"]').filter({ visible: true }).first();
     await expect(bookLink).toBeVisible();
 
     // Click book link
     await bookLink.click();
     await expect(page).toHaveURL(/\/book/);
 
-    // Verify booking page header
-    const heading = page.locator('h1');
-    await expect(heading).toBeVisible();
+    // Verify booking page renders the wizard
+    await expect(page.locator('[data-step-panel="1"]')).toBeVisible();
   });
 
   test('should display rooms listing', async ({ page }) => {

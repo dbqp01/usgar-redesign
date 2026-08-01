@@ -19,9 +19,10 @@ test.describe('USGAR Hotels - i18n & Theme E2E', () => {
     await expect(htmlElement).toBeVisible();
 
     // Check theme button exists
-    const themeButton = page.locator('[aria-label*="theme"], [aria-label*="modo"], button:has-svg').first();
+    const themeButton = page.locator('#theme-toggle');
     if (await themeButton.isVisible()) {
       await themeButton.click();
+      await expect(page.locator('html')).toHaveAttribute('class', /dark/);
     }
   });
 });
