@@ -515,15 +515,11 @@ h3, h4 {
 
 /* ============================================
    Typographic Marquee (Editorial Divider)
-   Pure CSS loop — two identical copies, translateX(-50%) = seamless.
+   Motion handled by GSAP autoMotion (continuous, scroll-boosted,
+   never pauses on hover). CSS only styles the glyphs.
    ============================================ */
 .marquee-tipographic-track {
-  animation: marquee-tipographic 30s linear infinite;
   will-change: transform;
-}
-
-.marquee-tipographic:hover .marquee-tipographic-track {
-  animation-play-state: paused;
 }
 
 .marquee-tipographic-text {
@@ -545,19 +541,8 @@ h3, h4 {
   font-size: 0.6em;
 }
 
-@keyframes marquee-tipographic {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-tipographic-track {
-    animation: none;
-  }
-}
-
 /* ============================================
-   Cinematic Page Transition Curtain
+   Reduced Motion (Accessibility)
    ============================================ */
 .page-transition-overlay {
   position: fixed;
