@@ -1,0 +1,248 @@
+---
+// src/components/ExploreShowcase.astro
+// Cinematic destination showcase: image crossfade (70%) + interactive list (30%).
+// (Fase 2 will replace this with a horizontal magazine carousel.)
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import { attractions } from "../data/attractions";
+import { useTranslations, type Locale } from "../i18n/utils";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import slide4 from "../assets/hotel/hero-slide-cusco.jpg";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const exploreImages = import.meta.glob<{ default: ImageMetadata }>('../assets/explore/*.jpg', { eager: true });
+---
+
+<section class="py-12 sm:py-16 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-300 relative scroll-mt-28 sm:scroll-mt-32">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center max-w-3xl mx-auto mb-10 animate-on-scroll">
+      <h2 class="font-display text-4xl sm:text-5xl lg:text-5xl text-primary-dark dark:text-white leading-tight">
+        {t("explore.title")}
+      </h2>
+      <p class="mt-4 text-base sm:text-lg text-text-secondary-light dark:text-text-secondary-dark font-body font-light">
+        {t("explore.description")}
+      </p>
+    </div>
+
+    <!-- Cinematic Sequence Showcase -->
+    <div class="mt-12 max-w-[1400px] mx-auto bg-black rounded-3xl overflow-hidden shadow-2xl border border-white/10 relative h-[600px] lg:h-[700px] flex flex-col lg:flex-row group animate-on-scroll" id="cinematic-showcase">
+
+      <!-- Left: Image Crossfade Container (70%) -->
+      <div class="relative w-full lg:w-2/3 h-[400px] sm:h-[450px] lg:h-full overflow-hidden">
+        {
+          attractions.map((attraction, i) => {
+            const imgPath = `../assets/explore/${attraction.id}.jpg`;
+            const showcaseImage = exploreImages[imgPath]?.default || slide4;
+            return (
+              <div
+                class={`showcase-slide absolute inset-0 transition-opacity duration-1000 ease-in-out ${i === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
+                data-index={i}
+              >
+                <a href={getRelativeLocaleUrl(lang, `explore/${attraction.id}`)} class="block w-full h-full">
+                  <Image
+                    src={showcaseImage}
+                    alt={attraction.name[lang]}
+                    width={1200}
+                    height={800}
+                    format="webp"
+                    class="w-full h-full object-cover transform transition-transform duration-[10s] ease-out showcase-img scale-100"
+                    loading={i === 0 ? "eager" : "lazy"}
+                    decoding="async"
+                  />
+                </a>
+                <!-- Gradient for text readability -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+
+                <!-- Title Overlay on the image -->
+                <div class="absolute bottom-6 left-6 right-6 lg:bottom-10 lg:left-10 lg:right-10">
+                  <h3 class="font-display font-bold text-3xl sm:text-4xl text-white mb-2 drop-shadow-lg">
+                    {attraction.name[lang]}
+                  </h3>
+                  <div class="flex flex-wrap items-center justify-between gap-4 mt-3">
+                    <div class="flex items-center gap-4 text-xs font-mono uppercase tracking-widest text-secondary font-bold">
+                      <span class="flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {attraction.distance}
+                      </span>
+                      <span class="flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {attraction.travelTime}
+                      </span>
+                    </div>
+                    <a
+                      href={getRelativeLocaleUrl(lang, `explore/${attraction.id}`)}
+                      class="inline-flex items-center gap-2 bg-primary/90 hover:bg-primary text-white font-semibold text-xs px-5 py-2.5 rounded-full transition-[transform,background-color,border-color,box-shadow] duration-300 backdrop-blur-sm border border-white/20 lg:hover:scale-105 shadow-md"
+                    >
+                      <span>{t('explore.viewGuide')}</span>
+                      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+
+      <!-- Right: Minimalist Interactive List (30%) -->
+      <div class="w-full lg:w-1/3 h-[300px] lg:h-full bg-surface-card-dark flex flex-col border-t lg:border-t-0 lg:border-l border-white/5 relative z-20">
+        <div class="p-6 border-b border-white/10 hidden lg:block">
+          <h4 class="font-body text-sm font-bold tracking-widest uppercase text-secondary">
+            {t('explore.popularDestinations')}
+          </h4>
+        </div>
+        <div class="flex-1 overflow-y-auto hide-scrollbar p-2 lg:p-4 space-y-1">
+          {
+            attractions.map((attraction, i) => (
+              <button
+                class={`showcase-btn w-full text-left px-4 py-3 lg:py-4 rounded-xl transition-[background-color,color,box-shadow] duration-300 flex items-center justify-between group/btn ${i === 0 ? 'bg-white/10 text-white shadow-inner' : 'text-white/50 hover:text-white hover:bg-white/5'}`}
+                data-index={i}
+                aria-label={`View ${attraction.name[lang]}`}
+              >
+                <span class="font-body text-sm lg:text-base font-medium truncate pr-2">{attraction.name[lang]}</span>
+                <a
+                  href={getRelativeLocaleUrl(lang, `explore/${attraction.id}`)}
+                  class="p-1 rounded-lg hover:bg-white/10 transition-colors flex-shrink-0"
+                  aria-label={`View ${attraction.name[lang]}`}
+                  data-stop-propagation
+                >
+                  <svg class={`w-4 h-4 lg:w-5 lg:h-5 text-secondary transition-opacity duration-300 ${i === 0 ? 'opacity-100' : 'opacity-0 group-hover/btn:opacity-50'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </a>
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+    </div>
+
+    <!-- View All Link Button -->
+    <div class="text-center mt-8 animate-on-scroll">
+      <a
+        href={getRelativeLocaleUrl(lang, "explore")}
+        data-astro-prefetch="tap"
+        class="inline-flex items-center gap-3 bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl transition-[transform,background-color,box-shadow] duration-300 shadow-md hover:shadow-lg lg:hover:-translate-y-0.5 text-sm uppercase tracking-wider group"
+      >
+        <span>{t("explore.viewAll")}</span>
+        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  function initCinematicShowcase() {
+    const showcase = document.getElementById('cinematic-showcase');
+    if (!showcase) return;
+
+    const slides = showcase.querySelectorAll('.showcase-slide');
+    const btns = showcase.querySelectorAll('.showcase-btn');
+    const images = showcase.querySelectorAll('.showcase-img');
+
+    let currentIndex = 0;
+    let interval: ReturnType<typeof setInterval>;
+
+    function goToSlide(index: number, shouldScroll = true) {
+      if (index === currentIndex) return;
+
+      // Hide current
+      slides[currentIndex].classList.remove('opacity-100', 'z-10');
+      slides[currentIndex].classList.add('opacity-0', 'z-0', 'pointer-events-none');
+
+      btns[currentIndex].classList.remove('bg-white/10', 'text-white', 'shadow-inner');
+      btns[currentIndex].classList.add('text-white/50');
+      btns[currentIndex].querySelector('svg')?.classList.remove('opacity-100');
+      btns[currentIndex].querySelector('svg')?.classList.add('opacity-0');
+
+      // Show new
+      currentIndex = index;
+      slides[currentIndex].classList.remove('opacity-0', 'z-0', 'pointer-events-none');
+      slides[currentIndex].classList.add('opacity-100', 'z-10');
+
+      requestAnimationFrame(() => {
+        images[currentIndex].classList.remove('scale-105');
+        images[currentIndex].classList.add('scale-100');
+      });
+
+      btns[currentIndex].classList.remove('text-white/50');
+      btns[currentIndex].classList.add('bg-white/10', 'text-white', 'shadow-inner');
+      btns[currentIndex].querySelector('svg')?.classList.remove('opacity-0');
+      btns[currentIndex].querySelector('svg')?.classList.add('opacity-100');
+
+      // Auto-scroll ONLY the internal list, without scrolling the main window
+      if (shouldScroll) {
+        const container = btns[currentIndex].parentElement;
+        if (container) {
+          const btnTop = (btns[currentIndex] as HTMLElement).offsetTop;
+          const containerTop = (container as HTMLElement).offsetTop;
+          container.scrollTo({ top: btnTop - containerTop - 20, behavior: 'smooth' });
+        }
+      }
+    }
+
+    function nextSlide() {
+      goToSlide((currentIndex + 1) % slides.length);
+    }
+
+    function startAutoPlay() {
+      stopAutoPlay();
+      interval = setInterval(nextSlide, 4500);
+    }
+
+    function stopAutoPlay() {
+      if (interval) clearInterval(interval);
+    }
+
+    // Interactions
+    btns.forEach((btn, idx) => {
+      btn.addEventListener('mouseenter', () => {
+        goToSlide(idx, false);
+        stopAutoPlay();
+      });
+      btn.addEventListener('mouseleave', () => {
+        startAutoPlay();
+      });
+      // For mobile tap
+      btn.addEventListener('click', () => {
+        goToSlide(idx);
+      });
+    });
+
+    showcase.addEventListener('mouseenter', stopAutoPlay);
+    showcase.addEventListener('mouseleave', startAutoPlay);
+
+    // Stop propagation for navigation links inside buttons
+    showcase.querySelectorAll('[data-stop-propagation]').forEach(link => {
+      link.addEventListener('click', (e) => e.stopPropagation());
+    });
+
+    // Initial state setup for first image animation
+    setTimeout(() => {
+      if (images[0]) {
+        images[0].classList.remove('scale-105');
+        images[0].classList.add('scale-100');
+      }
+    }, 100);
+
+    startAutoPlay();
+  }
+
+  document.addEventListener('astro:page-load', initCinematicShowcase);
+</script>
