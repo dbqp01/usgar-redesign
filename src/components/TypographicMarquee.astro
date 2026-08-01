@@ -16,7 +16,7 @@ const { items, reverse = false } = Astro.props;
         {items.map((item, i) => (
           <>
             <span class="whitespace-nowrap">{item}</span>
-            {i < items.length - 1 && <span class="text-secondary marquee-tipographic-star">✦</span>}
+            <span class="text-secondary marquee-tipographic-star" aria-hidden="true">✦</span>
           </>
         ))}
       </span>
