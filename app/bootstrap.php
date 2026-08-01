@@ -45,13 +45,20 @@ if ($dbConnection !== null) {
 }
 
 // Bindings interfaz -> implementacion (DIP)
-$container->bind(PmsPortInterface::class, fn($c) => new QloAppAdapter($c->get(PDO::class)));
+// PaymentGateway y ChannelManager no requieren BD (adaptadores HTTP)
 $container->bind(PaymentGatewayPortInterface::class, fn($c) => new MercadoPagoAdapter());
 $container->bind(ChannelManagerPortInterface::class, fn($c) => new ChannexAdapter());
 
+// PMS requiere BD — solo registrar si hay conexion disponible
+if ($dbConnection !== null) {
+    $container->bind(PmsPortInterface::class, fn($c) => new QloAppAdapter($c->get(PDO::class)));
+}
+
 // Listeners de dominio (webhook -> PMS / Channel Manager) con DIP desde el container
 $eventDispatcher = EventDispatcher::getInstance();
-$eventDispatcher->subscribe('booking.paid', new ConfirmQloAppsOrderListener($container->get(PmsPortInterface::class)));
+if ($dbConnection !== null) {
+    $eventDispatcher->subscribe('booking.paid', new ConfirmQloAppsOrderListener($container->get(PmsPortInterface::class)));
+}
 $eventDispatcher->subscribe('booking.paid', new SyncChannexBookingListener($container->get(ChannelManagerPortInterface::class)));
 
 /**

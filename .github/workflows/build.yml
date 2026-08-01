@@ -44,6 +44,9 @@ jobs:
             exit 1
           fi
 
+      - name: Crear .env para pruebas (sin BD real)
+        run: cp .env.example .env
+
       - name: Ejecutar pruebas unitarias de backend
         run: php scripts/run-exhaustive-tests.php
 
