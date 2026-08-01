@@ -17,6 +17,7 @@
         </include>
     </source>
     <php>
+        <env name="APP_ENV" value="testing"/>
         <env name="ENVIRONMENT" value="testing"/>
         <env name="SITE_URL" value="http://127.0.0.1:8089"/>
     </php>

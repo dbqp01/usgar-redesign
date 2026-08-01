@@ -8,6 +8,7 @@ use App\Core\Config;
 use App\Core\Logger;
 use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Client\Payment\PaymentClient;
+use MercadoPago\Client\Payment\PaymentRefundClient;
 use MercadoPago\Client\Common\RequestOptions;
 use MercadoPago\Webhook\WebhookSignatureValidator;
 use MercadoPago\Exceptions\InvalidWebhookSignatureException;
@@ -33,8 +34,10 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
     private readonly string $accessToken;
     private readonly ?string $webhookSecret;
     private readonly string $siteUrl;
+    private readonly PaymentClient $paymentClient;
+    private readonly PaymentRefundClient $refundClient;
 
-    public function __construct() {
+    public function __construct(?PaymentClient $paymentClient = null, ?PaymentRefundClient $refundClient = null) {
         // Token unico: MERCADO_PAGO_ACCESS_TOKEN es la fuente de verdad.
         // No hay distincion sandbox/produccion — el token define el entorno.
         $token = Config::get('MERCADO_PAGO_ACCESS_TOKEN', '');
@@ -49,6 +52,9 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
 
         $url = Config::get('SITE_URL', 'http://localhost:4321');
         $this->siteUrl = rtrim($url, '/');
+
+        $this->paymentClient = $paymentClient ?? new PaymentClient();
+        $this->refundClient = $refundClient ?? new PaymentRefundClient();
     }
 
     public function processPayment(array $paymentData): ?array {
@@ -67,7 +73,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             'payer'               => $payer,
             'external_reference'  => $cartId,
             'statement_descriptor'=> $statementDescriptor,
-            'binary_mode'         => (bool) Config::get('MP_BINARY_MODE', true),
+            'binary_mode'         => Config::get('MP_BINARY_MODE', 'true') === 'true',
             'notification_url'    => "{$this->siteUrl}/api/webhook",
         ];
 
@@ -86,7 +92,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             $idempotencyKey = 'pay_' . $cartId . '_' . hash('sha256', $cartId . '_' . $finalPrice);
             MercadoPagoConfig::setAccessToken($this->accessToken);
 
-            $client = new PaymentClient();
+            $client = $this->paymentClient;
             $requestOptions = new RequestOptions();
             $requestOptions->setCustomHeaders(["X-Idempotency-Key: {$idempotencyKey}"]);
             $requestOptions->setConnectionTimeout(10000); // 10s
@@ -176,7 +182,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
     public function getPaymentDetails(string $paymentId): ?array {
         try {
             MercadoPagoConfig::setAccessToken($this->accessToken);
-            $client = new PaymentClient();
+            $client = $this->paymentClient;
             $requestOptions = new RequestOptions();
             $requestOptions->setConnectionTimeout(10000); // 10s
 
@@ -211,7 +217,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
     public function refundPayment(string $paymentId, ?float $amount = null): bool {
         try {
             MercadoPagoConfig::setAccessToken($this->accessToken);
-            $client = new \MercadoPago\Client\Payment\PaymentRefundClient();
+            $client = $this->refundClient;
             $requestOptions = new RequestOptions();
             $requestOptions->setCustomHeaders(["X-Idempotency-Key: refund_{$paymentId}_" . hash('sha256', $paymentId . '_' . ($amount ?? 'full'))]);
             $requestOptions->setConnectionTimeout(10000); // 10s

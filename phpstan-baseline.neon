@@ -463,12 +463,6 @@ parameters:
 			path: app/Features/Shared/Adapters/MercadoPagoAdapter.php
 
 		-
-			message: '#^Parameter \#2 \$default of static method App\\Core\\Config\:\:get\(\) expects string\|null, true given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Features/Shared/Adapters/MercadoPagoAdapter.php
-
-		-
 			message: '#^Ternary operator condition is always true\.$#'
 			identifier: ternary.alwaysTrue
 			count: 3

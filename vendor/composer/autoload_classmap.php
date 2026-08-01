@@ -7,6 +7,10 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'DG\\BypassFinals' => $vendorDir . '/dg/bypass-finals/src/BypassFinals.php',
+    'DG\\BypassFinals\\MutatingWrapper' => $vendorDir . '/dg/bypass-finals/src/MutatingWrapper.php',
+    'DG\\BypassFinals\\NativeWrapper' => $vendorDir . '/dg/bypass-finals/src/NativeWrapper.php',
+    'DG\\BypassFinals\\PHPUnitExtension' => $vendorDir . '/dg/bypass-finals/src/PHPUnitExtension.php',
     'PHPUnit\\Event\\Application\\Finished' => $vendorDir . '/phpunit/phpunit/src/Event/Events/Application/Finished.php',
     'PHPUnit\\Event\\Application\\FinishedSubscriber' => $vendorDir . '/phpunit/phpunit/src/Event/Events/Application/FinishedSubscriber.php',
     'PHPUnit\\Event\\Application\\Started' => $vendorDir . '/phpunit/phpunit/src/Event/Events/Application/Started.php',

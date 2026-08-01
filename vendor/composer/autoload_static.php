@@ -52,6 +52,10 @@ class ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'DG\\BypassFinals' => __DIR__ . '/..' . '/dg/bypass-finals/src/BypassFinals.php',
+        'DG\\BypassFinals\\MutatingWrapper' => __DIR__ . '/..' . '/dg/bypass-finals/src/MutatingWrapper.php',
+        'DG\\BypassFinals\\NativeWrapper' => __DIR__ . '/..' . '/dg/bypass-finals/src/NativeWrapper.php',
+        'DG\\BypassFinals\\PHPUnitExtension' => __DIR__ . '/..' . '/dg/bypass-finals/src/PHPUnitExtension.php',
         'PHPUnit\\Event\\Application\\Finished' => __DIR__ . '/..' . '/phpunit/phpunit/src/Event/Events/Application/Finished.php',
         'PHPUnit\\Event\\Application\\FinishedSubscriber' => __DIR__ . '/..' . '/phpunit/phpunit/src/Event/Events/Application/FinishedSubscriber.php',
         'PHPUnit\\Event\\Application\\Started' => __DIR__ . '/..' . '/phpunit/phpunit/src/Event/Events/Application/Started.php',

@@ -67,10 +67,12 @@ class Response {
         }
 
         // Vaciar todos los búferes de salida
-        while (ob_get_level() > 0) {
-            ob_end_flush();
+        if (Config::get('APP_ENV') !== 'testing') {
+            while (ob_get_level() > 0) {
+                ob_end_flush();
+            }
+            flush();
         }
-        flush();
 
         // Si usamos FPM/LiteSpeed, esto cierra la conexión instantáneamente.
         if (function_exists('fastcgi_finish_request')) {
