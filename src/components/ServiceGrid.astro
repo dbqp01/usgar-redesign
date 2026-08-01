@@ -1,60 +1,43 @@
 ---
-import { Image } from 'astro:assets';
 import SectionHeader from './ui/SectionHeader.astro';
 import { services } from '../data/services';
 import { useTranslations } from '../i18n/utils';
 
 import type { Locale } from '../i18n/utils';
 
-// Brand-approved photography for Bento Box
-import patioImg from '../assets/hotel/hero-slide-patio.jpg';
-import oxigenoImg from '../assets/hotel/fallback-room-oxigeno.jpg';
-import cuscoImg from '../assets/hotel/hero-slide-cusco.jpg';
-import matrimonialImg from '../assets/hotel/hero-slide-matrimonial.jpg';
-
 const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
 
-// Grouping services for the Bento Box
+// Grouping services for the numbered list
 const highlights: Array<{
   id: string;
   title: Record<string, string>;
   desc: Record<string, string>;
-  img: ImageMetadata;
-  size: string;
   icon: string;
 }> = [
   {
     id: 'breakfast',
     title: { en: 'Andean Breakfast', es: 'Desayuno Andino', fr: 'Petit-Déjeuner Andin', pt: 'Café da Manhã Andino' },
     desc: { en: 'Local flavors to start your day right.', es: 'Sabores locales para empezar bien tu día.', fr: 'Saveurs locales pour bien démarrer votre journée.', pt: 'Sabores locais para começar bem o seu dia.' },
-    img: patioImg,
-    size: 'col-span-1 md:col-span-2 row-span-2',
-    icon: '<svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 19h16M7 19V7a2 2 0 012-2h6a2 2 0 012 2v12M17 9h2a2 2 0 012 2v2a2 2 0 01-2 2h-2" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 2v3M14 2v3" /></svg>'
+    icon: '<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 19h16M7 19V7a2 2 0 012-2h6a2 2 0 012 2v12M17 9h2a2 2 0 012 2v2a2 2 0 01-2 2h-2" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 2v3M14 2v3" /></svg>'
   },
   {
     id: 'oxygen',
     title: { en: 'Oxygen & Acclimatization', es: 'Oxígeno & Aclimatación', fr: 'Oxygène & Acclimatation', pt: 'Oxigênio & Aclimação' },
     desc: { en: 'Complimentary oxygen to help you adjust to Cusco.', es: 'Oxígeno de cortesía para ayudarte a aclimatarte a Cusco.', fr: 'Oxygène gracieux pour vous aider à vous acclimater.', pt: 'Oxigênio de cortesia para ajudar na aclimação.' },
-    img: oxigenoImg,
-    size: 'col-span-1 md:col-span-1 row-span-1',
-    icon: '<svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>'
+    icon: '<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>'
   },
   {
     id: 'tours',
     title: { en: 'Machu Picchu Tours', es: 'Tours Machu Picchu', fr: 'Tours Machu Picchu', pt: 'Passeios Machu Picchu' },
     desc: { en: 'Seamless travel assistance.', es: 'Asistencia de viaje sin complicaciones.', fr: 'Assistance voyage personnalisée.', pt: 'Assistência de viagem simplificada.' },
-    img: cuscoImg,
-    size: 'col-span-1 md:col-span-1 row-span-2',
-    icon: '<svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2L2 22h20L12 2zM12 8l3 6H9l3-6z" /></svg>'
+    icon: '<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2L2 22h20L12 2zM12 8l3 6H9l3-6z" /></svg>'
   },
   {
     id: 'comfort',
     title: { en: 'Boutique Comfort', es: 'Confort Boutique', fr: 'Confort Boutique', pt: 'Conforto Boutique' },
     desc: { en: 'Crafted spaces for authentic rest.', es: 'Espacios diseñados para un descanso auténtico.', fr: 'Des espaces conçus pour un repos authentique.', pt: 'Espaços projetados para um descanso autêntico.' },
-    img: matrimonialImg,
-    size: 'col-span-1 md:col-span-1 row-span-1',
-    icon: '<svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>'
+    icon: '<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>'
   }
 ];
 
@@ -73,71 +56,43 @@ const highlights: Array<{
       subtitle={t('services.description')}
     />
 
-    <!-- Bento Box Grid Layout -->
-    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 auto-rows-[250px] gap-4 sm:gap-6">
-      
-      {highlights.map((item) => (
-        <div class={`group relative rounded-3xl overflow-hidden shadow-xl border border-black/5 dark:border-white/5 img-hover-zoom ${item.size}`}>
-          <!-- Background Image with Astro Image Optimization -->
-          <Image
-            src={item.img}
-            alt={item.title[lang] || item.title.en || item.title.es || 'Service'}
-
-            width={800}
-            height={600}
-            format="webp"
-            class="absolute inset-0 w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-105"
-            loading="lazy"
-          />
-          
-          <!-- Gradient Overlay -->
-          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent transition-opacity duration-500"></div>
-          
-          <!-- Content -->
-          <div class="absolute inset-0 p-6 sm:p-8 flex flex-col justify-end">
-            <div class="transform transition-transform duration-500 group-hover:-translate-y-2">
-              <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-2xl mb-4 shadow-lg text-white" aria-hidden="true" set:html={item.icon}>
-              </div>
-              <h3 class="font-display font-bold text-2xl sm:text-3xl text-white mb-2 drop-shadow-md">
-                {item.title[lang]}
-              </h3>
-              <p class="text-sm text-white/80 font-light opacity-0 group-hover:opacity-100 transition-opacity duration-500 transform translate-y-4 group-hover:translate-y-0 delay-100">
-                {item.desc[lang]}
-              </p>
-            </div>
+    <!-- Brutalist numbered services list -->
+    <div class="divide-y divide-black/10 dark:divide-white/10 border-y border-black/10 dark:border-white/10">
+      {highlights.map((item, i) => (
+        <div class="group flex items-center gap-5 sm:gap-10 py-8 sm:py-10 transition-colors">
+          <span class="font-mono text-xs sm:text-sm text-secondary w-8 flex-shrink-0">{String(i + 1).padStart(2, '0')}</span>
+          <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-white dark:bg-surface-card-dark border border-black/10 dark:border-white/10 flex items-center justify-center flex-shrink-0 text-secondary transition-all duration-500 group-hover:bg-secondary group-hover:text-white" set:html={item.icon}></div>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-display text-2xl sm:text-4xl text-text-primary-light dark:text-white group-hover:text-secondary transition-colors duration-300">
+              {item.title[lang]}
+            </h3>
+            <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark font-light max-w-2xl opacity-0 max-h-0 overflow-hidden transition-all duration-500 group-hover:opacity-100 group-hover:max-h-24 group-hover:mt-2">
+              {item.desc[lang]}
+            </p>
           </div>
+          <svg class="w-6 h-6 flex-shrink-0 text-text-secondary-light dark:text-text-secondary-dark opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
         </div>
       ))}
-      
-      <!-- Minimalist List Card (All Services) -->
-      <div class="col-span-1 md:col-span-3 lg:col-span-4 row-span-1 rounded-3xl bg-white dark:bg-surface-card-dark border border-black/5 dark:border-white/5 shadow-xl p-8 flex flex-col justify-center relative overflow-hidden group">
-        <!-- Decoration -->
-        <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-secondary/10 to-transparent rounded-bl-full transform translate-x-8 -translate-y-8 transition-transform duration-500 group-hover:translate-x-0 group-hover:-translate-y-0"></div>
-        
-        <h3 class="font-display text-2xl font-bold text-text-primary-light dark:text-white mb-6">
-          {t('global.alsoIncluded')}
-        </h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10">
-          {services.filter(s => !['breakfast', 'oxygen', 'tours'].includes(s.id)).slice(0, 6).map(service => {
-            let iconSvg = '';
-            if (service.id === 'wifi') iconSvg = '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M2.28 9.141C8.214 3.208 17.84 3.208 23.774 9.14" /></svg>';
-            else if (service.id === 'hot-water') iconSvg = '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2c0 0-8 6-8 12a8 8 0 1016 0c0-6-8-12-8-12z" /></svg>';
-            else if (service.id === 'heating') iconSvg = '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" /></svg>';
-            else if (service.id === 'tv') iconSvg = '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>';
-            else if (service.id === 'laundry') iconSvg = '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4h16v16H4V4zm8 12a4 4 0 100-8 4 4 0 000 8zm-6-8h.01M6 10h.01" /></svg>';
-            else if (service.id === 'transfer') iconSvg = '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>';
-            else iconSvg = '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7" /></svg>';
+    </div>
 
-            return (
-              <div class="flex items-center gap-4 p-4 rounded-xl border border-black/10 dark:border-white/10 bg-surface-card-light dark:bg-surface-card-dark text-text-primary-light dark:text-white transition-colors duration-300 hover:border-secondary">
-                <div class="flex-shrink-0 text-secondary" set:html={iconSvg}></div>
-                <span class="font-body font-medium text-sm sm:text-base truncate">{service.name[lang]}</span>
-              </div>
-            );
-          })}
-        </div>
+    <!-- Also Included — professional typographic row -->
+    <div class="mt-12 rounded-3xl border border-black/10 dark:border-white/10 bg-white dark:bg-surface-card-dark p-8 sm:p-10">
+      <div class="flex items-center gap-4 mb-8">
+        <h3 class="font-display text-2xl font-bold text-text-primary-light dark:text-white">{t('global.alsoIncluded')}</h3>
+        <span class="flex-1 h-px bg-black/10 dark:bg-white/10"></span>
+        <span class="font-mono text-[10px] uppercase tracking-[0.3em] text-text-secondary-light dark:text-text-secondary-dark">06</span>
       </div>
-      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5">
+        {services.filter(s => !['breakfast', 'oxygen', 'tours'].includes(s.id)).slice(0, 6).map((service, i) => (
+          <div class="flex items-center gap-3 text-text-primary-light dark:text-white">
+            <span class="font-mono text-[10px] text-secondary w-5 flex-shrink-0">{String(i + 1).padStart(2, '0')}</span>
+            <span class="w-4 h-px bg-secondary flex-shrink-0"></span>
+            <span class="font-body text-sm font-medium truncate">{service.name[lang]}</span>
+          </div>
+        ))}
+      </div>
     </div>
 
   </div>
