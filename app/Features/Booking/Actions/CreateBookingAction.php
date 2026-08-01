@@ -73,9 +73,9 @@ class CreateBookingAction {
         $guests     = max(1, (int)($body['guests'] ?? 2));
         $checkIn    = $body['checkIn'];
         $checkOut   = $body['checkOut'];
-        $guestName  = htmlspecialchars(trim($body['guestName']), ENT_QUOTES, 'UTF-8');
+        $guestName  = trim($body['guestName']);
         $guestEmail = Validator::email($body['guestEmail']);
-        $guestPhone = htmlspecialchars(trim($body['guestPhone'] ?? ''), ENT_QUOTES, 'UTF-8');
+        $guestPhone = trim($body['guestPhone'] ?? '');
 
         Validator::dateRange($checkIn, $checkOut);
 

@@ -403,12 +403,6 @@ parameters:
 			path: app/Features/Shared/Adapters/ChannexAdapter.php
 
 		-
-			message: '#^Call to an undefined method MercadoPago\\Client\\Payment\\PaymentRefundClient\:\:create\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Features/Shared/Adapters/MercadoPagoAdapter.php
-
-		-
 			message: '#^Call to function is_array\(\) with array\<string, mixed\> will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 3
@@ -453,12 +447,6 @@ parameters:
 		-
 			message: '#^Negated boolean expression is always false\.$#'
 			identifier: booleanNot.alwaysFalse
-			count: 2
-			path: app/Features/Shared/Adapters/MercadoPagoAdapter.php
-
-		-
-			message: '#^Parameter \#1 \$custom_headers of method MercadoPago\\Client\\Common\\RequestOptions\:\:setCustomHeaders\(\) expects array\<string, string\>, array\<int, string\> given\.$#'
-			identifier: argument.type
 			count: 2
 			path: app/Features/Shared/Adapters/MercadoPagoAdapter.php
 

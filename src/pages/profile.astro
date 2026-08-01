@@ -269,6 +269,14 @@ const t = useTranslations(lang);
     (function() {
       let currentUser = null;
 
+      // Escapa valores interpolados en templates HTML (XSS). La API responde
+      // JSON con datos sin escapar (el escape de salida vive aca, no en el input).
+      function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, (c) => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+        }[c]));
+      }
+
       function initProfilePage() {
         const loadingEl = document.getElementById('profile-loading');
         const unauthEl = document.getElementById('profile-unauth');
@@ -406,16 +414,16 @@ const t = useTranslations(lang);
                     <div class="bg-surface-card-light dark:bg-surface-card-dark p-6 rounded-2xl border border-black/10 dark:border-white/10 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-[border-color] hover:border-primary/30">
                       <div class="space-y-1">
                         <div class="flex items-center gap-3">
-                          <h3 class="font-display font-bold text-lg text-text-primary-light dark:text-text-primary-dark">${roomName}</h3>
+                          <h3 class="font-display font-bold text-lg text-text-primary-light dark:text-text-primary-dark">${escapeHtml(roomName)}</h3>
                           <span class="text-xs px-2.5 py-1 rounded-full font-semibold uppercase border ${statusClass}">
-                            ${b.status}
+                            ${escapeHtml(b.status)}
                           </span>
                         </div>
                         <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">
-                          "... ${b.checkin} - ${b.checkout}
+                          "... ${escapeHtml(b.checkin)} - ${escapeHtml(b.checkout)}
                         </p>
                         <p class="text-xs font-mono text-stone-400">
-                          Cart ID: ${b.cart_id} ${b.qlo_order_id ? '| Order: ' + b.qlo_order_id : ''}
+                          Cart ID: ${escapeHtml(b.cart_id)} ${b.qlo_order_id ? '| Order: ' + escapeHtml(b.qlo_order_id) : ''}
                         </p>
                       </div>
                       <div class="text-left md:text-right">

@@ -161,7 +161,14 @@ class Request {
     }
 
     /**
-     * Sanitiza los datos de entrada recursivamente evitando romper las estructuras de array.
+     * Normaliza los datos de entrada recursivamente sin alterar su contenido.
+     *
+     * NOTA (2026-08-01): antes aplicaba htmlspecialchars() a todos los strings.
+     * Eso corrompia datos legitimos (contrasenas con '&'/'<', nombres con
+     * '&', comillas) causando doble-escape y logins rotos. El modelo correcto
+     * es: validar/tipar la entrada aqui (Validator en cada action) y escapar
+     * la salida SOLO donde se renderiza HTML (frontend / escapes de salida).
+     * La API responde JSON, que no interpreta HTML.
      */
     private function sanitize(mixed $data): mixed {
         if (is_array($data)) {
@@ -170,9 +177,6 @@ class Request {
                 $sanitized[$k] = $this->sanitize($v);
             }
             return $sanitized;
-        }
-        if (is_string($data)) {
-            return htmlspecialchars($data, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         }
         return $data;
     }

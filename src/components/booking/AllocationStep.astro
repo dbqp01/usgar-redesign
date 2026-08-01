@@ -21,6 +21,14 @@ const t = useTranslations(lang);
 
   <div data-allocation-options class="space-y-3"></div>
 
+  <div data-allocation-status class="hidden items-center gap-2 p-3 rounded-xl border border-primary/20 bg-primary/5 text-primary text-sm">
+    <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+    <span data-allocation-status-text></span>
+  </div>
+
   <div data-allocation-empty class="hidden p-4 rounded-xl border border-red-500/20 bg-red-500/5 text-red-600 dark:text-red-400 text-sm">
     {t('wizard.rangeUnavailable')}
   </div>
@@ -61,6 +69,13 @@ const t = useTranslations(lang);
     abortController = new AbortController();
     const signal = abortController.signal;
 
+    // Escapa valores interpolados en templates HTML (XSS).
+    function escapeHtml(value: unknown): string {
+      return String(value ?? '').replace(/[&<>"']/g, (c) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+      }[c]));
+    }
+
     const root = document.querySelector('[data-allocation-step]') as HTMLElement | null;
     const optionsEl = root?.querySelector('[data-allocation-options]') as HTMLElement | null;
     const emptyEl = root?.querySelector('[data-allocation-empty]') as HTMLElement | null;
@@ -71,6 +86,8 @@ const t = useTranslations(lang);
     const empty = emptyEl!;
     const next = nextBtn!;
     const back = backBtn!;
+    const statusEl = root.querySelector('[data-allocation-status]') as HTMLElement | null;
+    const statusText = root.querySelector('[data-allocation-status-text]') as HTMLElement | null;
 
     const lang = (document.documentElement.lang || 'en') as string;
     const L = (window as any).__LABELS || {};
@@ -108,7 +125,7 @@ const t = useTranslations(lang);
         const multi = opt.rooms.length > 1;
         const payable = !multi;
         const isSelected = selected === opt;
-        const roomNames = opt.rooms.map((e) => e.room.displayName).join(' + ');
+        const roomNames = opt.rooms.map((e) => escapeHtml(e.room.displayName)).join(' + ');
         const extrasLine = opt.extrasTotal > 0
           ? `<span class="text-text-secondary-light dark:text-text-secondary-dark">${L.extras || 'Extra guest'}: +${formatMoney(opt.extrasTotal)}</span>`
           : '';
@@ -201,6 +218,19 @@ const t = useTranslations(lang);
     preselect();
     render();
     const unsub = wizardStore.subscribe(() => {
+      if (statusEl && statusText) {
+        const s = wizardStore.getState();
+        if (s.selecting) {
+          statusEl.classList.remove('hidden');
+          statusEl.classList.add('flex');
+          statusText.textContent = L.availabilityChecking || 'Checking availability...';
+          optEl.classList.add('opacity-50', 'pointer-events-none');
+        } else {
+          statusEl.classList.add('hidden');
+          statusEl.classList.remove('flex');
+          optEl.classList.remove('opacity-50', 'pointer-events-none');
+        }
+      }
       preselect();
       render();
     });
