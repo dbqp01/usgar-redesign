@@ -1,87 +1,63 @@
-# USGAR Hotels — San Pedro, Cusco
+# USGAR Hotels — hotelesusgar.com
 
-Repositorio oficial del sitio web transaccional de **USGAR Hotels** en Cusco, Perú. Arquitectura híbrida: **Astro v7.x.x** (frontend estático en `http://localhost:4321`) + **Tailwind CSS v4.3** + **PHP 8.x** (Front Controller API ADR con DI Container PSR-11) + **QloApps** (PMS) + **Channex** (channel manager) + **Postman MCP** (auditoría exhaustiva y de estrés de endpoints).
+Sitio web transaccional del hotel boutique **Usgar** (San Pedro, Cusco, Perú) para reservas directas de turistas internacionales, con pagos en USD vía MercadoPago, sincronización de inventario con QloApps (PMS) y Channex (channel manager). Sitio en 4 idiomas: `en` (default), `es`, `fr`, `pt`.
 
-**Sitio en producción:** [https://usgarhoteles.com](https://usgarhoteles.com)  
-**PMS / Back-Office:** [https://cms.usgarhoteles.com](https://cms.usgarhoteles.com)
+## Stack
 
----
+| Capa | Tecnología |
+|---|---|
+| Frontend | Astro 7 (estático), Tailwind CSS 4, GSAP, Leaflet, Lenis, Lucide |
+| Backend | PHP 8 nativo — monolito modular **ADR** (Action → Domain → Ports/Adapters), DI container PSR-11, PDO/MySQL |
+| Pagos | MercadoPago (USD) — Checkout API (Custom Checkout), webhooks de pago |
+| PMS | QloApps vía `QloAppAdapter` (API XML) |
+| Channel manager | Channex vía `ChannexAdapter` + `SyncChannexBookingListener` |
+| Auth | Sesiones propias + social login (hybridauth) |
+| Deploy | Hostinger compartido (PHP + MySQL, sin Composer en prod) |
 
-## 1. Arquitectura General
+## Estructura
 
-```text
-┌──────────────────────────────────────────────────────────────────┐
-│                      USUARIO (Browser / App)                     │
-│                                                                  │
-│  Astro v7.x.x HTML (http://localhost:4321 via npm run dev:all)   │
-│         │                                                        │
-│         ▼                                                        │
-│  fetch('/api/...')  →  PHP Front Controller (public/index.php)   │
-│         │                │            │            │             │
-│         │                ▼            ▼            ▼             │
-│         │           QloApps API    Channex API   Mercado Pago    │
-│         │          (cms.usgar      (Channel      (Pagos)         │
-│         │           hoteles.com)   Manager)                      │
-│         │                │            │                          │
-│         │                ▼            ▼                          │
-│         │           MySQL DB     Booking.com                     │
-│         │                        TripAdvisor / Airbnb            │
-└──────────────────────────────────────────────────────────────────┘
+```
+src/       Frontend Astro: pages, components, layouts, i18n (en/es/fr/pt), data, content
+app/       Backend PHP: Core (Request, Response, Database, Container, Middleware…) + Features/
+app/Features/  Auth, Booking, Cron, Health, Rooms, Shared (Adapters/Ports), Webhooks
+public/    Entry point PHP (.htaccess + index.php)
+scripts/   Dev, tests exhaustivos, auditorías (seguridad, SEO)
+tests/     Tests PHP (api-harness) + Playwright (playwright.config.ts)
+docs/      Documentación técnica (API_REGISTRY, ARCHITECTURE, HARNESS, multi-hotel)
+vendor/    Dependencias Composer (NO editar a mano; no se instala en prod)
 ```
 
-### Roles de cada sistema
-
-| Sistema | Rol | URL/Endpoint |
-|---|---|---|
-| **Astro v7.x.x** | Frontend estático (HTML, Tailwind CSS v4.3, TS) | `http://localhost:4321` (Dev) / `https://usgarhoteles.com` |
-| **PHP 8.x API** | Front Controller proxy seguro (ADR + DI Container PSR-11) | `public/index.php` → `app/Features/` |
-| **Postman MCP** | Auditoría exhaustiva, límites y pruebas de estrés de API | `postman-mcp-server` (`runCollection`, `createCollectionRequest`) |
-| **PHP Test Harness** | Script único local de pruebas PHP | `tests/api-harness.php` |
-| **QloApps** | PMS — gestión de habitaciones, reservas, inventario local | `https://cms.usgarhoteles.com` |
-| **Channex** | Channel Manager — Sincronización en tiempo real con OTAs | API REST `api.channex.io` |
-| **Mercado Pago** | Pasarela de pagos | API REST & Webhooks IPN |
-| **Hostinger** | Hosting compartido (PHP 8 nativo + MySQL `srv909.hstgr.io`) | Panel hPanel |
-
----
-
-## 2. Metodología de Desarrollo Agentico y Auditoría (Postman MCP & 5 Etapas)
-
-El desarrollo y auditoría del proyecto siguen un procedimiento estricto para prevenir errores en cascada y asegurar cero regresiones:
-
-1. **Razonamiento Inicial (`sequential-thinking`):** Planteamiento estructurado de hipótesis y división en pasos secuenciales.
-2. **Recolección de Oportunidades y Documentación (`context7`):** Consulta activa de documentación oficial, mejores prácticas, APIs modernas y patrones optimizados según Astro v7.x.x, Tailwind CSS v4.3 y PHP 8.x.
-3. **Auditoría Exhaustiva y de Estrés de API (**Postman MCP**):** Ejecución de solicitudes y colecciones Postman evaluando **todas las opciones posibles** (caminos felices, payloads inválidos, firmas corruptas, tokens expirados y cargas sintéticas).
-4. **Investigación en Tiempo Real (`tavily` & `agent-skills` MCP):** Búsquedas sobre librerías y consulta de habilidades estandarizadas (`coding-guidelines`, `security-best-practices`, `perf-astro`, `web-quality-audit`).
-5. **Análisis de Impacto / Red de Nodos (`graphify` / búsqueda incorporada):** Evaluación obligatoria antes de modificar código:
-   > *"¿Si hago este cambio o refactorización, en qué afectará al proyecto?"*
-6. **Aplicación y Abstracción:** Implementación desacoplada, sin hardcoding (Zero-Hardcoding), mediante `.env` o base de datos.
-
----
-
-## 3. Entorno de Desarrollo y Comandos
+## Comandos
 
 ```bash
-# 1. Instalar dependencias
-npm install
-
-# 2. Servidor de desarrollo completo (Astro frontend en http://localhost:4321 + PHP API backend en 8000)
-npm run dev:all
-
-# O ejecutar servidores individualmente:
-npm run dev      # Servidor Astro dev (http://localhost:4321)
-npm run dev:php  # Servidor PHP API (http://localhost:8000)
-
-# 3. Verificación de Tipos, Pruebas y Build
-npm run check             # Verificación de tipos TypeScript y componentes Astro v7
-php tests/api-harness.php  # Script único local de pruebas PHP
-npm run build             # Compilación estática para producción
+npm run dev:all       # Entorno completo: Astro (4321) + PHP API (8000) con proxy /api
+npm run dev           # Solo frontend Astro
+npm run dev:php       # Solo PHP API server (localhost:8000, public/index.php)
+npm run build         # Build estático; postbuild copia app/, vendor/ y .env a dist/ (Hostinger)
+npm run check         # TypeScript/astro check
+npm run test          # astro check + tests PHP exhaustivos (scripts/run-exhaustive-tests.php)
+npm run audit:security # Auditoría de seguridad (PHP)
+npm run audit:seo     # Auditoría SEO/schema (Node)
 ```
 
----
+## Flujo de reserva (actual)
 
-## 4. Despliegue en Hostinger Shared Hosting
+1. `POST /api/booking` (`CreateBookingAction`): valida payload (normaliza `roomSlug`→`id_room_type`, `guestDetails`→campos planos), crea **bloqueo temporal en QloApps** y devuelve `cart_id`, `access_token`, `gateway_price`, `mp_public_key` — **sin** `init_point` (Custom Checkout).
+2. Frontend inicializa el SDK de MercadoPago en el cliente y cobra con esos datos.
+3. Webhook de MercadoPago (`HandleMercadoPagoWebhookAction`) confirma el pago → confirma la orden en QloApps y sincroniza con Channex.
+4. `ProcessPaymentAction` + repositorio de reservas provisionales cubren el ciclo intermedio.
 
-1. Ejecutar el script SQL `scripts/create_processed_payments_table.sql` en phpMyAdmin.
-2. Compilar el sitio estático Astro: `npm run build`.
-3. Subir el contenido generado en `dist/` a la raíz del hosting (`public_html`).
-4. El archivo `public/index.php` actuará como Front Controller en PHP 8 nativo para la API REST en `/api/*`.
+## Reglas de trabajo (obligatorias)
+
+- **Docs-first**: consultar MCPs de documentación antes de tocar código (Astro → astro-docs; librerías → context7; patrones → tavily).
+- **Pensamiento secuencial** antes de problemas no triviales.
+- **Zero hardcoding**: credenciales y config via `.env` (`dist/` recibe una copia en build). Nunca literales en código.
+- **Prepared statements** para SQL; inputs sanitizados; errores sin stack traces internos al cliente.
+- **No trackear generados**: `graphify-out/`, `dist/`, `node_modules/`, `*.map` están en `.gitignore`. Si algo nuevo es regenerable, va al ignore, no al repo.
+- Commits pequeños por tema (`feat:`, `fix:`, `chore:`), nunca mega-commits mezclados.
+- El hook `pre-commit` comprime `.mp4`/imágenes staged automáticamente (requiere ffmpeg + node `scripts/compress-images.js`).
+
+## Estado de migración pendiente
+
+- [x] Backend: MercadoPago Custom Checkout (sin `init_point`)
+- [ ] Frontend: inicializar SDK MP en cliente con los datos del backend (ver `task.md`)
