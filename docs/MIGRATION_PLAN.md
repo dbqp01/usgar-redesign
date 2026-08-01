@@ -6,43 +6,31 @@ Estado global: **TODO** (nada completado).
 
 ---
 
-## 1. Pagos: MercadoPago → TAB (¿o Culqi?)
+## 1. Pagos: MercadoPago → Stripe (DECIDIDO)
 
-### Veredicto de viabilidad de TAB (investigado, jul 2026)
-- **No viable para integración API-driven en este momento**: TAB no publica API REST ni documentación de desarrollador (mapa del sitio verificado: solo existe la página de "integrations"). Su modelo público es **widget embebido + conectores no-code + VCCs** ("integra sin desarrollador").
-- El flujo actual del repo (Custom Checkout: backend devuelve datos de cobro y el frontend cobra con SDK + webhooks) **no se puede construir** sin acceso a su API privada. Solo sería viable si: (a) TAB les concede acceso API bajo contrato, o (b) aceptan usar su widget embebido en `book.astro` (pérdida del control del checkout y del contrato de datos actual).
-- **Acción recomendada antes de descartar**: un correo/chat a TAB preguntando por API REST + webhooks para desarrolladores. Hasta respuesta, el plan asume Culqi como destino.
+**Decisión (jul 2026): Stripe con LLC en EEUU (Stripe Atlas).** TAB descartado: sin API pública + costo similar o mayor.
 
-### Alternativa según el enfoque INTERNACIONAL del hotel (decidido: USD + tarjetas extranjeras + mínimas comisiones)
+### Por qué Stripe (para el enfoque internacional del hotel)
+- **2.9% + $0.30** flat en línea (+1% tarjetas internacionales), **USD directo** (el repo ya cobra USD → cero conversión).
+- Acepta todas las marcas: Visa, MC, Amex, Diners, Discover, JCB, UnionPay.
+- API de referencia: SDK PHP oficial, Stripe.js, webhooks firmados — patrón 1:1 con la arquitectura actual (Ports/Adapters).
 
-Análisis comparado (investigado, jul 2026):
+### Requisitos previos (fuera del repo)
+- [ ] Constituir LLC en EEUU vía **Stripe Atlas** (~$500 inicial + EIN) y revisar implicaciones fiscales con contador.
+- [ ] Crear cuenta Stripe y activar el modo de pago por tarjeta.
+- [ ] Obtener credenciales: `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET` (firmar en el dashboard: `whsec_...`).
 
-| Proveedor | Comisión (tarjeta extranjera) | Tarjetas | Moneda | Desde Perú sin entidad | Notas |
-|---|---|---|---|---|---|
-| **Stripe** (vía LLC EEUU) | **2.9% + $0.30** online (+1% intl) | Todas: Visa, MC, **Amex, Diners, Discover, JCB, UnionPay** | **USD**, 135+ divisas | ❌ requiere LLC (Stripe Atlas) | La mejor API del mercado, webhooks, SDKs — patrón idéntico al actual |
-| **TAB** | s/d (privado) | Internacional (diseñado para turismo) | USD | ✅ (si dan acceso API) | Enfocado a turismo pero **sin API pública** → bloqueado |
-| **PayPal** | 2–4.5% + fijo + margen de conversión | Visa, MC, Amex, Discover | USD/PEN | ✅ | Caro de facto (~$25–35 por $500) y retenciones; solo fallback |
-| **Culqi** (plan B anterior) | **4.99–5.49% + $0.30** extranjeras | Visa, MC (+Yape, efectivo) | **PEN** | ✅ | Muy caro para público extranjero y liquida soles → **descartado** para este enfoque |
-| **Niubiz** | ~3.45% +1% intl + setup S/300 + S/50/mes | Amex, Diners | **PEN** | ✅ | Caro en fijos, liquida soles |
-| **Izipay** | 3.95–4.09% extranjeras | Visa, MC | **PEN** | ✅ | Liquida soles |
-
-**Conclusión:** para cobrar a turistas internacionales en USD con la mayor cobertura de tarjetas y las menores comisiones:
-1. **Stripe (con LLC vía Stripe Atlas)** — la única con 2.9% flat, todas las marcas y USD; requiere constituir entidad en EEUU (costo único ~$500 + mantenimiento anual; implicación fiscal a revisar con contador).
-2. **TAB** — si su equipo confirma acceso a API (ideal por ser travel-first, con VCCs y USD), gana por no requerir LLC; sigue bloqueado a su respuesta.
-3. **PayPal** — plan C sin entidad legal, pero el más caro de facto.
-
-**Acción recomendada:** contactar TAB (1 correo) Y evaluar Stripe Atlas en paralelo; descartar Culqi/Niubiz/Izipay por liquidación en PEN y comisiones altas en tarjetas extranjeras.
-
-### Tareas (Stripe o TAB, según decisión)
-- [ ] **Bloqueante 1**: correo a TAB → ¿API REST + webhooks para desarrolladores? ¿credenciales sandbox? (si sí → TAB es el ganador, sin LLC).
-- [ ] **Bloqueante 2**: decidir si se constituye LLC en EEUU para Stripe (Stripe Atlas ~$500) — requiere aprobación del usuario y revisión fiscal/contable.
-- [ ] Con proveedor elegido: crear adapter (`StripeAdapter` o `TabAdapter`) implementando `PaymentGatewayPortInterface`.
-- [ ] Refactor `CreateBookingAction`: devolver los datos de checkout del proveedor (sustituir `cart_id`/`access_token`/`mp_public_key`/`gateway_price`).
-- [ ] Frontend (`src/pages/book.astro`): SDK del proveedor (Stripe.js / SDK TAB) — Stripe.js mantiene el patrón actual casi 1:1.
-- [ ] Webhooks: adaptar `HandleMercadoPagoWebhookAction` → webhook del proveedor con verificación de firma (Stripe: `stripe-signature`).
-- [ ] Moneda: **USD directo** con Stripe (el precio ya está en USD en el repo — sin conversión).
-- [ ] Limpiar: quitar `mercadopago/dx-php` de `composer.json`, borrar adapters/vistas viejos de MP.
-- [ ] Pruebas en sandbox: pago exitoso, rechazado, expirado, reembolso y flujo completo de reserva (Stripe test cards: 4242…).
+### Tareas técnicas (en el repo)
+- [ ] `composer require stripe/stripe-php` (última estable; API moderna: `StripeClient` + servicios, no el estilo legacy de `Stripe::setApiKey`).
+- [ ] `.env`: agregar las 3 credenciales de Stripe (nunca literales en código).
+- [ ] Crear `StripeAdapter` en `app/Features/Shared/Adapters/` implementando `PaymentGatewayPortInterface` (sustituir `MercadoPagoAdapter`). Inicializar `new StripeClient(['api_key' => ..., 'stripe_version' => ...])` con valores de `.env`.
+- [ ] Refactor `CreateBookingAction`: crear `PaymentIntent` con `amount` (en **centavos** de USD), `currency => 'usd'`, `automatic_payment_methods => ['enabled' => true, 'allowed' => ['card']]`, `metadata` con el id de reserva provisional; devolver `client_secret` (sustituir `cart_id`/`access_token`/`mp_public_key`/`gateway_price`).
+- [ ] Frontend (`src/pages/book.astro`): **Stripe.js + Payment Element** — `stripe.confirmPayment({ clientSecret, ... })`; reemplazar el SDK de MercadoPago.
+- [ ] Webhooks: adaptar `HandleMercadoPagoWebhookAction` → `Webhook::constructEvent($payload, $header['stripe-signature'], $secret)` (HMAC-SHA256, tolerancia 300s). Eventos: `payment_intent.succeeded`, `payment_intent.payment_failed`, `payment_intent.canceled`.
+- [ ] Confirmar orden: al `payment_intent.succeeded` → `ConfirmQloAppsOrderListener` (ya existe; solo cambia el disparador) + sync con Channex.
+- [ ] Tests locales de webhook: **Stripe CLI** (`stripe listen --forward-to localhost:8000/api/webhooks/stripe`) — no depender de URLs públicas.
+- [ ] Pruebas: tarjetas de test de Stripe (`4242 4242 4242 4242` = éxito; `4000 0000 0000 0002` = declinada; `4000 0025 0000 3155` = requires auth/3DS), flujo completo de reserva, reembolso (`paymentIntents->refund` o API de reembolsos).
+- [ ] Limpiar: quitar `mercadopago/dx-php` de `composer.json`, borrar `MercadoPagoAdapter` y vistas/flujo viejos de MP.
 
 ## 2. Channel Manager: Channex → Nobeds
 

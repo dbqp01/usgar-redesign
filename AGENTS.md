@@ -17,7 +17,7 @@ Sitio web transaccional del hotel boutique Usgar (San Pedro, Cusco, Perú): rese
 
 ## Migraciones EN CURSO (importante)
 
-Hay un plan de migración pendiente: MercadoPago→TAB, Channex→Nobeds, QloApps→Filament PHP. **Ver `docs/MIGRATION_PLAN.md`. Nada de eso está hecho.** No implementes pasos del plan por tu cuenta: el código actual sigue siendo MP+Channex+QloApps. Si el usuario pide algo del plan, consulta el archivo y trabaja solo lo que marque.
+Hay un plan de migración pendiente: MercadoPago→**Stripe** (decidido), Channex→Nobeds, QloApps→Filament PHP. **Ver `docs/MIGRATION_PLAN.md`. Nada de eso está hecho.** No implementes pasos del plan por tu cuenta: el código actual sigue siendo MP+Channex+QloApps. Si el usuario pide algo del plan, consulta el archivo y trabaja solo lo que marque.
 
 ## Estructura (dónde está cada cosa)
 
