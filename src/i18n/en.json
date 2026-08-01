@@ -229,6 +229,8 @@
   },
   "book": {
     "stepFinal": "Final Step",
+    "checkingAvailability": "Checking availability…",
+    "available": "available",
     "title": "Book Your Stay",
     "subtitle": "Please enter the primary guest details and confirm your dates to proceed to secure checkout.",
     "stayDetails": "Stay Details",

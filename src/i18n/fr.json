@@ -46,7 +46,7 @@
   "room": {
     "about": "A propos de la chambre",
     "amenities": "Services et conforts",
-    "includedFree": "KEEP",
+    "includedFree": "Inclus sans frais supplementaires",
     "marquee1": "San Pedro",
     "marquee2": "Cusco",
     "marquee3": "Machu Picchu",
@@ -233,6 +233,8 @@
   },
   "book": {
     "stepFinal": "Etape Finale",
+    "checkingAvailability": "Verification de la disponibilite…",
+    "available": "disponibles",
     "title": "Finalisez Votre Reservation",
     "subtitle": "Veuillez saisir les coordonnees du voyageur principal et confirmer vos dates pour proceder au paiement securise.",
     "stayDetails": "Details du Sejour",
@@ -358,7 +360,7 @@
     "elevatedExperience": "EXPERIENCE COMPLETE",
     "alsoIncluded": "Aussi inclus :",
     "night": "nuit",
-    "includedFree": "KEEP",
+    "includedFree": "Inclus sans frais supplementaires",
     "marquee1": "San Pedro",
     "marquee2": "Cusco",
     "marquee3": "Machu Picchu",

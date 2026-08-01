@@ -207,8 +207,8 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
                         <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark line-clamp-2 leading-relaxed">
                           {r.description[lang]}
                         </p>
-                        <span data-room-qty-slug={r.slug} class="available-qty-badge ml-2 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 whitespace-nowrap">
-                          5 disponibles
+                        <span data-room-qty-slug={r.slug} class="available-qty-badge ml-2 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 whitespace-nowrap opacity-0 transition-opacity duration-300">
+                          {t('book.checkingAvailability')}
                         </span>
                       </div>
                       <div class="flex items-center justify-center sm:justify-start gap-3 mt-3 text-[10px] text-text-secondary-dark font-semibold uppercase tracking-wider">
@@ -557,7 +557,7 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
 
 <script src="https://sdk.mercadopago.com/js/v2" is:inline></script>
 
-<script is:inline define:vars={{ serializedRooms: JSON.stringify(rooms.map(r => ({ id: r.id, slug: r.slug, name: r.name, pricePerNight: r.pricePerNight, beds: r.beds, baseOccupancy: r.baseOccupancy, extraGuestCharge: r.extraGuestCharge, maxGuests: r.maxGuests }))), serializedLabels: JSON.stringify({ nights: t('book.nights'), night: t('book.night'), guest: t('booking.guest'), guests: t('booking.guests_plural'), selected: t('book.selected'), select: t('book.select'), fillAllFields: t('book.fillAllFields'), invalidEmail: t('book.invalidEmail'), processing: t('book.processing'), confirmAndPay: t('book.confirmAndPay'), noPaymentUrl: t('book.noPaymentUrl'), unexpectedError: t('book.unexpectedError') }) }}>
+<script is:inline define:vars={{ serializedRooms: JSON.stringify(rooms.map(r => ({ id: r.id, slug: r.slug, name: r.name, pricePerNight: r.pricePerNight, beds: r.beds, baseOccupancy: r.baseOccupancy, extraGuestCharge: r.extraGuestCharge, maxGuests: r.maxGuests }))), serializedLabels: JSON.stringify({ nights: t('book.nights'), night: t('book.night'), guest: t('booking.guest'), guests: t('booking.guests_plural'), selected: t('book.selected'), select: t('book.select'), fillAllFields: t('book.fillAllFields'), invalidEmail: t('book.invalidEmail'), processing: t('book.processing'), confirmAndPay: t('book.confirmAndPay'), noPaymentUrl: t('book.noPaymentUrl'), unexpectedError: t('book.unexpectedError'), available: t('book.available') }) }}>
   // Parse server-serialized data (single source of truth)
   window.__ROOMS_DATA = JSON.parse(serializedRooms);
   window.__LABELS = JSON.parse(serializedLabels);
@@ -807,11 +807,12 @@ import type { Locale } from '@/i18n/utils';
               const badge = document.querySelector(`[data-room-qty-slug="${slug}"]`);
               if (badge) {
                 const qty = r.available_qty ?? 0;
-                badge.textContent = `${qty} disponibles`;
+                badge.textContent = `${qty} ${L.available}`;
+                const visibilityClass = ' opacity-100';
                 if (qty === 0) {
-                  badge.className = 'available-qty-badge ml-2 text-[10px] font-mono font-bold text-red-600 dark:text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20 whitespace-nowrap';
+                  badge.className = 'available-qty-badge ml-2 text-[10px] font-mono font-bold text-red-600 dark:text-red-400 bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20 whitespace-nowrap transition-opacity duration-300' + visibilityClass;
                 } else {
-                  badge.className = 'available-qty-badge ml-2 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 whitespace-nowrap';
+                  badge.className = 'available-qty-badge ml-2 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 whitespace-nowrap transition-opacity duration-300' + visibilityClass;
                 }
               }
             });
