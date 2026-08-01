@@ -6,35 +6,12 @@ Estado global: **TODO** (nada completado).
 
 ---
 
-## 1. Pagos: MercadoPago → Payoneer Checkout (DECIDIDO)
+## 1. Pagos: MercadoPago — SE MANTIENE (sin migración de pasarela)
 
-**Decisión (jul 2026): Payoneer Checkout — sin entidad legal, menor comisión de las opciones plug-and-play desde Perú, y liquidación USD directa.** Stripe+LLC (Stripe Atlas, ~$900 año 1) descartado por ahora: no se conoce el volumen del hotel y el break-even de la LLC (~$700/año ÷ $5.64 de ahorro por reserva ≈ 125 reservas/año) no se justifica sin ese dato. TAB sin API pública.
+**Decisión (jul 2026): no migrar.** Análisis comparado con tarifas oficiales 2026: MercadoPago (3.29-3.49% + S/1 + IGV → ~4.1% efectivo, S/0 setup/mensualidad, retiros gratis) es la mejor opción sin entidad legal desde Perú; cumple el criterio del usuario ("se asume ~4% si funciona, está documentada y no tiene cobros raros posteriores"). Las alternativas fallan: PayPal Perú 4.4-5.4%, Culqi ~4.7% efectivo en internacionales, Payoneer Checkout requiere entidad HK + $20k/mes, Stripe exige LLC (~$900 año 1).
 
-### Por qué Payoneer Checkout
-- **Tarjeta: hasta 3.99% + $0.49** (mínimo $1 en pagos <$100) — la menor de las opciones sin entidad desde Perú (PayPal ≈ 4.4-6% efectivo; MercadoPago 4-5% + conversión).
-- **Liquidación en USD/EUR sin comisión de conversión** (1.5% solo otras divisas), T+2. El repo ya cobra USD → cero conversión.
-- Acepta Visa, Mastercard, **Amex** + métodos locales, 120+ divisas. Sin setup fees ni mensualidad ("pay as you go").
-- API REST oficial (Checkout API) + webhooks de pago; opciones **hosted payment page** (redirección, más simple) o **embedded payment page** (formulario embebido, patrón similar al actual).
-- Retiros a banco en Perú vía cuenta Payoneer normal (Payoneer opera en Perú).
-
-### ⚠️ Bloqueante 1 (fuera del repo) — confirmar elegibilidad ANTES de tocar código
-- [ ] Solicitar **Payoneer Checkout** desde la cuenta Payoneer peruana (la solicitud es **gratis**; el FAQ oficial indica que arrancó solo para entidades de APAC/Hong Kong y se extiende gradualmente — confirmar que aceptan Perú y el vertical hotel/travel, que pasa revisión de riesgo "subject to full risk assessment").
-- [ ] Si Payoneer Checkout rechaza/indispone Perú → **fallback**: PayPal Perú (funciona desde Perú, USD, REST API + webhooks; más caro ~4.4%+intl y con riesgo de holds) o mantener MercadoPago. Decidir al momento de la respuesta, no antes.
-- [ ] Obtener credenciales de sandbox y luego producción (API key / merchant id).
-
-### Tareas técnicas (en el repo)
-- [ ] `.env`: credenciales de Payoneer Checkout (API key, ids de store) — nunca literales en código.
-- [ ] Crear `PayoneerAdapter` en `app/Features/Shared/Adapters/` implementando `PaymentGatewayPortInterface` (sustituir `MercadoPagoAdapter`). Verificar docs oficiales de la Checkout API (hosted vs embedded) durante la implementación.
-- [ ] Refactor `CreateBookingAction`: crear el checkout/pago en Payoneer (monto USD en **centavos**, `metadata` con id de reserva provisional); devolver `payment_url` (hosted) o los datos del embedded form (sustituir `cart_id`/`access_token`/`mp_public_key`/`gateway_price`).
-- [ ] Frontend (`src/pages/book.astro`): redirigir a la hosted payment page o embeker el formulario de pago; reemplazar el SDK de MercadoPago.
-- [ ] Webhooks: adaptar `HandleMercadoPagoWebhookAction` → webhook de Payoneer Checkout (verificar esquema de firma/secret en docs oficiales al implementar). Eventos: pago exitoso / fallido / reembolso.
-- [ ] Confirmar orden: al pago exitoso → `ConfirmQloAppsOrderListener` (ya existe; solo cambia el disparador) + sync con Channex.
-- [ ] Tests locales de webhook: exponer endpoint en local (ngrok/tunnel) o usar entorno de test de Payoneer.
-- [ ] Pruebas: tarjetas de test de Payoneer sandbox (éxito, declinada, 3DS si aplica), flujo completo de reserva, reembolso.
-- [ ] Limpiar: quitar `mercadopago/dx-php` de `composer.json`, borrar `MercadoPagoAdapter` y vistas/flujo viejos de MP.
-
-### Nota a mediano plazo (no bloqueante)
-Stripe sigue siendo el mejor a largo plazo si el volumen sube (~10+ reservas online/mes lo justifican) o si se necesita cobertura Diners/Discover/JCB/UnionPay. No requiere acción ahora; reevaluar cuando haya datos de volumen.
+- [ ] **Reevaluar Stripe + LLC cuando existan ~6 meses de datos de volumen** (break-even ~10-12 reservas online/mes; 2.9% + $0.30 es el único <4% real).
+- [ ] Los problemas reportados con MP (falta de comunicación, residuos de Checkout Pro) **no se resuelven cambiando de pasarela**: se resuelven en la refactorización (sección 4) — aislar SDK, limpiar flujo viejo, tests de caracterización.
 
 ## 2. Channel Manager: Channex → Nobeds
 
@@ -69,6 +46,22 @@ Stripe sigue siendo el mejor a largo plazo si el volumen sube (~10+ reservas onl
 - [ ] Deploy Hostinger: Laravel en hosting compartido (ajustes: public/, rutas, artisan optimize).
 - [ ] Pruebas: portar `phpunit.xml` + `api-harness.php` a tests Laravel; mantener Playwright.
 
+## 4. Refactorización completa del código (transversal, PENDIENTE)
+
+**Objetivo:** eliminar deuda acumulada antes de tocar las migraciones 2 y 3: integración de pagos con residuos del flujo Checkout Pro (se migró a Checkout API), "falta de comunicación" entre capas (webhooks/confirmaciones que no llegan), y en general estructura ADR desprolija. Multi-sesión, sin dependencia de memoria.
+
+### Método (contrato de no-regresión)
+- [ ] **Línea base ANTES de tocar nada**: correr la suite de tests existente + linter + smoke test de arranque; documentar qué pasa y qué falla. Toda sesión verifica que la línea base no empeora.
+- [ ] **Memoria entre sesiones** en `docs/refactoring/`: `PLAN.md` (roadmap por paquetes de trabajo), `STATE.md` (handoff: hecho/en curso/siguiente), `DECISIONS.md` (decisiones y por qué). Regla: cada sesión empieza leyendo `STATE.md` y termina actualizándolo + commit descriptivo.
+- [ ] Registrar decisiones y deuda detectada en el memory MCP (persistencia fuera del repo).
+- [ ] **Paquetes de trabajo de 1-2 sesiones**, cada uno con criterio "done" verificable (tests + línea base intacta); prioridad riesgo×impacto. No agregar features nuevas durante el refactor.
+
+### Paquetes semilla (expandir en PLAN.md tras auditoría real)
+- [ ] **Pagos MP**: tests de caracterización con mocks del SDK (fijar comportamiento actual); aislar SDK detrás de `PaymentGatewayPortInterface` ya existente; **eliminar residuos del flujo Checkout Pro viejo** (auditar qué campos/flujo quedaron: `cart_id`, `access_token`, `checkout_pro`…); diagnosticar la "falta de comunicación" (revisar `HandleMercadoPagoWebhookAction`, listeners y confirmación de órdenes).
+- [ ] **Comunicación entre capas**: formalizar reglas de dependencia ADR (qué capa llama a cuál), eliminar saltos ilegales, centralizar manejo de errores.
+- [ ] **Higiene**: quitar dead code, dependencias no usadas, archivos generados; unificar convenciones.
+- [ ] (Cada hallazgo de auditoría agrega un paquete con su criterio de done.)
+
 ---
 
 ## Reglas del plan
@@ -76,4 +69,4 @@ Stripe sigue siendo el mejor a largo plazo si el volumen sube (~10+ reservas onl
 - Marcar `[x]` solo cuando esté hecho y verificado (tests pasando).
 - No mezclar migraciones en un mismo commit: una migración = una serie de commits `feat(migration-<nombre>):`.
 - Al terminar cada bloque: actualizar README y borrar esta sección completada.
-- Cualquier dependencia nueva (Laravel, Filament, SDK Payoneer, Nobeds) documentar versión exacta.
+- Cualquier dependencia nueva (Laravel, Filament, SDK MercadoPago, Nobeds) documentar versión exacta.

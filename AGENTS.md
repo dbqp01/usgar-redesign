@@ -17,7 +17,11 @@ Sitio web transaccional del hotel boutique Usgar (San Pedro, Cusco, Perú): rese
 
 ## Migraciones EN CURSO (importante)
 
-Hay un plan de migración pendiente: MercadoPago→**Payoneer Checkout** (decidido), Channex→Nobeds, QloApps→Filament PHP. **Ver `docs/MIGRATION_PLAN.md`. Nada de eso está hecho.** No implementes pasos del plan por tu cuenta: el código actual sigue siendo MP+Channex+QloApps. Si el usuario pide algo del plan, consulta el archivo y trabaja solo lo que marque.
+Hay un plan de trabajo pendiente (ver `docs/MIGRATION_PLAN.md`). **Nada de eso está hecho.** No implementes pasos del plan por tu cuenta: el código actual sigue siendo MP+Channex+QloApps. Si el usuario pide algo del plan, consulta el archivo y trabaja solo lo que marque. Estado actual de las decisiones:
+- **Pagos: MercadoPago SE MANTIENE** — no hay migración de pasarela (Stripe+LLC solo se reevaluará con datos de volumen).
+- **Channel manager**: Channex → Nobeds (pendiente).
+- **CMS/PMS**: QloApps → Filament PHP (pendiente, decisión de arquitectura Laravel sin definir).
+- **Refactorización completa del código**: pendiente (sección 4 del plan) — incluye limpiar residuos del flujo Checkout Pro de MercadoPago y la falta de comunicación entre capas.
 
 ## Estructura (dónde está cada cosa)
 
