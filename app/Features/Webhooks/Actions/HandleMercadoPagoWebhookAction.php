@@ -12,12 +12,7 @@ use App\Core\BookingStatus;
 use App\Core\Events\EventDispatcher;
 use App\Features\Booking\Domain\Events\BookingPaidEvent;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
-use App\Features\Shared\Ports\PmsPortInterface;
 use App\Features\Shared\Ports\PaymentGatewayPortInterface;
-use App\Features\Shared\Ports\ChannelManagerPortInterface;
-use App\Features\Shared\Adapters\QloAppAdapter;
-use App\Features\Shared\Adapters\MercadoPagoAdapter;
-use App\Features\Shared\Adapters\ChannexAdapter;
 use PDO;
 use Exception;
 
@@ -28,20 +23,17 @@ use Exception;
  */
 class HandleMercadoPagoWebhookAction {
     private PDO $pdo;
-    private PmsPortInterface $pms;
     private PaymentGatewayPortInterface $paymentGateway;
     private ProvisionalBookingRepository $bookingRepo;
     private EventDispatcher $eventDispatcher;
 
     public function __construct(
         PDO $pdo,
-        PmsPortInterface $pms,
         PaymentGatewayPortInterface $paymentGateway,
         ProvisionalBookingRepository $bookingRepo,
         EventDispatcher $eventDispatcher
     ) {
         $this->pdo = $pdo;
-        $this->pms = $pms;
         $this->paymentGateway = $paymentGateway;
         $this->bookingRepo = $bookingRepo;
         $this->eventDispatcher = $eventDispatcher;

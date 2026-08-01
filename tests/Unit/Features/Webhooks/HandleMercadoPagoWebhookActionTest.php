@@ -10,7 +10,6 @@ use App\Core\Events\EventDispatcher;
 use App\Features\Webhooks\Actions\HandleMercadoPagoWebhookAction;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
 use App\Features\Shared\Ports\PaymentGatewayPortInterface;
-use App\Features\Shared\Ports\PmsPortInterface;
 use PDO;
 
 /**
@@ -20,7 +19,6 @@ use PDO;
  */
 final class HandleMercadoPagoWebhookActionTest extends TestCase {
     private PDO $pdo;
-    private PmsPortInterface $pms;
     private PaymentGatewayPortInterface $paymentGateway;
     private ProvisionalBookingRepository $bookingRepo;
     private EventDispatcher $eventDispatcher;
@@ -36,14 +34,12 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
         $this->pdo->method('commit')->willReturn(true);
         $this->pdo->method('inTransaction')->willReturn(false);
 
-        $this->pms = $this->createMock(PmsPortInterface::class);
         $this->paymentGateway = $this->createMock(PaymentGatewayPortInterface::class);
         $this->bookingRepo = $this->createMock(ProvisionalBookingRepository::class);
         $this->eventDispatcher = $this->createMock(EventDispatcher::class);
 
         $this->action = new HandleMercadoPagoWebhookAction(
             $this->pdo,
-            $this->pms,
             $this->paymentGateway,
             $this->bookingRepo,
             $this->eventDispatcher

@@ -313,24 +313,6 @@ parameters:
 			path: app/Features/Auth/User.php
 
 		-
-			message: '#^Call to function is_array\(\) with array\<string, mixed\> will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 2
-			path: app/Features/Booking/Actions/CreateBookingAction.php
-
-		-
-			message: '#^Property App\\Features\\Booking\\Actions\\CreateBookingAction\:\:\$paymentGateway is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: app/Features/Booking/Actions/CreateBookingAction.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: app/Features/Booking/Actions/CreateBookingAction.php
-
-		-
 			message: '#^Method App\\Features\\Booking\\Domain\\Events\\BookingPaidEvent\:\:__construct\(\) has parameter \$guestData with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -555,11 +537,5 @@ parameters:
 		-
 			message: '#^Method App\\Features\\Webhooks\\Actions\\HandleMercadoPagoWebhookAction\:\:sanitizeForLog\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php
-
-		-
-			message: '#^Property App\\Features\\Webhooks\\Actions\\HandleMercadoPagoWebhookAction\:\:\$pms is never read, only written\.$#'
-			identifier: property.onlyWritten
 			count: 1
 			path: app/Features/Webhooks/Actions/HandleMercadoPagoWebhookAction.php
