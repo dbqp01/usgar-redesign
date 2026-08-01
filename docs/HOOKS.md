@@ -58,3 +58,7 @@ git commit -m "chore: video"
 - **ffmpeg no encontrado**: instalar ffmpeg (`winget install Gyan.FFmpeg`) y reiniciar la terminal; el hook avisará y continuará sin comprimir videos.
 - **sharp no encontrado**: `npm install` en la raíz; el hook avisará y continuará sin comprimir imágenes.
 - **Commit falla con error del hook**: el hook solo imprime advertencias (exit 0 siempre); si el commit falla, revisar el mensaje completo (puede ser `--no-verify` o un error previo al hook).
+
+### Limitación conocida: commits vía servidores MCP de git
+
+El servidor MCP de git (`git_git_commit`) ejecuta los hooks invocando `bash` explícitamente; en esta máquina `bash` resuelve al relay de WSL (`C:\Windows\System32\bash.exe`) que falla con `execvpe(/bin/bash) failed`, **independientemente del contenido del hook** (probado con shebangs `#!/bin/sh` y `#!/usr/bin/env powershell`). El commit desde terminal/PowerShell funciona correctamente. Si se usa el MCP de git, ejecutar el commit con `git commit --no-verify` desde la terminal, o usar otra herramienta de commit (el hook ya se ejecutó y validó por terminal).

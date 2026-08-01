@@ -43,15 +43,22 @@
 - `scripts/create_processed_payments_table.sql`: duplicaba el schema con `created_at` y PK en payment_id → unificado con `ProvisionalBookingRepository::ensureTablesExist()` (`id` AI + `payment_id` UNIQUE + `processed_at`). La tabla vieja de producción sigue siendo funcionalmente compatible (INSERT no usa `processed_at`); el script es la definición canónica para instalaciones nuevas (commit `65d7751`).
 
 ## En curso / pendiente (F2)
-- [ ] **Webhook MP en panel**: registrar (MCP `save_webhook` o manual) + verificar entrega con un pago de prueba — requiere confirmación del usuario.
+- [ ] **Webhook MP en panel — REGISTRADO (2026-08-01)**: app `8501374849722569`, callback prod/sandbox `https://usgarhoteles.com/api/webhook`, topic `payment` (vía MCP `save_webhook`). La app ya tenía webhook creado (2026-07-13) pero `notifications_history` estaba vacío → nunca recibió eventos. **ACCIÓN DEL USUARIO**: verificar que `MERCADO_PAGO_WEBHOOK_SECRET` del `.env` sea idéntico al secreto del panel (developers/panel/app/8501374849722569/webhooks); luego probar con un pago sandbox y confirmar entrega en `notifications_history`.
 - [ ] `success.astro` 3 estados (confirmado / pendiente / verificando) — refactor PLAN P6-1.
 - [ ] Logging diagnóstico pesado en `HandleMercadoPagoWebhookAction` (bloque "WEBHOOK DIAGNOSTICS"): reducirlo a un log conciso UNA VEZ que el webhook esté verificado funcionando.
 - [ ] DIP restante (P3-1): constructores nullable en actions; CSP duplicada (P4-3: .htaccess vs Middleware).
 
+## Hook pre-commit (2026-08-01) — reescrito y VERIFICADO
+- Causa: `.githooks/pre-commit` (sh) fallaba en esta máquina — `sh` del PATH (shim scoop) delegaba en el relay WSL (`execvpe(/bin/bash) failed`).
+- Solución: hook reescrito en **PowerShell puro** (Windows PowerShell 5.1) con shebang `#!/usr/bin/env powershell`; misma lógica (mp4 → ffmpeg con tag USGAR_COMPRESSED; imágenes → `node scripts/compress-images.js`; re-stage; nunca bloquea el commit). Docs: `docs/HOOKS.md`.
+- Verificación con evidencia: commit real con PNG 40x40 staged → blob commiteado **difiere** del PNG fresco (hash SHA256 distinto) → sharp re-encodeó vía el hook; `GIT_TRACE=1` confirma `start_command: .githooks/pre-commit` (~5s = arranque PowerShell). Commits posteriores OK por terminal.
+- **Limitación**: el servidor MCP de git (`git_git_commit`) falla con CUALQUIER hook (ejecuta `bash` → relay WSL). Los commits se hacen por terminal (bash tool). Documentado en `docs/HOOKS.md`.
+- Commit: `3a5b50c` (hook + HOOKS.md), `b6555e4`/`bb15b4c` (fixture de prueba ida y vuelta).
+
 ## Notas de entorno (Windows)
 - `npm run test:php` puede dejar zombies `php -S 127.0.0.1:8089` si se interrumpe; limpiar con `Stop-Process` o matando listeners de 8089.
-- WIP sin commitear del usuario (NO tocar): `app/Core/Container.php`, `app/bootstrap.php`, `scripts/dev.js`.
-- **Pre-commit hook roto en este entorno**: `.githooks/pre-commit` requiere WSL bash inexistente → commits con `--no-verify`. Opción: reescribir el hook en PowerShell (pendiente, confirmar con el usuario).
+- WIP sin commitear del usuario (NO tocar): `app/Core/Container.php`, `app/bootstrap.php`, `scripts/dev.js`. **Ojo**: hay una sesión paralela tocando el frontend F4 (`src/pages/book.astro`, `src/components/booking/PaymentStep.astro`, `tests/e2e/internals.spec.ts`, `tests/e2e/wizard-flow.spec.ts`) — no pisar; stagear solo lo propio al commitear.
+- **Hook pre-commit**: ahora PowerShell (funciona por terminal). El MCP de git (`git_git_commit`) NO puede ejecutar hooks en esta máquina (usa bash→WSL) → commits por terminal (bash tool).
 
 ## Siguiente
 - F2: confirmar registro de webhook MP (1 decisión del usuario) → completar P6-1/P3-1/P4-3.

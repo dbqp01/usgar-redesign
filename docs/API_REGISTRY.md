@@ -132,7 +132,14 @@ Procesa el pago con tarjeta vía Checkout API (Custom Checkout). Verifica `acces
 
 **Nota:** Ambas rutas `/api/webhook` y `/api/webhook-mercado-pago` apuntan al mismo Action (compatibilidad).
 
-**Env vars:** `MP_WEBHOOK_SECRET`, `CHANNEX_WEBHOOK_TOKEN`
+**Configuración del webhook en el panel de MercadoPago (registrada 2026-08-01):**
+
+- App: `8501374849722569` ("usgar test").
+- Callback (producción y sandbox): `https://usgarhoteles.com/api/webhook` — topics: `payment` (+ tópicos por defecto de la app).
+- ⚠️ **Verificar que `MERCADO_PAGO_WEBHOOK_SECRET` del `.env` sea EXACTO al secreto del panel** (developers/panel/app/8501374849722569/webhooks). Si no coincide, la validación de firma HMAC en `HandleMercadoPagoWebhookAction` rechazará todos los webhooks (HTTP 401).
+- Diagnóstico: `mercadopago-mcp-server_notifications_history` (app 8501374849722569). Al 2026-08-01 no había notificaciones registradas → probablemente el webhook nunca recibió eventos o el callback anterior era incorrecto; probar con un pago real/sandbox tras verificar el secreto.
+
+**Env vars:** `MERCADO_PAGO_WEBHOOK_SECRET` (nombre real en el código; `MP_WEBHOOK_SECRET` era el nombre viejo), `CHANNEX_WEBHOOK_TOKEN`
 
 ---
 
