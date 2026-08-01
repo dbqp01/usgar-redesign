@@ -12,7 +12,6 @@ console.log(' Iniciando entorno de desarrollo completo (Astro + PHP API)...\n');
 const phpServer = spawn('php', ['-S', 'localhost:8000', 'public/index.php'], {
   cwd: rootDir,
   stdio: 'inherit',
-  shell: true,
 });
 
 phpServer.on('error', (err) => {
@@ -20,11 +19,12 @@ phpServer.on('error', (err) => {
 });
 
 // 2. Iniciar Astro dev server en puerto 4321
-const astroServer = spawn('npx', ['astro', 'dev'], {
-  cwd: rootDir,
-  stdio: 'inherit',
-  shell: true,
-});
+const isWin = process.platform === 'win32';
+const astroServer = spawn(
+  isWin ? 'cmd.exe' : 'npx',
+  isWin ? ['/c', 'npx', 'astro', 'dev'] : ['astro', 'dev'],
+  { cwd: rootDir, stdio: 'inherit' }
+);
 
 astroServer.on('error', (err) => {
   console.error(' Error al iniciar Astro dev server:', err.message);

@@ -52,6 +52,8 @@ $container->bind(ChannelManagerPortInterface::class, fn($c) => new ChannexAdapte
 // PMS requiere BD — solo registrar si hay conexion disponible
 if ($dbConnection !== null) {
     $container->bind(PmsPortInterface::class, fn($c) => new QloAppAdapter($c->get(PDO::class)));
+} else {
+    $container->bind(PmsPortInterface::class, fn($c) => new QloAppAdapter(null));
 }
 
 // Listeners de dominio (webhook -> PMS / Channel Manager) con DIP desde el container

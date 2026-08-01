@@ -73,7 +73,17 @@ class Container implements ContainerInterface {
             $type = $parameter->getType();
             if ($type && !$type->isBuiltin()) {
                 $dependencyClassName = $type->getName();
-                $dependencies[] = $this->get($dependencyClassName);
+                try {
+                    $dependencies[] = $this->get($dependencyClassName);
+                } catch (NotFoundException|ContainerException $e) {
+                    if ($parameter->isDefaultValueAvailable()) {
+                        $dependencies[] = $parameter->getDefaultValue();
+                    } elseif ($parameter->allowsNull()) {
+                        $dependencies[] = null;
+                    } else {
+                        throw $e;
+                    }
+                }
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $dependencies[] = $parameter->getDefaultValue();
             } elseif ($parameter->allowsNull()) {
