@@ -1,16 +1,13 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/../app/Core/Autoloader.php';
+// Bootstrap compartido: autoloaders, Config, Container, bindings y listeners de dominio.
+require_once __DIR__ . '/../app/bootstrap.php';
 
 use App\Core\Database;
 use App\Core\Logger;
 use App\Core\Events\EventDispatcher;
 use App\Core\Events\EventInterface;
-
-// Boot application dependencies
-// Depending on how USGAR initializes, we just need DB and Logger.
-// Autoloader should handle the rest.
 
 $pdo = Database::getInstance()->getConnection();
 if ($pdo === null) {
@@ -49,16 +46,6 @@ try {
     }
 
     $dispatcher = EventDispatcher::getInstance();
-    
-    // NOTA: Para que el cron sepa qué listeners hay, normalmente necesitamos inicializar
-    // la registración de eventos de la aplicación.
-    // Asumiremos que index.php o AppRunner inicializa esto, o bien registramos los listeners si es necesario.
-    // Vamos a buscar un bootstrapper si existe, o solo confiamos en autoloaders (si autoload registra solos).
-    // Si no están registrados, $dispatcher->dispatchNow no hará nada.
-    $bootstrapFile = __DIR__ . '/../app/bootstrap.php';
-    if (file_exists($bootstrapFile)) {
-        require_once $bootstrapFile;
-    }
 
     foreach ($events as $row) {
         $id = $row['id'];

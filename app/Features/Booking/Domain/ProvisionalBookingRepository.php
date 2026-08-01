@@ -263,4 +263,52 @@ class ProvisionalBookingRepository {
             return 0;
         }
     }
+
+    /**
+     * Reservas provisionales pendientes con payment_id registrado (para reconciliacion).
+     * Devuelve solo holds aun no expirados.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function getPendingHoldsWithPaymentId(): array {
+        if (!$this->pdo) return [];
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT * FROM provisional_bookings
+                WHERE status = 'pending'
+                  AND payment_id IS NOT NULL
+                  AND payment_id <> ''
+                  AND expires_at > NOW()
+                LIMIT 50
+            ");
+            $stmt->execute();
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($rows as &$row) {
+                if (!empty($row['guest_data']) && is_string($row['guest_data'])) {
+                    $row['guest_data'] = json_decode($row['guest_data'], true) ?: [];
+                }
+                if (!empty($row['room_data']) && is_string($row['room_data'])) {
+                    $row['room_data'] = json_decode($row['room_data'], true) ?: [];
+                }
+            }
+            return $rows;
+        } catch (PDOException $e) {
+            Logger::error('ProvisionalBookingRepository::getPendingHoldsWithPaymentId Error: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Registra el payment_id de MercadoPago sobre un hold pendiente.
+     * Requiere la columna payment_id en provisional_bookings (migracion manual en produccion).
+     */
+    public function attachPaymentId(string $cartId, string $paymentId): bool {
+        try {
+            $stmt = $this->pdo->prepare("UPDATE provisional_bookings SET payment_id = :payment_id WHERE cart_id = :cartId");
+            return $stmt->execute([':payment_id' => $paymentId, ':cartId' => $cartId]);
+        } catch (PDOException $e) {
+            Logger::error('ProvisionalBookingRepository::attachPaymentId Error: ' . $e->getMessage());
+            return false;
+        }
+    }
 }

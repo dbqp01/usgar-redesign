@@ -6,22 +6,13 @@ if (PHP_SAPI !== 'cli') {
     ob_start();
 }
 
-// 1. Cargar el Autoloader de Composer si existe
-$vendorAutoload = dirname(__DIR__) . '/vendor/autoload.php';
-if (file_exists($vendorAutoload)) {
-    require_once $vendorAutoload;
-} elseif (file_exists(__DIR__ . '/vendor/autoload.php')) {
-    require_once __DIR__ . '/vendor/autoload.php';
-}
-
-// Cargar el Autoloader personalizado (Compatibilidad nativa con Hostinger sin Composer)
+// 1. Cargar Autoloaders (Composer + personalizado) y boot de la aplicacion
 // Backend PHP vive en app/ (separado de src/ que es exclusivo para Astro/frontend)
-if (file_exists(__DIR__ . '/../app/Core/Autoloader.php')) {
-    require_once __DIR__ . '/../app/Core/Autoloader.php';
-    \App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'app');
-} elseif (file_exists(__DIR__ . '/app/Core/Autoloader.php')) {
-    require_once __DIR__ . '/app/Core/Autoloader.php';
-    \App\Core\Autoloader::register(__DIR__ . DIRECTORY_SEPARATOR . 'app');
+$bootstrapFile = dirname(__DIR__) . '/app/bootstrap.php';
+if (file_exists($bootstrapFile)) {
+    require_once $bootstrapFile;
+} elseif (file_exists(__DIR__ . '/app/bootstrap.php')) {
+    require_once __DIR__ . '/app/bootstrap.php';
 } else {
     http_response_code(500);
     header('Content-Type: application/json');
@@ -29,9 +20,6 @@ if (file_exists(__DIR__ . '/../app/Core/Autoloader.php')) {
     exit;
 }
 
-use App\Core\Config;
-use App\Core\Container;
-use App\Core\Database;
 use App\Core\Request;
 use App\Core\Router;
 use App\Core\Middleware;
@@ -54,46 +42,18 @@ use App\Features\Auth\Actions\AuthMeAction;
 use App\Features\Auth\Actions\AuthLogoutAction;
 use App\Features\Auth\Actions\GetUserBookingsAction;
 
-// 2. Inicializar configuracion centralizada y Container PSR-11
-Config::boot();
-$container = Container::getInstance();
-$dbConnection = Database::getInstance()->getConnection();
-if ($dbConnection !== null) {
-    $container->set(PDO::class, $dbConnection);
-}
-
-use App\Features\Shared\Ports\PmsPortInterface;
-use App\Features\Shared\Ports\PaymentGatewayPortInterface;
-use App\Features\Shared\Ports\ChannelManagerPortInterface;
-use App\Features\Shared\Adapters\QloAppAdapter;
-use App\Features\Shared\Adapters\MercadoPagoAdapter;
-use App\Features\Shared\Adapters\ChannexAdapter;
-
-$container->bind(PmsPortInterface::class, fn($c) => clone new QloAppAdapter($c->get(PDO::class)));
-$container->bind(PaymentGatewayPortInterface::class, fn($c) => clone new MercadoPagoAdapter());
-$container->bind(ChannelManagerPortInterface::class, fn($c) => clone new ChannexAdapter());
-
-// 2.5 Registrar Event Listeners para el flujo Webhook → PMS/Channel Manager
-use App\Core\Events\EventDispatcher;
-use App\Features\Booking\Domain\Listeners\ConfirmQloAppsOrderListener;
-use App\Features\Booking\Domain\Listeners\SyncChannexBookingListener;
-
-$eventDispatcher = EventDispatcher::getInstance();
-$eventDispatcher->subscribe('booking.paid', new ConfirmQloAppsOrderListener());
-$eventDispatcher->subscribe('booking.paid', new SyncChannexBookingListener());
-
-// 3. Soporte para ejecuciones desde la linea de comandos (Cron Jobs)
+// 2. Soporte para ejecuciones desde la linea de comandos (Cron Jobs)
 if (PHP_SAPI === 'cli') {
     global $argv;
     $_SERVER['REQUEST_METHOD'] = 'POST';
     $_SERVER['REQUEST_URI'] = $argv[1] ?? '/api/cron/cleanup';
 }
 
-// 4. Instanciar Request y Router
+// 3. Instanciar Request y Router
 $request = new Request();
 $router = new Router();
 
-// 5. Configurar Middleware Pipeline (CORS, Security Headers, Rate Limit global)
+// 4. Configurar Middleware Pipeline (CORS, Security Headers, Rate Limit global)
 $middleware = new Middleware();
 $middleware
     ->add(Middleware::cors())
@@ -102,7 +62,7 @@ $middleware
 
 $router->setMiddleware($middleware);
 
-// 6. Registrar endpoints mapeados a Clases-Accion ADR (SRP extremo)
+// 5. Registrar endpoints mapeados a Clases-Accion ADR (SRP extremo)
 $router->get('/api/health',           HealthCheckAction::class);
 $router->get('/api/rooms',            GetRoomsAction::class);
 $router->post('/api/booking',         CreateBookingAction::class);
@@ -130,6 +90,6 @@ $router->get('/api/auth/logout',       AuthLogoutAction::class);
 $router->get('/api/user/bookings',     GetUserBookingsAction::class);
 $router->post('/api/user/profile',     UpdateUserProfileAction::class);
 
-// 7. Despachar la peticion actual
+// 6. Despachar la peticion actual
 $router->dispatch($request);
 

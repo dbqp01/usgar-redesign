@@ -130,6 +130,9 @@ class ProcessPaymentAction {
                     'message' => 'Pago aprobado exitosamente.'
                 ]);
             } else {
+                // Pago pendiente o rechazado: registrar payment_id para reconciliacion posterior
+                $this->bookingRepo->attachPaymentId($cartId, $paymentIdStr);
+
                 Response::json([
                     'success' => false,
                     'status' => $status,
