@@ -1,44 +1,53 @@
 ---
+// src/components/BookingWidget.astro
+// Widget de reserva de la HOME: aqui empieza la decision de fechas.
+// Calendario custom (mismo motor que el wizard: calendar.ts) en popover,
+// rango por clic, validacion con toasts y redirect a /book con parametros.
 import { rooms } from '../data/rooms';
-import { useTranslations } from '../i18n/utils';
-
-import type { Locale } from '../i18n/utils';
+import { useTranslations, type Locale } from '../i18n/utils';
 
 const lang = (Astro.currentLocale || 'en') as Locale;
-
 const t = useTranslations(lang);
 
 const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
 ---
 
-<section id="booking-widget" class="relative z-10 -mt-10 sm:-mt-24 mb-2 sm:mb-4" data-story-parallax="0.05">
+<section id="booking-widget" class="relative z-20 -mt-10 sm:-mt-24 mb-2 sm:mb-4" data-story-parallax="0.05">
   <div class="max-w-6xl mx-auto px-4">
     <div class="glass rounded-2xl p-6 shadow-xl shadow-black/5">
       <form id="booking-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
-        <!-- Check-in -->
-        <div>
-          <label for="checkin" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-            {t('booking.checkin')}
+        <!-- Dates (popover trigger) -->
+        <div class="relative">
+          <label for="widget-dates" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+            {t('booking.checkin')} - {t('booking.checkout')}
           </label>
-          <input
-            type="date"
-            id="checkin"
-            name="checkin"
-            class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-[border-color,box-shadow]"
-          />
-        </div>
+          <button
+            type="button"
+            id="widget-dates"
+            data-widget-dates
+            aria-haspopup="dialog"
+            aria-expanded="false"
+            class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark text-left hover:border-primary/40 transition-colors cursor-pointer"
+          >
+            <span data-widget-dates-label class="font-medium">-- / --</span>
+          </button>
 
-        <!-- Check-out -->
-        <div>
-          <label for="checkout" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-            {t('booking.checkout')}
-          </label>
-          <input
-            type="date"
-            id="checkout"
-            name="checkout"
-            class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-[border-color,box-shadow]"
-          />
+          <!-- Calendar Popover -->
+          <div
+            data-widget-popover
+            class="absolute left-0 right-0 sm:right-auto sm:w-[560px] top-full mt-3 hidden z-50 p-6 rounded-2xl bg-white dark:bg-surface-card-dark border border-black/10 dark:border-white/10 shadow-2xl shadow-black/15"
+          >
+            <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
+              <div class="flex-1 space-y-3" data-widget-month="0"></div>
+              <div class="flex-1 space-y-3 hidden lg:block" data-widget-month="1"></div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-black/5 dark:border-white/5 flex items-center justify-between text-xs">
+              <span data-widget-range class="font-mono text-text-secondary-light dark:text-text-secondary-dark">--</span>
+              <button type="button" data-widget-done class="text-xs font-semibold uppercase tracking-wider text-primary hover:text-primary-dark cursor-pointer">
+                {t('wizard.continue')}
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Guests -->
@@ -49,7 +58,7 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
           <select
             id="guests"
             name="guests"
-            class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-[border-color,box-shadow] appearance-none"
+            class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-[border-color,box-shadow] appearance-none cursor-pointer"
           >
             <option value="1" class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-text-primary-dark">1 {t('booking.guest')}</option>
             <option value="2" selected class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-text-primary-dark">2 {t('booking.guests_plural')}</option>
@@ -69,7 +78,7 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
           <select
             id="room-type"
             name="room-type"
-            class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-[border-color,box-shadow] appearance-none"
+            class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-[border-color,box-shadow] appearance-none cursor-pointer"
           >
             <option value="" class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-text-primary-dark">{t('booking.anyRoom')}</option>
             {roomTypes.map(rt => (
@@ -82,6 +91,7 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
         <div>
           <button
             type="submit"
+            data-widget-submit
             class="w-full bg-secondary hover:bg-secondary-dark text-text-primary-light font-semibold py-3 px-6 rounded-xl transition-[transform,background-color,box-shadow] duration-300 hover:shadow-lg hover:shadow-secondary/25 hover:-translate-y-0.5 text-sm uppercase tracking-wider cursor-pointer"
           >
             {t('booking.search')}
@@ -92,74 +102,199 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
   </div>
 </section>
 
+<script is:inline define:vars={{
+  widgetLabels: JSON.stringify({
+    nights: t('book.nights'),
+    done: t('wizard.continue'),
+    toastDatesAdjusted: t('wizard.toast.datesAdjusted'),
+    toastDatesAdjustedDesc: t('wizard.toast.datesAdjustedDesc'),
+  }),
+}}>
+  window.__WIDGET_LABELS = JSON.parse(widgetLabels);
+</script>
+
 <script>
+  import { buildMonthGrid, nightsBetween, clampRange, formatISODate } from '../features/booking/calendar';
+  import { animateCalendarDays } from '../features/animations/modules/bookingCalendar';
+  import { toastApi } from '../features/ui/toast';
+
   let abortController = new AbortController();
+  let cleanupAnim: (() => void) | null = null;
 
   function initBookingWidget() {
-    // Abort previous listeners to avoid duplicates
     abortController.abort();
     abortController = new AbortController();
     const signal = abortController.signal;
 
-    const form = document.getElementById('booking-form') as HTMLFormElement;
+    const form = document.getElementById('booking-form') as HTMLFormElement | null;
     if (!form) return;
 
-    const checkin = document.getElementById('checkin') as HTMLInputElement;
-    const checkout = document.getElementById('checkout') as HTMLInputElement;
+    const trigger = form.querySelector('[data-widget-dates]') as HTMLButtonElement | null;
+    const triggerLabel = form.querySelector('[data-widget-dates-label]') as HTMLElement | null;
+    const popover = form.querySelector('[data-widget-popover]') as HTMLElement | null;
+    const month0 = form.querySelector('[data-widget-month="0"]') as HTMLElement | null;
+    const month1 = form.querySelector('[data-widget-month="1"]') as HTMLElement | null;
+    const rangeEl = form.querySelector('[data-widget-range]') as HTMLElement | null;
+    const doneBtn = form.querySelector('[data-widget-done]') as HTMLButtonElement | null;
+    if (!trigger || !triggerLabel || !popover || !month0 || !month1 || !rangeEl || !doneBtn) return;
 
-    // Set default dates if empty
-    if (checkin && !checkin.value) {
-      const today = new Date();
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
-      checkin.value = tomorrow.toISOString().split('T')[0];
-      checkin.min = today.toISOString().split('T')[0];
+    const lang = (document.documentElement.lang || 'en') as string;
+    const W = (window as any).__WIDGET_LABELS || {};
+
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    const dayAfter = new Date(today);
+    dayAfter.setDate(today.getDate() + 2);
+
+    let checkIn = formatISODate(tomorrow);
+    let checkOut = formatISODate(dayAfter);
+    let viewYear = today.getFullYear();
+    let viewMonth = today.getMonth();
+    let open = false;
+
+    const fmt = (iso: string) => new Date(iso + 'T00:00:00').toLocaleDateString(lang === 'es' ? 'es' : lang === 'fr' ? 'fr' : lang === 'pt' ? 'pt' : 'en', { day: '2-digit', month: 'short' });
+
+    function renderLabel() {
+      if (triggerLabel) triggerLabel.textContent = `${fmt(checkIn)} - ${fmt(checkOut)}`;
     }
-    if (checkout && !checkout.value && checkin) {
-      const checkinDate = new Date(checkin.value);
-      const dayAfter = new Date(checkinDate);
-      dayAfter.setDate(checkinDate.getDate() + 1);
-      checkout.value = dayAfter.toISOString().split('T')[0];
-      checkout.min = checkin.value;
+    function renderRange() {
+      const nights = nightsBetween(checkIn, checkOut);
+      if (rangeEl) rangeEl.textContent = `${fmt(checkIn)} - ${fmt(checkOut)} (${nights} ${W.nights || 'nights'})`;
     }
 
-    // Set dynamic min value for checkout date based on checkin changes
-    checkin?.addEventListener('change', () => {
-      if (checkout && checkin.value >= checkout.value) {
-        const nextDay = new Date(checkin.value);
-        nextDay.setDate(nextDay.getDate() + 1);
-        checkout.value = nextDay.toISOString().split('T')[0];
+    function renderMonth(container: HTMLElement, year: number, month: number) {
+      const cells = buildMonthGrid(year, month);
+      const monthName = new Date(year, month, 1).toLocaleDateString(lang === 'es' ? 'es' : lang === 'fr' ? 'fr' : lang === 'pt' ? 'pt' : 'en', { month: 'long', year: 'numeric' });
+      const weekDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+      container.innerHTML = `
+        <div class="font-display text-lg capitalize">${monthName}</div>
+        <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-mono uppercase tracking-widest text-text-secondary-light dark:text-text-secondary-dark">
+          ${weekDays.map((d) => `<span class="py-1">${d}</span>`).join('')}
+        </div>
+        <div class="grid grid-cols-7 gap-1" role="grid" aria-label="${monthName}">
+          ${cells.map((cell) => {
+            if (!cell.inMonth) return '<span></span>';
+            const past = cell.past;
+            const dayNum = Number(cell.date.slice(-2));
+            const dateLabel = new Date(cell.date + 'T00:00:00').toLocaleDateString(lang === 'es' ? 'es' : lang === 'fr' ? 'fr' : lang === 'pt' ? 'pt' : 'en', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const disabledAttr = past ? 'tabindex="-1" aria-disabled="true"' : '';
+            return `<button type="button" role="gridcell" data-calendar-day data-date="${cell.date}" data-past="${past}" aria-label="${dateLabel}" ${disabledAttr} class="aspect-square rounded-lg text-sm flex items-center justify-center transition-colors duration-200 cursor-pointer select-none ${past ? 'opacity-25 pointer-events-none' : 'hover:bg-primary/10 hover:text-primary'}">${dayNum}</button>`;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function refreshSelection() {
+      popover.querySelectorAll<HTMLButtonElement>('[data-calendar-day]').forEach((btn) => {
+        const date = btn.dataset.date || '';
+        if (!date) return;
+        const past = btn.dataset.past === 'true';
+        const isStart = date === checkIn;
+        const isEnd = date === checkOut;
+        const range = checkIn && checkOut && date > checkIn && date < checkOut;
+        const stateClass = past
+          ? 'opacity-25 pointer-events-none'
+          : isStart || isEnd
+            ? 'bg-primary text-white font-bold'
+            : range
+              ? 'bg-primary/15 text-primary'
+              : 'hover:bg-primary/10 hover:text-primary';
+        btn.className = `aspect-square rounded-lg text-sm flex items-center justify-center transition-colors duration-200 cursor-pointer select-none ${stateClass}`;
+        btn.setAttribute('aria-selected', isStart || isEnd ? 'true' : 'false');
+      });
+    }
+
+    function render() {
+      renderMonth(month0, viewYear, viewMonth);
+      const next = new Date(viewYear, viewMonth + 1, 1);
+      renderMonth(month1, next.getFullYear(), next.getMonth());
+      cleanupAnim?.();
+      cleanupAnim = animateCalendarDays(month0);
+      refreshSelection();
+      renderLabel();
+      renderRange();
+    }
+
+    let picked: string | null = checkIn;
+
+    function openPopover() {
+      open = true;
+      popover.classList.remove('hidden');
+      trigger.setAttribute('aria-expanded', 'true');
+      render();
+    }
+    function closePopover() {
+      open = false;
+      popover.classList.add('hidden');
+      trigger.setAttribute('aria-expanded', 'false');
+      picked = checkIn;
+    }
+
+    trigger.addEventListener('click', () => (open ? closePopover() : openPopover()), { signal });
+
+    popover.addEventListener('click', (e) => {
+      const day = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-calendar-day]');
+      if (!day) return;
+      const date = day.dataset.date || '';
+      if (day.dataset.past === 'true' || !date) return;
+      if (!picked || (checkIn && checkOut)) {
+        picked = date;
+        checkIn = date;
+        checkOut = '';
+      } else {
+        checkOut = date;
+        const r = clampRange(checkIn, checkOut);
+        checkIn = r.checkIn;
+        checkOut = r.checkOut;
+        picked = null;
       }
-      if (checkout) {
-        checkout.min = checkin.value;
-      }
+      refreshSelection();
+      renderLabel();
+      renderRange();
     }, { signal });
 
-    checkin?.addEventListener('click', () => {
-      try { checkin.showPicker(); } catch (e) {}
+    doneBtn.addEventListener('click', closePopover, { signal });
+
+    document.addEventListener('click', (e) => {
+      if (open && !form.contains(e.target as Node)) closePopover();
     }, { signal });
-    checkout?.addEventListener('click', () => {
-      try { checkout.showPicker(); } catch (e) {}
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closePopover();
     }, { signal });
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const checkinVal = checkin?.value;
-      const checkoutVal = checkout?.value;
+      const r = clampRange(checkIn, checkOut);
+      const adjusted = r.checkIn !== checkIn || r.checkOut !== checkOut;
+      checkIn = r.checkIn;
+      checkOut = r.checkOut;
+      renderLabel();
+      if (adjusted) {
+        toastApi.warning({ title: W.toastDatesAdjusted || 'Dates adjusted', description: W.toastDatesAdjustedDesc || '' });
+      }
+
       const guests = (document.getElementById('guests') as HTMLSelectElement)?.value;
       const roomType = (document.getElementById('room-type') as HTMLSelectElement)?.value;
 
       const params = new URLSearchParams();
-      if (checkinVal) params.append('checkin', checkinVal);
-      if (checkoutVal) params.append('checkout', checkoutVal);
+      params.append('checkin', checkIn);
+      params.append('checkout', checkOut);
       if (guests) params.append('guests', guests);
       if (roomType) params.append('roomType', roomType);
 
-      const lang = document.documentElement.lang || 'en';
       const basePath = lang === 'en' ? '/book' : `/${lang}/book`;
       window.location.href = `${basePath}?${params.toString()}`;
     }, { signal });
+
+    renderLabel();
   }
 
   document.addEventListener('astro:page-load', initBookingWidget);
+  document.addEventListener('astro:before-preparation', () => {
+    abortController.abort();
+    cleanupAnim?.();
+    cleanupAnim = null;
+  });
 </script>

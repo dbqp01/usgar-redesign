@@ -33,6 +33,25 @@ test.describe('USGAR internal pages (Fase 3)', () => {
     await expect(page.locator('.filter-btn[data-filter="hotel"]')).toBeVisible();
   });
 
+  test('home booking widget opens the custom calendar popover and picks a range', async ({ page }) => {
+    await page.goto('/');
+    const trigger = page.locator('[data-widget-dates]');
+    await expect(trigger).toBeVisible();
+    await trigger.click();
+    await expect(page.locator('[data-widget-popover]')).toBeVisible();
+    await page.locator('[data-widget-popover]').scrollIntoViewIfNeeded();
+    await page.waitForTimeout(900);
+    await expect(page.locator('[data-widget-month="0"] [data-calendar-day]').first()).toBeVisible();
+
+    const futureDay = page.locator('[data-widget-popover] [data-calendar-day][data-past="false"]').first();
+    const futureDay2 = page.locator('[data-widget-popover] [data-calendar-day][data-past="false"]').nth(1);
+    await futureDay.click();
+    await futureDay2.click();
+    await expect(page.locator('[data-widget-range]')).toContainText('nights');
+    await page.locator('[data-widget-done]').click();
+    await expect(page.locator('[data-widget-popover]')).toBeHidden();
+  });
+
   test('contact page renders the editorial form', async ({ page }) => {
     await page.goto('/contact');
     await expect(page.locator('#contact-form')).toBeVisible();

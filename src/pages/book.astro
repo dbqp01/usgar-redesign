@@ -192,6 +192,10 @@ const guestsParam = Number(url.searchParams.get('guests')) || 2;
     roomsCount: t('wizard.roomsCount'),
     multiRoomNote: t('wizard.multiRoomNote'),
     perNight: t('wizard.perNight'),
+    alternatives: t('wizard.alternatives'),
+    onlyThisRoom: t('wizard.onlyThisRoom'),
+    toastOptionsUpdated: t('wizard.toast.optionsUpdated'),
+    toastBestPrice: t('wizard.toast.bestPrice'),
   }),
 }}>
   window.__ROOMS_DATA = JSON.parse(serializedRooms);
@@ -234,6 +238,7 @@ const guestsParam = Number(url.searchParams.get('guests')) || 2;
     const ROOMS = (window as any).__ROOMS_DATA || [];
 
     let currentStep = 1;
+    let lastTotal: number | null = null;
 
     function applyState() {
       const s = wizardStore.getState();
@@ -242,7 +247,7 @@ const guestsParam = Number(url.searchParams.get('guests')) || 2;
       (Object.keys(panels) as unknown as number[]).forEach((n) => {
         const panel = panels[n as keyof typeof panels];
         if (!panel) return;
-        const isActive = n === step;
+        const isActive = Number(n) === step;
         if (isActive && panel.classList.contains('hidden')) {
           panel.classList.remove('hidden');
           const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -278,7 +283,20 @@ const guestsParam = Number(url.searchParams.get('guests')) || 2;
         if (summaryCheckout) summaryCheckout.textContent = s.checkOut;
         if (summaryNights) summaryNights.textContent = `${nights} ${nights === 1 ? L.night : L.nights}`;
         if (summaryGuests) summaryGuests.textContent = `${s.guests} ${s.guests === 1 ? L.guest : L.guests}`;
-        if (summaryTotalPrice) summaryTotalPrice.textContent = String(s.allocation.total);
+        if (summaryTotalPrice) {
+          summaryTotalPrice.textContent = String(s.allocation.total);
+          if (lastTotal !== null && lastTotal !== s.allocation.total) {
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (!reduceMotion) {
+              gsap.fromTo(
+                summaryTotalPrice,
+                { scale: 1.08, color: '#d4af37' },
+                { scale: 1, color: 'inherit', duration: 0.6, ease: 'power2.out', overwrite: true }
+              );
+            }
+          }
+          lastTotal = s.allocation.total;
+        }
         const perNight = s.allocation.roomTotal / nights;
         if (summaryPricePerNight) summaryPricePerNight.textContent = String(Math.round(perNight));
         if (summaryVideoContainer && summaryRoomVideo) {

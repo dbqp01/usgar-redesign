@@ -94,6 +94,7 @@ const t = useTranslations(lang);
 <script>
   import { wizardStore } from '../../features/booking/wizardStore';
   import { bookingService } from '../../services/bookingService';
+  import { toastApi } from '../../features/ui/toast';
   import type { Locale } from '@/i18n/utils';
 
   let abortController = new AbortController();
@@ -110,6 +111,10 @@ const t = useTranslations(lang);
       if (started) return;
       const state = wizardStore.getState();
       if (state.step !== 3) return;
+      const guestNameInput = document.getElementById('guest-name') as HTMLInputElement | null;
+      const guestEmailInput = document.getElementById('guest-email') as HTMLInputElement | null;
+      const guestPhoneInput = document.getElementById('guest-phone') as HTMLInputElement | null;
+      if (!guestNameInput?.value || !guestEmailInput?.value || !guestPhoneInput?.value) return;
       started = true;
       void runPaymentFlow(root, state);
     };
@@ -131,6 +136,7 @@ const t = useTranslations(lang);
     const LABELS = (window as any).__LABELS || {};
 
     function showError(msg: string) {
+      toastApi.error({ title: msg });
       if (errorBanner && errorMessage) {
         errorMessage.textContent = msg;
         errorBanner.classList.remove('hidden');

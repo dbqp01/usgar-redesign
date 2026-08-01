@@ -1,4 +1,4 @@
-﻿{
+{
   "nav": {
     "home": "Inicio",
     "rooms": "Habitaciones",
@@ -412,7 +412,7 @@
     "availabilityDegraded": "La disponibilidad en vivo no esta disponible. Mostrando disponibilidad completa.",
     "rangeUnavailable": "No hay habitaciones disponibles para estas fechas.",
     "alternatives": "Ver alternativas",
-    "onlyThisRoom": "Habitacion elegida",
+    "onlyThisRoom": "Habitacion elegida", "toast": { "optionsUpdated": "Opciones actualizadas", "bestPrice": "Mejor precio {total}", "datesAdjusted": "Fechas ajustadas", "datesAdjustedDesc": "La salida se movio para mantener tu estancia valida.", "selectDates": "Elige tus fechas", "checkinTo": "Llegada" },
     "bestPrice": "Mejor precio",
     "perNight": "/noche",
     "roomsCount": "{n} habitaciones",

@@ -149,6 +149,7 @@ const t = useTranslations(lang);
 
 <script>
   import { wizardStore } from '../../features/booking/wizardStore';
+  import { toastApi } from '../../features/ui/toast';
 
   let abortController = new AbortController();
 
@@ -167,6 +168,7 @@ const t = useTranslations(lang);
     const L = (window as any).__LABELS || {};
 
     function showError(msg: string) {
+      toastApi.error({ title: msg });
       if (errorBanner && errorMessage) {
         errorMessage.textContent = msg;
         errorBanner.classList.remove('hidden');

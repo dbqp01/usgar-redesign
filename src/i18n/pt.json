@@ -1,4 +1,4 @@
-﻿{
+{
   "nav": {
     "home": "Inicio",
     "rooms": "Quartos",
@@ -412,7 +412,7 @@
     "availabilityDegraded": "A disponibilidade ao vivo esta temporariamente indisponivel. Mostrando disponibilidade completa.",
     "rangeUnavailable": "Nenhum quarto disponivel para estas datas.",
     "alternatives": "Ver alternativas",
-    "onlyThisRoom": "Quarto selecionado",
+    "onlyThisRoom": "Quarto selecionado", "toast": { "optionsUpdated": "Opcoes atualizadas", "bestPrice": "Melhor preco {total}", "datesAdjusted": "Datas ajustadas", "datesAdjustedDesc": "A saida foi movida para manter sua estadia valida.", "selectDates": "Escolha suas datas", "checkinTo": "Check-in" },
     "bestPrice": "Melhor preco",
     "perNight": "/noite",
     "roomsCount": "{n} quartos",

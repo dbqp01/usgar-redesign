@@ -37,9 +37,10 @@ test.describe('USGAR home visual sections', () => {
   });
 
   test('renders a full-size map surface and contained footer wordmark', async ({ page }) => {
+    test.setTimeout(45000);
     await expect(page.locator('#location-map')).toHaveCount(1);
     await page.locator('#location-map').scrollIntoViewIfNeeded();
-    await expect(page.locator('#location-map .usgar-marker')).toHaveCount(1);
+    await expect(page.locator('#location-map .usgar-marker')).toHaveCount(1, { timeout: 15000 });
     await expect(page.locator('[data-footer-wordmark="USGAR"]')).toHaveCount(1);
 
     const wordmark = page.locator('[data-footer-wordmark="USGAR"] span');

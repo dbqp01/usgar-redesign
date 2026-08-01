@@ -1,4 +1,4 @@
-﻿{
+{
   "nav": {
     "home": "Home",
     "rooms": "Rooms",
@@ -408,7 +408,7 @@
     "availabilityDegraded": "Live availability is temporarily unavailable. Showing full availability.",
     "rangeUnavailable": "No rooms available for these dates.",
     "alternatives": "View alternatives",
-    "onlyThisRoom": "Selected room",
+    "onlyThisRoom": "Selected room", "toast": { "optionsUpdated": "Options updated", "bestPrice": "Best price {total}", "datesAdjusted": "Dates adjusted", "datesAdjustedDesc": "Check-out was moved to keep your stay valid.", "selectDates": "Select your dates", "checkinTo": "Check-in" },
     "bestPrice": "Best price",
     "perNight": "/night",
     "roomsCount": "{n} rooms",

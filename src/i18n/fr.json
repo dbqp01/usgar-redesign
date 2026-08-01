@@ -1,4 +1,4 @@
-﻿{
+{
   "nav": {
     "home": "Accueil",
     "rooms": "Chambres",
@@ -412,7 +412,7 @@
     "availabilityDegraded": "La disponibilite en direct est temporairement indisponible. Disponibilite complete affichee.",
     "rangeUnavailable": "Aucune chambre disponible pour ces dates.",
     "alternatives": "Voir les alternatives",
-    "onlyThisRoom": "Chambre selectionnee",
+    "onlyThisRoom": "Chambre selectionnee", "toast": { "optionsUpdated": "Options mises a jour", "bestPrice": "Meilleur prix {total}", "datesAdjusted": "Dates ajustees", "datesAdjustedDesc": "Le depart a ete deplace pour garder un sejour valide.", "selectDates": "Choisissez vos dates", "checkinTo": "Arrivee" },
     "bestPrice": "Meilleur prix",
     "perNight": "/nuit",
     "roomsCount": "{n} chambres",

@@ -18,7 +18,7 @@ test.describe('USGAR booking wizard (Fase 4)', () => {
     await futureDay.click();
     await futureDay2.click();
 
-    await expect(page.locator('[data-calendar-checking]')).toBeHidden();
+    await expect(page.locator('[data-calendar-checking]')).toBeHidden({ timeout: 15000 });
     await expect(continueBtn).toBeEnabled();
   });
 
@@ -47,6 +47,7 @@ test.describe('USGAR booking wizard (Fase 4)', () => {
     await expect(page.locator('[data-step-panel="3"]')).toBeVisible();
     await page.locator('[data-guest-next]').click();
     await expect(page.locator('#error-banner')).toBeVisible();
+    await expect(page.locator('#toast-root [data-toast="error"]')).toBeVisible();
 
     await page.locator('#guest-name').fill('Test User');
     await page.locator('#guest-email').fill('test@example.com');

@@ -1,5 +1,12 @@
 # DECISIONS — Rediseño Awwwards
 
+## 2026-08-01 (Fase 3 + 4 polish — toasts, widget home, feedback dinámico)
+- **Toasts estilo Sonner** (`src/features/ui/toast.ts`): top-center, glass dark/light, iconos por tipo, auto-dismiss 4s (error 6s, warning 5s), máx 3 visibles, aria-live/role, animación GSAP con reduced-motion off. Usados en validación de huésped, errores de pago, degradación de disponibilidad, rango sin opciones y recomputo de opciones.
+- **Widget home = punto de decisión**: popover de calendario custom (mismo motor `calendar.ts`), rango por clic, clampRange con toast "Dates adjusted", redirect a /book con checkin/checkout/guests/roomType. Sección widget elevada a z-20 (el marquee z-10 del contexto raíz interceptaba clics del popover).
+- **Feedback dinámico del algoritmo**: recomputo en vivo al cambiar fechas/huéspedes con indicador "checking" + overlay "recalculando" en AllocationStep + toast success "Options updated" + pulso del total en el resumen. `computeAllocation` con try/catch (el fetch nunca deja el indicador colgado).
+- **Calendarios sin re-render**: build una vez + `refreshSelection()` in-place (clases/aria) — elimina la re-animación por clic (jank) y estabiliza E2E.
+- **Artefactos**: separator `·` no-ASCII reemplazado (regla global).
+
 ## 2026-08-01 (Fase 3 + 4 — implementadas)
 - **Wizard 3 pasos**: componentes por paso en `src/components/booking/` + store TS puro singleton (`wizardStore.ts`). Transiciones GSAP entre pasos, progreso 01/02/03.
 - **Pago MP intacto** (no-go): `PaymentStep` conserva createHold → cardForm → processPayment tal cual; arranca solo cuando el formulario de huésped está válido.
