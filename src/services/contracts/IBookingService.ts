@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Interfaces y contratos de Dominio para Servicios de Reserva y Consulta de Disponibilidad.
  */
 
@@ -38,8 +38,6 @@ export interface BookingResponseData {
   mp_public_key?: string;
   status?: string;
   expires_at?: string;
-  preference_url?: string;
-  init_point?: string;
   total_amount?: number;
   gateway_price?: number;
   price?: number;
@@ -67,7 +65,7 @@ export type ApiResult<T> =
 
 export interface IBookingService {
   getAvailableRooms(checkIn?: string, checkOut?: string): Promise<ApiResult<RoomAvailability[]>>;
-  createHoldAndPreference(payload: BookingPayload): Promise<ApiResult<BookingResponseData>>;
+  createHold(payload: BookingPayload): Promise<ApiResult<BookingResponseData>>;
   processPayment(cartId: string, accessToken: string, paymentData: any): Promise<ApiResult<any>>;
   extendHoldSession(bookingId: string): Promise<ApiResult<{ extended: boolean; new_expires_at: string }>>;
   getBookingStatus(bookingId: string): Promise<ApiResult<BookingStatusData>>;

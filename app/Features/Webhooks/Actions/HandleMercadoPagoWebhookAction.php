@@ -108,13 +108,6 @@ class HandleMercadoPagoWebhookAction {
         $signatureHeader = $request->getHeader('x-signature') ?? '';
         $requestId = $request->getHeader('x-request-id') ?? '';
 
-        // 2.1 Filtrar notificaciones IPN legacy (topic=payment en query, sin firma x-signature)
-        if (empty($signatureHeader) && ($topic === 'payment' || $topic === 'merchant_order')) {
-            Logger::info("HandleMercadoPagoWebhookAction: Ignorando notificacion IPN legacy (topic={$topic})");
-            Response::json(['success' => true, 'message' => 'Legacy IPN ignored.']);
-            return;
-        }
-
         // 2.2 Validar firma (usa SDK oficial WebhookSignatureValidator internamente)
         Logger::info("HandleMercadoPagoWebhookAction: Validando firma. DataId: {$paymentIdStr}, RequestId: {$requestId}, SignaturePresent: " . (empty($signatureHeader) ? 'NO' : 'YES'));
 

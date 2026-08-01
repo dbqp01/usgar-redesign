@@ -1,4 +1,4 @@
-import type { IHttpClient } from './contracts/IHttpClient';
+﻿import type { IHttpClient } from './contracts/IHttpClient';
 import { defaultHttpClient } from './httpClient';
 import type {
   IBookingService,
@@ -38,7 +38,7 @@ export class BookingService implements IBookingService {
         error: {
           code: err.code || 'API_ERROR',
           message: isMissingCreds
-            ? 'Faltan credenciales de configuración en el backend para consultar la disponibilidad en tiempo real.'
+            ? 'Faltan credenciales de configuraciÃ³n en el backend para consultar la disponibilidad en tiempo real.'
             : (err.message || 'Error al comunicarse con el servicio de habitaciones.'),
           status: response.status,
           missingCredentials: isMissingCreds,
@@ -52,7 +52,7 @@ export class BookingService implements IBookingService {
     };
   }
 
-  async createHoldAndPreference(payload: BookingPayload): Promise<ApiResult<BookingResponseData>> {
+  async createHold(payload: BookingPayload): Promise<ApiResult<BookingResponseData>> {
     const url = `${this.baseUrl}/booking`;
     const response = await this.httpClient.post<any>(url, payload);
 
@@ -65,7 +65,7 @@ export class BookingService implements IBookingService {
         error: {
           code: err.code || 'BOOKING_FAILED',
           message: isMissingCreds
-            ? 'Faltan credenciales activas (Mercado Pago / QloApps) en el backend para procesar el pago y retención.'
+            ? 'Faltan credenciales activas (Mercado Pago / QloApps) en el backend para procesar el pago y retenciÃ³n.'
             : (err.message || 'No se pudo crear la reserva en el servidor.'),
           status: response.status,
           missingCredentials: isMissingCreds,
@@ -115,7 +115,7 @@ export class BookingService implements IBookingService {
         success: false,
         error: {
           code: err.code || 'EXTEND_HOLD_FAILED',
-          message: err.message || 'No se pudo extender el temporizador de retención de la reserva.',
+          message: err.message || 'No se pudo extender el temporizador de retenciÃ³n de la reserva.',
           status: response.status,
         },
       };

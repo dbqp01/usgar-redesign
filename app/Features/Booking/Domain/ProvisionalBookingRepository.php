@@ -23,10 +23,10 @@ class ProvisionalBookingRepository {
             $stmt = $this->pdo->prepare("
                 INSERT INTO provisional_bookings (
                     cart_id, user_id, id_hotel, id_room_type, guest_data, room_data,
-                    price_snapshot, checkin, checkout, status, preference_id, expires_at
+                    price_snapshot, checkin, checkout, status, expires_at
                 ) VALUES (
                     :cart_id, :user_id, :id_hotel, :id_room_type, :guest_data, :room_data,
-                    :price_snapshot, :checkin, :checkout, :status, :preference_id, :expires_at
+                    :price_snapshot, :checkin, :checkout, :status, :expires_at
                 )
             ");
 
@@ -41,7 +41,6 @@ class ProvisionalBookingRepository {
                 ':checkin'       => $data['checkin'],
                 ':checkout'      => $data['checkout'],
                 ':status'        => $data['status'] ?? 'pending',
-                ':preference_id' => $data['preference_id'] ?? null,
                 ':expires_at'    => $data['expires_at'],
             ]);
         } catch (PDOException $e) {
@@ -53,10 +52,10 @@ class ProvisionalBookingRepository {
                     $stmt = $this->pdo->prepare("
                         INSERT INTO provisional_bookings (
                             cart_id, user_id, id_hotel, id_room_type, guest_data, room_data,
-                            price_snapshot, checkin, checkout, status, preference_id, expires_at
+                            price_snapshot, checkin, checkout, status, expires_at
                         ) VALUES (
                             :cart_id, :user_id, :id_hotel, :id_room_type, :guest_data, :room_data,
-                            :price_snapshot, :checkin, :checkout, :status, :preference_id, :expires_at
+                            :price_snapshot, :checkin, :checkout, :status, :expires_at
                         )
                     ");
                     return $stmt->execute([
@@ -70,7 +69,6 @@ class ProvisionalBookingRepository {
                         ':checkin'       => $data['checkin'],
                         ':checkout'      => $data['checkout'],
                         ':status'        => $data['status'] ?? 'pending',
-                        ':preference_id' => $data['preference_id'] ?? null,
                         ':expires_at'    => $data['expires_at'],
                     ]);
                 } catch (PDOException $ex) {
@@ -98,7 +96,6 @@ class ProvisionalBookingRepository {
                     checkin DATE NOT NULL,
                     checkout DATE NOT NULL,
                     status VARCHAR(32) DEFAULT 'pending',
-                    preference_id VARCHAR(128) NULL,
                     expires_at DATETIME NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     INDEX idx_hotel_room_status_dates (id_hotel, id_room_type, status, checkin, checkout)
@@ -199,16 +196,6 @@ class ProvisionalBookingRepository {
             ]);
         } catch (PDOException $e) {
             Logger::error('ProvisionalBookingRepository::markPaymentProcessed Error: ' . $e->getMessage());
-            return false;
-        }
-    }
-
-    public function updatePreferenceId(string $cartId, string $preferenceId): bool {
-        try {
-            $stmt = $this->pdo->prepare("UPDATE provisional_bookings SET preference_id = :pref WHERE cart_id = :cartId");
-            return $stmt->execute([':pref' => $preferenceId, ':cartId' => $cartId]);
-        } catch (PDOException $e) {
-            Logger::error('ProvisionalBookingRepository::updatePreferenceId Error: ' . $e->getMessage());
             return false;
         }
     }

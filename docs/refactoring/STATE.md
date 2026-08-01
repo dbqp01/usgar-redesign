@@ -67,7 +67,9 @@ Actualizado: 2026-08-01. Estado documentado al inicio del refactor. Actualizar a
 - MCP `mercadopago-mcp-server` activo (token APP_USR... app `usgar test`, AppID 8501374849722569).
 - `notifications_history`: **sin notificaciones configuradas ni entregadas** para la app.
 - `https://usgarhoteles.com/api/webhook` responde (404 a GET — esperado; solo POST).
-- Pendiente: registrar webhook formal vía `save_webhook` (topic payment) — requiere confirmación del usuario.
+- **Webhook registrado formalmente** vía `save_webhook` (2026-08-01): callback `https://usgarhoteles.com/api/webhook`, topic `payment` + defaults de la app.
+- **Secret verificado**: `.env` local (`a8c54ec...`, len=64) coincide con el panel MP → la firma HMAC nunca fue el problema de entrega. La causa de la falta de comunicación era la ausencia de webhook formal registrado.
+- Pendiente: re-consultar `notifications_history` tras el primer pago real para monitorear entregas.
 
 ## Cron Hostinger (P2)
 
