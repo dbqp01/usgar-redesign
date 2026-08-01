@@ -147,8 +147,10 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
                 ? 'bg-primary/15 text-primary'
                 : 'hover:bg-primary/10 hover:text-primary';
           const dayNum = Number(cell.date.slice(-2));
+          const dateLabel = new Date(cell.date + 'T00:00:00').toLocaleDateString(opts.lang === 'es' ? 'es' : opts.lang === 'fr' ? 'fr' : opts.lang === 'pt' ? 'pt' : 'en', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
           const disabledAttr = past ? 'tabindex="-1" aria-disabled="true"' : '';
-          return `<button type="button" role="gridcell" data-calendar-day data-date="${cell.date}" data-past="${past}" ${disabledAttr} class="aspect-square rounded-lg text-sm flex items-center justify-center transition-colors duration-200 cursor-pointer select-none ${stateClass}">${dayNum}</button>`;
+          const selectedAttr = (isStart || isEnd) ? 'aria-selected="true"' : 'aria-selected="false"';
+          return `<button type="button" role="gridcell" data-calendar-day data-date="${cell.date}" data-past="${past}" aria-label="${dateLabel}" ${selectedAttr} ${disabledAttr} class="aspect-square rounded-lg text-sm flex items-center justify-center transition-colors duration-200 cursor-pointer select-none ${stateClass}">${dayNum}</button>`;
         }).join('')}
       </div>
     `;
@@ -194,7 +196,9 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
     let checkIn = params.get('checkin') || params.get('checkIn') || '';
     let checkOut = params.get('checkout') || params.get('checkOut') || '';
     const guests = Number(params.get('guests')) || 2;
+    const roomTypeParam = params.get('roomType') || params.get('room_type') || null;
     if (guestsSelect) guestsSel.value = String(guests);
+    wizardStore.setState({ roomType: roomTypeParam, guests });
 
     const seedDates = () => {
       if (!checkIn) {
