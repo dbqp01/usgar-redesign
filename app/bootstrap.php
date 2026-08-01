@@ -49,10 +49,10 @@ $container->bind(PmsPortInterface::class, fn($c) => new QloAppAdapter($c->get(PD
 $container->bind(PaymentGatewayPortInterface::class, fn($c) => new MercadoPagoAdapter());
 $container->bind(ChannelManagerPortInterface::class, fn($c) => new ChannexAdapter());
 
-// Listeners de dominio (webhook -> PMS / Channel Manager)
+// Listeners de dominio (webhook -> PMS / Channel Manager) con DIP desde el container
 $eventDispatcher = EventDispatcher::getInstance();
-$eventDispatcher->subscribe('booking.paid', new ConfirmQloAppsOrderListener());
-$eventDispatcher->subscribe('booking.paid', new SyncChannexBookingListener());
+$eventDispatcher->subscribe('booking.paid', new ConfirmQloAppsOrderListener($container->get(PmsPortInterface::class)));
+$eventDispatcher->subscribe('booking.paid', new SyncChannexBookingListener($container->get(ChannelManagerPortInterface::class)));
 
 /**
  * Acceso global al container.

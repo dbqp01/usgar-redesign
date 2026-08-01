@@ -8,7 +8,6 @@ use App\Core\Events\ListenerInterface;
 use App\Core\Logger;
 use App\Features\Booking\Domain\Events\BookingPaidEvent;
 use App\Features\Shared\Ports\PmsPortInterface;
-use App\Features\Shared\Adapters\QloAppAdapter;
 use Exception;
 
 /**
@@ -17,8 +16,8 @@ use Exception;
 class ConfirmQloAppsOrderListener implements ListenerInterface {
     private PmsPortInterface $pmsAdapter;
 
-    public function __construct(?PmsPortInterface $pmsAdapter = null) {
-        $this->pmsAdapter = $pmsAdapter ?? new QloAppAdapter();
+    public function __construct(PmsPortInterface $pmsAdapter) {
+        $this->pmsAdapter = $pmsAdapter;
     }
 
     public function handle(EventInterface $event): void {

@@ -14,10 +14,14 @@ require_once __DIR__ . '/../app/Core/Autoloader.php';
 \App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'app');
 
 use App\Core\Config;
+use App\Core\Database;
 use App\Core\Request;
 use App\Features\Rooms\Actions\GetRoomsAction;
 use App\Features\Webhooks\Actions\HandleChannexWebhookAction;
 use App\Features\Shared\Adapters\QloAppAdapter;
+use App\Features\Shared\Adapters\ChannexAdapter;
+use App\Features\Shared\ChannexRoomMapper;
+use App\Features\Booking\Domain\ProvisionalBookingRepository;
 
 Config::boot();
 Config::set('CHANNEX_WEBHOOK_SECRET', 'realtime_secret_test');
@@ -49,7 +53,11 @@ foreach ($initialRooms as $r) {
 echo "1. Disponibilidad inicial Matrimonial Superior: " . ($initialMatrimonial ?? 'N/A') . " habitaciones.\n";
 
 // 2. Enviar una reserva via la API de Webhook Channex
-$webhookAction = new HandleChannexWebhookAction();
+$webhookAction = new HandleChannexWebhookAction(
+    new ChannexRoomMapper(),
+    new ProvisionalBookingRepository(),
+    new ChannexAdapter()
+);
 $resId = "REALTIME-API-" . time();
 
 $webhookRequest = new Request(

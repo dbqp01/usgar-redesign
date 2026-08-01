@@ -7,14 +7,12 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Logger;
 use App\Core\Config;
-use App\Core\Database;
 use App\Core\BookingStatus;
 use App\Core\HttpException;
 use App\Core\Events\EventDispatcher;
 use App\Features\Booking\Domain\Events\BookingPaidEvent;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
 use App\Features\Shared\Ports\PaymentGatewayPortInterface;
-use App\Features\Shared\Adapters\MercadoPagoAdapter;
 use PDO;
 use Exception;
 
@@ -29,16 +27,15 @@ class ProcessPaymentAction {
     private EventDispatcher $eventDispatcher;
 
     public function __construct(
-        ?PDO $pdo = null,
-        ?PaymentGatewayPortInterface $paymentGateway = null,
-        ?ProvisionalBookingRepository $bookingRepo = null,
-        ?EventDispatcher $eventDispatcher = null
+        PDO $pdo,
+        PaymentGatewayPortInterface $paymentGateway,
+        ProvisionalBookingRepository $bookingRepo,
+        EventDispatcher $eventDispatcher
     ) {
-        $db = Database::getInstance();
-        $this->pdo = $pdo ?? $db->getConnection();
-        $this->paymentGateway = $paymentGateway ?? new MercadoPagoAdapter();
-        $this->bookingRepo = $bookingRepo ?? new ProvisionalBookingRepository($this->pdo);
-        $this->eventDispatcher = $eventDispatcher ?? EventDispatcher::getInstance();
+        $this->pdo = $pdo;
+        $this->paymentGateway = $paymentGateway;
+        $this->bookingRepo = $bookingRepo;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function __invoke(Request $request): void {

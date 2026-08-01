@@ -9,7 +9,6 @@ use App\Core\HttpException;
 use App\Core\BookingStatus;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
 use App\Features\Shared\Ports\PmsPortInterface;
-use App\Features\Shared\Adapters\QloAppAdapter;
 
 /**
  * Accion ADR: POST /api/extend-hold
@@ -20,11 +19,11 @@ class ExtendHoldAction {
     private PmsPortInterface $pms;
 
     public function __construct(
-        ?ProvisionalBookingRepository $bookingRepo = null,
-        ?PmsPortInterface $pms = null
+        ProvisionalBookingRepository $bookingRepo,
+        PmsPortInterface $pms
     ) {
-        $this->bookingRepo = $bookingRepo ?? new ProvisionalBookingRepository();
-        $this->pms = $pms ?? new QloAppAdapter();
+        $this->bookingRepo = $bookingRepo;
+        $this->pms = $pms;
     }
 
     public function __invoke(Request $request): void {

@@ -16,8 +16,8 @@ use App\Features\Booking\Domain\ProvisionalBookingRepository;
 class CleanExpiredCartsAction {
     private ProvisionalBookingRepository $bookingRepo;
 
-    public function __construct(?ProvisionalBookingRepository $bookingRepo = null) {
-        $this->bookingRepo = $bookingRepo ?? new ProvisionalBookingRepository();
+    public function __construct(ProvisionalBookingRepository $bookingRepo) {
+        $this->bookingRepo = $bookingRepo;
     }
 
     public function __invoke(Request $request): void {

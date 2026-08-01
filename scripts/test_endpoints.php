@@ -54,7 +54,7 @@ if ($paid->value === 'paid' && !$paid->isExtendable() && $paid->isTerminal()) {
 echo PHP_EOL . "--- PROBANDO CONTROLADORES Y BASE DE DATOS ---" . PHP_EOL;
 
 try {
-    $roomsAction = new GetRoomsAction();
+    $roomsAction = new GetRoomsAction(\App\Core\Container::getInstance()->get(\App\Features\Shared\Ports\PmsPortInterface::class));
     echo " GetRoomsAction instanciado correctamente." . PHP_EOL;
 
     if ($pdo) {

@@ -10,7 +10,6 @@ use App\Core\HttpException;
 use App\Core\Logger;
 use App\Core\Config;
 use App\Features\Shared\Ports\PmsPortInterface;
-use App\Features\Shared\Adapters\QloAppAdapter;
 use App\Features\Shared\RoomTypeRegistry;
 use Exception;
 
@@ -21,8 +20,8 @@ use Exception;
 class GetRoomsAction {
     private PmsPortInterface $pms;
 
-    public function __construct(?PmsPortInterface $pms = null) {
-        $this->pms = $pms ?? new QloAppAdapter();
+    public function __construct(PmsPortInterface $pms) {
+        $this->pms = $pms;
     }
 
     public function __invoke(Request $request): void {

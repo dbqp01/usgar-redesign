@@ -14,9 +14,12 @@ require_once __DIR__ . '/../app/Core/Autoloader.php';
 \App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'app');
 
 use App\Core\Config;
+use App\Core\Container;
 use App\Core\Database;
 use App\Features\Webhooks\Actions\HandleChannexWebhookAction;
 use App\Features\Shared\Adapters\ChannexAdapter;
+use App\Features\Shared\Ports\ChannelManagerPortInterface;
+use App\Features\Booking\Domain\ProvisionalBookingRepository;
 
 Config::boot();
 
@@ -48,7 +51,11 @@ try {
 }
 
 try {
-    $action = new HandleChannexWebhookAction();
+    $action = new HandleChannexWebhookAction(
+        new \App\Features\Shared\ChannexRoomMapper(),
+        new ProvisionalBookingRepository(),
+        new ChannexAdapter()
+    );
     assertTest("HandleChannexWebhookAction instanciado correctamente", $action instanceof HandleChannexWebhookAction);
 } catch (Throwable $e) {
     assertTest("HandleChannexWebhookAction instanciado correctamente: " . $e->getMessage(), false);

@@ -19,8 +19,8 @@ use App\Features\Shared\RoomTypeRegistry;
 class GetBookingStatusAction {
     private ProvisionalBookingRepository $bookingRepo;
 
-    public function __construct(?ProvisionalBookingRepository $bookingRepo = null) {
-        $this->bookingRepo = $bookingRepo ?? new ProvisionalBookingRepository();
+    public function __construct(ProvisionalBookingRepository $bookingRepo) {
+        $this->bookingRepo = $bookingRepo;
     }
 
     public function __invoke(Request $request): void {

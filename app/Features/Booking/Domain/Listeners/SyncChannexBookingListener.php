@@ -8,7 +8,6 @@ use App\Core\Events\ListenerInterface;
 use App\Core\Logger;
 use App\Features\Booking\Domain\Events\BookingPaidEvent;
 use App\Features\Shared\Ports\ChannelManagerPortInterface;
-use App\Features\Shared\Adapters\ChannexAdapter;
 use Exception;
 
 /**
@@ -17,8 +16,8 @@ use Exception;
 class SyncChannexBookingListener implements ListenerInterface {
     private ChannelManagerPortInterface $channexAdapter;
 
-    public function __construct(?ChannelManagerPortInterface $channexAdapter = null) {
-        $this->channexAdapter = $channexAdapter ?? new ChannexAdapter();
+    public function __construct(ChannelManagerPortInterface $channexAdapter) {
+        $this->channexAdapter = $channexAdapter;
     }
 
     public function handle(EventInterface $event): void {

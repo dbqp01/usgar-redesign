@@ -7,11 +7,9 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Logger;
 use App\Core\Config;
-use App\Core\Database;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
 use App\Features\Shared\ChannexRoomMapper;
 use App\Features\Shared\Ports\ChannelManagerPortInterface;
-use App\Features\Shared\Adapters\ChannexAdapter;
 use PDO;
 use Exception;
 
@@ -20,22 +18,18 @@ use Exception;
  * Recibe notificaciones de reservas que ingresan desde OTAs a traves de Channex.
  */
 class HandleChannexWebhookAction {
-    private PDO $pdo;
     private ChannexRoomMapper $roomMapper;
     private ProvisionalBookingRepository $bookingRepo;
     private ChannelManagerPortInterface $channexAdapter;
 
     public function __construct(
-        ?PDO $pdo = null,
-        ?ChannexRoomMapper $roomMapper = null,
-        ?ProvisionalBookingRepository $bookingRepo = null,
-        ?ChannelManagerPortInterface $channexAdapter = null
+        ChannexRoomMapper $roomMapper,
+        ProvisionalBookingRepository $bookingRepo,
+        ChannelManagerPortInterface $channexAdapter
     ) {
-        $db = Database::getInstance();
-        $this->pdo = $pdo ?? $db->getConnection();
-        $this->roomMapper = $roomMapper ?? new ChannexRoomMapper();
-        $this->bookingRepo = $bookingRepo ?? new ProvisionalBookingRepository($this->pdo);
-        $this->channexAdapter = $channexAdapter ?? new ChannexAdapter();
+        $this->roomMapper = $roomMapper;
+        $this->bookingRepo = $bookingRepo;
+        $this->channexAdapter = $channexAdapter;
     }
 
     public function __invoke(Request $request): void {
