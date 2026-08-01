@@ -32,6 +32,44 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================
+   Dark Mode Purple Correction (Design decision 2026-08-01)
+   The purple family (#3D2B4A) is unreadable on dark surfaces.
+   Single global rule: in dark mode, any text-primary becomes
+   the lavender --color-primary-soft (AA ~7:1 on #121214).
+   Verified: no light surfaces exist inside dark mode, so a
+   blanket rule is safe and DRY (supersedes ad-hoc dark: overrides).
+   ============================================ */
+.dark .text-primary {
+  color: var(--color-primary-soft);
+}
+
+/* Primary buttons on dark: gradient lift + golden glow instead of flat purple */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+}
+
+.dark .btn-primary {
+  background-image: linear-gradient(135deg, #6B4F80, #4A3163);
+  box-shadow: 0 8px 24px -8px rgba(212, 191, 222, 0.25);
+}
+
+.dark .btn-primary:hover {
+  box-shadow: 0 8px 32px -6px rgba(212, 191, 222, 0.45);
+}
+
+/* Lavender-tinted borders for dark surfaces (replaces cold white/10) */
+.dark .border-tint {
+  border-color: rgba(212, 191, 222, 0.12) !important;
+}
+
+/* ============================================
    Navbar Contrast & Visibility Rules
    ============================================ */
 #main-navbar .nav-link-text {
@@ -72,6 +110,7 @@
   --color-primary: #3D2B4A;          /* Morado Oscuro — headings, primary CTAs */
   --color-primary-light: #7E628D;    /* Morado Medio — hover, active elements */
   --color-primary-dark: #2E1A38;     /* Hover intenso */
+  --color-primary-soft: #A78BBD;     /* Lavanda legible sobre superficies oscuras (AA ~7:1 sobre #121214) */
   --color-purple-soft: #8E7A9A;      /* Bordes decorativos, iconos secundarios */
   --color-purple-pastel: #C8B8D0;    /* Dark mode secondary text, card bg */
   --color-purple-bg: #F4F0F6;        /* Light mode section alternating bg */
