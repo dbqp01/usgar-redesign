@@ -19,7 +19,14 @@ class Validator {
     public static function requireFields(array $data, array $fields): void {
         $missing = [];
         foreach ($fields as $field) {
-            if (!isset($data[$field]) || (is_string($data[$field]) && trim($data[$field]) === '')) {
+            if (!isset($data[$field])) {
+                $missing[] = $field;
+                continue;
+            }
+            if (!is_scalar($data[$field])) {
+                throw HttpException::badRequest("El parámetro '{$field}' debe ser un valor escalar (texto o número).");
+            }
+            if (trim((string)$data[$field]) === '') {
                 $missing[] = $field;
             }
         }

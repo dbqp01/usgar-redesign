@@ -69,12 +69,12 @@ class ChannexRoomMapper {
             }
         }
 
-        Logger::warning("ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [{$channexRoomTypeId}]. Usando tipo predeterminado (1).", [
+        Logger::warning("ChannexRoomMapper: No se encontro mapeo explicito para tipo de habitacion de Channex [{$channexRoomTypeId}].", [
             'channex_room_type_id' => $channexRoomTypeId,
             'room_title'           => $roomTitle,
         ]);
 
-        return 1;
+        throw new \InvalidArgumentException("Unknown Channex Room Type or Mapping: {$channexRoomTypeId}");
     }
 
     /**

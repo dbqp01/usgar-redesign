@@ -62,6 +62,17 @@ if ($dbConnection !== null) {
     $container->set(PDO::class, $dbConnection);
 }
 
+use App\Features\Shared\Ports\PmsPortInterface;
+use App\Features\Shared\Ports\PaymentGatewayPortInterface;
+use App\Features\Shared\Ports\ChannelManagerPortInterface;
+use App\Features\Shared\Adapters\QloAppAdapter;
+use App\Features\Shared\Adapters\MercadoPagoAdapter;
+use App\Features\Shared\Adapters\ChannexAdapter;
+
+$container->bind(PmsPortInterface::class, fn($c) => clone new QloAppAdapter($c->get(PDO::class)));
+$container->bind(PaymentGatewayPortInterface::class, fn($c) => clone new MercadoPagoAdapter());
+$container->bind(ChannelManagerPortInterface::class, fn($c) => clone new ChannexAdapter());
+
 // 2.5 Registrar Event Listeners para el flujo Webhook → PMS/Channel Manager
 use App\Core\Events\EventDispatcher;
 use App\Features\Booking\Domain\Listeners\ConfirmQloAppsOrderListener;

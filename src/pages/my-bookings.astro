@@ -172,8 +172,14 @@ const t = useTranslations(lang);
         }
       }
 
+      // Evitar ejecucion doble por astro:page-load
+      if (window.__myBookingsInitialized) return;
+      window.__myBookingsInitialized = true;
       initMyBookings();
-      document.addEventListener('astro:page-load', initMyBookings);
+      document.addEventListener('astro:page-load', () => {
+        window.__myBookingsInitialized = false;
+        initMyBookings();
+      });
     })();
   </script>
 </Layout>

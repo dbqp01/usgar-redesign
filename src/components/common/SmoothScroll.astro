@@ -14,6 +14,7 @@
 
   let lenisInstance: any = null;
   let rafCallback: any = null;
+  let ctx: gsap.Context;
 
   function isHomePage() {
     const path = window.location.pathname;
@@ -30,20 +31,22 @@
       const isMobileTouch = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 1024;
 
       if (!isMobileTouch && !lenisInstance) {
-        lenisInstance = new Lenis({
-          duration: 1.2,
-          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-          smoothWheel: true,
+        ctx = gsap.context(() => {
+          lenisInstance = new Lenis({
+            duration: 1.2,
+            easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothWheel: true,
+          });
+
+          lenisInstance.on('scroll', ScrollTrigger.update);
+
+          rafCallback = (time: number) => {
+            lenisInstance.raf(time * 1000);
+          };
+          gsap.ticker.add(rafCallback);
+
+          gsap.ticker.lagSmoothing(0);
         });
-
-        lenisInstance.on('scroll', ScrollTrigger.update);
-
-        rafCallback = (time: number) => {
-          lenisInstance.raf(time * 1000);
-        };
-        gsap.ticker.add(rafCallback);
-
-        gsap.ticker.lagSmoothing(0);
         (window as any).__lenis = lenisInstance;
       }
 
@@ -71,7 +74,8 @@
       (window as any).__lenis = null;
     }
 
-    // 3. Remover el ticker
+    // 3. Remover el ticker y revert context
+    if (ctx) ctx.revert();
     if (rafCallback) {
       gsap.ticker.remove(rafCallback);
       rafCallback = null;

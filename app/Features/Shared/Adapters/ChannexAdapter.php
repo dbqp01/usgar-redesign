@@ -70,7 +70,12 @@ class ChannexAdapter implements ChannelManagerPortInterface {
 
             $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $curlError = curl_error($ch);
             curl_close($ch);
+
+            if ($curlError !== '') {
+                throw new Exception("Channex Network Error in pushAvailability: {$curlError}");
+            }
 
             return $httpCode === 200 || $httpCode === 201;
 
@@ -159,7 +164,7 @@ class ChannexAdapter implements ChannelManagerPortInterface {
                     'reservation_id'  => 'USG-' . $bookingId,
                     'arrival_date'    => $checkIn,
                     'departure_date'  => $checkOut,
-                    'currency'        => Config::get('MERCADO_PAGO_CURRENCY', 'PEN'),
+                    'currency'        => Config::get('MERCADO_PAGO_CURRENCY', 'USD'),
                     'payment_collect' => 'property',
                     'payment_type'    => 'credit_card',
                     'customer' => [
@@ -209,7 +214,7 @@ class ChannexAdapter implements ChannelManagerPortInterface {
 
             if ($curlError !== '') {
                 Logger::error("ChannexAdapter: cURL error: {$curlError}");
-                return false;
+                throw new Exception("Channex Network Error in createBooking: {$curlError}");
             }
 
             if ($httpCode === 200 || $httpCode === 201) {
@@ -245,7 +250,12 @@ class ChannexAdapter implements ChannelManagerPortInterface {
 
             $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $curlError = curl_error($ch);
             curl_close($ch);
+
+            if ($curlError !== '') {
+                throw new Exception("Channex Network Error in fetchBookingRevision: {$curlError}");
+            }
 
             if ($httpCode === 200 && !empty($response)) {
                 $decoded = json_decode($response, true);
@@ -281,7 +291,12 @@ class ChannexAdapter implements ChannelManagerPortInterface {
 
             $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $curlError = curl_error($ch);
             curl_close($ch);
+
+            if ($curlError !== '') {
+                throw new Exception("Channex Network Error in acknowledgeRevision: {$curlError}");
+            }
 
             if ($httpCode >= 200 && $httpCode < 300) {
                 Logger::info("ChannexAdapter: Revision {$revisionId} confirmada (ACK) exitosamente.");

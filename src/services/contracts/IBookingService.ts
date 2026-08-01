@@ -32,12 +32,17 @@ export interface BookingPayload {
 }
 
 export interface BookingResponseData {
-  booking_id: string;
-  status: string;
-  expires_at: string;
+  booking_id?: string;
+  cart_id?: string;
+  access_token?: string;
+  mp_public_key?: string;
+  status?: string;
+  expires_at?: string;
   preference_url?: string;
   init_point?: string;
   total_amount?: number;
+  gateway_price?: number;
+  price?: number;
   currency?: string;
   mock_mode?: boolean;
   message?: string;

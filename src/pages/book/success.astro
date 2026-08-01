@@ -104,7 +104,7 @@ const t = useTranslations(lang);
           </div>
           <div class="text-right">
             <span class="block text-xs uppercase font-semibold text-text-secondary-light dark:text-text-secondary-dark tracking-wider">{t('success.totalPaid')}</span>
-            <p class="font-display text-3xl font-bold text-primary"><span id="success-currency-symbol">S/.</span> <span id="success-total-price">0</span> <span id="success-currency-code">PEN</span></p>
+            <p class="font-display text-3xl font-bold text-primary"><span id="success-currency-symbol">$</span> <span id="success-total-price">0</span> <span id="success-currency-code">USD</span></p>
           </div>
         </div>
       </div>
@@ -158,54 +158,39 @@ const t = useTranslations(lang);
 </Layout>
 
 <!-- Serialize rooms data into browser context -->
-<script is:inline define:vars={{ serializedRooms: JSON.stringify(rooms.map(r => ({ id: r.id, slug: r.slug, name: r.name, pricePerNight: r.pricePerNight }))) }}>
+<script is:inline data-astro-rerun define:vars={{ 
+  serializedRooms: JSON.stringify(rooms.map(r => ({ id: r.id, slug: r.slug, name: r.name, pricePerNight: r.pricePerNight }))),
+  singleGuest: t('success.singleGuest') || '1 Guest',
+  pluralGuest: t('success.pluralGuest') || 'Guests',
+  singleNight: t('success.singleNight') || 'night',
+  pluralNight: t('success.pluralNight') || 'nights',
+  pollingMsg: t('success.polling') || 'Confirming payment with the bank, please wait...'
+}}>
   window.__ROOMS_DATA = JSON.parse(serializedRooms);
+  window.__I18N_DATA = { singleGuest, pluralGuest, singleNight, pluralNight, pollingMsg };
 </script>
 
 <script>
-  type Locale = 'en' | 'es' | 'fr' | 'pt';
-  const API_BASE_URL = (import.meta.env.PUBLIC_API_URL || window.location.origin + '/api').replace(/\/$/, '');
-  const ROOMS_DATA = (window as any).__ROOMS_DATA || [];
-  const rawLang = (document.documentElement.lang || 'en') as Locale;
-  const lang: Locale = ['en', 'es', 'fr', 'pt'].includes(rawLang) ? rawLang : 'en';
-
-  const dateLocales: Record<Locale, string> = {
-    en: 'en-US',
-    es: 'es-PE',
-    fr: 'fr-FR',
-    pt: 'pt-PT'
-  };
-
-  const labels: Record<Locale, { singleGuest: string; pluralGuest: string; singleNight: string; pluralNight: string }> = {
-    en: { singleGuest: '1 Guest', pluralGuest: 'Guests', singleNight: 'night', pluralNight: 'nights' },
-    es: { singleGuest: '1 Huesped', pluralGuest: 'Huespedes', singleNight: 'noche', pluralNight: 'noches' },
-    fr: { singleGuest: '1 Voyageur', pluralGuest: 'Voyageurs', singleNight: 'nuit', pluralNight: 'nuits' },
-    pt: { singleGuest: '1 Hospede', pluralGuest: 'Hospedes', singleNight: 'noite', pluralNight: 'noites' }
-  };
-
-  const pollingLabels: Record<Locale, string> = {
-    en: 'Confirming payment with the bank, please wait...',
-    es: 'Confirmando pago con el banco, por favor espere...',
-    fr: 'Confirmation du paiement avec la banque, veuillez patienter...',
-    pt: 'Confirmando pagamento com o banco, aguarde...'
-  };
+  let pollingAbortController: AbortController | null = null;
 
   /** Fetch booking status with optional token for guest data access */
-  async function fetchBookingStatus(bookingId: string, token: string): Promise<any> {
+  async function fetchBookingStatus(bookingId: string, token: string, signal?: AbortSignal): Promise<any> {
+    const API_BASE_URL = (import.meta.env.PUBLIC_API_URL || window.location.origin + '/api').replace(/\/$/, '');
     const tokenParam = token ? `&token=${encodeURIComponent(token)}` : '';
-    const response = await fetch(`${API_BASE_URL}/booking-status?cart_id=${bookingId}${tokenParam}`);
+    const response = await fetch(`${API_BASE_URL}/booking-status?cart_id=${bookingId}${tokenParam}`, { signal });
     if (!response.ok) throw new Error('Booking not found');
     const payload = await response.json();
     return payload.data || payload;
   }
 
   /** Poll until status changes from pending, with exponential backoff */
-  async function pollForPayment(bookingId: string, token: string, maxAttempts = 8): Promise<any> {
+  async function pollForPayment(bookingId: string, token: string, signal: AbortSignal, maxAttempts = 8): Promise<any> {
     const pollingStatus = document.getElementById('polling-status');
     let delay = 2000; // Start at 2 seconds
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      const booking = await fetchBookingStatus(bookingId, token);
+      if (signal.aborted) throw new Error('Aborted');
+      const booking = await fetchBookingStatus(bookingId, token, signal);
 
       // If status is no longer pending, return immediately
       if (booking.status && booking.status !== 'pending') {
@@ -214,20 +199,43 @@ const t = useTranslations(lang);
 
       // Show polling status after first attempt
       if (attempt > 0 && pollingStatus) {
+        const L = (window as any).__I18N_DATA || { pollingMsg: 'Confirming payment with the bank, please wait...' };
         pollingStatus.classList.remove('hidden');
-        pollingStatus.textContent = pollingLabels[lang] || pollingLabels.en;
+        pollingStatus.textContent = L.pollingMsg;
       }
 
-      // Wait with exponential backoff (2s, 3s, 4s, 6s, 8s, 12s, 16s, 24s)
-      await new Promise(resolve => setTimeout(resolve, delay));
+      // Wait with exponential backoff
+      try {
+        await new Promise((resolve, reject) => {
+          const timeout = setTimeout(resolve, delay);
+          signal.addEventListener('abort', () => {
+            clearTimeout(timeout);
+            reject(new Error('Aborted'));
+          });
+        });
+      } catch (e) {
+        if (signal.aborted) throw e;
+      }
       delay = Math.min(delay * 1.5, 24000);
     }
 
     // After max attempts, return whatever we have
-    return await fetchBookingStatus(bookingId, token);
+    return await fetchBookingStatus(bookingId, token, signal);
   }
 
   async function loadSuccessPage() {
+    if ((window as any).__successPageInitialized) return;
+    (window as any).__successPageInitialized = true;
+
+    type Locale = 'en' | 'es' | 'fr' | 'pt';
+    const rawLang = (document.documentElement.lang || 'en') as Locale;
+    const lang: Locale = ['en', 'es', 'fr', 'pt'].includes(rawLang) ? rawLang : 'en';
+    const dateLocales: Record<Locale, string> = { en: 'en-US', es: 'es-PE', fr: 'fr-FR', pt: 'pt-PT' };
+    const ROOMS_DATA = (window as any).__ROOMS_DATA || [];
+    const L = (window as any).__I18N_DATA || {
+      singleGuest: '1 Guest', pluralGuest: 'Guests', singleNight: 'night', pluralNight: 'nights'
+    };
+
     const loadingContainer = document.getElementById('loading-container');
     const successContainer = document.getElementById('success-container');
     const errorContainer = document.getElementById('error-container');
@@ -246,8 +254,9 @@ const t = useTranslations(lang);
     }
 
     try {
+      pollingAbortController = new AbortController();
       // Poll for payment confirmation (handles webhook race condition)
-      const booking = await pollForPayment(bookingId, token);
+      const booking = await pollForPayment(bookingId, token, pollingAbortController.signal);
 
       if (!booking || !booking.id_room_type) throw new Error('Data mismatch');
 
@@ -261,7 +270,7 @@ const t = useTranslations(lang);
       };
 
       // Determine currency from API response
-      const currency = booking.currency || 'PEN';
+      const currency = booking.currency || 'USD';
       const currencySymbol = currency === 'PEN' ? 'S/.' : '$';
 
       const confCodeEl = document.getElementById('success-conf-code');
@@ -283,7 +292,6 @@ const t = useTranslations(lang);
       if (guestPhoneEl) guestPhoneEl.textContent = booking.guest_phone || booking.guestPhone || '---';
       if (roomNameEl) roomNameEl.textContent = booking.room_name || (room ? (room.name[lang] || room.name.en) : '---');
 
-      const L = labels[lang] || labels.en;
       if (guestsTextEl) {
         const guests = booking.guests || 2;
         guestsTextEl.textContent = guests === 1
@@ -317,4 +325,14 @@ const t = useTranslations(lang);
   }
 
   document.addEventListener('astro:page-load', loadSuccessPage);
+
+  document.addEventListener('astro:before-preparation', () => {
+    (window as any).__successPageInitialized = false;
+    if (pollingAbortController) {
+      pollingAbortController.abort();
+      pollingAbortController = null;
+    }
+    delete (window as any).__ROOMS_DATA;
+    delete (window as any).__I18N_DATA;
+  });
 </script>

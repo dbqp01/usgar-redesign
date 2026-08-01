@@ -74,7 +74,7 @@ const navLinks = [
           <a
             href={link.href}
             class:list={[
-              'nav-link nav-link-text text-sm font-medium tracking-wide uppercase transition-colors duration-300 drop-shadow-md',
+              'nav-link nav-link-text text-sm font-medium tracking-wide uppercase transition-colors duration-300 drop-shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md px-2 py-1',
               currentPath === link.href ? 'text-primary' : ''
             ]}
           >
@@ -118,7 +118,7 @@ const navLinks = [
         <!-- Dark/Light Mode Toggle -->
         <button
           id="theme-toggle"
-          class="nav-link nav-link-text relative w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition-colors duration-300 drop-shadow-md"
+          class="nav-link nav-link-text relative w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition-colors duration-300 drop-shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           aria-label="Toggle dark mode"
         >
           <!-- Sun icon (shown in dark mode) -->
@@ -137,7 +137,7 @@ const navLinks = [
           <a
             id="auth-login-btn"
             href={getRelativeLocaleUrl(lang, 'login')}
-            class="nav-link nav-link-text nav-btn-border text-sm font-medium px-4 py-2 rounded-full border border-current/20 hover:border-primary hover:text-primary transition-[color,border-color] duration-300 drop-shadow-md"
+            class="nav-link nav-link-text nav-btn-border text-sm font-medium px-4 py-2 rounded-full border border-current/20 hover:border-primary hover:text-primary transition-[color,border-color] duration-300 drop-shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             {t('auth.signIn')}
           </a>
@@ -146,7 +146,8 @@ const navLinks = [
           <div id="auth-user-dropdown" class="hidden relative group">
             <button
               type="button"
-              class="nav-link nav-link-text flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary drop-shadow-md"
+              aria-label="User menu"
+              class="nav-link nav-link-text flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary drop-shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-full px-2 py-1"
             >
               <div class="w-8 h-8 rounded-full overflow-hidden bg-primary/20 border border-primary/50 flex-shrink-0 flex items-center justify-center">
                 <img id="auth-user-photo" src="" alt="User" class="w-full h-full object-cover hidden" />
@@ -180,7 +181,7 @@ const navLinks = [
         <a
           href={getRelativeLocaleUrl(lang, 'book')}
           data-astro-prefetch="tap"
-          class="bg-primary hover:bg-primary-dark text-white font-semibold text-sm px-6 py-2.5 rounded-full transition-[transform,background-color,box-shadow] duration-300 lg:hover:shadow-lg lg:hover:shadow-primary/25 lg:hover:-translate-y-0.5"
+          class="bg-primary hover:bg-primary-dark text-white font-semibold text-sm px-6 py-2.5 rounded-full transition-[transform,background-color,box-shadow] duration-300 lg:hover:shadow-lg lg:hover:shadow-primary/25 lg:hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card-light dark:focus-visible:ring-offset-surface-card-dark"
         >
           {t('nav.bookNow')}
         </a>
@@ -205,6 +206,8 @@ const navLinks = [
           id="mobile-menu-btn"
           class="nav-link nav-link-text w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition-colors duration-300 drop-shadow-md"
           aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
         >
           <svg class="w-6 h-6" id="hamburger-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
@@ -337,6 +340,7 @@ const navLinks = [
 <script>
   import { getUser, logout } from '../utils/auth-client';
   import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
   let ctx: gsap.Context;
 
@@ -414,48 +418,58 @@ const navLinks = [
 
     if (!navbar) return;
 
-    // --- 1. Sticky Navbar Logic ---
-    let ticking = false;
-    function handleScroll() {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const scrollY = window.scrollY;
-          const path = window.location.pathname.replace(/\/$/, '') || '/';
-          const isHome = path === '' || path === '/' || path === '/es' || path === '/fr' || path === '/pt';
-
-          if (scrollY > 40 || !isHome) {
-            navbar?.classList.add('glass', 'shadow-sm', 'navbar-scrolled');
-          } else {
-            navbar?.classList.remove('glass', 'shadow-sm', 'navbar-scrolled');
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true, signal });
-    handleScroll();
+    // --- 1. Sticky Navbar Logic (via GSAP ScrollTrigger to prevent layout thrashing) ---
+    const path = window.location.pathname.replace(/\/$/, '') || '/';
+    const isHome = path === '' || path === '/' || path === '/es' || path === '/fr' || path === '/pt';
 
     // --- 2. Mobile Menu GSAP Logic ---
     ctx = gsap.context(() => {
+      if (isHome) {
+        gsap.registerPlugin(ScrollTrigger);
+        ScrollTrigger.create({
+          start: '40px top',
+          end: 99999,
+          toggleClass: { targets: navbar, className: 'glass' },
+          onUpdate: (self) => {
+            if (self.isActive) {
+              navbar.classList.add('shadow-sm', 'navbar-scrolled');
+            } else {
+              navbar.classList.remove('shadow-sm', 'navbar-scrolled');
+            }
+          }
+        });
+      }
+
       let isMenuOpen = false;
-      const tl = gsap.timeline({ paused: true });
+      let tl = gsap.timeline({ paused: true });
+      const mm = gsap.matchMedia();
 
       // Coreografía Quiet Luxury
       if (mobileMenu && mobileBackdrop && mobilePanel) {
-        tl.set(mobileMenu, { display: 'block' })
-          .to(mobileBackdrop, { autoAlpha: 1, duration: 0.3, ease: 'power2.out' })
-          .to(mobilePanel, { x: '0%', duration: 0.5, ease: 'power4.out' }, '<0.1')
-          .fromTo('.mobile-nav-link', 
-            { x: 30, autoAlpha: 0 }, 
-            { x: 0, autoAlpha: 1, duration: 0.4, stagger: 0.05, ease: 'power3.out' }, 
-            '-=0.3'
-          )
-          .fromTo('.mobile-lang-link, .mobile-auth-item, .mobile-cta-btn',
-            { y: 20, autoAlpha: 0 },
-            { y: 0, autoAlpha: 1, duration: 0.4, stagger: 0.05, ease: 'power3.out' },
-            '-=0.3'
-          );
+        mm.add("(prefers-reduced-motion: no-preference)", () => {
+          tl.clear();
+          tl.set(mobileMenu, { display: 'block' })
+            .to(mobileBackdrop, { autoAlpha: 1, duration: 0.3, ease: 'power2.out' })
+            .to(mobilePanel, { x: '0%', duration: 0.5, ease: 'power4.out' }, '<0.1')
+            .fromTo('.mobile-nav-link', 
+              { x: 30, autoAlpha: 0 }, 
+              { x: 0, autoAlpha: 1, duration: 0.4, stagger: 0.05, ease: 'power3.out' }, 
+              '-=0.3'
+            )
+            .fromTo('.mobile-lang-link, .mobile-auth-item, .mobile-cta-btn',
+              { y: 20, autoAlpha: 0 },
+              { y: 0, autoAlpha: 1, duration: 0.4, stagger: 0.05, ease: 'power3.out' },
+              '-=0.3'
+            );
+        });
+
+        mm.add("(prefers-reduced-motion: reduce)", () => {
+          tl.clear();
+          tl.set(mobileMenu, { display: 'block' })
+            .to(mobileBackdrop, { autoAlpha: 1, duration: 0.1 })
+            .to(mobilePanel, { x: '0%', duration: 0.1 }, '<')
+            .set('.mobile-nav-link, .mobile-lang-link, .mobile-auth-item, .mobile-cta-btn', { autoAlpha: 1, x: 0, y: 0 });
+        });
       }
 
       function openMenu() {
@@ -464,6 +478,7 @@ const navLinks = [
         document.body.style.overflow = 'hidden';
         hamburgerIcon?.classList.add('hidden');
         closeIcon?.classList.remove('hidden');
+        mobileMenuBtn?.setAttribute('aria-expanded', 'true');
         tl.timeScale(1).play();
       }
 
@@ -473,6 +488,7 @@ const navLinks = [
         document.body.style.overflow = '';
         hamburgerIcon?.classList.remove('hidden');
         closeIcon?.classList.add('hidden');
+        mobileMenuBtn?.setAttribute('aria-expanded', 'false');
         tl.timeScale(2).reverse(); // Reverse faster
       }
 
@@ -480,6 +496,7 @@ const navLinks = [
         if (isMenuOpen) {
           isMenuOpen = false;
           document.body.style.overflow = '';
+          mobileMenuBtn?.setAttribute('aria-expanded', 'false');
           tl.progress(0).pause();
         }
       }
@@ -497,7 +514,7 @@ const navLinks = [
       document.addEventListener('astro:before-preparation', () => {
         forceCloseInstant();
         abortController.abort();
-        ctx?.revert();
+        if (ctx) ctx.revert();
       }, { once: true });
     });
 

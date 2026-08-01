@@ -30,24 +30,21 @@ class HandleMercadoPagoWebhookAction {
     private PDO $pdo;
     private PmsPortInterface $pms;
     private PaymentGatewayPortInterface $paymentGateway;
-    private ChannelManagerPortInterface $channelManager;
     private ProvisionalBookingRepository $bookingRepo;
     private EventDispatcher $eventDispatcher;
 
     public function __construct(
-        ?PDO $pdo = null,
-        ?PmsPortInterface $pms = null,
-        ?PaymentGatewayPortInterface $paymentGateway = null,
-        ?ChannelManagerPortInterface $channelManager = null,
-        ?EventDispatcher $eventDispatcher = null
+        PDO $pdo,
+        PmsPortInterface $pms,
+        PaymentGatewayPortInterface $paymentGateway,
+        ProvisionalBookingRepository $bookingRepo,
+        EventDispatcher $eventDispatcher
     ) {
-        $db = Database::getInstance();
-        $this->pdo = $pdo ?? $db->getConnection();
-        $this->pms = $pms ?? new QloAppAdapter($this->pdo);
-        $this->paymentGateway = $paymentGateway ?? new MercadoPagoAdapter();
-        $this->channelManager = $channelManager ?? new ChannexAdapter();
-        $this->bookingRepo = new ProvisionalBookingRepository($this->pdo);
-        $this->eventDispatcher = $eventDispatcher ?? EventDispatcher::getInstance();
+        $this->pdo = $pdo;
+        $this->pms = $pms;
+        $this->paymentGateway = $paymentGateway;
+        $this->bookingRepo = $bookingRepo;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function __invoke(Request $request): void {
@@ -136,14 +133,6 @@ class HandleMercadoPagoWebhookAction {
             return;
         }
 
-        // 3.5 Interceptar el boton "Simular Notificacion" de Mercado Pago
-        // MP envia payment_id '123456' como notificacion de prueba desde el dashboard.
-        if ($paymentIdStr === '123456') {
-            Logger::info("HandleMercadoPagoWebhookAction: Simulacion de Mercado Pago recibida y validada correctamente.");
-            Response::json(['success' => true, 'message' => 'Simulacion de Mercado Pago exitosa! La firma fue validada correctamente.']);
-            return;
-        }
-
         // 4. Obtener detalles del pago desde la API de Mercado Pago
         $paymentDetails = $this->paymentGateway->getPaymentDetails($paymentIdStr);
         if (!$paymentDetails) {
@@ -188,8 +177,10 @@ class HandleMercadoPagoWebhookAction {
 
             // 5.5 VALIDACION DE SEGURIDAD ESTRICTA (Amount Mismatch)
             // Usar bccomp para evitar falsos positivos por imprecision de punto flotante
+            $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
+            $expectedPen = (float)($hold['price_snapshot'] ?? 0.0) * $exchangeRate;
             $transactionStr = number_format($transactionAmount, 2, '.', '');
-            $expectedStr = number_format((float)($hold['price_snapshot'] ?? 0.0), 2, '.', '');
+            $expectedStr = number_format($expectedPen, 2, '.', '');
             if (bccomp($transactionStr, $expectedStr, 2) < 0) {
                 Logger::error("HandleMercadoPagoWebhookAction ALERTA FRAUDE: Monto cobrado ({$transactionStr}) es menor al esperado ({$expectedStr}) para Cart ID {$cartId}");
                 $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::FraudReview->value);

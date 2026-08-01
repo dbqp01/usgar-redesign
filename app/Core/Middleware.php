@@ -49,7 +49,9 @@ class Middleware {
             // Determinar Access-Control-Allow-Origin
             $allowOrigin = '*';
             if ($allowedOrigins !== ['*'] && $origin !== '') {
-                if (!in_array($origin, $allowedOrigins, true)) {
+                $host = parse_url($origin, PHP_URL_HOST);
+                $isLocal = in_array($host, ['localhost', '127.0.0.1'], true);
+                if (!in_array($origin, $allowedOrigins, true) && !$isLocal) {
                     throw HttpException::forbidden('Origin not allowed.');
                 }
                 $allowOrigin = $origin;
@@ -89,7 +91,7 @@ class Middleware {
             header('X-Content-Type-Options: nosniff');
             header('X-Frame-Options: DENY');
             header('Referrer-Policy: strict-origin-when-cross-origin');
-            header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://sdk.mercadopago.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob: *.tile.openstreetmap.org; connect-src 'self' https://api.mercadopago.com https://api.channex.io https://cms.hotelesusgar.com; frame-src 'self' https://www.mercadopago.com;");
+            header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://sdk.mercadopago.com https://*.mercadopago.com https://http2.mlstatic.com https://*.mlstatic.com https://unpkg.com https://www.mercadolibre.com https://*.mercadolibre.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com https://http2.mlstatic.com https://*.mlstatic.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob: *.tile.openstreetmap.org https://*.mlstatic.com https://*.mercadopago.com https://*.mercadolibre.com; connect-src 'self' https://api.mercadopago.com https://*.mercadopago.com https://events.mercadopago.com https://*.mercadolibre.com https://*.mlstatic.com https://api.channex.io https://cms.hotelesusgar.com; frame-src 'self' https://www.mercadopago.com https://*.mercadopago.com https://*.mercadolibre.com https://*.mercadolibre.com.pe https://*.mercadopago.com.pe;");
             header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
             header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
         };

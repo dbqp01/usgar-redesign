@@ -29,7 +29,10 @@ class RoomTypeRegistry {
      * Obtiene el slug por id_room_type.
      */
     public static function getSlugById(int $idRoomType): string {
-        return self::SLUG_MAP[$idRoomType] ?? 'matrimonial';
+        if (!isset(self::SLUG_MAP[$idRoomType])) {
+            throw new \InvalidArgumentException("Unknown RoomType ID: {$idRoomType}");
+        }
+        return self::SLUG_MAP[$idRoomType];
     }
 
     /**

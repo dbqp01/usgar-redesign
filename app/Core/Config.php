@@ -116,8 +116,14 @@ class Config {
         foreach ($lines as $line) {
             $line = trim($line);
 
-            // Ignorar comentarios y lineas vacias
-            if ($line === '' || str_starts_with($line, '#')) {
+            if (str_starts_with($line, '#')) {
+                continue;
+            }
+            if (str_contains($line, ' #')) {
+                $partsComment = explode(' #', $line, 2);
+                $line = trim($partsComment[0]);
+            }
+            if ($line === '') {
                 continue;
             }
 
@@ -130,8 +136,10 @@ class Config {
             $value = trim($parts[1]);
 
             // Remover comillas unicamente si envuelven el valor completo
-            if ((str_starts_with($value, '"') && str_ends_with($value, '"')) ||
-                (str_starts_with($value, "'") && str_ends_with($value, "'"))) {
+            if (strlen($value) >= 2 && (
+                (str_starts_with($value, '"') && str_ends_with($value, '"')) ||
+                (str_starts_with($value, "'") && str_ends_with($value, "'"))
+            )) {
                 $value = substr($value, 1, -1);
             }
 

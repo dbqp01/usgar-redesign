@@ -100,7 +100,8 @@ class ProvisionalBookingRepository {
                     status VARCHAR(32) DEFAULT 'pending',
                     preference_id VARCHAR(128) NULL,
                     expires_at DATETIME NOT NULL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    INDEX idx_hotel_room_status_dates (id_hotel, id_room_type, status, checkin, checkout)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
                 CREATE TABLE IF NOT EXISTS processed_payments (
@@ -172,7 +173,7 @@ class ProvisionalBookingRepository {
      */
     public function isPaymentProcessed(string $paymentId): bool {
         try {
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM processed_payments WHERE payment_id = :payment_id");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM processed_payments WHERE payment_id = :payment_id FOR UPDATE");
             $stmt->execute([':payment_id' => $paymentId]);
             return (int)$stmt->fetchColumn() > 0;
         } catch (PDOException $e) {
@@ -247,6 +248,31 @@ class ProvisionalBookingRepository {
             return $stmt->rowCount();
         } catch (PDOException $e) {
             Logger::error('ProvisionalBookingRepository::cleanExpiredCarts Error: ' . $e->getMessage());
+            return 0;
+        }
+    }
+
+    public function getHoldCountForRoomForUpdate(int $idRoomType, string $checkIn, string $checkOut, int $idHotel): int {
+        if (!$this->pdo) return 0;
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT COUNT(*) FROM provisional_bookings
+                WHERE id_hotel = :idHotel
+                  AND id_room_type = :idRoomType
+                  AND (status = 'paid' OR (status = 'pending' AND expires_at > NOW()))
+                  AND checkin < :checkout
+                  AND checkout > :checkin
+                FOR UPDATE
+            ");
+            $stmt->execute([
+                ':idHotel'    => $idHotel,
+                ':idRoomType' => $idRoomType,
+                ':checkin'    => $checkIn,
+                ':checkout'   => $checkOut,
+            ]);
+            return (int)$stmt->fetchColumn();
+        } catch (PDOException $e) {
+            Logger::error('ProvisionalBookingRepository::getHoldCountForRoomForUpdate Error: ' . $e->getMessage());
             return 0;
         }
     }

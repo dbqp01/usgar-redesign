@@ -55,6 +55,10 @@ class GetBookingStatusAction {
         $idRoomType = (int)$hold['id_room_type'];
         $slug = RoomTypeRegistry::getSlugById($idRoomType);
 
+        $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
+        $priceUSD = (float)$hold['price_snapshot'];
+        $gatewayPricePEN = round($priceUSD * $exchangeRate, 2);
+
         $payload = [
             'success'           => true,
             'cart_id'           => $hold['cart_id'],
@@ -66,8 +70,11 @@ class GetBookingStatusAction {
             'room_name'         => $hold['room_data']['room_name'] ?? '',
             'price_per_night'   => (float)($hold['room_data']['price_per_night'] ?? 0),
             'nights'            => (int)($hold['room_data']['nights'] ?? 1),
-            'currency'          => Config::get('MERCADO_PAGO_CURRENCY', 'PEN'),
-            'price'             => (float)$hold['price_snapshot'],
+            'currency'          => 'USD',
+            'price'             => $priceUSD,
+            'exchange_rate'     => $exchangeRate,
+            'gateway_currency'  => 'PEN',
+            'gateway_price'     => $gatewayPricePEN,
             'expires_at'        => $expiresAtStr,
             'is_expired'        => $isExpired,
             'time_left_seconds' => $timeLeftSeconds,

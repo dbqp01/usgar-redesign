@@ -33,8 +33,29 @@ class EventDispatcher {
             return;
         }
 
+        $pdo = \App\Core\Database::getInstance()->getConnection();
+        if ($pdo !== null) {
+            $payload = base64_encode(serialize($event));
+            try {
+                $stmt = $pdo->prepare("INSERT INTO event_outbox (event_name, payload, created_at) VALUES (:event_name, :payload, NOW())");
+                $stmt->execute([
+                    ':event_name' => $eventName,
+                    ':payload'    => $payload,
+                ]);
+                return;
+            } catch (Throwable $e) {
+                Logger::error("EventDispatcher Error inserting into outbox: " . $e->getMessage());
+                // Fallback to dispatchNow if outbox fails (e.g. table not created yet)
+            }
+        }
+
+        $this->dispatchNow($event);
+    }
+
+    public function dispatchNow(EventInterface $event): void {
+        $eventName = $event->getName();
         $lastError = null;
-        foreach ($this->listeners[$eventName] as $listener) {
+        foreach ($this->listeners[$eventName] ?? [] as $listener) {
             try {
                 $listener->handle($event);
             } catch (Throwable $e) {

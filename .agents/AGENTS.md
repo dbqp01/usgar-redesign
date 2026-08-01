@@ -6,7 +6,7 @@ Sitio web transaccional para turistas internacionales. Reservas directas con Mer
 - **Frontend:** Astro v7.x.x (estatico en http://localhost:4321), Tailwind CSS v4.3, Leaflet
 - **Backend:** PHP 8.x nativo (Monolito Modular, patron ADR con DI Container PSR-11)
 - **Server:** Hostinger compartido (PHP + MySQL, sin Composer en prod)
-- **Payments:** Mercado Pago (USD)
+- **Payments:** Mercado Pago (USD) - ESTRICTAMENTE Checkout API (Custom Checkout), prohibido Checkout Pro.
 - **PMS:** QloApps (API XML)
 - **Channel Manager:** Channex
 

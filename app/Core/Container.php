@@ -10,7 +10,7 @@ use Exception;
  * Contenedor de Inyeccion de Dependencias PSR-11 ligero para PHP 8.
  * Soporta autowiring mediante Reflection API.
  */
-class Container {
+class Container implements ContainerInterface {
     private static ?Container $instance = null;
     private array $instances = [];
     private array $bindings = [];
@@ -50,13 +50,13 @@ class Container {
             return $object;
         }
 
-        if (!class_exists($id)) {
-            throw new Exception("Core Container: Clase no encontrada '{$id}'.");
+        if (!class_exists($id) && !interface_exists($id)) {
+            throw new NotFoundException("Core Container: Clase o interfaz no encontrada '{$id}'.");
         }
 
         $reflector = new ReflectionClass($id);
         if (!$reflector->isInstantiable()) {
-            throw new Exception("Core Container: La clase '{$id}' no es instanciable.");
+            throw new ContainerException("Core Container: La clase o interfaz '{$id}' no es instanciable. (Verifique si falta un bind())");
         }
 
         $constructor = $reflector->getConstructor();
@@ -79,7 +79,7 @@ class Container {
             } elseif ($parameter->allowsNull()) {
                 $dependencies[] = null;
             } else {
-                throw new Exception("Core Container: No se pudo resolver el parámetro '{$parameter->getName()}' para la clase '{$id}'.");
+                throw new ContainerException("Core Container: No se pudo resolver el parámetro '{$parameter->getName()}' para la clase '{$id}'.");
             }
         }
 

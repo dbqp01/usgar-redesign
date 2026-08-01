@@ -7,7 +7,6 @@ use App\Features\Shared\Ports\PaymentGatewayPortInterface;
 use App\Core\Config;
 use App\Core\Logger;
 use MercadoPago\MercadoPagoConfig;
-use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\Client\Payment\PaymentClient;
 use MercadoPago\Client\Common\RequestOptions;
 use MercadoPago\Webhook\WebhookSignatureValidator;
@@ -55,27 +54,16 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
     public function processPayment(array $paymentData): ?array {
         $cartId = $paymentData['external_reference'] ?? '';
         
-        $currencyId = Config::get('MERCADO_PAGO_CURRENCY', 'PEN');
-        $totalPrice = (float)($paymentData['transaction_amount'] ?? 0);
-        $finalPrice = $totalPrice;
-
-        if ($currencyId === 'PEN') {
-            $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
-            $finalPrice = $totalPrice * $exchangeRate;
-        }
+        $finalPrice = (float)($paymentData['transaction_amount'] ?? 0);
 
         $statementDescriptor = Config::get('MP_STATEMENT_DESCRIPTOR', 'USGAR HOTELES CUSCO');
 
-        // Extract and map Payer Data
+        // Map Payer Data
         $payer = $paymentData['payer'] ?? [];
-        $guestEmail = $payer['email'] ?? '';
         
         $payload = [
             'transaction_amount'  => (float) round($finalPrice, 2),
-            'token'               => $paymentData['token'] ?? '',
-            'installments'        => (int) ($paymentData['installments'] ?? 1),
             'payment_method_id'   => $paymentData['payment_method_id'] ?? '',
-            'issuer_id'           => $paymentData['issuer_id'] ?? null,
             'payer'               => $payer,
             'external_reference'  => $cartId,
             'statement_descriptor'=> $statementDescriptor,
@@ -83,8 +71,19 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             'notification_url'    => "{$this->siteUrl}/api/webhook",
         ];
 
+        if (!empty($paymentData['token'])) {
+            $payload['token'] = $paymentData['token'];
+        }
+        if (!empty($paymentData['issuer_id'])) {
+            $payload['issuer_id'] = (string) $paymentData['issuer_id'];
+        }
+        if (!empty($paymentData['installments'])) {
+            $payload['installments'] = (int) $paymentData['installments'];
+        }
+
+
         try {
-            $idempotencyKey = 'pay_' . $cartId . '_' . time();
+            $idempotencyKey = 'pay_' . $cartId . '_' . hash('sha256', $cartId . '_' . $finalPrice);
             MercadoPagoConfig::setAccessToken($this->accessToken);
 
             $client = new PaymentClient();
@@ -214,7 +213,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             MercadoPagoConfig::setAccessToken($this->accessToken);
             $client = new \MercadoPago\Client\Payment\PaymentRefundClient();
             $requestOptions = new RequestOptions();
-            $requestOptions->setCustomHeaders(["X-Idempotency-Key: refund_{$paymentId}_" . time()]);
+            $requestOptions->setCustomHeaders(["X-Idempotency-Key: refund_{$paymentId}_" . hash('sha256', $paymentId . '_' . ($amount ?? 'full'))]);
             $requestOptions->setConnectionTimeout(10000); // 10s
 
             if ($amount !== null) {

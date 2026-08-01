@@ -13,7 +13,7 @@
   let ctx: gsap.Context;
 
   function initCursor() {
-    if (typeof window === 'undefined' || window.matchMedia('(pointer: coarse)').matches) return;
+    if (typeof window === 'undefined' || window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const cursor = document.getElementById('custom-cursor');
     if (!cursor) return;
@@ -60,6 +60,7 @@
       document.addEventListener('astro:before-preparation', () => {
         window.removeEventListener('mousemove', onMouseMove);
         isVisible = false;
+        if (ctx) ctx.revert();
       }, { once: true });
     });
   }

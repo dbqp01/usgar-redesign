@@ -70,11 +70,7 @@ class Router {
                         throw HttpException::internal("Controller class {$controllerClass} not found.");
                     }
 
-                    try {
-                        $controller = Container::getInstance()->get($controllerClass);
-                    } catch (\Throwable $e) {
-                        $controller = new $controllerClass();
-                    }
+                    $controller = Container::getInstance()->get($controllerClass);
 
                     if (!method_exists($controller, $action)) {
                         throw HttpException::internal("Action {$action} not found in {$controllerClass}.");
@@ -89,11 +85,7 @@ class Router {
                         throw HttpException::internal("Action class {$handler} not found.");
                     }
 
-                    try {
-                        $actionInstance = Container::getInstance()->get($handler);
-                    } catch (\Throwable $e) {
-                        $actionInstance = new $handler();
-                    }
+                    $actionInstance = Container::getInstance()->get($handler);
 
                     if (is_callable($actionInstance)) {
                         $actionInstance($request);

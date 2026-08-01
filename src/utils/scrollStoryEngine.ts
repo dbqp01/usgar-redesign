@@ -58,8 +58,8 @@ export class ScrollStoryEngine {
     this.ctx = gsap.context(() => {
       mm.add(
         {
-          isDesktop: '(min-width: 1024px)',
-          isMobile: '(max-width: 1023px)',
+          isDesktop: '(min-width: 768px)',
+          isMobile: '(max-width: 767px)',
           reduceMotion: '(prefers-reduced-motion: reduce)',
           noReduceMotion: '(prefers-reduced-motion: no-preference)',
         },

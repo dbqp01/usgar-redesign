@@ -31,7 +31,8 @@ class GetRoomsAction {
         $hotelId  = (int)($request->getQuery('id_hotel') ?? 1);
 
         if (!$checkIn || !$checkOut) {
-            throw HttpException::badRequest('Faltan los parámetros obligatorios checkIn y checkOut.');
+            $checkIn = date('Y-m-d');
+            $checkOut = date('Y-m-d', strtotime('+1 day'));
         }
 
         Validator::dateRange($checkIn, $checkOut);
@@ -47,10 +48,17 @@ class GetRoomsAction {
                 $totalStayPrice = round($price * $nights, 2);
 
                 $room['slug']             = $slug;
-                $currency = Config::get('MERCADO_PAGO_CURRENCY', 'PEN');
-                $symbol = $currency === 'PEN' ? 'S/.' : '$';
+                $currency = Config::get('HOTEL_BASE_CURRENCY', 'USD');
                 $room['currency']         = $currency;
-                $room['price_formatted']  = $symbol . ' ' . number_format($price, 2, '.', '') . ' ' . $currency;
+                
+                if (class_exists('NumberFormatter')) {
+                    $fmt = new \NumberFormatter('es_PE', \NumberFormatter::CURRENCY);
+                    $room['price_formatted']  = $fmt->formatCurrency($price, $currency);
+                } else {
+                    $symbol = match($currency) { 'USD' => '$', 'PEN' => 'S/.', 'EUR' => '€', default => $currency . ' ' };
+                    $room['price_formatted']  = $symbol . number_format($price, 2, '.', '');
+                }
+                
                 $room['nights']           = $nights;
                 $room['total_stay_price'] = $totalStayPrice;
 

@@ -22,7 +22,7 @@ class Request {
         ?array $body = null
     ) {
         $this->method = strtoupper($method ?? ($_SERVER['REQUEST_METHOD'] ?? 'GET'));
-        $this->queryParams = $_GET;
+        $this->queryParams = $this->sanitize($_GET);
 
         $rawHeaders = $this->extractHeaders();
         if (is_array($headers)) {
@@ -40,7 +40,7 @@ class Request {
             $this->path = '/' . trim($parts[0], '/');
         }
 
-        $this->body = $body ?? $this->parseBody();
+        $this->body = $this->sanitize($body ?? $this->parseBody());
     }
 
     public function getMethod(): string {
@@ -158,5 +158,22 @@ class Request {
             }
         }
         return $headers;
+    }
+
+    /**
+     * Sanitiza los datos de entrada recursivamente evitando romper las estructuras de array.
+     */
+    private function sanitize(mixed $data): mixed {
+        if (is_array($data)) {
+            $sanitized = [];
+            foreach ($data as $k => $v) {
+                $sanitized[$k] = $this->sanitize($v);
+            }
+            return $sanitized;
+        }
+        if (is_string($data)) {
+            return htmlspecialchars($data, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        }
+        return $data;
     }
 }

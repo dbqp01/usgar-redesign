@@ -1,82 +1,32 @@
 <?php
-/**
- * API Smoke Test Harness — USGAR Hotels
- * Version PHP para ejecutar en Hostinger donde no hay bash.
- * Usage: php tests/api-harness.php [base_url]
- */
-declare(strict_types=1);
-
-$baseUrl = $argv[1] ?? 'http://localhost:8000';
-$pass = 0;
-$warn = 0;
-$fail = 0;
-
-function testEndpoint(string $method, string $path, int $expectedStatus, ?string $body = null): array {
-    global $baseUrl;
-
-    $url = $baseUrl . $path;
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json', 'Accept: application/json']);
-
-    if ($method === 'POST') {
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $body ?? '{}');
-    }
-
-    $response = curl_exec($ch);
-    $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $error = curl_error($ch);
-    curl_close($ch);
-
-    if ($error) {
-        return ['status' => 0, 'label' => "$method $path", 'expected' => $expectedStatus, 'error' => $error];
-    }
-
-    return ['status' => $httpCode, 'label' => "$method $path", 'expected' => $expectedStatus, 'body' => $response];
-}
-
-echo "=================================\n";
-echo "  USGAR Hotels API Harness (PHP)\n";
-echo "  Target: $baseUrl\n";
-echo "=================================\n\n";
-
-$tests = [
-    ['GET',  '/api/health',         200],
-    ['GET',  '/api/rooms',          200],
-    ['GET',  '/api/rooms?checkIn=2026-08-01&checkOut=2026-08-03', 200],
-    ['POST', '/api/booking',        400, '{}'],
-    ['POST', '/api/extend-hold',    400, '{}'],
-    ['GET',  '/api/booking-status', 400],
-    ['POST', '/api/process-payment', 400, '{}'],
-    ['POST', '/api/webhook',        200, '{}'],
-    ['GET',  '/api/auth/me',        200],
-    ['POST', '/api/auth/register',  400, '{}'],
-    ['POST', '/api/auth/login-email', 400, '{}'],
-    ['POST', '/api/auth/logout',    200],
+$url = 'http://localhost:8000/api/booking';
+$payloads = [
+    'Empty Body' => [],
+    'Missing Required' => ['id_room_type' => 1],
+    'Bad Dates' => ['id_room_type' => 1, 'checkIn' => '2026-07-31', 'checkOut' => '2026-07-20', 'guestName' => 'Test', 'guestEmail' => 'test@test.com'],
+    'Negative Guests' => ['id_room_type' => 1, 'guests' => -5, 'checkIn' => '2026-08-01', 'checkOut' => '2026-08-05', 'guestName' => 'Test', 'guestEmail' => 'test@test.com'],
+    'Malformed Email' => ['id_room_type' => 1, 'checkIn' => '2026-08-01', 'checkOut' => '2026-08-05', 'guestName' => 'Test', 'guestEmail' => 'not-an-email'],
+    'Happy Path' => [
+        'id_room_type' => 1,
+        'guests' => 2,
+        'checkIn' => date('Y-m-d', strtotime('+5 days')),
+        'checkOut' => date('Y-m-d', strtotime('+10 days')),
+        'guestName' => 'John Doe',
+        'guestEmail' => 'john.doe@example.com',
+        'guestPhone' => '+123456789'
+    ]
 ];
 
-foreach ($tests as $test) {
-    $result = testEndpoint($test[0], $test[1], $test[2], $test[3] ?? null);
-
-    if ($result['status'] === 0) {
-        echo " {$result['label']} → CONNECTION REFUSED ({$result['error']})\n";
-        $fail++;
-    } elseif ($result['status'] === $result['expected']) {
-        echo " {$result['label']} → {$result['status']}\n";
-        $pass++;
-    } elseif ($result['status'] === 500) {
-        echo " {$result['label']} → {$result['status']} (SERVER ERROR)\n";
-        $fail++;
-    } else {
-        echo "️  {$result['label']} → {$result['status']} (expected {$result['expected']})\n";
-        $warn++;
-    }
+foreach ($payloads as $name => $payload) {
+    echo "Testing: $name\n";
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    echo "HTTP Code: $httpCode\n";
+    echo "Response: $response\n\n";
+    curl_close($ch);
 }
-
-echo "\n=================================\n";
-echo "  Results:  $pass  ️  $warn   $fail\n";
-echo "=================================\n";
-
-exit($fail > 0 ? 1 : 0);

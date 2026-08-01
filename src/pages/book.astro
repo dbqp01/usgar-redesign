@@ -376,6 +376,72 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
 
           </div>
         </form>
+
+        <!-- Section 3: Payment Details (Hidden initially) -->
+        <div id="payment-section" class="hidden bg-surface-card-light dark:bg-surface-card-dark p-6 md:p-8 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm space-y-6">
+          <h2 class="font-display text-2xl mb-4 flex items-center gap-3 border-b border-black/5 dark:border-white/5 pb-3">
+            <span class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">3</span>
+            {t('book.paymentDetails') || 'Payment Details'}
+          </h2>
+          
+          <form id="mp-payment-form" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                Card Number *
+              </label>
+              <div id="form-checkout__cardNumber" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm h-[46px] shadow-sm"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                  Expiration *
+                </label>
+                <div id="form-checkout__expirationDate" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm h-[46px] shadow-sm"></div>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                  CVV *
+                </label>
+                <div id="form-checkout__securityCode" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm h-[46px] shadow-sm"></div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                Cardholder Name *
+              </label>
+              <input type="text" id="form-checkout__cardholderName" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none placeholder:text-stone-400" placeholder="John Doe" />
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                  Document Type *
+                </label>
+                <select id="form-checkout__identificationType" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none appearance-none"></select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
+                  Document Number *
+                </label>
+                <input type="text" id="form-checkout__identificationNumber" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none placeholder:text-stone-400" placeholder="12345678" />
+              </div>
+            </div>
+            
+            <select id="form-checkout__issuer" class="hidden"></select>
+            <select id="form-checkout__installments" class="hidden"></select>
+            <input type="email" id="form-checkout__cardholderEmail" class="hidden" />
+
+            <button type="submit" id="btn-final-pay" class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-xl transition-[transform,background-color,box-shadow] duration-300 hover:shadow-lg hover:shadow-primary/25 lg:hover:-translate-y-0.5 text-lg cursor-pointer flex items-center justify-center gap-3 mt-6">
+              <span id="btn-final-text">Pay Now</span>
+              <svg id="btn-final-spinner" class="hidden animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </button>
+          </form>
+        </div>
       </div>
 
       <!-- Right Column: Booking Summary Card (5 cols) -->
@@ -488,6 +554,8 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
     </div>
   </main>
 </Layout>
+
+<script src="https://sdk.mercadopago.com/js/v2" is:inline></script>
 
 <script is:inline define:vars={{ serializedRooms: JSON.stringify(rooms.map(r => ({ id: r.id, slug: r.slug, name: r.name, pricePerNight: r.pricePerNight, beds: r.beds, baseOccupancy: r.baseOccupancy, extraGuestCharge: r.extraGuestCharge, maxGuests: r.maxGuests }))), serializedLabels: JSON.stringify({ nights: t('book.nights'), night: t('book.night'), guest: t('booking.guest'), guests: t('booking.guests_plural'), selected: t('book.selected'), select: t('book.select'), fillAllFields: t('book.fillAllFields'), invalidEmail: t('book.invalidEmail'), processing: t('book.processing'), confirmAndPay: t('book.confirmAndPay'), noPaymentUrl: t('book.noPaymentUrl'), unexpectedError: t('book.unexpectedError') }) }}>
   // Parse server-serialized data (single source of truth)
@@ -827,20 +895,109 @@ import type { Locale } from '@/i18n/utils';
         }
 
         const data = result.data;
-        const redirectUrl = data.preference_url || data.init_point;
+        const mpPublicKey = data.mp_public_key;
+        const cartId = data.cart_id;
+        const accessToken = data.access_token;
+        const totalAmount = data.gateway_price || data.price || 0;
 
-        if (redirectUrl) {
-          let url = redirectUrl;
-          if (url.startsWith('/') && lang !== 'en') {
-            url = `/${lang}${url}`;
-          }
-          window.location.href = url;
-        } else {
-          showError(L.noPaymentUrl);
+        if (!mpPublicKey || !cartId || !accessToken) {
+          showError(L.noPaymentUrl || 'Missing required payment data from backend');
           btnSpinner?.classList.add('hidden');
           btnPay.disabled = false;
           if (btnText) btnText.textContent = L.confirmAndPay;
+          return;
         }
+
+        // 1) Ocultar form de huesped y boton Confirmar
+        const checkoutForm = document.getElementById('checkout-form');
+        const paymentSection = document.getElementById('payment-section');
+        const btnFinalPay = document.getElementById('btn-final-pay') as HTMLButtonElement;
+        const btnFinalSpinner = document.getElementById('btn-final-spinner');
+        const btnFinalText = document.getElementById('btn-final-text');
+        
+        checkoutForm?.classList.add('hidden');
+        paymentSection?.classList.remove('hidden');
+        paymentSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Hide the original summary button so user is forced to use the CardForm button
+        if (btnPay.parentElement) {
+          btnPay.parentElement.style.display = 'none';
+        }
+
+        // 2) Inicializar MercadoPago.js v2
+        const mp = new (window as any).MercadoPago(mpPublicKey, { locale: lang === 'es' ? 'es-PE' : 'en-US' });
+        
+        const cardForm = mp.cardForm({
+          amount: totalAmount.toString(),
+          iframe: true,
+          form: {
+            id: "mp-payment-form",
+            cardNumber: { id: "form-checkout__cardNumber", placeholder: "0000 0000 0000 0000" },
+            expirationDate: { id: "form-checkout__expirationDate", placeholder: "MM/YY" },
+            securityCode: { id: "form-checkout__securityCode", placeholder: "CVV" },
+            cardholderName: { id: "form-checkout__cardholderName" },
+            issuer: { id: "form-checkout__issuer" },
+            installments: { id: "form-checkout__installments" },
+            identificationType: { id: "form-checkout__identificationType" },
+            identificationNumber: { id: "form-checkout__identificationNumber" },
+            cardholderEmail: { id: "form-checkout__cardholderEmail" }
+          },
+          callbacks: {
+            onFormMounted: (error: any) => {
+              if (error) return console.warn("Form mounted error:", error);
+              const emailEl = document.getElementById('form-checkout__cardholderEmail') as HTMLInputElement;
+              if (emailEl) emailEl.value = guestEmail;
+            },
+            onSubmit: async (event: any) => {
+              event.preventDefault();
+              
+              if (btnFinalPay) btnFinalPay.disabled = true;
+              if (btnFinalSpinner) btnFinalSpinner.classList.remove('hidden');
+              if (btnFinalText) btnFinalText.textContent = L.processing || 'Processing...';
+              errorBanner?.classList.add('hidden');
+              
+              try {
+                const formData = cardForm.getCardFormData();
+                
+                const processRes = await bookingService.processPayment(cartId!, accessToken!, {
+                  token: formData.token,
+                  issuer_id: formData.issuerId,
+                  payment_method_id: formData.paymentMethodId,
+                  installments: Number(formData.installments),
+                  payer: {
+                    email: guestEmail,
+                    identification: {
+                      type: formData.identificationType,
+                      number: formData.identificationNumber,
+                    }
+                  }
+                });
+                
+                if (!processRes.success) {
+                  showError(processRes.error?.message || 'Payment failed');
+                  if (btnFinalPay) btnFinalPay.disabled = false;
+                  if (btnFinalSpinner) btnFinalSpinner.classList.add('hidden');
+                  if (btnFinalText) btnFinalText.textContent = 'Pay Now';
+                  return;
+                }
+                
+                // Redirigir a exito
+                let successUrl = `/book/success?booking=${cartId}`;
+                if (lang !== 'en') {
+                  successUrl = `/${lang}${successUrl}`;
+                }
+                window.location.href = successUrl;
+                
+              } catch(err: any) {
+                console.error(err);
+                showError(err.message || 'Payment processing failed');
+                if (btnFinalPay) btnFinalPay.disabled = false;
+                if (btnFinalSpinner) btnFinalSpinner.classList.add('hidden');
+                if (btnFinalText) btnFinalText.textContent = 'Pay Now';
+              }
+            }
+          }
+        });
       } catch (err: any) {
         console.error(err);
         showError(err.message || L.unexpectedError);

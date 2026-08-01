@@ -19,4 +19,5 @@ interface PaymentGatewayPortInterface {
      * Reembolsa un pago. Si $amount es null, hace reembolso total.
      */
     public function refundPayment(string $paymentId, ?float $amount = null): bool;
+
 }

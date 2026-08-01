@@ -31,41 +31,8 @@ class QloAppAdapter implements PmsPortInterface {
 
     public function getAvailableRooms(string $checkIn, string $checkOut, int $idHotel = 1): array {
         if (!$this->pdo) {
-            Logger::warning('QloAppAdapter: DB Connection is offline. Returning mock availability.');
-            return [
-                [
-                    'id_room_type'  => 1,
-                    'id_product'    => 1,
-                    'room_name'     => 'Habitacion Matrimonial Superior',
-                    'price'         => 90.0,
-                    'max_guests'    => 2,
-                    'available_qty' => 5,
-                ],
-                [
-                    'id_room_type'  => 2,
-                    'id_product'    => 2,
-                    'room_name'     => 'Habitacion Doble Superior',
-                    'price'         => 90.0,
-                    'max_guests'    => 2,
-                    'available_qty' => 5,
-                ],
-                [
-                    'id_room_type'  => 3,
-                    'id_product'    => 3,
-                    'room_name'     => 'Habitacion Triple Estandar',
-                    'price'         => 120.0,
-                    'max_guests'    => 3,
-                    'available_qty' => 5,
-                ],
-                [
-                    'id_room_type'  => 4,
-                    'id_product'    => 4,
-                    'room_name'     => 'Habitacion Familiar Superior',
-                    'price'         => 150.0,
-                    'max_guests'    => 7,
-                    'available_qty' => 5,
-                ],
-            ];
+            Logger::error('QloAppAdapter: DB Connection is offline. Cannot get availability.');
+            return [];
         }
 
         try {
@@ -87,15 +54,7 @@ class QloAppAdapter implements PmsPortInterface {
                           AND bd.is_refunded = 0
                           AND bd.date_from < :date_to_booked
                           AND bd.date_to > :date_from_booked
-                    ), 0) AS booked_count,
-                    COALESCE((
-                        SELECT COUNT(*) FROM provisional_bookings pb
-                        WHERE pb.id_hotel = :id_hotel_holds
-                          AND pb.id_room_type = rt.id
-                          AND (pb.status = 'paid' OR (pb.status = 'pending' AND pb.expires_at > NOW()))
-                          AND pb.checkin < :checkout_holds
-                          AND pb.checkout > :checkin_holds
-                    ), 0) AS hold_count
+                    ), 0) AS booked_count
                 FROM qlo_htl_room_type rt
                 INNER JOIN qlo_product p ON p.id_product = rt.id_product
                 INNER JOIN qlo_product_lang pl ON pl.id_product = rt.id_product AND pl.id_lang = 1
@@ -104,11 +63,8 @@ class QloAppAdapter implements PmsPortInterface {
 
             $stmt->execute([
                 ':id_hotel'         => $idHotel,
-                ':id_hotel_holds'   => $idHotel,
                 ':date_from_booked' => $checkIn . ' 12:00:00',
                 ':date_to_booked'   => $checkOut . ' 10:30:00',
-                ':checkin_holds'    => $checkIn,
-                ':checkout_holds'   => $checkOut,
             ]);
 
             $rows = $stmt->fetchAll();
@@ -116,7 +72,7 @@ class QloAppAdapter implements PmsPortInterface {
 
             foreach ($rows as $row) {
                 $totalRooms = max((int)$row['total_rooms'], 1);
-                $availableCount = max(0, $totalRooms - (int)$row['booked_count'] - (int)$row['hold_count']);
+                $availableCount = max(0, $totalRooms - (int)$row['booked_count']);
 
                 $availableRooms[] = [
                     'id_room_type'  => (int)$row['id_room_type'],
@@ -128,69 +84,12 @@ class QloAppAdapter implements PmsPortInterface {
                 ];
             }
 
-            if (!empty($availableRooms)) {
-                return $availableRooms;
-            }
-
-            return $this->getDynamicFallbackAvailability($checkIn, $checkOut, $idHotel);
+            return $availableRooms;
 
         } catch (PDOException $e) {
-            Logger::warning('QloAppAdapter: Error en consulta SQL (posibles tablas de QloApps faltantes en DB). Usando fallback dinámico local: ' . $e->getMessage());
-            return $this->getDynamicFallbackAvailability($checkIn, $checkOut, $idHotel);
+            Logger::error('QloAppAdapter: Error en consulta SQL: ' . $e->getMessage());
+            return [];
         }
-    }
-
-    private function getDynamicFallbackAvailability(string $checkIn, string $checkOut, int $idHotel): array {
-        $baseRooms = [
-            1 => ['id_room_type' => 1, 'id_product' => 1, 'room_name' => 'Habitacion Matrimonial Superior', 'price' => 90.0,  'max_guests' => 2, 'total' => 5],
-            2 => ['id_room_type' => 2, 'id_product' => 2, 'room_name' => 'Habitacion Doble Superior',       'price' => 90.0,  'max_guests' => 2, 'total' => 5],
-            3 => ['id_room_type' => 3, 'id_product' => 3, 'room_name' => 'Habitacion Triple Estandar',       'price' => 120.0, 'max_guests' => 3, 'total' => 5],
-            4 => ['id_room_type' => 4, 'id_product' => 4, 'room_name' => 'Habitacion Familiar Superior',     'price' => 150.0, 'max_guests' => 7, 'total' => 5],
-        ];
-
-        if (!$this->pdo) {
-            return array_map(function($r) {
-                unset($r['total']);
-                $r['available_qty'] = 5;
-                return $r;
-            }, array_values($baseRooms));
-        }
-
-        try {
-            $stmt = $this->pdo->prepare("
-                SELECT id_room_type, COUNT(*) AS booked_count
-                FROM provisional_bookings
-                WHERE id_hotel = :idHotel
-                  AND (status = 'paid' OR (status = 'pending' AND expires_at > NOW()))
-                  AND checkin < :checkout
-                  AND checkout > :checkin
-                GROUP BY id_room_type
-            ");
-            $stmt->execute([
-                ':idHotel'  => $idHotel,
-                ':checkin'  => $checkIn,
-                ':checkout' => $checkOut,
-            ]);
-            $counts = $stmt->fetchAll(PDO::FETCH_KEY_PAIR) ?: [];
-        } catch (PDOException $e) {
-            $counts = [];
-        }
-
-        $result = [];
-        foreach ($baseRooms as $id => $room) {
-            $booked = (int)($counts[$id] ?? 0);
-            $available = max(0, $room['total'] - $booked);
-            $result[] = [
-                'id_room_type'  => $room['id_room_type'],
-                'id_product'    => $room['id_product'],
-                'room_name'     => $room['room_name'],
-                'price'         => $room['price'],
-                'max_guests'    => $room['max_guests'],
-                'available_qty' => $available,
-            ];
-        }
-
-        return $result;
     }
 
     public function createCart(int $idHotel, int $idProduct, string $checkIn, string $checkOut, int $guests = 1, float $totalPrice = 0, string $guestName = '', string $guestEmail = '', string $guestPhone = ''): string {
@@ -204,7 +103,7 @@ class QloAppAdapter implements PmsPortInterface {
         $lastName = htmlspecialchars($nameParts[1] ?? 'Guest', ENT_XML1);
         $safeEmail = htmlspecialchars($guestEmail ?: 'no-reply@hotelesusgar.com', ENT_XML1);
         $phone = htmlspecialchars($guestPhone ?: '000000000', ENT_XML1);
-        $currency = Config::get('MERCADO_PAGO_CURRENCY', 'PEN');
+        $currency = Config::get('MERCADO_PAGO_CURRENCY', 'USD');
         
         // payment_status 2 is generally Pending in QloApps/PrestaShop
         $xmlData = <<<XML
@@ -287,7 +186,7 @@ XML;
             $firstName = htmlspecialchars($nameParts[0] ?? $guestName, ENT_XML1);
             $lastName = htmlspecialchars($nameParts[1] ?? 'Guest', ENT_XML1);
             $safeEmail = htmlspecialchars($guestEmail, ENT_XML1);
-            $currency = Config::get('MERCADO_PAGO_CURRENCY', 'PEN');
+            $currency = Config::get('MERCADO_PAGO_CURRENCY', 'USD');
 
             $xmlData = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -338,7 +237,7 @@ XML;
         }
 
         // El cartId es un ID real numérico de QloApps, hacemos PUT para actualizar el pago
-        $currency = Config::get('MERCADO_PAGO_CURRENCY', 'PEN');
+        $currency = Config::get('MERCADO_PAGO_CURRENCY', 'USD');
         $xmlData = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <qloapps xmlns:xlink="http://www.w3.org/1999/xlink">

@@ -1,10 +1,11 @@
 ---
 // src/components/common/Preloader.astro
+import { siteSettings } from '../../data/settings';
 ---
 <div id="cinematic-preloader" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#121214] text-white overflow-hidden pointer-events-none">
   <div class="relative flex flex-col items-center">
     <div class="overflow-hidden">
-      <h1 id="preloader-text" class="text-4xl md:text-6xl font-serif tracking-[0.2em] transform translate-y-full opacity-0">USGAR</h1>
+      <h1 id="preloader-text" class="text-4xl md:text-6xl font-serif tracking-[0.2em] transform translate-y-full opacity-0">{siteSettings.hotelName}</h1>
     </div>
     <div 
       id="preloader-line"
@@ -14,15 +15,61 @@
   </div>
 </div>
 
-<script is:inline data-astro-rerun>
-  // Script bloqueante mínimo (se ejecuta inmediatamente)
-  (function() {
-    // Si ya cargó en esta sesión, ocultamos el preloader instantáneamente para no molestar la navegación SPA
-    if (sessionStorage.getItem('usgar_loaded')) {
-      const preloader = document.getElementById('cinematic-preloader');
+<script>
+  import { gsap } from "gsap";
+
+  document.addEventListener("astro:page-load", () => {
+    // Si ya cargó en esta sesión, ocultamos instantáneamente
+    if (sessionStorage.getItem("usgar_loaded")) {
+      const preloader = document.getElementById("cinematic-preloader");
       if (preloader) {
-        preloader.style.display = 'none';
+        preloader.style.display = "none";
       }
+      return;
     }
-  })();
+
+    const preloader = document.getElementById("cinematic-preloader");
+    if (!preloader) return;
+
+    let ctx = gsap.context(() => {
+      let mm = gsap.matchMedia();
+
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const tl = gsap.timeline({
+          onComplete: () => {
+            sessionStorage.setItem("usgar_loaded", "true");
+            gsap.set(preloader, { autoAlpha: 0, display: "none" });
+          },
+        });
+
+        tl.to("#preloader-text", {
+          y: 0,
+          autoAlpha: 1,
+          duration: 1.2,
+          ease: "power4.out",
+        })
+        .to("#preloader-line", {
+          scaleX: 1,
+          duration: 1,
+          ease: "power3.inOut",
+        }, "-=0.5")
+        .to(preloader, {
+          autoAlpha: 0,
+          duration: 0.8,
+          ease: "power2.inOut",
+          delay: 0.2
+        });
+      });
+
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        sessionStorage.setItem("usgar_loaded", "true");
+        gsap.set(preloader, { autoAlpha: 0, display: "none" });
+      });
+
+      // Cleanup MANDATORIO según AGENTS.md
+      document.addEventListener("astro:before-preparation", () => {
+        ctx.revert();
+      }, { once: true });
+    }, preloader);
+  });
 </script>

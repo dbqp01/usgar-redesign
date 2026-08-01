@@ -82,13 +82,15 @@ class ProcessPaymentAction {
                 return;
             }
 
+            $this->pdo->commit();
+
             $paymentData['external_reference'] = $cartId;
-            $paymentData['transaction_amount'] = $hold['price_snapshot'];
+            $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
+            $paymentData['transaction_amount'] = round($hold['price_snapshot'] * $exchangeRate, 2);
 
             $paymentResult = $this->paymentGateway->processPayment($paymentData);
 
             if (!$paymentResult || !isset($paymentResult['id'])) {
-                $this->pdo->rollBack();
                 throw new Exception("Fallo al procesar el pago con la pasarela.");
             }
 
@@ -96,6 +98,7 @@ class ProcessPaymentAction {
             $paymentIdStr = (string)$paymentResult['id'];
 
             if ($status === 'approved') {
+                $this->pdo->beginTransaction();
                 $this->bookingRepo->updateStatus($cartId, BookingStatus::Paid->value);
                 $this->bookingRepo->markPaymentProcessed($paymentIdStr, $cartId, 'approved');
                 $this->pdo->commit();
@@ -127,7 +130,6 @@ class ProcessPaymentAction {
                     'message' => 'Pago aprobado exitosamente.'
                 ]);
             } else {
-                $this->pdo->commit();
                 Response::json([
                     'success' => false,
                     'status' => $status,

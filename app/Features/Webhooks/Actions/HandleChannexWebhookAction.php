@@ -117,7 +117,10 @@ class HandleChannexWebhookAction {
                 'expires_at'     => date('Y-m-d H:i:s', strtotime('+1 year')),
             ];
 
-            $this->bookingRepo->create($holdData);
+            $inserted = $this->bookingRepo->create($holdData);
+            if (!$inserted) {
+                throw new Exception("Error al insertar la reserva provisional en la base de datos.");
+            }
             Logger::info("HandleChannexWebhookAction: Sincronizado inventario de {$otaName} en BD local con Cart ID {$cartId}");
 
             // Si vino un revision_id, se confirma mediante ACK para no perderla en la ventana de 30 minutos
@@ -126,6 +129,8 @@ class HandleChannexWebhookAction {
             }
         } catch (Exception $e) {
             Logger::error("HandleChannexWebhookAction Exception al sincronizar: " . $e->getMessage());
+            Response::json(['success' => false, 'error' => 'Internal Server Error'], 500);
+            return;
         }
 
         Response::json([

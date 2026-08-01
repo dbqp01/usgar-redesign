@@ -66,6 +66,11 @@ class SyncChannexBookingListener implements ListenerInterface {
                     $adults
                 );
 
+                if (!$channexResult) {
+                    Logger::error("SyncChannexBookingListener: Fallo lógico en Channex (retornó false), no se reintentará. Cart ID {$cartId}");
+                    break;
+                }
+
                 Logger::info("SyncChannexBookingListener: Reserva sincronizada en Channex exitosamente para Cart ID {$cartId} (Intento {$attempt})", [
                     'channex_result' => $channexResult
                 ]);

@@ -34,17 +34,15 @@ class CreateBookingAction {
     private ProvisionalBookingRepository $bookingRepo;
 
     public function __construct(
-        ?PDO $pdo = null,
-        ?PmsPortInterface $pms = null,
-        ?PaymentGatewayPortInterface $paymentGateway = null,
-        ?ProvisionalBookingRepository $bookingRepo = null
+        PDO $pdo,
+        PmsPortInterface $pms,
+        PaymentGatewayPortInterface $paymentGateway,
+        ProvisionalBookingRepository $bookingRepo
     ) {
-        $container = Container::getInstance();
-        $db = Database::getInstance();
-        $this->pdo = $pdo ?? ($container->has(PDO::class) ? $container->get(PDO::class) : $db->getConnection());
-        $this->pms = $pms ?? new QloAppAdapter($this->pdo);
-        $this->paymentGateway = $paymentGateway ?? new MercadoPagoAdapter();
-        $this->bookingRepo = $bookingRepo ?? new ProvisionalBookingRepository($this->pdo);
+        $this->pdo = $pdo;
+        $this->pms = $pms;
+        $this->paymentGateway = $paymentGateway;
+        $this->bookingRepo = $bookingRepo;
     }
 
     public function __invoke(Request $request): void {
@@ -82,7 +80,6 @@ class CreateBookingAction {
         Validator::dateRange($checkIn, $checkOut);
 
         try {
-            $this->pdo->beginTransaction();
 
             $availableRooms = $this->pms->getAvailableRooms($checkIn, $checkOut, $hotelId);
             $targetRoom = null;
@@ -94,14 +91,12 @@ class CreateBookingAction {
                 }
             }
 
-            if (!$targetRoom || $targetRoom['available_qty'] <= 0) {
-                $this->pdo->rollBack();
+            if (!$targetRoom) {
                 throw HttpException::badRequest('La habitación seleccionada ya no está disponible para estas fechas.');
             }
 
             $maxGuests = (int)($targetRoom['max_guests'] ?? 2);
             if ($guests > $maxGuests) {
-                $this->pdo->rollBack();
                 throw HttpException::badRequest("El número de huéspedes ({$guests}) excede la capacidad máxima de esta habitación ({$maxGuests} personas).");
             }
 
@@ -111,6 +106,16 @@ class CreateBookingAction {
             $totalPrice = round($pricePerNight * $nights, 2);
 
             $cartId = $this->pms->createCart($hotelId, $idProduct, $checkIn, $checkOut, $guests, $totalPrice, $guestName, $guestEmail, $guestPhone);
+            
+            $this->pdo->beginTransaction();
+
+            $holdsCount = $this->bookingRepo->getHoldCountForRoomForUpdate($idRoomType, $checkIn, $checkOut, $hotelId);
+            $targetRoom['available_qty'] -= $holdsCount;
+
+            if ($targetRoom['available_qty'] <= 0) {
+                $this->pdo->rollBack();
+                throw HttpException::badRequest('La habitación seleccionada ya no está disponible para estas fechas.');
+            }
             $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
             $currentUser = SessionService::getUserFromRequest();
 
@@ -154,13 +159,19 @@ class CreateBookingAction {
             $timeLeftSeconds = max(0, strtotime($expiresAt) - time());
             $roomSlug = RoomTypeRegistry::getSlugById($idRoomType);
 
+            $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
+            $gatewayPricePEN = round($totalPrice * $exchangeRate, 2);
+
             Response::json([
                 'success'           => true,
                 'cart_id'           => $cartId,
                 'access_token'      => $accessToken,
-                'init_point'        => "/book/checkout?cart_id={$cartId}&token={$accessToken}",
-                'currency'          => Config::get('MERCADO_PAGO_CURRENCY', 'PEN'),
+                'currency'          => 'USD',
                 'price'             => $totalPrice,
+                'exchange_rate'     => $exchangeRate,
+                'gateway_currency'  => 'PEN',
+                'gateway_price'     => $gatewayPricePEN,
+                'mp_public_key'     => Config::get('PUBLIC_MERCADO_PAGO_PUBLIC_KEY'),
                 'expires_at'        => $expiresAt,
                 'time_left_seconds' => $timeLeftSeconds,
                 'room_summary'      => [

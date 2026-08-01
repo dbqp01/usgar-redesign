@@ -74,6 +74,11 @@ class SessionService {
 
         [$header, $payload, $signature] = $parts;
 
+        $decodedHeader = json_decode(self::base64UrlDecode($header), true);
+        if (!is_array($decodedHeader) || !isset($decodedHeader['alg']) || $decodedHeader['alg'] !== self::ALG) {
+            return null;
+        }
+
         // Verificar firma
         $secret = self::getSecret();
         $expectedSig = self::base64UrlEncode(
@@ -106,7 +111,9 @@ class SessionService {
      * Setea la cookie de sesion con el JWT.
      */
     public static function setAuthCookie(string $jwt): void {
-        $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? 80) == 443;
+        $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || 
+                    ($_SERVER['SERVER_PORT'] ?? 80) == 443 || 
+                    (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
         setcookie(self::COOKIE_NAME, $jwt, [
             'expires'  => time() + (self::COOKIE_TTL_DAYS * 86400),
             'path'     => '/',
@@ -120,7 +127,9 @@ class SessionService {
      * Elimina la cookie de sesion.
      */
     public static function clearAuthCookie(): void {
-        $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? 80) == 443;
+        $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || 
+                    ($_SERVER['SERVER_PORT'] ?? 80) == 443 || 
+                    (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
         setcookie(self::COOKIE_NAME, '', [
             'expires'  => time() - 3600,
             'path'     => '/',
@@ -151,7 +160,7 @@ class SessionService {
     private static function getSecret(): string {
         $secret = Config::get('AUTH_JWT_SECRET');
         if ($secret === null || strlen($secret) < 32) {
-            throw new \RuntimeException('AUTH_JWT_SECRET must be configured and at least 32 characters.');
+            throw \App\Core\HttpException::unauthorized('AUTH_JWT_SECRET must be configured and at least 32 characters.');
         }
         return $secret;
     }
