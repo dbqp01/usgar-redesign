@@ -27,7 +27,15 @@ export interface SiteSettings {
   customCursor: boolean;
   siteDescription: { en: string; es: string; fr: string; pt: string };
   socialLinks: SocialLink[];
+  roomInventory: Record<string, number>;
 }
+
+export const DEFAULT_ROOM_INVENTORY: Record<string, number> = {
+  'doble-superior': 8,
+  matrimonial: 6,
+  'triple-superior': 4,
+  'familiar-superior': 2,
+};
 
 export const siteSettings: SiteSettings = {
   hotelName: settingsData.hotelName,
@@ -60,4 +68,9 @@ export const siteSettings: SiteSettings = {
     pt: settingsData.siteDescription_pt
   },
   socialLinks: settingsData.socialLinks,
+  roomInventory: settingsData.roomInventory ?? DEFAULT_ROOM_INVENTORY,
 };
+
+export function getRoomInventory(): Record<string, number> {
+  return settingsData.roomInventory ?? DEFAULT_ROOM_INVENTORY;
+}
