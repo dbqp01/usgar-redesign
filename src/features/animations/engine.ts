@@ -2,6 +2,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { register, isHomePage } from './animationLifecycle';
 import { initHeroStory } from './modules/heroStory';
+import { initHeroTextReveal } from './modules/heroTextReveal';
 import { initRoomsStory } from './modules/roomsStory';
 import { initHeritageStory } from './modules/heritageStory';
 import { initParallaxCards } from './modules/parallaxCards';
@@ -37,6 +38,7 @@ export function bootHomeAnimations(): void {
         register('hero', initHeroStory());
 
         if (isDesktop) {
+          register('hero-text', initHeroTextReveal());
           register('rooms', initRoomsStory());
           register('parallax', initParallaxCards());
           register('tilt', initMouseTilt());
