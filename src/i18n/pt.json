@@ -1,6 +1,6 @@
-{
+﻿{
   "nav": {
-    "home": "Início",
+    "home": "InÃ­cio",
     "rooms": "Quartos",
     "services": "Servicos",
     "explore": "Explorar Cusco",
@@ -11,7 +11,7 @@
   },
   "hero": {
     "title": "USGAR Hotels",
-    "subtitle": "San Pedro, Cusco — Sua porta de entrada para os Andes",
+    "subtitle": "San Pedro, Cusco â€” Sua porta de entrada para os Andes",
     "cta": "Reserve Sua Estadia",
     "ctaSecondary": "Explorar Quartos"
   },
@@ -46,7 +46,11 @@
   "room": {
     "about": "Sobre o quarto",
     "amenities": "Servicos e comodidades",
-    "includedFree": "Incluido sem custo extra",
+    "includedFree": "KEEP",
+    "marquee1": "San Pedro",
+    "marquee2": "Cusco",
+    "marquee3": "Machu Picchu",
+    "marquee4": "Vale Sagrado",
     "baseRate": "Tarifa base",
     "maxCapacity": "Capacidade maxima",
     "guests": "hospedes",
@@ -354,6 +358,10 @@
     "elevatedExperience": "EXPERIENCIA COMPLETA",
     "alsoIncluded": "Tambem incluido:",
     "night": "noite",
-    "includedFree": "Incluido sem custo extra"
+    "includedFree": "KEEP",
+    "marquee1": "San Pedro",
+    "marquee2": "Cusco",
+    "marquee3": "Machu Picchu",
+    "marquee4": "Vale Sagrado"
   }
 }

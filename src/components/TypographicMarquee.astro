@@ -1,0 +1,25 @@
+---
+// src/components/TypographicMarquee.astro
+// Editorial typographic marquee divider — pure CSS animation (zero JS, GPU transform).
+interface Props {
+  items: string[];
+  reverse?: boolean;
+}
+
+const { items, reverse = false } = Astro.props;
+---
+
+<div class="marquee-tipographic overflow-hidden relative select-none py-6 sm:py-10" aria-hidden="true">
+  <div class="flex w-max marquee-tipographic-track" style={reverse ? 'animation-direction: reverse' : undefined}>
+    {[0, 1].map(() => (
+      <span class="marquee-tipographic-text">
+        {items.map((item, i) => (
+          <>
+            <span class="whitespace-nowrap">{item}</span>
+            {i < items.length - 1 && <span class="text-secondary marquee-tipographic-star">✦</span>}
+          </>
+        ))}
+      </span>
+    ))}
+  </div>
+</div>

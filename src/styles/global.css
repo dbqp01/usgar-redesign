@@ -514,6 +514,49 @@ h3, h4 {
 }
 
 /* ============================================
+   Typographic Marquee (Editorial Divider)
+   Pure CSS loop — two identical copies, translateX(-50%) = seamless.
+   ============================================ */
+.marquee-tipographic-track {
+  animation: marquee-tipographic 30s linear infinite;
+  will-change: transform;
+}
+
+.marquee-tipographic:hover .marquee-tipographic-track {
+  animation-play-state: paused;
+}
+
+.marquee-tipographic-text {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  color: var(--color-primary);
+  opacity: 0.85;
+}
+
+.dark .marquee-tipographic-text {
+  color: var(--color-primary-soft);
+}
+
+.marquee-tipographic-star {
+  margin: 0 1.25rem;
+  font-size: 0.6em;
+}
+
+@keyframes marquee-tipographic {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-tipographic-track {
+    animation: none;
+  }
+}
+
+/* ============================================
    Reduced Motion (Accessibility)
    ============================================ */
 @media (prefers-reduced-motion: reduce) {

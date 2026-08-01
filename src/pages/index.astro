@@ -9,6 +9,7 @@ import AboutSection from "../components/AboutSection.astro";
 import HeritageSection from "../components/HeritageSection.astro";
 import InteractiveRoomsSection from "../components/InteractiveRoomsSection.astro";
 import GastronomySection from "../components/GastronomySection.astro";
+import TypographicMarquee from "../components/TypographicMarquee.astro";
 import { rooms } from "../data/rooms";
 import { attractions } from "../data/attractions";
 import { useTranslations } from "../i18n/utils";
@@ -322,6 +323,8 @@ const schemas = [hotelSchema, faqSchema];
        ========================================== -->
   <AboutSection />
 
+  <TypographicMarquee items={[t('global.marquee1'), t('global.marquee2'), t('global.marquee3'), t('global.marquee4')]} />
+
   <!-- ==========================================
        HERITAGE SECTION (Image 1 reference: Legado y Espiritualidad)
        ========================================== -->
@@ -493,6 +496,8 @@ const schemas = [hotelSchema, faqSchema];
        MAP SECTION
        ========================================== -->
   <MapSection />
+
+  <TypographicMarquee items={[t('global.marquee1'), t('global.marquee2'), t('global.marquee3'), t('global.marquee4')]} reverse />
 </Layout>
 
 <!-- Hero Video Audio Toggle & Slideshow loop -->

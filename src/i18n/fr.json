@@ -1,4 +1,4 @@
-{
+﻿{
   "nav": {
     "home": "Accueil",
     "rooms": "Chambres",
@@ -6,12 +6,12 @@
     "explore": "Explorer Cusco",
     "gallery": "Galerie",
     "contact": "Contact",
-    "bookNow": "Réserver",
+    "bookNow": "RÃ©server",
     "language": "Francais"
   },
   "hero": {
     "title": "USGAR Hotels",
-    "subtitle": "San Pedro, Cusco — Votre porte d'entree vers les Andes",
+    "subtitle": "San Pedro, Cusco â€” Votre porte d'entree vers les Andes",
     "cta": "Reservez Votre Sejour",
     "ctaSecondary": "Explorer les Chambres"
   },
@@ -46,7 +46,11 @@
   "room": {
     "about": "A propos de la chambre",
     "amenities": "Services et conforts",
-    "includedFree": "Inclus sans frais supplementaires",
+    "includedFree": "KEEP",
+    "marquee1": "San Pedro",
+    "marquee2": "Cusco",
+    "marquee3": "Machu Picchu",
+    "marquee4": "Vallee Sacree",
     "baseRate": "Tarif de base",
     "maxCapacity": "Capacite maximale",
     "guests": "voyageurs",
@@ -93,7 +97,7 @@
   "map": {
     "sectionLabel": "Localisation",
     "title": "Ou nous trouver a Cusco",
-    "description": "Situe au cœur de San Pedro, a deux pas du marche historique et a quelques minutes a pied de la Plaza de Armas.",
+    "description": "Situe au cÅ“ur de San Pedro, a deux pas du marche historique et a quelques minutes a pied de la Plaza de Armas.",
     "loading": "Chargement de la carte interactive..."
   },
   "faq": {
@@ -131,7 +135,7 @@
   },
   "gastronomy": {
     "sectionLabel": "GASTRONOMIE & CAFETERIA",
-    "description": "Une experience gastronomique inoubliable avec des ingredients andins frais au cœur de Cusco."
+    "description": "Une experience gastronomique inoubliable avec des ingredients andins frais au cÅ“ur de Cusco."
   },
   "contact": {
     "sectionTag": "CENTRE D'ASSISTANCE & SUPPORT 24/7",
@@ -190,7 +194,7 @@
     "title": "Decouvrez Notre Essence",
     "purpose": "Creer des experiences memorables permettant a chaque voyageur de decouvrir l'essence de Cusco, en offrant un service chaleureux, personnalise et d'excellence qui fait de chaque sejour un souvenir inoubliable.",
     "missionTitle": "Notre Mission",
-    "missionText": "Offrir une experience d'hebergement unique au cœur de Cusco, en fournissant un service personnalise, chaleureux et de haute qualite qui allie confort, hospitalite et richesse de la culture locale. Nous nous engageons a depasser les attentes de nos clients grace a une attention exceptionnelle, une equipe passionnee et des pratiques de tourisme durable.",
+    "missionText": "Offrir une experience d'hebergement unique au cÅ“ur de Cusco, en fournissant un service personnalise, chaleureux et de haute qualite qui allie confort, hospitalite et richesse de la culture locale. Nous nous engageons a depasser les attentes de nos clients grace a une attention exceptionnelle, une equipe passionnee et des pratiques de tourisme durable.",
     "visionTitle": "Notre Vision",
     "visionText": "Etre l'hotel de reference a Cusco en preservant l'essence de notre culture. Nous aspirons a etre le premier choix des voyageurs en quete d'excellence, de chaleur et d'un service personnalise, en nous distinguant par notre hospitalite, notre innovation et notre engagement envers le developpement durable.",
     "valuesTitle": "Nos Valeurs",
@@ -354,6 +358,10 @@
     "elevatedExperience": "EXPERIENCE COMPLETE",
     "alsoIncluded": "Aussi inclus :",
     "night": "nuit",
-    "includedFree": "Inclus sans frais"
+    "includedFree": "KEEP",
+    "marquee1": "San Pedro",
+    "marquee2": "Cusco",
+    "marquee3": "Machu Picchu",
+    "marquee4": "Vallee Sacree"
   }
 }
