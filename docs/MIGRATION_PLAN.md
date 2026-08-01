@@ -13,21 +13,36 @@ Estado global: **TODO** (nada completado).
 - El flujo actual del repo (Custom Checkout: backend devuelve datos de cobro y el frontend cobra con SDK + webhooks) **no se puede construir** sin acceso a su API privada. Solo sería viable si: (a) TAB les concede acceso API bajo contrato, o (b) aceptan usar su widget embebido en `book.astro` (pérdida del control del checkout y del contrato de datos actual).
 - **Acción recomendada antes de descartar**: un correo/chat a TAB preguntando por API REST + webhooks para desarrolladores. Hasta respuesta, el plan asume Culqi como destino.
 
-### Alternativa recomendada: Culqi (plan B)
-- **Por qué**: pasarela peruana nativa (grupo Credicorp/BCP), documentación en español, API REST completa + IPN/webhooks, checkout embebido con tokenización (cumple PCI DSS sin tocar datos de tarjeta), **sin costos de afiliación ni mensualidad**, plugin para **PrestaShop** (relevante: QloApps es base PrestaShop), acepta tarjetas internacionales, Yape y PagoEfectivo.
-- **Comisiones 2026**: nacional 3.44% + USD 0.20 + IGV; **tarjetas extranjeras 4.99–5.49% + USD 0.30 + IGV** (público principal del hotel → considerar en precio).
-- **Caveats a decidir**: Culqi opera en **PEN** (el repo hoy cobra en USD) → decidir si precios finales van en PEN o se maneja conversión; Stripe **no opera en Perú** (descartado sin entidad en EEUU); Niubiz es alternativa solo si se necesita Amex/Diners o volumen alto (S/300 setup + S/50/mes).
-- **Arquitectura compatible**: mismo patrón que hoy — `PaymentGatewayPortInterface` → `CulqiAdapter`, `CreateBookingAction` devuelve token/session del checkout Culqi, frontend usa SDK Culqi.js, webhooks IPN con firma.
+### Alternativa según el enfoque INTERNACIONAL del hotel (decidido: USD + tarjetas extranjeras + mínimas comisiones)
 
-### Tareas (TAB o Culqi, según la respuesta de TAB)
-- [ ] **Bloqueante**: contactar a TAB (API REST/webhooks para desarrolladores, docs privadas, credenciales). Si no hay API → cerrar TAB y seguir con Culqi.
-- [ ] Si TAB da API: crear `TabAdapter` (patrón actual). Si no: crear `CulqiAdapter` implementando `PaymentGatewayPortInterface`.
-- [ ] Refactor `CreateBookingAction`: devolver los datos de checkout del proveedor elegido (sustituir `cart_id`/`access_token`/`mp_public_key`/`gateway_price`).
-- [ ] Frontend (`src/pages/book.astro`): SDK del proveedor (Culqi.js o SDK TAB) o widget, según lo decidido.
-- [ ] Webhooks: adaptar `HandleMercadoPagoWebhookAction` → webhook/IPN del proveedor con verificación de firma.
-- [ ] Decidir moneda: PEN vs USD (Culqi liquida PEN; verificar si el proveedor elegido soporta USD).
+Análisis comparado (investigado, jul 2026):
+
+| Proveedor | Comisión (tarjeta extranjera) | Tarjetas | Moneda | Desde Perú sin entidad | Notas |
+|---|---|---|---|---|---|
+| **Stripe** (vía LLC EEUU) | **2.9% + $0.30** online (+1% intl) | Todas: Visa, MC, **Amex, Diners, Discover, JCB, UnionPay** | **USD**, 135+ divisas | ❌ requiere LLC (Stripe Atlas) | La mejor API del mercado, webhooks, SDKs — patrón idéntico al actual |
+| **TAB** | s/d (privado) | Internacional (diseñado para turismo) | USD | ✅ (si dan acceso API) | Enfocado a turismo pero **sin API pública** → bloqueado |
+| **PayPal** | 2–4.5% + fijo + margen de conversión | Visa, MC, Amex, Discover | USD/PEN | ✅ | Caro de facto (~$25–35 por $500) y retenciones; solo fallback |
+| **Culqi** (plan B anterior) | **4.99–5.49% + $0.30** extranjeras | Visa, MC (+Yape, efectivo) | **PEN** | ✅ | Muy caro para público extranjero y liquida soles → **descartado** para este enfoque |
+| **Niubiz** | ~3.45% +1% intl + setup S/300 + S/50/mes | Amex, Diners | **PEN** | ✅ | Caro en fijos, liquida soles |
+| **Izipay** | 3.95–4.09% extranjeras | Visa, MC | **PEN** | ✅ | Liquida soles |
+
+**Conclusión:** para cobrar a turistas internacionales en USD con la mayor cobertura de tarjetas y las menores comisiones:
+1. **Stripe (con LLC vía Stripe Atlas)** — la única con 2.9% flat, todas las marcas y USD; requiere constituir entidad en EEUU (costo único ~$500 + mantenimiento anual; implicación fiscal a revisar con contador).
+2. **TAB** — si su equipo confirma acceso a API (ideal por ser travel-first, con VCCs y USD), gana por no requerir LLC; sigue bloqueado a su respuesta.
+3. **PayPal** — plan C sin entidad legal, pero el más caro de facto.
+
+**Acción recomendada:** contactar TAB (1 correo) Y evaluar Stripe Atlas en paralelo; descartar Culqi/Niubiz/Izipay por liquidación en PEN y comisiones altas en tarjetas extranjeras.
+
+### Tareas (Stripe o TAB, según decisión)
+- [ ] **Bloqueante 1**: correo a TAB → ¿API REST + webhooks para desarrolladores? ¿credenciales sandbox? (si sí → TAB es el ganador, sin LLC).
+- [ ] **Bloqueante 2**: decidir si se constituye LLC en EEUU para Stripe (Stripe Atlas ~$500) — requiere aprobación del usuario y revisión fiscal/contable.
+- [ ] Con proveedor elegido: crear adapter (`StripeAdapter` o `TabAdapter`) implementando `PaymentGatewayPortInterface`.
+- [ ] Refactor `CreateBookingAction`: devolver los datos de checkout del proveedor (sustituir `cart_id`/`access_token`/`mp_public_key`/`gateway_price`).
+- [ ] Frontend (`src/pages/book.astro`): SDK del proveedor (Stripe.js / SDK TAB) — Stripe.js mantiene el patrón actual casi 1:1.
+- [ ] Webhooks: adaptar `HandleMercadoPagoWebhookAction` → webhook del proveedor con verificación de firma (Stripe: `stripe-signature`).
+- [ ] Moneda: **USD directo** con Stripe (el precio ya está en USD en el repo — sin conversión).
 - [ ] Limpiar: quitar `mercadopago/dx-php` de `composer.json`, borrar adapters/vistas viejos de MP.
-- [ ] Pruebas en sandbox: pago exitoso, rechazado, expirado, reembolso y flujo completo de reserva.
+- [ ] Pruebas en sandbox: pago exitoso, rechazado, expirado, reembolso y flujo completo de reserva (Stripe test cards: 4242…).
 
 ## 2. Channel Manager: Channex → Nobeds
 
