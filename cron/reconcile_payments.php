@@ -14,7 +14,7 @@ use App\Core\Database;
 use App\Core\Events\EventDispatcher;
 use App\Features\Cron\Actions\ReconcilePaymentsAction;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
-use App\Features\Shared\Adapters\MercadoPagoAdapter;
+use App\Features\Shared\Ports\PaymentGatewayPortInterface;
 
 $pdo = Database::getInstance()->getConnection();
 if ($pdo === null) {
@@ -26,7 +26,7 @@ $container = Container::getInstance();
 
 $action = new ReconcilePaymentsAction(
     $pdo,
-    new MercadoPagoAdapter(),
+    $container->get(PaymentGatewayPortInterface::class),
     new ProvisionalBookingRepository($pdo),
     EventDispatcher::getInstance()
 );
