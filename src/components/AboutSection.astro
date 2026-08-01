@@ -24,12 +24,17 @@ const purpose = (aboutData as any)[`purpose_${lang}`] || aboutData.purpose_en ||
       <!-- Text Content (Left on Desktop) -->
       <div class="lg:col-span-5 space-y-6 sm:space-y-8 lg:pr-6">
         <div class="space-y-4">
-          <span class="tag-dash-title block">
-            {t('about.sectionLabel')}
-          </span>
-          <h2 class="font-display text-4xl sm:text-5xl lg:text-5xl text-text-primary-light dark:text-white leading-[1.1]">
-            {title}
-          </h2>
+          <div class="flex items-start gap-5">
+            <span class="section-number text-6xl sm:text-7xl mt-1" aria-hidden="true">06</span>
+            <div class="space-y-4">
+              <span class="tag-dash-title block">
+                {t('about.sectionLabel')}
+              </span>
+              <h2 class="font-display text-4xl sm:text-5xl lg:text-5xl text-text-primary-light dark:text-white leading-[1.1]">
+                {title}
+              </h2>
+            </div>
+          </div>
         </div>
         
         <p class="text-base sm:text-lg text-text-secondary-light dark:text-text-secondary-dark font-body font-light leading-relaxed">

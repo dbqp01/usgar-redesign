@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import SectionHeader from './ui/SectionHeader.astro';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { rooms } from '../data/rooms';
 import { useTranslations } from '../i18n/utils';
@@ -37,17 +38,12 @@ const roomsWithPhotos = await Promise.all(
   <div class="max-w-[1400px] mx-auto animate-on-scroll">
     
     <!-- Header -->
-    <div class="text-center max-w-3xl mx-auto mb-10 space-y-2">
-      <span class="tag-dash-title block">
-        {t('rooms.sectionLabel')}
-      </span>
-      <h2 class="font-display text-4xl sm:text-5xl lg:text-5xl text-text-primary-light dark:text-white leading-tight">
-        {t('roomsSection.heading')}
-      </h2>
-      <p class="mt-2 text-base sm:text-lg text-text-secondary-light dark:text-text-secondary-dark font-body font-light">
-        {t('roomsSection.subheading')}
-      </p>
-    </div>
+    <SectionHeader
+      number="01"
+      eyebrow={t('rooms.sectionLabel')}
+      title={t('roomsSection.heading')}
+      subtitle={t('roomsSection.subheading')}
+    />
 
     <!-- Accordion Layout with Viewport-Constrained Height -->
     <div class="flex flex-col lg:flex-row h-[650px] lg:h-[500px] max-h-[62vh] w-full gap-2 lg:gap-4">

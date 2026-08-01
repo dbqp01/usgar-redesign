@@ -1,0 +1,35 @@
+---
+// src/components/ui/SectionHeader.astro
+// Editorial section header: index number (outline) + eyebrow + title + subtitle
+interface Props {
+  number: string;
+  eyebrow: string;
+  title: string;
+  subtitle?: string;
+  align?: 'center' | 'left';
+}
+
+const { number, eyebrow, title, subtitle, align = 'center' } = Astro.props;
+---
+
+<div
+  class:list={[
+    'max-w-3xl mx-auto mb-10 space-y-2',
+    align === 'center' ? 'text-center' : 'text-left',
+  ]}
+>
+  <span class:list={['tag-dash-title block', align === 'center' ? '' : 'justify-start']}>
+    {eyebrow}
+  </span>
+  <div class:list={['flex items-center gap-4', align === 'center' ? 'justify-center' : '']}>
+    <span class="section-number text-6xl sm:text-7xl" aria-hidden="true">{number}</span>
+    <h2 class="font-display text-4xl sm:text-5xl lg:text-5xl text-text-primary-light dark:text-white leading-tight">
+      {title}
+    </h2>
+  </div>
+  {subtitle && (
+    <p class="mt-2 text-base sm:text-lg text-text-secondary-light dark:text-text-secondary-dark font-body font-light">
+      {subtitle}
+    </p>
+  )}
+</div>

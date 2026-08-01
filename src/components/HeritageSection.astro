@@ -57,12 +57,17 @@ const stats = [
       <div class="space-y-12">
         
         <div class="space-y-4">
-          <span class="tag-dash-title block text-secondary">
-            {t('heritage.sectionLabel')}
-          </span>
-          <h2 class="font-display text-5xl sm:text-6xl lg:text-7xl leading-none text-white tracking-tight">
-            {t('heritage.heading')}
-          </h2>
+          <div class="flex items-start gap-5">
+            <span class="section-number text-6xl sm:text-8xl mt-1" aria-hidden="true">02</span>
+            <div class="space-y-4">
+              <span class="tag-dash-title block text-secondary">
+                {t('heritage.sectionLabel')}
+              </span>
+              <h2 class="font-display text-5xl sm:text-6xl lg:text-7xl leading-none text-white tracking-tight">
+                {t('heritage.heading')}
+              </h2>
+            </div>
+          </div>
           <p class="text-lg text-text-secondary-dark font-body font-light leading-relaxed pt-6">
             {t('heritage.description')}
           </p>

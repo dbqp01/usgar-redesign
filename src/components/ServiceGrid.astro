@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import SectionHeader from './ui/SectionHeader.astro';
 import { services } from '../data/services';
 import { useTranslations } from '../i18n/utils';
 
@@ -65,17 +66,12 @@ const highlights: Array<{
   <div class="max-w-[1400px] mx-auto relative z-10 animate-on-scroll">
     
     <!-- Section Header -->
-    <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
-      <span class="tag-dash-title block">
-        {t('services.sectionLabel')}
-      </span>
-      <h2 class="font-display text-4xl sm:text-5xl lg:text-7xl text-text-primary-light dark:text-white leading-tight">
-        {t('global.elevatedExperience')}
-      </h2>
-      <p class="mt-4 text-base sm:text-lg text-text-secondary-light dark:text-text-secondary-dark font-body font-light">
-        {t('services.description')}
-      </p>
-    </div>
+    <SectionHeader
+      number="05"
+      eyebrow={t('services.sectionLabel')}
+      title={t('global.elevatedExperience')}
+      subtitle={t('services.description')}
+    />
 
     <!-- Bento Box Grid Layout -->
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 auto-rows-[250px] gap-4 sm:gap-6">

@@ -564,8 +564,31 @@ html, body {
 
 /* Fluid Typography Clamp Rules */
 .fluid-h1 {
-  font-size: clamp(2rem, 1.25rem + 3.2vw, 4.5rem);
-  line-height: 1.1;
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+/* Editorial section index numbers (outline stroke) */
+.section-number {
+  -webkit-text-stroke: 1px var(--color-primary-soft);
+  color: transparent;
+  font-family: var(--font-display);
+  line-height: 1;
+  user-select: none;
+}
+
+.dark .section-number {
+  -webkit-text-stroke-color: rgba(167, 139, 189, 0.45);
+}
+
+/* Monospace micro-labels (coordinates, eyebrow metadata) */
+.micro-label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
 }
 
 .fluid-h2 {

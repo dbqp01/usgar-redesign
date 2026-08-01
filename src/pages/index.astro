@@ -32,10 +32,12 @@ const lang = (Astro.currentLocale || "en") as Locale;
 
 const optimizedPoster = await getImage({
   src: slide1,
-  width: 1200,
+  width: 1920,
   format: "webp",
 });
 const t = useTranslations(lang);
+
+const heroCoordinates = `${Math.abs(siteSettings.latitude).toFixed(4)}°${siteSettings.latitude >= 0 ? 'N' : 'S'} — ${Math.abs(siteSettings.longitude).toFixed(4)}°${siteSettings.longitude >= 0 ? 'E' : 'W'} · ${siteSettings.city}, ${siteSettings.region}`;
 
 const hotelSchema = {
   "@context": "https://schema.org",
@@ -135,11 +137,11 @@ const schemas = [hotelSchema, faqSchema];
       autoplay
       muted
       playsinline
-      preload="none"
+      preload="auto"
       class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 z-0 opacity-100"
       poster={optimizedPoster.src}
       id="hero-video"
-      data-src="/videos/hero-video.mp4"
+      src="/videos/hero-video.mp4"
     >
     </video>
 
@@ -215,8 +217,9 @@ const schemas = [hotelSchema, faqSchema];
 
     <!-- Content -->
     <div class="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
+      <p class="micro-label text-secondary mb-4 sm:mb-6 opacity-90">{heroCoordinates}</p>
       <h1
-        class="font-display fluid-h1 text-3xl sm:text-6xl lg:text-7xl mb-4 sm:mb-6 drop-shadow-lg"
+        class="font-display fluid-h1 mb-4 sm:mb-6 drop-shadow-lg"
       >
         {t("hero.title")}
       </h1>
