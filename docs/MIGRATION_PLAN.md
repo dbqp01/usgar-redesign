@@ -8,12 +8,23 @@ Estado global: **TODO** (nada completado).
 
 ## 1. Pagos: MercadoPago → TAB
 
-- [ ] Obtener credenciales TAB (API key/public key sandbox y prod) y su documentación oficial — **bloqueante**: no hay docs públicas indexadas, pedir URL del developer portal al usuario.
-- [ ] Confirmar modelo de integración TAB: checkout embebido vs API-driven (patrón token de sesión backend → cobro frontend → webhook/IPN).
-- [ ] Crear `TabAdapter` implementando `PaymentGatewayPortInterface` (sustituir `MercadoPagoAdapter`).
+### Qué es TAB (investigado, jul 2026)
+- Plataforma de pagos **especializada en turismo** (hoteles, hostales, tours, retiros) — no es una pasarela genérica estilo MercadoPago. Sitio: `business.tab.travel` (param `cc=pe` = Perú).
+- Productos: cobros con tarjeta, **VCCs** (tarjetas virtuales), **widget de reservas embebible** y **conectores no-code** con booking engines/PMS ("integra sin desarrollador").
+- Respaldo de los mismos inversores que Airbnb/OpenAI/Dropbox/Stripe. Trustpilot 4★ (78 reseñas).
+- **NO hay documentación de API pública**: no existe portal de desarrolladores ni docs indexadas (mapa del sitio verificado). La integración pública es widget/conector; la API parece privada (bajo contrato).
+
+### Impacto en la arquitectura actual (importante)
+El flujo actual (Custom Checkout: backend devuelve `cart_id`/`access_token`/`mp_public_key` y el frontend cobra con SDK) depende de un modelo API-driven. Hay que **confirmar con TAB** si ofrecen API directa (Checkout API + webhooks) o solo widget/conector — eso define si el frontend sigue custom o pasa a widget embebido.
+
+### Tareas
+- [ ] **Bloqueante**: contactar a TAB (soporte/comercial) para: (a) credenciales sandbox/prod, (b) confirmar si hay API REST para desarrolladores o solo widget/conectores no-code, (c) pedir su documentación técnica si existe (privada).
+- [ ] Decidir modelo según la respuesta: API directa (patrón actual: token backend → cobro frontend → webhook) vs widget embebido vs connector.
+- [ ] Si hay API: crear `TabAdapter` implementando `PaymentGatewayPortInterface` (sustituir `MercadoPagoAdapter`).
 - [ ] Refactor `CreateBookingAction`: devolver los datos de checkout que TAB requiera (sustituir `cart_id`/`access_token`/`mp_public_key`/`gateway_price`).
-- [ ] Frontend (`src/pages/book.astro`): reemplazar SDK de MercadoPago por el checkout de TAB.
-- [ ] Webhooks: adaptar `HandleMercadoPagoWebhookAction` → webhook de TAB con verificación de firma.
+- [ ] Frontend (`src/pages/book.astro`): reemplazar SDK de MercadoPago por el mecanismo de TAB (SDK propio o widget).
+- [ ] Webhooks: adaptar `HandleMercadoPagoWebhookAction` → webhook de TAB con verificación de firma (o IPN equivalente).
+- [ ] VCCs (si aplica): evaluar uso para pagos a proveedores/OTA — fuera del flujo de reserva directo.
 - [ ] Limpiar: quitar `mercadopago/dx-php` de `composer.json`, borrar adapters/vistas viejos de MP.
 - [ ] Pruebas en sandbox: pago exitoso, rechazado, expirado, reembolso y flujo completo de reserva.
 
