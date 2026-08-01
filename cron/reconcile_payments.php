@@ -15,7 +15,6 @@ use App\Core\Events\EventDispatcher;
 use App\Features\Cron\Actions\ReconcilePaymentsAction;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
 use App\Features\Shared\Adapters\MercadoPagoAdapter;
-use PDO;
 
 $pdo = Database::getInstance()->getConnection();
 if ($pdo === null) {

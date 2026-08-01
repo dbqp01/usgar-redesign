@@ -2,6 +2,17 @@
 
 Actualizado: 2026-08-01. Estado documentado al inicio del refactor. Actualizar al final de cada fase.
 
+## ESTADO FINAL DEL REFACTOR (2026-08-01)
+
+- **P0 QA**: PHPUnit 11.5.56 + PHPStan 2 instalados como dev-deps. `php composer.phar check` = 26 tests/97 assertions PASS + PHPStan exit 0 con baseline (103 errores congelados). Polyfill casero reemplazado; dead test (RoomControllerTest) eliminado.
+- **P1 Pagos MP**: MercadoPagoAdapterTest + HandleMercadoPagoWebhookActionTest (caracterización). Bug real arreglado: `Config::get('MP_BINARY_MODE', true)` → string. DIP del adapter (PaymentClient/RefundClient inyectables). Residuos Checkout Pro eliminados: preference_id (repo+User.php), init_point/preference_url (TS), createHoldAndPreference→createHold, filtro IPN legacy, WebhookDebugAction. **Webhook formal registrado en MP** (topic payment) — la causa real de la falta de comunicación. Secret verificado OK.
+- **P2 Comunicación**: app/bootstrap.php compartido (autoload, Config, Container, bindings, listeners). process_outbox.php reparado (antes marcaba eventos COMPLETED sin ejecutar listeners). cron/reconcile_payments.php + ReconcilePaymentsAction (recupera holds pendientes consultando MP). ProcessPaymentAction persiste payment_id en pending. CRON.md con instrucciones Hostinger + migración BD.
+- **P3 DIP**: constructores de acciones no-nullable por interfaz, sin new Adapter() internos; listeners inyectados desde container; handleChannexWebhookAction sin $pdo muerto.
+- **P4 Seguridad**: .env.example con placeholders (credenciales reales eliminadas); secrets hardcodeados → env con fallback test; CSP unificada (Middleware es fuente única; .htaccess sin duplicado). **PENDIENTE ROTACIÓN MANUAL** (usuario).
+- **P5 Higiene**: hardcodes externalizados a Config (DEFAULT_HOTEL_ID, EXCHANGE_RATE_USD_PEN, DEFAULT_GUEST_EMAIL, DEFAULT_REPLY_EMAIL).
+- **P6 Frontend**: success.astro 3 estados (paid→confirmación, pending→verificación, error); i18n en 4 idiomas.
+- **Pendiente despliegue**: ejecutar migración BD (payment_id columna) + configurar crons en Hostinger (CRON.md) + rotar secretos.
+
 ## Entorno
 
 - Repo: `C:\Users\akim\Desktop\usgar-redesign` — rama `main`, ahead 9 de origin/main.
