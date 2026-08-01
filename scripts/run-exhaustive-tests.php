@@ -106,10 +106,9 @@ echo PHP_EOL . "---  SECCION 2: PRUEBAS DE INTEGRACION HTTP ---" . PHP_EOL;
 $host = '127.0.0.1';
 $port = 8089;
 
-$serverLogFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php-test-server.log';
-if (file_exists($serverLogFile)) {
-    @unlink($serverLogFile);
-}
+// Nombre de log unico por ejecucion: evita locks de Windows cuando un servidor
+// de pruebas anterior quedo vivo (zombie) reteniendo el archivo.
+$serverLogFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php-test-server-' . getmypid() . '.log';
 
 $descriptorspec = [
     0 => ["pipe", "r"],
@@ -185,10 +184,12 @@ $healthRes = httpGet("http://$host:$port/api/health");
 assertTest("Endpoint GET /api/health retorna HTTP 200", $healthRes['status'] === 200);
 assertTest("Endpoint GET /api/health retorna JSON válido con success=true", str_contains($healthRes['body'], '"success":true'));
 
-// Test /api/rooms sin parametros (debe fallar por validacion)
-$roomsInvalidRes = httpGet("http://$host:$port/api/rooms");
-assertTest("Endpoint GET /api/rooms sin parámetros retorna HTTP 400 (Bad Request)", $roomsInvalidRes['status'] === 400);
-assertTest("Endpoint GET /api/rooms sin parámetros reporta error de validación", str_contains(strtolower($roomsInvalidRes['body']), 'falta') || str_contains(strtolower($roomsInvalidRes['body']), 'field') || str_contains(strtolower($roomsInvalidRes['body']), 'checkin'));
+// Test /api/rooms sin parametros: GetRoomsAction usa hoy/tomorrow por defecto
+// (el frontend hace polling de /api/rooms sin params en subscribeToRoomAvailability),
+// por lo que debe responder 200 con success=true, no 400.
+$roomsDefaultRes = httpGet("http://$host:$port/api/rooms");
+assertTest("Endpoint GET /api/rooms sin parámetros responde HTTP 200 (defaults hoy/mañana)", $roomsDefaultRes['status'] === 200);
+assertTest("Endpoint GET /api/rooms sin parámetros reporta success=true", str_contains($roomsDefaultRes['body'], '"success":true'));
 
 // Test /api/rooms con rango invalido
 $roomsRangeInvalidRes = httpGet("http://$host:$port/api/rooms?checkIn={$validCheckOut}&checkOut={$validCheckIn}");
