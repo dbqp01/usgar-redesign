@@ -1,6 +1,8 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
+import critters from '@otterlord/astro-critters';
+import compress from '@playform/compress';
 
 export default defineConfig({
   site: 'https://hotelesusgar.com',
@@ -9,14 +11,26 @@ export default defineConfig({
     prefetchAll: false,
     defaultStrategy: 'hover',
   },
-  integrations: [sitemap()],
+  integrations: [
+    sitemap(),
+    critters(),
+    compress({
+      CSS: false, // Tailwind 4 ya minifica vía Lightning CSS
+      HTML: true,
+      JavaScript: true,
+      Image: false, // Ya optimizadas con sharp
+      SVG: false,
+    }),
+  ],
   image: {
     service: {
       entrypoint: 'astro/assets/services/sharp',
       config: {
         limitInputPixels: false,
-        webp: { effort: 4, quality: 80 },
-        jpeg: { mozjpeg: true, quality: 80 },
+        webp: { effort: 6, quality: 90 },
+        avif: { effort: 6, quality: 85 },
+        jpeg: { mozjpeg: true, quality: 85 },
+        png: { effort: 6, quality: 90 },
       },
     },
   },

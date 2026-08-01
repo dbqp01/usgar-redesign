@@ -1,0 +1,89 @@
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+type ContextEntry = { name: string; ctx: gsap.Context };
+
+const RESIZE_DEBOUNCE_MS = 200;
+const registry: Map<string, ContextEntry> = new Map();
+let resizeHandler: (() => void) | null = null;
+let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+
+function debounceRefresh(): void {
+  if (resizeTimer) clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    ScrollTrigger.refresh();
+  }, RESIZE_DEBOUNCE_MS);
+}
+
+function ensureResizeDebounce(): void {
+  if (resizeHandler || typeof window === 'undefined') return;
+  resizeHandler = debounceRefresh;
+  window.addEventListener('resize', resizeHandler, { passive: true });
+}
+
+function teardownResizeDebounce(): void {
+  if (!resizeHandler) return;
+  window.removeEventListener('resize', resizeHandler);
+  if (resizeTimer) {
+    clearTimeout(resizeTimer);
+    resizeTimer = null;
+  }
+  resizeHandler = null;
+}
+
+export function register(name: string, ctx: gsap.Context): void {
+  if (registry.has(name)) {
+    registry.get(name)!.ctx.revert();
+  }
+  registry.set(name, { name, ctx });
+  ensureResizeDebounce();
+}
+
+export function unregister(name: string): void {
+  const entry = registry.get(name);
+  if (entry) {
+    entry.ctx.revert();
+    registry.delete(name);
+  }
+}
+
+export function cleanupAll(): void {
+  registry.forEach((entry) => {
+    entry.ctx.revert();
+  });
+  registry.clear();
+  teardownResizeDebounce();
+  ScrollTrigger.clearScrollMemory();
+}
+
+export function getContext(name: string): gsap.Context | undefined {
+  return registry.get(name)?.ctx;
+}
+
+export function isPage(path: string, pattern: string): boolean {
+  return path === pattern
+    || path === `${pattern}/`
+    || path.startsWith(`/${pattern}/`)
+    || path.startsWith(`/${pattern}`);
+}
+
+export function isHomePage(): boolean {
+  if (typeof window === 'undefined') return false;
+  const path = window.location.pathname;
+  return path === '/' || isPage(path, 'es') || isPage(path, 'fr') || isPage(path, 'pt');
+}
+
+export function initLifecycle(): void {
+  if (typeof window === 'undefined') return;
+  ensureResizeDebounce();
+
+  document.addEventListener('astro:before-preparation', () => {
+    cleanupAll();
+  });
+
+  document.addEventListener('astro:after-swap', () => {
+    window.scrollTo(0, 0);
+  });
+}

@@ -7,90 +7,68 @@
 ---
 
 <script>
-  import { ScrollStoryEngine } from '../../utils/scrollStoryEngine';
   import Lenis from 'lenis';
-  import gsap from 'gsap';
-  import ScrollTrigger from 'gsap/ScrollTrigger';
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { initLifecycle } from '../../features/animations/animationLifecycle';
+  import { bootAnimations } from '../../features/animations/engine';
 
-  let lenisInstance: any = null;
-  let rafCallback: any = null;
-  let ctx: gsap.Context;
+  gsap.registerPlugin(ScrollTrigger);
 
-  function isHomePage() {
-    const path = window.location.pathname;
-    return path === '/' || path === '/es' || path === '/es/' || path === '/fr' || path === '/fr/' || path === '/pt' || path === '/pt/';
-  }
+  let lenisInstance: Lenis | null = null;
+  let rafCallback: ((time: number) => void) | null = null;
+  let lenisCtx: gsap.Context | null = null;
 
-  function initSmoothScroll() {
-    if (typeof window === 'undefined' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  function initLenis() {
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    try {
-      gsap.registerPlugin(ScrollTrigger);
+    const isMobileTouch = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 1024;
 
-      // Desactivar Lenis en dispositivos táctiles / móviles (tienen scroll inercial nativo)
-      const isMobileTouch = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 1024;
-
-      if (!isMobileTouch && !lenisInstance) {
-        ctx = gsap.context(() => {
-          lenisInstance = new Lenis({
-            duration: 1.2,
-            easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            smoothWheel: true,
-          });
-
-          lenisInstance.on('scroll', ScrollTrigger.update);
-
-          rafCallback = (time: number) => {
-            lenisInstance.raf(time * 1000);
-          };
-          gsap.ticker.add(rafCallback);
-
-          gsap.ticker.lagSmoothing(0);
+    if (!isMobileTouch && !lenisInstance) {
+      lenisCtx = gsap.context(() => {
+        lenisInstance = new Lenis({
+          duration: 1.2,
+          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          smoothWheel: true,
         });
-        (window as any).__lenis = lenisInstance;
-      }
 
-      // Initialize story engine animations for both desktop and mobile
-      if (isHomePage()) {
-        ScrollStoryEngine.initHomePageStory();
-      } else {
-        ScrollStoryEngine.initPageReveals();
-      }
+        lenisInstance.on('scroll', ScrollTrigger.update);
 
-    } catch (e) {
-      console.warn('SmoothScroll init note:', e);
+        rafCallback = (time: number) => {
+          lenisInstance!.raf(time * 1000);
+        };
+        gsap.ticker.add(rafCallback);
+        gsap.ticker.lagSmoothing(0);
+      });
     }
   }
 
-  // Teardown ScrollTrigger on View Transitions before swap
-  document.addEventListener('astro:before-preparation', () => {
-    // 1. Matar todas las animaciones de la página anterior
-    ScrollStoryEngine.cleanup();
-    
-    // 2. Destruir Lenis rigurosamente
+  function destroyLenis() {
     if (lenisInstance) {
       lenisInstance.destroy();
       lenisInstance = null;
-      (window as any).__lenis = null;
     }
-
-    // 3. Remover el ticker y revert context
-    if (ctx) ctx.revert();
+    if (lenisCtx) {
+      lenisCtx.revert();
+      lenisCtx = null;
+    }
     if (rafCallback) {
       gsap.ticker.remove(rafCallback);
       rafCallback = null;
     }
+  }
 
-    // 4. Limpiar memoria de scroll de ScrollTrigger y matar animaciones perdidas
-    ScrollTrigger.clearScrollMemory();
-    gsap.killTweensOf('*');
+  function initPage() {
+    initLenis();
+    bootAnimations();
+  }
+
+  initLifecycle();
+
+  document.addEventListener('astro:before-preparation', () => {
+    destroyLenis();
   });
 
-  // Manejar el reset de scroll al cambiar de página (Astro a veces restaura mal con Lenis)
-  document.addEventListener('astro:after-swap', () => {
-    window.scrollTo(0, 0);
-  });
-
-  // Re-init on page load / transition completed
-  document.addEventListener('astro:page-load', initSmoothScroll);
+  document.addEventListener('astro:page-load', initPage);
 </script>

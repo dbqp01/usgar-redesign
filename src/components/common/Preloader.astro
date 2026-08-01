@@ -17,28 +17,30 @@ import { siteSettings } from '../../data/settings';
 
 <script>
   import { gsap } from "gsap";
+  import { register } from "../../features/animations/animationLifecycle";
 
   document.addEventListener("astro:page-load", () => {
-    // Si ya cargó en esta sesión, ocultamos instantáneamente
     if (sessionStorage.getItem("usgar_loaded")) {
       const preloader = document.getElementById("cinematic-preloader");
       if (preloader) {
         preloader.style.display = "none";
       }
+      window.dispatchEvent(new CustomEvent("usgar:preloader-done"));
       return;
     }
 
     const preloader = document.getElementById("cinematic-preloader");
     if (!preloader) return;
 
-    let ctx = gsap.context(() => {
-      let mm = gsap.matchMedia();
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         const tl = gsap.timeline({
           onComplete: () => {
             sessionStorage.setItem("usgar_loaded", "true");
             gsap.set(preloader, { autoAlpha: 0, display: "none" });
+            window.dispatchEvent(new CustomEvent("usgar:preloader-done"));
           },
         });
 
@@ -64,12 +66,10 @@ import { siteSettings } from '../../data/settings';
       mm.add("(prefers-reduced-motion: reduce)", () => {
         sessionStorage.setItem("usgar_loaded", "true");
         gsap.set(preloader, { autoAlpha: 0, display: "none" });
+        window.dispatchEvent(new CustomEvent("usgar:preloader-done"));
       });
-
-      // Cleanup MANDATORIO según AGENTS.md
-      document.addEventListener("astro:before-preparation", () => {
-        ctx.revert();
-      }, { once: true });
     }, preloader);
+
+    register("preloader", ctx);
   });
 </script>

@@ -2487,3 +2487,5 @@
 {"timestamp":"2026-08-01 09:18:08","level":"INFO","message":"ReconcilePaymentsAction: checked=0, reconciled=0, skipped=0"}
 {"timestamp":"2026-08-01 09:18:19","level":"ERROR","message":"ProvisionalBookingRepository::getPendingHoldsWithPaymentId Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'payment_id' in 'WHERE'"}
 {"timestamp":"2026-08-01 09:18:19","level":"INFO","message":"ReconcilePaymentsAction: checked=0, reconciled=0, skipped=0"}
+{"timestamp":"2026-08-01 09:46:30","level":"ERROR","message":"QloAppAdapter: cURL error: Could not resolve host: cms.hotelesusgar.com"}
+{"timestamp":"2026-08-01 09:46:30","level":"ERROR","message":"QloAppAdapter: Error al crear Cart/Booking en QloApps, fallback a USGAR- local."}
