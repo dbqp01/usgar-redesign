@@ -1,0 +1,129 @@
+---
+// src/components/LocationMap.astro
+// Brutal static map: CARTO dark tiles + non-interactive Leaflet, custom
+// diamond marker, typographic coordinate overlays and a Google Maps
+// directions CTA. Leaflet JS/CSS load on demand (IntersectionObserver).
+import { useTranslations, type Locale } from '../i18n/utils';
+import { siteSettings } from '../data/settings';
+
+const lang = (Astro.currentLocale || 'en') as Locale;
+const t = useTranslations(lang);
+
+const { latitude: lat, longitude: lng } = siteSettings;
+const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+---
+
+<section id="map-section" class="py-12 sm:py-16 px-4 bg-surface-card-light dark:bg-surface-dark text-text-primary-light dark:text-white relative overflow-hidden transition-colors duration-500">
+  <div class="max-w-[1400px] mx-auto relative z-10 animate-on-scroll">
+    <div class="text-center mb-12 space-y-3">
+      <span class="tag-dash-title block">
+        {t('map.sectionLabel')}
+      </span>
+      <h2 class="font-display text-4xl sm:text-5xl lg:text-7xl text-text-primary-light dark:text-white tracking-tight leading-tight">
+        {t('map.title')}
+      </h2>
+      <p class="mt-4 text-base sm:text-lg text-text-secondary-light dark:text-text-secondary-dark font-body font-light max-w-2xl mx-auto">
+        {t('map.description')}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 items-stretch">
+      <!-- Static map -->
+      <div class="relative rounded-3xl overflow-hidden border border-black/5 dark:border-white/10 min-h-[420px] bg-[#17141C]">
+        <div id="location-map" class="absolute inset-0" data-lat={lat} data-lng={lng}></div>
+
+        <!-- Brutal overlays -->
+        <div class="absolute top-4 left-4 pointer-events-none">
+          <span class="inline-block font-mono text-[10px] tracking-[0.3em] text-white/80 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15">
+            -13.5215° S · 71.9848° O
+          </span>
+        </div>
+        <div class="absolute top-4 right-4 pointer-events-none">
+          <span class="inline-block font-mono text-[10px] tracking-[0.3em] text-white/80 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15">
+            CUSCO · PE
+          </span>
+        </div>
+
+        <!-- Directions CTA -->
+        <a
+          href={directionsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="absolute bottom-5 left-5 inline-flex items-center gap-2 btn-primary px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest group"
+        >
+          {t('map.directions')}
+          <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </a>
+      </div>
+
+      <!-- Info column -->
+      <div class="flex flex-col justify-center gap-6">
+        <p class="font-mono text-xs uppercase tracking-[0.3em] text-secondary">
+          {t('map.addressPrefix')}
+        </p>
+        <h3 class="font-display text-3xl sm:text-4xl text-text-primary-light dark:text-white leading-tight">
+          {t('map.addressHotel')}
+        </h3>
+        <div class="divide-y divide-black/10 dark:divide-white/10 border-y border-black/10 dark:border-white/10">
+          <div class="flex justify-between py-4">
+            <span class="text-sm text-text-secondary-light dark:text-text-secondary-dark">{t('map.marketLabel')}</span>
+            <span class="font-mono text-xs text-text-primary-light dark:text-white">{t('map.walkTime')} · 6 min</span>
+          </div>
+          <div class="flex justify-between py-4">
+            <span class="text-sm text-text-secondary-light dark:text-text-secondary-dark">{t('map.plazaLabel')}</span>
+            <span class="font-mono text-xs text-text-primary-light dark:text-white">{t('map.walkTime')} · 8 min</span>
+          </div>
+        </div>
+        <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark font-light">
+          {siteSettings.address[lang]}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .usgar-marker-core {
+    width: 26px;
+    height: 26px;
+    background: #D4AF37;
+    border: 3px solid #fff;
+    transform: rotate(45deg);
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.35);
+  }
+</style>
+
+<script>
+  import { initLocationMap } from '../features/animations/modules/locationMap';
+
+  let cleanup: (() => void) | null = null;
+
+  function initMap() {
+    const el = document.getElementById('location-map') as HTMLElement | null;
+    if (!el) return;
+    cleanup?.();
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const lat = parseFloat(el.dataset.lat || '-13.521528');
+    const lng = parseFloat(el.dataset.lng || '-71.984886');
+
+    const io = new IntersectionObserver(async (entries) => {
+      if (!entries[0].isIntersecting) return;
+      io.disconnect();
+      try {
+        cleanup = await initLocationMap(el, lat, lng);
+      } catch {
+        // map load failed — keep the dark panel + CTA visible
+      }
+    }, { rootMargin: '400px' });
+    io.observe(el);
+  }
+
+  document.addEventListener('astro:page-load', initMap);
+  document.addEventListener('astro:before-preparation', () => {
+    cleanup?.();
+    cleanup = null;
+  }, { once: true });
+</script>

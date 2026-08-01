@@ -1,6 +1,6 @@
 ﻿---
 import Layout from "../layouts/Layout.astro";
-import CuscoMap from "../components/CuscoMap.astro";
+import LocationMap from "../components/LocationMap.astro";
 import { useTranslations, type Locale } from "../i18n/utils";
 import { siteSettings } from "../data/settings";
 
@@ -657,7 +657,7 @@ const contactSchema = {
   </section>
 
   <!-- Leaflet Map Section -->
-  <CuscoMap />
+  <LocationMap />
 </Layout>
 
 <script>
