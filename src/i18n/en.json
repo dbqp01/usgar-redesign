@@ -116,7 +116,16 @@
     "followUs": "Follow Us",
     "findUs": "Find us on your favorite travel platform",
     "rights": "All rights reserved.",
-    "madeWith": "Made by MarcaRed"
+    "madeWith": "Made by MarcaRed",
+    "newsletterLabel": "Newsletter",
+    "newsletterTitle": "Travel notes from Cusco, monthly",
+    "newsletterDesc": "Rates, openings and Machu Picchu tips — straight to your inbox. No spam, ever.",
+    "newsletterPlaceholder": "Your email address",
+    "newsletterButton": "Subscribe",
+    "newsletterSuccess": "You're in! Welcome to the USGAR newsletter.",
+    "newsletterError": "Something went wrong — please try again.",
+    "newsletterEmailInvalid": "Please enter a valid email address.",
+    "certificationsLabel": "As featured on"
   },
   "whatsapp": {
     "tooltip": "Need help? Chat with us!",

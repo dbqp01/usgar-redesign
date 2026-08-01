@@ -30,10 +30,52 @@ const socialLinks = siteSettings.socialLinks.map(s => ({
   label: s.label,
   icon: s.platform,
 }));
+
+const tripadvisorUrl = siteSettings.socialLinks.find(s => s.platform === 'tripadvisor')?.url || '#';
+const bookingUrl = siteSettings.socialLinks.find(s => s.platform === 'booking')?.url || '#';
+const newsletterStatusLabels = {
+  success: t('footer.newsletterSuccess'),
+  error: t('footer.newsletterError'),
+  invalid: t('footer.newsletterEmailInvalid'),
+};
 ---
 
-<footer class="bg-surface-light dark:bg-surface-dark transition-colors duration-500 pt-24 pb-12" id="contact">
-  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+<footer class="bg-surface-light dark:bg-surface-dark transition-colors duration-500 pt-24 pb-12 overflow-hidden relative" id="contact">
+  <!-- Giant editorial wordmark (background accent) -->
+  <div class="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap font-display text-[18vw] leading-none text-primary/[0.04] dark:text-white/[0.04] select-none pointer-events-none" aria-hidden="true">
+    USGAR
+  </div>
+
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative">
+    <!-- Newsletter -->
+    <div class="max-w-2xl mx-auto text-center mb-20">
+      <p class="micro-label text-secondary mb-3">{t('footer.newsletterLabel')}</p>
+      <h2 class="font-display text-3xl sm:text-4xl text-text-primary-light dark:text-white mb-3">
+        {t('footer.newsletterTitle')}
+      </h2>
+      <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark font-light mb-6">
+        {t('footer.newsletterDesc')}
+      </p>
+      <form id="newsletter-form" class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" novalidate data-labels={JSON.stringify(newsletterStatusLabels)}>
+        <label for="newsletter-email" class="sr-only">Email</label>
+        <input
+          type="email"
+          id="newsletter-email"
+          name="email"
+          required
+          placeholder={t('footer.newsletterPlaceholder')}
+          class="flex-1 px-5 py-3.5 rounded-full bg-white dark:bg-surface-card-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-[border-color,box-shadow] placeholder:text-stone-400"
+        />
+        <button
+          type="submit"
+          class="btn-primary font-semibold px-7 py-3.5 rounded-full text-sm uppercase tracking-wider whitespace-nowrap"
+        >
+          {t('footer.newsletterButton')}
+        </button>
+      </form>
+      <p id="newsletter-status" class="hidden mt-3 text-xs font-semibold" role="status"></p>
+    </div>
+
     <!-- Logo -->
     <div class="flex justify-center mb-16">
       <a href={getRelativeLocaleUrl(lang, '')} aria-label="USGAR Hotels Home">
@@ -136,6 +178,27 @@ const socialLinks = siteSettings.socialLinks.map(s => ({
       </div>
     </div>
 
+    <!-- Certifications / Trust bar -->
+    <div class="border-t border-black/10 dark:border-white/10 pt-8 mt-8 mb-6">
+      <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+        <span class="text-[10px] font-mono uppercase tracking-[0.3em] text-text-secondary-light/70 dark:text-text-secondary-dark/70">
+          {t('footer.certificationsLabel')}
+        </span>
+        <a href={tripadvisorUrl} target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2 text-sm font-bold text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-light dark:hover:text-white transition-colors">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12.006 4.295c-2.67 0-5.338.784-7.645 2.353H0l1.963 2.135a5.997 5.997 0 004.04 10.43 5.976 5.976 0 004.075-1.6L12 19.705l1.922-2.09a5.972 5.972 0 004.075 1.6 5.997 5.997 0 004.04-10.43L24 6.648h-4.35a13.573 13.573 0 00-7.644-2.353zM12 6.76c1.874 0 3.727.56 5.295 1.587H6.706A11.115 11.115 0 0112 6.76zM5.997 17.213a3.997 3.997 0 110-7.994 3.997 3.997 0 010 7.994zm12.006 0a3.997 3.997 0 110-7.994 3.997 3.997 0 010 7.994zM5.997 11.219a2.0 2.0 0 100 4.0 2.0 2.0 0 000-4.0zm12.006 0a2.0 2.0 0 100 4.0 2.0 2.0 0 000-4.0z"/>
+          </svg>
+          <span class="tracking-wide">TripAdvisor</span>
+        </a>
+        <a href={bookingUrl} target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2 text-sm font-bold text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-light dark:hover:text-white transition-colors">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M2.273 0v24h7.619c6.727 0 9.836-3.552 9.836-7.552 0-2.87-1.552-5.292-4.162-6.275v-.076c2.041-1.066 3.234-2.987 3.234-5.262C18.8 1.55 16.127 0 10.545 0H2.273zm4.5 3.6h3.22c2.652 0 4.108.869 4.108 2.87 0 2.152-1.607 3.145-4.108 3.145H6.773V3.6zm0 9.615h3.524c2.955 0 4.869.945 4.869 3.372 0 2.393-1.914 3.413-4.538 3.413H6.773v-6.785z"/>
+          </svg>
+          <span class="tracking-wide">Booking.com</span>
+        </a>
+      </div>
+    </div>
+
     <!-- Divider -->
     <div class="border-t border-black/10 dark:border-white/10 pt-8 mt-8">
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] text-text-secondary-light/70 dark:text-text-secondary-dark/70 uppercase tracking-widest">
@@ -149,3 +212,48 @@ const socialLinks = siteSettings.socialLinks.map(s => ({
     </div>
   </div>
 </footer>
+
+<script>
+  const labels = JSON.parse(
+    document.getElementById('newsletter-form')?.dataset.labels || '{}'
+  );
+  const form = document.getElementById('newsletter-form') as HTMLFormElement | null;
+  const status = document.getElementById('newsletter-status') as HTMLElement | null;
+  const input = document.getElementById('newsletter-email') as HTMLInputElement | null;
+
+  function showStatus(message: string, ok: boolean) {
+    if (!status) return;
+    status.textContent = message;
+    status.className = `mt-3 text-xs font-semibold ${ok ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`;
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!input) return;
+
+    if (!input.validity.valid || input.value.trim() === '') {
+      showStatus(labels.invalid || 'Invalid email', false);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: input.value.trim(),
+          locale: document.documentElement.lang || 'en',
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        input.value = '';
+        showStatus(labels.success || 'Subscribed', true);
+      } else {
+        showStatus(labels.error || 'Something went wrong', false);
+      }
+    } catch {
+      showStatus(labels.error || 'Something went wrong', false);
+    }
+  });
+</script>

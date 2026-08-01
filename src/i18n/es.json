@@ -120,7 +120,16 @@
     "followUs": "Siguenos",
     "findUs": "Encuentranos en tu plataforma de viajes favorita",
     "rights": "Todos los derechos reservados.",
-    "madeWith": "Hecho por MarcaRed"
+    "madeWith": "Hecho por MarcaRed",
+    "newsletterLabel": "Newsletter",
+    "newsletterTitle": "Notas de viaje desde Cusco, cada mes",
+    "newsletterDesc": "Tarifas, novedades y consejos para Machu Picchu — directo a tu correo. Sin spam, nunca.",
+    "newsletterPlaceholder": "Tu correo electronico",
+    "newsletterButton": "Suscribirme",
+    "newsletterSuccess": "¡Listo! Bienvenido a la newsletter de USGAR.",
+    "newsletterError": "Algo salio mal — intenta de nuevo.",
+    "newsletterEmailInvalid": "Ingresa un correo valido.",
+    "certificationsLabel": "Tambien en"
   },
   "whatsapp": {
     "tooltip": "Â¿Necesitas ayuda? Â¡Escribenos!",
