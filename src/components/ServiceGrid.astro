@@ -1,54 +1,38 @@
 ---
+import { Picture } from 'astro:assets';
 import SectionHeader from './ui/SectionHeader.astro';
 import { services } from '../data/services';
-import { useTranslations } from '../i18n/utils';
-
-import type { Locale } from '../i18n/utils';
+import { useTranslations, type Locale } from '../i18n/utils';
+import breakfastImage from '../assets/hotel/fallback-room-desayuno.jpg';
+import oxygenImage from '../assets/hotel/fallback-room-oxigeno.jpg';
+import toursImage from '../assets/explore/machu-picchu.jpg';
+import comfortImage from '../assets/hotel/hero-slide-patio.jpg';
 
 const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
 
-// Grouping services for the numbered list
-const highlights: Array<{
-  id: string;
-  title: Record<string, string>;
-  desc: Record<string, string>;
-  icon: string;
-}> = [
-  {
-    id: 'breakfast',
-    title: { en: 'Andean Breakfast', es: 'Desayuno Andino', fr: 'Petit-Déjeuner Andin', pt: 'Café da Manhã Andino' },
-    desc: { en: 'Local flavors to start your day right.', es: 'Sabores locales para empezar bien tu día.', fr: 'Saveurs locales pour bien démarrer votre journée.', pt: 'Sabores locais para começar bem o seu dia.' },
-    icon: '<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 19h16M7 19V7a2 2 0 012-2h6a2 2 0 012 2v12M17 9h2a2 2 0 012 2v2a2 2 0 01-2 2h-2" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 2v3M14 2v3" /></svg>'
-  },
-  {
-    id: 'oxygen',
-    title: { en: 'Oxygen & Acclimatization', es: 'Oxígeno & Aclimatación', fr: 'Oxygène & Acclimatation', pt: 'Oxigênio & Aclimação' },
-    desc: { en: 'Complimentary oxygen to help you adjust to Cusco.', es: 'Oxígeno de cortesía para ayudarte a aclimatarte a Cusco.', fr: 'Oxygène gracieux pour vous aider à vous acclimater.', pt: 'Oxigênio de cortesia para ajudar na aclimação.' },
-    icon: '<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>'
-  },
-  {
-    id: 'tours',
-    title: { en: 'Machu Picchu Tours', es: 'Tours Machu Picchu', fr: 'Tours Machu Picchu', pt: 'Passeios Machu Picchu' },
-    desc: { en: 'Seamless travel assistance.', es: 'Asistencia de viaje sin complicaciones.', fr: 'Assistance voyage personnalisée.', pt: 'Assistência de viagem simplificada.' },
-    icon: '<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2L2 22h20L12 2zM12 8l3 6H9l3-6z" /></svg>'
-  },
-  {
-    id: 'comfort',
-    title: { en: 'Boutique Comfort', es: 'Confort Boutique', fr: 'Confort Boutique', pt: 'Conforto Boutique' },
-    desc: { en: 'Crafted spaces for authentic rest.', es: 'Espacios diseñados para un descanso auténtico.', fr: 'Des espaces conçus pour un repos authentique.', pt: 'Espaços projetados para um descanso autêntico.' },
-    icon: '<svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>'
-  }
-];
+const imageByService: Record<string, typeof breakfastImage> = {
+  breakfast: breakfastImage,
+  oxigeno: oxygenImage,
+  tours: toursImage,
+  garden: comfortImage,
+};
 
+const featureIds = ['breakfast', 'oxigeno', 'tours', 'garden'];
+const featureServices = featureIds
+  .map((id) => {
+    const service = services.find((item) => item.id === id);
+    return service ? { ...service, image: imageByService[id] } : null;
+  })
+  .filter((service): service is NonNullable<typeof service> => Boolean(service));
+
+const includedServices = services
+  .filter((service) => !featureIds.includes(service.id))
+  .slice(0, 6);
 ---
 
-
-<section id="services" class="scroll-mt-28 sm:scroll-mt-32 py-12 sm:py-16 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-500 relative overflow-hidden">
-  
-  <div class="max-w-[1400px] mx-auto relative z-10 animate-on-scroll">
-    
-    <!-- Section Header -->
+<section id="services" class="scroll-mt-28 sm:scroll-mt-32 overflow-hidden bg-surface-light px-4 py-16 transition-colors duration-500 dark:bg-surface-dark sm:py-24">
+  <div class="relative z-10 mx-auto max-w-[1400px] animate-on-scroll">
     <SectionHeader
       number="05"
       eyebrow={t('services.sectionLabel')}
@@ -56,44 +40,72 @@ const highlights: Array<{
       subtitle={t('services.description')}
     />
 
-    <!-- Brutalist numbered services list -->
-    <div class="divide-y divide-black/10 dark:divide-white/10 border-y border-black/10 dark:border-white/10">
-      {highlights.map((item, i) => (
-        <div class="group flex items-center gap-5 sm:gap-10 py-8 sm:py-10 transition-colors">
-          <span class="font-mono text-xs sm:text-sm text-secondary w-8 flex-shrink-0">{String(i + 1).padStart(2, '0')}</span>
-          <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-white dark:bg-surface-card-dark border border-black/10 dark:border-white/10 flex items-center justify-center flex-shrink-0 text-secondary transition-all duration-500 group-hover:bg-secondary group-hover:text-white" set:html={item.icon}></div>
-          <div class="flex-1 min-w-0">
-            <h3 class="font-display text-2xl sm:text-4xl text-text-primary-light dark:text-white group-hover:text-secondary transition-colors duration-300">
-              {item.title[lang]}
-            </h3>
-            <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark font-light max-w-2xl opacity-0 max-h-0 overflow-hidden transition-all duration-500 group-hover:opacity-100 group-hover:max-h-24 group-hover:mt-2">
-              {item.desc[lang]}
-            </p>
+    <div data-services-scenes class="grid grid-cols-1 gap-5 sm:gap-7 md:grid-cols-2">
+      {featureServices.map((service, index) => (
+        <article data-service-scene class="group relative isolate min-h-[390px] overflow-hidden rounded-[1.75rem] border border-black/10 bg-surface-card-dark sm:min-h-[500px]">
+          <Picture
+            src={service.image}
+            alt={service.name[lang]}
+            formats={['avif', 'webp']}
+            fallbackFormat="jpg"
+            quality="high"
+            widths={[480, 720, 960, 1200]}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            loading={index === 0 ? 'eager' : 'lazy'}
+            decoding="async"
+            pictureAttributes={{ class: 'absolute inset-0 block h-full w-full' }}
+            class="h-full w-full object-cover transition-transform duration-1000 ease-out will-change-transform motion-safe:group-hover:scale-[1.045]"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-black/5"></div>
+          <div class="absolute left-5 top-5 z-10 flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.25em] text-white/80 sm:left-7 sm:top-7">
+            <span class="text-secondary">{String(index + 1).padStart(2, '0')}</span>
+            <span class="h-px w-8 bg-secondary/80"></span>
+            <span>{t('services.sectionLabel')}</span>
           </div>
-          <svg class="w-6 h-6 flex-shrink-0 text-text-secondary-light dark:text-text-secondary-dark opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
-        </div>
+          <div class="absolute inset-x-5 bottom-5 z-10 sm:inset-x-7 sm:bottom-7">
+            <div class="max-w-xl border-l-2 border-secondary bg-black/35 px-5 py-4 backdrop-blur-md transition-transform duration-700 ease-out motion-safe:group-hover:translate-x-2 sm:px-6 sm:py-5">
+              <h3 class="font-display text-3xl leading-none text-white sm:text-5xl">{service.name[lang]}</h3>
+              <p class="mt-3 max-w-lg text-sm leading-relaxed text-white/75 sm:text-base">{service.description[lang]}</p>
+            </div>
+          </div>
+        </article>
       ))}
     </div>
 
-    <!-- Also Included — professional typographic row -->
-    <div class="mt-12 rounded-3xl border border-black/10 dark:border-white/10 bg-white dark:bg-surface-card-dark p-8 sm:p-10">
-      <div class="flex items-center gap-4 mb-8">
+    <div class="mt-8 rounded-[1.5rem] border border-black/10 bg-white p-6 dark:border-white/10 dark:bg-surface-card-dark sm:mt-10 sm:p-8">
+      <div class="mb-6 flex items-center gap-4">
         <h3 class="font-display text-2xl font-bold text-text-primary-light dark:text-white">{t('global.alsoIncluded')}</h3>
-        <span class="flex-1 h-px bg-black/10 dark:bg-white/10"></span>
+        <span class="h-px flex-1 bg-black/10 dark:bg-white/10"></span>
         <span class="font-mono text-[10px] uppercase tracking-[0.3em] text-text-secondary-light dark:text-text-secondary-dark">06</span>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5">
-        {services.filter(s => !['breakfast', 'oxygen', 'tours'].includes(s.id)).slice(0, 6).map((service, i) => (
+      <div class="grid grid-cols-1 gap-x-10 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+        {includedServices.map((service, index) => (
           <div class="flex items-center gap-3 text-text-primary-light dark:text-white">
-            <span class="font-mono text-[10px] text-secondary w-5 flex-shrink-0">{String(i + 1).padStart(2, '0')}</span>
-            <span class="w-4 h-px bg-secondary flex-shrink-0"></span>
-            <span class="font-body text-sm font-medium truncate">{service.name[lang]}</span>
+            <span class="w-5 flex-shrink-0 font-mono text-[10px] text-secondary">{String(index + 1).padStart(2, '0')}</span>
+            <span class="h-px w-4 flex-shrink-0 bg-secondary"></span>
+            <span class="truncate font-body text-sm font-medium">{service.name[lang]}</span>
           </div>
         ))}
       </div>
     </div>
-
   </div>
 </section>
+
+<script>
+  import { initServicesScenes } from '../features/animations/modules/servicesScenes';
+
+  let cleanup: (() => void) | null = null;
+
+  function init() {
+    const root = document.querySelector('[data-services-scenes]') as HTMLElement | null;
+    if (!root) return;
+    cleanup?.();
+    cleanup = initServicesScenes(root);
+  }
+
+  document.addEventListener('astro:page-load', init);
+  document.addEventListener('astro:before-preparation', () => {
+    cleanup?.();
+    cleanup = null;
+  });
+</script>

@@ -26,11 +26,11 @@ describe('i18n Translations Parity & Fallbacks (4 Locales: EN, ES, FR, PT)', () 
     expect(tEn('nav.home')).toBe('Home');
     expect(tEs('nav.home')).toBe('Inicio');
     expect(tFr('nav.home')).toBe('Accueil');
-    expect(tPt('nav.home')).toBe('Início');
+    expect(tPt('nav.home')).toBe('Inicio');
 
     expect(tEn('nav.bookNow')).toBe('Book Now');
     expect(tEs('nav.bookNow')).toBe('Reservar');
-    expect(tFr('nav.bookNow')).toBe('Réserver');
+    expect(tFr('nav.bookNow')).toBe('Reserver');
     expect(tPt('nav.bookNow')).toBe('Reservar');
   });
 

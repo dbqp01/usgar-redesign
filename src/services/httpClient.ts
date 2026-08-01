@@ -68,8 +68,8 @@ export class FetchHttpClient implements IHttpClient {
 
       const isAbort = error?.name === 'AbortError';
       const errorMessage = isAbort
-        ? 'La petición excedió el tiempo límite de espera (timeout).'
-        : (error?.message || 'Error de conexión de red al servidor.');
+        ? 'La peticion excedio el tiempo limite de espera (timeout).'
+        : (error?.message || 'Error de conexion de red al servidor.');
 
       return {
         ok: false,

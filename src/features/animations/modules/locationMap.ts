@@ -1,4 +1,5 @@
 import type * as Leaflet from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 let leafletPromise: Promise<typeof Leaflet> | null = null;
 
@@ -9,7 +10,7 @@ export async function initLocationMap(
   container: HTMLElement,
   lat: number,
   lng: number,
-  zoom = 16
+  zoom = 15
 ): Promise<() => void> {
   const L = await (leafletPromise ??= import('leaflet'));
 
@@ -25,7 +26,7 @@ export async function initLocationMap(
     attributionControl: true,
   });
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains: 'abcd',
@@ -33,14 +34,21 @@ export async function initLocationMap(
 
   const icon = L.divIcon({
     className: 'usgar-marker',
-    html: '<div class="usgar-marker-core"></div>',
+    html: '<div style="width:26px;height:26px;background:#D4AF37;border:3px solid #fff;transform:rotate(45deg);box-shadow:0 0 0 4px rgba(212,175,55,.35)"></div>',
     iconSize: [36, 36],
     iconAnchor: [18, 18],
   });
 
   L.marker([lat, lng], { icon }).addTo(map);
 
+  const resizeObserver = typeof ResizeObserver !== 'undefined'
+    ? new ResizeObserver(() => map.invalidateSize({ pan: false }))
+    : null;
+  resizeObserver?.observe(container);
+  requestAnimationFrame(() => map.invalidateSize({ pan: false }));
+
   return () => {
+    resizeObserver?.disconnect();
     map.remove();
   };
 }

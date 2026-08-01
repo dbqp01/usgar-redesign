@@ -11,7 +11,7 @@
   },
   "hero": {
     "title": "USGAR Hotels",
-    "subtitle": "San Pedro, Cusco â€” Tu puerta a los Andes",
+    "subtitle": "San Pedro, Cusco - Tu puerta a los Andes",
     "cta": "Reserva Tu Estadia",
     "ctaSecondary": "Explorar Habitaciones"
   },
@@ -35,7 +35,12 @@
     "perNight": "/noche",
     "upTo": "Hasta",
     "videoTour": "Video Tour",
-    "viewAll": "Ver todas las habitaciones"
+    "viewAll": "Ver todas las habitaciones",
+    "viewDetails": "Ver Detalles",
+    "from": "Desde",
+    "upTo": "Hasta",
+    "perNight": "por noche",
+    "videoTour": "Video Tour"
   },
   "roomsSection": {
     "heading": "NUESTRO REFUGIO",
@@ -103,7 +108,7 @@
     "marketLabel": "Mercado San Pedro",
     "plazaLabel": "Plaza de Armas",
     "walkTime": "Caminando",
-    "directions": "Cómo llegar",
+    "directions": "Como llegar",
     "addressPrefix": "759 Calle Hospital",
     "addressHotel": "San Pedro, Cusco"
   },
@@ -124,17 +129,17 @@
     "madeWith": "Hecho por MarcaRed",
     "newsletterLabel": "Newsletter",
     "newsletterTitle": "Notas de viaje desde Cusco, cada mes",
-    "newsletterDesc": "Tarifas, novedades y consejos para Machu Picchu — directo a tu correo. Sin spam, nunca.",
+    "newsletterDesc": "Tarifas, novedades y consejos para Machu Picchu - directo a tu correo. Sin spam, nunca.",
     "newsletterPlaceholder": "Tu correo electronico",
     "newsletterButton": "Suscribirme",
-    "newsletterSuccess": "¡Listo! Bienvenido a la newsletter de USGAR.",
-    "newsletterError": "Algo salio mal — intenta de nuevo.",
+    "newsletterSuccess": "Listo! Bienvenido a la newsletter de USGAR.",
+    "newsletterError": "Algo salio mal - intenta de nuevo.",
     "newsletterEmailInvalid": "Ingresa un correo valido.",
     "asFeaturedIn": "Como Aparecemos En"
   },
   "whatsapp": {
-    "tooltip": "Â¿Necesitas ayuda? Â¡Escribenos!",
-    "message": "Â¡Hola! Me gustaria reservar una habitacion en USGAR Hotels."
+    "tooltip": "Necesitas ayuda? Escribenos!",
+    "message": "Hola! Me gustaria reservar una habitacion en USGAR Hotels."
   },
   "theme": {
     "toggleDark": "Cambiar modo oscuro"
@@ -166,7 +171,7 @@
     "subjectTransfer": "Traslado desde el Aeropuerto",
     "subjectAcclimatization": "Soroche & Asistencia Medica",
     "subjectGeneral": "Consulta General",
-    "formMessage": "Â¿Como podemos ayudarte?",
+    "formMessage": "Como podemos ayudarte?",
     "formSubmit": "Enviar Mensaje",
     "directChannels": "Canales Directos",
     "whatsappText": "Escribenos por WhatsApp",
@@ -188,13 +193,13 @@
     "checkinTime": "Check-In: 11:00 AM",
     "checkoutTime": "Check-Out: 09:00 AM",
     "faqTitle": "Preguntas Frecuentes de Llegada",
-    "faqLuggageQ": "Â¿Puedo guardar mi equipaje antes del check-in o despues del check-out?",
-    "faqLuggageA": "Si, ofrecemos guardado de equipaje 100% gratuito y custodiado mientras exploras Cusco o realizas la excursiÃ³n a Machu Picchu.",
-    "faqOxygenQ": "Â¿El oxigeno medicinal para el soroche tiene costo adicional?",
+    "faqLuggageQ": "Puedo guardar mi equipaje antes del check-in o despues del check-out?",
+    "faqLuggageA": "Si, ofrecemos guardado de equipaje 100% gratuito y custodiado mientras exploras Cusco o realizas la excursion a Machu Picchu.",
+    "faqOxygenQ": "El oxigeno medicinal para el soroche tiene costo adicional?",
     "faqOxygenA": "No, el suministro de oxigeno concentrado y el mate de coca son de cortesia para todos nuestros huespedes las 24 horas.",
-    "faqTransferQ": "Â¿Como coordino mi traslado desde el aeropuerto de Cusco?",
+    "faqTransferQ": "Como coordino mi traslado desde el aeropuerto de Cusco?",
     "faqTransferA": "Puedes seleccionarlo al reservar en nuestra web o enviarnos un mensaje por WhatsApp con los datos de tu vuelo.",
-    "successMessage": "Â¡Mensaje enviado con exito! Nuestro equipo te respondera a la brevedad.",
+    "successMessage": "Mensaje enviado con exito! Nuestro equipo te respondera a la brevedad.",
     "messagePlaceholder": "Escribe tus dudas, fechas estimadas o requerimientos especiales aqui..."
   },
   "gallery": {
@@ -249,7 +254,7 @@
   },
   "book": {
     "stepFinal": "Paso Final",
-    "checkingAvailability": "Comprobando disponibilidad…",
+    "checkingAvailability": "Comprobando disponibilidad...",
     "available": "disponibles",
     "title": "Completa tu Reserva",
     "subtitle": "Por favor, introduce los datos del huesped principal y confirma las fechas para proceder al pago seguro.",
@@ -260,7 +265,7 @@
     "guestDetails": "Datos del Huesped Principal",
     "fullName": "Nombre Completo",
     "phoneWhatsApp": "Telefono / WhatsApp",
-    "airportPickupCheckbox": "Â¿Necesita traslado privado desde el aeropuerto?",
+    "airportPickupCheckbox": "Necesita traslado privado desde el aeropuerto?",
     "flightTimeLabel": "Hora aproximada de llegada de su vuelo",
     "arrivalCalculationTitle": "Calculo de Llegada Estimada",
     "arrivalCalculationText": "Tiempo de transito: ~20-30 minutos en auto desde el Aeropuerto de Cusco (CUZ).",
@@ -285,13 +290,6 @@
     "noPaymentUrl": "No se recibio la URL de pago desde el servidor.",
     "unexpectedError": "Ocurrio un error inesperado."
   },
-  "rooms": {
-    "viewDetails": "Ver Detalles",
-    "from": "Desde",
-    "upTo": "Hasta",
-    "perNight": "por noche",
-    "videoTour": "Video Tour"
-  },
   "exploreDetail": {
     "home": "Inicio",
     "historyTitle": "Historia y Contexto",
@@ -301,14 +299,14 @@
     "distanceFromHotel": "Distancia desde el Hotel",
     "travelTime": "Tiempo de Viaje",
     "bestSeason": "Mejor Epoca",
-    "readyToExplore": "Â¿Listo para explorar Cusco?",
+    "readyToExplore": "Listo para explorar Cusco?",
     "readyToExploreText": "Reserva tu estadia en USGAR Hotels y descubre todas las maravillas de Cusco y el Valle Sagrado."
   },
   "success": {
     "title": "Reserva Confirmada",
     "retrieving": "Recuperando detalles de reserva...",
     "paymentApproved": "Pago Aprobado con Exito",
-    "reservationConfirmed": "Â¡Tu Reserva esta Confirmada!",
+    "reservationConfirmed": "Tu Reserva esta Confirmada!",
     "confirmationMessage": "Gracias por elegir USGAR Hotels. Recibiras un correo de confirmacion con todos los detalles de tu estadia.",
     "channexCode": "Codigo de Confirmacion Channex",
     "bookingDetails": "Detalles de la Reserva",
@@ -324,7 +322,7 @@
     "notFoundMessage": "No pudimos encontrar los detalles de la reserva. Si completaste un pago, por favor contactanos.",
     "paymentPending": "Pago Pendiente",
     "verifyingPayment": "Estamos verificando tu pago",
-    "verifyingPaymentMessage": "Tu pago esta siendo verificado con el banco. Recibiras un correo de confirmacion en breve. Por favor mantÃ©n esta pagina abierta."
+    "verifyingPaymentMessage": "Tu pago esta siendo verificado con el banco. Recibiras un correo de confirmacion en breve. Por favor manten esta pagina abierta."
   },
   "auth": {
     "signIn": "Iniciar Sesion",
@@ -345,8 +343,8 @@
     "fullName": "Nombre completo",
     "firstName": "Nombre",
     "lastName": "Apellido",
-    "alreadyHaveAccount": "Â¿Ya tienes una cuenta?",
-    "dontHaveAccount": "Â¿No tienes cuenta?",
+    "alreadyHaveAccount": "Ya tienes una cuenta?",
+    "dontHaveAccount": "No tienes cuenta?",
     "loginToBookFaster": "Inicia sesion para reservar mas rapido con tus datos guardados",
     "welcomeBack": "Bienvenido de vuelta",
     "noBookingsYet": "Aun no tienes reservas.",
@@ -363,7 +361,7 @@
     "checkinDate": "Entrada",
     "checkoutDate": "Salida",
     "totalPaid": "Total",
-    "registrationSuccess": "Â¡Cuenta creada exitosamente!",
+    "registrationSuccess": "Cuenta creada exitosamente!",
     "loginError": "Correo o contrasena incorrectos.",
     "emailExists": "Ya existe una cuenta con este correo.",
     "passwordTooShort": "La contrasena debe tener al menos 8 caracteres."
@@ -385,7 +383,7 @@
   "instagram": {
     "sectionLabel": "Instagram",
     "title": "Vive USGAR en Instagram",
-    "description": "Arte mural, mananas en el patio colonial y platos de Auka Restobar — sigue el dia a dia del hotel.",
+    "description": "Arte mural, mananas en el patio colonial y platos de Auka Restobar - sigue el dia a dia del hotel.",
     "followCta": "Siguenos en Instagram",
     "handle": "@hotelesusgar",
     "altPatio": "Patio inca colonial de USGAR Hotels",

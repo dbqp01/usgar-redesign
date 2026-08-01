@@ -10,7 +10,7 @@ const t = useTranslations(lang);
 const contactSchema = {
   "@context": "https://schema.org",
   "@type": "ContactPage",
-  name: `${t("contact.title")} â€” USGAR Hotels`,
+  name: `${t("contact.title")} - USGAR Hotels`,
   description: t("contact.subtitle"),
   url: `https://hotelesusgar.com/${lang !== "en" ? lang + "/" : ""}contact`,
   mainEntity: {
@@ -31,7 +31,7 @@ const contactSchema = {
 ---
 
 <Layout
-  title={`${t("contact.title")} â€” USGAR Hotels`}
+  title={`${t("contact.title")} - USGAR Hotels`}
   lang={lang}
   schema={contactSchema}
 >

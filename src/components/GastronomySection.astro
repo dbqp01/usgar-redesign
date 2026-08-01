@@ -14,45 +14,45 @@ const t = useTranslations(lang);
 const culinaryOffers = [
   {
     id: 'buffet',
-    title: { en: 'Daily Buffet Breakfast', es: 'Desayuno Buffet Diario', fr: 'Petit-Déjeuner Buffet Quotidien', pt: 'Café da Manhã Buffet Diário' },
+    title: { en: 'Daily Buffet Breakfast', es: 'Desayuno Buffet Diario', fr: 'Petit-Dejeuner Buffet Quotidien', pt: 'Cafe da Manha Buffet Diario' },
     schedule: '06:00 AM - 09:00 AM',
     metric: '100%',
-    metricLabel: { en: 'Included in Stay', es: 'Incluido en tu Estadía', fr: 'Inclus dans le Séjour', pt: 'Incluído na Estadia' },
+    metricLabel: { en: 'Included in Stay', es: 'Incluido en tu Estadia', fr: 'Inclus dans le Sejour', pt: 'Incluido na Estadia' },
     desc: {
       en: 'Fresh tropical fruits, artisan breads, eggs prepared to order, regional cheeses, coffee, and authentic hot Andean herbal teas.',
-      es: 'Frutas frescas del valle, panes artesanales, huevos al gusto, quesos regionales, café pasado e infusiones andinas calientes.',
-      fr: 'Fruits frais, pains artisanaux, œufs préparés à la commande, fromages régionaux, café et infusions andines chaudes.',
-      pt: 'Frutas frescas, pães artesanais, ovos preparados na hora, queijos regionais, café e infusões andinas quentes.'
+      es: 'Frutas frescas del valle, panes artesanales, huevos al gusto, quesos regionales, cafe pasado e infusiones andinas calientes.',
+      fr: 'Fruits frais, pains artisanaux, oeufs prepares a la commande, fromages regionaux, cafe et infusions andines chaudes.',
+      pt: 'Frutas frescas, paes artesanais, ovos preparados na hora, queijos regionais, cafe e infusoes andinas quentes.'
     },
     image: desayunoImg,
     size: 'col-span-1 lg:col-span-2 row-span-2'
   },
   {
     id: 'teas',
-    title: { en: 'Coca & Muña Station', es: 'Estación de Mates', fr: 'Station de Boissons Chaudes', pt: 'Estação de Chás' },
+    title: { en: 'Coca & Muna Station', es: 'Estacion de Mates', fr: 'Station de Boissons Chaudes', pt: 'Estacao de Chas' },
     schedule: '24 Hours',
     metric: '24/7',
-    metricLabel: { en: 'Complimentary', es: 'De Cortesía', fr: 'Gracieux', pt: 'De Cortesia' },
+    metricLabel: { en: 'Complimentary', es: 'De Cortesia', fr: 'Gracieux', pt: 'De Cortesia' },
     desc: {
-      en: 'Unlimited hot Coca and Muña leaf infusions to prevent altitude sickness and stay energized.',
-      es: 'Infusiones ilimitadas de hoja de Coca y Muña para prevenir el soroche y mantenerte activo.',
-      fr: 'Infusions illimitées de feuilles de Coca et Muña pour prévenir le mal de l\'altitude.',
-      pt: 'Infusões ilimitadas de folhas de Coca e Muña para prevenir o soroche.'
+      en: 'Unlimited hot Coca and Muna leaf infusions to prevent altitude sickness and stay energized.',
+      es: 'Infusiones ilimitadas de hoja de Coca y Muna para prevenir el soroche y mantenerte activo.',
+      fr: 'Infusions illimitees de feuilles de Coca et Muna pour prevenir le mal de l\'altitude.',
+      pt: 'Infusoes ilimitadas de folhas de Coca e Muna para prevenir o soroche.'
     },
     image: recepcionImg,
     size: 'col-span-1 lg:col-span-1 row-span-1'
   },
   {
     id: 'cafeteria',
-    title: { en: 'Evening Cafeteria', es: 'Cafetería Nocturna', fr: 'Cafétéria du Soir', pt: 'Cafetaria Noturna' },
+    title: { en: 'Evening Cafeteria', es: 'Cafeteria Nocturna', fr: 'Cafeteria du Soir', pt: 'Cafetaria Noturna' },
     schedule: 'Until 22:00 PM',
     metric: '22:00',
     metricLabel: { en: 'Open Daily', es: 'Abierto Diario', fr: 'Ouvert Tous les Jours', pt: 'Aberto Diariamente' },
     desc: {
       en: 'Warm beverages, light snacks, and cozy seating after your Machu Picchu tours.',
-      es: 'Bebidas calientes, bocadillos ligeros y ambiente acogedor después de tus tours a Machu Picchu.',
-      fr: 'Boissons chaudes, en-cas légers et ambiance chaleureuse après vos visites.',
-      pt: 'Bebidas quentes, lanches leves e ambiente acolhedor após seus passeios.'
+      es: 'Bebidas calientes, bocadillos ligeros y ambiente acogedor despues de tus tours a Machu Picchu.',
+      fr: 'Boissons chaudes, en-cas legers et ambiance chaleureuse apres vos visites.',
+      pt: 'Bebidas quentes, lanches leves e ambiente acolhedor apos seus passeios.'
     },
     image: patioImg,
     size: 'col-span-1 lg:col-span-1 row-span-1'
@@ -89,7 +89,7 @@ const culinaryOffers = [
             />
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
             <div class="absolute bottom-5 left-5 px-4 py-2 rounded-full bg-black/45 backdrop-blur-md border border-white/10 text-white text-[11px] font-mono tracking-[0.15em]">
-              {offer.metric} — {offer.metricLabel[lang]}
+              {offer.metric} - {offer.metricLabel[lang]}
             </div>
           </div>
         ))}

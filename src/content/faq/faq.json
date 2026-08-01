@@ -1,7 +1,7 @@
 {
   "questions": [
     {
-      "question_es": "¿Cuales son los horarios de check-in y check-out?",
+      "question_es": "Cuales son los horarios de check-in y check-out?",
       "question_en": "What are the check-in and check-out times?",
       "question_fr": "Quels sont les horaires d'arrivee et de depart ?",
       "question_pt": "Quais sao os horarios de check-in e check-out?",
@@ -11,7 +11,7 @@
       "answer_pt": "O check-in e a partir das 12:00 (meio-dia) e o check-out e ate as 10:30. Se chegar mais cedo, guardaremos a sua bagagem gratuitamente ou faremos o check-in antecipado se o quarto ja estiver pronto."
     },
     {
-      "question_es": "¿Como puedo prevenir el mal de altura (soroche)?",
+      "question_es": "Como puedo prevenir el mal de altura (soroche)?",
       "question_en": "How can I prevent altitude sickness (soroche)?",
       "question_fr": "Comment prevenir le mal de l'altitude (soroche) ?",
       "question_pt": "Como posso prevenir o mal da altitude (soroche)?",
@@ -21,7 +21,7 @@
       "answer_pt": "Cusco esta a 3.400 metros de altitude. Para ajudar a aclimatar-se, oferecemos cha de Coca quente cortesia 24 horas no nosso lobby. Recomendamos descansar nas primeiras horas, beber muita agua, comer leve e evitar bebidas alcoolicas. Tambem dispomos de oxigenio na recepcao se necessario."
     },
     {
-      "question_es": "¿Ofrecen traslados desde el aeropuerto o la estacion de tren?",
+      "question_es": "Ofrecen traslados desde el aeropuerto o la estacion de tren?",
       "question_en": "Do you offer airport or train station transfers?",
       "question_fr": "Proposez-vous des transferts depuis l'aeroport ou la gare ?",
       "question_pt": "Oferecem traslado do aeroporto ou da estacao de trem?",
@@ -31,27 +31,27 @@
       "answer_pt": "Sim, oferecemos servicos de traslado privado. Pode agendar um transporte seguro e confortavel a partir do Aeroporto Alejandro Velasco Astete (CUZ) ou das estacoes de trem de Poroy/Wanchaq. Por favor, entre em contato por e-mail ou WhatsApp com os detalhes da viagem com pelo menos 24 horas de antecedencia."
     },
     {
-      "question_es": "¿El desayuno esta incluido y a que hora se sirve?",
+      "question_es": "El desayuno esta incluido y a que hora se sirve?",
       "question_en": "Is breakfast included and what time is it served?",
       "question_fr": "Le petit-dejeuner est-il inclus et a quelle heure est-il servi ?",
       "question_pt": "O cafe da manha esta incluido e a que horas e servido?",
       "answer_es": "Si, un desayuno buffet fresco con frutas andinas locales, panes, queso, huevos, cafe e infusiones tradicionales esta incluido en todas nuestras tarifas. Se sirve todos los dias de 6:00 AM a 9:00 AM, perfecto para antes de iniciar sus tours tempranos a Machu Picchu o el Valle Sagrado.",
       "answer_en": "Yes, a fresh buffet breakfast featuring local Andean fruits, breads, cheese, eggs, coffee, and traditional herbal teas is included with all room rates. It is served daily from 6:00 AM to 9:00 AM, allowing plenty of time before you start early day tours to Machu Picchu or the Sacred Valley.",
-      "answer_fr": "Oui, un petit-dejeuner buffet frais compose de fruits andins locaux, pains, fromages, œufs, cafe et infusions traditionnelles est inclus dans tous nos tarifs. Il est servi tous les jours de 6h00 a 9h00, parfait avant de partir pour vos excursions matinales vers le Machu Picchu ou la Vallee Sacree.",
+      "answer_fr": "Oui, un petit-dejeuner buffet frais compose de fruits andins locaux, pains, fromages, oeufs, cafe et infusions traditionnelles est inclus dans tous nos tarifs. Il est servi tous les jours de 6h00 a 9h00, parfait avant de partir pour vos excursions matinales vers le Machu Picchu ou la Vallee Sacree.",
       "answer_pt": "Sim, um cafe da manha buffet fresco com frutas andinas locais, paes, queijos, ovos, cafe e chas tradicionais esta incluido em todas as tarifas. E servido diariamente das 06:00 as 09:00, ideal antes de iniciar os seus passeios para Machu Picchu ou o Vale Sagrado."
     },
     {
-      "question_es": "¿Puedo dejar mi equipaje en el hotel mientras visito Machu Picchu?",
+      "question_es": "Puedo dejar mi equipaje en el hotel mientras visito Machu Picchu?",
       "question_en": "Can I leave my luggage at the hotel while visiting Machu Picchu?",
       "question_fr": "Puis-je laisser mes bagages a l'hotel pendant ma visite au Machu Picchu ?",
       "question_pt": "Posso deixar a minha bagagem no hotel enquanto me desloco a Machu Picchu?",
-      "answer_es": "¡Por supuesto! Brindamos almacenamiento de equipaje seguro y gratuito para todos nuestros huespedes. Puede dejar sus maletas grandes con nosotros mientras ya viaja a Machu Picchu o al Valle Sagrado con una mochila pequena, y recogerlas a su regreso.",
+      "answer_es": "Por supuesto! Brindamos almacenamiento de equipaje seguro y gratuito para todos nuestros huespedes. Puede dejar sus maletas grandes con nosotros mientras ya viaja a Machu Picchu o al Valle Sagrado con una mochila pequena, y recogerlas a su regreso.",
       "answer_en": "Absolutely! We provide free, secure luggage storage for all our guests. You can leave your large suitcases with us while you travel to Machu Picchu or the Sacred Valley with a smaller daypack, and retrieve them when you return.",
       "answer_fr": "Absolument ! Nous proposons un service de bagagerie securise et gratuit pour tous nos clients. Vous pouvez laisser vos grandes valises chez nous pendant que vous voyagez vers le Machu Picchu ou la Vallee Sacree avec un petit sac a dos, et les recuperer a votre retour.",
       "answer_pt": "Com certeza! Oferecemos armazenamento seguro e gratuito de bagagens para todos os nossos hospedes. Pode deixar as suas malas grandes conosco enquanto viaja para Machu Picchu ou para o Vale Sagrado com uma mochila pequena, e retira-las ao regressar."
     },
     {
-      "question_es": "¿Las habitaciones cuentan con calefaccion y agua caliente las 24 horas?",
+      "question_es": "Las habitaciones cuentan con calefaccion y agua caliente las 24 horas?",
       "question_en": "Do rooms have heating and 24/7 hot water?",
       "question_fr": "Les chambres disposent-elles de chauffage et d'eau chaude 24h/24 ?",
       "question_pt": "Os quartos tem aquecimento e agua quente 24 horas?",

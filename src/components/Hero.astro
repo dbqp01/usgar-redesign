@@ -25,7 +25,7 @@ const optimizedPoster = await getImage({
   format: "webp",
 });
 
-const heroCoordinates = `${Math.abs(siteSettings.latitude).toFixed(4)}°${siteSettings.latitude >= 0 ? 'N' : 'S'} — ${Math.abs(siteSettings.longitude).toFixed(4)}°${siteSettings.longitude >= 0 ? 'E' : 'W'} · ${siteSettings.city}, ${siteSettings.region}`;
+const heroCoordinates = `${Math.abs(siteSettings.latitude).toFixed(4)} ${siteSettings.latitude >= 0 ? 'N' : 'S'} / ${Math.abs(siteSettings.longitude).toFixed(4)} ${siteSettings.longitude >= 0 ? 'E' : 'W'} / ${siteSettings.city}, ${siteSettings.region}`;
 
 const slides = [slide1, slide2, slide3, slide4];
 ---

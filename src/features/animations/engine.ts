@@ -24,6 +24,7 @@ export function bootHomeAnimations(): void {
     mm.add(
       {
         isDesktop: '(min-width: 768px)',
+        isMobile: '(max-width: 767px)',
         reduceMotion: PREFERS_REDUCED_MOTION,
       },
       (context) => {

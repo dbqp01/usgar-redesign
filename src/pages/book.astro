@@ -54,7 +54,7 @@ const initialTotalPrice = selectedRoom.pricePerNight * initialNights;
 const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
 ---
 
-<Layout title={`${t('book.title')} â€” USGAR Hotels`} lang={lang}>
+<Layout title={`${t('book.title')} - USGAR Hotels`} lang={lang}>
   <main class="py-12 sm:py-24 px-4 max-w-7xl mx-auto flex-1 animate-fade-in">
     <!-- Header -->
     <div class="mb-12 text-center max-w-xl mx-auto">
@@ -221,7 +221,7 @@ const getTranslatedBeds = (bedsStr: string) => translateBeds(bedsStr, lang);
                           </svg>
                           Max {r.maxGuests} {r.maxGuests === 1 ? t('booking.guest') : t('booking.guests_plural')}
                         </span>
-                        <span>â€¢</span>
+                        <span>*</span>
                         <span class="flex items-center gap-1">
                           <svg class="w-3.5 h-3.5 text-text-secondary-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M2 4v16M2 20h20M22 20V12a4 4 0 0 0-4-4H4" />

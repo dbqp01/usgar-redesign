@@ -45,8 +45,10 @@ const newsletterStatusLabels = {
 
 <footer class="bg-surface-light dark:bg-surface-dark transition-colors duration-500 pt-24 pb-12 overflow-hidden relative" id="contact">
   <!-- Giant editorial wordmark (background accent) -->
-  <div class="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap font-display text-[18vw] leading-none text-primary/[0.04] dark:text-white/[0.04] select-none pointer-events-none" aria-hidden="true">
-    USGAR
+  <div data-footer-wordmark="USGAR" class="pointer-events-none absolute inset-x-0 top-2 flex justify-center overflow-hidden px-4 select-none" aria-hidden="true">
+    <span class="block w-full max-w-full text-center font-display text-[clamp(4.5rem,12vw,11rem)] leading-none tracking-[0.02em] text-primary/[0.04] dark:text-white/[0.04]">
+      USGAR
+    </span>
   </div>
 
   <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative">
@@ -179,11 +181,11 @@ const newsletterStatusLabels = {
         </span>
         <a href={tripadvisorUrl} target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2.5 opacity-70 hover:opacity-100 transition-opacity">
           <PlatformLogo platform="tripadvisor" class="w-7 h-7 text-text-secondary-light dark:text-white" />
-          <span class="font-display font-bold text-lg tracking-tight text-text-secondary-light dark:text-white">TripAdvisor</span>
+          <span class="font-body font-light italic text-lg tracking-wide text-text-secondary-light/80 dark:text-white/80">TripAdvisor</span>
         </a>
         <a href={bookingUrl} target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2.5 opacity-70 hover:opacity-100 transition-opacity">
           <PlatformLogo platform="booking" class="w-7 h-7 text-text-secondary-light dark:text-white" />
-          <span class="font-display font-bold text-lg tracking-tight text-text-secondary-light dark:text-white">Booking.com</span>
+          <span class="font-body font-light italic text-lg tracking-wide text-text-secondary-light/80 dark:text-white/80">Booking.com</span>
         </a>
       </div>
     </div>

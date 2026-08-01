@@ -30,9 +30,9 @@ const exploreImages = import.meta.glob<{ default: ImageMetadata }>('../../assets
 
 // Category Labels and Icons
 const categoryLabels: Record<string, { en: string; es: string; fr: string; pt: string }> = {
-  historical: { en: "Historical Site", es: "Sitio Histórico", fr: "Site Historique", pt: "Sítio Histórico" },
+  historical: { en: "Historical Site", es: "Sitio Historico", fr: "Site Historique", pt: "Sitio Historico" },
   nature: { en: "Nature & Landscape", es: "Naturaleza y Paisaje", fr: "Nature et Paysage", pt: "Natureza e Paisagem" },
-  cultural: { en: "Cultural Experience", es: "Experiencia Cultural", fr: "Expérience Culturelle", pt: "Experiência Cultural" },
+  cultural: { en: "Cultural Experience", es: "Experiencia Cultural", fr: "Experience Culturelle", pt: "Experiencia Cultural" },
   adventure: { en: "Adventure", es: "Aventura", fr: "Aventure", pt: "Aventura" },
 };
 
@@ -46,7 +46,7 @@ const categoryIcons: Record<string, string> = {
 const blogSchema = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": attraction.name[lang] + " — Travel Guide",
+    "headline": attraction.name[lang] + " - Travel Guide",
   "description": attraction.description[lang],
   "author": {
     "@type": "Organization",
@@ -71,7 +71,7 @@ const blogSchema = {
 ---
 
 <Layout
-  title={`${attraction.name[lang]} — ${t("explore.title")} | USGAR Hotels`}
+  title={`${attraction.name[lang]} - ${t("explore.title")} | USGAR Hotels`}
   lang={lang}
   schema={blogSchema}
 >

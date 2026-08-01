@@ -12,15 +12,15 @@ const capacities = ["all", "2", "3", "4", "7"];
 
 const filterLabels: Record<string, { en: string; es: string; fr: string; pt: string }> = {
   all: { en: "All Rooms", es: "Todas las Habitaciones", fr: "Toutes les Chambres", pt: "Todos os Quartos" },
-  "2": { en: "2 Guests", es: "2 Huéspedes", fr: "2 Voyageurs", pt: "2 Hóspedes" },
-  "3": { en: "3 Guests", es: "3 Huéspedes", fr: "3 Voyageurs", pt: "3 Hóspedes" },
-  "4": { en: "4 Guests", es: "4 Huéspedes", fr: "4 Voyageurs", pt: "4 Hóspedes" },
-  "7": { en: "7 Guests", es: "7 Huéspedes", fr: "7 Voyageurs", pt: "7 Hóspedes" }
+  "2": { en: "2 Guests", es: "2 Huespedes", fr: "2 Voyageurs", pt: "2 Hospedes" },
+  "3": { en: "3 Guests", es: "3 Huespedes", fr: "3 Voyageurs", pt: "3 Hospedes" },
+  "4": { en: "4 Guests", es: "4 Huespedes", fr: "4 Voyageurs", pt: "4 Hospedes" },
+  "7": { en: "7 Guests", es: "7 Huespedes", fr: "7 Voyageurs", pt: "7 Hospedes" }
 };
 ---
 
 
-<Layout title={`${t("rooms.title")} — USGAR Hotels`} lang={lang}>
+<Layout title={`${t("rooms.title")} - USGAR Hotels`} lang={lang}>
   <!-- Header Banner -->
   <section
     class="relative pt-32 pb-16 px-4 bg-gradient-to-b from-primary/10 via-transparent to-transparent overflow-hidden"
@@ -86,7 +86,7 @@ const filterLabels: Record<string, { en: string; es: string; fr: string; pt: str
       <p class="text-text-secondary-light dark:text-text-secondary-dark font-body max-w-sm mx-auto">
         {
           lang === "es"
-            ? "Prueba cambiando los filtros de huéspedes."
+            ? "Prueba cambiando los filtros de huespedes."
             : "Try adjusting your guest capacity filters."
         }
       </p>

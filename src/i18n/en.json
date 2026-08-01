@@ -11,7 +11,7 @@
   },
   "hero": {
     "title": "USGAR Hotels",
-    "subtitle": "San Pedro, Cusco — Your gateway to the Andes",
+    "subtitle": "San Pedro, Cusco - Your gateway to the Andes",
     "cta": "Book Your Stay",
     "ctaSecondary": "Explore Rooms"
   },
@@ -35,7 +35,12 @@
     "perNight": "/night",
     "upTo": "Up to",
     "videoTour": "Video Tour",
-    "viewAll": "View all rooms"
+    "viewAll": "View all rooms",
+    "viewDetails": "View Details",
+    "from": "From",
+    "upTo": "Up to",
+    "perNight": "per night",
+    "videoTour": "Video Tour"
   },
   "roomsSection": {
     "heading": "OUR SANCTUARY",
@@ -120,11 +125,11 @@
     "madeWith": "Made by MarcaRed",
     "newsletterLabel": "Newsletter",
     "newsletterTitle": "Travel notes from Cusco, monthly",
-    "newsletterDesc": "Rates, openings and Machu Picchu tips — straight to your inbox. No spam, ever.",
+    "newsletterDesc": "Rates, openings and Machu Picchu tips - straight to your inbox. No spam, ever.",
     "newsletterPlaceholder": "Your email address",
     "newsletterButton": "Subscribe",
     "newsletterSuccess": "You're in! Welcome to the USGAR newsletter.",
-    "newsletterError": "Something went wrong — please try again.",
+    "newsletterError": "Something went wrong - please try again.",
     "newsletterEmailInvalid": "Please enter a valid email address.",
     "asFeaturedIn": "As Featured In"
   },
@@ -245,7 +250,7 @@
   },
   "book": {
     "stepFinal": "Final Step",
-    "checkingAvailability": "Checking availability…",
+    "checkingAvailability": "Checking availability...",
     "available": "available",
     "title": "Book Your Stay",
     "subtitle": "Please enter the primary guest details and confirm your dates to proceed to secure checkout.",
@@ -280,13 +285,6 @@
     "invalidEmail": "Please enter a valid email address.",
     "noPaymentUrl": "No payment URL received from server.",
     "unexpectedError": "An unexpected error occurred."
-  },
-  "rooms": {
-    "viewDetails": "View Details",
-    "from": "From",
-    "upTo": "Up to",
-    "perNight": "per night",
-    "videoTour": "Video Tour"
   },
   "exploreDetail": {
     "home": "Home",
@@ -381,7 +379,7 @@
   "instagram": {
     "sectionLabel": "Instagram",
     "title": "Experience USGAR on Instagram",
-    "description": "Mural art, colonial patio mornings and Auka Restobar plates — follow the daily life of the hotel.",
+    "description": "Mural art, colonial patio mornings and Auka Restobar plates - follow the daily life of the hotel.",
     "followCta": "Follow Us on Instagram",
     "handle": "@hotelesusgar",
     "altPatio": "Inca colonial patio of USGAR Hotels",

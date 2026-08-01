@@ -13,7 +13,7 @@ const { latitude: lat, longitude: lng } = siteSettings;
 const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
 ---
 
-<section id="map-section" class="py-12 sm:py-16 px-4 bg-surface-card-light dark:bg-surface-dark text-text-primary-light dark:text-white relative overflow-hidden transition-colors duration-500">
+<section id="map-section" class="relative overflow-hidden bg-surface-card-light px-4 py-16 text-text-primary-light transition-colors duration-500 dark:bg-surface-dark dark:text-white sm:py-24">
   <div class="max-w-[1400px] mx-auto relative z-10 animate-on-scroll">
     <div class="text-center mb-12 space-y-3">
       <span class="tag-dash-title block">
@@ -27,20 +27,20 @@ const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat}
       </p>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 items-stretch">
+    <div class="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
       <!-- Static map -->
-      <div class="relative rounded-3xl overflow-hidden border border-black/5 dark:border-white/10 min-h-[420px] bg-[#17141C]">
+      <div class="relative min-h-[390px] overflow-hidden rounded-[1.75rem] border border-black/10 bg-[#E7E4DE] shadow-xl dark:border-white/10 sm:min-h-[500px]">
         <div id="location-map" class="absolute inset-0" data-lat={lat} data-lng={lng}></div>
 
         <!-- Brutal overlays -->
         <div class="absolute top-4 left-4 pointer-events-none">
           <span class="inline-block font-mono text-[10px] tracking-[0.3em] text-white/80 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15">
-            -13.5215° S · 71.9848° O
+            {Math.abs(lat).toFixed(4)} {lat < 0 ? 'S' : 'N'} / {Math.abs(lng).toFixed(4)} {lng < 0 ? 'W' : 'E'}
           </span>
         </div>
         <div class="absolute top-4 right-4 pointer-events-none">
           <span class="inline-block font-mono text-[10px] tracking-[0.3em] text-white/80 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15">
-            CUSCO · PE
+            CUSCO / PE
           </span>
         </div>
 
@@ -59,7 +59,7 @@ const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat}
       </div>
 
       <!-- Info column -->
-      <div class="flex flex-col justify-center gap-6">
+      <div class="flex flex-col justify-center gap-6 lg:px-2">
         <p class="font-mono text-xs uppercase tracking-[0.3em] text-secondary">
           {t('map.addressPrefix')}
         </p>
@@ -69,11 +69,11 @@ const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat}
         <div class="divide-y divide-black/10 dark:divide-white/10 border-y border-black/10 dark:border-white/10">
           <div class="flex justify-between py-4">
             <span class="text-sm text-text-secondary-light dark:text-text-secondary-dark">{t('map.marketLabel')}</span>
-            <span class="font-mono text-xs text-text-primary-light dark:text-white">{t('map.walkTime')} · 6 min</span>
+            <span class="font-mono text-xs text-text-primary-light dark:text-white">{t('map.walkTime')} / 6 min</span>
           </div>
           <div class="flex justify-between py-4">
             <span class="text-sm text-text-secondary-light dark:text-text-secondary-dark">{t('map.plazaLabel')}</span>
-            <span class="font-mono text-xs text-text-primary-light dark:text-white">{t('map.walkTime')} · 8 min</span>
+            <span class="font-mono text-xs text-text-primary-light dark:text-white">{t('map.walkTime')} / 8 min</span>
           </div>
         </div>
         <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark font-light">
@@ -84,46 +84,48 @@ const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat}
   </div>
 </section>
 
-<style>
-  .usgar-marker-core {
-    width: 26px;
-    height: 26px;
-    background: #D4AF37;
-    border: 3px solid #fff;
-    transform: rotate(45deg);
-    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.35);
-  }
-</style>
-
 <script>
   import { initLocationMap } from '../features/animations/modules/locationMap';
 
   let cleanup: (() => void) | null = null;
+  let observer: IntersectionObserver | null = null;
+  let initToken = 0;
 
   function initMap() {
     const el = document.getElementById('location-map') as HTMLElement | null;
     if (!el) return;
+    const token = ++initToken;
+    observer?.disconnect();
+    observer = null;
     cleanup?.();
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
+    cleanup = null;
     const lat = parseFloat(el.dataset.lat || '-13.521528');
     const lng = parseFloat(el.dataset.lng || '-71.984886');
 
-    const io = new IntersectionObserver(async (entries) => {
+    observer = new IntersectionObserver(async (entries) => {
       if (!entries[0].isIntersecting) return;
-      io.disconnect();
+      observer?.disconnect();
+      observer = null;
       try {
-        cleanup = await initLocationMap(el, lat, lng);
+        const mapCleanup = await initLocationMap(el, lat, lng);
+        if (token !== initToken || !el.isConnected) {
+          mapCleanup();
+          return;
+        }
+        cleanup = mapCleanup;
       } catch {
         // map load failed — keep the dark panel + CTA visible
       }
     }, { rootMargin: '400px' });
-    io.observe(el);
+    observer.observe(el);
   }
 
   document.addEventListener('astro:page-load', initMap);
   document.addEventListener('astro:before-preparation', () => {
+    initToken += 1;
+    observer?.disconnect();
+    observer = null;
     cleanup?.();
     cleanup = null;
-  }, { once: true });
+  });
 </script>

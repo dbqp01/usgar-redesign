@@ -1,6 +1,6 @@
 ﻿{
   "nav": {
-    "home": "InÃ­cio",
+    "home": "Inicio",
     "rooms": "Quartos",
     "services": "Servicos",
     "explore": "Explorar Cusco",
@@ -11,7 +11,7 @@
   },
   "hero": {
     "title": "USGAR Hotels",
-    "subtitle": "San Pedro, Cusco â€” Sua porta de entrada para os Andes",
+    "subtitle": "San Pedro, Cusco - Sua porta de entrada para os Andes",
     "cta": "Reserve Sua Estadia",
     "ctaSecondary": "Explorar Quartos"
   },
@@ -35,7 +35,12 @@
     "perNight": "/noite",
     "upTo": "Ate",
     "videoTour": "Video Tour",
-    "viewAll": "Ver todos os quartos"
+    "viewAll": "Ver todos os quartos",
+    "viewDetails": "Ver Detalhes",
+    "from": "A partir de",
+    "upTo": "Ate",
+    "perNight": "por noite",
+    "videoTour": "Video Tour"
   },
   "roomsSection": {
     "heading": "NOSSO REFUGIO",
@@ -124,11 +129,11 @@
     "madeWith": "Feito por MarcaRed",
     "newsletterLabel": "Newsletter",
     "newsletterTitle": "Notas de viagem de Cusco, todo mes",
-    "newsletterDesc": "Tarifas, novidades e dicas para Machu Picchu — direto na sua caixa de entrada. Sem spam, nunca.",
+    "newsletterDesc": "Tarifas, novidades e dicas para Machu Picchu - direto na sua caixa de entrada. Sem spam, nunca.",
     "newsletterPlaceholder": "Seu endereco de e-mail",
     "newsletterButton": "Inscrever-se",
     "newsletterSuccess": "Voce esta inscrito! Bem-vindo a newsletter do USGAR.",
-    "newsletterError": "Algo deu errado — tente novamente.",
+    "newsletterError": "Algo deu errado - tente novamente.",
     "newsletterEmailInvalid": "Digite um e-mail valido.",
     "asFeaturedIn": "Como Aparecemos Em"
   },
@@ -249,7 +254,7 @@
   },
   "book": {
     "stepFinal": "Etapa Final",
-    "checkingAvailability": "Verificando disponibilidade…",
+    "checkingAvailability": "Verificando disponibilidade...",
     "available": "disponiveis",
     "title": "Conclua Sua Reserva",
     "subtitle": "Por favor, informe os dados do hospede principal e confirme suas datas para prosseguir com o pagamento seguro.",
@@ -284,13 +289,6 @@
     "invalidEmail": "Por favor, insira um e-mail valido.",
     "noPaymentUrl": "Nenhuma URL de pagamento recebida do servidor.",
     "unexpectedError": "Ocorreu um erro inesperado."
-  },
-  "rooms": {
-    "viewDetails": "Ver Detalhes",
-    "from": "A partir de",
-    "upTo": "Ate",
-    "perNight": "por noite",
-    "videoTour": "Video Tour"
   },
   "exploreDetail": {
     "home": "Inicio",
@@ -385,7 +383,7 @@
   "instagram": {
     "sectionLabel": "Instagram",
     "title": "Vivencie o USGAR no Instagram",
-    "description": "Arte mural, manhas no patio colonial e pratos do Auka Restobar — acompanhe o dia a dia do hotel.",
+    "description": "Arte mural, manhas no patio colonial e pratos do Auka Restobar - acompanhe o dia a dia do hotel.",
     "followCta": "Siga-nos no Instagram",
     "handle": "@hotelesusgar",
     "altPatio": "Patio inca colonial do USGAR Hotels",

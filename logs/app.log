@@ -2489,3 +2489,7 @@
 {"timestamp":"2026-08-01 09:18:19","level":"INFO","message":"ReconcilePaymentsAction: checked=0, reconciled=0, skipped=0"}
 {"timestamp":"2026-08-01 09:46:30","level":"ERROR","message":"QloAppAdapter: cURL error: Could not resolve host: cms.hotelesusgar.com"}
 {"timestamp":"2026-08-01 09:46:30","level":"ERROR","message":"QloAppAdapter: Error al crear Cart/Booking en QloApps, fallback a USGAR- local."}
+{"timestamp":"2026-08-01 11:52:47","level":"ERROR","message":"QloAppAdapter: cURL error: Could not resolve host: cms.hotelesusgar.com"}
+{"timestamp":"2026-08-01 11:52:47","level":"ERROR","message":"QloAppAdapter: Error al crear Cart/Booking en QloApps, fallback a USGAR- local."}
+{"timestamp":"2026-08-01 11:53:12","level":"ERROR","message":"MercadoPagoAdapter API Error en processPayment","context":{"status_code":401,"api_response":"{\"message\":\"Unauthorized use of live credentials\",\"error\":\"unauthorized\",\"status\":401,\"cause\":[{\"code\":7,\"description\":\"Unauthorized use of live credentials\",\"data\":\"01-08-2026T16:53:12UTC;ff2efd1a-9208-4f75-8241-fc80c4d4b881\"}]}","cart_id":"USGAR-d5f6a5aa1f21"}}
+{"timestamp":"2026-08-01 11:53:12","level":"ERROR","message":"ProcessPaymentAction Exception: Api error. Check response for details"}
