@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import logo from '../assets/logos/Logo usgar morado.png';
+import PlatformLogo from './icons/PlatformLogos.astro';
 import { useTranslations } from '../i18n/utils';
 import { siteSettings } from '../data/settings';
 
@@ -25,11 +26,13 @@ const quickLinks = [
   { href: getRelativeLocaleUrl(lang, 'book'), label: t('nav.bookNow') },
 ];
 
-const socialLinks = siteSettings.socialLinks.map(s => ({
-  href: s.url,
-  label: s.label,
-  icon: s.platform,
-}));
+const socialLinks = siteSettings.socialLinks
+  .filter(s => s.platform === 'instagram' || s.platform === 'facebook')
+  .map(s => ({
+    href: s.url,
+    label: s.label,
+    icon: s.platform,
+  }));
 
 const tripadvisorUrl = siteSettings.socialLinks.find(s => s.platform === 'tripadvisor')?.url || '#';
 const bookingUrl = siteSettings.socialLinks.find(s => s.platform === 'booking')?.url || '#';
@@ -159,16 +162,6 @@ const newsletterStatusLabels = {
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                 </svg>
               )}
-              {social.icon === 'tripadvisor' && (
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12.006 4.295c-2.67 0-5.338.784-7.645 2.353H0l1.963 2.135a5.997 5.997 0 004.04 10.43 5.976 5.976 0 004.075-1.6L12 19.705l1.922-2.09a5.972 5.972 0 004.075 1.6 5.997 5.997 0 004.04-10.43L24 6.648h-4.35a13.573 13.573 0 00-7.644-2.353zM12 6.76c1.874 0 3.727.56 5.295 1.587H6.706A11.115 11.115 0 0112 6.76zM5.997 17.213a3.997 3.997 0 110-7.994 3.997 3.997 0 010 7.994zm12.006 0a3.997 3.997 0 110-7.994 3.997 3.997 0 010 7.994zM5.997 11.219a2.0 2.0 0 100 4.0 2.0 2.0 0 000-4.0zm12.006 0a2.0 2.0 0 100 4.0 2.0 2.0 0 000-4.0z"/>
-                </svg>
-              )}
-              {social.icon === 'booking' && (
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M2.273 0v24h7.619c6.727 0 9.836-3.552 9.836-7.552 0-2.87-1.552-5.292-4.162-6.275v-.076c2.041-1.066 3.234-2.987 3.234-5.262C18.8 1.55 16.127 0 10.545 0H2.273zm4.5 3.6h3.22c2.652 0 4.108.869 4.108 2.87 0 2.152-1.607 3.145-4.108 3.145H6.773V3.6zm0 9.615h3.524c2.955 0 4.869.945 4.869 3.372 0 2.393-1.914 3.413-4.538 3.413H6.773v-6.785z"/>
-                </svg>
-              )}
             </a>
           ))}
         </div>
@@ -178,23 +171,19 @@ const newsletterStatusLabels = {
       </div>
     </div>
 
-    <!-- Certifications / Trust bar -->
+    <!-- As Featured In — brutal trust bar -->
     <div class="border-t border-black/10 dark:border-white/10 pt-8 mt-8 mb-6">
-      <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+      <div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
         <span class="text-[10px] font-mono uppercase tracking-[0.3em] text-text-secondary-light/70 dark:text-text-secondary-dark/70">
-          {t('footer.certificationsLabel')}
+          {t('footer.asFeaturedIn')}
         </span>
-        <a href={tripadvisorUrl} target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2 text-sm font-bold text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-light dark:hover:text-white transition-colors">
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12.006 4.295c-2.67 0-5.338.784-7.645 2.353H0l1.963 2.135a5.997 5.997 0 004.04 10.43 5.976 5.976 0 004.075-1.6L12 19.705l1.922-2.09a5.972 5.972 0 004.075 1.6 5.997 5.997 0 004.04-10.43L24 6.648h-4.35a13.573 13.573 0 00-7.644-2.353zM12 6.76c1.874 0 3.727.56 5.295 1.587H6.706A11.115 11.115 0 0112 6.76zM5.997 17.213a3.997 3.997 0 110-7.994 3.997 3.997 0 010 7.994zm12.006 0a3.997 3.997 0 110-7.994 3.997 3.997 0 010 7.994zM5.997 11.219a2.0 2.0 0 100 4.0 2.0 2.0 0 000-4.0zm12.006 0a2.0 2.0 0 100 4.0 2.0 2.0 0 000-4.0z"/>
-          </svg>
-          <span class="tracking-wide">TripAdvisor</span>
+        <a href={tripadvisorUrl} target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2.5 opacity-70 hover:opacity-100 transition-opacity">
+          <PlatformLogo platform="tripadvisor" class="w-7 h-7 text-text-secondary-light dark:text-white" />
+          <span class="font-display font-bold text-lg tracking-tight text-text-secondary-light dark:text-white">TripAdvisor</span>
         </a>
-        <a href={bookingUrl} target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2 text-sm font-bold text-text-secondary-light dark:text-text-secondary-dark hover:text-primary-light dark:hover:text-white transition-colors">
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M2.273 0v24h7.619c6.727 0 9.836-3.552 9.836-7.552 0-2.87-1.552-5.292-4.162-6.275v-.076c2.041-1.066 3.234-2.987 3.234-5.262C18.8 1.55 16.127 0 10.545 0H2.273zm4.5 3.6h3.22c2.652 0 4.108.869 4.108 2.87 0 2.152-1.607 3.145-4.108 3.145H6.773V3.6zm0 9.615h3.524c2.955 0 4.869.945 4.869 3.372 0 2.393-1.914 3.413-4.538 3.413H6.773v-6.785z"/>
-          </svg>
-          <span class="tracking-wide">Booking.com</span>
+        <a href={bookingUrl} target="_blank" rel="noopener noreferrer" class="group flex items-center gap-2.5 opacity-70 hover:opacity-100 transition-opacity">
+          <PlatformLogo platform="booking" class="w-7 h-7 text-text-secondary-light dark:text-white" />
+          <span class="font-display font-bold text-lg tracking-tight text-text-secondary-light dark:text-white">Booking.com</span>
         </a>
       </div>
     </div>

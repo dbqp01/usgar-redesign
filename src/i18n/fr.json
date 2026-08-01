@@ -130,7 +130,7 @@
     "newsletterSuccess": "Vous etes inscrit ! Bienvenue dans la newsletter USGAR.",
     "newsletterError": "Une erreur est survenue — reessayez.",
     "newsletterEmailInvalid": "Veuillez saisir une adresse e-mail valide.",
-    "certificationsLabel": "Egalement sur"
+    "asFeaturedIn": "Comme Présenté Dans"
   },
   "whatsapp": {
     "tooltip": "Besoin d'aide ? Discutez avec nous !",

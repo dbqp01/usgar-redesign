@@ -126,7 +126,7 @@
     "newsletterSuccess": "You're in! Welcome to the USGAR newsletter.",
     "newsletterError": "Something went wrong — please try again.",
     "newsletterEmailInvalid": "Please enter a valid email address.",
-    "certificationsLabel": "As featured on"
+    "asFeaturedIn": "As Featured In"
   },
   "whatsapp": {
     "tooltip": "Need help? Chat with us!",
