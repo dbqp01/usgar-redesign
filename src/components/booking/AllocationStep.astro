@@ -70,10 +70,11 @@ const t = useTranslations(lang);
     const signal = abortController.signal;
 
     // Escapa valores interpolados en templates HTML (XSS).
+    const ENTITIES: Record<string, string> = {
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    };
     function escapeHtml(value: unknown): string {
-      return String(value ?? '').replace(/[&<>"']/g, (c) => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-      }[c]));
+      return String(value ?? '').replace(/[&<>"']/g, (c) => ENTITIES[c] ?? c);
     }
 
     const root = document.querySelector('[data-allocation-step]') as HTMLElement | null;
