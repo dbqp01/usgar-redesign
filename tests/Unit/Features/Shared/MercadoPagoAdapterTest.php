@@ -74,7 +74,11 @@ final class MercadoPagoAdapterTest extends TestCase {
                 $this->callback(function (RequestOptions $options): bool {
                     $headers = $options->getCustomHeaders();
                     $this->assertNotEmpty($headers, 'Debe enviar X-Idempotency-Key');
-                    $this->assertStringStartsWith('X-Idempotency-Key: pay_', (string) $headers[0]);
+                    // El SDK espera claves => valores ("X-Idempotency-Key" => "pay_...").
+                    // El formato antiguo ("X-Idempotency-Key: pay_..." como valor unico
+                    // con clave entera) se reindexaba en array_merge y el header no se enviaba.
+                    $this->assertArrayHasKey('X-Idempotency-Key', $headers);
+                    $this->assertStringStartsWith('pay_', $headers['X-Idempotency-Key']);
                     return true;
                 })
             )
@@ -174,6 +178,17 @@ final class MercadoPagoAdapterTest extends TestCase {
 
         $adapter = new MercadoPagoAdapter(null, $refundClient);
         $this->assertTrue($adapter->refundPayment('42424242'));
+    }
+
+    public function testRefundPaymentPartialRefundUsesRefundMethod(): void {
+        $refundClient = $this->createMock(PaymentRefundClient::class);
+        $refundClient->expects($this->once())
+            ->method('refund')
+            ->with(42424242, 50.0, $this->isInstanceOf(RequestOptions::class))
+            ->willReturn(new PaymentRefund());
+
+        $adapter = new MercadoPagoAdapter(null, $refundClient);
+        $this->assertTrue($adapter->refundPayment('42424242', 50.0));
     }
 
     private function makePayment(int $id, string $status, string $statusDetail, string $externalRef, float $amount): Payment {

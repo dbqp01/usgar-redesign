@@ -94,7 +94,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
 
             $client = $this->paymentClient;
             $requestOptions = new RequestOptions();
-            $requestOptions->setCustomHeaders(["X-Idempotency-Key: {$idempotencyKey}"]);
+            $requestOptions->setCustomHeaders(['X-Idempotency-Key' => $idempotencyKey]);
             $requestOptions->setConnectionTimeout(10000); // 10s
 
             $payment = $client->create($payload, $requestOptions);
@@ -219,12 +219,12 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             MercadoPagoConfig::setAccessToken($this->accessToken);
             $client = $this->refundClient;
             $requestOptions = new RequestOptions();
-            $requestOptions->setCustomHeaders(["X-Idempotency-Key: refund_{$paymentId}_" . hash('sha256', $paymentId . '_' . ($amount ?? 'full'))]);
+            $requestOptions->setCustomHeaders(['X-Idempotency-Key' => 'refund_' . $paymentId . '_' . hash('sha256', $paymentId . '_' . ($amount ?? 'full'))]);
             $requestOptions->setConnectionTimeout(10000); // 10s
 
             if ($amount !== null) {
                 // Reembolso parcial
-                $client->create((int)$paymentId, $amount, $requestOptions);
+                $client->refund((int)$paymentId, $amount, $requestOptions);
             } else {
                 // Reembolso total (el amount se toma del monto total de la transaccion, o se envia null para total)
                 $client->refundTotal((int)$paymentId, $requestOptions);
