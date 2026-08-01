@@ -14,3 +14,10 @@ logs/
 
 .phpunit.cache/
 .phpstan-cache/
+
+# Artefactos de pruebas e instrumentacion (2026-08-01)
+playwright-report/
+test-results/
+.playwright-mcp/
+preview.log
+*.log
