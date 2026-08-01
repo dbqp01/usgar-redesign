@@ -6,25 +6,26 @@ Estado global: **TODO** (nada completado).
 
 ---
 
-## 1. Pagos: MercadoPago → TAB
+## 1. Pagos: MercadoPago → TAB (¿o Culqi?)
 
-### Qué es TAB (investigado, jul 2026)
-- Plataforma de pagos **especializada en turismo** (hoteles, hostales, tours, retiros) — no es una pasarela genérica estilo MercadoPago. Sitio: `business.tab.travel` (param `cc=pe` = Perú).
-- Productos: cobros con tarjeta, **VCCs** (tarjetas virtuales), **widget de reservas embebible** y **conectores no-code** con booking engines/PMS ("integra sin desarrollador").
-- Respaldo de los mismos inversores que Airbnb/OpenAI/Dropbox/Stripe. Trustpilot 4★ (78 reseñas).
-- **NO hay documentación de API pública**: no existe portal de desarrolladores ni docs indexadas (mapa del sitio verificado). La integración pública es widget/conector; la API parece privada (bajo contrato).
+### Veredicto de viabilidad de TAB (investigado, jul 2026)
+- **No viable para integración API-driven en este momento**: TAB no publica API REST ni documentación de desarrollador (mapa del sitio verificado: solo existe la página de "integrations"). Su modelo público es **widget embebido + conectores no-code + VCCs** ("integra sin desarrollador").
+- El flujo actual del repo (Custom Checkout: backend devuelve datos de cobro y el frontend cobra con SDK + webhooks) **no se puede construir** sin acceso a su API privada. Solo sería viable si: (a) TAB les concede acceso API bajo contrato, o (b) aceptan usar su widget embebido en `book.astro` (pérdida del control del checkout y del contrato de datos actual).
+- **Acción recomendada antes de descartar**: un correo/chat a TAB preguntando por API REST + webhooks para desarrolladores. Hasta respuesta, el plan asume Culqi como destino.
 
-### Impacto en la arquitectura actual (importante)
-El flujo actual (Custom Checkout: backend devuelve `cart_id`/`access_token`/`mp_public_key` y el frontend cobra con SDK) depende de un modelo API-driven. Hay que **confirmar con TAB** si ofrecen API directa (Checkout API + webhooks) o solo widget/conector — eso define si el frontend sigue custom o pasa a widget embebido.
+### Alternativa recomendada: Culqi (plan B)
+- **Por qué**: pasarela peruana nativa (grupo Credicorp/BCP), documentación en español, API REST completa + IPN/webhooks, checkout embebido con tokenización (cumple PCI DSS sin tocar datos de tarjeta), **sin costos de afiliación ni mensualidad**, plugin para **PrestaShop** (relevante: QloApps es base PrestaShop), acepta tarjetas internacionales, Yape y PagoEfectivo.
+- **Comisiones 2026**: nacional 3.44% + USD 0.20 + IGV; **tarjetas extranjeras 4.99–5.49% + USD 0.30 + IGV** (público principal del hotel → considerar en precio).
+- **Caveats a decidir**: Culqi opera en **PEN** (el repo hoy cobra en USD) → decidir si precios finales van en PEN o se maneja conversión; Stripe **no opera en Perú** (descartado sin entidad en EEUU); Niubiz es alternativa solo si se necesita Amex/Diners o volumen alto (S/300 setup + S/50/mes).
+- **Arquitectura compatible**: mismo patrón que hoy — `PaymentGatewayPortInterface` → `CulqiAdapter`, `CreateBookingAction` devuelve token/session del checkout Culqi, frontend usa SDK Culqi.js, webhooks IPN con firma.
 
-### Tareas
-- [ ] **Bloqueante**: contactar a TAB (soporte/comercial) para: (a) credenciales sandbox/prod, (b) confirmar si hay API REST para desarrolladores o solo widget/conectores no-code, (c) pedir su documentación técnica si existe (privada).
-- [ ] Decidir modelo según la respuesta: API directa (patrón actual: token backend → cobro frontend → webhook) vs widget embebido vs connector.
-- [ ] Si hay API: crear `TabAdapter` implementando `PaymentGatewayPortInterface` (sustituir `MercadoPagoAdapter`).
-- [ ] Refactor `CreateBookingAction`: devolver los datos de checkout que TAB requiera (sustituir `cart_id`/`access_token`/`mp_public_key`/`gateway_price`).
-- [ ] Frontend (`src/pages/book.astro`): reemplazar SDK de MercadoPago por el mecanismo de TAB (SDK propio o widget).
-- [ ] Webhooks: adaptar `HandleMercadoPagoWebhookAction` → webhook de TAB con verificación de firma (o IPN equivalente).
-- [ ] VCCs (si aplica): evaluar uso para pagos a proveedores/OTA — fuera del flujo de reserva directo.
+### Tareas (TAB o Culqi, según la respuesta de TAB)
+- [ ] **Bloqueante**: contactar a TAB (API REST/webhooks para desarrolladores, docs privadas, credenciales). Si no hay API → cerrar TAB y seguir con Culqi.
+- [ ] Si TAB da API: crear `TabAdapter` (patrón actual). Si no: crear `CulqiAdapter` implementando `PaymentGatewayPortInterface`.
+- [ ] Refactor `CreateBookingAction`: devolver los datos de checkout del proveedor elegido (sustituir `cart_id`/`access_token`/`mp_public_key`/`gateway_price`).
+- [ ] Frontend (`src/pages/book.astro`): SDK del proveedor (Culqi.js o SDK TAB) o widget, según lo decidido.
+- [ ] Webhooks: adaptar `HandleMercadoPagoWebhookAction` → webhook/IPN del proveedor con verificación de firma.
+- [ ] Decidir moneda: PEN vs USD (Culqi liquida PEN; verificar si el proveedor elegido soporta USD).
 - [ ] Limpiar: quitar `mercadopago/dx-php` de `composer.json`, borrar adapters/vistas viejos de MP.
 - [ ] Pruebas en sandbox: pago exitoso, rechazado, expirado, reembolso y flujo completo de reserva.
 
