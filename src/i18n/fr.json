@@ -299,7 +299,10 @@
     "returnHome": "Retour a l'Accueil",
     "printReceipt": "Imprimer le Recu",
     "notFound": "Reservation Non Trouvee",
-    "notFoundMessage": "Nous n'avons pas pu trouver les details de la reservation. Si vous avez effectue un paiement, veuillez nous contacter."
+    "notFoundMessage": "Nous n'avons pas pu trouver les details de la reservation. Si vous avez effectue un paiement, veuillez nous contacter.",
+    "paymentPending": "Paiement en Attente",
+    "verifyingPayment": "Nous verifions votre paiement",
+    "verifyingPaymentMessage": "Votre paiement est en cours de verification aupres de la banque. Vous recevrez un e-mail de confirmation sous peu. Merci de garder cette page ouverte."
   },
   "auth": {
     "signIn": "Se Connecter",

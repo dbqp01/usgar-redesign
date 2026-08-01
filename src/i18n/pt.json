@@ -299,7 +299,10 @@
     "returnHome": "Voltar ao Inicio",
     "printReceipt": "Imprimir Comprovante",
     "notFound": "Reserva Nao Encontrada",
-    "notFoundMessage": "Nao conseguimos encontrar os detalhes da reserva. Se voce concluiu um pagamento, entre em contato conosco."
+    "notFoundMessage": "Nao conseguimos encontrar os detalhes da reserva. Se voce concluiu um pagamento, entre em contato conosco.",
+    "paymentPending": "Pagamento Pendente",
+    "verifyingPayment": "Estamos verificando seu pagamento",
+    "verifyingPaymentMessage": "Seu pagamento esta sendo verificado com o banco. Voce recebera um e-mail de confirmacao em breve. Por favor, mantenha esta pagina aberta."
   },
   "auth": {
     "signIn": "Entrar",

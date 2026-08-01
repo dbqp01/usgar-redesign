@@ -131,7 +131,33 @@ const t = useTranslations(lang);
       </div>
     </div>
 
-    <!-- 3. Error State Card (Hidden by default, shown client-side) -->
+    <!-- 3. Pending State Card (payment still being verified) -->
+    <div id="pending-container" class="hidden bg-surface-card-light dark:bg-surface-card-dark p-12 rounded-3xl border border-black/5 dark:border-white/5 shadow-2xl text-center space-y-6 animate-fade-in">
+      <div class="mx-auto w-16 h-16 rounded-full bg-amber-500/10 dark:bg-amber-500/15 text-amber-500 flex items-center justify-center border border-amber-500/20 shadow-inner">
+        <svg class="w-8 h-8 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="font-display text-3xl mb-2">
+          {t('success.paymentPending')}
+        </h1>
+        <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm max-w-md mx-auto">
+          {t('success.verifyingPaymentMessage')}
+        </p>
+        <p id="pending-retry-status" class="text-text-secondary-light dark:text-text-secondary-dark text-xs mt-3">
+          {t('success.verifyingPayment')}...
+        </p>
+      </div>
+      <a
+        href={getRelativeLocaleUrl(lang, '')}
+        class="inline-block text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary font-semibold text-sm transition-colors duration-200"
+      >
+        &larr; {t('success.returnHome')}
+      </a>
+    </div>
+
+    <!-- 4. Error State Card (Hidden by default, shown client-side) -->
     <div id="error-container" class="hidden bg-surface-card-light dark:bg-surface-card-dark p-12 rounded-3xl border border-black/5 dark:border-white/5 shadow-2xl text-center space-y-6 animate-fade-in">
       <div class="mx-auto w-16 h-16 rounded-full bg-red-500/10 dark:bg-red-500/15 text-red-500 flex items-center justify-center border border-red-500/20 shadow-inner">
         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -164,10 +190,11 @@ const t = useTranslations(lang);
   pluralGuest: t('success.pluralGuest') || 'Guests',
   singleNight: t('success.singleNight') || 'night',
   pluralNight: t('success.pluralNight') || 'nights',
-  pollingMsg: t('success.polling') || 'Confirming payment with the bank, please wait...'
+  pollingMsg: t('success.polling') || 'Confirming payment with the bank, please wait...',
+  pendingStatusMsg: t('success.verifyingPayment') || 'We are verifying your payment'
 }}>
   window.__ROOMS_DATA = JSON.parse(serializedRooms);
-  window.__I18N_DATA = { singleGuest, pluralGuest, singleNight, pluralNight, pollingMsg };
+  window.__I18N_DATA = { singleGuest, pluralGuest, singleNight, pluralNight, pollingMsg, pendingStatusMsg };
 </script>
 
 <script>
@@ -238,6 +265,7 @@ const t = useTranslations(lang);
 
     const loadingContainer = document.getElementById('loading-container');
     const successContainer = document.getElementById('success-container');
+    const pendingContainer = document.getElementById('pending-container');
     const errorContainer = document.getElementById('error-container');
 
     const params = new URLSearchParams(window.location.search);
@@ -259,6 +287,26 @@ const t = useTranslations(lang);
       const booking = await pollForPayment(bookingId, token, pollingAbortController.signal);
 
       if (!booking || !booking.id_room_type) throw new Error('Data mismatch');
+
+      // 3-state flow: paid -> success card, pending -> pending card, else -> error
+      const status = booking.status || '';
+      const PAID_STATUSES = ['paid', 'approved'];
+      const PENDING_STATUSES = ['pending', 'provisional', 'in_process', 'authorized'];
+
+      if (!PAID_STATUSES.includes(status)) {
+        // Show pending card (or error for failed/expired/cancelled)
+        loadingContainer?.classList.add('hidden');
+        if (PENDING_STATUSES.includes(status)) {
+          const pendingStatus = document.getElementById('pending-retry-status');
+          if (pendingStatus) {
+            pendingStatus.textContent = (window as any).__I18N_DATA?.pendingStatusMsg || 'We are verifying your payment...';
+          }
+          pendingContainer?.classList.remove('hidden');
+        } else {
+          errorContainer?.classList.remove('hidden');
+        }
+        return;
+      }
 
       const room = ROOMS_DATA.find((r: any) => r.id === booking.id_room_type || r.slug === booking.id_room_type);
 

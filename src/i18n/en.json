@@ -299,7 +299,10 @@
     "returnHome": "Return to Home",
     "printReceipt": "Print Receipt",
     "notFound": "Booking Not Found",
-    "notFoundMessage": "We could not find the booking details. If you completed a payment, please contact us."
+    "notFoundMessage": "We could not find the booking details. If you completed a payment, please contact us.",
+    "paymentPending": "Payment Pending",
+    "verifyingPayment": "We are verifying your payment",
+    "verifyingPaymentMessage": "Your payment is being verified with the bank. You will receive a confirmation email shortly. Please keep this page open."
   },
   "auth": {
     "signIn": "Sign In",
