@@ -16,6 +16,20 @@ Catálogo completo de endpoints del backend PHP. Todos los endpoints se sirven d
 
 ---
 
+## Newsletter
+
+| Method | Endpoint | Action | Auth |
+|--------|----------|--------|------|
+| POST | `/api/newsletter` | `SubscribeNewsletterAction` |  |
+
+**Body:** `{ "email": "user@example.com", "locale": "es" }` (locale opcional, default `en`)
+
+**Response:** `{ "success": true, "message": "subscribed" }` (422 email inválido, 503 BD offline, 500 error)
+
+**Nota:** Crea la tabla `newsletter_subscribers` (email único, ip, source, locale, created_at) si no existe.
+
+---
+
 ## Rooms (Disponibilidad)
 
 | Method | Endpoint | Action | Auth |
