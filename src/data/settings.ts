@@ -24,6 +24,7 @@ export interface SiteSettings {
   checkoutTime: string;
   starRating: number;
   priceRange: string;
+  customCursor: boolean;
   siteDescription: { en: string; es: string; fr: string; pt: string };
   socialLinks: SocialLink[];
 }
@@ -51,6 +52,7 @@ export const siteSettings: SiteSettings = {
   checkoutTime: settingsData.checkoutTime,
   starRating: settingsData.starRating,
   priceRange: settingsData.priceRange,
+  customCursor: settingsData.customCursor !== false,
   siteDescription: {
     en: settingsData.siteDescription_en,
     es: settingsData.siteDescription_es,
