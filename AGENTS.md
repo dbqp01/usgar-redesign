@@ -81,4 +81,5 @@ docs/                         Documentación técnica (API_REGISTRY, ARCHITECTUR
 - **Zero hardcoding**: credenciales/URLs/precios → `.env` o BD. Jamás literales en código.
 - **No tocar generados**: `graphify-out/`, `dist/`, `node_modules/`, `vendor/` (a mano), `*.map`. Si algo es regenerable, no se edita ni se commitea.
 - **Commits**: pequeños, por tema, prefijo `feat:` / `fix:` / `chore:` / `docs:`. No mega-commits.
+- **MCPs OBLIGATORIOS en todos los agentes** (regla del usuario, incluye subagentes): todo agente que ejecute tareas DEBE usar los MCPs (context7 para docs de librerías, chrome-devtools para verificación visual/rendimiento, mysql para datos, mercadopago-mcp para el flujo MP, astro-docs, tavily) y DEBE reportar en su reporte qué MCPs usó y qué verificó con ellos. Si un MCP esencial no está disponible → BLOCKED, nunca trabajar sin verificación real.
 - **Duda → preguntar**: si el pedido del usuario choca con el plan de migración o la arquitectura, pregunta antes de codear.
