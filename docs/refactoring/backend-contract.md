@@ -51,8 +51,8 @@ Fecha de captura: 2026-08-01 (local, America/Lima UTC-5).
 - Envelope: `{"success":true,"rooms":[...]}` — sin paginación ni meta; lista plana.
 - Campos por habitación (todos presentes, sin nulls): `id_room_type`, `id_product`, `room_name`, `price`, `max_guests`, `available_qty`, `slug`, `currency`, `price_formatted`, `nights`, `total_stay_price`.
 - Derivados calculados por el backend: `price_formatted` (USD, 2 decimales), `nights` (1 para 2026-08-15→16), `total_stay_price` (price × nights).
-- `available_qty` es 1 para las 4 habitaciones — sospechoso: posible cap en la consulta o stock real de 1 unidad por tipo.
-- Anomalía: **Triple Estándar (id_room_type 3) reporta `max_guests: 2`** — inconsistente con ser una triple; validar en la Fase 2 si el dato viene así del QloAppAdapter.
+- `available_qty` es 1 para las 4 habitaciones. Mecanismo real (QloAppAdapter.php:39-75 + verificación MySQL 2026-08-01): la tabla `qlo_htl_room_information` está **vacía (0 filas)**, por lo que el subquery `COUNT(*)` devuelve 0 y el `COALESCE(...,5)` (línea 46-49) nunca dispara (0 ≠ NULL) → `total_rooms=0` → el fallback `max((int)$row['total_rooms'], 1)` (línea 74) lo convierte en 1 → con `booked_count=0`, `available_qty = 1 - 0 = 1`. Es un fallback del adaptador, no stock real ni cap de consulta.
+- Anomalía: **Triple Estándar (id_room_type 3) reporta `max_guests: 2`** — es **dato real de QloApps** (verificado en `qlo_htl_room_type` vía MySQL, columna max_guests=2 para los 4 tipos); no es artefacto del adaptador. Corregir en QloApps y revisar el porteo en Fase 2.
 - Inconsistencia menor de slugs: `"triple-standar"` (sin ñ, divergente de `"matrimonial"`/`"doble-superior"`).
 
 ### providers (GET /api/auth/providers)
@@ -65,6 +65,7 @@ Fecha de captura: 2026-08-01 (local, America/Lima UTC-5).
 
 ### Notas para la Fase 2
 - Portar endpoints 1:1: envelope `success`, error `error.code`/`error.message`, Content-Type charset=utf-8.
-- `/api/rooms` requiere `checkIn`/`checkOut` como query params (ausentes → esperar 400/422; no capturado).
+- `/api/rooms` **NO valida** la presencia de `checkIn`/`checkOut`: si faltan, defaultiza a hoy/+1 (`GetRoomsAction.php:32-35`) y responde **200 con datos** (verificado en vivo 2026-08-01: `GET /api/rooms` sin params → 200, success:true, 4 rooms, nights:1). El porteo debe reproducir este default, no un error de validación.
+- `nights` se calcula con `max(1, round((checkOut - checkIn) / 86400))` — un checkout de un día después da nights=1 (GetRoomsAction.php:41).
 
 
