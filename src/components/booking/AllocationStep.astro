@@ -90,7 +90,6 @@ const t = useTranslations(lang);
     const statusEl = root.querySelector('[data-allocation-status]') as HTMLElement | null;
     const statusText = root.querySelector('[data-allocation-status-text]') as HTMLElement | null;
 
-    const lang = (document.documentElement.lang || 'en') as string;
     const L = (window as any).__LABELS || {};
 
     let selected: AllocationOption | null = null;

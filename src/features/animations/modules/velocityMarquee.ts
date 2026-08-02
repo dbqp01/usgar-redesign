@@ -6,6 +6,8 @@ export function initVelocityMarquee(): gsap.Context {
     const track = document.getElementById('velocity-marquee-track');
     const container = document.getElementById('velocity-marquee-section');
     if (!track || !container) return;
-    createAutoMotion(track, container, { baseSpeed: 1, velocityFactor: 0.0025 });
+    const cleanup = createAutoMotion(track, container, { baseSpeed: 1, velocityFactor: 0.0025 });
+    // gsap.Context ejecuta el retorno al revert(): libera el ticker y el IntersectionObserver
+    return () => cleanup?.();
   });
 }

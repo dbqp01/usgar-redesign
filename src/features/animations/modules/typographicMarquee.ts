@@ -6,10 +6,11 @@ export function initTypographicMarquee(container: HTMLElement, reverse = false):
   return gsap.context(() => {
     const track = container.querySelector<HTMLElement>('.marquee-tipographic-track');
     if (!track) return;
-    createAutoMotion(track, container, {
+    const cleanup = createAutoMotion(track, container, {
       baseSpeed: 1.4,
       direction: reverse ? -1 : 1,
       velocityFactor: 0.004,
     });
+    return () => cleanup?.();
   });
 }

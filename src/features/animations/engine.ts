@@ -1,12 +1,6 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { register, isHomePage } from './animationLifecycle';
-import { initHeroStory } from './modules/heroStory';
-import { initHeroTextReveal } from './modules/heroTextReveal';
-import { initHeritageStory } from './modules/heritageStory';
-import { initParallaxCards } from './modules/parallaxCards';
-import { initMouseTilt } from './modules/mouseTilt';
-import { initVelocityMarquee } from './modules/velocityMarquee';
 import { initGlobalReveals, initGlobalRevealsInstant } from './modules/globalReveals';
 import { initPageTransitions } from './modules/pageTransition';
 
@@ -15,12 +9,25 @@ gsap.registerPlugin(ScrollTrigger);
 const PREFERS_REDUCED_MOTION = '(prefers-reduced-motion: reduce)';
 const PREFERS_NO_REDUCE = '(prefers-reduced-motion: no-preference)';
 
+// Módulos exclusivos de la home: se cargan bajo demanda para no inflar el bundle
+// base que comparten todas las páginas (heroStory, SplitText, parallax, tilt...).
+async function loadHomeModules(): Promise<void> {
+  const [heroStory, heritage, marquee] = await Promise.all([
+    import('./modules/heroStory'),
+    import('./modules/heritageStory'),
+    import('./modules/velocityMarquee'),
+  ]);
+  register('marquee', marquee.initVelocityMarquee());
+  register('hero', heroStory.initHeroStory());
+  register('heritage', heritage.initHeritageStory());
+  register('reveals', initGlobalReveals());
+  ScrollTrigger.refresh(true);
+}
+
 export function bootHomeAnimations(): void {
   const mm = gsap.matchMedia();
 
   const ctx = gsap.context(() => {
-    register('marquee', initVelocityMarquee());
-
     mm.add(
       {
         isDesktop: '(min-width: 768px)',
@@ -35,18 +42,18 @@ export function bootHomeAnimations(): void {
           return;
         }
 
-        register('hero', initHeroStory());
-
-        if (isDesktop) {
-          register('hero-text', initHeroTextReveal());
-          register('parallax', initParallaxCards());
-          register('tilt', initMouseTilt());
-        }
-
-        register('heritage', initHeritageStory());
-        register('reveals', initGlobalReveals());
-
-        ScrollTrigger.refresh(true);
+        void loadHomeModules().then(() => {
+          if (!isDesktop) return;
+          void Promise.all([
+            import('./modules/heroTextReveal'),
+            import('./modules/parallaxCards'),
+            import('./modules/mouseTilt'),
+          ]).then(([heroText, parallax, tilt]) => {
+            register('hero-text', heroText.initHeroTextReveal());
+            register('parallax', parallax.initParallaxCards());
+            register('tilt', tilt.initMouseTilt());
+          });
+        });
       }
     );
   });

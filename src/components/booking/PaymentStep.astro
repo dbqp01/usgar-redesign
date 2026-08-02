@@ -100,6 +100,21 @@ const t = useTranslations(lang);
   let abortController = new AbortController();
   let started = false;
 
+  function loadMercadoPagoSdk(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (typeof (window as any).MercadoPago !== 'undefined') {
+        resolve();
+        return;
+      }
+      const s = document.createElement('script');
+      s.src = 'https://sdk.mercadopago.com/js/v2';
+      s.async = true;
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error('MercadoPago SDK could not load'));
+      document.head.appendChild(s);
+    });
+  }
+
   function initPaymentStep() {
     abortController.abort();
     abortController = new AbortController();
@@ -116,7 +131,7 @@ const t = useTranslations(lang);
       const guestPhoneInput = document.getElementById('guest-phone') as HTMLInputElement | null;
       if (!guestNameInput?.value || !guestEmailInput?.value || !guestPhoneInput?.value) return;
       started = true;
-      void runPaymentFlow(root, state);
+      void runPaymentFlow(state);
     };
 
     const unsub = wizardStore.subscribe(() => start());
@@ -124,11 +139,10 @@ const t = useTranslations(lang);
     start();
   }
 
-  async function runPaymentFlow(root: HTMLElement, state: any) {
+  async function runPaymentFlow(state: any) {
     const allocation = state.allocation;
     const errorBanner = document.getElementById('error-banner');
     const errorMessage = document.getElementById('error-message');
-    const noteEl = root.querySelector('[data-payment-note]') as HTMLElement | null;
     if (!allocation || allocation.rooms.length !== 1) return;
 
     const room = allocation.rooms[0].room;
@@ -186,7 +200,9 @@ const t = useTranslations(lang);
           return;
         }
 
-        if (typeof (window as any).MercadoPago === 'undefined') {
+        try {
+          await loadMercadoPagoSdk();
+        } catch {
           showError(LABELS.unexpectedError || 'Payment gateway could not load');
           return;
         }

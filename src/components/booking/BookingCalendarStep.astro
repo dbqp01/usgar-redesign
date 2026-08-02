@@ -8,7 +8,6 @@ import { useTranslations, type Locale } from '../../i18n/utils';
 const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
 
-const weekDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
 ---
 
@@ -90,7 +89,6 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
 </div>
 
 <script>
-  import { gsap } from 'gsap';
   import { buildMonthGrid, nightsBetween, clampRange, formatISODate } from '../../features/booking/calendar';
   import { allocateRooms } from '../../features/booking/roomAllocator';
   import { wizardStore } from '../../features/booking/wizardStore';
@@ -148,7 +146,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
     });
   }
 
-  function refreshSelection() {
+  function refreshSelection(checkIn: string, checkOut: string) {
     document.querySelectorAll<HTMLButtonElement>('[data-calendar-day]').forEach((btn) => {
       const date = btn.dataset.date || '';
       if (!date) return;
@@ -184,8 +182,6 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
     const banner = root.querySelector('[data-calendar-banner]') as HTMLElement | null;
     const checking = root.querySelector('[data-calendar-checking]') as HTMLElement | null;
     if (!month0 || !month1 || !checkinInput || !checkoutInput || !guestsSelect || !continueBtn || !banner || !checking) return;
-    const month0El = month0!;
-    const month1El = month1!;
     const checkin = checkinInput!;
     const checkout = checkoutInput!;
     const guestsSel = guestsSelect!;
@@ -198,7 +194,6 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
     const INVENTORY = (window as any).__ROOM_INVENTORY as Record<string, number> || {};
     const L = (window as any).__LABELS || {};
 
-    const today = new Date();
     const params = new URLSearchParams(window.location.search);
 
     let checkIn = params.get('checkin') || params.get('checkIn') || '';
@@ -237,7 +232,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
       renderMonth(month1, next.getFullYear(), next.getMonth(), { lang, weekDays: ['Su','Mo','Tu','We','Th','Fr','Sa'], onPick });
       cleanupAnim?.();
       cleanupAnim = animateCalendarDays(month0);
-      refreshSelection();
+      refreshSelection(checkIn, checkOut);
     };
 
     let picked: string | null = checkIn;
@@ -260,12 +255,12 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
         picked = null;
         void computeAllocation();
       }
-      refreshSelection();
+      refreshSelection(checkIn, checkOut);
     }
 
     checkin.addEventListener('change', () => {
       checkIn = checkin.value;
-      refreshSelection();
+      refreshSelection(checkIn, checkOut);
     }, { signal: abortController.signal });
     checkout.addEventListener('change', () => {
       checkOut = checkout.value;
@@ -277,7 +272,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
         checkout.value = checkOut;
         void computeAllocation();
       }
-      refreshSelection();
+      refreshSelection(checkIn, checkOut);
     }, { signal: abortController.signal });
     guestsSel.addEventListener('change', () => {
       if (checkIn && checkOut) void computeAllocation();

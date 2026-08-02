@@ -13,7 +13,7 @@ const { items, reverse = false } = Astro.props;
   <div class="flex w-max marquee-tipographic-track">
     {[0, 1].map(() => (
       <span class="marquee-tipographic-text">
-        {items.map((item, i) => (
+        {items.map((item) => (
           <>
             <span class="whitespace-nowrap">{item}</span>
             <span class="text-secondary marquee-tipographic-star" aria-hidden="true">✦</span>

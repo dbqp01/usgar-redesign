@@ -1,9 +1,13 @@
 import { gsap } from 'gsap';
 
-const PRELOADER_FALLBACK_MS = 4500;
+const PRELOADER_FALLBACK_MS = 900;
 
 export function initHeroStory(): gsap.Context {
-  return gsap.context(() => {
+  // El context se crea primero para evitar TDZ: el callback de mm.add se ejecuta
+  // durante gsap.context(), antes de que la const quede asignada.
+  const ctx = gsap.context(() => {});
+
+  ctx.add(() => {
     const mm = gsap.matchMedia();
 
     mm.add(
@@ -16,13 +20,15 @@ export function initHeroStory(): gsap.Context {
         const { isDesktop, reduceMotion } = context.conditions!;
         if (reduceMotion) return;
 
-        bootHero(isDesktop!);
+        void bootHero(isDesktop!, ctx);
       }
     );
   });
+
+  return ctx;
 }
 
-async function bootHero(isDesktop: boolean): Promise<void> {
+async function bootHero(isDesktop: boolean, parentCtx: gsap.Context): Promise<void> {
   const heroSec = document.getElementById('hero');
   const heroMedia = document.getElementById('hero-video') || document.getElementById('hero-slideshow');
   const heroContent = heroSec?.querySelector('.relative.z-10');
@@ -62,53 +68,60 @@ async function bootHero(isDesktop: boolean): Promise<void> {
 
   if (!title || !subtitle || !buttons) return;
 
-  title.classList.remove('animate-fade-in');
-  subtitle.classList.remove('animate-slide-up');
-  buttons.classList.remove('animate-slide-up');
-  (subtitle as HTMLElement).style.animation = 'none';
-  (buttons as HTMLElement).style.animation = 'none';
+  // La entrada del hero se crea DENTRO del context padre (ctx.add):
+  // los tweens y el timeout quedan revertibles al navegar con View Transitions.
+  parentCtx.add(() => {
+    title.classList.remove('animate-fade-in');
+    subtitle.classList.remove('animate-slide-up');
+    buttons.classList.remove('animate-slide-up');
+    (subtitle as HTMLElement).style.animation = 'none';
+    (buttons as HTMLElement).style.animation = 'none';
 
-  gsap.set([subtitle, buttons], { autoAlpha: 0, y: 30 });
+    gsap.set([subtitle, buttons], { autoAlpha: 0, y: 30 });
 
-  const splitTitle = new SplitText(title, { type: 'words,chars' });
-  gsap.set(splitTitle.chars, { autoAlpha: 0, y: 40 });
+    const splitTitle = new SplitText(title, { type: 'words,chars' });
+    gsap.set(splitTitle.chars, { autoAlpha: 0, y: 40 });
 
-  let heroEntryPlayed = false;
+    let heroEntryPlayed = false;
 
-  const playHeroEntry = () => {
-    if (heroEntryPlayed) return;
-    heroEntryPlayed = true;
+    const playHeroEntry = () => {
+      if (heroEntryPlayed) return;
+      heroEntryPlayed = true;
 
-    gsap.timeline()
-      .to(splitTitle.chars, {
-        duration: 1.2,
-        autoAlpha: 1,
-        y: 0,
-        stagger: 0.04,
-        ease: 'power3.out',
-      }, 0)
-      .to(subtitle, {
-        duration: 1.2,
-        autoAlpha: 0.9,
-        y: 0,
-        ease: 'power3.out'
-      }, '-=0.8')
-      .to(buttons, {
-        duration: 1.2,
-        autoAlpha: 1,
-        y: 0,
-        ease: 'power3.out'
-      }, '-=1');
+      gsap.timeline()
+        .to(splitTitle.chars, {
+          duration: 1.2,
+          autoAlpha: 1,
+          y: 0,
+          stagger: 0.04,
+          ease: 'power3.out',
+        }, 0)
+        .to(subtitle, {
+          duration: 1.2,
+          autoAlpha: 0.9,
+          y: 0,
+          ease: 'power3.out'
+        }, '-=0.8')
+        .to(buttons, {
+          duration: 1.2,
+          autoAlpha: 1,
+          y: 0,
+          ease: 'power3.out'
+        }, '-=1');
 
-    deferHeroVideoPlay();
-  };
+      deferHeroVideoPlay();
+    };
 
-  if (sessionStorage.getItem('usgar_loaded')) {
-    playHeroEntry();
-  } else {
+    if (sessionStorage.getItem('usgar_loaded')) {
+      playHeroEntry();
+      return;
+    }
+
     window.addEventListener('usgar:preloader-done', playHeroEntry, { once: true });
-    window.setTimeout(playHeroEntry, PRELOADER_FALLBACK_MS);
-  }
+    const timeoutId = window.setTimeout(playHeroEntry, PRELOADER_FALLBACK_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  });
 }
 
 function deferHeroVideoPlay(): void {

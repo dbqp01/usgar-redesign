@@ -47,19 +47,19 @@ import { siteSettings } from '../../data/settings';
         tl.to("#preloader-text", {
           y: 0,
           autoAlpha: 1,
-          duration: 1.2,
+          duration: 0.6,
           ease: "power4.out",
         })
         .to("#preloader-line", {
           scaleX: 1,
-          duration: 1,
+          duration: 0.55,
           ease: "power3.inOut",
-        }, "-=0.5")
+        }, "-=0.35")
         .to(preloader, {
           autoAlpha: 0,
-          duration: 0.8,
+          duration: 0.4,
           ease: "power2.inOut",
-          delay: 0.2
+          delay: 0.1
         });
       });
 

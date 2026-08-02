@@ -138,6 +138,13 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
     const doneBtn = form.querySelector('[data-widget-done]') as HTMLButtonElement | null;
     if (!trigger || !triggerLabel || !popover || !month0 || !month1 || !rangeEl || !doneBtn) return;
 
+    // TS 6 no propaga el narrowing de const a function declarations hoisted:
+    // aliases no-null tras el guard (mismo patrón que BookingCalendarStep/AllocationStep).
+    const triggerEl = trigger;
+    const popoverEl = popover;
+    const month0El = month0;
+    const month1El = month1;
+
     const lang = (document.documentElement.lang || 'en') as string;
     const W = (window as any).__WIDGET_LABELS || {};
 
@@ -187,7 +194,7 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
     }
 
     function refreshSelection() {
-      popover.querySelectorAll<HTMLButtonElement>('[data-calendar-day]').forEach((btn) => {
+      popoverEl.querySelectorAll<HTMLButtonElement>('[data-calendar-day]').forEach((btn) => {
         const date = btn.dataset.date || '';
         if (!date) return;
         const past = btn.dataset.past === 'true';
@@ -207,11 +214,11 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
     }
 
     function render() {
-      renderMonth(month0, viewYear, viewMonth);
+      renderMonth(month0El, viewYear, viewMonth);
       const next = new Date(viewYear, viewMonth + 1, 1);
-      renderMonth(month1, next.getFullYear(), next.getMonth());
+      renderMonth(month1El, next.getFullYear(), next.getMonth());
       cleanupAnim?.();
-      cleanupAnim = animateCalendarDays(month0);
+      cleanupAnim = animateCalendarDays(month0El);
       refreshSelection();
       renderLabel();
       renderRange();
@@ -221,20 +228,20 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
 
     function openPopover() {
       open = true;
-      popover.classList.remove('hidden');
-      trigger.setAttribute('aria-expanded', 'true');
+      popoverEl.classList.remove('hidden');
+      triggerEl.setAttribute('aria-expanded', 'true');
       render();
     }
     function closePopover() {
       open = false;
-      popover.classList.add('hidden');
-      trigger.setAttribute('aria-expanded', 'false');
+      popoverEl.classList.add('hidden');
+      triggerEl.setAttribute('aria-expanded', 'false');
       picked = checkIn;
     }
 
-    trigger.addEventListener('click', () => (open ? closePopover() : openPopover()), { signal });
+    triggerEl.addEventListener('click', () => (open ? closePopover() : openPopover()), { signal });
 
-    popover.addEventListener('click', (e) => {
+    popoverEl.addEventListener('click', (e) => {
       const day = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-calendar-day]');
       if (!day) return;
       const date = day.dataset.date || '';

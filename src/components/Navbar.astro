@@ -340,7 +340,6 @@ const navLinks = [
 <script>
   import { getUser, logout } from '../utils/auth-client';
   import gsap from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
   let ctx: gsap.Context;
 
@@ -418,27 +417,28 @@ const navLinks = [
 
     if (!navbar) return;
 
-    // --- 1. Sticky Navbar Logic (via GSAP ScrollTrigger to prevent layout thrashing) ---
+    // --- 1. Sticky Navbar Logic (IntersectionObserver + sentinel: sin ScrollTrigger
+    // ni lecturas de layout en init — los reflows forzados del navbar eran ~78ms) ---
     const path = window.location.pathname.replace(/\/$/, '') || '/';
     const isHome = path === '' || path === '/' || path === '/es' || path === '/fr' || path === '/pt';
 
+    let stickyIo: IntersectionObserver | null = null;
+    if (isHome) {
+      const sentinel = document.createElement('div');
+      sentinel.setAttribute('aria-hidden', 'true');
+      sentinel.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:1px;pointer-events:none;';
+      document.body.insertBefore(sentinel, document.body.firstChild);
+      stickyIo = new IntersectionObserver(([entry]) => {
+        const scrolled = !entry.isIntersecting;
+        navbar.classList.toggle('glass', scrolled);
+        navbar.classList.toggle('shadow-sm', scrolled);
+        navbar.classList.toggle('navbar-scrolled', scrolled);
+      }, { rootMargin: '-40px 0px 0px 0px' });
+      stickyIo.observe(sentinel);
+    }
+
     // --- 2. Mobile Menu GSAP Logic ---
     ctx = gsap.context(() => {
-      if (isHome) {
-        gsap.registerPlugin(ScrollTrigger);
-        ScrollTrigger.create({
-          start: '40px top',
-          end: 99999,
-          toggleClass: { targets: navbar, className: 'glass' },
-          onUpdate: (self) => {
-            if (self.isActive) {
-              navbar.classList.add('shadow-sm', 'navbar-scrolled');
-            } else {
-              navbar.classList.remove('shadow-sm', 'navbar-scrolled');
-            }
-          }
-        });
-      }
 
       let isMenuOpen = false;
       let tl = gsap.timeline({ paused: true });
@@ -513,6 +513,7 @@ const navLinks = [
       // Cuando Astro empieza a enrutar, matamos la animación instantáneamente y liberamos el scroll.
       document.addEventListener('astro:before-preparation', () => {
         forceCloseInstant();
+        stickyIo?.disconnect();
         abortController.abort();
         if (ctx) ctx.revert();
       }, { once: true });

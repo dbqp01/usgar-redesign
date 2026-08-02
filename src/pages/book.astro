@@ -9,18 +9,11 @@ import PaymentStep from '../components/booking/PaymentStep.astro';
 import { rooms } from '../data/rooms';
 import { getRoomInventory } from '../data/settings';
 import { useTranslations, type Locale } from '../i18n/utils';
-import { translateBeds, daysBetween } from '../utils/helpers';
 
 export const prerender = true;
 
 const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
-
-const url = new URL(Astro.url);
-const checkInParam = url.searchParams.get('checkin') || url.searchParams.get('checkIn') || '';
-const checkOutParam = url.searchParams.get('checkout') || url.searchParams.get('checkOut') || '';
-const roomTypeParam = url.searchParams.get('roomType') || url.searchParams.get('room_type') || '';
-const guestsParam = Number(url.searchParams.get('guests')) || 2;
 ---
 
 <Layout title={`${t('book.title')} - USGAR Hotels`} lang={lang}>
@@ -156,9 +149,10 @@ const guestsParam = Number(url.searchParams.get('guests')) || 2;
 
     </div>
   </main>
-</Layout>
 
-<script src="https://sdk.mercadopago.com/js/v2" is:inline></script>
+  <!-- SDK MercadoPago.js: la doc exige cargarlo antes de cualquier lógica de pago (script estándar previo a </body>) -->
+  <script is:inline slot="end-body" src="https://sdk.mercadopago.com/js/v2"></script>
+</Layout>
 
 <script is:inline define:vars={{
   serializedRooms: JSON.stringify(rooms.map(r => ({
@@ -207,6 +201,7 @@ const guestsParam = Number(url.searchParams.get('guests')) || 2;
   import { gsap } from 'gsap';
   import { translateBeds, daysBetween } from '../utils/helpers';
   import { wizardStore } from '../features/booking/wizardStore';
+  import type { Locale } from '../i18n/utils';
 
   let abortController = new AbortController();
 
@@ -233,11 +228,10 @@ const guestsParam = Number(url.searchParams.get('guests')) || 2;
     const summaryVideoContainer = document.getElementById('summary-video-container');
     const summaryRoomVideo = document.getElementById('summary-room-video') as HTMLVideoElement | null;
     const errorBanner = document.getElementById('error-banner');
-    const lang = (document.documentElement.lang || 'en') as string;
+    const lang = (document.documentElement.lang || 'en') as Locale;
     const L = (window as any).__LABELS || {};
     const ROOMS = (window as any).__ROOMS_DATA || [];
 
-    let currentStep = 1;
     let lastTotal: number | null = null;
 
     function applyState() {
