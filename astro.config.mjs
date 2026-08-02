@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import compress from '@playform/compress';
+import critters from 'astro-critters';
 
 export default defineConfig({
   site: 'https://hotelesusgar.com',
@@ -19,6 +20,9 @@ export default defineConfig({
       Image: false, // Ya optimizadas con sharp
       SVG: false,
     }),
+    // Inline del CSS crítico (above-the-fold) + carga diferida del resto:
+    // elimina las 2 peticiones CSS render-blocking del primer paint
+    critters(),
   ],
   image: {
     service: {
