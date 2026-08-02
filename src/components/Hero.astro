@@ -16,12 +16,13 @@ interface Props {
   lang: Locale;
 }
 
-const { lang } = Astro.props;
+const { lang } = Astro.props as Props;
 const t = useTranslations(lang);
 
 const optimizedPoster = await getImage({
   src: slide1,
-  width: 1920,
+  width: 1280,
+  quality: 80,
   format: "webp",
 });
 
@@ -41,7 +42,7 @@ const slides = [slide1, slide2, slide3, slide4];
     autoplay
     muted
     playsinline
-    preload="auto"
+    preload="metadata"
     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 z-0 opacity-100"
     poster={optimizedPoster.src}
     id="hero-video"
@@ -62,8 +63,7 @@ const slides = [slide1, slide2, slide3, slide4];
           width={1600}
           height={900}
           format="avif"
-          loading={i === 0 ? "eager" : "lazy"}
-          fetchpriority={i === 0 ? "high" : undefined}
+          loading="lazy"
           class="w-full h-full object-cover"
         />
       </div>
