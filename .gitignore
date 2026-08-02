@@ -1,5 +1,10 @@
 .env
 node_modules/
+backend/.env
+backend/vendor/
+backend/storage/logs/*.log
+backend/storage/framework/cache/*
+backend/node_modules/
 dist/
 .astro/
 localhost_*.json
