@@ -94,7 +94,10 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
 
             $client = $this->paymentClient;
             $requestOptions = new RequestOptions();
-            $requestOptions->setCustomHeaders(['X-Idempotency-Key' => $idempotencyKey]);
+            // Clave EN MINUSCULAS obligatoria: getIdempotencyKey() del SDK (MercadoPagoClient:155)
+            // hace array_change_key_case() para detectar la key pero devuelve $headers['x-idempotency-key']
+            // del array ORIGINAL (case-sensitive). Con 'X-Idempotency-Key' mayuscula -> null -> TypeError 500.
+            $requestOptions->setCustomHeaders(['x-idempotency-key' => $idempotencyKey]);
             $requestOptions->setConnectionTimeout(10000); // 10s
 
             $payment = $client->create($payload, $requestOptions);
@@ -219,7 +222,8 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             MercadoPagoConfig::setAccessToken($this->accessToken);
             $client = $this->refundClient;
             $requestOptions = new RequestOptions();
-            $requestOptions->setCustomHeaders(['X-Idempotency-Key' => 'refund_' . $paymentId . '_' . hash('sha256', $paymentId . '_' . ($amount ?? 'full'))]);
+            // Misma convencion de clave en minusculas que processPayment (bug SDK getIdempotencyKey).
+            $requestOptions->setCustomHeaders(['x-idempotency-key' => 'refund_' . $paymentId . '_' . hash('sha256', $paymentId . '_' . ($amount ?? 'full'))]);
             $requestOptions->setConnectionTimeout(10000); // 10s
 
             if ($amount !== null) {

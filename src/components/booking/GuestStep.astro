@@ -224,7 +224,10 @@ const t = useTranslations(lang);
         showError(L.invalidEmail);
         return;
       }
-      wizardStore.next();
+      // Si ya estamos en el paso 3 (guest + payment juntos), next() es no-op.
+      // setState({step:3}) SIEMPRE notifica -> PaymentStep.start() se re-evalua
+      // con los campos llenos -> createHold -> cardForm monta.
+      wizardStore.setState({ step: 3 });
     }, { signal });
 
     backBtn.addEventListener('click', () => wizardStore.back(), { signal });

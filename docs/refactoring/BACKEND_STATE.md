@@ -133,8 +133,48 @@ Verificación end-to-end del flujo de webhooks de MercadoPago ejecutada el 2026-
 - Registrar el webhook en el panel de la app de **producción** (8776209959654245) para pagos reales (el webhook verificado pertenece a la app de test 8501374849722569).
 - Restaurar las credenciales `APP_USR` de producción en el `.env` antes de cualquier deploy (el `.env` local quedó en modo TEST por instrucción del usuario).
 
+## Verificación checkout + pagos en vivo (2026-08-03) — COMPLETADA (fix incluido)
+
+**CORRECCIÓN DE IDENTIDAD DE APP (aclaración del usuario)**: la app `8501374849722569` **ES la app de producción** de MercadoPago (con credenciales APP_USR-8501374849722569-... y public key APP_USR-24cfc998-...). La app `8776209959654245` era la app ANTERIOR/legacy (sus tokens APP_USR-8776209959654245 estaban en el .env del servidor → no podían leer los pagos de la app correcta → 500 en webhook). Las secciones previas que decían "app de test 8501374849722569 / producción 8776209959654245" quedan superseded por esta corrección.
+
+### Diagnóstico en vivo (producción, 2026-08-03)
+- `POST https://usgarhoteles.com/api/booking` → **200** con `mp_public_key: APP_USR-24cfc998-...` (credenciales APP_USR correctas YA en el servidor) y hold real (`USGAR-5a972718a6c5`, gateway_price 684 PEN = 180 USD × 3.8).
+- Token APP_USR válido: `GET api.mercadopago.com/v1/payments/search` → 200, 5 pagos reales legibles (approved 2025-11-27).
+- **Aislamiento TEST/PROD confirmado**: token APP_USR → 404 "Payment not found" para pagos TEST (`live_mode: false`); token TEST → 200. Los 500 históricos del webhook eran eventos TEST entregados a un servidor con token de la app vieja — **irrecuperables por diseño, NO bug**.
+
+### BUG BLOQUEANTE ENCONTRADO Y CORREGIDO (este es el fix grande del día)
+
+**Síntoma del usuario**: "no me deja poner ni la tarjeta ni el tipo de documento" en el checkout de producción.
+
+**Causa raíz 1 — cardForm nunca montaba (frontend)**: `PaymentStep.start()` solo se re-evaluaba con cambios del `wizardStore`; el usuario llegaba al paso 3 con los campos del huésped vacíos → `start()` retornaba; al llenarlos y pulsar CONTINUAR, `wizardStore.next()` era **no-op** en step 3 (`if (state.step < 3)`) → nadie volvía a llamar `start()` → 0 POST `/api/booking` desde el navegador → `cardForm` de MP nunca montaba (divs de tarjeta/CVV vacíos, select de documento sin opciones).
+- **Fix**: `src/components/booking/GuestStep.astro` — el botón `[data-guest-next]` ahora llama `wizardStore.setState({ step: 3 })` (setState SIEMPRE notifica) en vez de `wizardStore.next()` (no-op en step 3). Además `PaymentStep.astro`: `started = false` en los paths de error (permite reintento).
+
+**Causa raíz 2 — 500 en process-payment (backend, bug SDK dx-php)**: `MercadoPagoAdapter::processPayment()` pasaba `setCustomHeaders(['X-Idempotency-Key' => $key])` (clave con mayúscula). El SDK `MercadoPagoClient::getIdempotencyKey()` (línea 149-159) detecta la key con `array_change_key_case()` pero devuelve `$headers[strtolower($key)]` del array ORIGINAL (case-sensitive) → **null → TypeError → 500** "Return value must be of type string, null returned".
+- **Fix**: clave en **minúsculas** `['x-idempotency-key' => $key]` en `processPayment` y `refundPayment` (el SDK busca exactamente `$headers['x-idempotency-key']`). Test `testProcessPaymentSendsIdempotencyHeader` actualizado al formato correcto.
+
+### E2E verificado en local (entorno TEST, sin dinero real) — evidencia completa
+
+| Escenario | Evidencia |
+|---|---|
+| cardForm monta (iframes tarjeta/exp/CVV + select doc `DNI/C.E/RUC/Otro`) | ✅ snapshot + `hasIframe: true` |
+| Pago Visa test `4009 1753 3280 6176`, titular `APRO`, doc `123456789` | ✅ payment `1327783766` **approved/accredited**, `live_mode: false`, 684 PEN, `external_reference: USGAR-20376530e184` |
+| DB: hold → `paid` + `processed_payments` (payment_id, processed_at) | ✅ `provisional_bookings` + `processed_payments` |
+| Redirect a `/book/success` | ✅ |
+| Rama OTHE (rechazo general): titular `OTHE` | ✅ payment `1349906085` **rejected** `cc_rejected_other_reason`; wizard muestra "Error al procesar el pago." + botón re-habilitado; hold queda **pending** (NO paid) |
+| Rama CONT (pendiente): titular `CONT` | ✅ payment `1327783824` **rejected** (esperado con `binary_mode=true`: MP fuerza approved/rejected, nunca pending); hold **pending**; error mostrado |
+| Webhook firmado, pago approved ya procesado | ✅ **200 "Payment already processed"** (idempotencia) |
+| Webhook firmado, pago rejected | ✅ **200 "Payment status is not approved"** |
+| Webhook firma inválida | ✅ **401 "Firma de webhook invalida o ausente"** |
+| Stress: 50× GET /api/rooms + 20× POST /api/booking + 10× webhook idempotente | ✅ **0 errores 5xx**; p95: rooms 574ms / booking 1239ms / webhook 578ms (umbral plan: <2s) |
+
+### Notas de la verificación
+- `npm run check` → 0 errores; `php composer.phar check` → **27/27 tests / 103 assertions PASS + PHPStan OK**.
+- `quality_evaluation` del MCP NO funciona con pagos TEST (el wrapper consulta con token APP_USR → 404) ni con pagos de la app anterior ("not originated from app") — límite de la herramienta; funcionará con el primer pago LIVE de la app.
+- El `.env` local queda en modo TEST (para E2E/stress); el servidor tiene APP_USR (verificado en vivo).
+
 ## Siguiente
-- F2 cerrada (2026-08-03); verificación webhook completada para la app de test. Para pagos reales: registrar el webhook en el panel de la app de **producción** (8776209959654245) y restaurar las credenciales `APP_USR` en el `.env` antes de cualquier deploy.
+- **Checkout VERIFICADO end-to-end (2026-08-03)** con tarjetas de prueba (APRO/OTHE/CONT), webhook firmado (3 ramas) y stress sin errores. Los fixes (cardForm trigger + idempotency key) están en el branch pendiente de commit.
+- Para el cierre definitivo en producción: desplegar los fixes + primera reserva real (user-gated) → verificar webhook 200 + email + booking Paid (y `quality_evaluation` del MCP funcionará con ese pago LIVE).
 - F4 frontend (fases 3-4 redesign: internas + wizard reserva).
 - F3 CMS (mini-contrato de alcance al empezar).
 - F1 Nobeds (requiere sub pagada; instrucciones de cuenta/API key al llegar).

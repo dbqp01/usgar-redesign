@@ -73,12 +73,14 @@ final class MercadoPagoAdapterTest extends TestCase {
                 $this->anything(),
                 $this->callback(function (RequestOptions $options): bool {
                     $headers = $options->getCustomHeaders();
-                    $this->assertNotEmpty($headers, 'Debe enviar X-Idempotency-Key');
-                    // El SDK espera claves => valores ("X-Idempotency-Key" => "pay_...").
-                    // El formato antiguo ("X-Idempotency-Key: pay_..." como valor unico
-                    // con clave entera) se reindexaba en array_merge y el header no se enviaba.
-                    $this->assertArrayHasKey('X-Idempotency-Key', $headers);
-                    $this->assertStringStartsWith('pay_', $headers['X-Idempotency-Key']);
+                    $this->assertNotEmpty($headers, 'Debe enviar x-idempotency-key');
+                    // Clave en MINUSCULAS obligatoria: getIdempotencyKey() del SDK
+                    // (MercadoPagoClient::getIdempotencyKey) detecta la key con
+                    // array_change_key_case() pero devuelve $headers['x-idempotency-key']
+                    // del array ORIGINAL (case-sensitive). Con 'X-Idempotency-Key'
+                    // (mayuscula) devuelve null -> TypeError 500 en processPayment.
+                    $this->assertArrayHasKey('x-idempotency-key', $headers);
+                    $this->assertStringStartsWith('pay_', $headers['x-idempotency-key']);
                     return true;
                 })
             )

@@ -185,6 +185,7 @@ const t = useTranslations(lang);
         });
 
         if (!result.success) {
+          started = false; // permitir reintento tras error de createHold
           showError(result.error.message);
           return;
         }
@@ -281,6 +282,7 @@ const t = useTranslations(lang);
         });
       } catch (err: any) {
         console.error(err);
+        started = false; // permitir reintento tras error inesperado
         showError(err.message || LABELS.unexpectedError);
       }
   }
