@@ -42,22 +42,6 @@ class HandleMercadoPagoWebhookAction {
     public function __invoke(Request $request): void {
         $body = $request->getBody() ?? [];
 
-        // ========== DIAGNOSTIC LOGGING ==========
-        // Registra todos los headers y query params recibidos para depuracion
-        $allHeaders = $request->getHeaders();
-        $allQuery = $request->getQueryParams();
-        Logger::info('WEBHOOK DIAGNOSTICS', [
-            'headers'      => $this->sanitizeForLog($allHeaders),
-            'query_params' => $allQuery,
-            'body_keys'    => array_keys($body),
-            'body_type'    => $body['type'] ?? ($body['action'] ?? 'N/A'),
-            'body_data_id' => $body['data']['id'] ?? ($body['id'] ?? 'N/A'),
-            'has_x_signature' => isset($allHeaders['x-signature']) ? 'YES' : 'NO',
-            'has_x_request_id' => isset($allHeaders['x-request-id']) ? 'YES' : 'NO',
-            'raw_server_http_x_signature' => $_SERVER['HTTP_X_SIGNATURE'] ?? 'NOT_PRESENT',
-        ]);
-        // ========================================
-
         // 0. Extraer tipo de evento ANTES de cualquier validacion
         $type = $body['type'] ?? ($body['action'] ?? null);
         $topic = $request->getQuery('topic');
@@ -83,6 +67,9 @@ class HandleMercadoPagoWebhookAction {
             ?? ($body['id'] ?? null);
         $paymentIdStr = $dataId ? (string)$dataId : '';
 
+        // Log de entrada conciso por evento (sin headers ni datos sensibles)
+        Logger::info('HandleMercadoPagoWebhookAction: Webhook recibido', ['type' => $type, 'payment_id' => $paymentIdStr]);
+
         if (empty($paymentIdStr)) {
             Logger::error('HandleMercadoPagoWebhookAction: No se pudo extraer payment ID del webhook.');
             Response::json(['success' => true, 'message' => 'No payment ID found, event acknowledged.']);
@@ -101,15 +88,11 @@ class HandleMercadoPagoWebhookAction {
         $requestId = $request->getHeader('x-request-id') ?? '';
 
         // 2.2 Validar firma (usa SDK oficial WebhookSignatureValidator internamente)
-        Logger::info("HandleMercadoPagoWebhookAction: Validando firma. DataId: {$paymentIdStr}, RequestId: {$requestId}, SignaturePresent: " . (empty($signatureHeader) ? 'NO' : 'YES'));
-
         if (empty($signatureHeader) || !$this->paymentGateway->verifySignature($signatureHeader, $requestId, $paymentIdStr)) {
             Logger::error("HandleMercadoPagoWebhookAction: Firma de webhook ausente o invalida. DataID: {$paymentIdStr}, SignatureHeader: " . substr($signatureHeader, 0, 20) . '...');
             Response::unauthorized('Firma de webhook invalida o ausente.');
             return;
         }
-
-        Logger::info("HandleMercadoPagoWebhookAction: Firma validada OK para Payment ID {$paymentIdStr}");
 
         // 3. Verificacion de Idempotencia previa
         if ($this->bookingRepo->isPaymentProcessed($paymentIdStr)) {
@@ -153,7 +136,6 @@ class HandleMercadoPagoWebhookAction {
 
             $holdStatus = BookingStatus::tryFrom($hold['status']);
             if ($holdStatus === BookingStatus::Paid) {
-                Logger::info("HandleMercadoPagoWebhookAction: Reserva para Cart ID {$cartId} ya fue procesada previamente.");
                 $this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, 'approved');
                 $this->pdo->commit();
                 Response::json(['success' => true, 'message' => 'Booking already marked as paid.']);
@@ -229,21 +211,5 @@ class HandleMercadoPagoWebhookAction {
             Logger::error('HandleMercadoPagoWebhookAction Exception general: ' . $e->getMessage());
             Response::error('Error interno al procesar el webhook.', 500);
         }
-    }
-
-    /**
-     * Sanitiza headers para logging seguro (oculta valores sensibles).
-     */
-    private function sanitizeForLog(array $headers): array {
-        $safe = [];
-        $sensitiveKeys = ['authorization', 'cookie', 'x-signature'];
-        foreach ($headers as $key => $value) {
-            if (in_array(strtolower($key), $sensitiveKeys, true)) {
-                $safe[$key] = substr((string)$value, 0, 30) . '...[TRUNCATED]';
-            } else {
-                $safe[$key] = $value;
-            }
-        }
-        return $safe;
     }
 }
