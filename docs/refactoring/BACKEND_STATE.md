@@ -2,7 +2,7 @@
 
 > Memoria de sesión del backend. El `STATE.md` anterior documenta el redesign del frontend;
 > este archivo es el handoff del trabajo de backend (migraciones + refactor).
-> Última actualización: 2026-08-01 (F0 completa, F2 parcial).
+> Última actualización: 2026-08-03 (F0 completa; F2 cerrada — solo quedan ítems user-gated).
 
 ## Contexto (decisiones aprobadas por el usuario)
 
@@ -67,17 +67,31 @@
 - `preference_id` (residuo Checkout Pro) existe en `provisional_bookings` con **52 registros históricos** → NO se elimina (preservación de datos); queda documentado.
 
 ### Pendiente del usuario (webhook)
-- Verificar que `MERCADO_PAGO_WEBHOOK_SECRET` del `.env` sea idéntico al secreto del panel MP (developers/panel/app/8501374849722569/webhooks). El webhook quedó registrado (callback `https://usgarhoteles.com/api/webhook`, topic `payment`) y `notifications_history` se monitorea tras un pago de prueba.
+- Verificar que `MERCADO_PAGO_WEBHOOK_SECRET` del `.env` sea idéntico al secreto del panel MP (developers/panel/app/8501374849722569/webhooks). El webhook quedó registrado (callback `https://usgarhoteles.com/api/webhook`, topic `payment`) y `notifications_history` se monitorea tras un pago de prueba. **— NO CONFIRMADO por el MCP (ver "Verificación webhook (2026-08-03)")**: el registro del webhook está pendiente de confirmación del usuario.
 
 ### Nota: agente paralelo
 - Hay una sesión paralela trabajando el wizard de reserva (BookingWidget, GuestStep, BookingCalendarStep, PaymentStep, book.astro, i18n). Al cierre de esta auditoría, `astro check` reporta **15 errores TS en su WIP** (null-checks y variables sin definir en BookingWidget/BookingCalendarStep/book.astro) — no tocados para no pisar su trabajo; quedan para cuando cierre su tarea.
 
-## Pendiente (F2 restante)
-- [ ] Verificar `MERCADO_PAGO_WEBHOOK_SECRET` == secreto del panel MP + pago de prueba + `notifications_history`.
-- [ ] `success.astro` 3 estados (confirmado / pendiente / verificando) — refactor PLAN P6-1.
-- [ ] Reducir el logging diagnóstico pesado ("WEBHOOK DIAGNOSTICS") a un log conciso, UNA VEZ verificado el webhook.
-- [ ] DIP restante (P3-1): constructores nullable en actions; verificar CSP duplicada (no hay `.htaccess` raíz; `public/.htaccess` solo setea nosniff — CSP única en Middleware, ya confirmado).
-- [ ] Revisar/fixear los 15 errores TS del WIP del agente paralelo cuando cierre su tarea.
+## Pendiente (F2 restante) — cerrado 2026-08-03
+- [ ] Verificar `MERCADO_PAGO_WEBHOOK_SECRET` == secreto del panel MP — **USER-GATED** (sin API para leerlo; revelar en panel MP → Webhooks > Configure notification, app 8501374849722569, y comparar contra el `.env`, len=64).
+- [ ] Pago de prueba + re-ejecutar `notifications_history` — **USER-GATED** (requiere OK explícito: `tests/mp-test-payment.php` usa el token real y crearía un pago real de $50 `pagoefectivo`).
+- [x] `success.astro` 3 estados (confirmado / pendiente / verificando) — refactor PLAN P6-1. **Evidencia (verificada 2026-08-03)**: `src/pages/book/success.astro:214` (`pollForPayment`), `:287` (call con AbortSignal), `:291` (comentario "3-state flow: paid -> success card, pending -> pending card, else -> error"), `:294` (`PENDING_STATUSES`), `:299` (branch de estado pendiente); claves i18n en las 4 locales: `en.json:319/321`, `es.json:323/325`, `fr.json:323/325`, `pt.json:323/325` (`paymentPending`, `verifyingPaymentMessage`).
+- [x] Reducir el logging diagnóstico pesado ("WEBHOOK DIAGNOSTICS") a un log conciso. **Evidencia (verificada 2026-08-03)**: `grep -rn "WEBHOOK DIAGNOSTICS" app/` → 0 resultados; commit `1e3226b` ("refactor: trim webhook diagnostic logging to concise per-event info"); `HandleMercadoPagoWebhookAction.php` con 5 `Logger::info` (líneas 57/71/99/117/164), entrada concisa con solo `type`+`payment_id` (:71), cero headers/query/`$_SERVER`; ERRORs intactos.
+- [x] DIP restante (P3-1): constructores nullable en actions. **Evidencia (verificada 2026-08-03)**: `grep -rn "= null)" app/Features/Booking/Actions/ app/Features/Webhooks/Actions/` → 0 matches; constructores no-nullable en `CreateBookingAction.php:32`, `ProcessPaymentAction.php:29`, `GetBookingStatusAction.php:22`, `ExtendHoldAction.php:21`, `HandleMercadoPagoWebhookAction.php:30`. CSP duplicada ya confirmada (no hay `.htaccess` raíz; `public/.htaccess` solo setea nosniff — CSP única en Middleware).
+- [x] Revisar/fixear los 15 errores TS del WIP del agente paralelo. **Evidencia (verificada 2026-08-03)**: `npm run check` → 0 errors / 0 warnings / 0 hints (136 archivos); corroborado en `docs/refactoring/STATE.md` (Fases 3+4: "astro check 0 errores", STATE.md:30/48).
+
+## F2 — cerrada (2026-08-03)
+
+Cierre de la Fase 2 del refactor backend (plan `f2-close-backend-refactor`), con evidencia verificada en sesión:
+
+- **Recorte de logging diagnóstico** (Todo 1, commit `1e3226b`): bloque "WEBHOOK DIAGNOSTICS" eliminado de `HandleMercadoPagoWebhookAction.php`; quedan 5 `Logger::info` por evento (líneas 57/71/99/117/164), entrada concisa con solo `type` + `payment_id` (:71), cero headers/query/`$_SERVER`; ERRORs intactos. Comportamiento HTTP y dispatch de `BookingPaidEvent` sin cambios (refactor behavior-preserving).
+- **Verificación webhook** (Todo 2): `notifications_history` con `application_id: "8501374849722569"` → "📭 No Notifications Found" (cita textual en la sección "Verificación webhook (2026-08-03)"); `.env` con `MERCADO_PAGO_WEBHOOK_SECRET` presente (len=64, valor nunca impreso). Registro del webhook (`save_webhook`, callback `https://usgarhoteles.com/api/webhook`, topic `payment`) **NO ejecutado** — pendiente de confirmación del usuario (cambia producción).
+- **P6-1 (success.astro 3 estados) y P3-1 (DIP no-nullable) ya hechos** — verificados con evidencia file:line en la sección "Pendiente (F2 restante) — cerrado 2026-08-03".
+
+**Queda user-gated (no bloquea el cierre):**
+1. Comparar el secret del panel MP (Webhooks > Configure notification, app 8501374849722569) contra `MERCADO_PAGO_WEBHOOK_SECRET` del `.env` (len=64).
+2. Confirmar el registro del webhook en el panel o vía `save_webhook` (solo con OK explícito del usuario).
+3. Pago de prueba (requiere OK explícito — `tests/mp-test-payment.php` usa el token real, $50 `pagoefectivo`) y re-ejecutar `notifications_history` 10-30 min después.
 
 ## Hook pre-commit (2026-08-01) — reescrito y VERIFICADO
 - Causa: `.githooks/pre-commit` (sh) fallaba en esta máquina — `sh` del PATH (shim scoop) delegaba en el relay WSL (`execvpe(/bin/bash) failed`).
@@ -91,8 +105,40 @@
 - WIP sin commitear del usuario (NO tocar): `app/Core/Container.php`, `app/bootstrap.php`, `scripts/dev.js`. **Ojo**: hay una sesión paralela tocando el frontend F4 (`src/pages/book.astro`, `src/components/booking/PaymentStep.astro`, `tests/e2e/internals.spec.ts`, `tests/e2e/wizard-flow.spec.ts`) — no pisar; stagear solo lo propio al commitear.
 - **Hook pre-commit**: ahora PowerShell (funciona por terminal). El MCP de git (`git_git_commit`) NO puede ejecutar hooks en esta máquina (usa bash→WSL) → commits por terminal (bash tool).
 
+## Verificación webhook (2026-08-03)
+
+Diagnóstico read-only (Todo 2 del plan `f2-close-backend-refactor`) ejecutado por agente. El MCP de MercadoPago es la fuente de verdad para este hallazgo; **reemplaza la afirmación de la sección "Pendiente del usuario (webhook)" (línea 70: "El webhook quedó registrado")**, que el MCP NO confirma.
+
+### Llamadas ejecutadas (todas read-only)
+
+1. `mercadopago-mcp-server_notifications_history` con `application_id: "8501374849722569"` (app de producción) — output literal del MCP:
+   > "📭 No Notifications Found"
+   > "It looks like you don't have any webhook notifications configured or no notifications have been sent yet."
+   - Sin notificaciones listadas: sin fechas, sin IDs, sin historial. El resto del output es texto de ayuda boilerplate del MCP (guía para configurar webhooks).
+2. `mercadopago-mcp-server_notifications_history` SIN `application_id` (app por defecto) — mismo output literal: "No Notifications Found".
+3. `.env` (raíz): `MERCADO_PAGO_WEBHOOK_SECRET` → **presente, len=64** (valor nunca impreso, conforme a la regla del plan).
+
+### Interpretación (inferencia, no afirmación del MCP)
+
+- El output del MCP es ambiguo por diseño ("no notifications **configured** or no notifications have been **sent** yet"): no expone directamente si el webhook está registrado. Lo verificable es que **no hay historial de notificaciones para la app 8501374849722569** — consistente con un webhook no registrado o con cero eventos (probable: no hubo pago de prueba aún).
+- Documentación oficial MP confirmada vía `search_documentation` (2026-08-03): las notificaciones se configuran en el panel (Webhooks > Configure notifications; HTTPS URL + topic), al guardar se genera un secret **solo visible en el panel** (sin API para leerlo); la validación es `WebhookSignatureValidator::validate(xSignature, xRequestId, data_id, secret)`; el endpoint debe responder 200/201 en ≤22 s y MP reintenta cada 15 min.
+- Conclusión conservadora: **no hay evidencia de webhook registrado ni de notificaciones entregadas**; el estado previo documentado queda sin confirmar.
+
+### Ejecutado vs pendiente del usuario
+
+| # | Paso | Estado |
+|---|---|---|
+| 1 | `notifications_history` con `application_id: "8501374849722569"` | ✅ EJECUTADO (cita textual arriba) |
+| 2 | `.env`: `MERCADO_PAGO_WEBHOOK_SECRET` presente | ✅ EJECUTADO — `len=64` (no vacío) |
+| 3 | `save_webhook` — `callback: "https://usgarhoteles.com/api/webhook"`, `topics: ["payment"]` | ⏳ **PENDIENTE DE CONFIRMACIÓN del usuario** (cambia producción — NO ejecutado). Si ya estuviera registrado, no re-escribir. |
+| 4 | Comparación del secret del panel vs `.env` | ⏳ **PENDIENTE DEL USUARIO** (no se omite: el secret existe, len=64). Revelar en panel MP → Webhooks > Configure notification (app 8501374849722569) y comparar contra `MERCADO_PAGO_WEBHOOK_SECRET`. No hay API para leerlo. |
+| 5 | Pago de prueba | ⏳ **PENDIENTE DE CONFIRMACIÓN** — NO ejecutado. `tests/mp-test-payment.php` usa el token REAL (`MERCADO_PAGO_ACCESS_TOKEN`) y crearía un pago real de $50 (`pagoefectivo`) — no es sandbox; requiere OK explícito. Alternativa sin producción: test user vía MCP (`create_test_user` + `add_money_test_user`). |
+| 6 | Monitoreo post-pago | ⏳ PENDIENTE: re-ejecutar `notifications_history` con app_id tras el pago de prueba (esperar 10-30 min). |
+
+**Nota**: esta sección se deja SIN commitear (Todo 3 es el dueño del commit de `BACKEND_STATE.md`).
+
 ## Siguiente
-- F2: confirmar registro de webhook MP (1 decisión del usuario) → completar P6-1/P3-1/P4-3.
+- F2 cerrada (2026-08-03) salvo ítems user-gated: comparación del secret del panel MP, confirmación del registro del webhook, pago de prueba + monitoreo de `notifications_history`.
 - F4 frontend (fases 3-4 redesign: internas + wizard reserva).
 - F3 CMS (mini-contrato de alcance al empezar).
 - F1 Nobeds (requiere sub pagada; instrucciones de cuenta/API key al llegar).
