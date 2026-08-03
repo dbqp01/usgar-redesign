@@ -1,4 +1,4 @@
-﻿# Contrato del backend actual (linea base)
+# Contrato del backend actual (linea base)
 
 Captura realizada el 2026-08-01 19:42 (local) contra php -S localhost:4399 -t public public/index.php
 

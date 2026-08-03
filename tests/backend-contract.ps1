@@ -43,48 +43,56 @@ function Invoke-CaptureRequest {
 }
 
 # --- Asegurar que el servidor este arriba -----------------------------------
+$proc = $null
 try {
     $null = Invoke-WebRequest "$base/api/health" -UseBasicParsing -TimeoutSec 5
     Write-Host "Servidor ya respondia en $base"
 } catch {
     Write-Host "Servidor no respondia; levantando php -S localhost:$Port -t public public/index.php"
-    Start-Process php -ArgumentList '-S', "localhost:$Port", '-t', 'public', 'public/index.php' -WindowStyle Hidden
+    $proc = Start-Process php -ArgumentList '-S', "localhost:$Port", '-t', 'public', 'public/index.php' -WindowStyle Hidden -PassThru
     Start-Sleep -Seconds 2
 }
 
 # --- Captura -----------------------------------------------------------------
-$targets = @(
-    @{ name = 'health';           method = 'GET';  url = "$base/api/health" },
-    @{ name = 'rooms';            method = 'GET';  url = "$base/api/rooms?checkIn=2026-08-15&checkOut=2026-08-16" },
-    @{ name = 'providers';        method = 'GET';  url = "$base/api/auth/providers" },
-    @{ name = 'booking-invalid';  method = 'POST'; url = "$base/api/booking"; body = '{}' }
-)
+try {
+    $targets = @(
+        @{ name = 'health';           method = 'GET';  url = "$base/api/health" },
+        @{ name = 'rooms';            method = 'GET';  url = "$base/api/rooms?checkIn=2026-08-15&checkOut=2026-08-16" },
+        @{ name = 'providers';        method = 'GET';  url = "$base/api/auth/providers" },
+        @{ name = 'booking-invalid';  method = 'POST'; url = "$base/api/booking"; body = '{}' }
+    )
 
-$lines = @()
-$lines += "# Contrato del backend actual (linea base)"
-$lines += ""
-$lines += "Captura realizada el $(Get-Date -Format 'yyyy-MM-dd HH:mm') (local) contra php -S localhost:$Port -t public public/index.php"
-$lines += ""
+    $lines = @()
+    $lines += "# Contrato del backend actual (linea base)"
+    $lines += ""
+    $lines += "Captura realizada el $(Get-Date -Format 'yyyy-MM-dd HH:mm') (local) contra php -S localhost:$Port -t public public/index.php"
+    $lines += ""
 
-foreach ($t in $targets) {
-    Write-Host "Capturando $($t.name) [$($t.method) $($t.url)]"
-    $r = if ($t.ContainsKey('body')) {
-        Invoke-CaptureRequest -Method $t.method -Url $t.url -Body $t.body
-    } else {
-        Invoke-CaptureRequest -Method $t.method -Url $t.url
+    foreach ($t in $targets) {
+        Write-Host "Capturando $($t.name) [$($t.method) $($t.url)]"
+        $r = if ($t.ContainsKey('body')) {
+            Invoke-CaptureRequest -Method $t.method -Url $t.url -Body $t.body
+        } else {
+            Invoke-CaptureRequest -Method $t.method -Url $t.url
+        }
+        $lines += "## $($t.name)"
+        $lines += ""
+        $lines += "- HTTP: $($r.StatusCode)"
+        $lines += "- Headers relevantes: Content-Type=$($r.ContentType)"
+        $lines += "- Body:"
+        $lines += '```json'
+        $lines += $r.Content
+        $lines += '```'
+        $lines += ""
     }
-    $lines += "## $($t.name)"
-    $lines += ""
-    $lines += "- HTTP: $($r.StatusCode)"
-    $lines += "- Headers relevantes: Content-Type=$($r.ContentType)"
-    $lines += "- Body:"
-    $lines += '```json'
-    $lines += $r.Content
-    $lines += '```'
-    $lines += ""
-}
 
-$dir = Split-Path -Parent $Out
-if ($dir -and -not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
-$lines | Set-Content -Path $Out -Encoding UTF8
-Write-Host "Contrato escrito en $Out"
+    $dir = Split-Path -Parent $Out
+    if ($dir -and -not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+    $lines | Set-Content -Path $Out -Encoding UTF8
+    Write-Host "Contrato escrito en $Out"
+} finally {
+    if ($proc -and -not $proc.HasExited) {
+        Stop-Process -Id $proc.Id -Force
+        Write-Host "Servidor php detenido (PID $($proc.Id))"
+    }
+}
