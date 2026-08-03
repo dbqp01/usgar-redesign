@@ -26,3 +26,6 @@ test-results/
 .playwright-mcp/
 preview.log
 *.log
+
+# Paquete de deploy del panel admin (Fase 0, Task 4) — se entrega al usuario, no al repo
+usgar-admin-deploy.zip

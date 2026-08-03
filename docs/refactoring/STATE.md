@@ -1,6 +1,13 @@
 # STATE — Rediseño Awwwards (multi-sesión)
 
-Última actualización: 2026-08-01 (Fases 1-4 completas)
+Última actualización: 2026-08-02 (Fase 0 backend: panel empaquetado, subida pendiente)
+
+## Hecho
+- **FASE 0 (en curso) — Backend Laravel + Filament**:
+  - Tasks 1-3 completas: caracterización del contrato API actual, scaffolding Laravel 12 en `backend/` con health endpoint, panel Filament v5 con multi-tenancy (Property).
+  - **Task 4 completada (variante B, sin acceso al hosting)**: build de producción (`composer install --optimize-autoloader --no-dev` + config/route/view/event cache, `route:list` OK), `backend/README.md` con instrucciones de deploy Hostinger, template `.env.production.example`, `.htaccess` raíz → `public/`, y paquete `usgar-admin-deploy.zip` (18.8 MB, gitignored) listo para que el usuario lo suba a `public_html/admin`.
+  - `usgar-admin-deploy.zip`: verificado — sin `.env`, sin `tests/`, sin logs; SÍ `vendor/` (53.6 MB, 13.979 archivos), caches de prod, `.env.production.example` y `.htaccess`.
+  - **PENDIENTE (usuario)**: crear subdominio `admin.hotelesusgar.com`, BD MySQL nueva, subir el zip, `.env` desde el template, `key:generate` + `migrate --force` + `storage:link` + `optimize`, `make:filament-user`, cron `schedule:run`; verificación conjunta de `https://admin.hotelesusgar.com/admin/login`.
 
 ## Hecho
 - **FASE 1 COMPLETA (Foundation)**: dark mode corregido (primary-soft lavanda + regla global), tipografía editorial (fluid-h1 7.5rem, section-number, micro-label, SectionHeader), cursor dual-layer con kill-switch, marquee tipográfico, transición de página cinematográfica, refactor RoomDetail (RoomGallery/RoomAmenities/RoomBookingSidebar) y index (Hero/ExploreShowcase extraídos), perf audit (quality hardcodeados fuera).
@@ -21,6 +28,7 @@
 - Caza de fallas con docs: astro-docs (Picture/layout vs Tailwind 4: responsiveStyles OFF correcto; scripts bundle run-once → patrón page-load+before-preparation correcto), context7 GSAP (ScrollTrigger.batch/context/revert/autoAlpha correctos), tavily WAI-APG (aria-label/aria-selected añadidos al calendario).
 
 ## En curso
+- **Fase 0 / Task 4 (variante B)**: usuario sube `usgar-admin-deploy.zip` a Hostinger y verifica el panel (`admin.hotelesusgar.com`) — instrucciones en `backend/README.md`.
 - QA visual final de Fases 3+4 en navegador real (Chrome DevTools MCP tras reinicio de OpenCode; Playwright ya cubre flujos críticos).
 
 ## Siguiente

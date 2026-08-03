@@ -1,0 +1,7 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Si el docroot del subdominio apunta a la raíz del proyecto (ej. public_html/admin),
+    # redirigir todo el tráfico a public/ (el docroot real de Laravel).
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
