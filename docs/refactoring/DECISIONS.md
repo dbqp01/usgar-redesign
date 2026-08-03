@@ -1,5 +1,9 @@
 # DECISIONS — Rediseño Awwwards
 
+## 2026-08-02 (Fase 0 — cierre)
+- **Laravel 12 + Filament v5.7.5 desplegado en subdominio admin (multi-tenant Property)**: decisión de arquitectura del panel admin confirmada en producción. Deploy variante B: zip (`usgar-admin-deploy.zip`) subido a `public_html/admin` en Hostinger compartido (sin Composer en prod → `vendor/` incluido, caches de prod). Contrato de no-regresión de Fase 0 verificado: sitio Astro intacto (check 0/0/0, api-harness OK, métricas visuales dentro de baseline) + suite Laravel verde (5 passed).
+- **Panel Filament**: single admin login; tenant = Property (multi-tenant a nivel de recurso, guard/tenant en el panel). El siguiente ciclo de fase es el rate engine + recursos Filament (Fase 1 del plan).
+
 ## 2026-08-01 (Fase 3 + 4 polish — toasts, widget home, feedback dinámico)
 - **Toasts estilo Sonner** (`src/features/ui/toast.ts`): top-center, glass dark/light, iconos por tipo, auto-dismiss 4s (error 6s, warning 5s), máx 3 visibles, aria-live/role, animación GSAP con reduced-motion off. Usados en validación de huésped, errores de pago, degradación de disponibilidad, rango sin opciones y recomputo de opciones.
 - **Widget home = punto de decisión**: popover de calendario custom (mismo motor `calendar.ts`), rango por clic, clampRange con toast "Dates adjusted", redirect a /book con checkin/checkout/guests/roomType. Sección widget elevada a z-20 (el marquee z-10 del contexto raíz interceptaba clics del popover).

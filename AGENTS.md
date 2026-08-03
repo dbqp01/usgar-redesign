@@ -39,6 +39,8 @@ app/                          Backend PHP
     Actions/                  Clases ADR invocables (ruta → action)
     Domain/                   Repositorios, Listeners (ej. ConfirmQloAppsOrderListener)
     Shared/                   Adapters/ (QloApp, Channex, MercadoPago) + Ports/ (interfaces)
+backend/                      Panel admin Laravel 12 + Filament v5 (multi-tenant Property) — se
+                              despliega como subaplicación en el subdominio admin.hotelesusgar.com
 public/                       Entry PHP (.htaccess + index.php) + estáticos
 scripts/                      dev.js (dev:all), tests, auditorías (seguridad/SEO)
 tests/                        api-harness.php (tests PHP) + playwright.config.ts (E2E)
