@@ -19,13 +19,27 @@ import { siteSettings } from '../../data/settings';
   import { gsap } from "gsap";
   import { register } from "../../features/animations/animationLifecycle";
 
+  declare global {
+    interface Window {
+      __preloaderDone?: boolean;
+    }
+  }
+
+  // Shared done-guard with the is:inline fallback in Layout.astro head:
+  // usgar:preloader-done fires exactly once per load (timeline path OR fallback).
+  function done() {
+    if (window.__preloaderDone) return;
+    window.__preloaderDone = true;
+    window.dispatchEvent(new CustomEvent("usgar:preloader-done"));
+  }
+
   document.addEventListener("astro:page-load", () => {
     if (sessionStorage.getItem("usgar_loaded")) {
       const preloader = document.getElementById("cinematic-preloader");
       if (preloader) {
         preloader.style.display = "none";
       }
-      window.dispatchEvent(new CustomEvent("usgar:preloader-done"));
+      done();
       return;
     }
 
@@ -40,7 +54,7 @@ import { siteSettings } from '../../data/settings';
           onComplete: () => {
             sessionStorage.setItem("usgar_loaded", "true");
             gsap.set(preloader, { autoAlpha: 0, display: "none" });
-            window.dispatchEvent(new CustomEvent("usgar:preloader-done"));
+            done();
           },
         });
 
@@ -66,7 +80,7 @@ import { siteSettings } from '../../data/settings';
       mm.add("(prefers-reduced-motion: reduce)", () => {
         sessionStorage.setItem("usgar_loaded", "true");
         gsap.set(preloader, { autoAlpha: 0, display: "none" });
-        window.dispatchEvent(new CustomEvent("usgar:preloader-done"));
+        done();
       });
     }, preloader);
 

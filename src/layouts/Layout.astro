@@ -132,6 +132,51 @@ const localeMap: Record<Locale, string> = {
       })();
     </script>
 
+    <!-- Preloader fallback (persistent is:inline: independent of GSAP/bundled modules) -->
+    <script is:inline>
+      (function () {
+        // First-load flag lives in this head-script closure. The inline script is not
+        // re-executed after the first SPA visit (scriptsAlreadyRan marks its textContent),
+        // so this closure persists across navigations.
+        var firstLoad = true;
+
+        function preloaderDone() {
+          if (window.__preloaderDone) return;
+          window.__preloaderDone = true;
+          sessionStorage.setItem('usgar_loaded', 'true');
+          window.dispatchEvent(new CustomEvent('usgar:preloader-done'));
+        }
+
+        function forceHide() {
+          var preloader = document.getElementById('cinematic-preloader');
+          if (preloader) preloader.style.display = 'none';
+          preloaderDone();
+        }
+
+        // Bind latch: the script may re-execute once on the first SPA visit - keep a
+        // single timeout + a single page-load listener registered from the first run.
+        if (!window.__preloaderFallbackBound) {
+          window.__preloaderFallbackBound = true;
+          // Belt-and-suspenders: hide even if GSAP or the bundled module never run.
+          window.setTimeout(forceHide, 2500);
+          document.addEventListener('astro:page-load', function () {
+            // The initial astro:page-load is the first load: the cinematic must survive.
+            if (firstLoad) {
+              firstLoad = false;
+              return;
+            }
+            // Later navigations re-create the preloader in the swapped body: force-hide.
+            forceHide();
+          });
+        }
+      })();
+    </script>
+
+    <!-- No-JS: hide the preloader entirely (it is animated by JS only) -->
+    <noscript>
+      <style>#cinematic-preloader{display:none}</style>
+    </noscript>
+
     <!-- View Transitions -->
     <ClientRouter />
 
