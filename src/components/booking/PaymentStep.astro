@@ -67,7 +67,11 @@ const t = useTranslations(lang);
       <select id="form-checkout__installments" class="hidden"></select>
       <input type="email" id="form-checkout__cardholderEmail" class="hidden" />
 
-      <button type="submit" id="btn-final-pay" class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-xl transition-[transform,background-color,box-shadow] duration-300 hover:shadow-lg hover:shadow-primary/25 lg:hover:-translate-y-0.5 text-lg cursor-pointer flex items-center justify-center gap-3 mt-6">
+      <div data-payment-error class="hidden p-4 rounded-xl border border-red-400/30 bg-red-500/5 text-red-600 dark:text-red-400 text-sm space-y-1">
+        <p data-payment-error-text></p>
+      </div>
+
+      <button type="submit" id="btn-final-pay" disabled class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-xl transition-[transform,background-color,box-shadow] duration-300 hover:shadow-lg hover:shadow-primary/25 lg:hover:-translate-y-0.5 text-lg cursor-pointer flex items-center justify-center gap-3 mt-6 disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none">
         <span id="btn-final-text">Pay Now</span>
         <svg id="btn-final-spinner" class="hidden animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -117,6 +121,9 @@ const t = useTranslations(lang);
   let abortController = new AbortController();
   let started = false;
   let cardFormInstance: any = null;
+  // Timer de seguridad: si onReady no llega (iframes bloqueados por adblocker,
+  // SDK lento), habilita el botón Pay para no bloquear al usuario para siempre.
+  let payReadyTimer: number | null = null;
 
   function setProcessing(p: boolean): void {
     wizardStore.setState({ processing: p });
@@ -152,6 +159,8 @@ const t = useTranslations(lang);
     if (placeholder) placeholder.classList.add('hidden');
     // Restaurar el guest form (visible de nuevo al volver atrás o reintentar)
     if (guestStep) guestStep.classList.remove('hidden');
+    const cardError = document.querySelector('[data-payment-error]') as HTMLElement | null;
+    if (cardError) cardError.classList.add('hidden');
   }
 
   function loadMercadoPagoSdk(): Promise<void> {
@@ -219,6 +228,22 @@ const t = useTranslations(lang);
         errorBanner.classList.remove('hidden');
         errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
+    }
+
+    // Errores de validación/tokenización del cardForm de MercadoPago:
+    // se muestran inline, junto al botón de pago (el banner global queda
+    // reservado para errores del backend).
+    function showCardError(msg: string): void {
+      const box = document.querySelector('[data-payment-error]') as HTMLElement | null;
+      const text = document.querySelector('[data-payment-error-text]') as HTMLElement | null;
+      if (!box || !text) return;
+      text.textContent = msg;
+      box.classList.remove('hidden');
+    }
+
+    function clearCardError(): void {
+      const box = document.querySelector('[data-payment-error]') as HTMLElement | null;
+      if (box) box.classList.add('hidden');
     }
 
     const guestNameInput = document.getElementById('guest-name') as HTMLInputElement | null;
@@ -293,6 +318,20 @@ const t = useTranslations(lang);
         showPaymentPanel();
         setProcessing(false);
 
+        // Seguridad: si onReady no llega en 12s (adblocker bloqueando los
+        // iframes de secure-fields, red lenta, SDK caído), habilitar igual el
+        // botón; al intentar pagar, onError/onCardTokenReceived explicarán el
+        // fallo en lugar de dejar al usuario bloqueado sin explicación.
+        if (payReadyTimer !== null) { window.clearTimeout(payReadyTimer); payReadyTimer = null; }
+        payReadyTimer = window.setTimeout(() => {
+          if (btnFinalPay?.disabled) {
+            btnFinalPay.disabled = false;
+            btnFinalPay.classList.remove('disabled:pointer-events-none');
+            console.warn('cardForm onReady timeout: enabling Pay button as fallback');
+          }
+          payReadyTimer = null;
+        }, 12000);
+
         cardFormInstance = mp.cardForm({
           amount: totalAmount.toString(),
           iframe: true,
@@ -314,8 +353,47 @@ const t = useTranslations(lang);
               const emailEl = document.getElementById('form-checkout__cardholderEmail') as HTMLInputElement | null;
               if (emailEl && guestEmailInput) emailEl.value = guestEmailInput.value;
             },
+            onReady: () => {
+              // Doc sdk-js: onReady se dispara cuando getIdentificationTypes()
+              // respondió y los iframes de secure-fields están listos.
+              // Solo entonces el usuario puede pagar con éxito.
+              if (btnFinalPay) {
+                btnFinalPay.disabled = false;
+                btnFinalPay.classList.remove('disabled:pointer-events-none');
+              }
+            },
+            onFormUnmounted: (error: any) => {
+              if (error) return console.warn("Form unmounted error:", error);
+            },
+            onValidityChange: (error: any) => {
+              // Doc sdk-js: error = [{ message, code }] - validación por campo
+              // (tarjeta mal escrita, fecha vencida, CVV incompleto, etc.)
+              const msg = (error && error.length > 0 && error[0].message)
+                ? String(error[0].message)
+                : '';
+              if (msg) showCardError(msg);
+              else clearCardError();
+            },
+            onError: (error: any) => {
+              // Doc sdk-js: onError = [{ message }] - errores de la SDK
+              // (fallo al crear token, identificación inválida, red, etc.)
+              const msg = (error && error.length > 0 && error[0].message)
+                ? String(error[0].message)
+                : (LABELS.unexpectedError || 'Payment could not be processed');
+              showCardError(msg);
+            },
+            onCardTokenReceived: (error: any) => {
+              // Doc sdk-js: se dispara tras createCardToken(); error si falló.
+              if (error) {
+                const msg = (error && error.length > 0 && error[0].message)
+                  ? String(error[0].message)
+                  : (LABELS.cardError || 'Card could not be verified. Check the card details and try again.');
+                showCardError(msg);
+              }
+            },
             onSubmit: async (event: any) => {
               event.preventDefault();
+              clearCardError();
               if (btnFinalPay) btnFinalPay.disabled = true;
               if (btnFinalSpinner) btnFinalSpinner.classList.remove('hidden');
               if (btnFinalText) btnFinalText.textContent = LABELS.processing || 'Processing...';
@@ -323,6 +401,12 @@ const t = useTranslations(lang);
 
               try {
                 const formData = cardFormInstance.getCardFormData();
+
+                if (!formData.token) {
+                  // La tokenización falló y el SDK no creó el token:
+                  // el error ya fue mostrado por onCardTokenReceived/onError.
+                  throw new Error(LABELS.cardError || 'Card could not be verified. Check the card details and try again.');
+                }
 
                 const processRes = await bookingService.processPayment(cartId!, accessToken!, {
                   token: formData.token,
@@ -371,6 +455,7 @@ const t = useTranslations(lang);
   function handlePaymentBack(): void {
     // Volver al formulario de datos (guest): desmontar el cardForm (doc MP:
     // unmount() limpia los iframes de secure-fields) y restaurar el guest.
+    if (payReadyTimer !== null) { window.clearTimeout(payReadyTimer); payReadyTimer = null; }
     if (cardFormInstance && typeof cardFormInstance.unmount === 'function') {
       try { cardFormInstance.unmount(); } catch (e) { console.warn('cardForm unmount error:', e); }
     }
@@ -382,6 +467,7 @@ const t = useTranslations(lang);
 
   document.addEventListener('astro:page-load', initPaymentStep);
   document.addEventListener('astro:before-preparation', () => {
+    if (payReadyTimer !== null) { window.clearTimeout(payReadyTimer); payReadyTimer = null; }
     abortController.abort();
   });
 </script>

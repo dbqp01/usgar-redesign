@@ -7,6 +7,7 @@ import type {
   BookingPayload,
   BookingResponseData,
   BookingStatusData,
+  CalendarAvailability,
 } from './contracts/IBookingService';
 
 /**
@@ -49,6 +50,32 @@ export class BookingService implements IBookingService {
     return {
       success: true,
       data: (response.data.rooms ?? response.data.data) as RoomAvailability[],
+    };
+  }
+
+  async getAvailabilityCalendar(from?: string, to?: string): Promise<ApiResult<CalendarAvailability>> {
+    const query = new URLSearchParams();
+    if (from) query.append('from', from);
+    if (to) query.append('to', to);
+
+    const url = `${this.baseUrl}/rooms/calendar${query.toString() ? '?' + query.toString() : ''}`;
+    const response = await this.httpClient.get<any>(url);
+
+    if (!response.ok || !response.data?.success) {
+      const err = response.data?.error || {};
+      return {
+        success: false,
+        error: {
+          code: err.code || 'API_ERROR',
+          message: err.message || 'Error al consultar el calendario de disponibilidad.',
+          status: response.status,
+        },
+      };
+    }
+
+    return {
+      success: true,
+      data: (response.data.days ?? {}) as CalendarAvailability,
     };
   }
 

@@ -289,7 +289,8 @@
     "fillAllFields": "Por favor, preencha todos os campos obrigatorios.",
     "invalidEmail": "Por favor, insira um e-mail valido.",
     "noPaymentUrl": "Nenhuma URL de pagamento recebida do servidor.",
-    "unexpectedError": "Ocorreu um erro inesperado."
+    "unexpectedError": "Ocorreu um erro inesperado.",
+    "cardError": "Não foi possível verificar o cartão. Verifique os dados e tente novamente."
   },
   "exploreDetail": {
     "home": "Inicio",
@@ -412,6 +413,8 @@
     "availabilityChecking": "Verificando disponibilidade...",
     "availabilityDegraded": "A disponibilidade ao vivo esta temporariamente indisponivel. Mostrando disponibilidade completa.",
     "rangeUnavailable": "Nenhum quarto disponivel para estas datas.",
+    "soldOut": "Esgotado",
+    "availableOn": "Disponível:",
     "alternatives": "Ver alternativas",
     "onlyThisRoom": "Quarto selecionado", "toast": { "optionsUpdated": "Opcoes atualizadas", "bestPrice": "Melhor preco {total}", "datesAdjusted": "Datas ajustadas", "datesAdjustedDesc": "A saida foi movida para manter sua estadia valida.", "selectDates": "Escolha suas datas", "checkinTo": "Check-in" },
     "bestPrice": "Melhor preco",

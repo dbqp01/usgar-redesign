@@ -63,8 +63,12 @@ export type ApiResult<T> =
   | { success: true; data: T }
   | { success: false; error: { code: string; message: string; status?: number; missingCredentials?: boolean } };
 
+/** Disponibilidad por día y por habitación para pintar el calendario. */
+export type CalendarAvailability = Record<string, Record<string, number>>;
+
 export interface IBookingService {
   getAvailableRooms(checkIn?: string, checkOut?: string): Promise<ApiResult<RoomAvailability[]>>;
+  getAvailabilityCalendar(from?: string, to?: string): Promise<ApiResult<CalendarAvailability>>;
   createHold(payload: BookingPayload): Promise<ApiResult<BookingResponseData>>;
   processPayment(cartId: string, accessToken: string, paymentData: any): Promise<ApiResult<any>>;
   extendHoldSession(bookingId: string): Promise<ApiResult<{ extended: boolean; new_expires_at: string }>>;

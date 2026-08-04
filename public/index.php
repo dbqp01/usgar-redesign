@@ -27,6 +27,7 @@ use App\Core\Middleware;
 // Importar Clases-Accion ADR (Action-Domain-Responder)
 use App\Features\Health\Actions\HealthCheckAction;
 use App\Features\Rooms\Actions\GetRoomsAction;
+use App\Features\Rooms\Actions\GetRoomsCalendarAction;
 use App\Features\Booking\Actions\CreateBookingAction;
 use App\Features\Booking\Actions\ExtendHoldAction;
 use App\Features\Booking\Actions\GetBookingStatusAction;
@@ -66,6 +67,7 @@ $router->setMiddleware($middleware);
 // 5. Registrar endpoints mapeados a Clases-Accion ADR (SRP extremo)
 $router->get('/api/health',           HealthCheckAction::class);
 $router->get('/api/rooms',            GetRoomsAction::class);
+$router->get('/api/rooms/calendar',   GetRoomsCalendarAction::class);
 $router->post('/api/booking',         CreateBookingAction::class);
 $router->post('/api/process-payment', \App\Features\Booking\Actions\ProcessPaymentAction::class);
 $router->post('/api/extend-hold',     ExtendHoldAction::class);

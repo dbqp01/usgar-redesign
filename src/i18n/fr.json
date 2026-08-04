@@ -289,7 +289,8 @@
     "fillAllFields": "Veuillez remplir tous les champs obligatoires.",
     "invalidEmail": "Veuillez saisir une adresse e-mail valide.",
     "noPaymentUrl": "Aucune URL de paiement recue du serveur.",
-    "unexpectedError": "Une erreur inattendue s'est produite."
+    "unexpectedError": "Une erreur inattendue s'est produite.",
+    "cardError": "Impossible de vérifier la carte. Vérifiez les informations et réessayez."
   },
   "exploreDetail": {
     "home": "Accueil",
@@ -412,6 +413,8 @@
     "availabilityChecking": "Verification de la disponibilite...",
     "availabilityDegraded": "La disponibilite en direct est temporairement indisponible. Disponibilite complete affichee.",
     "rangeUnavailable": "Aucune chambre disponible pour ces dates.",
+    "soldOut": "Complet",
+    "availableOn": "Disponible :",
     "alternatives": "Voir les alternatives",
     "onlyThisRoom": "Chambre selectionnee", "toast": { "optionsUpdated": "Options mises a jour", "bestPrice": "Meilleur prix {total}", "datesAdjusted": "Dates ajustees", "datesAdjustedDesc": "Le depart a ete deplace pour garder un sejour valide.", "selectDates": "Choisissez vos dates", "checkinTo": "Arrivee" },
     "bestPrice": "Meilleur prix",

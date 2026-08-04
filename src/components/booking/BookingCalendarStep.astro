@@ -100,6 +100,9 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
   let cleanupAnim: (() => void) | null = null;
   let firstCompute = true;
 
+  // Disponibilidad por día cargada del backend: { 'YYYY-MM-DD': { slug: qty } }
+  let calendarAvailability: Record<string, Record<string, number>> = {};
+
   interface SerializedRoom {
     slug: string;
     name: Record<string, string>;
@@ -112,6 +115,56 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
 
   function isPast(date: string): boolean {
     return date < formatISODate(new Date());
+  }
+
+  function escapeAttr(value: string): string {
+    return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  }
+
+  /** Labels i18n del host (evita colisión con el global `L` de Leaflet). */
+  function labels(): Record<string, string> {
+    return (window as any).__LABELS || {};
+  }
+
+  /** Un día está agotado cuando NINGUNA habitación tiene disponibilidad. */
+  function isDaySoldOut(date: string): boolean {
+    const day = calendarAvailability[date];
+    if (!day) return false;
+    const slugs = Object.keys(day);
+    if (slugs.length === 0) return false;
+    return slugs.every((slug) => (day[slug] ?? 0) <= 0);
+  }
+
+  /** Etiqueta del tooltip: lista de habitaciones con disponibilidad ese día. */
+  function availableRoomsLabel(date: string): string {
+    const day = calendarAvailability[date];
+    if (!day) return '';
+    const lang = (document.documentElement.lang || 'en') as string;
+    const rooms = (window as any).__ROOMS_DATA as SerializedRoom[] || [];
+    const available = Object.entries(day)
+      .filter(([, qty]) => (qty ?? 0) > 0)
+      .map(([slug]) => {
+        const room = rooms.find((r) => r.slug === slug);
+        return room ? (room.name[lang] || slug) : slug;
+      });
+    if (available.length === 0) return '';
+    const lb = labels();
+    return `${lb.availableOn || 'Available:'} ${available.slice(0, 4).join(', ')}${available.length > 4 ? '…' : ''}`;
+  }
+
+  async function loadCalendarAvailability(): Promise<void> {
+    const today = new Date();
+    const from = formatISODate(today);
+    const end = new Date(today); end.setMonth(end.getMonth() + 3);
+    const to = formatISODate(end);
+    try {
+      const res = await bookingService.getAvailabilityCalendar(from, to);
+      if (res.success && res.data) {
+        calendarAvailability = res.data;
+      }
+    } catch {
+      calendarAvailability = {};
+    }
   }
 
   function renderMonth(container: HTMLElement, year: number, month: number, opts: {
@@ -135,8 +188,19 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
           const past = cell.past;
           const dayNum = Number(cell.date.slice(-2));
           const dateLabel = new Date(cell.date + 'T00:00:00').toLocaleDateString(opts.lang === 'es' ? 'es' : opts.lang === 'fr' ? 'fr' : opts.lang === 'pt' ? 'pt' : 'en', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-          const disabledAttr = past ? 'tabindex="-1" aria-disabled="true"' : '';
-          return `<button type="button" role="gridcell" data-calendar-day data-date="${cell.date}" data-past="${past}" aria-label="${dateLabel}" ${disabledAttr} class="aspect-square rounded-lg text-sm flex items-center justify-center transition-colors duration-200 cursor-pointer select-none ${past ? 'opacity-25 pointer-events-none' : 'hover:bg-primary/10 hover:text-primary'}">${dayNum}</button>`;
+          const soldOut = !past && calendarAvailability[cell.date] !== undefined && isDaySoldOut(cell.date);
+          const disabledAttr = past || soldOut ? 'tabindex="-1" aria-disabled="true"' : '';
+          const stateClass = past
+            ? 'opacity-25 pointer-events-none'
+            : soldOut
+              ? 'opacity-30 pointer-events-none bg-red-500/10 text-red-500/70 line-through'
+              : 'hover:bg-primary/10 hover:text-primary';
+          const tooltip = soldOut
+            ? ` title="${escapeAttr(labels().soldOut || 'Sold out')}"`
+            : calendarAvailability[cell.date] && !past
+              ? ` title="${escapeAttr(availableRoomsLabel(cell.date))}"`
+              : '';
+          return `<button type="button" role="gridcell" data-calendar-day data-date="${cell.date}" data-past="${past}" data-sold-out="${soldOut}" aria-label="${dateLabel}${soldOut ? ' - ' + (labels().soldOut || 'Sold out') : ''}" ${disabledAttr}${tooltip} class="aspect-square rounded-lg text-sm flex items-center justify-center transition-colors duration-200 cursor-pointer select-none ${stateClass}">${dayNum}</button>`;
         }).join('')}
       </div>
     `;
@@ -353,6 +417,19 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
 
     render();
     if (checkIn && checkOut) void computeAllocation();
+    // Cargar disponibilidad por día para marcar días agotados; al llegar,
+    // re-renderizar el calendario con los días bloqueados y tooltips.
+    void loadCalendarAvailability().then(() => {
+      if (calendarAvailability && Object.keys(calendarAvailability).length > 0) {
+        render();
+        if (checkIn && checkOut) {
+          const r = clampRange(checkIn, checkOut);
+          checkIn = r.checkIn;
+          checkOut = r.checkOut;
+          refreshSelection(checkIn, checkOut);
+        }
+      }
+    });
   }
 
   document.addEventListener('astro:page-load', initCalendar);

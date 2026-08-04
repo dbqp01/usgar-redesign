@@ -92,6 +92,107 @@ class QloAppAdapter implements PmsPortInterface {
         }
     }
 
+    /**
+     * Disponibilidad por día y por habitación para un rango de calendario.
+     * Devuelve: [ 'YYYY-MM-DD' => [ 'id_room_type' => qty_disponible, ... ], ... ]
+     *
+     * El cálculo replica la semántica de getAvailableRooms() (solapamiento
+     * date_from < checkout AND date_to > checkin, excluyendo canceladas/
+     * reembolsadas) pero evaluado día a día para pintar el calendario.
+     */
+    public function getAvailabilityCalendar(string $from, string $to, int $idHotel = 1): array {
+        if (!$this->pdo) {
+            Logger::error('QloAppAdapter: DB Connection is offline. Cannot get calendar availability.');
+            return [];
+        }
+
+        $fromTs = strtotime($from . ' 00:00:00');
+        $toTs   = strtotime($to . ' 00:00:00');
+        if ($fromTs === false || $toTs === false || $toTs < $fromTs) {
+            return [];
+        }
+        // Protección: máx. 120 días por request
+        if (($toTs - $fromTs) / 86400 > 120) {
+            $toTs = $fromTs + (120 * 86400);
+        }
+
+        try {
+            // Habitaciones activas con su inventario total
+            $roomsStmt = $this->pdo->prepare("
+                SELECT 
+                    rt.id AS id_room_type,
+                    rt.id_product,
+                    pl.name AS room_name,
+                    COALESCE((
+                        SELECT COUNT(*) FROM qlo_htl_room_information ri
+                        WHERE ri.id_product = rt.id_product
+                    ), 5) AS total_rooms
+                FROM qlo_htl_room_type rt
+                INNER JOIN qlo_product p ON p.id_product = rt.id_product
+                INNER JOIN qlo_product_lang pl ON pl.id_product = rt.id_product AND pl.id_lang = 1
+                WHERE p.active = 1 AND rt.id_hotel = :id_hotel
+            ");
+            $roomsStmt->execute([':id_hotel' => $idHotel]);
+            $rooms = $roomsStmt->fetchAll();
+
+            if (empty($rooms)) {
+                return [];
+            }
+
+            // Todas las reservas activas (no canceladas/refundadas) que tocan el rango.
+            // Cada fila representa UNA habitación física ocupada durante [date_from, date_to).
+            $bookingsStmt = $this->pdo->prepare("
+                SELECT bd.id_product, bd.date_from, bd.date_to
+                FROM qlo_htl_booking_detail bd
+                INNER JOIN qlo_htl_room_type rt ON rt.id_product = bd.id_product
+                WHERE bd.is_cancelled = 0
+                  AND bd.is_refunded = 0
+                  AND bd.date_from < :range_to
+                  AND bd.date_to > :range_from
+                  AND rt.id_hotel = :id_hotel
+            ");
+            $bookingsStmt->execute([
+                ':range_from' => date('Y-m-d 00:00:00', $fromTs),
+                ':range_to'   => date('Y-m-d 23:59:59', $toTs),
+                ':id_hotel'   => $idHotel,
+            ]);
+            $bookings = $bookingsStmt->fetchAll();
+
+            // Índice de inventario por id_room_type
+            $inventory = [];
+            foreach ($rooms as $room) {
+                $inventory[(int)$room['id_room_type']] = max((int)$room['total_rooms'], 1);
+            }
+
+            // Para cada día del rango, contar cuántas habitaciones ocupadas
+            $days = [];
+            for ($ts = $fromTs; $ts <= $toTs; $ts += 86400) {
+                $dateKey = date('Y-m-d', $ts);
+                $occupied = [];
+                foreach ($bookings as $b) {
+                    $bFrom = strtotime((string)$b['date_from']);
+                    $bTo   = strtotime((string)$b['date_to']);
+                    // Solapamiento: día [ts, ts+24h) vs reserva [bFrom, bTo)
+                    if ($ts < $bTo && $ts >= $bFrom) {
+                        $idRoomType = (int)$b['id_product'];
+                        $occupied[$idRoomType] = ($occupied[$idRoomType] ?? 0) + 1;
+                    }
+                }
+                $dayAvailability = [];
+                foreach ($inventory as $idRoomType => $total) {
+                    $dayAvailability[$idRoomType] = max(0, $total - ($occupied[$idRoomType] ?? 0));
+                }
+                $days[$dateKey] = $dayAvailability;
+            }
+
+            return $days;
+
+        } catch (PDOException $e) {
+            Logger::error('QloAppAdapter: Error en consulta de calendario: ' . $e->getMessage());
+            return [];
+        }
+    }
+
     public function createCart(int $idHotel, int $idProduct, string $checkIn, string $checkOut, int $guests = 1, float $totalPrice = 0, string $guestName = '', string $guestEmail = '', string $guestPhone = ''): string {
         if (empty($this->apiKey) || empty($this->apiUrl)) {
             Logger::error('QloAppAdapter: QloApps API key or API URL is not configured. Falling back to local cart.');

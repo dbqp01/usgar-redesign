@@ -285,7 +285,8 @@
     "fillAllFields": "Please fill out all required fields.",
     "invalidEmail": "Please enter a valid email address.",
     "noPaymentUrl": "No payment URL received from server.",
-    "unexpectedError": "An unexpected error occurred."
+    "unexpectedError": "An unexpected error occurred.",
+    "cardError": "Card could not be verified. Check the card details and try again."
   },
   "exploreDetail": {
     "home": "Home",
@@ -408,6 +409,8 @@
     "availabilityChecking": "Checking availability...",
     "availabilityDegraded": "Live availability is temporarily unavailable. Showing full availability.",
     "rangeUnavailable": "No rooms available for these dates.",
+    "soldOut": "Sold out",
+    "availableOn": "Available:",
     "alternatives": "View alternatives",
     "onlyThisRoom": "Selected room", "toast": { "optionsUpdated": "Options updated", "bestPrice": "Best price {total}", "datesAdjusted": "Dates adjusted", "datesAdjustedDesc": "Check-out was moved to keep your stay valid.", "selectDates": "Select your dates", "checkinTo": "Check-in" },
     "bestPrice": "Best price",
