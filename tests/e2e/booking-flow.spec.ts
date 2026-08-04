@@ -21,7 +21,9 @@ test.describe('USGAR Hotels - Booking Flow E2E', () => {
 
   test('should display rooms listing', async ({ page }) => {
     await page.goto('/rooms');
-    await expect(page.locator('h1')).toBeVisible();
+    // Scoped to <main>: the Astro dev-toolbar injects headings into its shadow
+    // root (a body sibling), which made the generic 'h1' locator flaky in dev
+    await expect(page.locator('main h2')).toBeVisible();
 
     // Verify at least 4 room cards exist
     const roomCards = page.locator('[data-room-card]');
