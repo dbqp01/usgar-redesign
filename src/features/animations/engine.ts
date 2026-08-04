@@ -2,7 +2,6 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { register, isHomePage } from './animationLifecycle';
 import { initGlobalReveals, initGlobalRevealsInstant } from './modules/globalReveals';
-import { initPageTransitions } from './modules/pageTransition';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -52,6 +51,10 @@ export function bootHomeAnimations(): void {
             register('hero-text', heroText.initHeroTextReveal());
             register('parallax', parallax.initParallaxCards());
             register('tilt', tilt.initMouseTilt());
+            // These ScrollTriggers are created after async imports resolve —
+            // recalc positions in case layout settled after the
+            // loadHomeModules refresh above (same pattern as line 24).
+            ScrollTrigger.refresh();
           });
         });
       }
@@ -79,8 +82,6 @@ export function bootPageReveals(): void {
 }
 
 export function bootAnimations(): void {
-  initPageTransitions();
-
   if (isHomePage()) {
     bootHomeAnimations();
   } else {

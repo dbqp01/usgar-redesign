@@ -120,7 +120,13 @@ async function bootHero(isDesktop: boolean, parentCtx: gsap.Context): Promise<vo
     window.addEventListener('usgar:preloader-done', playHeroEntry, { once: true });
     const timeoutId = window.setTimeout(playHeroEntry, PRELOADER_FALLBACK_MS);
 
-    return () => window.clearTimeout(timeoutId);
+    return () => {
+      window.clearTimeout(timeoutId);
+      // {once:true} only self-removes if the event fires — if the context
+      // reverts first (SPA navigation) the listener would leak with a stale
+      // closure over the split chars. Remove it explicitly on revert.
+      window.removeEventListener('usgar:preloader-done', playHeroEntry);
+    };
   });
 }
 

@@ -53,6 +53,17 @@ export function initMouseTilt(): gsap.Context {
         container.addEventListener('mousemove', handleMouseMove);
         container.addEventListener('mouseleave', handleMouseLeave);
         container.addEventListener('mouseenter', handleMouseEnter);
+
+        // gsap.Context only reverts tweens/ScrollTriggers, not native DOM
+        // listeners — remove them on revert or SPA navigations accumulate them.
+        return () => {
+          container.removeEventListener('mousemove', handleMouseMove);
+          container.removeEventListener('mouseleave', handleMouseLeave);
+          container.removeEventListener('mouseenter', handleMouseEnter);
+          layers.forEach((layer) => {
+            (layer as HTMLElement).style.willChange = 'auto';
+          });
+        };
       });
     });
   });

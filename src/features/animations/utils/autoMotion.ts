@@ -91,45 +91,43 @@ export function createAutoMotion(
   let pointerVelocity = 0;
   let totalDrag = 0;
 
-  if (opts.draggable) {
-    const onDown = (e: PointerEvent) => {
-      dragging = true;
-      lastX = e.clientX;
-      pointerVelocity = 0;
+  const onDown = (e: PointerEvent) => {
+    dragging = true;
+    lastX = e.clientX;
+    pointerVelocity = 0;
+    totalDrag = 0;
+    stop();
+    container.setPointerCapture?.(e.pointerId);
+  };
+  const onMove = (e: PointerEvent) => {
+    if (!dragging) return;
+    const dx = e.clientX - lastX;
+    lastX = e.clientX;
+    totalDrag += Math.abs(dx);
+    pointerVelocity = dx;
+    currentX += dx * opts.dragFactor;
+    setX(currentX);
+  };
+  const onUp = () => {
+    if (!dragging) return;
+    dragging = false;
+    boost = Math.abs(pointerVelocity) > 2 ? pointerVelocity * opts.dragFactor * 0.06 : 0;
+    start();
+  };
+  const onClickCapture = (e: Event) => {
+    if (totalDrag > opts.clickThreshold) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
       totalDrag = 0;
-      stop();
-      container.setPointerCapture?.(e.pointerId);
-    };
-    const onMove = (e: PointerEvent) => {
-      if (!dragging) return;
-      const dx = e.clientX - lastX;
-      lastX = e.clientX;
-      totalDrag += Math.abs(dx);
-      pointerVelocity = dx;
-      currentX += dx * opts.dragFactor;
-      setX(currentX);
-    };
-    const onUp = () => {
-      if (!dragging) return;
-      dragging = false;
-      boost = Math.abs(pointerVelocity) > 2 ? pointerVelocity * opts.dragFactor * 0.06 : 0;
-      start();
-    };
+    }
+  };
+
+  if (opts.draggable) {
     container.addEventListener('pointerdown', onDown);
     window.addEventListener('pointermove', onMove);
     window.addEventListener('pointerup', onUp);
     // Click cancellation after a real drag (nested <a> keep working)
-    container.addEventListener(
-      'click',
-      (e) => {
-        if (totalDrag > opts.clickThreshold) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          totalDrag = 0;
-        }
-      },
-      true
-    );
+    container.addEventListener('click', onClickCapture, true);
   }
 
   start();
@@ -159,5 +157,11 @@ export function createAutoMotion(
     stop();
     observer?.disconnect();
     st.kill();
+    if (opts.draggable) {
+      container.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      container.removeEventListener('click', onClickCapture, true);
+    }
   };
 }
