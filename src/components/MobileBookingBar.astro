@@ -268,12 +268,14 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
       closeBtn?.addEventListener('click', closeSheet, { signal });
       backdrop?.addEventListener('click', closeSheet, { signal });
 
-      // Clean up smoothly on Astro ViewTransitions
+      // Clean up smoothly on Astro ViewTransitions. Registered with the per-init
+      // signal: abort() below removes this listener itself, so it never
+      // accumulates across SPA navigations ({ once: true } is only a safety net).
       document.addEventListener('astro:before-preparation', () => {
         forceCloseInstant();
         abortController.abort();
         if (ctx) ctx.revert();
-      }, { once: true });
+      }, { signal, once: true });
     });
   }
 

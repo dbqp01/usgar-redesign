@@ -88,16 +88,23 @@
         }
       };
 
-      window.addEventListener('mousemove', onMouseMove);
-      document.documentElement.addEventListener('mouseleave', onMouseLeave);
+      // Per-init AbortController: this init's listeners are removed together on
+      // navigation (see before-preparation below), so none accumulate across
+      // SPA navigations even though initCursor re-runs on every astro:page-load.
+      const abortController = new AbortController();
+      const signal = abortController.signal;
 
-      // Cleanup on Astro ViewTransitions
+      window.addEventListener('mousemove', onMouseMove, { signal });
+      document.documentElement.addEventListener('mouseleave', onMouseLeave, { signal });
+
+      // Cleanup on Astro ViewTransitions: abort() removes the listeners above
+      // (and this listener itself). { once: true } is kept as a safety net,
+      // not the primary cleanup mechanism.
       document.addEventListener('astro:before-preparation', () => {
-        window.removeEventListener('mousemove', onMouseMove);
-        document.documentElement.removeEventListener('mouseleave', onMouseLeave);
+        abortController.abort();
         isVisible = false;
         if (ctx) ctx.revert();
-      }, { once: true });
+      }, { signal, once: true });
     });
   }
 

@@ -75,8 +75,19 @@ export function isHomePage(): boolean {
   return path === '/' || isPage(path, 'es') || isPage(path, 'fr') || isPage(path, 'pt');
 }
 
+declare global {
+  interface Window {
+    __usgarLifecycleInit?: boolean;
+  }
+}
+
 export function initLifecycle(): void {
   if (typeof window === 'undefined') return;
+  // Defensive idempotency guard: SmoothScroll.astro calls this from a bundled
+  // script (once per document), so today this registers once — keep it that
+  // way even if a second caller ever appears.
+  if (window.__usgarLifecycleInit) return;
+  window.__usgarLifecycleInit = true;
   ensureResizeDebounce();
 
   document.addEventListener('astro:before-preparation', () => {

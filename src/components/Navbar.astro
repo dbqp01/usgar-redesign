@@ -511,12 +511,15 @@ const navLinks = [
 
       // ¡El gancho salvador de Astro! 
       // Cuando Astro empieza a enrutar, matamos la animación instantáneamente y liberamos el scroll.
+      // Registered with the per-init signal: abort() below removes this listener
+      // itself, so it never accumulates across SPA navigations ({ once: true } is
+      // only a safety net, not the primary cleanup).
       document.addEventListener('astro:before-preparation', () => {
         forceCloseInstant();
         stickyIo?.disconnect();
         abortController.abort();
         if (ctx) ctx.revert();
-      }, { once: true });
+      }, { signal, once: true });
     });
 
     // --- 3. Theme Toggle ---
