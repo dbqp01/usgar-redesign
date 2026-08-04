@@ -54,7 +54,10 @@ test.describe('USGAR booking wizard (Fase 4)', () => {
     await page.locator('#guest-phone').fill('+51 999 888 777');
     await page.locator('[data-guest-next]').click();
 
-    await expect(page.locator('#mp-payment-form')).toBeVisible();
+    // Nuevo flujo (foolproof): tras CONTINUE aparece primero el placeholder de
+    // preparación del pago; el formulario real solo se muestra si el hold
+    // (createHold) tiene éxito, ocultando a su vez el guest form.
+    await expect(page.locator('[data-payment-placeholder]')).toBeVisible({ timeout: 15000 });
   });
 
   test('preselects a single room from /book?roomType=matrimonial and shows alternatives toggle', async ({ page }) => {

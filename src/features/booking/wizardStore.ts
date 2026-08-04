@@ -16,6 +16,7 @@ export interface WizardState {
   allocation: AllocationOption | null;
   options: AllocationOption[] | null;
   selecting: boolean;
+  processing: boolean;
   error: string | null;
 }
 
@@ -36,6 +37,7 @@ const DEFAULT_STATE: WizardState = {
   allocation: null,
   options: null,
   selecting: false,
+  processing: false,
   error: null,
 };
 

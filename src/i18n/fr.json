@@ -263,6 +263,7 @@
     "selected": "Selectionnee",
     "select": "Selectionner",
     "guestDetails": "Coordonnees du Voyageur Principal",
+    "paymentDetails": "Details de Paiement",
     "fullName": "Nom Complet",
     "phoneWhatsApp": "Telephone / WhatsApp",
     "airportPickupCheckbox": "Avez-vous besoin d'un transfert prive depuis l'aeroport ?",

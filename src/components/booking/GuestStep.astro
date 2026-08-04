@@ -216,6 +216,8 @@ const t = useTranslations(lang);
       const guestEmailInput = document.getElementById('guest-email') as HTMLInputElement | null;
       const guestPhoneInput = document.getElementById('guest-phone') as HTMLInputElement | null;
 
+      if (wizardStore.getState().processing) return;
+
       if (!guestNameInput?.value || !guestEmailInput?.value || !guestPhoneInput?.value) {
         showError(L.fillAllFields);
         return;
@@ -227,8 +229,24 @@ const t = useTranslations(lang);
       // Si ya estamos en el paso 3 (guest + payment juntos), next() es no-op.
       // setState({step:3}) SIEMPRE notifica -> PaymentStep.start() se re-evalua
       // con los campos llenos -> createHold -> cardForm monta.
-      wizardStore.setState({ step: 3 });
+      nextBtn.disabled = true;
+      nextBtn.setAttribute('aria-busy', 'true');
+      const continueLabel = L.checkingAvailability || 'Checking availability...';
+      if (nextBtn.querySelector('span')) nextBtn.querySelector('span')!.textContent = continueLabel;
+      wizardStore.setState({ step: 3, processing: true });
     }, { signal });
+
+    // Restaurar el botón si el proceso de pago termina en error o el usuario vuelve atrás
+    const originalLabel = nextBtn.querySelector('span')?.textContent || '';
+    const unsub = wizardStore.subscribe((state) => {
+      if (!state.processing && nextBtn.disabled) {
+        nextBtn.disabled = false;
+        nextBtn.removeAttribute('aria-busy');
+        const span = nextBtn.querySelector('span');
+        if (span && state.error === null) span.textContent = originalLabel;
+      }
+    });
+    abortController.signal.addEventListener('abort', () => unsub());
 
     backBtn.addEventListener('click', () => wizardStore.back(), { signal });
 

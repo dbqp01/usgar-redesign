@@ -269,7 +269,7 @@ const t = useTranslations(lang);
     const errorContainer = document.getElementById('error-container');
 
     const params = new URLSearchParams(window.location.search);
-    const bookingId = params.get('bookingId') || params.get('external_reference') || '';
+    const bookingId = params.get('bookingId') || params.get('booking') || params.get('external_reference') || '';
     // Retrieve access token from URL, sessionStorage, or empty
     const token = params.get('token')
       || sessionStorage.getItem(`booking_token_${bookingId}`)
