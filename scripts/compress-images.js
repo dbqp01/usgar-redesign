@@ -78,11 +78,25 @@ async function compressImage(filePath) {
 
 async function run() {
   console.log('Optimizing staged images...');
-  for (const file of files) {
-    if (fs.existsSync(file)) {
-      await compressImage(file);
+  const existing = files.filter((file) => fs.existsSync(file));
+  const CONCURRENCY = 4;
+  let index = 0;
+
+  // Worker pool: at most CONCURRENCY compressImage calls in flight at once.
+  // Each call is error-tolerant (allSettled semantics) so one corrupt file
+  // reports its error and the rest of the batch continues.
+  async function worker() {
+    while (index < existing.length) {
+      const file = existing[index++];
+      await compressImage(file).catch((error) => {
+        console.error(`  - Failed to compress image ${file}:`, error.message);
+      });
     }
   }
+
+  await Promise.all(
+    Array.from({ length: Math.min(CONCURRENCY, existing.length) }, () => worker())
+  );
 }
 
 run();

@@ -3,8 +3,8 @@
 # pre-commit hook — USGAR Hotels (PowerShell, Windows-compatible)
 # =============================================================================
 # Que hace:
-#   1. Comprime videos .mp4 staged con ffmpeg (libx264, max 1280px, 60fps
-#      interpolados, aac 128k) y marca el archivo con el tag
+#   1. Comprime videos .mp4 staged con ffmpeg (libx264, max 1280px, fps nativo,
+#      aac 128k) y marca el archivo con el tag
 #      USGAR_COMPRESSED para no re-comprimir en el proximo commit.
 #   2. Comprime imagenes staged (.jpg/.jpeg/.png/.webp) via
 #      node scripts/compress-images.js (sharp: max 1920px, calidad 80-82).
@@ -64,7 +64,7 @@ try {
             $tempFile = Join-Path $dir ($base + '-temp.mp4')
 
             & ffmpeg -y -i $file -vcodec libx264 -crf 28 -preset medium -pix_fmt yuv420p `
-                -vf "scale='min(1280,iw)':-2,minterpolate=fps=60:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1" `
+                -vf "scale='min(1280,iw)':-2" `
                 -c:a aac -b:a 128k -metadata comment="USGAR_COMPRESSED" `
                 -movflags +faststart $tempFile 2>$null | Out-Null
 
