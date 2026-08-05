@@ -19,8 +19,8 @@ Sitio web transaccional del hotel boutique Usgar (San Pedro, Cusco, Perú): rese
 
 Hay un plan de trabajo pendiente (ver `docs/MIGRATION_PLAN.md`). **Nada de eso está hecho.** No implementes pasos del plan por tu cuenta: el código actual sigue siendo MP+Channex+QloApps. Si el usuario pide algo del plan, consulta el archivo y trabaja solo lo que marque. Estado actual de las decisiones:
 - **Pagos: MercadoPago SE MANTIENE** — no hay migración de pasarela (Stripe+LLC solo se reevaluará con datos de volumen).
-- **Channel manager**: Channex → Nobeds (pendiente).
-- **CMS/PMS**: QloApps → Filament PHP (pendiente, decisión de arquitectura Laravel sin definir).
+- **Channel manager**: Channex → **QloApps Channel Manager** (pendiente, decisión 2026-08-04: $30/propiedad/mes con conexiones Booking/Expedia/Airbnb incluidas; sustituye la migración a Nobeds).
+- **CMS/PMS**: **QloApps SE MANTIENE** — migración a Filament PHP cancelada (decisión 2026-08-04). El panel Laravel 12/Filament ya desplegado en admin.hotelesusgar.com queda fuera de alcance (pendiente: decidir su destino).
 - **Refactorización completa del código**: pendiente (sección 4 del plan) — incluye limpiar residuos del flujo Checkout Pro de MercadoPago y la falta de comunicación entre capas.
 
 ## Estructura (dónde está cada cosa)
@@ -85,3 +85,24 @@ docs/                         Documentación técnica (API_REGISTRY, ARCHITECTUR
 - **Commits**: pequeños, por tema, prefijo `feat:` / `fix:` / `chore:` / `docs:`. No mega-commits.
 - **MCPs OBLIGATORIOS en todos los agentes** (regla del usuario, incluye subagentes): todo agente que ejecute tareas DEBE usar los MCPs (context7 para docs de librerías, chrome-devtools para verificación visual/rendimiento, mysql para datos, mercadopago-mcp para el flujo MP, astro-docs, tavily) y DEBE reportar en su reporte qué MCPs usó y qué verificó con ellos. Si un MCP esencial no está disponible → BLOCKED, nunca trabajar sin verificación real.
 - **Duda → preguntar**: si el pedido del usuario choca con el plan de migración o la arquitectura, pregunta antes de codear.
+
+## Principios de ingeniería (reglas de senior dev, adaptadas de Marcos Hernanz — Vercel)
+
+Aplicar en orden; detente en la primera que aplique. Estas reglas son PARA ESTE REPO (producción con pagos/BD): las reglas 1 y 7 del original se suavizan a propósito (el original casi borró una tabla de producción del autor).
+
+1. **Sin capas de compatibilidad especulativas**: borra caminos obsoletos directo, pero NUNCA sin antes verificar dependencias y con `git` limpio y reversible. No añadas migraciones/fallbacks "por si acaso". Cambios de schema: coordinar con QloApps (ver sección BD).
+2. **Implementación más simple que satisfaga la necesidad actual**: sin abstracción preventiva, sin interfaces para un solo uso futuro.
+3. **Build the thinnest end-to-end slice first**: un corte vertical mínimo funcionando antes que infraestructura; nunca reemplaces código que funciona con complejidad a medias.
+4. **Componentes modulares**: separación de concerns (el ADR del proyecto ya lo impone: Action → Domain → Ports/Adapters).
+5. **Preferir librerías maduras**: no reescribas lo que una librería estable ya resuelve (compatible con "dependencia mínima" del deploy Hostinger).
+6. **Revisar dependencias existentes** antes de añadir paquetes nuevos: revisa `composer.json`/`package.json` y qué ya importa el código antes de instalar algo.
+7. **Decisiones de arquitectura a largo plazo**: rechaza hacks "lo cambiamos luego" para cosas que cruzan capas o la BD; documenta en `docs/` (patrón ADR del proyecto).
+8. **Estudia cómo lo resolvieron productos maduros**: usa patrones probados (PrestaShop/QloApps, Laravel/Filament del backend, estándares del sector) antes de inventar.
+
+## Herramientas de calidad disponibles (instaladas 2026-08-04)
+
+- **Semgrep MCP** (`semgrep` en MCPs): SAST local y gratuito — auditor de seguridad estándar. Usa `semgrep mcp` para escanear el diff/código. Sustituye el rol del auditor conectado (CodeScene).
+- **open-code-review (Alibaba)**: `ocr delegate preview` + `ocr delegate rule <file>` para revisión de código independiente en modo delegación (sin API key extra — el agente hace el razonamiento). Plugin OpenCode instalado globalmente.
+- **Ponytail**: plugin OpenCode activo — sigue la "ladder" YAGNI antes de generar código (¿existe? ¿stdlib? ¿dependencia instalada? → solo entonces el mínimo que funciona). Niveles `/ponytail lite|full|ultra|off`.
+- **Skills de diseño**: `design-taste-frontend` (anti-slop, landing/redesign — NO usar en el booking wizard) y `modlens` (visión para imágenes: requiere `GEMINI_API_KEY` vía `modlens config set gemini-api.apiKey <key>`; provider ya fijado a `gemini-api`).
+- **codebase-memory-mcp**: NO instalar como MCP — duplica `graphify` (ya configurado). Si se quiere comparar, usar su CLI standalone.

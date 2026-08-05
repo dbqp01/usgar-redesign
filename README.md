@@ -2,7 +2,7 @@
 
 Sitio transaccional del hotel boutique Usgar (San Pedro, Cusco, Perú): reservas directas, 4 idiomas (en/es/fr/pt), pagos USD. Frontend Astro 7 estático + API PHP nativa (monolito ADR).
 
-> **Para agentes:** lee primero `AGENTS.md` (estructura y cómo modificar). **Migraciones en curso:** `docs/MIGRATION_PLAN.md` (TAB, Nobeds, Filament — nada implementado aún).
+> **Para agentes:** lee primero `AGENTS.md` (estructura y cómo modificar). **Migraciones en curso:** `docs/MIGRATION_PLAN.md` (QloApps Channel Manager pendiente; migración de PMS cancelada — nos quedamos con QloApps).
 
 ## Quickstart
 

@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "design-taste-frontend": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/taste-skill/SKILL.md",
+      "computedHash": "899b84384f74f540ea5284d9b2e9234e050998b42eacc805410b518d4226c0b3"
+    },
     "gsap-core": {
       "source": "greensock/gsap-skills",
       "sourceType": "github",
@@ -48,6 +54,12 @@
       "sourceType": "github",
       "skillPath": "skills/gsap-utils/SKILL.md",
       "computedHash": "72af4a036d417d6eaef7478eca2f28e760631fb78db822ba34a9c706797aab62"
+    },
+    "modlens": {
+      "source": "liustack/modlens",
+      "sourceType": "github",
+      "skillPath": "skills/modlens/SKILL.md",
+      "computedHash": "54073715d508dadf48c405e96b7f2154a5762956d7e310d4250bba76150537d3"
     }
   }
 }

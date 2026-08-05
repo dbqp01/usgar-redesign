@@ -1,0 +1,55 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  // MCPs específicos de USGAR (2026-08-04, docs: opencode.ai/docs/config#precedence-order):
+  // El config de proyecto se MERGEA sobre el global y tiene precedencia en claves en conflicto.
+  // Estos MCPs viven SOLO aquí para no inflar el contexto en otros proyectos:
+  // - graphify: ruta hardcodeada a graphify-out/ de este repo
+  // - mysql: BD del hotel (schema QloApps)
+  // - mercadopago-mcp-server: pagos del hotel (disabled; se habilita solo en tareas de pagos)
+  "mcp": {
+    "graphify": {
+      "type": "local",
+      "command": [
+        "uv",
+        "run",
+        "--with",
+        "graphifyy",
+        "--with",
+        "mcp",
+        "-m",
+        "graphify.serve",
+        "C:/Users/akim/Desktop/usgar-redesign/graphify-out/graph.json"
+      ],
+      "enabled": true
+    },
+    "mysql": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "--from",
+        "mysql-mcp-server",
+        "mysql_mcp_server"
+      ],
+      "environment": {
+        "MYSQL_HOST": "{env:MYSQL_HOST}",
+        "MYSQL_PORT": "{env:MYSQL_PORT}",
+        "MYSQL_USER": "{env:MYSQL_USER}",
+        "MYSQL_PASSWORD": "{env:MYSQL_PASSWORD}",
+        "MYSQL_DATABASE": "{env:MYSQL_DATABASE}"
+      },
+      "enabled": true
+    },
+    "mercadopago-mcp-server": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "mcp-remote",
+        "https://mcp.mercadopago.com/mcp",
+        "--header",
+        "Authorization:Bearer {env:MERCADOPAGO_ACCESS_TOKEN}"
+      ],
+      "enabled": false
+    }
+  }
+}

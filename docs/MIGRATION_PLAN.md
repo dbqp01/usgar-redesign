@@ -2,7 +2,7 @@
 
 Plan de trabajo con migraciones en curso y estado verificado (2026-08-03): úsalo como lista de tareas y como documentación del estado real.
 
-Estado global (2026-08-03): **sección 3 en curso** — Fase 0 completada (decisión variante B + panel Laravel 12 / Filament v5.7.5 en admin.hotelesusgar.com), Fases 1-2 pendientes; **sección 4 completada** (refactor backend, cierre F2 el 2026-08-03); **sección 2 bloqueada** (Nobeds requiere suscripción pagada); **sección 1 sin cambios** (MP se mantiene).
+Estado global (2026-08-04): **sección 2 pendiente** — decisión tomada: Channex → **QloApps Channel Manager** ($30/propiedad/mes, conexiones incluidas); **sección 3 CANCELADA** — nos quedamos con QloApps como PMS (decisión usuario 2026-08-04); **sección 4 completada** (refactor backend, cierre F2 el 2026-08-03); **sección 1 sin cambios** (MP se mantiene).
 
 ---
 
@@ -13,43 +13,25 @@ Estado global (2026-08-03): **sección 3 en curso** — Fase 0 completada (decis
 - [ ] **Reevaluar Stripe + LLC cuando existan ~6 meses de datos de volumen** (break-even ~10-12 reservas online/mes; 2.9% + $0.30 es el único <4% real).
 - [ ] Los problemas reportados con MP (falta de comunicación, residuos de Checkout Pro) **no se resuelven cambiando de pasarela**: se resuelven en la refactorización (sección 4) — aislar SDK, limpiar flujo viejo, tests de caracterización.
 
-## 2. Channel Manager: Channex → Nobeds
+## 2. Channel Manager: Channex → QloApps Channel Manager (pendiente, decisión 2026-08-04)
 
-- [ ] Crear cuenta/API key de Nobeds (docs en https://api.nobeds.com — incluye MCP docs).
-- [ ] Revisar endpoints reales a usar: Bookings Engine, Prices & Availability, WebHooks, Health.
-- [ ] Crear `NobedsAdapter` (sustituir `ChannexAdapter` en `app/Features/Shared/Adapters/`).
-- [ ] `RoomTypeRegistry`: re-mapear room types a los IDs de Nobeds.
-- [ ] Sincronización de inventario/tarifas: sustituir lógica de Channex (availability + rates).
-- [ ] Listener de bookings: `SyncChannexBookingListener` → equivalente Nobeds (crear/actualizar/cancelar reservas).
-- [ ] Webhooks de Nobeds: registrar y verificar eventos en `app/Features/Webhooks/`.
-- [ ] Health/self-service: monitorear estado de conexión OTA (endpoint Health de Nobeds).
-- [ ] Eliminar código de Channex (adapters, mappers, listeners).
-- [ ] Pruebas con OTAs reales en sandbox (Booking.com / Airbnb) y verificación de overbooking.
+**Decisión (2026-08-04, usuario):** sustituir la migración prevista a Nobeds por la suscripción SaaS **QloApps Channel Manager** (Webkul). Investigación de precios exactos (2026-08-04): Channex cuesta $130/mes plataforma + $7/propiedad (**$137/mes** — su único plan publicado); Nobeds €99/mes plan API con el peor historial de fiabilidad/soporte del grupo; el QloApps CM cuesta **$30/propiedad/mes** ($300/año, descuento 16.6%) e **incluye las conexiones** a Booking.com, Expedia, Airbnb (+Agoda, Google Hotels, Ctrip, Despegar, Goibibo/MakeMyTrip, Yatra, Bakuun) **sin costo por canal**, con la conectividad Channex operada por Webkul dentro del plan (no se paga Channex aparte). Requisito del hotel: solo Booking/Expedia/Airbnb — cubierto.
 
-## 3. CMS/PMS: QloApps → Filament PHP
+- [ ] Confirmar con Webkul (ticket en webkul.uvdesk.com) antes de pagar: (1) conectividad Channex de Booking/Expedia incluida en el $30 (sin factura aparte de Channex), (2) compatibilidad con la versión de QloApps de la instancia, (3) límite de canales por propiedad (la doc lista 10, sin límite publicado).
+- [ ] Activar suscripción en channels.qloapps.com — ojo: el trial de 15 días NO sincroniza precios/inventario (solo la versión pagada) y no hay reembolsos.
+- [ ] Conector PMS↔CM: habilitar webservice QloApps (clave + permisos `cm_api`) + módulo gratuito "QloApps PMS & Channel Manager Connector".
+- [ ] Configurar canales siguiendo las guías de qloapps.com: Booking.com y Expedia (seleccionar "Channex" como proveedor en el extranet OTA) + Airbnb (authorize) + mapeo de room types/rate plans.
+- [ ] Eliminar `ChannexAdapter` y la lógica de sincronización de Channex en `app/Features/Shared/Adapters/` (sustituida por la sync CM↔PMS vía webservice, cron ~1 min).
+- [ ] Revisar listeners de bookings: `SyncChannexBookingListener` → las reservas OTA entran directo a QloApps (verificar flujo con `QloAppAdapter` y webhooks existentes).
+- [ ] Monitoreo: reconciliación periódica inventario/tarifas OTA vs QloApps — el CM de Webkul no tiene status page pública (mitigar con checks propios).
+- [ ] Pruebas con OTAs reales (Booking.com / Airbnb) y verificación de overbooking.
 
-### Decisión de arquitectura — RESUELTA (Fase 0, 2026-08-02)
-- [x] **Variante (B) — backend dual temporal**: Filament es un panel de administración para **Laravel** y el backend actual es PHP 8 nativo (monolito ADR con DI PSR-11). Se eligió (B): Laravel + Filament **solo para admin**, API pública PHP nativa hasta migrar. Alternativas descartadas:
-  - (A) Migrar TODO el backend a Laravel + Filament (reescritura gradual feature a feature, ADR → controllers/servicios Laravel).
-  - (C) Otro (depende de lo que el usuario quiera conservar de QloApps: PrestaShop schema, módulos, etc.)
-  - **Implementada en Fase 0**: Laravel 12 + Filament v5.7.5 desplegado en `https://admin.hotelesusgar.com/admin/login` (multi-tenant Property, deploy zip `usgar-admin-deploy.zip` → `public_html/admin` en Hostinger compartido, sin Composer en prod). Evidencia: `docs/refactoring/DECISIONS.md` (2026-08-02), `docs/refactoring/STATE.md` ("FASE 0 COMPLETA"), commits `7333841`/`f7642ec`/`4f1eff6`.
-- [x] **Alcance de "QloApps" confirmado**: se sale de QloApps por completo (tablas propias + Filament como admin del sitio); Filament gestiona habitaciones/tarifas/reservas/huéspedes y QloApps deja de ser el PMS (decisión del usuario — contexto en `docs/refactoring/BACKEND_STATE.md`).
+## 3. CMS/PMS: QloApps → Filament PHP — CANCELADA (2026-08-04)
 
-### Fase 0 — completada (2026-08-02)
-- [x] Bootstrap: Laravel 12 + Filament v5 instalados en `backend/` + panel admin en producción (evidencia: commits `e2b6476`/`7333841`; `docs/refactoring/STATE.md` "FASE 0 COMPLETA").
+**Decisión (2026-08-04, usuario): nos quedamos con QloApps como PMS.** Se cancela la migración del PMS (Fases 1-2: rate engine, migración de esquema BD, recursos Filament, API pública Laravel). Contexto: la investigación de channel managers (2026-08-04) mostró que el QloApps Channel Manager ($30/mes) es el camino económico y funciona sobre QloApps; mantener QloApps como PMS simplifica el stack y conserva `QloAppAdapter`, el schema PrestaShop y el flujo de reservas actual.
 
-### Fase 1 — pendiente (rate engine + recursos Filament)
-- [ ] Rate engine (siguiente ciclo según `docs/refactoring/DECISIONS.md`, 2026-08-02).
-- [ ] Migrar esquema BD: QloApps (schema PrestaShop: `ps_room_type`, órdenes, clientes…) → Eloquent migrations (tablas propias).
-- [ ] Recursos Filament: Habitaciones, Reservas, Huéspedes, Tarifas, Webhooks (con policies/permissions).
-
-### Fase 2 — pendiente (API pública Laravel)
-- [ ] `/api` público: migrar actions ADR a rutas/controllers Laravel **1:1 con el contrato de `docs/refactoring/backend-contract.md`** (mantener contrato JSON igual para no romper frontend).
-- [ ] Migrar Ports/Adapters → servicios Laravel (`PmsPortInterface`, `PaymentGatewayPortInterface` → service containers).
-- [ ] Auth: sesiones propias + hybridauth → Laravel Auth (guards + socialite si aplica).
-- [ ] Cron → Laravel Scheduler (reemplazar scripts crudos de `app/Features/Cron`).
-- [ ] Deploy Hostinger: Laravel en hosting compartido (ajustes: public/, rutas, artisan optimize).
-- [ ] Pruebas: portar `phpunit.xml` + `api-harness.php` a tests Laravel; mantener Playwright.
+- [x] **Histórico — Fase 0 completada (2026-08-02)**: Laravel 12 + Filament v5.7.5 desplegado en `https://admin.hotelesusgar.com/admin/login` (multi-tenant Property, deploy zip `usgar-admin-deploy.zip` → `public_html/admin`). Evidencia: `docs/refactoring/DECISIONS.md`, `docs/refactoring/STATE.md`, commits `7333841`/`f7642ec`/`4f1eff6`. **Queda fuera de alcance a partir de la cancelación.**
+- [ ] **Pendiente de decisión (no bloqueante)**: qué hacer con el panel Filament ya desplegado en producción (desactivar/eliminar, o conservar como visor de solo lectura). Los docs de `docs/refactoring/` quedan como registro histórico de F0.
 
 ## 4. Refactorización completa del código (transversal) — COMPLETADA (2026-08-03)
 
@@ -76,4 +58,4 @@ Estado global (2026-08-03): **sección 3 en curso** — Fase 0 completada (decis
 - Marcar `[x]` solo cuando esté hecho y verificado (tests pasando).
 - No mezclar migraciones en un mismo commit: una migración = una serie de commits `feat(migration-<nombre>):`.
 - Al terminar cada bloque: actualizar README y borrar esta sección completada.
-- Cualquier dependencia nueva (Laravel, Filament, SDK MercadoPago, Nobeds) documentar versión exacta.
+- Cualquier dependencia nueva (Laravel, Filament, SDK MercadoPago, QloApps Channel Manager) documentar versión exacta.
