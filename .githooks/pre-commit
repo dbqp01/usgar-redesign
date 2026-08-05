@@ -3,9 +3,14 @@
 # pre-commit hook — USGAR Hotels (PowerShell, Windows-compatible)
 # =============================================================================
 # Que hace:
-#   1. Comprime videos .mp4 staged con ffmpeg (libx264, max 1280px, fps nativo,
-#      aac 128k) y marca el archivo con el tag
-#      USGAR_COMPRESSED para no re-comprimir en el proximo commit.
+#   1. Comprime videos .mp4 staged con ffmpeg (libx264 crf 18 preset slow,
+#      max 1280px, 60fps interpolados via minterpolate, aac 128k) y marca el
+#      archivo con el tag USGAR_COMPRESSED para no re-comprimir en el proximo
+#      commit. Calidad primero (usuario 2026-08-05: "que se vea fluido"):
+#      crf 28 dejaba pixeleado con frames interpolados -> crf 18 + preset slow
+#      (wiki ffmpeg H.264: 17-18 "visually lossless or nearly so") y
+#      minterpolate fps=60 mci/aobmc/bidir/vsbmc=1 (blog.programster.org;
+#      vsbmc = variable-size block MC, anti-borrosidad en bordes).
 #   2. Comprime imagenes staged (.jpg/.jpeg/.png/.webp) via
 #      node scripts/compress-images.js (sharp: max 1920px, calidad 80-82).
 #   3. Re-stagea los archivos comprimidos.
@@ -63,8 +68,8 @@ try {
             $dir  = Split-Path -Parent $file
             $tempFile = Join-Path $dir ($base + '-temp.mp4')
 
-            & ffmpeg -y -i $file -vcodec libx264 -crf 28 -preset medium -pix_fmt yuv420p `
-                -vf "scale='min(1280,iw)':-2" `
+            & ffmpeg -y -i $file -vcodec libx264 -crf 18 -preset slow -pix_fmt yuv420p `
+                -vf "scale='min(1280,iw)':-2,minterpolate=fps=60:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1" `
                 -c:a aac -b:a 128k -metadata comment="USGAR_COMPRESSED" `
                 -movflags +faststart $tempFile 2>$null | Out-Null
 
