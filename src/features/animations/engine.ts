@@ -24,61 +24,59 @@ async function loadHomeModules(): Promise<void> {
 }
 
 export function bootHomeAnimations(): void {
+  // gsap.matchMedia() crea su propio context internamente (docs GSAP): anidarlo
+  // en gsap.context() es redundante; mm.revert() equivale a ctx.revert().
   const mm = gsap.matchMedia();
 
-  const ctx = gsap.context(() => {
-    mm.add(
-      {
-        isDesktop: '(min-width: 768px)',
-        isMobile: '(max-width: 767px)',
-        reduceMotion: PREFERS_REDUCED_MOTION,
-      },
-      (context) => {
-        const { isDesktop, reduceMotion } = context.conditions!;
+  mm.add(
+    {
+      isDesktop: '(min-width: 768px)',
+      isMobile: '(max-width: 767px)',
+      reduceMotion: PREFERS_REDUCED_MOTION,
+    },
+    (context) => {
+      const { isDesktop, reduceMotion } = context.conditions!;
 
-        if (reduceMotion) {
-          register('reveals', initGlobalRevealsInstant());
-          return;
-        }
-
-        void loadHomeModules().then(() => {
-          if (!isDesktop) return;
-          void Promise.all([
-            import('./modules/heroTextReveal'),
-            import('./modules/parallaxCards'),
-            import('./modules/mouseTilt'),
-          ]).then(([heroText, parallax, tilt]) => {
-            register('hero-text', heroText.initHeroTextReveal());
-            register('parallax', parallax.initParallaxCards());
-            register('tilt', tilt.initMouseTilt());
-            // These ScrollTriggers are created after async imports resolve —
-            // recalc positions in case layout settled after the
-            // loadHomeModules refresh above (same pattern as line 24).
-            ScrollTrigger.refresh();
-          });
-        });
+      if (reduceMotion) {
+        register('reveals', initGlobalRevealsInstant());
+        return;
       }
-    );
-  });
 
-  register('home', ctx);
+      void loadHomeModules().then(() => {
+        if (!isDesktop) return;
+        void Promise.all([
+          import('./modules/heroTextReveal'),
+          import('./modules/parallaxCards'),
+          import('./modules/mouseTilt'),
+        ]).then(([heroText, parallax, tilt]) => {
+          register('hero-text', heroText.initHeroTextReveal());
+          register('parallax', parallax.initParallaxCards());
+          register('tilt', tilt.initMouseTilt());
+          // These ScrollTriggers are created after async imports resolve —
+          // recalc positions in case layout settled after the
+          // loadHomeModules refresh above (same pattern as line 24).
+          ScrollTrigger.refresh();
+        });
+      });
+    }
+  );
+
+  register('home', mm);
 }
 
 export function bootPageReveals(): void {
   const mm = gsap.matchMedia();
 
-  const ctx = gsap.context(() => {
-    mm.add(PREFERS_NO_REDUCE, () => {
-      register('reveals', initGlobalReveals());
-      ScrollTrigger.refresh(true);
-    });
-
-    mm.add(PREFERS_REDUCED_MOTION, () => {
-      register('reveals', initGlobalRevealsInstant());
-    });
+  mm.add(PREFERS_NO_REDUCE, () => {
+    register('reveals', initGlobalReveals());
+    ScrollTrigger.refresh(true);
   });
 
-  register('page', ctx);
+  mm.add(PREFERS_REDUCED_MOTION, () => {
+    register('reveals', initGlobalRevealsInstant());
+  });
+
+  register('page', mm);
 }
 
 export function bootAnimations(): void {

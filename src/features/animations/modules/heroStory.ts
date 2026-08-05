@@ -2,30 +2,27 @@ import { gsap } from 'gsap';
 
 const PRELOADER_FALLBACK_MS = 900;
 
-export function initHeroStory(): gsap.Context {
-  // El context se crea primero para evitar TDZ: el callback de mm.add se ejecuta
-  // durante gsap.context(), antes de que la const quede asignada.
-  const ctx = gsap.context(() => {});
+export function initHeroStory(): gsap.MatchMedia {
+  // gsap.matchMedia() crea su propio context internamente (docs GSAP) y se lo
+  // pasa al callback: ese context sirve a bootHero para registrar los tweens
+  // async via context.add(), revertibles cuando mm.revert() corra.
+  const mm = gsap.matchMedia();
 
-  ctx.add(() => {
-    const mm = gsap.matchMedia();
+  mm.add(
+    {
+      isDesktop: '(min-width: 768px)',
+      isMobile: '(max-width: 767px)',
+      reduceMotion: '(prefers-reduced-motion: reduce)',
+    },
+    (context) => {
+      const { isDesktop, reduceMotion } = context.conditions!;
+      if (reduceMotion) return;
 
-    mm.add(
-      {
-        isDesktop: '(min-width: 768px)',
-        isMobile: '(max-width: 767px)',
-        reduceMotion: '(prefers-reduced-motion: reduce)',
-      },
-      (context) => {
-        const { isDesktop, reduceMotion } = context.conditions!;
-        if (reduceMotion) return;
+      void bootHero(isDesktop!, context);
+    }
+  );
 
-        void bootHero(isDesktop!, ctx);
-      }
-    );
-  });
-
-  return ctx;
+  return mm;
 }
 
 async function bootHero(isDesktop: boolean, parentCtx: gsap.Context): Promise<void> {

@@ -46,44 +46,44 @@ import { siteSettings } from '../../data/settings';
     const preloader = document.getElementById("cinematic-preloader");
     if (!preloader) return;
 
-    const ctx = gsap.context(() => {
-      const mm = gsap.matchMedia();
+    // gsap.matchMedia() crea su propio context internamente (docs GSAP); el
+    // scope por defecto se pasa como unico parametro (igual que ctx(scope)).
+    const mm = gsap.matchMedia(preloader);
 
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const tl = gsap.timeline({
-          onComplete: () => {
-            sessionStorage.setItem("usgar_loaded", "true");
-            gsap.set(preloader, { autoAlpha: 0, display: "none" });
-            done();
-          },
-        });
-
-        tl.to("#preloader-text", {
-          y: 0,
-          autoAlpha: 1,
-          duration: 0.6,
-          ease: "power4.out",
-        })
-        .to("#preloader-line", {
-          scaleX: 1,
-          duration: 0.55,
-          ease: "power3.inOut",
-        }, "-=0.35")
-        .to(preloader, {
-          autoAlpha: 0,
-          duration: 0.4,
-          ease: "power2.inOut",
-          delay: 0.1
-        });
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const tl = gsap.timeline({
+        onComplete: () => {
+          sessionStorage.setItem("usgar_loaded", "true");
+          gsap.set(preloader, { autoAlpha: 0, display: "none" });
+          done();
+        },
       });
 
-      mm.add("(prefers-reduced-motion: reduce)", () => {
-        sessionStorage.setItem("usgar_loaded", "true");
-        gsap.set(preloader, { autoAlpha: 0, display: "none" });
-        done();
+      tl.to("#preloader-text", {
+        y: 0,
+        autoAlpha: 1,
+        duration: 0.6,
+        ease: "power4.out",
+      })
+      .to("#preloader-line", {
+        scaleX: 1,
+        duration: 0.55,
+        ease: "power3.inOut",
+      }, "-=0.35")
+      .to(preloader, {
+        autoAlpha: 0,
+        duration: 0.4,
+        ease: "power2.inOut",
+        delay: 0.1
       });
-    }, preloader);
+    });
 
-    register("preloader", ctx);
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      sessionStorage.setItem("usgar_loaded", "true");
+      gsap.set(preloader, { autoAlpha: 0, display: "none" });
+      done();
+    });
+
+    register("preloader", mm);
   });
 </script>

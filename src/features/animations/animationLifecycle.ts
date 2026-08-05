@@ -3,7 +3,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-type ContextEntry = { name: string; ctx: gsap.Context };
+// MatchMedia wraps a Context internally (GSAP docs) — both expose revert().
+type ContextEntry = { name: string; ctx: gsap.Context | gsap.MatchMedia };
 
 const RESIZE_DEBOUNCE_MS = 200;
 const registry: Map<string, ContextEntry> = new Map();
@@ -33,7 +34,7 @@ function teardownResizeDebounce(): void {
   resizeHandler = null;
 }
 
-export function register(name: string, ctx: gsap.Context): void {
+export function register(name: string, ctx: gsap.Context | gsap.MatchMedia): void {
   if (registry.has(name)) {
     registry.get(name)!.ctx.revert();
   }
