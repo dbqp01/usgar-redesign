@@ -223,8 +223,27 @@ const errorMessage = url.searchParams.get('error') || '';
     </div>
   </main>
 
-  <script is:inline define:vars={{ redirect, tErrorLogin: t('auth.loginError'), tEmailExists: t('auth.emailExists'), tSignIn: t('auth.signIn'), tSignUp: t('auth.signUp') }}>
+  <script is:inline data-astro-rerun define:vars={{ redirect, tErrorLogin: t('auth.loginError'), tEmailExists: t('auth.emailExists'), tSignIn: t('auth.signIn'), tSignUp: t('auth.signUp') }}>
     (function() {
+      // The login form must be re-bound on EVERY entry under client-side
+      // navigation: the form elements are re-created on each body swap, so the
+      // getElementById calls and listeners below MUST re-run on every entry —
+      // never wrap initLogin in a `window.__loginInit` latch.
+      //
+      // Two mechanisms cooperate to re-run it:
+      //   1. data-astro-rerun (plan Todo 5) — forces the router to re-execute
+      //      this inline script on every transition. NOTE: with define:vars
+      //      present, Astro strips data-astro-rerun from the served <script>
+      //      tag (verified on Astro 7.1.1 dev, see swap-functions.js), so the
+      //      reliable mechanism is #2.
+      //   2. A persistent `astro:page-load` listener registered EXACTLY ONCE.
+      //      `astro:page-load` fires at the end of the initial load and of
+      //      every client-side navigation, so the handler re-binds the fresh
+      //      form elements each entry. document/window are persistent targets,
+      //      so the registration is guarded by window.__loginPageLoadBound
+      //      (the guard covers ONLY this persistent listener — it must never
+      //      wrap the form re-binding inside initLogin).
+      function initLogin() {
       const loginSubmitLabel = tSignIn;
       const registerSubmitLabel = tSignUp;
       const tabLoginBtn = document.getElementById('tab-login-btn');
@@ -367,6 +386,14 @@ const errorMessage = url.searchParams.get('error') || '';
           if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = registerSubmitLabel; }
         }
       });
+      }
+
+      // Register the persistent page-load listener exactly once per document.
+      // The handler re-runs initLogin on every entry (fresh form elements).
+      if (!window.__loginPageLoadBound) {
+        window.__loginPageLoadBound = true;
+        document.addEventListener('astro:page-load', initLogin);
+      }
     })();
   </script>
 </Layout>
