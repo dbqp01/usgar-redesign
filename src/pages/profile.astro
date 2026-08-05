@@ -279,6 +279,15 @@ const t = useTranslations(lang);
 
       function initProfilePage() {
         const loadingEl = document.getElementById('profile-loading');
+        // El listener de page-load vive en `document` y dispara en TODA
+        // navegacion (cualquier pagina): sin este check, el init correria y
+        // haria fetches tambien en home/rooms... (leak por navegacion).
+        // El flag de idempotencia va en el DOM, no en `window`: el body se
+        // re-crea en cada swap SPA, asi cada entrada tiene un elemento nuevo
+        // sin flag → exactamente un init por entrada, y los page-load
+        // duplicados de la misma entrada se descartan (sin latch permanente).
+        if (!loadingEl || loadingEl.dataset.profileInit) return;
+        loadingEl.dataset.profileInit = 'true';
         const unauthEl = document.getElementById('profile-unauth');
         const nameEl = document.getElementById('profile-user-name');
         const emailEl = document.getElementById('profile-user-email');
@@ -494,8 +503,16 @@ const t = useTranslations(lang);
         loadProfile();
       }
 
-      initProfilePage();
-      document.addEventListener('astro:page-load', initProfilePage);
+      // Unico punto de init: `astro:page-load` dispara en la carga inicial Y
+      // en cada navegacion SPA (docs Astro: View Transitions, Lifecycle
+      // events). El listener se registra UNA sola vez: window persiste entre
+      // navegaciones y el script is:inline puede re-ejecutarse al volver a la
+      // pagina. La idempotencia por-entrada la da el guard del DOM en
+      // initProfilePage (flag dataset sobre el body re-creado en cada swap).
+      if (!window.__profilePageLoadBound) {
+        window.__profilePageLoadBound = true;
+        document.addEventListener('astro:page-load', initProfilePage);
+      }
     })();
   </script>
 </Layout>
