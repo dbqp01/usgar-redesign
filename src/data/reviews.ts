@@ -1,4 +1,4 @@
-import reviewsData from "../content/reviews/reviews.json";
+import { getCollection } from "astro:content";
 
 export interface Review {
   id: number;
@@ -9,7 +9,13 @@ export interface Review {
   date: { en: string; es: string; fr: string; pt: string };
 }
 
-export const reviews: Review[] = reviewsData.reviews.map((r: any, index: number) => ({
+// file() loader store order is non-deterministic (docs) — sort by the parser's
+// `order` index (JSON array order = business order).
+const rawReviews = (await getCollection("reviews")).sort((a, b) =>
+  a.data.order - b.data.order
+);
+
+export const reviews: Review[] = rawReviews.map(({ data: r }, index) => ({
   id: index + 1,
   name: r.name,
   country: r.country,

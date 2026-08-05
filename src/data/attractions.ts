@@ -1,4 +1,4 @@
-import exploreData from "../content/explore/explore.json";
+import { getCollection } from "astro:content";
 
 export interface LocalizedField<T = string> {
   en: T;
@@ -20,7 +20,13 @@ export interface Attraction {
   bestTime: LocalizedField<string>;
 }
 
-export const attractions: Attraction[] = exploreData.attractions.map((attr: any) => ({
+// file() loader store order is non-deterministic (docs) — sort by the parser's
+// `order` index (JSON array order = business order).
+const rawAttractions = (await getCollection("explore")).sort((a, b) =>
+  a.data.order - b.data.order
+);
+
+export const attractions: Attraction[] = rawAttractions.map(({ data: attr }) => ({
   id: attr.id,
   name: {
     en: attr.name_en,
@@ -36,7 +42,7 @@ export const attractions: Attraction[] = exploreData.attractions.map((attr: any)
   },
   distance: attr.distance,
   travelTime: attr.travelTime,
-  category: attr.category as any,
+  category: attr.category,
   history: {
     en: attr.history_en,
     es: attr.history_es,

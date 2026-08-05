@@ -1,4 +1,4 @@
-import settingsData from "../content/settings/settings.json";
+import { getEntry } from "astro:content";
 
 export interface SocialLink {
   platform: string;
@@ -36,6 +36,14 @@ export const DEFAULT_ROOM_INVENTORY: Record<string, number> = {
   'triple-standar': 4,
   'familiar-superior': 2,
 };
+
+const settingsEntry = await getEntry("settings", "site");
+
+if (!settingsEntry) {
+  throw new Error("settings collection entry 'site' not found");
+}
+
+const settingsData = settingsEntry.data;
 
 export const siteSettings: SiteSettings = {
   hotelName: settingsData.hotelName,
