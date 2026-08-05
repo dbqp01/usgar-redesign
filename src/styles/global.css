@@ -465,14 +465,16 @@ h3, h4 {
 /* ============================================
    Scroll Animations
    ============================================ */
-.animate-on-scroll {
+/* Hidden by default ONLY when JS is available (html.js) — progressive enhancement:
+   without JS these rules never apply and content is born visible. */
+html.js .animate-on-scroll {
   opacity: 0;
   visibility: hidden;
   transform: translate3d(0, 30px, 0);
   /* will-change managed dynamically by GSAP ScrollTrigger.batch() */
 }
 
-.animate-on-scroll.visible {
+html.js .animate-on-scroll.visible {
   opacity: 1;
   visibility: visible;
   transform: translate3d(0, 0, 0);
@@ -598,9 +600,11 @@ h3, h4 {
    Reduced Motion (Accessibility)
    ============================================ */
 @media (prefers-reduced-motion: reduce) {
-  .animate-on-scroll {
+  /* Same specificity as the hidden rule (html.js .animate-on-scroll), later in the
+     file -> wins by source order when JS is on and reduced motion is requested. */
+  html.js .animate-on-scroll {
     opacity: 1;
-    visibility: inherit;
+    visibility: visible;
     transform: none;
     transition: none;
     will-change: auto;

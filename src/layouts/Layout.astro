@@ -177,6 +177,22 @@ const localeMap: Record<Locale, string> = {
       <style>#cinematic-preloader{display:none}</style>
     </noscript>
 
+    <!-- Progressive enhancement: `.animate-on-scroll` is hidden only when html.js is
+         present, so content is born visible without JS. The router's swapRootAttributes
+         copies the INCOMING root's attributes and wipes the current one, so the class is
+         re-added on the incoming root in astro:before-swap (mirror of the theme script). -->
+    <script is:inline data-astro-rerun>
+      (function () {
+        document.documentElement.classList.add('js');
+        if (!window.__jsClassBound) {
+          window.__jsClassBound = true;
+          document.addEventListener('astro:before-swap', function (event) {
+            event.newDocument.documentElement.classList.add('js');
+          });
+        }
+      })();
+    </script>
+
     <!-- View Transitions -->
     <ClientRouter />
 
