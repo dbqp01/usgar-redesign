@@ -1,0 +1,55 @@
+name: Deploy — Build branch (Hostinger)
+
+# Fase 2 (B2): genera dist/ en cada push a main y lo publica en la rama `build`.
+# Hostinger Advanced→Git apunta a la rama `build` y COPIA los archivos sin compilar.
+# Ver docs/DEPLOY-B2.md para el switch manual en hPanel.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-branch
+  cancel-in-progress: true
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar proyecto
+        run: npm run build
+
+      # postbuild (package.json) copia app/, vendor/ y .env a dist/.
+      # Las credenciales NUNCA deben llegar a la rama build: se borran antes de publicar.
+      - name: Eliminar .env de dist/ (credenciales fuera de la rama build)
+        run: rm -f dist/.env
+
+      - name: Verificar que .env no quedó en dist/
+        run: test ! -f dist/.env
+
+      - name: Publicar dist/ en la rama build
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: build
+          FOLDER: dist
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MESSAGE: "Build: ({sha}) {msg}"
