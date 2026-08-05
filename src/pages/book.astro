@@ -17,7 +17,7 @@ const t = useTranslations(lang);
 ---
 
 <Layout title={`${t('book.title')} - USGAR Hotels`} lang={lang}>
-  <main class="py-12 sm:py-24 px-4 max-w-[1400px] mx-auto flex-1 animate-fade-in">
+  <div class="py-12 sm:py-24 px-4 max-w-[1400px] mx-auto flex-1 animate-fade-in">
     <section class="pb-10">
       <SectionHeader
         number="04"
@@ -148,7 +148,7 @@ const t = useTranslations(lang);
       </div>
 
     </div>
-  </main>
+  </div>
 
   <!-- SDK MercadoPago.js: la doc exige cargarlo antes de cualquier lógica de pago (script estándar previo a </body>) -->
   <script is:inline slot="end-body" src="https://sdk.mercadopago.com/js/v2"></script>

@@ -11,7 +11,7 @@ const t = useTranslations(lang);
 ---
 
 <Layout title={`${t('success.title')} - USGAR Hotels`} lang={lang}>
-  <main class="py-24 px-4 max-w-3xl mx-auto flex-1 print:py-10">
+  <div class="py-24 px-4 max-w-3xl mx-auto flex-1 print:py-10">
     
     <!-- 1. Loading State Spinner -->
     <div id="loading-container" class="py-20 text-center space-y-4">
@@ -180,7 +180,7 @@ const t = useTranslations(lang);
       </a>
     </div>
 
-  </main>
+  </div>
 </Layout>
 
 <!-- Serialize rooms data into browser context -->

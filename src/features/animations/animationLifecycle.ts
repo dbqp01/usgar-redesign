@@ -41,14 +41,6 @@ export function register(name: string, ctx: gsap.Context): void {
   ensureResizeDebounce();
 }
 
-export function unregister(name: string): void {
-  const entry = registry.get(name);
-  if (entry) {
-    entry.ctx.revert();
-    registry.delete(name);
-  }
-}
-
 export function cleanupAll(): void {
   registry.forEach((entry) => {
     entry.ctx.revert();
@@ -56,10 +48,6 @@ export function cleanupAll(): void {
   registry.clear();
   teardownResizeDebounce();
   ScrollTrigger.clearScrollMemory();
-}
-
-export function getContext(name: string): gsap.Context | undefined {
-  return registry.get(name)?.ctx;
 }
 
 export function isPage(path: string, pattern: string): boolean {

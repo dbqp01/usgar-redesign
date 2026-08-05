@@ -9,7 +9,7 @@ const t = useTranslations(lang);
 ---
 
 <Layout title={`${t('auth.myBookings')} - USGAR Hotels`} lang={lang}>
-  <main class="py-28 px-4 max-w-5xl mx-auto flex-1 animate-fade-in space-y-8">
+  <div class="py-28 px-4 max-w-5xl mx-auto flex-1 animate-fade-in space-y-8">
     
     <!-- Header -->
     <div class="bg-surface-card-light dark:bg-surface-card-dark p-8 md:p-10 rounded-3xl border border-black/10 dark:border-white/10 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -75,7 +75,7 @@ const t = useTranslations(lang);
     <!-- Bookings List -->
     <div id="bookings-list" class="space-y-4 hidden"></div>
 
-  </main>
+  </div>
 
   <script is:inline>
     (function() {
