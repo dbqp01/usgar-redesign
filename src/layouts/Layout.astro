@@ -1,5 +1,6 @@
 ---
 import { ClientRouter, fade } from 'astro:transitions';
+import { Font } from 'astro:assets';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
@@ -14,6 +15,7 @@ import CustomCursor from '../components/common/CustomCursor.astro';
 import NoiseOverlay from '../components/common/NoiseOverlay.astro';
 import { useTranslations } from '../i18n/utils';
 import type { Locale } from '../i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
 
 interface Props {
   title: string;
@@ -30,22 +32,23 @@ const {
   title,
   description = (siteSettings.siteDescription as Record<string, string>)[currentLang] || siteSettings.siteDescription.en,
   lang = currentLang,
-  ogImage = '/og-image.jpg',
+  ogImage = new URL('/og-image.jpg', Astro.site).href,
   schema,
   preloadImage
 } = Astro.props;
 
-const siteBase = Astro.site ?? new URL('https://usgarhoteles.com');
+const siteBase = Astro.site;
 const canonicalURL = new URL(Astro.url.pathname, siteBase);
 
-// Build correct hreflang alternate URLs for all 4 supported locales
+// Hreflang alternate URLs for all 4 supported locales via the native astro:i18n
+// helper (getRelativeLocaleUrl). Only the locale prefix is stripped by hand —
+// there is no native "remove locale from path" helper; the URL building is native.
 const pathWithoutLocale = Astro.url.pathname.replace(/^\/(es|fr|pt)(\/|$)/, '/');
-const cleanPath = pathWithoutLocale.startsWith('/') ? pathWithoutLocale : `/${pathWithoutLocale}`;
 
-const enURL = new URL(cleanPath, siteBase);
-const esURL = new URL(`/es${cleanPath === '/' ? '' : cleanPath}`, siteBase);
-const frURL = new URL(`/fr${cleanPath === '/' ? '' : cleanPath}`, siteBase);
-const ptURL = new URL(`/pt${cleanPath === '/' ? '' : cleanPath}`, siteBase);
+const enURL = new URL(getRelativeLocaleUrl('en', pathWithoutLocale), siteBase);
+const esURL = new URL(getRelativeLocaleUrl('es', pathWithoutLocale), siteBase);
+const frURL = new URL(getRelativeLocaleUrl('fr', pathWithoutLocale), siteBase);
+const ptURL = new URL(getRelativeLocaleUrl('pt', pathWithoutLocale), siteBase);
 
 const localeMap: Record<Locale, string> = {
   en: 'en_US',
@@ -98,8 +101,10 @@ const localeMap: Record<Locale, string> = {
     )}
 
     <!-- Fonts self-hosted (variable woff2, mismo origin — sin 3rd-party ni font-swap tardío) -->
-    <link rel="preload" href="/fonts/montserrat-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/playfair-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- Preload SOLO las 2 familias críticas; --font-ak sin preload (5KB, solo headings) -->
+    <Font cssVariable="--font-ak" />
+    <Font cssVariable="--font-montserrat" preload />
+    <Font cssVariable="--font-playfair" preload />
 
     <!-- Schema.org JSON-LD -->
     {schema && (
