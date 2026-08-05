@@ -23,7 +23,7 @@ const optimizedPoster = await getImage({
   src: slide1,
   width: 1280,
   quality: 80,
-  format: "webp",
+  format: "avif",
 });
 
 const heroCoordinates = `${Math.abs(siteSettings.latitude).toFixed(4)} ${siteSettings.latitude >= 0 ? 'N' : 'S'} / ${Math.abs(siteSettings.longitude).toFixed(4)} ${siteSettings.longitude >= 0 ? 'E' : 'W'} / ${siteSettings.city}, ${siteSettings.region}`;
@@ -31,7 +31,7 @@ const heroCoordinates = `${Math.abs(siteSettings.latitude).toFixed(4)} ${siteSet
 const slides = [slide1, slide2, slide3, slide4];
 ---
 
-<link rel="preload" href={optimizedPoster.src} as="image" type="image/webp" />
+<link rel="preload" href={optimizedPoster.src} as="image" type="image/avif" />
 
 <section
   class="relative h-dvh min-h-[500px] sm:min-h-[600px] flex items-center justify-center overflow-hidden"

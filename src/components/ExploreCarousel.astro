@@ -20,7 +20,7 @@ const items = await Promise.all(attractions.map(async (attraction) => {
   const image = exploreImages[`../assets/explore/${attraction.id}.jpg`]?.default || fallbackImg;
   const preview = await getImage({
     src: image,
-    format: 'webp',
+    format: 'avif',
     width: 1200,
     quality: 'high',
   });
@@ -51,8 +51,8 @@ const categoryLabels: Record<string, string> = {
           <Picture
             src={items[0].image}
             alt={items[0].name[lang]}
-            formats={['avif', 'webp']}
-            fallbackFormat="jpg"
+            formats={['avif']}
+            fallbackFormat="avif"
             quality="high"
             layout="full-width"
             fit="cover"

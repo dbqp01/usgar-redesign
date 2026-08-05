@@ -40,7 +40,7 @@ const allPhotos = [...hotelPhotos, ...roomPhotos].sort((a, b) =>
 const lightboxSrcs = (
   await Promise.all(
     allPhotos.map((photo) =>
-      getImage({ src: photo.metadata, width: 1600, format: "webp", quality: "high" }),
+      getImage({ src: photo.metadata, width: 1600, format: "avif", quality: "high" }),
     ),
   )
 ).map((img) => img.src);
@@ -103,8 +103,8 @@ const lightboxSrcs = (
             <Picture
               src={photo.metadata}
               alt={`${t("gallery.title")} - ${index + 1}`}
-              formats={["avif", "webp"]}
-              fallbackFormat="jpg"
+              formats={["avif"]}
+              fallbackFormat="avif"
               quality="high"
               fit="cover"
               loading={index < 1 ? "eager" : "lazy"}

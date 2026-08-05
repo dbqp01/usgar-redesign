@@ -130,8 +130,8 @@ const attractionsSchema = {
             <Picture
               src={attraction.image}
               alt={attraction.name[lang]}
-              formats={['avif', 'webp']}
-              fallbackFormat="jpg"
+              formats={['avif']}
+              fallbackFormat="avif"
               quality="high"
               fit="cover"
               loading={i < 3 ? 'eager' : 'lazy'}

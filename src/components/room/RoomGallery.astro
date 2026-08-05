@@ -20,7 +20,7 @@ const t = useTranslations(lang);
 const sliderSrcs = (
   await Promise.all(
     images.map((img) =>
-      getImage({ src: img, width: 1600, format: "webp", quality: "high" }),
+      getImage({ src: img, width: 1600, format: "avif", quality: "high" }),
     ),
   )
 ).map((img) => img.src);
@@ -41,7 +41,7 @@ const sliderSrcs = (
         alt={room.name[lang]}
         width={1600}
         height={900}
-        format="webp"
+        format="avif"
         loading="eager"
         fetchpriority="high"
         class="w-full h-full object-cover transition-opacity duration-300"
@@ -96,7 +96,7 @@ const sliderSrcs = (
           width={300}
           height={225}
           layout="none"
-          format="webp"
+          format="avif"
           class="w-full h-full object-cover"
         />
       </button>
