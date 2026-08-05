@@ -13,7 +13,8 @@
     "title": "USGAR Hotels",
     "subtitle": "San Pedro, Cusco - Votre porte d'entree vers les Andes",
     "cta": "Reservez Votre Sejour",
-    "ctaSecondary": "Explorer les Chambres"
+    "ctaSecondary": "Explorer les Chambres",
+    "slideAlt": "USGAR Hotels Cusco -"
   },
   "booking": {
     "title": "Reservation Directe",
@@ -118,7 +119,8 @@
     "description": "Tout ce que vous devez savoir sur votre sejour a Cusco : mal de l'altitude, enregistrement, transports et plus encore.",
     "assistanceTitle": "Assistance 24/7",
     "assistanceDesc": "Notre equipe bilingue a la reception est disponible 24h/24 pour vous aider dans vos reservations, vos itineraires vers le Machu Picchu et votre acclimatation.",
-    "whatsappCta": "Contacter par WhatsApp"
+    "whatsappCta": "Contacter par WhatsApp",
+    "receptionAlt": "Reception 24h/24 de l'USGAR Hotels"
   },
   "footer": {
     "contact": "Contact",
@@ -152,7 +154,9 @@
     "heading": "UN REFUGE VIVANT",
     "description": "Situe a quelques pas du marche historique de San Pedro, notre hotel offre un havre de paix et de serenite. Chaque mur raconte une histoire de mysticisme andin et de chaleur humaine, concu pour vous reposer avant ou apres le Machu Picchu.",
     "fusionTitle": "Fusion Inca-Coloniale",
-    "fusionDesc": "500 ans d'histoire preserves dans des arches coloniales et des pierres ancestrales."
+    "fusionDesc": "500 ans d'histoire preserves dans des arches coloniales et des pierres ancestrales.",
+    "patioAlt": "Patio inca colonial de l'USGAR Hotels",
+    "pasilloAlt": "Couloirs de pierre de l'USGAR Hotels"
   },
   "gastronomy": {
     "sectionLabel": "GASTRONOMIE & CAFETERIA",
@@ -214,6 +218,8 @@
     "sectionLabel": "A Propos de Nous",
     "title": "Decouvrez Notre Essence",
     "purpose": "Creer des experiences memorables permettant a chaque voyageur de decouvrir l'essence de Cusco, en offrant un service chaleureux, personnalise et d'excellence qui fait de chaque sejour un souvenir inoubliable.",
+    "patioAlt": "Patio inca colonial de l'USGAR Hotels",
+    "fachadaAlt": "Facade coloniale de l'USGAR Hotels",
     "missionTitle": "Notre Mission",
     "missionText": "Offrir une experience d'hebergement unique au coeur de Cusco, en fournissant un service personnalise, chaleureux et de haute qualite qui allie confort, hospitalite et richesse de la culture locale. Nous nous engageons a depasser les attentes de nos clients grace a une attention exceptionnelle, une equipe passionnee et des pratiques de tourisme durable.",
     "visionTitle": "Notre Vision",

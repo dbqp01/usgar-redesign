@@ -13,7 +13,8 @@
     "title": "USGAR Hotels",
     "subtitle": "San Pedro, Cusco - Sua porta de entrada para os Andes",
     "cta": "Reserve Sua Estadia",
-    "ctaSecondary": "Explorar Quartos"
+    "ctaSecondary": "Explorar Quartos",
+    "slideAlt": "USGAR Hotels Cusco -"
   },
   "booking": {
     "title": "Reserva Direta",
@@ -118,7 +119,8 @@
     "description": "Tudo o que voce precisa saber sobre sua estadia em Cusco: mal da altitude (soroche), check-in, transporte e mais.",
     "assistanceTitle": "Atendimento 24/7",
     "assistanceDesc": "Nossa equipe bilingue na recepcao esta pronta 24 horas por dia para ajudar com reservas, roteiros para Machu Picchu e aclimatacao.",
-    "whatsappCta": "Contato via WhatsApp"
+    "whatsappCta": "Contato via WhatsApp",
+    "receptionAlt": "Recepcao 24 horas do USGAR Hotels"
   },
   "footer": {
     "contact": "Contato",
@@ -152,7 +154,9 @@
     "heading": "UM REFUGIO VIVO",
     "description": "Localizado a poucos passos do historico Mercado de San Pedro, nosso hotel oferece um oasis de luxo sereno. Cada parede conta uma historia de misticismo andino e acolhimento humano, projetado para voce descansar antes ou depois de Machu Picchu.",
     "fusionTitle": "Fusao Inca-Colonial",
-    "fusionDesc": "500 anos de historia guardados em arcos coloniais e pedras ancestrais."
+    "fusionDesc": "500 anos de historia guardados em arcos coloniais e pedras ancestrais.",
+    "patioAlt": "Patio inca colonial do USGAR Hotels",
+    "pasilloAlt": "Corredores de pedra do USGAR Hotels"
   },
   "gastronomy": {
     "sectionLabel": "GASTRONOMIA & CAFETARIA",
@@ -214,6 +218,8 @@
     "sectionLabel": "Sobre Nos",
     "title": "Descubra Nossa Essencia",
     "purpose": "Criar experiencias memoraveis que permitam a cada viajante descobrir a essencia de Cusco, oferecendo um servico caloroso, personalizado e de excelencia que transforme cada estadia em uma lembranca inesquecivel.",
+    "patioAlt": "Patio inca colonial do USGAR Hotels",
+    "fachadaAlt": "Fachada colonial do USGAR Hotels",
     "missionTitle": "Nossa Missao",
     "missionText": "Proporcionar uma experiencia unica de hospedagem no coracao de Cusco, oferecendo um servico personalizado, acolhedor e de alta qualidade que combine conforto, hospitalidade e a riqueza da cultura local. Nos comprometemos a superar as expectativas dos nossos hospedes atraves de um atendimento excepcional, uma equipe apaixonada e praticas de turismo sustentavel.",
     "visionTitle": "Nossa Visao",

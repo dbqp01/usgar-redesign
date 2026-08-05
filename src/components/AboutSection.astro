@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import { useTranslations } from "../i18n/utils";
-import aboutData from "../content/about/about.json";
+import { aboutData } from "../data/about";
 import patioImg from '../assets/hotel/hero-slide-patio.jpg';
 import fachadaImg from '../assets/hotel/fallback-room-fachada.jpg';
 
@@ -11,8 +11,8 @@ const lang = (Astro.currentLocale || 'en') as Locale;
 
 const t = useTranslations(lang);
 
-const title = (aboutData as any)[`title_${lang}`] || aboutData.title_en || aboutData.title_es;
-const purpose = (aboutData as any)[`purpose_${lang}`] || aboutData.purpose_en || aboutData.purpose_es;
+const title = aboutData[`title_${lang}`] || aboutData.title_en || aboutData.title_es;
+const purpose = aboutData[`purpose_${lang}`] || aboutData.purpose_en || aboutData.purpose_es;
 ---
 
 <section id="about" class="scroll-mt-28 sm:scroll-mt-32 py-12 sm:py-20 lg:py-16 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-500 overflow-hidden relative">
@@ -45,7 +45,7 @@ const purpose = (aboutData as any)[`purpose_${lang}`] || aboutData.purpose_en ||
         <div class="pt-6 border-t border-black/10 dark:border-white/10">
           <div class="grid grid-cols-2 gap-y-4 gap-x-4">
              {aboutData.values.slice(0, 4).map((valor) => {
-               const valTitle = (valor as any)[`title_${lang}`] || valor.title_en || valor.title_es;
+               const valTitle = valor[`title_${lang}`] || valor.title_en || valor.title_es;
                return (
                  <div class="flex items-center gap-3 group">
                    <div class="w-6 h-px bg-secondary transition-[width] duration-300 group-hover:w-10"></div>
@@ -67,9 +67,10 @@ const purpose = (aboutData as any)[`purpose_${lang}`] || aboutData.purpose_en ||
         <div class="absolute top-0 right-0 w-[82%] h-[82%] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl z-10 border border-black/5 dark:border-white/5 transition-transform duration-500 ease-out" data-tilt-layer="0.5">
           <Image
             src={patioImg}
-            alt="Patio Inca Colonial USGAR Hotels"
+            alt={t('about.patioAlt')}
             width={800}
             height={600}
+            layout="none"
             format="webp"
             class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
             loading="lazy"
@@ -80,9 +81,10 @@ const purpose = (aboutData as any)[`purpose_${lang}`] || aboutData.purpose_en ||
         <div class="absolute bottom-0 left-0 w-[52%] h-[58%] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl z-20 border-4 border-surface-light dark:border-surface-dark transition-transform duration-500 ease-out" data-tilt-layer="1.2">
           <Image
             src={fachadaImg}
-            alt="Fachada USGAR Hotels"
+            alt={t('about.fachadaAlt')}
             width={500}
             height={500}
+            layout="none"
             format="webp"
             class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
             loading="lazy"

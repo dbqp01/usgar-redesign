@@ -32,9 +32,10 @@ const stats = [
       <div class="relative w-full aspect-[3/4] sm:aspect-square lg:aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl img-hover-zoom" data-story-parallax="0.12">
         <Image
           src={patioImg}
-          alt="Patio Inca Colonial USGAR Hotels"
+          alt={t('heritage.patioAlt')}
           width={800}
           height={1200}
+          layout="none"
           format="webp"
           class="w-full h-full object-cover"
           loading="lazy"
@@ -89,9 +90,10 @@ const stats = [
         <div class="relative w-full h-64 sm:h-80 rounded-2xl overflow-hidden shadow-xl img-hover-zoom hidden sm:block" data-story-parallax="0.18">
            <Image
             src={pasilloImg}
-            alt="Pasillos de Piedra USGAR Hotels"
+            alt={t('heritage.pasilloAlt')}
             width={800}
             height={500}
+            layout="none"
             format="webp"
             class="w-full h-full object-cover"
             loading="lazy"

@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import faqData from "../content/faq/faq.json";
+import { faqData } from '../data/faq';
 import { useTranslations } from '../i18n/utils';
 import recepcionImg from '../assets/hotel/hero-slide-recepcion.jpg';
 
@@ -25,9 +25,10 @@ const t = useTranslations(lang);
         <div class="w-full h-full rounded-3xl overflow-hidden shadow-2xl img-hover-zoom relative">
           <Image
             src={recepcionImg}
-            alt="Recepcion 24 horas USGAR Hotels"
+            alt={t('faq.receptionAlt')}
             width={800}
             height={1200}
+            layout="none"
             format="webp"
             class="w-full h-full object-cover"
             loading="lazy"
@@ -71,7 +72,7 @@ const t = useTranslations(lang);
 
         <!-- Accordion List (Tailwind v4 open: modifiers) -->
         <div class="space-y-2">
-          {faqData.questions.map((faq: any, i) => {
+          {faqData.questions.map((faq, i) => {
             const question = faq[`question_${lang}`] || faq.question_en || faq.question_es;
             const answer = faq[`answer_${lang}`] || faq.answer_en || faq.answer_es;
             return (

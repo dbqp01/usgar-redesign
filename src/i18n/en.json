@@ -13,7 +13,8 @@
     "title": "USGAR Hotels",
     "subtitle": "San Pedro, Cusco - Your gateway to the Andes",
     "cta": "Book Your Stay",
-    "ctaSecondary": "Explore Rooms"
+    "ctaSecondary": "Explore Rooms",
+    "slideAlt": "USGAR Hotels Cusco -"
   },
   "booking": {
     "title": "Direct Booking",
@@ -114,7 +115,8 @@
     "description": "Everything you need to know about your stay in Cusco: altitude sickness, check-in, transport, and more.",
     "assistanceTitle": "24/7 Assistance",
     "assistanceDesc": "Our 24/7 bilingual front desk team is ready to assist with bookings, Machu Picchu tours, and altitude acclimatization.",
-    "whatsappCta": "Contact via WhatsApp"
+    "whatsappCta": "Contact via WhatsApp",
+    "receptionAlt": "24-hour reception at USGAR Hotels"
   },
   "footer": {
     "contact": "Contact",
@@ -148,7 +150,9 @@
     "heading": "A LIVING SANCTUARY",
     "description": "Located steps from the historic San Pedro Market, our hotel offers an oasis of serene luxury. Every wall tells a story of Andean mysticism and human warmth, designed for you to rest before or after Machu Picchu.",
     "fusionTitle": "Inca-Colonial Fusion",
-    "fusionDesc": "500 years of history guarded within colonial archways and ancient stone."
+    "fusionDesc": "500 years of history guarded within colonial archways and ancient stone.",
+    "patioAlt": "Inca colonial patio of USGAR Hotels",
+    "pasilloAlt": "Stone corridors of USGAR Hotels"
   },
   "gastronomy": {
     "sectionLabel": "CULINARY & COFFEE",
@@ -210,6 +214,8 @@
     "sectionLabel": "About Us",
     "title": "Discover Our Essence",
     "purpose": "To create memorable experiences that allow every traveler to discover the essence of Cusco, providing a warm, personalized, and excellent service that makes every stay an unforgettable memory.",
+    "patioAlt": "Inca colonial patio of USGAR Hotels",
+    "fachadaAlt": "USGAR Hotels colonial facade",
     "missionTitle": "Our Mission",
     "missionText": "To provide a unique lodging experience in the heart of Cusco, offering personalized, warm, and high-quality service that combines comfort, hospitality, and the richness of local culture. We are committed to exceeding our guests' expectations through exceptional care, a passionate team, and sustainable tourism practices.",
     "visionTitle": "Our Vision",

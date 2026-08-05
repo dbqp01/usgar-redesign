@@ -59,9 +59,10 @@ const slides = [slide1, slide2, slide3, slide4];
       <div class="absolute inset-0 transition-opacity duration-1000 opacity-0" data-slide={i}>
         <Image
           src={slide}
-          alt={`USGAR Hotels Cusco - ${i + 1}`}
+          alt={`${t('hero.slideAlt')} ${i + 1}`}
           width={1600}
           height={900}
+          layout="none"
           format="avif"
           loading="lazy"
           class="w-full h-full object-cover"

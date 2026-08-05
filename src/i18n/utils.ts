@@ -15,7 +15,8 @@ const dictionaries: Record<Locale, any> = {
 // Translation-Key Level Fallback Chain:
 // Handles missing translation keys at runtime (e.g. fr -> en, pt -> es -> en).
 // Page-level route fallbacks are configured separately in astro.config.mjs.
-const fallbackChain: Record<Locale, Locale[]> = {
+// Exported: single source of truth for key-level fallbacks (also used by data wrappers).
+export const fallbackChain: Record<Locale, Locale[]> = {
   en: ['es'],
   es: ['en'],
   fr: ['en', 'es'],
