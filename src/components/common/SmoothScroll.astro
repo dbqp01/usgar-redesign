@@ -21,7 +21,6 @@
 
   function initLenis() {
     if (typeof window === 'undefined') return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const isMobileTouch = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 1024;
 
@@ -31,6 +30,7 @@
           duration: 1.2,
           easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
           smoothWheel: true,
+          anchors: true,
         });
 
         lenisInstance.on('scroll', ScrollTrigger.update);
@@ -59,9 +59,73 @@
     }
   }
 
+  // --- In-page hash anchors (#rooms, #main-content) ---------------------------
+  // The ClientRouter (astro:transitions, Layout.astro) intercepts EVERY
+  // same-origin anchor click - including hash-only links like href="#rooms" -
+  // with a document (bubble) listener that preventDefaults and runs a full
+  // view transition, so the page never scrolls (router source: ClientRouter.astro
+  // registers on document, bubble; bails out on ev.defaultPrevented). This
+  // capture-phase listener runs BEFORE the router's: preventDefault() makes the
+  // router bail out via its own defaultPrevented check. Bundled module scripts
+  // execute only once per load (docs: "Script re-execution"), so this listener
+  // persists across every view transition. pushState() only updates the hash -
+  // it never fires hashchange nor loads the URL (MDN History.pushState).
+  const isModifiedClick = (ev: MouseEvent) =>
+    (ev.button && ev.button !== 0) || ev.metaKey || ev.ctrlKey || ev.altKey || ev.shiftKey;
+
+  function resolveHashTarget(hash: string): HTMLElement | null {
+    let id = hash.slice(1);
+    try {
+      id = decodeURIComponent(id);
+    } catch {
+      // malformed escape: keep the raw id
+    }
+    return document.getElementById(id);
+  }
+
+  function smoothScrollTo(target: HTMLElement): void {
+    // Lenis scrollTo honors the section's CSS scroll-margin-top (lenis dist);
+    // under prefers-reduced-motion it jumps instantly (respectReducedMotion).
+    if (lenisInstance) {
+      lenisInstance.scrollTo(target);
+    } else {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  function scrollToInitialHash(): void {
+    const { hash } = location;
+    if (!hash || hash === '#') return;
+    const target = resolveHashTarget(hash);
+    if (!target) return;
+    // Two frames: let Lenis compute dimensions and the layout settle first.
+    requestAnimationFrame(() => requestAnimationFrame(() => smoothScrollTo(target)));
+  }
+
+  document.addEventListener(
+    'click',
+    (ev: MouseEvent) => {
+      if (isModifiedClick(ev)) return; // new tab/window/download: leave native
+      const origin = ev.composedPath()[0];
+      if (!(origin instanceof Element)) return;
+      const anchor = origin.closest('a[href^="#"]');
+      if (!anchor) return;
+      const hash = anchor.getAttribute('href');
+      if (!hash || hash === '#') return; // bare "#" = top: leave native
+      const target = resolveHashTarget(hash);
+      if (!target) return; // unknown id: leave native/router behavior
+      ev.preventDefault(); // router bails out (ev.defaultPrevented check)
+      ev.stopPropagation(); // Lenis's own anchor handler must not double-fire
+      history.pushState(null, '', hash);
+      smoothScrollTo(target);
+    },
+    true
+  );
+
   function initPage() {
     initLenis();
     bootAnimations();
+    scrollToInitialHash();
   }
 
   initLifecycle();

@@ -383,6 +383,15 @@ const roomSchema = {
 
     if (!sliderContainer || !activeImg || slides.length === 0) return;
 
+    // Bug D2: re-parent the lightbox to <body> at init. Inside <main> (GSAP/astro
+    // transition transforms make it a stacking context) the lightbox z-[100] is
+    // trapped and the fixed z-50 navbar paints above its close button. As a direct
+    // body child its z-index competes in the root stacking context (MDN stacking
+    // context docs). appendChild MOVES the node; fixed positioning is unaffected.
+    if (lightbox && lightbox.parentElement !== document.body) {
+      document.body.appendChild(lightbox);
+    }
+
     const imageUrls = JSON.parse(sliderContainer.getAttribute("data-images") || "[]");
     let activeIndex = 0;
     const totalSlides = slides.length;
