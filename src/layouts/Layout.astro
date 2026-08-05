@@ -159,6 +159,15 @@ const localeMap: Record<Locale, string> = {
           window.__preloaderFallbackBound = true;
           // Belt-and-suspenders: hide even if GSAP or the bundled module never run.
           window.setTimeout(forceHide, 2500);
+          // The preloader of the INCOMING document enters the DOM visible during a
+          // view transition (display:flex until astro:page-load hides it, a gap that
+          // grows to hundreds of ms on slow hosts). Per the Astro docs
+          // (astro:before-swap, event.newDocument), mutate the incoming document
+          // BEFORE the swap so the preloader never flashes on SPA navigations.
+          document.addEventListener('astro:before-swap', function (event) {
+            var incomingPreloader = event.newDocument.getElementById('cinematic-preloader');
+            if (incomingPreloader) incomingPreloader.style.display = 'none';
+          });
           document.addEventListener('astro:page-load', function () {
             // The initial astro:page-load is the first load: the cinematic must survive.
             if (firstLoad) {
