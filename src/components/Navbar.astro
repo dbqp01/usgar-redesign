@@ -56,6 +56,7 @@ const navLinks = [
           src={logoLight}
           alt="USGAR Hotels"
           width={120}
+          layout="none"
           class="h-10 w-auto block dark:hidden"
           loading="eager"
         />
@@ -63,6 +64,7 @@ const navLinks = [
           src={logoDark}
           alt="USGAR Hotels"
           width={120}
+          layout="none"
           class="h-10 w-auto hidden dark:block"
           loading="eager"
         />
@@ -341,7 +343,7 @@ const navLinks = [
   import { getUser, logout } from '../utils/auth-client';
   import gsap from 'gsap';
 
-  let ctx: gsap.Context;
+  let ctx: gsap.MatchMedia;
 
   async function initAuth(signal: AbortSignal) {
     const loginBtn = document.getElementById('auth-login-btn');
@@ -438,15 +440,16 @@ const navLinks = [
     }
 
     // --- 2. Mobile Menu GSAP Logic ---
-    ctx = gsap.context(() => {
+    // gsap.matchMedia() crea su propio context internamente (docs GSAP):
+    // ctx.revert() revierte los tweens/ScrollTriggers de sus handlers.
+    ctx = gsap.matchMedia();
 
-      let isMenuOpen = false;
-      let tl = gsap.timeline({ paused: true });
-      const mm = gsap.matchMedia();
+    let isMenuOpen = false;
+    let tl = gsap.timeline({ paused: true });
 
-      // Coreografía Quiet Luxury
-      if (mobileMenu && mobileBackdrop && mobilePanel) {
-        mm.add("(prefers-reduced-motion: no-preference)", () => {
+    // Coreografía Quiet Luxury
+    if (mobileMenu && mobileBackdrop && mobilePanel) {
+      ctx.add("(prefers-reduced-motion: no-preference)", () => {
           tl.clear();
           tl.set(mobileMenu, { display: 'block' })
             .to(mobileBackdrop, { autoAlpha: 1, duration: 0.3, ease: 'power2.out' })
@@ -463,7 +466,7 @@ const navLinks = [
             );
         });
 
-        mm.add("(prefers-reduced-motion: reduce)", () => {
+        ctx.add("(prefers-reduced-motion: reduce)", () => {
           tl.clear();
           tl.set(mobileMenu, { display: 'block' })
             .to(mobileBackdrop, { autoAlpha: 1, duration: 0.1 })
@@ -520,7 +523,6 @@ const navLinks = [
         abortController.abort();
         if (ctx) ctx.revert();
       }, { signal, once: true });
-    });
 
     // --- 3. Theme Toggle ---
     function toggleTheme() {

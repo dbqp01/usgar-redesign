@@ -106,8 +106,7 @@ const lightboxSrcs = (
               formats={["avif", "webp"]}
               fallbackFormat="jpg"
               quality="high"
-              widths={[400, 600, 800]}
-              sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+              fit="cover"
               loading={index < 1 ? "eager" : "lazy"}
               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
@@ -127,7 +126,7 @@ const lightboxSrcs = (
     <!-- Visor Modal (Lightbox) -->
     <div
       id="gallery-lightbox"
-      class="fixed inset-0 z-50 hidden items-center justify-center bg-black/95 backdrop-blur-md transition-[opacity,visibility,background-color] duration-300"
+      class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/95 backdrop-blur-md transition-[opacity,visibility,background-color] duration-300"
     >
       <!-- Close Button -->
       <button
@@ -203,6 +202,15 @@ const lightboxSrcs = (
     const counter = document.getElementById("lightbox-counter");
 
     if (!grid || !lightbox || !lightboxImg) return;
+
+    // Bug D2: re-parent the lightbox to <body> at init. Inside <main> (GSAP/astro
+    // transition transforms make it a stacking context) the lightbox z-[100] is
+    // trapped and the fixed z-50 navbar paints above its close button. As a direct
+    // body child its z-index competes in the root stacking context (MDN stacking
+    // context docs). appendChild MOVES the node; fixed positioning is unaffected.
+    if (lightbox.parentElement !== document.body) {
+      document.body.appendChild(lightbox);
+    }
 
     imageUrls = JSON.parse(grid.getAttribute("data-images") || "[]");
 

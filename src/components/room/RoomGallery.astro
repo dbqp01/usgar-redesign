@@ -39,9 +39,9 @@ const sliderSrcs = (
         id="active-gallery-image"
         src={images[0]}
         alt={room.name[lang]}
-        width={1200}
-        height={600}
-        format="avif"
+        width={1600}
+        height={900}
+        format="webp"
         loading="eager"
         fetchpriority="high"
         class="w-full h-full object-cover transition-opacity duration-300"
@@ -95,6 +95,7 @@ const sliderSrcs = (
           alt={`${room.name[lang]} thumb - ${idx + 1}`}
           width={300}
           height={225}
+          layout="none"
           format="webp"
           class="w-full h-full object-cover"
         />
@@ -104,9 +105,12 @@ const sliderSrcs = (
 </div>
 
 <!-- Premium Fullscreen Lightbox -->
+<!-- z-[100]: above navbar z-50. Re-parented to <body> at init (RoomDetail.astro) so
+     this z-index competes in the ROOT stacking context — inside the transformed/transition
+     <main> it could never beat the root-level navbar (MDN: stacking contexts are atomic). -->
 <div
   id="gallery-lightbox"
-  class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex-col items-center justify-center select-none"
+  class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md hidden flex-col items-center justify-center select-none"
   role="dialog"
   aria-modal="true"
   aria-label={t('room.photoGallery')}
@@ -138,6 +142,7 @@ const sliderSrcs = (
             alt={`${room.name[lang]} - Lightbox Photo ${idx + 1}`}
             width={1600}
             height={1066}
+            layout="none"
             format="avif"
             loading="lazy"
             class="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl transition-opacity duration-300"

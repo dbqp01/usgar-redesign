@@ -49,8 +49,8 @@ const includedServices = services
             formats={['avif', 'webp']}
             fallbackFormat="jpg"
             quality="high"
-            widths={[480, 720, 960, 1200]}
-            sizes="(min-width: 768px) 50vw, 100vw"
+            fit="cover"
+            position="center"
             loading={index === 0 ? 'eager' : 'lazy'}
             decoding="async"
             pictureAttributes={{ class: 'absolute inset-0 block h-full w-full' }}
