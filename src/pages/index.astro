@@ -15,7 +15,7 @@ import ExploreCarousel from "../components/ExploreCarousel.astro";
 import InstagramSection from "../components/InstagramSection.astro";
 import { rooms } from "../data/rooms";
 import { useTranslations } from "../i18n/utils";
-import faqData from "../content/faq/faq.json";
+import { faqData } from "../data/faq";
 import { siteSettings } from "../data/settings";
 
 import type { Locale } from "../i18n/utils";
@@ -29,10 +29,10 @@ const hotelSchema = {
   "@type": "Hotel",
   name: siteSettings.hotelName,
   description: siteSettings.siteDescription[lang],
-  image: "https://usgarhotels.com/assets/logos/Logo%20usgar%20morado.png",
+  image: "https://hotelesusgar.com/assets/logos/Logo%20usgar%20morado.png",
   telephone: `+${siteSettings.phoneRaw}`,
   email: siteSettings.email,
-  url: "https://sanpedro.hotelesusgar.com" + (lang !== "en" ? `/${lang}` : ""),
+  url: "https://hotelesusgar.com" + (lang !== "en" ? `/${lang}` : ""),
   address: {
     "@type": "PostalAddress",
     streetAddress: siteSettings.streetAddress,
@@ -93,10 +93,10 @@ const faqSchema = {
   "@type": "FAQPage",
   mainEntity: faqData.questions.map((faq) => ({
     "@type": "Question",
-    name: (faq as any)[`question_${lang}`] || faq.question_en,
+    name: faq[`question_${lang}`] || faq.question_en,
     acceptedAnswer: {
       "@type": "Answer",
-      text: (faq as any)[`answer_${lang}`] || faq.answer_en,
+      text: faq[`answer_${lang}`] || faq.answer_en,
     },
   })),
 };

@@ -5,6 +5,7 @@ import { useTranslations } from "../../i18n/utils";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
+import fallbackImg from "../../assets/hotel/hero-slide-cusco.jpg";
 
 interface Props {
   attraction?: Attraction;
@@ -51,14 +52,14 @@ const blogSchema = {
   "author": {
     "@type": "Organization",
     "name": "USGAR Hotels",
-    "url": "https://usgarhotels.com"
+    "url": "https://hotelesusgar.com"
   },
   "publisher": {
     "@type": "Organization",
     "name": "USGAR Hotels",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://usgarhotels.com/assets/logos/Logo%20usgar%20morado.png"
+      "url": "https://hotelesusgar.com/assets/logos/Logo%20usgar%20morado.png"
     }
   },
   "about": {
@@ -80,10 +81,10 @@ const blogSchema = {
     <!-- Background Image -->
     <div class="absolute inset-0 z-0 bg-stone-950">
       <Image
-        src={exploreImages[`../../assets/explore/${attraction.id}.jpg`].default}
+        src={exploreImages[`../../assets/explore/${attraction.id}.jpg`]?.default ?? fallbackImg}
         alt={attraction.name[lang]}
-        widths={[640, 1024, 1600]}
-        sizes="100vw"
+        layout="full-width"
+        fit="cover"
         format="webp"
         loading="eager"
         decoding="async"
