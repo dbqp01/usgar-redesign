@@ -46,25 +46,24 @@ class HandleMercadoPagoWebhookAction {
         $type = $body['type'] ?? ($body['action'] ?? null);
         $topic = $request->getQuery('topic');
 
-        // 0.1 Filtrar eventos que NO son de pago (merchant_order, chargebacks, etc.)
-        // Devolver 200 OK para que Mercado Pago deje de reintentar
-        $isPaymentEvent = false;
-        if ($type !== null && (str_contains((string)$type, 'payment') || $type === 'payment')) {
-            $isPaymentEvent = true;
-        }
-
-        if (!$isPaymentEvent) {
+        // 0.1 TODO 13: filtro ESTRICTO $type === 'payment'. El str_contains
+        // laxo dejaba pasar topics SEPARADOS que contienen la subcadena
+        // 'payment' (subscription_authorized_payment, topic_chargebacks_wh,
+        // etc. — doc MP webhooks, tabla de topics). Cualquier otro type se
+        // reconoce con 200 sin procesar ni validar firma.
+        if ($type !== 'payment') {
             Logger::info("HandleMercadoPagoWebhookAction: Evento no-payment ignorado. Type: " . ($type ?? 'null') . ", Topic: " . ($topic ?? 'null'));
             Response::json(['success' => true, 'message' => 'Non-payment event acknowledged.']);
             return;
         }
 
-        // 1. Extraer data ID del query string (MP envia ?data.id=XXX, PHP lo convierte a data_id)
+        // 1. TODO 13: el payment id sale SOLO de data.id del body y de
+        // data.id/data_id del query (MP envia ?data.id=XXX, PHP lo convierte
+        // a data_id). body['id'] es el ID de la NOTIFICACION, NO el del pago
+        // (doc MP) — nunca se usa como payment id.
         $dataId = $request->getQuery('data_id')
             ?? $request->getQuery('data.id')
-            ?? $request->getQuery('id')
-            ?? $body['data']['id']
-            ?? ($body['id'] ?? null);
+            ?? $body['data']['id'] ?? null;
         $paymentIdStr = $dataId ? (string)$dataId : '';
 
         // Log de entrada conciso por evento (sin headers ni datos sensibles)
@@ -113,7 +112,10 @@ class HandleMercadoPagoWebhookAction {
             }
 
             $status = $paymentDetails['status'] ?? 'pending';
-            $cartId = $paymentDetails['external_reference'] ?? null;
+            // Coordinacion W3: el create (todo 3) envia external_reference
+            // 'USGAR-{cartId}'; al resolver el hold se STRIP-ea el prefijo
+            // (back-compat: ref sin prefijo se usa directo).
+            $cartId = $this->resolveCartId($paymentDetails['external_reference'] ?? null);
             $transactionAmount = (float)($paymentDetails['transaction_amount'] ?? 0.0);
 
             // 4.5 TODO 12: idempotencia POR TIPO DE EVENTO. El indice unico
@@ -130,7 +132,19 @@ class HandleMercadoPagoWebhookAction {
                 return;
             }
 
-            if ($status !== 'approved' || !$cartId) {
+            // TODO 13 (r1/r2): status rejected/failed -> 200 +
+            // markPaymentProcessed('rejected') (cart_id del hold si existe,
+            // '' si no). NUNCA 400/500: un error haria que MP reintente la
+            // notificacion cada 15 min por siempre (doc MP retries).
+            if (in_array($status, ['rejected', 'failed'], true)) {
+                $this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)($cartId ?? ''), 'rejected');
+                $this->pdo->commit();
+                Logger::info("HandleMercadoPagoWebhookAction: Pago ID {$paymentIdStr} marcado como rechazado ({$status}). Reconocido para cortar reintentos.");
+                Response::json(['success' => true, 'status' => $status, 'message' => 'Payment rejected/failed, acknowledged.']);
+                return;
+            }
+
+            if ($status !== 'approved') {
                 $this->pdo->rollBack();
                 Logger::info("HandleMercadoPagoWebhookAction: Pago ID {$paymentIdStr} tiene estado '{$status}'. Omitiendo confirmacion.");
                 if (in_array($status, ['refunded', 'charged_back', 'cancelled'], true) && $cartId) {
@@ -143,12 +157,25 @@ class HandleMercadoPagoWebhookAction {
                 return;
             }
 
+            // TODO 14: pago approved SIN external_reference localizable ->
+            // orphan (el hold no puede resolverse). Se marca procesado para
+            // cortar el reintento infinito de MP.
+            if (!$cartId) {
+                $this->markOrphan($paymentIdStr);
+                return;
+            }
+
             // 5. Transaccion Local PDO con Bloqueo Pesimista
             $hold = $this->bookingRepo->getByCartIdForUpdate((string)$cartId);
             if (!$hold) {
-                Logger::error("HandleMercadoPagoWebhookAction Error: No se encontro hold para Cart ID {$cartId}");
-                $this->pdo->rollBack();
-                Response::error("Reserva provisional no encontrada para Cart ID {$cartId}.", 404);
+                // TODO 14: firma valida + hold inexistente -> 200 + fila
+                // orphan (cart_id='' — la columna es NOT NULL). MP reintenta
+                // cada 15 min indefinidamente ante no-200 (doc MP); marcarlo
+                // procesado corta el retry. El chequeo isPaymentProcessed
+                // corre DENTRO de la txn ANTES del INSERT (patron todo 11) y
+                // el INSERT usa ON DUPLICATE KEY (carrera concurrente segura).
+                Logger::error("HandleMercadoPagoWebhookAction ALERTA ORPHAN: Pago {$paymentIdStr} sin hold para Cart ID " . ($cartId ?? 'n/a'));
+                $this->markOrphan($paymentIdStr);
                 return;
             }
 
@@ -179,15 +206,31 @@ class HandleMercadoPagoWebhookAction {
             }
 
             // 5.5 VALIDACION DE SEGURIDAD ESTRICTA (Amount Mismatch)
-            // Usar bccomp para evitar falsos positivos por imprecision de punto flotante
+            // Usar bccomp para evitar falsos positivos por imprecision de punto flotante.
+            // Comparacion actual (W3): price_snapshot (USD) x EXCHANGE_RATE_USD_PEN ->
+            // PEN esperado vs transaction_amount (PEN). W6 (todo 32) introduce
+            // price_snapshot_pen persistido; esta comparacion se migra ahi.
             $expectedPen = PriceCalculator::toGatewayPrice((float)($hold['price_snapshot'] ?? 0.0));
             $transactionStr = number_format($transactionAmount, 2, '.', '');
             $expectedStr = number_format($expectedPen, 2, '.', '');
             if (bccomp($transactionStr, $expectedStr, 2) < 0) {
+                // TODO 16: monto insuficiente -> FraudReview + processed('fraud_review')
+                // EN LA MISMA transaccion + 200 (antes 400 sin marcar -> MP
+                // reintentaba cada 15 min por siempre). La reserva NO queda
+                // paid; fraud_review -> paid es legal cuando el cron del todo
+                // 24 re-despacha con el monto correcto (guard del todo 9).
                 Logger::error("HandleMercadoPagoWebhookAction ALERTA FRAUDE: Monto cobrado ({$transactionStr}) es menor al esperado ({$expectedStr}) para Cart ID {$cartId}");
-                $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::FraudReview->value);
+                if (!$this->bookingRepo->isPaymentProcessed($paymentIdStr, 'fraud_review')) {
+                    $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::FraudReview->value);
+                    $this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, 'fraud_review');
+                    $this->bookingRepo->recordAlert((string)$cartId, $paymentIdStr, 'fraud_review');
+                }
                 $this->pdo->commit();
-                Response::error("El monto de la transaccion no coincide con el valor de la reserva.", 400);
+                Response::json([
+                    'success' => true,
+                    'status'  => 'fraud_review',
+                    'message' => 'Payment under fraud review, acknowledged.'
+                ]);
                 return;
             }
 
@@ -249,5 +292,42 @@ class HandleMercadoPagoWebhookAction {
             'rejected', 'failed', 'cancelled' => 'rejected',
             default => 'approved',
         };
+    }
+
+    /**
+     * Normaliza el external_reference del pago al cartId local.
+     * Coordinacion W3: el create (todo 3) envia 'USGAR-{cartId}'; se
+     * STRIP-ea el prefijo. Back-compat: una ref sin prefijo (legacy) se usa
+     * directa. Devuelve null si no hay ref o el prefijo deja vacio.
+     */
+    private function resolveCartId(?string $externalReference): ?string {
+        if ($externalReference === null || $externalReference === '') {
+            return null;
+        }
+        if (str_starts_with($externalReference, 'USGAR-')) {
+            $stripped = substr($externalReference, 6);
+            return $stripped === '' ? null : $stripped;
+        }
+        return $externalReference;
+    }
+
+    /**
+     * TODO 14: marca un pago sin hold como procesado (orphan) y responde 200,
+     * cortando el reintento infinito de MP. El chequeo isPaymentProcessed
+     * corre DENTRO de la transaccion ANTES del INSERT (determinismo bajo
+     * carrera; el INSERT usa ON DUPLICATE KEY como cinturon-y-tirantes).
+     * cart_id = '' porque la columna es NOT NULL. Requiere txn activa.
+     */
+    private function markOrphan(string $paymentIdStr): void {
+        if (!$this->bookingRepo->isPaymentProcessed($paymentIdStr, 'orphan')) {
+            $this->bookingRepo->markPaymentProcessed($paymentIdStr, '', 'orphan');
+        }
+        $this->pdo->commit();
+        Logger::info("HandleMercadoPagoWebhookAction: Pago {$paymentIdStr} sin hold marcado como orphan (idempotencia registrada).");
+        Response::json([
+            'success' => true,
+            'status'  => 'orphan',
+            'message' => 'Payment orphan acknowledged.'
+        ]);
     }
 }

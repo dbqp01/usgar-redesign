@@ -3,8 +3,11 @@ declare(strict_types=1);
 
 namespace App\Test\Unit\Features\Shared;
 
+require_once __DIR__ . '/../../../fixtures/W3WebhookFixtures.php';
+
 use PHPUnit\Framework\TestCase;
 use App\Features\Shared\Adapters\MercadoPagoAdapter;
+use App\Test\Fixtures\W3WebhookFixtures;
 use App\Core\Config;
 use MercadoPago\Client\Payment\PaymentClient;
 use MercadoPago\Client\Payment\PaymentRefundClient;
@@ -234,7 +237,9 @@ final class MercadoPagoAdapterTest extends TestCase {
     }
 
     public function testVerifySignatureAcceptsValidHmac(): void {
-        $ts = (string) time();
+        // ts en MILISEGUNDOS (doc MP webhooks x-signature: ts en ms; el
+        // WebhookSignatureValidator del SDK compara ts contra now() en ms).
+        $ts = (string) ((int) (microtime(true) * 1000));
         $dataId = '123456789';
         $requestId = 'req-abc-123';
         $manifest = "id:{$dataId};request-id:{$requestId};ts:{$ts};";
@@ -245,8 +250,34 @@ final class MercadoPagoAdapterTest extends TestCase {
         $this->assertTrue($adapter->verifySignature($signatureHeader, $requestId, $dataId));
     }
 
+    public function testVerifySignatureAcceptsRecentTimestampWithinTolerance(): void {
+        // Todo 15 (QA-): con toleranceSeconds=300 activado, una firma RECIENTE
+        // (dentro de 5 min) sigue siendo valida.
+        $dataId = '123456789';
+        $requestId = 'req-fresh-ts';
+        $signatureHeader = W3WebhookFixtures::signatureHeader($dataId, $requestId);
+
+        $adapter = new MercadoPagoAdapter();
+        $this->assertTrue($adapter->verifySignature($signatureHeader, $requestId, $dataId));
+    }
+
+    public function testVerifySignatureRejectsTimestampBeyondTolerance(): void {
+        // Todo 15 (QA+): firma con ts viejo (>300s) -> INVALIDA (ventana de
+        // replay de 5 min). RED: sin tolerance, el SDK no chequeaba skew y la
+        // firma era aceptada.
+        $dataId = '123456789';
+        $requestId = 'req-old-ts';
+        $oldTs = (int) (microtime(true) * 1000) - 600_000; // 600s en el pasado
+        $signatureHeader = W3WebhookFixtures::signatureHeader($dataId, $requestId, $oldTs);
+
+        $adapter = new MercadoPagoAdapter();
+        $this->assertFalse($adapter->verifySignature($signatureHeader, $requestId, $dataId));
+    }
+
     public function testVerifySignatureRejectsInvalidHmac(): void {
-        $ts = (string) time();
+        // ts en ms por coherencia con el tolerance (todo 15); el fallo de
+        // este test es por HMAC distinto, no por skew.
+        $ts = (string) ((int) (microtime(true) * 1000));
         $dataId = '123456789';
         $manifest = "id:{$dataId};ts:{$ts};";
         $v1 = hash_hmac('sha256', $manifest, 'wrong-secret');
@@ -265,7 +296,9 @@ final class MercadoPagoAdapterTest extends TestCase {
 
         $adapter = new MercadoPagoAdapter($paymentClient);
 
-        $ts = (string) time();
+        // ts en ms (todo 15: tolerance 300s activado — la firma debe ser
+        // reciente en ms para pasar el skew check).
+        $ts = (string) ((int) (microtime(true) * 1000));
         $dataId = '555666777';
         $requestId = 'req-xyz';
         $manifest = "id:{$dataId};request-id:{$requestId};ts:{$ts};";

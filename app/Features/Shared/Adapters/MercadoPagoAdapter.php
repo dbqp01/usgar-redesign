@@ -165,11 +165,16 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         }
 
         try {
+            // Todo 15: toleranceSeconds=300 — ventana de replay de 5 min. La
+            // doc MP (webhooks x-signature) declara ts en MILISEGUNDOS y el
+            // SDK compara contra now() en ms (verificado empiricamente en W3).
+            // Sin tolerance, cualquier replay del header era aceptado.
             WebhookSignatureValidator::validate(
                 $signatureHeader,
                 $requestId,
                 $dataId,
-                $this->webhookSecret
+                $this->webhookSecret,
+                300
             );
             Logger::info("MercadoPagoAdapter: Firma de webhook validada correctamente. DataId: {$dataId}");
             return true;
@@ -189,6 +194,14 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             Logger::error("MercadoPagoAdapter: paymentId no numerico ignorado: {$paymentId}");
             return null;
         }
+
+        // Todo 17: el path del webhook corre ANTES del ACK (MP espera
+        // 200/201 en 22s, doc webhooks). El SDK reintenta 3x por defecto
+        // con backoff exponencial sobre timeouts (4x8s excederia la ventana);
+        // RequestOptions no expone retries, asi que el unico knob es la
+        // config global: 1 SOLO intento + restauracion en finally.
+        $previousRetries = MercadoPagoConfig::getMaxRetries();
+        MercadoPagoConfig::setMaxRetries(0);
 
         try {
             MercadoPagoConfig::setAccessToken($this->accessToken);
@@ -217,6 +230,8 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         } catch (Exception $e) {
             Logger::error('MercadoPagoAdapter Exception en getPaymentDetails: ' . $e->getMessage());
             return null;
+        } finally {
+            MercadoPagoConfig::setMaxRetries($previousRetries);
         }
     }
 
