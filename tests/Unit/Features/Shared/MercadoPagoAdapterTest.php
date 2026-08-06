@@ -11,7 +11,10 @@ use MercadoPago\Client\Payment\PaymentRefundClient;
 use MercadoPago\Client\Common\RequestOptions;
 use MercadoPago\Exceptions\MPApiException;
 use MercadoPago\Net\MPResponse;
+use MercadoPago\Net\MPSearchRequest;
 use MercadoPago\Resources\Payment;
+use MercadoPago\Resources\PaymentSearch;
+use MercadoPago\Resources\Payment\PaymentSearchResult;
 use MercadoPago\Resources\PaymentRefund;
 
 /**
@@ -37,11 +40,18 @@ final class MercadoPagoAdapterTest extends TestCase {
                     $this->assertSame('card', $payload['payment_method_id']);
                     $this->assertSame('CART-ABC-123', $payload['external_reference']);
                     $this->assertSame('USGAR HOTELES CUSCO', $payload['statement_descriptor']);
-                    $this->assertSame('https://usgarhoteles.com/api/webhook', $payload['notification_url']);
+                    // Todo 3 (clausula r2): el create NO envia notification_url
+                    // (la config del panel/save_webhook gobierna).
+                    $this->assertArrayNotHasKey('notification_url', $payload);
+                    // Todo 4: currency_id explicito.
+                    $this->assertSame('PEN', $payload['currency_id']);
                     $this->assertSame(['email' => 'cliente@test.com'], $payload['payer']);
                     $this->assertSame('CARD_TOKEN_XYZ', $payload['token']);
                     $this->assertSame('310', $payload['issuer_id']);
                     $this->assertSame(3, $payload['installments']);
+                    // Todo 3: additional_info pasa tal cual (density armada en la accion).
+                    $this->assertSame('travel', $payload['additional_info']['items'][0]['category_id']);
+                    $this->assertSame(2, $payload['additional_info']['items'][0]['quantity']);
                     return true;
                 }),
                 $this->isInstanceOf(RequestOptions::class)
@@ -57,6 +67,15 @@ final class MercadoPagoAdapterTest extends TestCase {
             'token' => 'CARD_TOKEN_XYZ',
             'issuer_id' => '310',
             'installments' => 3,
+            'additional_info' => [
+                'items' => [[
+                    'id' => '5',
+                    'title' => 'Suite Deluxe',
+                    'quantity' => 2,
+                    'unit_price' => 250.0,
+                    'category_id' => 'travel',
+                ]],
+            ],
         ]);
 
         $this->assertSame(987654321, $result['id']);
@@ -74,13 +93,13 @@ final class MercadoPagoAdapterTest extends TestCase {
                 $this->callback(function (RequestOptions $options): bool {
                     $headers = $options->getCustomHeaders();
                     $this->assertNotEmpty($headers, 'Debe enviar x-idempotency-key');
-                    // Clave en MINUSCULAS obligatoria: getIdempotencyKey() del SDK
-                    // (MercadoPagoClient::getIdempotencyKey) detecta la key con
-                    // array_change_key_case() pero devuelve $headers['x-idempotency-key']
-                    // del array ORIGINAL (case-sensitive). Con 'X-Idempotency-Key'
-                    // (mayuscula) devuelve null -> TypeError 500 en processPayment.
                     $this->assertArrayHasKey('x-idempotency-key', $headers);
-                    $this->assertStringStartsWith('pay_', $headers['x-idempotency-key']);
+                    // Todo 2: UUID v4 por intento (ya no es determinista por carrito).
+                    $this->assertMatchesRegularExpression(
+                        '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/',
+                        $headers['x-idempotency-key'],
+                        'La key debe ser un UUID v4 fresco, no derivada del cart.'
+                    );
                     return true;
                 })
             )
@@ -93,6 +112,32 @@ final class MercadoPagoAdapterTest extends TestCase {
             'payment_method_id' => 'card',
             'payer' => ['email' => 'x@test.com'],
         ]);
+    }
+
+    public function testProcessPaymentGeneratesFreshIdempotencyKeyPerAttempt(): void {
+        // Todo 2 (QA+): dos llamadas seguidas sobre el MISMO cart -> keys DISTINTAS
+        // (la key determinista por carrito bloqueaba reintentos legitimos).
+        $capturedKeys = [];
+        $paymentClient = $this->createMock(PaymentClient::class);
+        $paymentClient->expects($this->exactly(2))
+            ->method('create')
+            ->willReturnCallback(function (array $payload, RequestOptions $options) use (&$capturedKeys) {
+                $capturedKeys[] = $options->getCustomHeaders()['x-idempotency-key'] ?? null;
+                return $this->makePayment(222, 'approved', 'accredited', 'CART-1', 50.0);
+            });
+
+        $adapter = new MercadoPagoAdapter($paymentClient);
+        $request = [
+            'external_reference' => 'CART-1',
+            'transaction_amount' => 50.0,
+            'payment_method_id' => 'card',
+            'payer' => ['email' => 'x@test.com'],
+        ];
+        $adapter->processPayment($request);
+        $adapter->processPayment($request);
+
+        $this->assertCount(2, $capturedKeys);
+        $this->assertNotSame($capturedKeys[0], $capturedKeys[1], 'Cada intento debe tener una idempotency key fresca (UUID).');
     }
 
     public function testGetPaymentDetailsReturnsNormalizedArray(): void {
@@ -109,6 +154,70 @@ final class MercadoPagoAdapterTest extends TestCase {
         $this->assertSame('approved', $result['status']);
         $this->assertSame('CART-42', $result['external_reference']);
         $this->assertSame(75.25, $result['transaction_amount']);
+    }
+
+    public function testGetPaymentDetailsIncludesStatusDetail(): void {
+        // Todo 7 (QA+): el retorno incluye status_detail (motivos de rechazo MP).
+        $paymentClient = $this->createMock(PaymentClient::class);
+        $paymentClient->expects($this->once())
+            ->method('get')
+            ->with(888, $this->isInstanceOf(RequestOptions::class))
+            ->willReturn($this->makePayment(888, 'rejected', 'cc_rejected_insufficient_amount', 'CART-8', 10.0));
+
+        $adapter = new MercadoPagoAdapter($paymentClient);
+        $result = $adapter->getPaymentDetails('888');
+
+        $this->assertSame('cc_rejected_insufficient_amount', $result['status_detail']);
+    }
+
+    public function testGetPaymentDetailsReturnsNullForNonNumericId(): void {
+        // Todo 7 (QA-): paymentId alfanumerico -> null + log, sin TypeError del cast.
+        $paymentClient = $this->createMock(PaymentClient::class);
+        $paymentClient->expects($this->never())->method('get');
+
+        $adapter = new MercadoPagoAdapter($paymentClient);
+        $this->assertNull($adapter->getPaymentDetails('ABC123XYZ'));
+    }
+
+    public function testFindPaymentByExternalReferenceReturnsNormalizedPayment(): void {
+        // Todo 7: dueno de findPaymentByExternalReference (consume todo 31).
+        $result = new PaymentSearchResult();
+        $result->id = 777;
+        $result->status = 'approved';
+        $result->status_detail = 'accredited';
+        $result->external_reference = 'USGAR-CART-77';
+        $result->transaction_amount = 380.0;
+        $search = new PaymentSearch();
+        $search->results = [$result];
+
+        $paymentClient = $this->createMock(PaymentClient::class);
+        $paymentClient->expects($this->once())
+            ->method('search')
+            ->with($this->isInstanceOf(MPSearchRequest::class), $this->isInstanceOf(RequestOptions::class))
+            ->willReturn($search);
+
+        $adapter = new MercadoPagoAdapter($paymentClient);
+        $found = $adapter->findPaymentByExternalReference('USGAR-CART-77');
+
+        $this->assertNotNull($found);
+        $this->assertSame(777, $found['id']);
+        $this->assertSame('approved', $found['status']);
+        $this->assertSame('accredited', $found['status_detail']);
+        $this->assertSame('USGAR-CART-77', $found['external_reference']);
+        $this->assertSame(380.0, $found['transaction_amount']);
+    }
+
+    public function testFindPaymentByExternalReferenceReturnsNullWhenNoResults(): void {
+        $search = new PaymentSearch();
+        $search->results = [];
+
+        $paymentClient = $this->createMock(PaymentClient::class);
+        $paymentClient->expects($this->once())
+            ->method('search')
+            ->willReturn($search);
+
+        $adapter = new MercadoPagoAdapter($paymentClient);
+        $this->assertNull($adapter->findPaymentByExternalReference('USGAR-CART-NONE'));
     }
 
     public function testGetPaymentDetailsReturnsNullOnSdkFailure(): void {

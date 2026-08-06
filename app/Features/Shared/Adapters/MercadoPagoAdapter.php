@@ -10,6 +10,7 @@ use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Client\Payment\PaymentClient;
 use MercadoPago\Client\Payment\PaymentRefundClient;
 use MercadoPago\Client\Common\RequestOptions;
+use MercadoPago\Net\MPSearchRequest;
 use MercadoPago\Webhook\WebhookSignatureValidator;
 use MercadoPago\Exceptions\InvalidWebhookSignatureException;
 use MercadoPago\Exceptions\MPApiException;
@@ -50,7 +51,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         $this->accessToken = $token;
         $this->webhookSecret = Config::get('MERCADO_PAGO_WEBHOOK_SECRET');
 
-        $url = Config::get('SITE_URL', 'http://localhost:4321');
+        $url = Config::get('SITE_URL') ?? '';
         $this->siteUrl = rtrim($url, '/');
 
         $this->paymentClient = $paymentClient ?? new PaymentClient();
@@ -72,10 +73,17 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             'payment_method_id'   => $paymentData['payment_method_id'] ?? '',
             'payer'               => $payer,
             'external_reference'  => $cartId,
+            'currency_id'         => Config::get('MERCADO_PAGO_CURRENCY', 'PEN'), // todo 4: explicito
             'statement_descriptor'=> $statementDescriptor,
             'binary_mode'         => Config::get('MP_BINARY_MODE', 'true') === 'true',
-            'notification_url'    => "{$this->siteUrl}/api/webhook",
+            // Todo 3 (clausula r2): SIN notification_url en el create — la config
+            // del panel / save_webhook gobierna (doc MP: la URL del create tendria
+            // prioridad sobre el panel; se mantiene AUSENTE a proposito).
         ];
+
+        if (!empty($paymentData['additional_info'])) {
+            $payload['additional_info'] = $paymentData['additional_info'];
+        }
 
         if (!empty($paymentData['token'])) {
             $payload['token'] = $paymentData['token'];
@@ -89,16 +97,14 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
 
 
         try {
-            $idempotencyKey = 'pay_' . $cartId . '_' . hash('sha256', $cartId . '_' . $finalPrice);
             MercadoPagoConfig::setAccessToken($this->accessToken);
 
             $client = $this->paymentClient;
             $requestOptions = new RequestOptions();
-            // Clave EN MINUSCULAS obligatoria: getIdempotencyKey() del SDK (MercadoPagoClient:155)
-            // hace array_change_key_case() para detectar la key pero devuelve $headers['x-idempotency-key']
-            // del array ORIGINAL (case-sensitive). Con 'X-Idempotency-Key' mayuscula -> null -> TypeError 500.
-            $requestOptions->setCustomHeaders(['x-idempotency-key' => $idempotencyKey]);
-            $requestOptions->setConnectionTimeout(10000); // 10s
+            // Todo 2: UUID v4 FRESCO por intento. Una key determinista por carrito
+            // bloqueaba reintentos legitimos (MP deduplica por X-Idempotency-Key).
+            $requestOptions->setCustomHeaders(['x-idempotency-key' => $this->generateUuidV4()]);
+            $requestOptions->setConnectionTimeout((int) Config::get('MERCADO_PAGO_TIMEOUT_CREATE_MS', '15000')); // 15s total
 
             $payment = $client->create($payload, $requestOptions);
 
@@ -114,13 +120,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             ];
 
         } catch (MPApiException $e) {
-            $statusCode = $e->getStatusCode();
-            $apiBody = $e->getApiResponse() ? $e->getApiResponse()->getContent() : 'N/A';
-            Logger::error('MercadoPagoAdapter API Error en processPayment', [
-                'status_code' => $statusCode,
-                'api_response' => is_array($apiBody) ? json_encode($apiBody) : $apiBody,
-                'cart_id' => $cartId,
-            ]);
+            $this->logApiError($e, 'MercadoPagoAdapter API Error en processPayment', ['cart_id' => $cartId]);
             throw $e;
         } catch (Exception $e) {
             Logger::error('MercadoPagoAdapter Exception en processPayment: ' . $e->getMessage());
@@ -183,11 +183,18 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
     }
 
     public function getPaymentDetails(string $paymentId): ?array {
+        // Todo 7 (QA-): guard ctype_digit antes del cast — un id alfanumerico
+        // no debe llegar a la API como (int)0 ni lanzar TypeError.
+        if (!ctype_digit($paymentId)) {
+            Logger::error("MercadoPagoAdapter: paymentId no numerico ignorado: {$paymentId}");
+            return null;
+        }
+
         try {
             MercadoPagoConfig::setAccessToken($this->accessToken);
             $client = $this->paymentClient;
             $requestOptions = new RequestOptions();
-            $requestOptions->setConnectionTimeout(10000); // 10s
+            $requestOptions->setConnectionTimeout((int) Config::get('MERCADO_PAGO_TIMEOUT_GET_MS', '8000')); // 8s total (webhook ACK 22s)
 
             $payment = $client->get((int)$paymentId, $requestOptions);
 
@@ -199,21 +206,55 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             return [
                 'id' => $payment->id,
                 'status' => $payment->status,
+                'status_detail' => $payment->status_detail, // todo 7: motivos de rechazo MP
                 'external_reference' => $payment->external_reference,
                 'transaction_amount' => $payment->transaction_amount,
             ];
 
         } catch (MPApiException $e) {
-            $statusCode = $e->getStatusCode();
-            $apiBody = $e->getApiResponse() ? $e->getApiResponse()->getContent() : 'N/A';
-            Logger::error('MercadoPagoAdapter API Error en getPaymentDetails', [
-                'status_code' => $statusCode,
-                'api_response' => is_array($apiBody) ? json_encode($apiBody) : $apiBody,
-                'payment_id' => $paymentId,
-            ]);
+            $this->logApiError($e, 'MercadoPagoAdapter API Error en getPaymentDetails', ['payment_id' => $paymentId]);
             return null;
         } catch (Exception $e) {
             Logger::error('MercadoPagoAdapter Exception en getPaymentDetails: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Busca un pago por external_reference (GET /v1/payments/search).
+     * Consumido por el todo 31 (W5) para evitar segundos cobros tras commit-falla.
+     * Devuelve el primer resultado normalizado, o null si no existe.
+     */
+    public function findPaymentByExternalReference(string $externalRef): ?array {
+        try {
+            MercadoPagoConfig::setAccessToken($this->accessToken);
+            $requestOptions = new RequestOptions();
+            $requestOptions->setConnectionTimeout((int) Config::get('MERCADO_PAGO_TIMEOUT_GET_MS', '8000')); // 8s total
+
+            $search = $this->paymentClient->search(
+                new MPSearchRequest(1, 0, ['external_reference' => $externalRef]),
+                $requestOptions
+            );
+
+            $results = $search->results ?? null;
+            if (!is_array($results) || count($results) === 0) {
+                return null;
+            }
+
+            $first = $results[0];
+            return [
+                'id' => (int) ($first->id ?? 0),
+                'status' => (string) ($first->status ?? ''),
+                'status_detail' => (string) ($first->status_detail ?? ''),
+                'external_reference' => (string) ($first->external_reference ?? $externalRef),
+                'transaction_amount' => (float) ($first->transaction_amount ?? 0.0),
+            ];
+
+        } catch (MPApiException $e) {
+            $this->logApiError($e, 'MercadoPagoAdapter API Error en findPaymentByExternalReference', ['external_reference' => $externalRef]);
+            return null;
+        } catch (Exception $e) {
+            Logger::error('MercadoPagoAdapter Exception en findPaymentByExternalReference: ' . $e->getMessage());
             return null;
         }
     }
@@ -237,17 +278,35 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             Logger::info("MercadoPagoAdapter: Reembolso procesado exitosamente para Payment ID {$paymentId}");
             return true;
         } catch (MPApiException $e) {
-            $statusCode = $e->getStatusCode();
-            $apiBody = $e->getApiResponse() ? $e->getApiResponse()->getContent() : 'N/A';
-            Logger::error('MercadoPagoAdapter API Error en refundPayment', [
-                'status_code' => $statusCode,
-                'api_response' => is_array($apiBody) ? json_encode($apiBody) : $apiBody,
-                'payment_id' => $paymentId,
-            ]);
+            $this->logApiError($e, 'MercadoPagoAdapter API Error en refundPayment', ['payment_id' => $paymentId]);
             return false;
         } catch (Exception $e) {
             Logger::error('MercadoPagoAdapter Exception en refundPayment: ' . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * Genera un UUID v4 fresco por llamada (idempotency key por intento).
+     * Mismo algoritmo que el SDK dx-php (random_bytes + version/bits).
+     */
+    private function generateUuidV4(): string {
+        $data = random_bytes(16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // version 4
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // variant RFC 4122
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    }
+
+    /**
+     * Registra un error de API de Mercado Pago con status y body normalizados.
+     *
+     * @param array<string, mixed> $context
+     */
+    private function logApiError(MPApiException $e, string $message, array $context): void {
+        $statusCode = $e->getStatusCode();
+        $apiBody = $e->getApiResponse() ? $e->getApiResponse()->getContent() : 'N/A';
+        $context['status_code'] = $statusCode;
+        $context['api_response'] = is_array($apiBody) ? json_encode($apiBody) : $apiBody;
+        Logger::error($message, $context);
     }
 }

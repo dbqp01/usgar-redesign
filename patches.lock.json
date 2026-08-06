@@ -1,0 +1,27 @@
+{
+    "_hash": "9e219b5a16ec62fcd2ff809568f3341620f299d9884800d5f28f6d321a7cb46a",
+    "patches": {
+        "mercadopago/dx-php": [
+            {
+                "package": "mercadopago/dx-php",
+                "description": "Case-robust idempotency key + single idempotency header",
+                "url": "patches/dx-php-idempotency-case.patch",
+                "sha256": "e0354a5cb607e175db61ddacb91d2f1227f0cd44fd9f4f4f9990fa4e33f2089b",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            },
+            {
+                "package": "mercadopago/dx-php",
+                "description": "Bounded total timeout on SDK HTTP calls (CURLOPT_TIMEOUT_MS)",
+                "url": "patches/dx-php-total-timeout.patch",
+                "sha256": "58bf5cc171067b4f9eec40eb4599d0f8c4a096b675128678f310beadef30d16e",
+                "depth": 1,
+                "extra": {
+                    "provenance": "root"
+                }
+            }
+        ]
+    }
+}

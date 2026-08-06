@@ -1,0 +1,12 @@
+diff --git a/src/MercadoPago/Net/MPDefaultHttpClient.php b/src/MercadoPago/Net/MPDefaultHttpClient.php
+index ef4a72e..683bc78 100644
+--- a/src/MercadoPago/Net/MPDefaultHttpClient.php
++++ b/src/MercadoPago/Net/MPDefaultHttpClient.php
+@@ -109,6 +109,7 @@ class MPDefaultHttpClient implements MPHttpClient
+             CURLOPT_HTTPHEADER => $request->getHeaders(),
+             CURLOPT_POSTFIELDS => $request->getPayload(),
+             CURLOPT_CONNECTTIMEOUT_MS => $connection_timeout,
++            CURLOPT_TIMEOUT_MS => $connection_timeout, // patch W1 todo 5: timeout TOTAL acotado (read colgado no bloquea indefinido)
+             CURLOPT_MAXCONNECTS => MercadoPagoConfig::getMaxConnections(),
+             CURLOPT_RETURNTRANSFER => true
+         );
