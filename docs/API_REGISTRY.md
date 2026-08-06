@@ -205,7 +205,7 @@ Todas las claves se leen vía `App\Core\Config` (`Config::get('KEY')`, con fallb
 | `DB_NAME` | Database | Nombre de la BD local de la app (default `usgar_hotels`) |
 | `DB_USER` | Database | Usuario MySQL |
 | `DB_PASS` | Database | Password MySQL |
-| `QLOAPP_API_URL` | QloAppAdapter | URL de la API XML del PMS (default `https://cms.hotelesusgar.com/api`) |
+| `QLOAPP_API_URL` | QloAppAdapter | URL de la API XML del PMS (default `https://cms.usgarhoteles.com/api`) |
 | `QLOAPP_API_KEY` | QloAppAdapter | API key del PMS QloApps |
 | `MERCADO_PAGO_ACCESS_TOKEN` | MercadoPagoAdapter | Token de Mercado Pago (fuente de verdad única) |
 | `MERCADO_PAGO_WEBHOOK_SECRET` | MercadoPagoAdapter / WebhookAction | Secreto para validar la firma HMAC de los webhooks MP |
@@ -233,8 +233,8 @@ Todas las claves se leen vía `App\Core\Config` (`Config::get('KEY')`, con fallb
 | `MICROSOFT_CLIENT_ID` / `MICROSOFT_CLIENT_SECRET` | AuthService | Credenciales OAuth de Microsoft |
 | `FACEBOOK_APP_ID` / `FACEBOOK_APP_SECRET` | AuthService | Credenciales OAuth de Facebook |
 | `DEFAULT_HOTEL_ID` | Booking / Rooms | `id_hotel` por defecto (default `1`) |
-| `DEFAULT_GUEST_EMAIL` | Listeners | Email de huésped por defecto (default `reserva@hotelesusgar.com`) |
-| `DEFAULT_REPLY_EMAIL` | QloAppAdapter | Email de reply (default `no-reply@hotelesusgar.com`) |
+| `DEFAULT_GUEST_EMAIL` | Listeners | Email de huésped por defecto (default `reserva@usgarhoteles.com`) |
+| `DEFAULT_REPLY_EMAIL` | QloAppAdapter | Email de reply (default `no-reply@usgarhoteles.com`) |
 | `TRUSTED_PROXIES` | Config | IPs de proxies confiables para `X-Forwarded-For` (vacío = seguro) |
 | `ALLOWED_ORIGINS` | Config | Orígenes CORS permitidos (default `*`) |
 | `TIMEZONE` | Config | Zona horaria (default `America/Lima`) |

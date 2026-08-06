@@ -1,4 +1,5 @@
 ﻿---
+// debt: oversized module (384 LOC) — split into concept-named components when touched; ceiling 250 pure LOC
 // src/components/booking/BookingCalendarStep.astro
 // Paso 1 del wizard: calendario custom (dual-month desktop / single mobile),
 // rango por clic, disponibilidad via API con degradacion, y disparo del
@@ -90,6 +91,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
 
 <script>
   import { buildMonthGrid, nightsBetween, clampRange, formatISODate } from '../../features/booking/calendar';
+import { formatDate } from '../../utils/format';
   import { allocateRooms } from '../../features/booking/roomAllocator';
   import { wizardStore } from '../../features/booking/wizardStore';
   import { bookingService } from '../../services/bookingService';
@@ -187,7 +189,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
           if (!cell.inMonth) return '<span></span>';
           const past = cell.past;
           const dayNum = Number(cell.date.slice(-2));
-          const dateLabel = new Date(cell.date + 'T00:00:00').toLocaleDateString(opts.lang === 'es' ? 'es' : opts.lang === 'fr' ? 'fr' : opts.lang === 'pt' ? 'pt' : 'en', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+          const dateLabel = formatDate(cell.date, opts.lang);
           const soldOut = !past && calendarAvailability[cell.date] !== undefined && isDaySoldOut(cell.date);
           const disabledAttr = past || soldOut ? 'tabindex="-1" aria-disabled="true"' : '';
           const stateClass = past

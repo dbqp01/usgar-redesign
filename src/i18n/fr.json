@@ -44,10 +44,6 @@
     "about": "A propos de la chambre",
     "amenities": "Services et conforts",
     "includedFree": "Inclus sans frais supplementaires",
-    "marquee1": "San Pedro",
-    "marquee2": "Cusco",
-    "marquee3": "Machu Picchu",
-    "marquee4": "Vallee Sacree",
     "baseRate": "Tarif de base",
     "maxCapacity": "Capacite maximale",
     "guests": "voyageurs",
@@ -132,7 +128,6 @@
   "theme": {
     "toggleDark": "Basculer en mode sombre"
   },
-  "layout": {},
   "heritage": {
     "sectionLabel": "PATRIMOINE & HERITAGE",
     "heading": "UN REFUGE VIVANT",
@@ -162,6 +157,7 @@
     "formSubmit": "Envoyer le Message",
     "directChannels": "Canaux Directs",
     "whatsappText": "Ecrivez-nous sur WhatsApp",
+    "whatsappDirect": "WhatsApp direct",
     "emailText": "Envoyer un E-mail",
     "callText": "Appeler la Reception",
     "directionsTitle": "Comment Arriver a San Pedro",
@@ -378,11 +374,8 @@
     "payNow": "Payer maintenant",
     "processing": "Traitement du paiement...",
     "preparing": "Préparation du paiement sécurisé...",
-    "pendingPayment": "Votre paiement est en attente de confirmation. Vous serez redirigé pour vérifier son statut.",
-    "verifyingPayment": "Vérification du statut du paiement...",
     "rejectedGeneric": "Votre paiement a été refusé. Vérifiez les informations et réessayez.",
     "retryCooldown": "Vous pourrez réessayer dans {n}",
-    "retryButton": "Réessayer le paiement",
     "manualReview": "Nous n'avons pas pu confirmer votre paiement après plusieurs tentatives. Contactez l'hôtel pour finaliser votre réservation.",
     "statusDetails": {
       "pending_challenge": "Terminez la vérification 3D Secure pour confirmer le paiement.",
@@ -415,5 +408,12 @@
   "status": {
     "ready": "Système prêt",
     "close": "Fermer la notification"
+  },
+  "profile": {
+    "personalDetails": "Détails personnels",
+    "personalInformation": "Informations personnelles",
+    "accountProvider": "Fournisseur du compte",
+    "sanctuaryPerk": "Avantage Sanctuary",
+    "totalPaid": "Total payé"
   }
 }

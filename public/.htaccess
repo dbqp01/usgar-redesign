@@ -30,3 +30,51 @@ RewriteRule ^api/(.*)$ index.php [L,QSA]
     Order allow,deny
     Deny from all
 </FilesMatch>
+
+# =============================================================================
+# HTTP caching headers (mod_expires + mod_headers) — Apache 2.4 / Hostinger (LiteSpeed)
+#  * Hashed Astro assets under /_astro/ carry content hashes -> 1 year, immutable
+#  * og-image.jpg, favicon, images and videos -> 30 days
+#  * HTML -> never cached (prices/availability change); also required for
+#    Astro prefetch in Firefox/Safari (astro docs: prefetch needs cache headers)
+# NOTE: for /_astro/* raster images mod_expires emits a 30-day Expires while the
+#       Cache-Control override below says 1 year — browsers MUST ignore Expires
+#       when Cache-Control max-age is present (RFC 7234 sec 5.3), so Cache-Control wins.
+# =============================================================================
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    # Hashed build assets (css/js/woff2): 1 year
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+
+    # Images, favicon, videos: 30 days
+    ExpiresByType image/x-icon "access plus 30 days"
+    ExpiresByType image/svg+xml "access plus 30 days"
+    ExpiresByType image/avif "access plus 30 days"
+    ExpiresByType image/webp "access plus 30 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType video/mp4 "access plus 30 days"
+
+    # HTML: revalidate on every request
+    ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+<IfModule mod_headers.c>
+    <IfModule mod_setenvif.c>
+        # Hashed /_astro/* assets: hard cache + immutable (SetEnvIf env= triggers
+        # work on both Apache and LiteSpeed)
+        SetEnvIf Request_URI "^/_astro/" USGAR_HASHED_ASSET=1
+        # Videos: 30 days (Apache/LiteSpeed serve Accept-Ranges natively; set explicitly)
+        SetEnvIf Request_URI "\.mp4$" USGAR_VIDEO=1
+        # HTML pages (incl. homepage "/" resolved via DirectoryIndex): do not cache
+        SetEnvIf Request_URI "(\.html?$|^/$)" USGAR_HTML=1
+    </IfModule>
+
+    Header set Cache-Control "public, max-age=31536000, immutable" env=USGAR_HASHED_ASSET
+    Header set Cache-Control "public, max-age=2592000" env=USGAR_VIDEO
+    Header set Accept-Ranges "bytes" env=USGAR_VIDEO
+    Header set Cache-Control "public, max-age=0, must-revalidate" env=USGAR_HTML
+</IfModule>

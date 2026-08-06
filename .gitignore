@@ -30,3 +30,6 @@ preview.log
 .agents/
 .docs/
 tests/latest_payment_id.txt
+
+# Clones de herramientas externas (nunca subir: repos anidados)
+tools/rsshub/

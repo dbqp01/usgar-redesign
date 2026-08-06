@@ -46,8 +46,9 @@ const slides = [slide1, slide2, slide3, slide4];
     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 z-0 opacity-100"
     poster={optimizedPoster.src}
     id="hero-video"
-    src="/videos/hero-video.mp4"
   >
+    <source media="(max-width: 767px)" src="/videos/hero-video-mobile.mp4" type="video/mp4" />
+    <source src="/videos/hero-video.mp4" type="video/mp4" />
   </video>
 
   <!-- Slideshow Background (Initially hidden) -->

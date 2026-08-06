@@ -1,4 +1,4 @@
-# USGAR Hotels — hotelesusgar.com
+# USGAR Hotels — usgarhoteles.com
 
 Sitio transaccional del hotel boutique Usgar (San Pedro, Cusco, Perú): reservas directas, 4 idiomas (en/es/fr/pt), pagos USD. Frontend Astro 7 estático + API PHP nativa (monolito ADR).
 

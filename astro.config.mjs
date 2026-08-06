@@ -5,7 +5,7 @@ import compress from '@playform/compress';
 import critters from 'astro-critters';
 
 export default defineConfig({
-  site: 'https://hotelesusgar.com',
+  site: 'https://usgarhoteles.com',
   output: 'static',
   fonts: [
     {
@@ -58,6 +58,9 @@ export default defineConfig({
           pt: 'pt',
         },
       },
+      // Sin noticias/videos/imágenes en el sitio: excluir esos namespaces
+      // (xhtml queda activo: el sitemap usa alternates hreflang vía i18n)
+      namespaces: { news: false, video: false, image: false },
     }),
     // Inline del CSS crítico (above-the-fold) + carga diferida del resto:
     // elimina las 2 peticiones CSS render-blocking del primer paint
@@ -82,7 +85,7 @@ export default defineConfig({
       config: {
         limitInputPixels: false,
         webp: { effort: 6, quality: 90 },
-        avif: { effort: 6, quality: 85 },
+        avif: { effort: 3, quality: 85 },
         jpeg: { mozjpeg: true, quality: 85 },
         png: { effort: 6, quality: 90 },
       },

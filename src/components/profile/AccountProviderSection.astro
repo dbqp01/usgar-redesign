@@ -1,0 +1,46 @@
+---
+// src/components/profile/AccountProviderSection.astro
+// VIEW 3: preferences & security — account provider badge and sanctuary perk.
+import { useTranslations, type Locale } from '../../i18n/utils';
+
+const lang = (Astro.currentLocale || "en") as Locale;
+const t = useTranslations(lang);
+---
+
+<!-- VIEW 3: Preferences & Security -->
+<div id="view-preferences" class="hidden space-y-6">
+  <div class="bg-surface-card-light dark:bg-surface-card-dark p-8 md:p-10 rounded-3xl border border-black/10 dark:border-white/10 shadow-xl space-y-6">
+    <div>
+      <h2 class="font-display text-2xl font-bold">Preferences & Security</h2>
+      <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">
+        Customize your stay preferences and account verification status.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="p-6 rounded-2xl border border-black/10 dark:border-white/10 bg-white/50 dark:bg-surface-dark/50 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark">{t('profile.accountProvider')}</span>
+          <span id="pref-provider-badge" class="text-xs font-bold px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 uppercase">
+            Email
+          </span>
+        </div>
+        <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark">
+          Your account is authenticated securely via JWT HttpOnly tokens.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-2xl border border-black/10 dark:border-white/10 bg-white/50 dark:bg-surface-dark/50 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark">{t('profile.sanctuaryPerk')}</span>
+          <span class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 uppercase">
+            Direct Booking VIP
+          </span>
+        </div>
+        <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark">
+          Free Andean breakfast & complimentary oxygen concentrator on arrival.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,5 @@
 ---
+// debt: oversized module (261 LOC) — split into concept-named components when touched; ceiling 250 pure LOC
 // src/components/BookingWidget.astro
 // Widget de reserva de la HOME: aqui empieza la decision de fechas.
 // Calendario custom (mismo motor que el wizard: calendar.ts) en popover,
@@ -115,6 +116,7 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
 
 <script>
   import { buildMonthGrid, nightsBetween, clampRange, formatISODate } from '../features/booking/calendar';
+import { formatDate } from '../utils/format';
   import { animateCalendarDays } from '../features/animations/modules/bookingCalendar';
   import { toastApi } from '../features/ui/toast';
 
@@ -185,7 +187,7 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
             if (!cell.inMonth) return '<span></span>';
             const past = cell.past;
             const dayNum = Number(cell.date.slice(-2));
-            const dateLabel = new Date(cell.date + 'T00:00:00').toLocaleDateString(lang === 'es' ? 'es' : lang === 'fr' ? 'fr' : lang === 'pt' ? 'pt' : 'en', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const dateLabel = formatDate(cell.date, lang);
             const disabledAttr = past ? 'tabindex="-1" aria-disabled="true"' : '';
             return `<button type="button" role="gridcell" data-calendar-day data-date="${cell.date}" data-past="${past}" aria-label="${dateLabel}" ${disabledAttr} class="aspect-square rounded-lg text-sm flex items-center justify-center transition-colors duration-200 cursor-pointer select-none ${past ? 'opacity-25 pointer-events-none' : 'hover:bg-primary/10 hover:text-primary'}">${dayNum}</button>`;
           }).join('')}

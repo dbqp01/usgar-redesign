@@ -27,7 +27,7 @@ class QloAppAdapter implements PmsPortInterface {
         $db = Database::getInstance();
         $this->pdo = $pdo ?? $db->getConnection();
 
-        $this->apiUrl = Config::get('QLOAPP_API_URL', 'https://cms.hotelesusgar.com/api');
+        $this->apiUrl = Config::get('QLOAPP_API_URL', 'https://cms.usgarhoteles.com/api');
         $this->apiKey = Config::get('QLOAPP_API_KEY');
     }
 

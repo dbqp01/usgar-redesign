@@ -86,6 +86,14 @@ const statusLabels = JSON.stringify({
 
   </div>
 
+  <script>
+    // Bridge para el <script is:inline> de abajo (no puede importar modulos):
+    // los modulos bundlados se ejecutan antes de que cualquier fetch del
+    // is:inline resuelva, asi que __usgarFormatPrice siempre esta definido al renderizar.
+    import { formatPrice } from '../utils/format';
+    (window as any).__usgarFormatPrice = formatPrice;
+  </script>
+
   <script is:inline define:vars={{ statusLabels }}>
     (function() {
       const STATUS_LABELS = JSON.parse(statusLabels);
@@ -177,7 +185,7 @@ const statusLabels = JSON.stringify({
                   </div>
                   <div class="text-left md:text-right">
                     <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark block">Total</span>
-                    <span class="font-bold text-xl text-primary">$${Number(b.price_snapshot).toFixed(2)} USD</span>
+                    <span class="font-bold text-xl text-primary">$${window.__usgarFormatPrice(b.price_snapshot, 'USD', 'en')}</span>
                   </div>
                 </div>
               `;

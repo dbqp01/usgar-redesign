@@ -44,10 +44,6 @@
     "about": "Sobre o quarto",
     "amenities": "Servicos e comodidades",
     "includedFree": "Incluido sem custo extra",
-    "marquee1": "San Pedro",
-    "marquee2": "Cusco",
-    "marquee3": "Machu Picchu",
-    "marquee4": "Vale Sagrado",
     "baseRate": "Tarifa base",
     "maxCapacity": "Capacidade maxima",
     "guests": "hospedes",
@@ -132,7 +128,6 @@
   "theme": {
     "toggleDark": "Alternar modo escuro"
   },
-  "layout": {},
   "heritage": {
     "sectionLabel": "PATRIMONIO & LEGADO",
     "heading": "UM REFUGIO VIVO",
@@ -162,6 +157,7 @@
     "formSubmit": "Enviar Mensagem",
     "directChannels": "Canais Diretos",
     "whatsappText": "Fale pelo WhatsApp",
+    "whatsappDirect": "WhatsApp direto",
     "emailText": "Enviar um E-mail",
     "callText": "Ligar para a Recepcao",
     "directionsTitle": "Como Chegar em San Pedro",
@@ -378,11 +374,8 @@
     "payNow": "Pagar Agora",
     "processing": "Processando pagamento...",
     "preparing": "Preparando pagamento seguro...",
-    "pendingPayment": "Seu pagamento está pendente de confirmação. Você será redirecionado para verificar o status.",
-    "verifyingPayment": "Verificando status do pagamento...",
     "rejectedGeneric": "Seu pagamento foi rejeitado. Verifique os dados e tente novamente.",
     "retryCooldown": "Você poderá tentar novamente em {n}",
-    "retryButton": "Tentar pagamento novamente",
     "manualReview": "Não foi possível confirmar seu pagamento após várias tentativas. Entre em contato com o hotel para concluir sua reserva.",
     "statusDetails": {
       "pending_challenge": "Conclua a verificação 3D Secure para confirmar o pagamento.",
@@ -415,5 +408,12 @@
   "status": {
     "ready": "Sistema pronto",
     "close": "Fechar notificação"
+  },
+  "profile": {
+    "personalDetails": "Dados pessoais",
+    "personalInformation": "Informações pessoais",
+    "accountProvider": "Provedor da conta",
+    "sanctuaryPerk": "Vantagem Sanctuary",
+    "totalPaid": "Total pago"
   }
 }

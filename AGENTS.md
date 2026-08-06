@@ -20,7 +20,7 @@ Sitio web transaccional del hotel boutique Usgar (San Pedro, Cusco, Perú): rese
 Hay un plan de trabajo pendiente (ver `docs/MIGRATION_PLAN.md`). **Nada de eso está hecho.** No implementes pasos del plan por tu cuenta: el código actual sigue siendo MP+Channex+QloApps. Si el usuario pide algo del plan, consulta el archivo y trabaja solo lo que marque. Estado actual de las decisiones:
 - **Pagos: MercadoPago SE MANTIENE** — pasarela única. Stripe/LLC **descartados definitivamente** (2026-08-05).
 - **Channel manager**: Channex → **QloApps Channel Manager** (pendiente, decisión 2026-08-04: $30/propiedad/mes con conexiones Booking/Expedia/Airbnb incluidas; sustituye la migración a Nobeds).
-- **CMS/PMS**: **QloApps SE MANTIENE** — migración a Filament PHP cancelada (decisión 2026-08-04) y el panel **eliminado del repo** (2026-08-05: borrados `backend/`, zip de deploy y docs de la fase). Pendiente en Hostinger: retirar `public_html/admin` y el subdominio admin.hotelesusgar.com.
+- **CMS/PMS**: **QloApps SE MANTIENE** — migración a Filament PHP cancelada (decisión 2026-08-04) y el panel **eliminado del repo** (2026-08-05: borrados `backend/`, zip de deploy y docs de la fase). Pendiente en Hostinger: retirar `public_html/admin` y el subdominio admin.usgarhoteles.com.
 - **Refactorización completa del código**: refactor backend cerrado (F2, 2026-08-03); **auditoría de limpieza en curso (2026-08-05)** — código muerto, duplicación, abstracción, hardcodes pendientes (P5-2).
 
 ## Estructura (dónde está cada cosa)

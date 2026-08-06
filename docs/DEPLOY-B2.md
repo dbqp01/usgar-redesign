@@ -81,6 +81,6 @@ git push --force origin build          # Hostinger auto-despliega el estado ante
 ## Checklist post-switch
 
 - [ ] `public_html/.env` presente con credenciales de producción
-- [ ] `https://hotelesusgar.com` responde y los `/api/*` funcionan (pagos, rooms)
+- [ ] `https://usgarhoteles.com` responde y los `/api/*` funcionan (pagos, rooms)
 - [ ] Rama `build` en GitHub sin `.env` (revisar el árbol de archivos)
 - [ ] Un push de prueba a `main` deja el workflow verde y el sitio actualizado

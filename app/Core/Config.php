@@ -37,8 +37,8 @@ class Config {
         'ALLOWED_ORIGINS'      => '*',
         'DEFAULT_HOTEL_ID'     => '1',
         'EXCHANGE_RATE_USD_PEN'=> '3.80',
-        'DEFAULT_GUEST_EMAIL'  => 'reserva@hotelesusgar.com',
-        'DEFAULT_REPLY_EMAIL'  => 'no-reply@hotelesusgar.com',
+        'DEFAULT_GUEST_EMAIL'  => 'reserva@usgarhoteles.com',
+        'DEFAULT_REPLY_EMAIL'  => 'no-reply@usgarhoteles.com',
         'RATE_LIMIT_MAX_REQUESTS'   => '300',
         'RATE_LIMIT_WINDOW_SECONDS' => '600',
     ];

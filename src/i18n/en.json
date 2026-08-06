@@ -128,7 +128,6 @@
   "theme": {
     "toggleDark": "Toggle dark mode"
   },
-  "layout": {},
   "heritage": {
     "sectionLabel": "HERITAGE & SOUL",
     "heading": "A LIVING SANCTUARY",
@@ -158,6 +157,7 @@
     "formSubmit": "Send Message",
     "directChannels": "Direct Channels",
     "whatsappText": "Chat on WhatsApp",
+    "whatsappDirect": "WhatsApp Direct",
     "emailText": "Send an Email",
     "callText": "Call Front Desk",
     "directionsTitle": "How to Arrive in San Pedro",
@@ -374,11 +374,8 @@
     "payNow": "Pay Now",
     "processing": "Processing payment...",
     "preparing": "Preparing secure payment...",
-    "pendingPayment": "Your payment is pending confirmation. You will be redirected to check its status.",
-    "verifyingPayment": "Checking payment status...",
     "rejectedGeneric": "Your payment was rejected. Check the details and try again.",
     "retryCooldown": "You can retry in {n}",
-    "retryButton": "Retry payment",
     "manualReview": "We could not confirm your payment after several attempts. Please contact the hotel to complete your booking.",
     "statusDetails": {
       "pending_challenge": "Complete the 3D Secure verification to confirm the payment.",
@@ -411,5 +408,12 @@
   "status": {
     "ready": "System ready",
     "close": "Close notification"
+  },
+  "profile": {
+    "personalDetails": "Personal Details",
+    "personalInformation": "Personal Information",
+    "accountProvider": "Account Provider",
+    "sanctuaryPerk": "Sanctuary Perk",
+    "totalPaid": "Total Paid"
   }
 }

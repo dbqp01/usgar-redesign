@@ -11,10 +11,10 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 
 const platforms = [
-  { id: 'tripadvisor', name: 'TRIPADVISOR', text: 'text-[#10B981]', label: 'VERIFIED TRIPADVISOR REVIEW' },
-  { id: 'booking', name: 'BOOKING.COM', text: 'text-[#2563EB]', label: 'VERIFIED BOOKING.COM GUEST' },
-  { id: 'google', name: 'GOOGLE', text: 'text-[#4285F4]', label: 'VERIFIED GOOGLE LOCAL GUIDE' },
-  { id: 'expedia', name: 'EXPEDIA', text: 'text-[#F59E0B]', label: 'VERIFIED EXPEDIA TRAVELER' },
+  { id: 'tripadvisor', name: 'TRIPADVISOR', text: 'text-emerald-500', label: 'VERIFIED TRIPADVISOR REVIEW' },
+  { id: 'booking', name: 'BOOKING.COM', text: 'text-blue-600', label: 'VERIFIED BOOKING.COM GUEST' },
+  { id: 'google', name: 'GOOGLE', text: 'text-google-blue', label: 'VERIFIED GOOGLE LOCAL GUIDE' },
+  { id: 'expedia', name: 'EXPEDIA', text: 'text-amber-500', label: 'VERIFIED EXPEDIA TRAVELER' },
 ] as const;
 ---
 
@@ -36,13 +36,13 @@ const platforms = [
     <!-- Editorial Reputation Metrics Header Bar (High Contrast Typographic Labels) -->
     <div class="flex flex-wrap items-center justify-center gap-8 mt-10 pt-8 border-t border-black/10 dark:border-white/10 text-xs font-mono uppercase tracking-widest text-text-secondary-light dark:text-text-secondary-dark">
       <div class="flex items-center gap-2">
-        <PlatformLogo platform="tripadvisor" class="w-4 h-4 text-[#10B981]" />
+        <PlatformLogo platform="tripadvisor" class="w-4 h-4 text-emerald-500" />
         <span class="text-text-primary-light dark:text-white font-bold">5.0 / 5.0</span>
         <span class="text-slate-400">(240+ REVIEWS)</span>
       </div>
       <div class="hidden sm:block text-slate-300 dark:text-slate-700">|</div>
       <div class="flex items-center gap-2">
-        <PlatformLogo platform="booking" class="w-4 h-4 text-[#2563EB]" />
+        <PlatformLogo platform="booking" class="w-4 h-4 text-blue-600" />
         <span class="text-text-primary-light dark:text-white font-bold">9.6 / 10</span>
         <span class="text-slate-400">(380+ REVIEWS)</span>
       </div>
@@ -74,7 +74,7 @@ const platforms = [
                 <!-- Top Header: Quote Mark & Platform Logo -->
                 <div class="flex items-start justify-between mb-4">
                   <!-- Pale Purple Quote Mark -->
-                  <div class="text-[#EADDF3] dark:text-primary-dark font-serif text-6xl leading-none mt-2 select-none">
+                  <div class="text-cream-lavender dark:text-primary-dark font-serif text-6xl leading-none mt-2 select-none">
                     &rdquo;
                   </div>
                   <!-- Platform Logo -->

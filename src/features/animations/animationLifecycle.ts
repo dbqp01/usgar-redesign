@@ -52,10 +52,8 @@ export function cleanupAll(): void {
 }
 
 function isPage(path: string, pattern: string): boolean {
-  return path === pattern
-    || path === `${pattern}/`
-    || path.startsWith(`/${pattern}/`)
-    || path.startsWith(`/${pattern}`);
+  // Solo la raíz exacta de la locale (/es, /es/) es home; /es/rooms no lo es.
+  return path === `/${pattern}` || path === `/${pattern}/`;
 }
 
 export function isHomePage(): boolean {

@@ -1,0 +1,119 @@
+---
+// src/components/contact/ContactTravelGuide.astro
+// Right column of the contact page: Cusco survival & travel guide card
+// (directions, airport pickup, altitude safety, reception hours).
+import { useTranslations, type Locale } from '../../i18n/utils';
+
+const lang = (Astro.currentLocale || "en") as Locale;
+const t = useTranslations(lang);
+---
+
+<!-- Cusco Survival & Travel Guide Glass Card -->
+<div
+  class="glass p-6 sm:p-8 rounded-3xl border border-black/5 dark:border-white/10 shadow-xl space-y-6 animate-on-scroll"
+>
+  <div class="border-b border-black/5 dark:border-white/10 pb-3">
+    <span class="tag-dash-title block mb-1"
+      >{t("contact.directionsTitle")}</span
+    >
+    <h3
+      class="font-display text-2xl text-text-primary-light dark:text-white font-bold"
+    >
+      {t("contact.directionsTitle")}
+    </h3>
+    <p
+      class="text-xs sm:text-sm text-text-secondary-light dark:text-purple-pastel mt-1 leading-relaxed"
+    >
+      {t("contact.directionsDesc")}
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+    <!-- Airport Pickup -->
+    <div
+      class="p-5 rounded-2xl bg-primary/5 dark:bg-primary-light/10 border border-primary/10 dark:border-primary-light/20 space-y-2"
+    >
+      <h4
+        class="font-semibold text-sm text-primary dark:text-purple-pastel flex items-center gap-2"
+      >
+        <svg
+          class="w-4 h-4 text-primary dark:text-purple-pastel flex-shrink-0"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M8 17a2 2 0 100-4 2 2 0 000 4zm8 0a2 2 0 100-4 2 2 0 000 4zm2-10h-3V4H5v10h13V7z"
+          ></path>
+        </svg>
+        {t("contact.airportPickup")}
+      </h4>
+      <p
+        class="text-xs text-text-secondary-light dark:text-purple-pastel/90 leading-relaxed"
+      >
+        {t("contact.airportPickupDesc")}
+      </p>
+    </div>
+
+    <!-- Altitude Safety Warning -->
+    <div
+      class="p-5 rounded-2xl bg-secondary/10 dark:bg-secondary/15 border border-secondary/20 space-y-2"
+    >
+      <h4
+        class="font-semibold text-sm text-secondary-dark dark:text-secondary flex items-center gap-2"
+      >
+        <svg
+          class="w-4 h-4 text-secondary-dark dark:text-secondary flex-shrink-0"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"
+          ></path>
+        </svg>
+        {t("contact.altitudeTitle")}
+      </h4>
+      <p
+        class="text-xs text-text-secondary-light dark:text-purple-pastel/90 leading-relaxed"
+      >
+        {t("contact.altitudeDesc")}
+      </p>
+    </div>
+  </div>
+
+  <!-- Reception Hours & Luggage Notice -->
+  <div
+    class="p-4 rounded-2xl bg-tertiary/5 dark:bg-tertiary-light/10 border border-tertiary/10 dark:border-tertiary-light/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs"
+  >
+    <div
+      class="flex items-center gap-2 text-tertiary dark:text-mint font-semibold"
+    >
+      <svg
+        class="w-4 h-4 flex-shrink-0"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+        ></path>
+      </svg>
+      <span>{t("contact.receptionDesc")}</span>
+    </div>
+    <span
+      class="font-mono text-[11px] text-text-secondary-light dark:text-purple-pastel font-medium bg-white/50 dark:bg-stone-900/50 px-2.5 py-1 rounded-md"
+    >
+      {t("contact.checkinHours")}
+    </span>
+  </div>
+</div>

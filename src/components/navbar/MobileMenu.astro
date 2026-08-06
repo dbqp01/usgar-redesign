@@ -1,0 +1,73 @@
+---
+// src/components/navbar/MobileMenu.astro
+// Slide-in mobile drawer (sibling of <nav>, outside the desktop flex row).
+// Composes the mobile variants of LanguageSwitcher / AuthNav / CTAGroup.
+// The GSAP open/close choreography lives in the Navbar shell script.
+import { type Locale } from '../../i18n/utils';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import AuthNav from './AuthNav.astro';
+import CTAGroup from './CTAGroup.astro';
+
+interface Props {
+  navLinks: { href: string; label: string }[];
+  locales: { code: Locale; label: string }[];
+  getLocaleUrl: (targetLang: Locale) => string;
+}
+
+const { navLinks, locales, getLocaleUrl } = Astro.props as Props;
+---
+
+<!-- Mobile Menu (slide-in) -->
+<div
+  id="mobile-menu"
+  class="fixed inset-0 z-40 hidden lg:hidden"
+>
+  <!-- Backdrop -->
+  <div id="mobile-backdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0"></div>
+
+  <!-- Panel -->
+  <div
+    id="mobile-panel"
+    class="absolute right-0 top-0 h-dvh w-80 max-w-[85vw] bg-surface-card-light dark:bg-surface-card-dark shadow-2xl flex flex-col pt-safe pb-safe overflow-y-auto"
+    style="transform: translateX(100%);"
+  >
+    <div class="flex flex-col h-full px-6 py-6">
+      <!-- Drawer Header with close button -->
+      <div class="flex items-center justify-between pb-4 mb-4 border-b border-black/10 dark:border-white/10">
+        <span class="text-xs font-bold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark">Menu</span>
+        <button
+          id="mobile-menu-close-btn"
+          type="button"
+          class="touch-target p-2 rounded-full text-text-primary-light dark:text-text-primary-dark hover:bg-black/5 dark:hover:bg-white/10"
+          aria-label="Close menu"
+        >
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Nav Links -->
+      <nav class="flex flex-col gap-1">
+        {navLinks.map(link => (
+          <a
+            href={link.href}
+            class="mobile-nav-link text-base font-semibold py-3.5 px-4 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors duration-200 flex items-center min-h-[48px]"
+          >
+            {link.label}
+          </a>
+        ))}
+      </nav>
+
+      <div class="border-t border-black/10 dark:border-white/10 my-6"></div>
+
+      <LanguageSwitcher variant="mobile" locales={locales} getLocaleUrl={getLocaleUrl} />
+
+      <!-- Spacer -->
+      <div class="flex-1"></div>
+
+      <AuthNav variant="mobile" />
+      <CTAGroup variant="mobile" />
+    </div>
+  </div>
+</div>

@@ -28,7 +28,7 @@
 /* Primary buttons on dark: gradient lift + golden glow instead of flat purple */
 .btn-primary {
   background-color: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-white);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, background-color 0.3s ease;
 }
 
@@ -38,19 +38,19 @@
 }
 
 .dark .btn-primary {
-  background-image: linear-gradient(135deg, #6B4F80, #4A3163);
-  box-shadow: 0 8px 24px -8px rgba(212, 191, 222, 0.25);
+  background-image: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end));
+  box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--color-glass-tint) 25%, transparent);
 }
 
 .dark .btn-primary:hover {
-  box-shadow: 0 8px 32px -6px rgba(212, 191, 222, 0.45);
+  box-shadow: 0 8px 32px -6px color-mix(in srgb, var(--color-glass-tint) 45%, transparent);
 }
 
 /* ============================================
    Navbar Contrast & Visibility Rules
    ============================================ */
 #main-navbar .nav-link-text {
-  color: #ffffff;
+  color: var(--color-white);
 }
 
 #main-navbar.navbar-scrolled .nav-link-text {
@@ -59,23 +59,23 @@
 
 .dark #main-navbar .nav-link-text,
 .dark #main-navbar.navbar-scrolled .nav-link-text {
-  color: #ffffff !important;
+  color: var(--color-white) !important;
 }
 
 #main-navbar .nav-btn-border {
   border-color: rgba(255, 255, 255, 0.4);
-  color: #ffffff;
+  color: var(--color-white);
 }
 
 #main-navbar.navbar-scrolled .nav-btn-border {
-  border-color: rgba(74, 48, 86, 0.3) !important;
+  border-color: color-mix(in srgb, var(--color-tint-purple) 30%, transparent) !important;
   color: var(--color-primary-dark) !important;
 }
 
 .dark #main-navbar .nav-btn-border,
 .dark #main-navbar.navbar-scrolled .nav-btn-border {
   border-color: rgba(255, 255, 255, 0.2) !important;
-  color: #ffffff !important;
+  color: var(--color-white) !important;
 }
 
 
@@ -119,6 +119,39 @@
   --color-text-secondary-light: #57534E;
   --color-text-secondary-dark: #C6B5CD;   /* Sophisticated Lavender/Silver */
 
+  /* === PALETA DE MARCA ADICIONAL (tokenizada 2026-08-06 — remove-ai-slops token drift) === */
+  /* Teal brand family (booking/contact accents) */
+  --color-teal-brand: #2DB5A0;       /* Teal brand — contact/booking accents */
+  --color-teal-deep: #1F9484;        /* Teal oscuro legible */
+  --color-teal-light: #4ECBB8;       /* Teal claro (dark mode) */
+  /* Status system (StatusBanner) */
+  --color-status-success: #0CB2A3;   /* Status success LED (teal) */
+  --color-status-info: #A980BD;      /* Status info (lavanda) */
+  --color-status-info-deep: #9360AC; /* Status info profundo */
+  --color-status-bg-dark: #2B1D33;   /* Status banner fondo dark */
+  /* Dorado brillante (LED, bordes, acentos) */
+  --color-gold-bright: #EACA1C;      /* Amarillo LED/acento brillante */
+  /* Map & misc surfaces */
+  --color-map-surface: #E7E4DE;      /* LocationMap panel light */
+  --color-cream-lavender: #EADDF3;   /* Comillas lavanda pálida */
+  /* Social brand colors */
+  --color-whatsapp: #25D366;         /* WhatsApp green */
+  --color-facebook: #1877F2;         /* Facebook blue */
+  --color-facebook-dark: #166fe5;    /* Facebook hover blue */
+  --color-google-blue: #4285F4;      /* Google logo */
+  --color-google-green: #34A853;
+  --color-google-yellow: #FBBC05;
+  --color-google-red: #EA4335;
+  --color-ms-orange: #f35325;        /* Microsoft logo (valores EXACTOS del SVG en login.astro) */
+  --color-ms-green: #81bc06;
+  --color-ms-blue: #05a6f0;
+  --color-ms-yellow: #ffba08;
+  /* Tints purpura/gris del dark mode (global.css rgba families) */
+  --color-tint-purple: #4A3056;      /* rgba(74,48,86) — nav border, tag bg, ::selection, scrollbar */
+  --color-glass-tint: #D4BFDE;       /* rgba(212,191,222) — glass border/hover tint */
+  --color-gradient-start: #6B4F80;   /* .dark .btn-primary gradient start */
+  --color-gradient-end: #4A3163;     /* .dark .btn-primary gradient end */
+
   /* === TIPOGRAFÍA === */
   /* Familias registradas vía Fonts API de Astro (astro.config.mjs):
      --font-ak (A Akhin Tahun), --font-playfair (Playfair Display),
@@ -160,7 +193,7 @@
 @media (hover: hover) {
   .glow-card-hover:hover {
     transform: translateY(-6px);
-    box-shadow: 0 20px 40px -15px rgba(234, 202, 28, 0.25), 0 0 20px rgba(147, 96, 172, 0.2);
+    box-shadow: 0 20px 40px -15px color-mix(in srgb, var(--color-gold-bright) 25%, transparent), 0 0 20px color-mix(in srgb, var(--color-status-info-deep) 20%, transparent);
   }
 }
 
@@ -212,20 +245,20 @@ h3, h4 {
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(24px) saturate(1.4);
   -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  border: 0.5px solid rgba(212, 191, 222, 0.15); /* purple-pastel tint */
+  border: 0.5px solid color-mix(in srgb, var(--color-glass-tint) 15%, transparent); /* purple-pastel tint */
 }
 
 .glass:hover {
-  box-shadow: 0 4px 24px -4px rgba(234, 202, 28, 0.12); /* golden glow on hover */
+  box-shadow: 0 4px 24px -4px color-mix(in srgb, var(--color-gold-bright) 12%, transparent); /* golden glow on hover */
 }
 
 .dark .glass {
-  background: rgba(26, 26, 30, 0.85); /* surface-card-dark #1A1A1E with transparency */
+  background: color-mix(in srgb, var(--color-surface-card-dark) 85%, transparent); /* surface-card-dark #1A1A1E with transparency */
   border: 0.5px solid rgba(255, 255, 255, 0.08);
 }
 
 .dark .glass:hover {
-  box-shadow: 0 4px 24px -4px rgba(234, 202, 28, 0.08);
+  box-shadow: 0 4px 24px -4px color-mix(in srgb, var(--color-gold-bright) 8%, transparent);
 }
 
 @media (max-width: 767px) {
@@ -249,15 +282,15 @@ h3, h4 {
   font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  background: rgba(74, 48, 86, 0.06);
-  border: 1px solid rgba(234, 202, 28, 0.35);
+  background: color-mix(in srgb, var(--color-tint-purple) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-gold-bright) 35%, transparent);
   color: var(--color-primary-dark);
   backdrop-filter: blur(8px);
 }
 
 .dark .tag-architectural {
   background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(234, 202, 28, 0.4);
+  border-color: color-mix(in srgb, var(--color-gold-bright) 40%, transparent);
   color: var(--color-secondary);
 }
 
@@ -335,7 +368,7 @@ html.js .animate-on-scroll.visible {
    Selection Colors
    ============================================ */
 ::selection {
-  background: rgba(74, 48, 86, 0.3);
+  background: color-mix(in srgb, var(--color-tint-purple) 30%, transparent);
   color: inherit;
 }
 
@@ -351,12 +384,12 @@ html.js .animate-on-scroll.visible {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(74, 48, 86, 0.3);
+  background: color-mix(in srgb, var(--color-tint-purple) 30%, transparent);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(74, 48, 86, 0.5);
+  background: color-mix(in srgb, var(--color-tint-purple) 50%, transparent);
 }
 
 /* ============================================
@@ -452,7 +485,7 @@ html, body {
 }
 
 .dark .section-number {
-  -webkit-text-stroke-color: rgba(167, 139, 189, 0.45);
+  -webkit-text-stroke-color: color-mix(in srgb, var(--color-primary-soft) 45%, transparent);
 }
 
 /* Monospace micro-labels (coordinates, eyebrow metadata) */

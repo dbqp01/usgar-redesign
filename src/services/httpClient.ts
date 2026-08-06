@@ -4,7 +4,7 @@ import type { IHttpClient, HttpResponse } from './contracts/IHttpClient';
  * Implementación concreta de IHttpClient utilizando fetch nativo.
  * Maneja timeouts de red, headers predeterminados y captura de errores sin crashing.
  */
-export class FetchHttpClient implements IHttpClient {
+class FetchHttpClient implements IHttpClient {
   private readonly defaultTimeoutMs: number;
 
   constructor(timeoutMs = 10000) {

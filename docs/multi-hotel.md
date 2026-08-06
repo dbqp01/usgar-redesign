@@ -20,19 +20,19 @@ WHERE rt.active = 1 AND rt.id_hotel = :id_hotel
 
 ## 2. Cómo agregar un Nuevo Hotel (Subdominio)
 
-Cuando USGAR Hotels expanda su presencia y añada una nueva sucursal (ejemplo: `arequipa.hotelesusgar.com`):
+Cuando USGAR Hotels expanda su presencia y añada una nueva sucursal (ejemplo: `arequipa.usgarhoteles.com`):
 
 ### Paso A: Configuración en QloApps Backoffice
-1. Accede al panel de administración de QloApps (`cms.hotelesusgar.com/admin/`).
+1. Accede al panel de administración de QloApps (`cms.usgarhoteles.com/admin/`).
 2. Ve a **Multitienda** o **Hotel General Settings** y da de alta una nueva tienda/sucursal.
 3. Toma nota del `id_hotel` asignado en el sistema (por ejemplo, Arequipa = `2`).
 
 ### Paso B: Despliegue del Frontend
-1. Clona el frontend en Astro en el nuevo subdominio (ej: `arequipa.hotelesusgar.com`).
+1. Clona el frontend en Astro en el nuevo subdominio (ej: `arequipa.usgarhoteles.com`).
 2. En el archivo `.env` del nuevo despliegue del frontend, define el identificador del hotel correspondiente:
    ```env
    # En el frontend de Arequipa
-   SITE_URL=https://arequipa.hotelesusgar.com
+   SITE_URL=https://arequipa.usgarhoteles.com
    PUBLIC_HOTEL_ID=2
    ```
 3. La página web de Arequipa hará consultas automáticas al endpoint del backend enviando su identificador:

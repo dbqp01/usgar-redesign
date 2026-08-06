@@ -4,8 +4,8 @@
 // expired_paid/in_process/approved/rejected (GetBookingStatusAction +
 // ProcessPaymentAction, waves 1-4).
 
-export const PAID_STATUSES: readonly string[] = ['paid', 'approved', 'expired_paid'];
-export const PENDING_STATUSES: readonly string[] = [
+const PAID_STATUSES: readonly string[] = ['paid', 'approved', 'expired_paid'];
+const PENDING_STATUSES: readonly string[] = [
   'pending',
   'provisional',
   'in_process',
@@ -112,7 +112,7 @@ export function cooldownSecondsRemaining(cooldownEndsAt: number, now: number): n
 }
 
 /** True si el pago encontrado en MP esta activo (no final-rejected). */
-export function isActiveMpPayment(payment: any): boolean {
+function isActiveMpPayment(payment: any): boolean {
   if (!payment || !payment.payment_id) return false;
   const s = String(payment.status || '');
   return s === '' || isPaidStatus(s) || isPendingStatus(s);

@@ -1,0 +1,26 @@
+---
+// src/components/navbar/DesktopNav.astro
+// Desktop navigation links (hidden on <lg). Active state driven by the
+// current path, links computed once in the Navbar shell.
+interface Props {
+  navLinks: { href: string; label: string }[];
+  currentPath: string;
+}
+
+const { navLinks, currentPath } = Astro.props as Props;
+---
+
+<!-- Desktop Navigation -->
+<div class="hidden lg:flex items-center gap-8">
+  {navLinks.map(link => (
+    <a
+      href={link.href}
+      class:list={[
+        'nav-link nav-link-text text-sm font-medium tracking-wide uppercase transition-colors duration-300 drop-shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md px-2 py-1',
+        currentPath === link.href ? 'text-primary' : ''
+      ]}
+    >
+      {link.label}
+    </a>
+  ))}
+</div>

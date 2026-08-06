@@ -1,4 +1,5 @@
 ---
+// debt: oversized module (357 LOC) — split into concept-named components when touched; ceiling 250 pure LOC
 import Layout from '../../layouts/Layout.astro';
 import { rooms } from '../../data/rooms';
 import { useTranslations, type Locale } from '../../i18n/utils';
@@ -196,10 +197,10 @@ const t = useTranslations(lang);
 <!-- Serialize rooms data into browser context -->
 <script is:inline data-astro-rerun define:vars={{ 
   serializedRooms: JSON.stringify(rooms.map(r => ({ id: r.id, slug: r.slug, name: r.name, pricePerNight: r.pricePerNight }))),
-  singleGuest: t('success.singleGuest') || '1 Guest',
-  pluralGuest: t('success.pluralGuest') || 'Guests',
-  singleNight: t('success.singleNight') || 'night',
-  pluralNight: t('success.pluralNight') || 'nights',
+  singleGuest: t('success.singleGuest'),
+  pluralGuest: t('success.pluralGuest'),
+  singleNight: t('success.singleNight'),
+  pluralNight: t('success.pluralNight'),
   pollingMsg: t('success.polling'),
   pendingStatusMsg: t('success.verifyingPayment'),
   verifyAgainMsg: t('success.verifyAgain'),
@@ -215,6 +216,7 @@ const t = useTranslations(lang);
 
 <script>
   import { mapBookingStatus, isPendingStatus, pendingMessageKey } from '../../utils/paymentStatus';
+  import { formatDate } from '../../utils/format';
 
   // Todo 27: polling continuo cada 15s hasta 10 minutos (el polling anterior
   // moria ~88s y dejaba la tarjeta pending terminal) + boton manual
@@ -281,7 +283,6 @@ const t = useTranslations(lang);
     type Locale = 'en' | 'es' | 'fr' | 'pt';
     const rawLang = (document.documentElement.lang || 'en') as Locale;
     const lang: Locale = ['en', 'es', 'fr', 'pt'].includes(rawLang) ? rawLang : 'en';
-    const dateLocales: Record<Locale, string> = { en: 'en-US', es: 'es-PE', fr: 'fr-FR', pt: 'pt-PT' };
     const ROOMS_DATA = (window as any).__ROOMS_DATA || [];
     const L = (window as any).__I18N_DATA || {};
 
@@ -318,13 +319,6 @@ const t = useTranslations(lang);
         // paid/approved/expired_paid -> tarjeta de exito.
         const room = ROOMS_DATA.find((r: any) => r.id === booking.id_room_type || r.slug === booking.id_room_type);
 
-        const formatDate = (dateStr: string) => {
-          if (!dateStr) return '';
-          const d = new Date(dateStr + 'T00:00:00');
-          const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-          return d.toLocaleDateString(dateLocales[lang] || 'en-US', options);
-        };
-
         const currency = booking.currency || 'USD';
         const currencySymbol = currency === 'PEN' ? 'S/.' : '$';
 
@@ -354,8 +348,8 @@ const t = useTranslations(lang);
             : `${guests} ${L.pluralGuest || 'Guests'}`;
         }
 
-        if (checkinEl) checkinEl.textContent = formatDate(booking.checkin || booking.checkIn);
-        if (checkoutEl) checkoutEl.textContent = formatDate(booking.checkout || booking.checkOut);
+        if (checkinEl) checkinEl.textContent = formatDate(booking.checkin || booking.checkIn, lang);
+        if (checkoutEl) checkoutEl.textContent = formatDate(booking.checkout || booking.checkOut, lang);
 
         if (billingNightsEl) {
           const nights = booking.nights || 1;

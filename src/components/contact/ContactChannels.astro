@@ -1,0 +1,166 @@
+---
+// src/components/contact/ContactChannels.astro
+// Right column of the contact page: direct channels (WhatsApp, Email,
+// Reception Phone) + OTA/review badges.
+import { useTranslations, type Locale } from '../../i18n/utils';
+import { siteSettings } from '../../data/settings';
+
+const lang = (Astro.currentLocale || "en") as Locale;
+const t = useTranslations(lang);
+---
+
+<!-- Channels Glass Section -->
+<div
+  class="glass p-6 sm:p-8 rounded-3xl border border-black/5 dark:border-white/10 shadow-xl space-y-6 animate-on-scroll"
+>
+  <div class="border-b border-black/5 dark:border-white/10 pb-3">
+    <span class="tag-dash-title block mb-1"
+      >{t("contact.directChannels")}</span
+    >
+    <h3
+      class="font-display text-2xl text-text-primary-light dark:text-white font-bold"
+    >
+      {t("contact.directChannels")}
+    </h3>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <!-- WhatsApp -->
+    <a
+      href={`https://wa.me/${siteSettings.whatsappNumber}?text=${encodeURIComponent(t("contact.whatsappQuery"))}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="flex items-center gap-4 p-4 rounded-2xl bg-stone-50/80 dark:bg-stone-900/50 border border-black/5 dark:border-white/5 hover:border-teal-brand/40 hover:bg-teal-brand/5 transition-[border-color,background-color] duration-300 group"
+    >
+      <div
+        class="w-12 h-12 rounded-xl bg-teal-brand/15 text-teal-brand flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+          ></path>
+        </svg>
+      </div>
+      <div>
+        <h4
+          class="font-semibold text-xs sm:text-sm text-text-primary-light dark:text-white"
+        >
+          {t("contact.whatsappText")}
+        </h4>
+        <p
+          class="text-xs text-text-secondary-light dark:text-purple-pastel mt-0.5 font-mono"
+        >
+          {siteSettings.phone}
+        </p>
+      </div>
+    </a>
+
+    <!-- Email -->
+    <a
+      href={`mailto:${siteSettings.email}`}
+      class="flex items-center gap-4 p-4 rounded-2xl bg-stone-50/80 dark:bg-stone-900/50 border border-black/5 dark:border-white/5 hover:border-primary/40 hover:bg-primary/5 transition-[border-color,background-color] duration-300 group"
+    >
+      <div
+        class="w-12 h-12 rounded-xl bg-primary/15 dark:bg-primary-light/20 text-primary dark:text-purple-pastel flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+          ></path>
+        </svg>
+      </div>
+      <div>
+        <h4
+          class="font-semibold text-xs sm:text-sm text-text-primary-light dark:text-white"
+        >
+          {t("contact.emailText")}
+        </h4>
+        <p
+          class="text-xs text-text-secondary-light dark:text-purple-pastel mt-0.5 font-mono"
+        >
+          {siteSettings.email}
+        </p>
+      </div>
+    </a>
+
+    <!-- Reception Phone -->
+    <a
+      href={`tel:+${siteSettings.phoneRaw}`}
+      class="flex items-center gap-4 p-4 rounded-2xl bg-stone-50/80 dark:bg-stone-900/50 border border-black/5 dark:border-white/5 hover:border-secondary/40 hover:bg-secondary/5 transition-[border-color,background-color] duration-300 group"
+    >
+      <div
+        class="w-12 h-12 rounded-xl bg-secondary/15 text-secondary-dark dark:text-secondary flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+          ></path>
+        </svg>
+      </div>
+      <div>
+        <h4
+          class="font-semibold text-xs sm:text-sm text-text-primary-light dark:text-white"
+        >
+          {t("contact.callText")}
+        </h4>
+        <p
+          class="text-xs text-text-secondary-light dark:text-purple-pastel mt-0.5"
+        >
+          {siteSettings.phone}
+        </p>
+      </div>
+    </a>
+
+    <!-- Travel Portals Badges -->
+    <div
+      class="flex items-center justify-between p-4 rounded-2xl bg-stone-50/80 dark:bg-stone-900/50 border border-black/5 dark:border-white/5"
+    >
+      <span
+        class="text-xs font-medium text-text-secondary-light dark:text-purple-pastel"
+        >OTAs & Reviews:</span
+      >
+      <div class="flex gap-2">
+        <a
+          href="https://www.tripadvisor.com.pe/Hotel_Review-g294314-d12461523-Reviews-Usgar_San_Pedro_Boutique-Cusco_Cusco_Region.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-[11px] bg-stone-200/70 dark:bg-stone-800 hover:bg-secondary/20 dark:hover:bg-secondary/20 hover:text-secondary-dark dark:hover:text-secondary px-3 py-2 rounded-lg font-bold transition-[background-color,color] cursor-pointer"
+        >
+          TripAdvisor
+        </a>
+        <a
+          href="https://www.booking.com/hotel/pe/chavin-imperio-del-sol.es.html?aid=311839&label=chavin-imperio-del-sol-zuUKmuTcIrFOMWxyHhV97gS539509797055%3Apl%3Ata%3Ap1%3Ap2%3Aac%3Aap%3Aneg%3Afi%3Atiaud-2395231936498%3Akwd-2440927734184%3Alp9060927%3Ali%3Adec%3Adm%3Appccp%3DUmFuZG9tSVYkc2RlIyh9YcUc3ZfdbbfEuXomSVxn0TU&sid=cde5b6d1678ed661cd007c4cc75870a4&dest_id=-345275&dest_type=city&dist=0&group_adults=2&group_children=0&hapos=1&hpos=1&no_rooms=1&req_adults=2&req_children=0&room1=A%2CA&sb_price_type=total&sr_order=popularity&srepoch=1782702781&srpvid=7032169be43f00ba&type=total&ucfs=1&"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-[11px] bg-stone-200/70 dark:bg-stone-800 hover:bg-tertiary/20 dark:hover:bg-tertiary-light/20 hover:text-tertiary dark:hover:text-mint px-3 py-2 rounded-lg font-bold transition-[background-color,color] cursor-pointer"
+        >
+          Booking.com
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

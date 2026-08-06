@@ -1,0 +1,37 @@
+---
+// src/components/navbar/CTAGroup.astro
+// "Book Now" call-to-action. Two instances: desktop pill and mobile drawer
+// button; the mobile one carries data-astro-prefetch="tap".
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { useTranslations, type Locale } from '../../i18n/utils';
+
+interface Props {
+  variant: 'desktop' | 'mobile';
+}
+
+const { variant } = Astro.props as Props;
+const lang = (Astro.currentLocale || 'en') as Locale;
+const t = useTranslations(lang);
+---
+
+<!-- CTA: Book Now (desktop) -->
+{variant === 'desktop' && (
+    <a
+      href={getRelativeLocaleUrl(lang, 'book')}
+      data-astro-prefetch="tap"
+      class="bg-primary hover:bg-primary-dark text-white font-semibold text-sm px-6 py-2.5 rounded-full transition-[transform,background-color,box-shadow] duration-300 lg:hover:shadow-lg lg:hover:shadow-primary/25 lg:hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card-light dark:focus-visible:ring-offset-surface-card-dark"
+    >
+      {t('nav.bookNow')}
+    </a>
+)}
+
+<!-- CTA: Book Now (mobile) -->
+{variant === 'mobile' && (
+    <a
+      href={getRelativeLocaleUrl(lang, 'book')}
+      data-astro-prefetch="tap"
+      class="mobile-cta-btn bg-primary hover:bg-primary-dark text-white font-semibold text-center py-4 rounded-2xl transition-colors duration-300 text-lg shadow-md"
+    >
+      {t('nav.bookNow')}
+    </a>
+)}

@@ -1,0 +1,101 @@
+---
+// src/components/navbar/AuthNav.astro
+// Signed-in / signed-out state for the navbar. Two instances: the desktop
+// avatar dropdown and the mobile drawer block; ids wired by the navbar script.
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { useTranslations, type Locale } from '../../i18n/utils';
+
+interface Props {
+  variant: 'desktop' | 'mobile';
+}
+
+const { variant } = Astro.props as Props;
+const lang = (Astro.currentLocale || 'en') as Locale;
+const t = useTranslations(lang);
+---
+
+<!-- Auth State (Sign In / User Avatar) desktop -->
+{variant === 'desktop' && (
+    <div id="auth-nav-desktop" class="flex items-center gap-3 relative">
+      <a
+        id="auth-login-btn"
+        href={getRelativeLocaleUrl(lang, 'login')}
+        class="nav-link nav-link-text nav-btn-border text-sm font-medium px-4 py-2 rounded-full border border-current/20 hover:border-primary hover:text-primary transition-[color,border-color] duration-300 drop-shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      >
+        {t('auth.signIn')}
+      </a>
+
+      <div id="auth-user-dropdown" class="hidden relative group">
+        <button
+          type="button"
+          aria-label="User menu"
+          class="nav-link nav-link-text flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary drop-shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-full px-2 py-1"
+        >
+          <div class="w-8 h-8 rounded-full overflow-hidden bg-primary/20 border border-primary/50 flex-shrink-0 flex items-center justify-center">
+            <img id="auth-user-photo" src="" alt="User" class="w-full h-full object-cover hidden" />
+            <span id="auth-user-initial" class="text-xs text-primary font-bold">U</span>
+          </div>
+          <span id="auth-user-name" class="max-w-[100px] truncate">User</span>
+        </button>
+
+        <div class="absolute right-0 mt-2 w-48 rounded-2xl bg-surface-card-light dark:bg-surface-card-dark shadow-2xl border border-black/10 dark:border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-[opacity,visibility] duration-200 z-50 py-2">
+          <a
+            href={getRelativeLocaleUrl(lang, 'profile')}
+            class="flex items-center gap-3 px-4 py-2 text-sm font-medium text-text-primary-light dark:text-text-primary-dark hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            {t('auth.myProfile')}
+          </a>
+          <div class="border-t border-black/10 dark:border-white/10 my-1"></div>
+          <button
+            id="auth-logout-btn"
+            type="button"
+            class="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-red-500 hover:bg-red-500/10 transition-colors text-left"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            {t('auth.signOut')}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<!-- Mobile Auth State -->
+{variant === 'mobile' && (
+    <div id="auth-nav-mobile" class="mt-4 mb-4 flex flex-col gap-2">
+      <a
+        id="mobile-auth-login-btn"
+        href={getRelativeLocaleUrl(lang, 'login')}
+        class="mobile-auth-item flex justify-center items-center gap-2 bg-stone-100 dark:bg-stone-800 text-text-primary-light dark:text-text-primary-dark font-medium py-3 rounded-xl transition-colors duration-200"
+      >
+        {t('auth.signIn')}
+      </a>
+
+      <div id="mobile-auth-user" class="hidden flex flex-col gap-2">
+        <div class="flex items-center gap-3 px-4 py-3 bg-primary/10 rounded-xl">
+          <div class="w-10 h-10 rounded-full overflow-hidden bg-primary/20 border border-primary/50 flex items-center justify-center flex-shrink-0">
+            <img id="mobile-auth-user-photo" src="" alt="User" class="w-full h-full object-cover hidden" />
+            <span id="mobile-auth-user-initial" class="text-sm text-primary font-bold">U</span>
+          </div>
+          <span id="mobile-auth-user-name" class="font-medium text-text-primary-light dark:text-text-primary-dark truncate">User</span>
+        </div>
+        <a
+          href={getRelativeLocaleUrl(lang, 'profile')}
+          class="flex items-center gap-3 px-4 py-3 bg-stone-100 dark:bg-stone-800 rounded-xl font-medium text-text-primary-light dark:text-text-primary-dark"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+          {t('auth.myProfile')}
+        </a>
+        <button
+          id="mobile-auth-logout-btn"
+          type="button"
+          class="flex items-center gap-3 px-4 py-3 bg-red-500/10 rounded-xl font-medium text-red-500 text-left"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          {t('auth.signOut')}
+        </button>
+      </div>
+    </div>
+  )
+}

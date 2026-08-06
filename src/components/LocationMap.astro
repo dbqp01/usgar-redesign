@@ -29,7 +29,7 @@ const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat}
 
     <div class="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
       <!-- Static map -->
-      <div class="relative min-h-[390px] overflow-hidden rounded-[1.75rem] border border-black/10 bg-[#E7E4DE] shadow-xl dark:border-white/10 sm:min-h-[500px]">
+      <div class="relative min-h-[390px] overflow-hidden rounded-[1.75rem] border border-black/10 bg-map-surface shadow-xl dark:border-white/10 sm:min-h-[500px]">
         <div id="location-map" class="absolute inset-0" data-lat={lat} data-lng={lng}></div>
 
         <!-- Brutal overlays -->

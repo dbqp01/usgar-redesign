@@ -11,7 +11,7 @@
 const AUTH_API_BASE = '/api/auth';
 const CACHE_KEY = 'usgar_auth_user';
 
-export interface AuthUser {
+interface AuthUser {
   sub: number;
   name: string;
   email: string;

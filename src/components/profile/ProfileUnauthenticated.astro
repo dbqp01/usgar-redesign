@@ -1,0 +1,24 @@
+---
+// src/components/profile/ProfileUnauthenticated.astro
+// Shown (via the page's inline profile script) when /api/auth/me is not
+// authenticated: lock icon, "login required" copy and a sign-in link that
+// returns to this page after auth.
+import { useTranslations, type Locale } from '../../i18n/utils';
+
+const lang = (Astro.currentLocale || "en") as Locale;
+const t = useTranslations(lang);
+---
+
+<!-- Unauthenticated State -->
+<div id="profile-unauth" class="hidden text-center py-16 bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-3xl border border-black/10 dark:border-white/10 space-y-4">
+  <svg class="w-12 h-12 text-stone-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+  </svg>
+  <p class="text-base font-semibold">{t('auth.loginRequired')}</p>
+  <a
+    href={`/login?redirect=${encodeURIComponent(Astro.url.pathname)}`}
+    class="inline-block bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-full text-sm transition-[background-color,color] shadow-md"
+  >
+    {t('auth.signIn')}
+  </a>
+</div>
