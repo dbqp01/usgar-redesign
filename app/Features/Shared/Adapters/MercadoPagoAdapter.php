@@ -80,7 +80,12 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             'payment_method_id'   => $paymentData['payment_method_id'] ?? '',
             'payer'               => $payer,
             'external_reference'  => $cartId,
-            'currency_id'         => Config::get('MERCADO_PAGO_CURRENCY', 'PEN'), // todo 4: explicito
+            // Fix F3 (2026-08-06, verificado con MCP search_documentation
+            // "create payment" es/MPE + sandbox real): el create /v1/payments
+            // NO acepta currency_id (400 "The name of the following parameters
+            // is wrong : currency_id"); MP infiere la moneda de la cuenta. La
+            // moneda de cobro sigue siendo Config::get('MERCADO_PAGO_CURRENCY')
+            // para el evento/PMS (todo 34); el create simplemente no la envia.
             'statement_descriptor'=> $statementDescriptor,
             'binary_mode'         => Config::get('MP_BINARY_MODE', 'true') === 'true',
             // Todo 3 (clausula r2): SIN notification_url en el create — la config
@@ -110,7 +115,14 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             $requestOptions = new RequestOptions();
             // Todo 2: UUID v4 FRESCO por intento. Una key determinista por carrito
             // bloqueaba reintentos legitimos (MP deduplica por X-Idempotency-Key).
-            $requestOptions->setCustomHeaders(['x-idempotency-key' => $this->generateUuidV4()]);
+            // Fix F3 (2026-08-06, verificado con MCP search_documentation
+            // "create payment" es/MPE + sandbox real): el SDK espera el header
+            // como string "Name: value" (doc oficial: setCustomHeaders(["X-
+            // Idempotency-Key: <UUID>"])). La forma ASOCIATIVA
+            // ['x-idempotency-key' => $uuid] se pierde en el transporte: el
+            // array_merge + CURLOPT_HTTPHEADER deja un valor sin ':' que curl
+            // descarta -> MP responde 400 "Header X-Idempotency-Key can't be null".
+            $requestOptions->setCustomHeaders(['X-Idempotency-Key: ' . $this->generateUuidV4()]);
             $requestOptions->setConnectionTimeout((int) Config::get('MERCADO_PAGO_TIMEOUT_CREATE_MS', '15000')); // 15s total
 
             $payment = $client->create($payload, $requestOptions);
@@ -285,8 +297,10 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             MercadoPagoConfig::setAccessToken($this->accessToken);
             $client = $this->refundClient;
             $requestOptions = new RequestOptions();
-            // Misma convencion de clave en minusculas que processPayment (bug SDK getIdempotencyKey).
-            $requestOptions->setCustomHeaders(['x-idempotency-key' => 'refund_' . $paymentId . '_' . hash('sha256', $paymentId . '_' . ($amount ?? 'full'))]);
+            // Fix F3 (2026-08-06): mismo contrato del SDK que processPayment —
+            // header como string "Name: value" (la forma asociativa se pierde
+            // en CURLOPT_HTTPHEADER).
+            $requestOptions->setCustomHeaders(['X-Idempotency-Key: refund_' . $paymentId . '_' . hash('sha256', $paymentId . '_' . ($amount ?? 'full'))]);
             $requestOptions->setConnectionTimeout(10000); // 10s
 
             if ($amount !== null) {

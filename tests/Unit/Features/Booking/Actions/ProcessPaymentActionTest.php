@@ -122,8 +122,10 @@ final class ProcessPaymentActionTest extends TestCase {
 
         // Todo 3: external_reference compartida con todo 22 (dedup por USGAR-{cartId}).
         $this->assertSame('USGAR-CART-1', $data['external_reference']);
-        // Todo 4: currency_id explicito (default PEN, env sin la var).
-        $this->assertSame('PEN', $data['currency_id']);
+        // Fix F3 (2026-08-06): el create /v1/payments NO acepta currency_id
+        // (400 bad_request, verificado con MCP + sandbox real); MP infiere la
+        // moneda de la cuenta. La moneda se propaga via evento/PMS (todo 34).
+        $this->assertArrayNotHasKey('currency_id', $data);
 
         // Todo 3: additional_info.items[] con categoria travel.
         $items = $data['additional_info']['items'] ?? null;
@@ -136,9 +138,12 @@ final class ProcessPaymentActionTest extends TestCase {
         $this->assertSame(380.0, $item['unit_price']); // 200 USD x 3.80 / 2 noches
         $this->assertSame('travel', $item['category_id']);
 
-        // Todo 3: payer.name/surname (split de guest_data del hold) + phone.
-        $this->assertSame('Juan', $data['payer']['name']);
-        $this->assertSame('Perez', $data['payer']['surname']);
+        // Todo 3 + fix F3 (2026-08-06, verificado con MCP search_documentation
+        // "create payment payer" es/MPE + sandbox real): el schema del create
+        // /v1/payments usa first_name/last_name — name/surname devuelve 400
+        // bad_request ([payer.surname, payer.name]).
+        $this->assertSame('Juan', $data['payer']['first_name']);
+        $this->assertSame('Perez', $data['payer']['last_name']);
         $this->assertSame(['area_code' => 84, 'number' => 1234567], $data['payer']['phone']);
         // Los datos del request del cliente se conservan.
         $this->assertSame('juan@test.com', $data['payer']['email']);
@@ -174,7 +179,7 @@ final class ProcessPaymentActionTest extends TestCase {
 
         $data = $this->capturedPaymentData;
         $this->assertNotNull($data);
-        $this->assertSame('Huésped USGAR', $data['payer']['name']);
+        $this->assertSame('Huesped USGAR', $data['payer']['first_name']);
         $this->assertArrayNotHasKey('phone', $data['payer'], 'Sin telefono persistido no se envia payer.phone.');
         $this->assertArrayHasKey('additional_info', $data, 'El payload debe seguir construyendose.');
         $this->assertSame('Suite Deluxe', $data['additional_info']['items'][0]['title']);

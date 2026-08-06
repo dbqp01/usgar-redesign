@@ -36,17 +36,6 @@ final class SpyMpHttpClient implements MPHttpClient {
  * idempotencia con el valor custom (ni null, ni UUID, ni duplicado).
  */
 final class SdkIdempotencyKeyTest extends TestCase {
-    /**
-     * @return array<int, string> Headers normalizados a formato "Name: value".
-     */
-    private function normalizedHeaders(SpyMpHttpClient $spy): array {
-        $normalized = [];
-        foreach ($spy->lastHeaders as $name => $value) {
-            $normalized[] = is_int($name) ? $value : $name . ': ' . $value;
-        }
-        return $normalized;
-    }
-
     private function idempotencyHeaders(array $headers): array {
         return array_values(array_filter(
             $headers,
@@ -54,12 +43,17 @@ final class SdkIdempotencyKeyTest extends TestCase {
         ));
     }
 
-    public function testUppercaseKeySendsExactlyOneCustomIdempotencyHeader(): void {
+    public function testStringFormCustomIdempotencyHeaderReachesTransport(): void {
+        // Fix F3 (2026-08-06): el SDK espera el header como STRING "Name: value"
+        // (doc oficial setCustomHeaders(["X-Idempotency-Key: <UUID>"])). El spy
+        // captura los headers CRUDOS (los mismos que recibe CURLOPT_HTTPHEADER):
+        // un header en forma de string sobrevive al array_merge del SDK y llega
+        // a curl; la forma asociativa NO (curl descarta valores sin ':').
         $spy = new SpyMpHttpClient();
         $client = new PaymentClient($spy);
 
         $options = new RequestOptions();
-        $options->setCustomHeaders(['X-Idempotency-Key' => 'pay_test_1']); // MAYUSCULAS
+        $options->setCustomHeaders(['X-Idempotency-Key: pay_test_1']);
 
         $client->create([
             'transaction_amount' => 100.0,
@@ -67,19 +61,19 @@ final class SdkIdempotencyKeyTest extends TestCase {
             'payer'              => ['email' => 'cliente@test.com'],
         ], $options);
 
-        $idemHeaders = $this->idempotencyHeaders($this->normalizedHeaders($spy));
+        $idemHeaders = $this->idempotencyHeaders($spy->lastHeaders);
 
-        $this->assertCount(1, $idemHeaders, 'Debe salir EXACTAMENTE UN header de idempotencia (ni null, ni UUID, ni duplicado).');
+        $this->assertCount(1, $idemHeaders, 'Debe salir EXACTAMENTE UN header de idempotencia en el transporte real.');
         $this->assertSame('X-Idempotency-Key: pay_test_1', $idemHeaders[0]);
     }
 
-    public function testLowercaseKeyStillSendsExactlyOneCustomHeader(): void {
-        // Documenta la convencion previa del adapter (clave en minusculas ya funcionaba).
+    public function testLowercaseStringFormAlsoReachesTransport(): void {
+        // Documenta la convencion en minusculas (tambien como string "Name: value").
         $spy = new SpyMpHttpClient();
         $client = new PaymentClient($spy);
 
         $options = new RequestOptions();
-        $options->setCustomHeaders(['x-idempotency-key' => 'pay_test_1']);
+        $options->setCustomHeaders(['x-idempotency-key: pay_test_1']);
 
         $client->create([
             'transaction_amount' => 100.0,
@@ -87,10 +81,33 @@ final class SdkIdempotencyKeyTest extends TestCase {
             'payer'              => ['email' => 'cliente@test.com'],
         ], $options);
 
-        $idemHeaders = $this->idempotencyHeaders($this->normalizedHeaders($spy));
+        $idemHeaders = $this->idempotencyHeaders($spy->lastHeaders);
 
         $this->assertCount(1, $idemHeaders);
         $this->assertSame('x-idempotency-key: pay_test_1', $idemHeaders[0]);
+    }
+
+    public function testAssociativeCustomHeaderDoesNotReachTransport(): void {
+        // Pin del contrato de transporte: ['x-idempotency-key' => $uuid]
+        // (asociativo) NO llega a curl — el array_merge del SDK lo deja como
+        // valor sin ':' y curl lo descarta (MP responde 400 "Header
+        // X-Idempotency-Key can't be null"). Por eso el adapter usa SIEMPRE
+        // la forma string "Name: value".
+        $spy = new SpyMpHttpClient();
+        $client = new PaymentClient($spy);
+
+        $options = new RequestOptions();
+        $options->setCustomHeaders(['X-Idempotency-Key' => 'pay_test_1']);
+
+        $client->create([
+            'transaction_amount' => 100.0,
+            'payment_method_id'  => 'visa',
+            'payer'              => ['email' => 'cliente@test.com'],
+        ], $options);
+
+        $idemHeaders = $this->idempotencyHeaders($spy->lastHeaders);
+
+        $this->assertCount(0, $idemHeaders, 'La forma asociativa no produce un header "Name: value" en el transporte.');
     }
 
     public function testSdkAddsUuidOnlyWhenNoCustomIdempotencyHeader(): void {
@@ -103,8 +120,9 @@ final class SdkIdempotencyKeyTest extends TestCase {
             'payer'              => ['email' => 'cliente@test.com'],
         ]);
 
-        $idemHeaders = $this->idempotencyHeaders($this->normalizedHeaders($spy));
+        $idemHeaders = $this->idempotencyHeaders($spy->lastHeaders);
 
-        $this->assertCount(1, $idemHeaders, 'Sin custom header el SDK debe autogenerar un UUID, pero nunca duplicar.');
+        $this->assertCount(1, $idemHeaders, 'Sin custom header el SDK debe autogenerar un UUID (string form), pero nunca duplicar.');
+        $this->assertStringStartsWith('X-Idempotency-Key: ', $idemHeaders[0]);
     }
 }

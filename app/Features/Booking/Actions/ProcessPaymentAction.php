@@ -132,14 +132,19 @@ class ProcessPaymentAction {
             $guestName = trim((string)($guestData['name'] ?? ''));
 
             $payer = is_array($paymentData['payer'] ?? null) ? $paymentData['payer'] : [];
+            // Fix F3 (2026-08-06, verificado con mercadopago-mcp-server
+            // search_documentation "create payment payer" es/MPE + sandbox real):
+            // el schema del create /v1/payments usa first_name/last_name; el
+            // envio de name/surname devuelve 400 bad_request ("The name of the
+            // following parameters is wrong : [payer.surname, payer.name]").
             if ($guestName === '') {
                 // QA- (todo 3): guest sin name -> nombre por defecto sin romper el payload
-                $payer['name']    = 'Huésped USGAR';
-                $payer['surname'] = '';
+                $payer['first_name'] = 'Huesped USGAR';
+                $payer['last_name']  = '';
             } else {
                 $nameParts  = GuestName::split($guestName);
-                $payer['name']    = $nameParts[0] ?? '';
-                $payer['surname'] = trim($nameParts[1] ?? '');
+                $payer['first_name'] = $nameParts[0] ?? '';
+                $payer['last_name']  = trim($nameParts[1] ?? '');
             }
 
             $phoneDigits = preg_replace('/\D+/', '', (string)($guestData['phone'] ?? '')) ?? '';
@@ -155,7 +160,10 @@ class ProcessPaymentAction {
 
             $paymentData['external_reference'] = 'USGAR-' . $cartId; // formato compartido con todo 22 (dedup PMS)
             $paymentData['transaction_amount'] = $gatewayPrice;
-            $paymentData['currency_id']        = Config::get('MERCADO_PAGO_CURRENCY', 'PEN'); // todo 4
+            // Fix F3 (2026-08-06): el create /v1/payments NO acepta
+            // currency_id (verificado con MCP + sandbox real; MP infiere la
+            // moneda de la cuenta). La moneda de cobro (Config, todo 34) se
+            // propaga via BookingPaidEvent al PMS, no en el create.
             $paymentData['payer']              = $payer;
             $paymentData['additional_info']    = [
                 'items' => [[

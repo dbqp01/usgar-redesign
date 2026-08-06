@@ -14,9 +14,10 @@ use MercadoPago\Resources\Payment;
 /**
  * Tests del plumbing de moneda (Wave 6, todo 34): UNA UNICA fuente de
  * verdad para la moneda de cobro — Config::get('MERCADO_PAGO_CURRENCY') —
- * usada en el create (currency_id, todo 4), en el evento (currency, todo
- * 25) y propagada en el payload del outbox. Sin literales en el flujo de
- * pago (los listeners reciben amount_pen/currency del evento).
+ * usada en el evento (currency, todo 25) y propagada en el payload del
+ * outbox (el create /v1/payments NO acepta currency_id — fix F3). Sin
+ * literales en el flujo de pago (los listeners reciben amount_pen/currency
+ * del evento).
  */
 final class CurrencyPlumbingTest extends TestCase {
     protected function setUp(): void {
@@ -67,10 +68,12 @@ final class CurrencyPlumbingTest extends TestCase {
         $this->assertSame('PEN', $event->getPayload()['currency']);
     }
 
-    public function testAdapterCreateCurrencyIdFollowsConfig(): void {
-        // Complementa el test de caracterizacion (currency_id='PEN' con env
-        // PEN): con env USD el create debe enviar 'USD' — prueba que el
-        // payload NO tiene la moneda hardcodeada (single source).
+    public function testAdapterCreateDoesNotSendCurrencyId(): void {
+        // Fix F3 (2026-08-06, verificado con MCP search_documentation "create
+        // payment" es/MPE + sandbox real): el create /v1/payments NO acepta
+        // currency_id (400 "The name of the following parameters is wrong :
+        // currency_id"); MP infiere la moneda de la cuenta. La moneda de cobro
+        // sigue siendo single-source en Config (todo 34) para el EVENTO/PMS.
         Config::set('MERCADO_PAGO_CURRENCY', 'USD');
 
         $paymentClient = $this->createMock(PaymentClient::class);
@@ -78,7 +81,7 @@ final class CurrencyPlumbingTest extends TestCase {
             ->method('create')
             ->with(
                 $this->callback(function (array $payload): bool {
-                    return $payload['currency_id'] === 'USD';
+                    return !array_key_exists('currency_id', $payload);
                 }),
                 $this->isInstanceOf(RequestOptions::class)
             )

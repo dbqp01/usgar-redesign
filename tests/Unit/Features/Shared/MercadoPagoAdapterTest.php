@@ -46,8 +46,12 @@ final class MercadoPagoAdapterTest extends TestCase {
                     // Todo 3 (clausula r2): el create NO envia notification_url
                     // (la config del panel/save_webhook gobierna).
                     $this->assertArrayNotHasKey('notification_url', $payload);
-                    // Todo 4: currency_id explicito.
-                    $this->assertSame('PEN', $payload['currency_id']);
+                    // Fix F3 (2026-08-06, verificado con MCP search_documentation
+                    // "create payment" es/MPE + sandbox real): el create
+                    // /v1/payments NO acepta currency_id (400 bad_request); MP
+                    // infiere la moneda de la cuenta. La moneda de cobro vive en
+                    // el evento/PMS (todo 34), no en el create.
+                    $this->assertArrayNotHasKey('currency_id', $payload);
                     $this->assertSame(['email' => 'cliente@test.com'], $payload['payer']);
                     $this->assertSame('CARD_TOKEN_XYZ', $payload['token']);
                     $this->assertSame('310', $payload['issuer_id']);
@@ -94,13 +98,16 @@ final class MercadoPagoAdapterTest extends TestCase {
             ->with(
                 $this->anything(),
                 $this->callback(function (RequestOptions $options): bool {
-                    $headers = $options->getCustomHeaders();
+                    $headers = array_values($options->getCustomHeaders() ?? []);
                     $this->assertNotEmpty($headers, 'Debe enviar x-idempotency-key');
-                    $this->assertArrayHasKey('x-idempotency-key', $headers);
+                    // Fix F3 (2026-08-06): el SDK espera "Name: value" string;
+                    // la forma asociativa se pierde en CURLOPT_HTTPHEADER.
+                    $found = array_values(array_filter($headers, static fn ($h) => is_string($h) && stripos($h, 'X-Idempotency-Key:') === 0));
+                    $this->assertCount(1, $found, 'exactamente un header X-Idempotency-Key en forma string');
                     // Todo 2: UUID v4 por intento (ya no es determinista por carrito).
                     $this->assertMatchesRegularExpression(
-                        '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/',
-                        $headers['x-idempotency-key'],
+                        '/^X-Idempotency-Key: [0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/',
+                        (string)$found[0],
                         'La key debe ser un UUID v4 fresco, no derivada del cart.'
                     );
                     return true;
@@ -125,7 +132,13 @@ final class MercadoPagoAdapterTest extends TestCase {
         $paymentClient->expects($this->exactly(2))
             ->method('create')
             ->willReturnCallback(function (array $payload, RequestOptions $options) use (&$capturedKeys) {
-                $capturedKeys[] = $options->getCustomHeaders()['x-idempotency-key'] ?? null;
+                $headers = array_values($options->getCustomHeaders() ?? []);
+                foreach ($headers as $h) {
+                    if (is_string($h) && preg_match('/^X-Idempotency-Key: ([0-9a-f-]{36})$/i', $h, $m)) {
+                        $capturedKeys[] = $m[1];
+                        break;
+                    }
+                }
                 return $this->makePayment(222, 'approved', 'accredited', 'CART-1', 50.0);
             });
 
