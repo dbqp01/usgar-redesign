@@ -82,7 +82,37 @@ class ProcessPaymentAction {
                 return;
             }
 
-            $this->pdo->commit();
+            // --- Todo 8 (W2): gates del lock pesimista ---
+            // El cobro ocurre DENTRO de la transaccion del lock (FOR UPDATE):
+            // la ventana commit-antes-de-cobrar desaparece y un segundo
+            // intento concurrente sobre el mismo hold no puede volver a cobrar.
+
+            // Gate 1: hold expirado -> no cobrar (el cron lo marcara expired).
+            if (strtotime((string)($hold['expires_at'] ?? '')) <= time()) {
+                $this->pdo->rollBack();
+                Response::json([
+                    'success' => false,
+                    'message' => 'Esta reserva ya fue procesada o expiro.',
+                    'status' => 'expired'
+                ]);
+                return;
+            }
+
+            // Gate 2 (fix BLOCKER r3): si el hold YA tiene payment_id (intento
+            // previo pending/in_process), NO llamar la gateway — responder
+            // success:false(status pending) y dejar que polling/webhook
+            // reconcilien. Sin este gate, un reintento concurrente vuelve a
+            // cobrar sobre el mismo cart.
+            $existingPaymentId = trim((string)($hold['payment_id'] ?? ''));
+            if ($existingPaymentId !== '') {
+                $this->pdo->rollBack();
+                Response::json([
+                    'success' => false,
+                    'status' => 'pending',
+                    'message' => 'Ya existe un pago en curso para esta reserva; se confirmara automaticamente.'
+                ]);
+                return;
+            }
 
             // --- Todo 3/4 (W1): densidad antifraude desde el HOLD persistido ---
             // payer.name/surname/phone salen de guest_data (no del request del
@@ -133,6 +163,9 @@ class ProcessPaymentAction {
                 ]],
             ];
 
+            // La transaccion del lock SIGUE ABIERTA durante la llamada a la
+            // gateway (timeout total <= 15s < lock_wait_timeout de MySQL):
+            // el pago y el attach/status se hacen atomicos.
             $paymentResult = $this->paymentGateway->processPayment($paymentData);
 
             if (!$paymentResult || !isset($paymentResult['id'])) {
@@ -143,11 +176,66 @@ class ProcessPaymentAction {
             $paymentIdStr = (string)$paymentResult['id'];
 
             if ($status === 'approved') {
-                $this->pdo->beginTransaction();
+                // Todo 8 (fix MINOR r4): persistir payment_id + status paid
+                // DENTRO de la txn (polling todo 27 y refunds todo 12
+                // dependen de payment_id persistido).
+                $this->bookingRepo->attachPaymentId($cartId, $paymentIdStr);
                 $this->bookingRepo->updateStatus($cartId, BookingStatus::Paid->value);
                 $this->bookingRepo->markPaymentProcessed($paymentIdStr, $cartId, 'approved');
-                $this->pdo->commit();
+            } elseif (in_array($status, ['pending', 'in_process'], true)) {
+                // QA+2: attach DENTRO de la txn + commit; success:false(status
+                // pending) — no se pierde el payment_id para reconciliacion.
+                $this->bookingRepo->attachPaymentId($cartId, $paymentIdStr);
+            } else {
+                // QA-1: la gateway devolvio un pago rechazado SIN excepcion ->
+                // rollback, nada persistido (ni payment_id ni status).
+                $this->pdo->rollBack();
+                Response::json([
+                    'success' => false,
+                    'status' => $status,
+                    'status_detail' => $paymentResult['status_detail'] ?? '',
+                    'message' => 'El pago fue rechazado por la pasarela.'
+                ]);
+                return;
+            }
 
+            // --- RAMA COMMIT-FALLA (revision r1): la gateway tuvo exito pero
+            // commit() lanza (error BD/red) -> el pago existe en MP y el hold
+            // quedaria pending SIN payment_id; un reintento seria doble cobro.
+            // Best-effort: transaccion corta para attachPaymentId ANTES de
+            // responder + success:false(status pending) para que el
+            // polling/webhook (todo 31) reconcilien; si ni el attach funciona
+            // -> 500.
+            try {
+                $this->pdo->commit();
+            } catch (Exception $e) {
+                Logger::error('ProcessPaymentAction: commit fallo tras cobro exitoso (payment_id=' . $paymentIdStr . '): ' . $e->getMessage());
+                if ($this->pdo->inTransaction()) {
+                    try {
+                        $this->pdo->rollBack();
+                    } catch (Exception $ignore) {
+                        // la conexion pudo morir; seguir con el attach best-effort
+                    }
+                }
+                $attached = $this->bookingRepo->attachPaymentId($cartId, $paymentIdStr);
+                if (!$attached) {
+                    Logger::error('ProcessPaymentAction: attach best-effort fallo para cart ' . $cartId . ' (payment_id=' . $paymentIdStr . ').');
+                    throw new Exception(
+                        'El pago se proceso en la pasarela pero no se pudo registrar en la BD.',
+                        0,
+                        $e
+                    );
+                }
+                Response::json([
+                    'success' => false,
+                    'status' => 'pending',
+                    'payment_id' => $paymentIdStr,
+                    'message' => 'El pago se proceso, pero la confirmacion local fallo; se reconciliara automaticamente.'
+                ]);
+                return;
+            }
+
+            if ($status === 'approved') {
                 // Dispatch event asynchronously if possible, or synchronously
                 $event = BookingPaidEvent::fromHold((string)$cartId, $paymentIdStr, $hold);
 
@@ -164,9 +252,8 @@ class ProcessPaymentAction {
                     'message' => 'Pago aprobado exitosamente.'
                 ]);
             } else {
-                // Pago pendiente o rechazado: registrar payment_id para reconciliacion posterior
-                $this->bookingRepo->attachPaymentId($cartId, $paymentIdStr);
-
+                // Pago pending/in_process: el payment_id ya quedo persistido
+                // dentro de la txn; polling (todo 27) y webhook resolveran.
                 Response::json([
                     'success' => false,
                     'status' => $status,

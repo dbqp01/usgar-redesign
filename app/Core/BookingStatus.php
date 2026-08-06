@@ -13,8 +13,10 @@ enum BookingStatus: string {
     case Paid         = 'paid';
     case Failed       = 'failed';
     case Expired      = 'expired';
+    case Cancelled    = 'cancelled';
     case FraudReview  = 'fraud_review';
     case ManualReview = 'manual_review';
+    case ExpiredPaid  = 'expired_paid'; // todo 9: pago approved que llego sobre un hold expirado (alerta manual)
 
     /**
      * Verifica si el estado permite extension de hold.
@@ -28,7 +30,7 @@ enum BookingStatus: string {
      */
     public function isTerminal(): bool {
         return match ($this) {
-            self::Paid, self::Expired, self::Failed, self::FraudReview => true,
+            self::Paid, self::Expired, self::Failed, self::FraudReview, self::ExpiredPaid => true,
             default => false,
         };
     }

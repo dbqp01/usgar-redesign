@@ -7,11 +7,11 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Logger;
 use App\Core\Config;
-use App\Core\Database;
 use App\Core\Validator;
 use App\Core\HttpException;
 use App\Core\BookingStatus;
-use App\Core\Container;
+use App\Core\BookingHoldToken;
+use App\Core\PriceCalculator;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
 use App\Features\Shared\Ports\PmsPortInterface;
 use App\Features\Shared\RoomTypeRegistry;
@@ -103,6 +103,18 @@ class CreateBookingAction {
             
             $this->pdo->beginTransaction();
 
+            // Todo 10 (W2): serializar la creacion de holds con un objetivo de
+            // lock que SIEMPRE existe (fila room_locks get-or-create + FOR
+            // UPDATE) DENTRO de la misma transaccion que la verificacion de
+            // disponibilidad y el INSERT del hold. Elimina los holds fantasma:
+            // dos creates concurrentes sobre la misma habitacion se
+            // serializan aqui, y el segundo ve el hold del primero en el COUNT.
+            $roomLockId = $hotelId . ':' . $idRoomType;
+            if (!$this->bookingRepo->lockRoom($roomLockId)) {
+                $this->pdo->rollBack();
+                throw new Exception('No se pudo adquirir el lock de serializacion para la habitacion.');
+            }
+
             $holdsCount = $this->bookingRepo->getHoldCountForRoomForUpdate($idRoomType, $checkIn, $checkOut, $hotelId);
             $targetRoom['available_qty'] -= $holdsCount;
 
@@ -110,7 +122,7 @@ class CreateBookingAction {
                 $this->pdo->rollBack();
                 throw HttpException::badRequest('La habitaciÃ³n seleccionada ya no estÃ¡ disponible para estas fechas.');
             }
-            $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
+            $expiresAt = date('Y-m-d H:i:s', strtotime(Config::get('BOOKING_HOLD_TTL', '+15 minutes')));
             $currentUser = SessionService::getUserFromRequest();
 
             $holdData = [
@@ -141,12 +153,7 @@ class CreateBookingAction {
             }
 
             // Exigencia estricta de variables de entorno sin fallbacks inseguros
-            $secretKey = Config::get('BOOKING_TOKEN_SECRET', Config::get('CRON_SECRET'));
-            if (empty($secretKey)) {
-                throw HttpException::internal('Falta configuraciÃ³n obligatoria de BOOKING_TOKEN_SECRET en servidor .env');
-            }
-
-            $accessToken = hash_hmac('sha256', $cartId . ':' . $guestEmail, $secretKey);
+            $accessToken = BookingHoldToken::derive($cartId, $guestEmail);
 
             $this->pdo->commit();
 
@@ -154,16 +161,16 @@ class CreateBookingAction {
             $roomSlug = RoomTypeRegistry::getSlugById($idRoomType);
 
             $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN');
-            $gatewayPricePEN = round($totalPrice * $exchangeRate, 2);
+            $gatewayPricePEN = PriceCalculator::toGatewayPrice($totalPrice);
 
             Response::json([
                 'success'           => true,
                 'cart_id'           => $cartId,
                 'access_token'      => $accessToken,
-                'currency'          => 'USD',
+                'currency'          => Config::get('HOTEL_BASE_CURRENCY', 'USD'),
                 'price'             => $totalPrice,
                 'exchange_rate'     => $exchangeRate,
-                'gateway_currency'  => 'PEN',
+                'gateway_currency'  => Config::get('MERCADO_PAGO_CURRENCY', 'PEN'),
                 'gateway_price'     => $gatewayPricePEN,
                 'mp_public_key'     => Config::get('PUBLIC_MERCADO_PAGO_PUBLIC_KEY'),
                 'expires_at'        => $expiresAt,
@@ -193,9 +200,7 @@ class CreateBookingAction {
                 throw HttpException::missingCredentials('Faltan credenciales de configuracion (Mercado Pago / QloApps) en el backend para procesar la transaccion.');
             }
 
-            $clientMessage = 'Error: ' . $e->getMessage();
-
-            Response::error($clientMessage, 500, 'SERVER_ERROR');
+            Response::error('Error interno al procesar la reserva.', 500, 'SERVER_ERROR');
         }
     }
 }

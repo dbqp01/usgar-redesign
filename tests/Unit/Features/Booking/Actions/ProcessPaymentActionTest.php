@@ -190,4 +190,130 @@ final class ProcessPaymentActionTest extends TestCase {
         $this->assertSame(500, $response['code']);
         $this->assertStringContainsString('Error interno', $response['body']);
     }
+
+    // =====================================================================
+    // Todo 8 (W2): cobro DENTRO de la transaccion del lock pesimista.
+    // La gateway solo se llama si el hold esta pending, NO expirado y
+    // payment_id IS NULL; el attach ocurre dentro de la txn en AMBAS ramas
+    // (approved y pending/in_process); commit-falla -> attach best-effort.
+    // =====================================================================
+
+    public function testHoldWithExistingPaymentIdSkipsGatewayAndReturnsPending(): void {
+        // QA+2 (fix r3): un intento previo pending ya dejo payment_id en el
+        // hold -> el gate 'payment_id IS NULL' bloquea un segundo cobro.
+        $hold = $this->holdFixture();
+        $hold['payment_id'] = '555';
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($hold);
+        $this->paymentGateway->expects($this->never())->method('processPayment');
+
+        $response = $this->captureResponse(fn () => ($this->action)($this->defaultRequest()));
+
+        $this->assertSame(200, $response['code']);
+        $this->assertStringContainsString('"success":false', $response['body']);
+        $this->assertStringContainsString('"status":"pending"', $response['body']);
+    }
+
+    public function testExpiredHoldIsNotCharged(): void {
+        $hold = $this->holdFixture();
+        $hold['expires_at'] = date('Y-m-d H:i:s', time() - 60);
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($hold);
+        $this->paymentGateway->expects($this->never())->method('processPayment');
+
+        $response = $this->captureResponse(fn () => ($this->action)($this->defaultRequest()));
+
+        $this->assertSame(200, $response['code']);
+        $this->assertStringContainsString('"success":false', $response['body']);
+        $this->assertStringContainsString('"status":"expired"', $response['body']);
+    }
+
+    public function testPendingGatewayResultAttachesPaymentIdInsideTransaction(): void {
+        // QA+2 (carrera CONT): create OK in_process -> attach DENTRO de la
+        // txn + commit + success:false(status in_process); el payment_id
+        // queda persistido para reconciliacion (todo 27).
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->holdFixture());
+        $this->paymentGateway->method('processPayment')->willReturn([
+            'id' => 987, 'status' => 'in_process', 'status_detail' => 'pending_contingency',
+        ]);
+        $this->bookingRepo->expects($this->once())->method('attachPaymentId')->with('CART-1', '987');
+
+        $response = $this->captureResponse(fn () => ($this->action)($this->defaultRequest()));
+
+        $this->assertSame(200, $response['code']);
+        $this->assertStringContainsString('"success":false', $response['body']);
+        $this->assertStringContainsString('"status":"in_process"', $response['body']);
+    }
+
+    public function testApprovedAttachesPaymentIdAndStatusPaidInsideTransaction(): void {
+        // fix MINOR r4: el attach aplica TAMBIEN a la rama approved (el
+        // polling del todo 27 y los refunds del todo 12 dependen de que
+        // payment_id este persistido).
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->holdFixture());
+        $this->stubApprovedGateway();
+        $this->bookingRepo->expects($this->once())->method('attachPaymentId')->with('CART-1', '987');
+        $this->bookingRepo->expects($this->once())->method('updateStatus')->with('CART-1', 'paid');
+        $this->bookingRepo->expects($this->once())->method('markPaymentProcessed')->with('987', 'CART-1', 'approved');
+
+        $response = $this->captureResponse(fn () => ($this->action)($this->defaultRequest()));
+
+        $this->assertSame(200, $response['code']);
+        $this->assertStringContainsString('"success":true', $response['body']);
+        $this->assertStringContainsString('"payment_id":"987"', $response['body']);
+    }
+
+    public function testRejectedReturnedStatusRollsBackWithoutPersisting(): void {
+        // QA-1: la gateway devuelve un pago rechazado (sin excepcion) ->
+        // rollback, NADA persistido (ni payment_id ni status).
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->holdFixture());
+        $this->paymentGateway->method('processPayment')->willReturn([
+            'id' => 987, 'status' => 'rejected', 'status_detail' => 'cc_rejected_other_reason',
+        ]);
+        $this->bookingRepo->expects($this->never())->method('attachPaymentId');
+        $this->bookingRepo->expects($this->never())->method('updateStatus');
+        $this->pdo->expects($this->atLeastOnce())->method('rollBack');
+
+        $response = $this->captureResponse(fn () => ($this->action)($this->defaultRequest()));
+
+        $this->assertSame(200, $response['code']);
+        $this->assertStringContainsString('"success":false', $response['body']);
+        $this->assertStringContainsString('"status":"rejected"', $response['body']);
+    }
+
+    public function testCommitFailureAfterGatewayAttachesBestEffortAndReturnsPending(): void {
+        // QA-2 (ramas commit-falla): la gateway tuvo exito pero commit() lanza
+        // -> attach best-effort ANTES de responder + success:false(status
+        // pending) para que polling/webhook reconcilien; el hold NO permite
+        // un segundo cobro.
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->holdFixture());
+        $this->stubApprovedGateway();
+        $this->pdo->method('commit')->willThrowException(new \PDOException('lock wait timeout exceeded'));
+        $attached = [];
+        $this->bookingRepo->method('attachPaymentId')->willReturnCallback(
+            function (string $cartId, string $paymentId) use (&$attached): bool {
+                $attached[] = [$cartId, $paymentId];
+                return true;
+            }
+        );
+
+        $response = $this->captureResponse(fn () => ($this->action)($this->defaultRequest()));
+
+        $this->assertNotEmpty($attached, 'El attach best-effort debe ejecutarse.');
+        $this->assertSame(['CART-1', '987'], $attached[array_key_last($attached)]);
+        $this->assertSame(200, $response['code']);
+        $this->assertStringContainsString('"success":false', $response['body']);
+        $this->assertStringContainsString('"status":"pending"', $response['body']);
+    }
+
+    public function testCommitFailureWithFailedBestEffortAttachReturns500(): void {
+        // QA-2 variante: si ni el attach best-effort funciona -> 500 (el todo
+        // 31 consulta MP por external_reference antes de reintentar).
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->holdFixture());
+        $this->stubApprovedGateway();
+        $this->pdo->method('commit')->willThrowException(new \PDOException('connection lost'));
+        $this->bookingRepo->method('attachPaymentId')->willReturn(false);
+
+        $response = $this->captureResponse(fn () => ($this->action)($this->defaultRequest()));
+
+        $this->assertSame(500, $response['code']);
+        $this->assertStringContainsString('Error interno', $response['body']);
+    }
 }
