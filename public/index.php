@@ -23,6 +23,7 @@ if (file_exists($bootstrapFile)) {
 use App\Core\Request;
 use App\Core\Router;
 use App\Core\Middleware;
+use App\Core\Config;
 
 // Importar Clases-Accion ADR (Action-Domain-Responder)
 use App\Features\Health\Actions\HealthCheckAction;
@@ -34,6 +35,7 @@ use App\Features\Booking\Actions\GetBookingStatusAction;
 use App\Features\Webhooks\Actions\HandleMercadoPagoWebhookAction;
 use App\Features\Webhooks\Actions\HandleChannexWebhookAction;
 use App\Features\Cron\Actions\CleanExpiredCartsAction;
+use App\Features\Cron\Actions\RetryManualReviewAction;
 use App\Features\Auth\Actions\AuthLoginAction;
 use App\Features\Auth\Actions\AuthProvidersAction;
 use App\Features\Auth\Actions\AuthCallbackAction;
@@ -60,7 +62,7 @@ $middleware = new Middleware();
 $middleware
     ->add(Middleware::cors())
     ->add(Middleware::securityHeaders())
-    ->add(Middleware::rateLimit(300, 600));
+    ->add(Middleware::rateLimit((int)Config::get('RATE_LIMIT_MAX_REQUESTS', '300'), (int)Config::get('RATE_LIMIT_WINDOW_SECONDS', '600')));
 
 $router->setMiddleware($middleware);
 
@@ -73,11 +75,11 @@ $router->post('/api/process-payment', \App\Features\Booking\Actions\ProcessPayme
 $router->post('/api/extend-hold',     ExtendHoldAction::class);
 $router->get('/api/booking-status',   GetBookingStatusAction::class);
 $router->post('/api/webhook',         HandleMercadoPagoWebhookAction::class);
-$router->post('/api/webhook-mercado-pago', HandleMercadoPagoWebhookAction::class);
 $router->post('/api/webhook/channex', HandleChannexWebhookAction::class);
 
 // Endpoint de mantenimiento del sistema (Cron)
-$router->post('/api/cron/cleanup',    CleanExpiredCartsAction::class);
+$router->post('/api/cron/cleanup',       CleanExpiredCartsAction::class);
+$router->post('/api/cron/manual-review', RetryManualReviewAction::class);
 
 use App\Features\Auth\Actions\UpdateUserProfileAction;
 

@@ -238,16 +238,23 @@ class HandleMercadoPagoWebhookAction {
             $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::Paid->value);
             $this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, 'approved');
 
+            // TODO 18/23 (Wave 4): el INSERT del evento en event_outbox corre
+            // DENTRO de la transaccion (dispatch -> outbox) ANTES del commit —
+            // patron transactional-outbox (microservices.io): si el commit se
+            // confirma, el evento YA esta persistido; no se pierde en la
+            // ventana commit->ACK. Los listeners corren en el cron
+            // (process_outbox, todo 19); aqui NO queda trabajo pesado tras el
+            // ACK. Fail-closed (todo 11): si el INSERT del outbox falla y el
+            // fallback dispatchNow lanza, la excepcion propaga -> rollback ->
+            // 500 -> MP reintenta (idempotencia protege).
+            $event = BookingPaidEvent::fromHold((string)$cartId, $paymentIdStr, $hold);
+            $this->eventDispatcher->dispatch($event);
+
             $this->pdo->commit();
             Logger::info("HandleMercadoPagoWebhookAction: Transaccion en BD local confirmada para Cart ID {$cartId}");
 
-            // 5.6 Extender tiempo de ejecucion para listeners en shared hosting
-            if (function_exists('set_time_limit')) {
-                @set_time_limit(120);
-            }
-            
-            // 6. CERRAR CONEXION HTTP TEMPRANAMENTE (Evitar timeout de Mercado Pago)
-            // Se responde 200 OK inmediatamente a MP para que no reintente
+            // 6. ACK (200) DESPUES del commit: el outbox ya tiene el evento y
+            // el cron lo entrega aunque el proceso muera aqui mismo.
             Response::jsonAsync([
                 'success' => true,
                 'cart_id' => $cartId,
@@ -255,20 +262,7 @@ class HandleMercadoPagoWebhookAction {
                 'message' => 'Payment processed locally. Dispatching external sync.'
             ]);
 
-            // 7. Emision de Evento de Dominio Desacoplado (Ahora ejecutado en Background)
-            $event = BookingPaidEvent::fromHold((string)$cartId, $paymentIdStr, $hold);
-
-            try {
-                $this->eventDispatcher->dispatch($event);
-            } catch (Exception $e) {
-                Logger::error("HandleMercadoPagoWebhookAction: Fallo en integracion externa durante la dispatch del evento: " . $e->getMessage());
-                // En background, actualizar a manual_review si los reintentos locales fallaron
-                $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::ManualReview->value);
-                // Nota: La respuesta HTTP 200 ya fue enviada a MP, no podemos usar Response::json() aqui.
-                return;
-            }
-
-            // Terminamos el script en background
+            // Terminamos el script en background (los listeners corren en el cron).
             return;
 
         } catch (Exception $e) {

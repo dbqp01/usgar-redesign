@@ -125,27 +125,36 @@ class CreateBookingAction {
             $expiresAt = date('Y-m-d H:i:s', strtotime(Config::get('BOOKING_HOLD_TTL', '+15 minutes')));
             $currentUser = SessionService::getUserFromRequest();
 
+            // Todo 25 (Wave 4): congelar tasa + PEN al cotizar (UNA sola
+            // lectura de EXCHANGE_RATE_USD_PEN). Sin este WRITE,
+            // BookingPaidEvent::fromHold obtendria rate NULL y el webhook
+            // compararia contra la tasa ACTUAL (falso fraude por descalce).
+            $exchangeRate = (float)Config::get('EXCHANGE_RATE_USD_PEN');
+            $priceSnapshotPen = PriceCalculator::toGatewayPrice($totalPrice);
+
             $holdData = [
-                'cart_id'       => $cartId,
-                'user_id'       => $currentUser['sub'] ?? null,
-                'id_hotel'      => $hotelId,
-                'id_room_type'  => $idRoomType,
-                'guest_data'    => [
+                'cart_id'                 => $cartId,
+                'user_id'                 => $currentUser['sub'] ?? null,
+                'id_hotel'                => $hotelId,
+                'id_room_type'            => $idRoomType,
+                'guest_data'              => [
                     'name'   => $guestName,
                     'email'  => $guestEmail,
                     'phone'  => $guestPhone,
                     'guests' => $guests,
                 ],
-                'room_data'     => [
+                'room_data'               => [
                     'room_name'       => $targetRoom['room_name'],
                     'price_per_night' => $pricePerNight,
                     'nights'          => $nights,
                 ],
-                'price_snapshot' => $totalPrice,
-                'checkin'        => $checkIn,
-                'checkout'       => $checkOut,
-                'status'         => BookingStatus::Pending->value,
-                'expires_at'     => $expiresAt,
+                'price_snapshot'          => $totalPrice,
+                'price_snapshot_pen'      => $priceSnapshotPen,
+                'exchange_rate_snapshot'  => $exchangeRate,
+                'checkin'                 => $checkIn,
+                'checkout'                => $checkOut,
+                'status'                  => BookingStatus::Pending->value,
+                'expires_at'              => $expiresAt,
             ];
 
             if (!$this->bookingRepo->create($holdData)) {
@@ -160,8 +169,8 @@ class CreateBookingAction {
             $timeLeftSeconds = max(0, strtotime($expiresAt) - time());
             $roomSlug = RoomTypeRegistry::getSlugById($idRoomType);
 
-            $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN');
-            $gatewayPricePEN = PriceCalculator::toGatewayPrice($totalPrice);
+            // Reutiliza la tasa/PEN congelados (una sola lectura, todo 25).
+            $gatewayPricePEN = $priceSnapshotPen;
 
             Response::json([
                 'success'           => true,

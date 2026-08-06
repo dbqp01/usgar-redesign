@@ -7,16 +7,6 @@ namespace App\Features\Shared\Ports;
  * Puerto de abstraccion para la interaccion con Channel Managers (Channex).
  */
 interface ChannelManagerPortInterface {
-    public function pushAvailability(
-        int $idRoomType,
-        string $checkIn,
-        string $checkOut,
-        float $totalPrice,
-        int $availabilityQty = 1
-    ): bool;
-
-    public function processChannelBooking(array $bookingData): bool;
-
     public function createBooking(
         string $bookingId,
         string $checkIn,
@@ -32,4 +22,12 @@ interface ChannelManagerPortInterface {
     public function fetchBookingRevision(string $revisionId): ?array;
 
     public function acknowledgeRevision(string $revisionId): bool;
+
+    /**
+     * Dedup del consumidor (todo 22): consulta si ya existe un booking con la
+     * external_reference dada (USGAR-{cartId}). Devuelve el booking o null si
+     * no existe. FAIL-CLOSED: ante fallo de transporte/API DEBE lanzar (nunca
+     * null por error — el caller reintentaria y duplicaria).
+     */
+    public function findBookingByExternalReference(string $externalReference): ?array;
 }

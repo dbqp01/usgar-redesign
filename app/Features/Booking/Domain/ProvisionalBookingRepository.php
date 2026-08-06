@@ -48,25 +48,29 @@ class ProvisionalBookingRepository {
         $stmt = $this->pdo->prepare("
             INSERT INTO provisional_bookings (
                 cart_id, user_id, id_hotel, id_room_type, guest_data, room_data,
-                price_snapshot, checkin, checkout, status, expires_at
+                price_snapshot, price_snapshot_pen, exchange_rate_snapshot,
+                checkin, checkout, status, expires_at
             ) VALUES (
                 :cart_id, :user_id, :id_hotel, :id_room_type, :guest_data, :room_data,
-                :price_snapshot, :checkin, :checkout, :status, :expires_at
+                :price_snapshot, :price_snapshot_pen, :exchange_rate_snapshot,
+                :checkin, :checkout, :status, :expires_at
             )
         ");
 
         return $stmt->execute([
-            ':cart_id'       => $data['cart_id'],
-            ':user_id'       => $data['user_id'] ?? null,
-            ':id_hotel'      => $data['id_hotel'] ?? Config::get('DEFAULT_HOTEL_ID', '1'),
-            ':id_room_type'  => $data['id_room_type'],
-            ':guest_data'    => json_encode($data['guest_data'] ?? [], JSON_THROW_ON_ERROR),
-            ':room_data'     => json_encode($data['room_data'] ?? [], JSON_THROW_ON_ERROR),
-            ':price_snapshot'=> $data['price_snapshot'],
-            ':checkin'       => $data['checkin'],
-            ':checkout'      => $data['checkout'],
-            ':status'        => $data['status'] ?? BookingStatus::Pending->value,
-            ':expires_at'    => $data['expires_at'],
+            ':cart_id'                => $data['cart_id'],
+            ':user_id'                => $data['user_id'] ?? null,
+            ':id_hotel'               => $data['id_hotel'] ?? Config::get('DEFAULT_HOTEL_ID', '1'),
+            ':id_room_type'           => $data['id_room_type'],
+            ':guest_data'             => json_encode($data['guest_data'] ?? [], JSON_THROW_ON_ERROR),
+            ':room_data'              => json_encode($data['room_data'] ?? [], JSON_THROW_ON_ERROR),
+            ':price_snapshot'         => $data['price_snapshot'],
+            ':price_snapshot_pen'     => $data['price_snapshot_pen'] ?? null,
+            ':exchange_rate_snapshot' => $data['exchange_rate_snapshot'] ?? null,
+            ':checkin'                => $data['checkin'],
+            ':checkout'               => $data['checkout'],
+            ':status'                 => $data['status'] ?? BookingStatus::Pending->value,
+            ':expires_at'             => $data['expires_at'],
         ]);
     }
 
@@ -83,6 +87,8 @@ class ProvisionalBookingRepository {
                     guest_data TEXT,
                     room_data TEXT,
                     price_snapshot DECIMAL(10,2) NOT NULL,
+                    price_snapshot_pen DECIMAL(12,2) NULL,
+                    exchange_rate_snapshot DECIMAL(12,4) NULL,
                     checkin DATE NOT NULL,
                     checkout DATE NOT NULL,
                     status VARCHAR(32) DEFAULT 'pending',
@@ -122,6 +128,19 @@ class ProvisionalBookingRepository {
             if (!$this->columnExists('provisional_bookings', 'payment_id')) {
                 $this->pdo->exec("ALTER TABLE provisional_bookings ADD COLUMN payment_id VARCHAR(64) NULL AFTER status");
                 Logger::info('ProvisionalBookingRepository: Columna payment_id creada automaticamente en provisional_bookings.');
+            }
+
+            // Auto-heal (todo 25, Wave 4): PEN y tasa CONGELADOS al cotizar.
+            // El WRITE lo hace CreateBookingAction; el todo 32 (W6) solo lo
+            // verifica. Sin estas columnas, BookingPaidEvent::fromHold
+            // derivaria con la tasa ACTUAL (falso fraude por descalce).
+            if (!$this->columnExists('provisional_bookings', 'price_snapshot_pen')) {
+                $this->pdo->exec("ALTER TABLE provisional_bookings ADD COLUMN price_snapshot_pen DECIMAL(12,2) NULL AFTER price_snapshot");
+                Logger::info('ProvisionalBookingRepository: Columna price_snapshot_pen creada automaticamente en provisional_bookings.');
+            }
+            if (!$this->columnExists('provisional_bookings', 'exchange_rate_snapshot')) {
+                $this->pdo->exec("ALTER TABLE provisional_bookings ADD COLUMN exchange_rate_snapshot DECIMAL(12,4) NULL AFTER price_snapshot_pen");
+                Logger::info('ProvisionalBookingRepository: Columna exchange_rate_snapshot creada automaticamente en provisional_bookings.');
             }
 
             // Auto-heal (todo 12): processed_payments con event_type + indice

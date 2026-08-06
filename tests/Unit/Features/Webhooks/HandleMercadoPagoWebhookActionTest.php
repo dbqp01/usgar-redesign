@@ -502,4 +502,58 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
         $this->assertSame(200, $response['code']);
         $this->assertStringContainsString('Payment processed locally', $response['body']);
     }
+
+    // ------------------------------------------------------------ todo 23
+
+    public function testOrderIsCommitAfterOutboxInsertAndAckLast(): void {
+        // Todo 23: orden final beginTransaction -> lock -> validar -> fetch ->
+        // updateStatus + markPaymentProcessed + INSERT outbox (dispatch) ->
+        // commit -> jsonAsync 200. NADA despues del commit (los listeners
+        // corren en el cron; el ACK no deja ventana de perdida post-200).
+        $order = [];
+
+        $pdo = $this->createMock(PDO::class);
+        $pdo->method('beginTransaction')->willReturnCallback(function () use (&$order): bool {
+            $order[] = 'begin';
+            return true;
+        });
+        $pdo->method('commit')->willReturnCallback(function () use (&$order): bool {
+            $order[] = 'commit';
+            return true;
+        });
+        $pdo->method('rollBack')->willReturn(true);
+        $pdo->method('inTransaction')->willReturn(true);
+
+        $repo = $this->createMock(ProvisionalBookingRepository::class);
+        $repo->method('isPaymentProcessed')->willReturn(false);
+        $repo->method('getByCartIdForUpdate')->willReturn($this->hold('CART-42'));
+        $repo->method('updateStatus')->willReturnCallback(function () use (&$order): bool {
+            $order[] = 'updateStatus';
+            return true;
+        });
+        $repo->method('markPaymentProcessed')->willReturnCallback(function () use (&$order): bool {
+            $order[] = 'markProcessed';
+            return true;
+        });
+
+        $dispatcher = $this->createMock(EventDispatcher::class);
+        $dispatcher->method('dispatch')->willReturnCallback(function () use (&$order): void {
+            $order[] = 'dispatch';
+        });
+
+        $gateway = $this->createMock(PaymentGatewayPortInterface::class);
+        $gateway->method('verifySignature')->willReturn(true);
+        $gateway->method('getPaymentDetails')->willReturn($this->approvedPayment('USGAR-CART-42'));
+
+        $action = new HandleMercadoPagoWebhookAction($pdo, $gateway, $repo, $dispatcher);
+        $response = $this->captureResponse(fn () => ($action)($this->signedRequest('555666777')));
+
+        $this->assertSame(200, $response['code']);
+        $this->assertStringContainsString('Payment processed locally', $response['body']);
+        $this->assertSame(
+            ['begin', 'updateStatus', 'markProcessed', 'dispatch', 'commit'],
+            $order,
+            'INSERT outbox (dispatch) ANTES del commit; ACK despues; sin trabajo pesado tras el commit.'
+        );
+    }
 }

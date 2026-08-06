@@ -88,16 +88,7 @@ class ReconcilePaymentsAction {
                 continue;
             }
 
-            $event = new BookingPaidEvent(
-                $cartId,
-                $paymentId,
-                (float)($hold['price_snapshot'] ?? 0.0),
-                (string)($hold['checkin'] ?? ''),
-                (string)($hold['checkout'] ?? ''),
-                (int)($hold['id_room_type'] ?? 1),
-                $hold['guest_data'] ?? [],
-                $hold['room_data'] ?? []
-            );
+            $event = BookingPaidEvent::fromHold($cartId, $paymentId, $hold);
 
             try {
                 $this->eventDispatcher->dispatch($event);

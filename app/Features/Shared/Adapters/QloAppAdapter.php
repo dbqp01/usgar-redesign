@@ -7,6 +7,8 @@ use App\Features\Shared\Ports\PmsPortInterface;
 use App\Core\Config;
 use App\Core\Logger;
 use App\Core\Database;
+use App\Core\GuestName;
+use App\Core\CartIdPrefix;
 use PDO;
 use PDOException;
 use SimpleXMLElement;
@@ -196,14 +198,14 @@ class QloAppAdapter implements PmsPortInterface {
     public function createCart(int $idHotel, int $idProduct, string $checkIn, string $checkOut, int $guests = 1, float $totalPrice = 0, string $guestName = '', string $guestEmail = '', string $guestPhone = ''): string {
         if (empty($this->apiKey) || empty($this->apiUrl)) {
             Logger::error('QloAppAdapter: QloApps API key or API URL is not configured. Falling back to local cart.');
-            return 'USGAR-' . bin2hex(random_bytes(6));
+            return CartIdPrefix::QLOAPPS_LOCAL . bin2hex(random_bytes(6));
         }
 
-        $nameParts = explode(' ', $guestName, 2);
-        $firstName = htmlspecialchars($nameParts[0] ?: 'Guest', ENT_XML1);
-        $lastName = htmlspecialchars($nameParts[1] ?? 'Guest', ENT_XML1);
+        $nameParts = GuestName::split($guestName);
+        $firstName = htmlspecialchars($nameParts[0] ?: Config::get('DEFAULT_GUEST_NAME', 'Guest'), ENT_XML1);
+        $lastName = htmlspecialchars($nameParts[1] ?? Config::get('DEFAULT_GUEST_NAME', 'Guest'), ENT_XML1);
         $safeEmail = htmlspecialchars($guestEmail ?: Config::get('DEFAULT_REPLY_EMAIL'), ENT_XML1);
-        $phone = htmlspecialchars($guestPhone ?: '000000000', ENT_XML1);
+        $phone = htmlspecialchars($guestPhone ?: Config::get('OTA_DEFAULT_PHONE', '000000000'), ENT_XML1);
         $currency = Config::get('MERCADO_PAGO_CURRENCY', 'USD');
         
         // payment_status 2 is generally Pending in QloApps/PrestaShop
@@ -255,7 +257,7 @@ XML;
         }
 
         Logger::error("QloAppAdapter: Error al crear Cart/Booking en QloApps, fallback a USGAR- local.");
-        return 'USGAR-' . bin2hex(random_bytes(6));
+        return CartIdPrefix::QLOAPPS_LOCAL . bin2hex(random_bytes(6));
     }
 
     public function confirmOrder(string $cartId, float $totalPrice, string $guestName, string $guestEmail): ?string {
@@ -264,7 +266,7 @@ XML;
         }
 
         // Si el cartId es el fallback local (USGAR-), tenemos que usar el flujo antiguo (crearlo de cero)
-        if (str_starts_with($cartId, 'USGAR-')) {
+        if (str_starts_with($cartId, CartIdPrefix::QLOAPPS_LOCAL)) {
             $stmt = $this->pdo->prepare("SELECT * FROM provisional_bookings WHERE cart_id = :cartId");
             $stmt->execute([':cartId' => $cartId]);
             $hold = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -281,11 +283,11 @@ XML;
             
             $guestData = json_decode((string)$hold['guest_data'], true) ?? [];
             $guests = $guestData['guests'] ?? 1;
-            $phone = $guestData['phone'] ?? '000000000';
+            $phone = $guestData['phone'] ?? Config::get('OTA_DEFAULT_PHONE', '000000000');
             
-            $nameParts = explode(' ', $guestName, 2);
+            $nameParts = GuestName::split($guestName);
             $firstName = htmlspecialchars($nameParts[0] ?? $guestName, ENT_XML1);
-            $lastName = htmlspecialchars($nameParts[1] ?? 'Guest', ENT_XML1);
+            $lastName = htmlspecialchars($nameParts[1] ?? Config::get('DEFAULT_GUEST_NAME', 'Guest'), ENT_XML1);
             $safeEmail = htmlspecialchars($guestEmail, ENT_XML1);
             $currency = Config::get('MERCADO_PAGO_CURRENCY', 'USD');
 
@@ -378,6 +380,46 @@ XML;
             Logger::error("QloAppAdapter: Error al extender sesión de carrito {$cartId}: " . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * Dedup del consumidor (todo 21): consulta la orden de QloApps por su id
+     * (la external_reference USGAR-{cartId} transporta el id de booking de
+     * QloApps) y verifica su payment_status.
+     *
+     * FAIL-CLOSED: una falla de transporte/API (PMS caido) LANZA — nunca
+     * devuelve false por error (el listener reintenta via outbox, nunca
+     * salta la confirmacion por un falso "no confirmada").
+     *
+     * Cart local fallback (USGAR-*): no existe una orden QloApps pre-existente
+     * por la que deduplicar (se crea al confirmar) -> false.
+     */
+    public function isOrderConfirmed(string $externalReference): bool {
+        if (empty($this->apiKey) || empty($this->apiUrl)) {
+            throw new Exception('QloApps API key or API URL is not configured.');
+        }
+
+        $cartId = $externalReference;
+        if (str_starts_with($cartId, CartIdPrefix::QLOAPPS_LOCAL)) {
+            $cartId = substr($cartId, strlen(CartIdPrefix::QLOAPPS_LOCAL));
+        }
+        if ($cartId === '' || !ctype_digit($cartId)) {
+            // Cart local (fallback QLOAPPS_LOCAL): sin orden pre-existente.
+            return false;
+        }
+
+        $xml = $this->executeRequest('bookings/' . $cartId, 'GET');
+        if ($xml === null) {
+            // executeRequest devuelve null ante error de transporte, HTTP>=400
+            // o XML invalido — indistinguible de "no encontrada" pero
+            // FAIL-CLOSED: tratar como PMS caido y lanzar.
+            throw new Exception('QloApps API no disponible durante isOrderConfirmed (' . $cartId . ').');
+        }
+
+        $paymentStatus = isset($xml->booking->payment_status)
+            ? trim((string)$xml->booking->payment_status)
+            : '';
+        return $paymentStatus === '1';
     }
 
     private function executeRequest(string $endpoint, string $method = 'GET', ?string $xmlData = null): ?SimpleXMLElement {

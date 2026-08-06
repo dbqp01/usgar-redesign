@@ -37,7 +37,21 @@ class EventDispatcher {
         if ($pdo !== null) {
             $payload = base64_encode(serialize($event));
             try {
-                $stmt = $pdo->prepare("INSERT INTO event_outbox (event_name, payload, created_at) VALUES (:event_name, :payload, NOW())");
+                // TODO 18 (Wave 4): el INSERT del evento en event_outbox corre
+                // DENTRO de la transaccion del llamador (webhook) cuando hay una
+                // activa — el patron transactional-outbox (microservices.io):
+                // el mensaje se persiste en la MISMA txn que el cambio de
+                // negocio; si el commit se confirma, el evento YA esta en el
+                // outbox (no se pierde en la ventana commit->ACK). Sin txn
+                // activa -> autocommit propio (back-compat para
+                // ReconcilePaymentsAction). El evento FRESCO fija
+                // next_attempt_at = NOW() (todo 19): sin esto, `next_attempt_at
+                // NULL <= NOW()` es NULL/false en SQL y el cron nunca lo
+                // procesaria.
+                $stmt = $pdo->prepare("
+                    INSERT INTO event_outbox (event_name, payload, status, attempts, next_attempt_at, created_at)
+                    VALUES (:event_name, :payload, 'PENDING', 0, NOW(), NOW())
+                ");
                 $stmt->execute([
                     ':event_name' => $eventName,
                     ':payload'    => $payload,
@@ -45,7 +59,20 @@ class EventDispatcher {
                 return;
             } catch (Throwable $e) {
                 Logger::error("EventDispatcher Error inserting into outbox: " . $e->getMessage());
-                // Fallback to dispatchNow if outbox fails (e.g. table not created yet)
+                // Fallback: tabla legacy sin las columnas attempts/next_attempt_at
+                // (antes del auto-heal del cron process_outbox). Reintenta con el
+                // INSERT basico; el backfill del cron (todo 19) fija
+                // next_attempt_at luego.
+                try {
+                    $stmt = $pdo->prepare("INSERT INTO event_outbox (event_name, payload, created_at) VALUES (:event_name, :payload, NOW())");
+                    $stmt->execute([
+                        ':event_name' => $eventName,
+                        ':payload'    => $payload,
+                    ]);
+                    return;
+                } catch (Throwable $e2) {
+                    Logger::error("EventDispatcher Error inserting into outbox (legacy): " . $e2->getMessage());
+                }
             }
         }
 
