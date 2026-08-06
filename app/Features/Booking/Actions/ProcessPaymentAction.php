@@ -120,7 +120,12 @@ class ProcessPaymentAction {
             $guestData = is_array($hold['guest_data']) ? $hold['guest_data'] : [];
             $roomData  = is_array($hold['room_data']) ? $hold['room_data'] : [];
 
-            $gatewayPrice = PriceCalculator::toGatewayPrice((float)$hold['price_snapshot']);
+            // Todo 32 (W6): usar el PEN congelado al cotizar (sin re-leer la tasa
+            // actual); fallback legacy a la derivacion USD x tasa actual.
+            $frozenPen = $hold['price_snapshot_pen'] ?? null;
+            $gatewayPrice = $frozenPen !== null
+                ? (float)$frozenPen
+                : PriceCalculator::toGatewayPrice((float)$hold['price_snapshot']);
             $nights  = max(1, (int)($roomData['nights'] ?? 1));
             $roomName = trim((string)($roomData['room_name'] ?? ''));
 

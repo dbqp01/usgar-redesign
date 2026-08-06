@@ -145,8 +145,26 @@ final class ProcessPaymentActionTest extends TestCase {
         $this->assertSame(['type' => 'DNI', 'number' => '12345678'], $data['payer']['identification']);
     }
 
-    public function testGuestWithoutNameFallsBackToHuespedUsgar(): void {
-        // QA- del todo 3: guest sin name -> "Huesped USGAR" sin romper el payload.
+    public function testPaymentPayloadUsesFrozenPenWhenRateChangesAfterQuote(): void {
+        // Todo 32 (W6): el cargo usa price_snapshot_pen congelado al cotizar,
+        // NO la tasa actual (un cambio de .env entre creacion y pago no debe
+        // desviar el cargo: ni falso fraud_review ni sobrecobro).
+        Config::set('EXCHANGE_RATE_USD_PEN', '3.90'); // cambio post-cotizacion (3.75 al cotizar)
+        $hold = $this->holdFixture();
+        $hold['price_snapshot']     = 75.0;   // USD
+        $hold['price_snapshot_pen'] = 281.25; // congelado @3.75
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($hold);
+        $this->stubApprovedGateway();
+
+        $this->captureResponse(fn () => ($this->action)($this->defaultRequest()));
+
+        $data = $this->capturedPaymentData;
+        $this->assertNotNull($data);
+        $this->assertSame(281.25, $data['transaction_amount'], 'El cargo usa el PEN congelado (281.25), no 75x3.90=292.50.');
+        $this->assertSame(140.63, $data['additional_info']['items'][0]['unit_price']); // 281.25 / 2 noches
+    }
+
+    public function testGuestWithoutNameFallsBackToHuespedUsgar(): void {        // QA- del todo 3: guest sin name -> "Huesped USGAR" sin romper el payload.
         $this->bookingRepo->method('getByCartIdForUpdate')->willReturn(
             $this->holdFixture(guestName: '', phone: '')
         );

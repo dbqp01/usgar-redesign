@@ -85,7 +85,7 @@ class BookingPaidEvent implements EventInterface {
             $hold['guest_data'] ?? [],
             $hold['room_data'] ?? [],
             $amountPen,
-            'PEN',
+            (string)Config::get('MERCADO_PAGO_CURRENCY', 'PEN'), // todo 34: moneda de Config (unica fuente)
             $exchangeRate !== null ? (float)$exchangeRate : null
         );
     }

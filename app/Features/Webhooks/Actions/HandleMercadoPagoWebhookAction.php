@@ -205,21 +205,27 @@ class HandleMercadoPagoWebhookAction {
                 return;
             }
 
-            // 5.5 VALIDACION DE SEGURIDAD ESTRICTA (Amount Mismatch)
-            // Usar bccomp para evitar falsos positivos por imprecision de punto flotante.
-            // Comparacion actual (W3): price_snapshot (USD) x EXCHANGE_RATE_USD_PEN ->
-            // PEN esperado vs transaction_amount (PEN). W6 (todo 32) introduce
-            // price_snapshot_pen persistido; esta comparacion se migra ahi.
-            $expectedPen = PriceCalculator::toGatewayPrice((float)($hold['price_snapshot'] ?? 0.0));
-            $transactionStr = number_format($transactionAmount, 2, '.', '');
-            $expectedStr = number_format($expectedPen, 2, '.', '');
-            if (bccomp($transactionStr, $expectedStr, 2) < 0) {
+            // 5.5 VALIDACION DE SEGURIDAD ESTRICTA (Amount Mismatch) — todo 32.
+            // Comparacion en CENTAVOS ENTEROS: NUNCA igualdad float ni
+            // number_format (imprecision de punto flotante = falsos positivos).
+            // expected_pen_cents se DERIVA del PEN CONGELADO al cotizar
+            // (price_snapshot_pen, columna auto-heal + write del todo 25):
+            // el hold fija la tasa en creacion, el cambio posterior de
+            // EXCHANGE_RATE_USD_PEN NO debe producir falso fraude. Back-compat
+            // documentado: hold legacy sin la columna (NULL) deriva con la
+            // tasa ACTUAL via PriceCalculator::toGatewayPrice.
+            $priceSnapshotPen = $hold['price_snapshot_pen'] ?? null;
+            $expectedPenCents = $priceSnapshotPen !== null
+                ? (int)round((float)$priceSnapshotPen * 100)
+                : (int)round(PriceCalculator::toGatewayPrice((float)($hold['price_snapshot'] ?? 0.0)) * 100);
+            $chargedPenCents = (int)round($transactionAmount * 100);
+            if ($chargedPenCents < $expectedPenCents) {
                 // TODO 16: monto insuficiente -> FraudReview + processed('fraud_review')
                 // EN LA MISMA transaccion + 200 (antes 400 sin marcar -> MP
                 // reintentaba cada 15 min por siempre). La reserva NO queda
                 // paid; fraud_review -> paid es legal cuando el cron del todo
                 // 24 re-despacha con el monto correcto (guard del todo 9).
-                Logger::error("HandleMercadoPagoWebhookAction ALERTA FRAUDE: Monto cobrado ({$transactionStr}) es menor al esperado ({$expectedStr}) para Cart ID {$cartId}");
+                Logger::error("HandleMercadoPagoWebhookAction ALERTA FRAUDE: Monto cobrado ({$chargedPenCents} centavos) es menor al esperado ({$expectedPenCents} centavos) para Cart ID {$cartId}");
                 if (!$this->bookingRepo->isPaymentProcessed($paymentIdStr, 'fraud_review')) {
                     $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::FraudReview->value);
                     $this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, 'fraud_review');
