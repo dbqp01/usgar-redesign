@@ -66,23 +66,6 @@ class User {
     }
 
     /**
-     * Busca un usuario por proveedor OAuth + ID del proveedor.
-     */
-    public function findByProvider(string $provider, string $providerId): ?array {
-        try {
-            $stmt = $this->pdo->prepare(
-                'SELECT * FROM users WHERE provider = :provider AND provider_id = :provider_id LIMIT 1'
-            );
-            $stmt->execute([':provider' => $provider, ':provider_id' => $providerId]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $result ?: null;
-        } catch (PDOException $e) {
-            Logger::error('User::findByProvider failed: ' . $e->getMessage());
-            return null;
-        }
-    }
-
-    /**
      * Busca un usuario por su ID.
      */
     public function findById(int $id): ?array {
@@ -249,15 +232,23 @@ class User {
             $stmt->execute([':user_id' => $userId]);
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            return array_map(function (array $row): array {
-                $row['room_data'] = json_decode($row['room_data'] ?? '{}', true);
-                $row['guest_data'] = json_decode($row['guest_data'] ?? '{}', true);
-                return $row;
-            }, $results);
+            return array_map(fn(array $row): array => $this->hydrateBookingRow($row), $results);
         } catch (PDOException $e) {
             Logger::error('User::getBookings failed: ' . $e->getMessage());
             return [];
         }
+    }
+
+    /**
+     * Decodifica los campos JSON de una fila de reserva.
+     *
+     * @param array<string, mixed> $row
+     * @return array<string, mixed>
+     */
+    private function hydrateBookingRow(array $row): array {
+        $row['room_data'] = json_decode($row['room_data'] ?? '{}', true);
+        $row['guest_data'] = json_decode($row['guest_data'] ?? '{}', true);
+        return $row;
     }
     /**
      * Actualiza los datos del perfil de un usuario.

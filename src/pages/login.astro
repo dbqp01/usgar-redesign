@@ -7,9 +7,11 @@ export const prerender = true;
 const lang = (Astro.currentLocale || "en") as Locale;
 const t = useTranslations(lang);
 
-const url = new URL(Astro.url);
-const redirect = url.searchParams.get('redirect') || '/my-bookings';
-const errorMessage = url.searchParams.get('error') || '';
+// La página es prerender (output: static): Astro.url.searchParams se evalúa en
+// BUILD, no por request — por eso ?error= y ?redirect= se leen en el CLIENTE
+// (URLSearchParams(window.location.search)) dentro del script, y aquí solo
+// queda una constante por defecto para el SSR inicial.
+const DEFAULT_REDIRECT = '/my-bookings';
 ---
 
 <Layout title={`${t('auth.signIn')} - USGAR Hotels`} lang={lang}>
@@ -29,17 +31,7 @@ const errorMessage = url.searchParams.get('error') || '';
         </p>
       </div>
 
-      <!-- Error Alert -->
-      {errorMessage && (
-        <div class="p-4 rounded-xl border border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-medium flex items-center gap-3">
-          <svg class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          <span>{errorMessage}</span>
-        </div>
-      )}
-
-      <!-- Dynamic Alert Container (JS) -->
+      <!-- Error Alert (dinámico vía JS — ver initLogin: el banner SSR no funciona en prerender) -->
       <div id="auth-alert" class="hidden p-4 rounded-xl border text-sm font-medium flex items-center gap-3">
         <span id="auth-alert-text"></span>
       </div>
@@ -49,7 +41,7 @@ const errorMessage = url.searchParams.get('error') || '';
         <!-- Google -->
         <div id="provider-Google" class="hidden">
           <a
-            href={`/api/auth/login?provider=Google&redirect=${encodeURIComponent(redirect)}`}
+            href={`/api/auth/login?provider=Google&redirect=${encodeURIComponent(DEFAULT_REDIRECT)}`}
           class="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl border border-black/10 dark:border-white/10 bg-white dark:bg-surface-dark hover:bg-stone-50 dark:hover:bg-stone-800 text-text-primary-light dark:text-text-primary-dark font-medium text-sm transition-[background-color,color,box-shadow] duration-300 shadow-sm hover:shadow"
         >
           <svg class="w-5 h-5" viewBox="0 0 24 24">
@@ -65,7 +57,7 @@ const errorMessage = url.searchParams.get('error') || '';
         <!-- Microsoft -->
         <div id="provider-MicrosoftGraph" class="hidden">
           <a
-            href={`/api/auth/login?provider=MicrosoftGraph&redirect=${encodeURIComponent(redirect)}`}
+            href={`/api/auth/login?provider=MicrosoftGraph&redirect=${encodeURIComponent(DEFAULT_REDIRECT)}`}
           class="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl border border-black/10 dark:border-white/10 bg-white dark:bg-surface-dark hover:bg-stone-50 dark:hover:bg-stone-800 text-text-primary-light dark:text-text-primary-dark font-medium text-sm transition-[background-color,color,box-shadow] duration-300 shadow-sm hover:shadow"
         >
           <svg class="w-5 h-5" viewBox="0 0 23 23">
@@ -81,7 +73,7 @@ const errorMessage = url.searchParams.get('error') || '';
         <!-- Facebook -->
         <div id="provider-Facebook" class="hidden">
           <a
-            href={`/api/auth/login?provider=Facebook&redirect=${encodeURIComponent(redirect)}`}
+            href={`/api/auth/login?provider=Facebook&redirect=${encodeURIComponent(DEFAULT_REDIRECT)}`}
           class="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl border border-black/10 dark:border-white/10 bg-[#1877F2] hover:bg-[#166fe5] text-white font-medium text-sm transition-[background-color,color,box-shadow] duration-300 shadow-sm hover:shadow"
         >
           <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
@@ -122,7 +114,7 @@ const errorMessage = url.searchParams.get('error') || '';
 
         <!-- Form: Login -->
         <form id="login-form" action="/api/auth/login-email" method="POST" class="space-y-4">
-          <input type="hidden" name="redirect" value={redirect || '/my-bookings'} />
+          <input type="hidden" name="redirect" value={DEFAULT_REDIRECT} />
           <div>
             <label for="login-email" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
               {t('auth.emailAddress')} *
@@ -164,7 +156,7 @@ const errorMessage = url.searchParams.get('error') || '';
 
         <!-- Form: Register (Hidden by default) -->
         <form id="register-form" action="/api/auth/register" method="POST" class="space-y-4 hidden">
-          <input type="hidden" name="redirect" value={redirect || '/my-bookings'} />
+          <input type="hidden" name="redirect" value={DEFAULT_REDIRECT} />
           <div>
             <label for="reg-name" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
               {t('auth.fullName')} *
@@ -223,7 +215,7 @@ const errorMessage = url.searchParams.get('error') || '';
     </div>
   </div>
 
-  <script is:inline data-astro-rerun define:vars={{ redirect, tErrorLogin: t('auth.loginError'), tEmailExists: t('auth.emailExists'), tSignIn: t('auth.signIn'), tSignUp: t('auth.signUp') }}>
+  <script is:inline data-astro-rerun define:vars={{ DEFAULT_REDIRECT, tErrorLogin: t('auth.loginError'), tEmailExists: t('auth.emailExists'), tSignIn: t('auth.signIn'), tSignUp: t('auth.signUp') }}>
     (function() {
       // The login form must be re-bound on EVERY entry under client-side
       // navigation: the form elements are re-created on each body swap, so the
@@ -265,6 +257,29 @@ const errorMessage = url.searchParams.get('error') || '';
       function hideAlert() {
         if (alertBox) alertBox.classList.add('hidden');
       }
+
+      // ── Redirect y error se leen del CLIENTE (no de Astro.url: la página es
+      // prerender, ?error= y ?redirect= no existen en build de producción) ──
+      // Validación idéntica a la del backend (AuthLoginAction/AuthCallbackAction):
+      // solo rutas relativas del mismo origen, nunca '//' ni absolutas.
+      const urlParams = new URLSearchParams(window.location.search);
+      const rawRedirect = urlParams.get('redirect');
+      const redirect = rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') && rawRedirect !== '/'
+        ? rawRedirect
+        : DEFAULT_REDIRECT;
+
+      const oauthError = urlParams.get('error');
+      if (oauthError) {
+        showAlert(decodeURIComponent(oauthError));
+      }
+
+      // Re-escribir los links OAuth y los inputs ocultos con el redirect real
+      document.querySelectorAll('#oauth-container a[href*="/api/auth/login"]').forEach(a => {
+        const url = new URL(a.href);
+        url.searchParams.set('redirect', redirect);
+        a.href = url.toString();
+      });
+      document.querySelectorAll('input[name="redirect"]').forEach(i => { i.value = redirect; });
 
       // Fetch active OAuth providers
       fetch('/api/auth/providers')
@@ -337,7 +352,7 @@ const errorMessage = url.searchParams.get('error') || '';
           const data = await res.json();
           if (res.ok && data.success) {
             sessionStorage.removeItem('usgar_auth_user');
-            window.location.href = redirect || '/profile';
+            window.location.href = redirect;
           } else {
             showAlert(data.error?.message || data.message || tErrorLogin, false);
           }
@@ -369,12 +384,12 @@ const errorMessage = url.searchParams.get('error') || '';
           const data = await res.json();
           if (res.ok && data.success) {
             sessionStorage.removeItem('usgar_auth_user');
-            window.location.href = redirect || '/profile';
+            window.location.href = redirect;
           } else {
             const errMsg = data.error?.message || data.message || '';
             // Si la cuenta ya existe, alternar inteligentemente a Iniciar Sesion
             if (res.status === 409 || errMsg.includes('already exists') || errMsg.includes('ya existe')) {
-              showAlert('This account already exists. We have switched you to the Sign In tab.', false);
+              showAlert(tEmailExists, false);
               setTimeout(() => { switchToSignIn(email); }, 1500);
             } else {
               showAlert(errMsg || tEmailExists, false);

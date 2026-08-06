@@ -202,7 +202,8 @@ const t = useTranslations(lang);
 
 <script>
   import { gsap } from 'gsap';
-  import { translateBeds, daysBetween } from '../utils/helpers';
+  import { translateBeds } from '../utils/helpers';
+  import { nightsBetween } from '../features/booking/calendar';
   import { wizardStore } from '../features/booking/wizardStore';
   import type { Locale } from '../i18n/utils';
 
@@ -275,7 +276,7 @@ const t = useTranslations(lang);
           const first = ROOMS.find((r: any) => r.slug === s.allocation!.rooms[0].room.slug);
           summaryRoomBedsText.textContent = first ? translateBeds(first.beds, lang) : '';
         }
-        const nights = daysBetween(s.checkIn, s.checkOut);
+        const nights = nightsBetween(s.checkIn, s.checkOut);
         if (summaryCheckin) summaryCheckin.textContent = s.checkIn;
         if (summaryCheckout) summaryCheckout.textContent = s.checkOut;
         if (summaryNights) summaryNights.textContent = `${nights} ${nights === 1 ? L.night : L.nights}`;

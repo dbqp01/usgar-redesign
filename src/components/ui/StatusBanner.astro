@@ -4,30 +4,35 @@
  * Micro-linea de estado tipografica minimalista (Quiet Luxury Editorial).
  * Sustituye toasts estridentes por un indicador editorial de alto nivel.
  */
+import { useTranslations, type Locale } from '../../i18n/utils';
+
 interface Props {
   id?: string;
 }
 
 const { id = "usgar-status-banner" } = Astro.props;
+
+const lang = (Astro.currentLocale || 'en') as Locale;
+const t = useTranslations(lang);
 ---
 
 <div
   id={id}
-  class="fixed bottom-6 left-6 z-50 hidden max-w-md items-center gap-3 rounded-lg bg-[#1C1917]/90 px-4 py-2.5 text-xs tracking-widest uppercase border border-[#A980BD]/25 backdrop-blur-2xl shadow-2xl transition-[opacity,transform] duration-300 dark:bg-[#2B1D33]/95 dark:border-[#EACA1C]/30 text-stone-200 animate-[status-slide_0.4s_cubic-bezier(0.16,1,0.3,1)]"
+  class="fixed bottom-6 left-6 z-50 hidden max-w-md items-center gap-3 rounded-lg bg-[#1C1917]/90 px-4 py-2.5 text-xs tracking-widest uppercase border border-[#A980BD]/25 backdrop-blur-2xl shadow-2xl transition-[opacity,transform] duration-300 dark:bg-[#2B1D33]/95 dark:border-[#EACA1C]/30 text-stone-200 animate-status-slide"
   role="status"
   aria-live="polite"
 >
   <!-- Micro LED Indicator -->
   <span
     id={`${id}-led`}
-    class="h-2 w-2 rounded-full bg-[#EACA1C] transition-colors duration-300 animate-[led-glow_2s_infinite]"
+    class="h-2 w-2 rounded-full bg-[#EACA1C] transition-colors duration-300 animate-led-glow"
   ></span>
 
   <!-- Status Text -->
   <div class="flex items-center gap-2 font-mono text-[11px] font-medium tracking-[0.18em]">
     <span id={`${id}-code`} class="text-[#EACA1C] font-bold">STATUS // 01</span>
     <span class="text-stone-500">•</span>
-    <span id={`${id}-message`} class="text-stone-300 font-sans tracking-wider normal-case">Sistema listo.</span>
+    <span id={`${id}-message`} class="text-stone-300 font-sans tracking-wider normal-case">{t('status.ready')}</span>
   </div>
 
   <!-- Close Action (Minimalist Cross) -->
@@ -35,7 +40,7 @@ const { id = "usgar-status-banner" } = Astro.props;
     type="button"
     onclick={`document.getElementById('${id}').classList.add('hidden')`}
     class="ml-2 text-stone-400 hover:text-white transition-colors duration-200 p-0.5"
-    aria-label="Cerrar notificacion"
+    aria-label={t('status.close')}
   >
     <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
       <path d="M18 6L6 18M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
@@ -65,16 +70,16 @@ const { id = "usgar-status-banner" } = Astro.props;
 
       // Brand color mappings from BRAND.md
       if (type === 'error') {
-        ledEl.className = 'h-2 w-2 rounded-full bg-rose-500 transition-colors duration-300 animate-[led-glow_2s_infinite]';
+        ledEl.className = 'h-2 w-2 rounded-full bg-rose-500 transition-colors duration-300 animate-led-glow';
         codeEl.className = 'text-rose-400 font-bold';
       } else if (type === 'success') {
-        ledEl.className = 'h-2 w-2 rounded-full bg-[#0CB2A3] transition-colors duration-300 animate-[led-glow_2s_infinite]';
+        ledEl.className = 'h-2 w-2 rounded-full bg-[#0CB2A3] transition-colors duration-300 animate-led-glow';
         codeEl.className = 'text-[#0CB2A3] font-bold';
       } else if (type === 'warning') {
-        ledEl.className = 'h-2 w-2 rounded-full bg-[#EACA1C] transition-colors duration-300 animate-[led-glow_2s_infinite]';
+        ledEl.className = 'h-2 w-2 rounded-full bg-[#EACA1C] transition-colors duration-300 animate-led-glow';
         codeEl.className = 'text-[#EACA1C] font-bold';
       } else {
-        ledEl.className = 'h-2 w-2 rounded-full bg-[#9360AC] transition-colors duration-300 animate-[led-glow_2s_infinite]';
+        ledEl.className = 'h-2 w-2 rounded-full bg-[#9360AC] transition-colors duration-300 animate-led-glow';
         codeEl.className = 'text-[#A980BD] font-bold';
       }
 

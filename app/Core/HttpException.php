@@ -32,23 +32,6 @@ class HttpException extends Exception {
         return $this->details;
     }
 
-    /**
-     * Convierte la excepcion al formato de payload JSON estandar de la API.
-     */
-    public function toPayload(): array {
-        $payload = [
-            'success' => false,
-            'error'   => [
-                'code'    => $this->errorCode,
-                'message' => $this->getMessage(),
-            ],
-        ];
-        if (!empty($this->details)) {
-            $payload['error']['details'] = $this->details;
-        }
-        return $payload;
-    }
-
     // --- Factory methods para errores comunes ---
 
     public static function badRequest(string $message = 'Bad Request', array $details = []): self {

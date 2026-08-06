@@ -51,7 +51,7 @@ export function cleanupAll(): void {
   ScrollTrigger.clearScrollMemory();
 }
 
-export function isPage(path: string, pattern: string): boolean {
+function isPage(path: string, pattern: string): boolean {
   return path === pattern
     || path === `${pattern}/`
     || path.startsWith(`/${pattern}/`)

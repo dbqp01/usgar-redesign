@@ -17,19 +17,8 @@ use Throwable;
  */
 class AuthLoginAction {
     public function __invoke(Request $request): void {
-        $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? 80) == 443;
-
-        if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
-            session_set_cookie_params([
-                'lifetime' => 0,
-                'path'     => '/',
-                'domain'   => '',
-                'secure'   => $isSecure,
-                'httponly'  => true,
-                'samesite' => 'Lax'
-            ]);
-            @session_start();
-        }
+        $isSecure = Request::isHttps();
+        Request::startSession($isSecure);
 
         $provider = $request->getQuery('provider', 'Google');
         $redirect = $request->getQuery('redirect', '/profile');

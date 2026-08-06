@@ -27,7 +27,6 @@ export interface SiteSettings {
   customCursor: boolean;
   siteDescription: { en: string; es: string; fr: string; pt: string };
   socialLinks: SocialLink[];
-  roomInventory: Record<string, number>;
 }
 
 export const DEFAULT_ROOM_INVENTORY: Record<string, number> = {
@@ -76,7 +75,6 @@ export const siteSettings: SiteSettings = {
     pt: settingsData.siteDescription_pt
   },
   socialLinks: settingsData.socialLinks,
-  roomInventory: settingsData.roomInventory ?? DEFAULT_ROOM_INVENTORY,
 };
 
 export function getRoomInventory(): Record<string, number> {

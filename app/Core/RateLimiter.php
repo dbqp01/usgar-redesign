@@ -24,14 +24,18 @@ class RateLimiter {
 
     /**
      * Valida si la IP del cliente no ha excedido la tasa maxima en la ventana de tiempo.
+     * Los limites por defecto se leen de Config (RATE_LIMIT_MAX_REQUESTS / RATE_LIMIT_WINDOW_SECONDS).
      *
      * @param string $ip               Direccion IP del cliente
      * @param int    $maxRequests       Cantidad maxima de peticiones
      * @param int    $timeWindowSeconds Ventana de tiempo en segundos
      * @return bool True si la peticion esta permitida, False si esta limitada
      */
-    public static function check(string $ip, int $maxRequests = 5, int $timeWindowSeconds = 600): bool {
+    public static function check(string $ip, ?int $maxRequests = null, ?int $timeWindowSeconds = null): bool {
         self::init();
+
+        $maxRequests = $maxRequests ?? (int)(Config::get('RATE_LIMIT_MAX_REQUESTS', '5') ?? '5');
+        $timeWindowSeconds = $timeWindowSeconds ?? (int)(Config::get('RATE_LIMIT_WINDOW_SECONDS', '600') ?? '600');
 
         // SHA-256 para resistencia a colisiones (md5 es insuficiente)
         $ipHash = hash('sha256', $ip);
@@ -84,35 +88,5 @@ class RateLimiter {
         fclose($fp);
 
         return true;
-    }
-
-    /**
-     * Limpia los archivos de rate limit expirados para evitar saturar el disco.
-     */
-    public static function cleanup(int $windowSeconds = 600): int {
-        self::init();
-        if (!is_dir(self::$limitsDir)) {
-            return 0;
-        }
-
-        $files = glob(self::$limitsDir . DIRECTORY_SEPARATOR . 'limit_*.json');
-        if (!is_array($files)) {
-            return 0;
-        }
-
-        $now = time();
-        $cutoff = $now - $windowSeconds;
-        $deletedCount = 0;
-
-        foreach ($files as $file) {
-            $mtime = filemtime($file);
-            if ($mtime !== false && $mtime < $cutoff) {
-                if (@unlink($file)) {
-                    $deletedCount++;
-                }
-            }
-        }
-
-        return $deletedCount;
     }
 }

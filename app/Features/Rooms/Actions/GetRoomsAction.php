@@ -27,7 +27,7 @@ class GetRoomsAction {
     public function __invoke(Request $request): void {
         $checkIn  = $request->getQuery('checkIn');
         $checkOut = $request->getQuery('checkOut');
-        $hotelId  = (int)($request->getQuery('id_hotel') ?? 1);
+        $hotelId  = (int)($request->getQuery('id_hotel') ?? Config::get('DEFAULT_HOTEL_ID', '1'));
 
         if (!$checkIn || !$checkOut) {
             $checkIn = date('Y-m-d');

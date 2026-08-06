@@ -56,16 +56,16 @@ class ChannexRoomMapper {
         $roomTitle = strtolower($bookingData['room_name'] ?? ($bookingData['title'] ?? ''));
         if (!empty($roomTitle)) {
             if (str_contains($roomTitle, 'familiar')) {
-                return 4;
+                return (int) RoomTypeRegistry::getIdBySlug('familiar-superior');
             }
             if (str_contains($roomTitle, 'triple')) {
-                return 3;
+                return (int) RoomTypeRegistry::getIdBySlug('triple-standar');
             }
             if (str_contains($roomTitle, 'doble') || str_contains($roomTitle, 'double')) {
-                return 2;
+                return (int) RoomTypeRegistry::getIdBySlug('doble-superior');
             }
             if (str_contains($roomTitle, 'matrimonial') || str_contains($roomTitle, 'king') || str_contains($roomTitle, 'queen') || str_contains($roomTitle, 'single')) {
-                return 1;
+                return (int) RoomTypeRegistry::getIdBySlug('matrimonial');
             }
         }
 
@@ -82,10 +82,10 @@ class ChannexRoomMapper {
      */
     private function getDefaultMapping(): array {
         return [
-            Config::get('CHANNEX_ROOM_MATRIMONIAL')       => 1,
-            Config::get('CHANNEX_ROOM_DOBLE_SUPERIOR')    => 2,
-            Config::get('CHANNEX_ROOM_TRIPLE_STANDAR')    => 3,
-            Config::get('CHANNEX_ROOM_FAMILIAR_SUPERIOR') => 4,
+            Config::get('CHANNEX_ROOM_MATRIMONIAL')       => (int) RoomTypeRegistry::getIdBySlug('matrimonial'),
+            Config::get('CHANNEX_ROOM_DOBLE_SUPERIOR')    => (int) RoomTypeRegistry::getIdBySlug('doble-superior'),
+            Config::get('CHANNEX_ROOM_TRIPLE_STANDAR')    => (int) RoomTypeRegistry::getIdBySlug('triple-standar'),
+            Config::get('CHANNEX_ROOM_FAMILIAR_SUPERIOR') => (int) RoomTypeRegistry::getIdBySlug('familiar-superior'),
         ];
     }
 }

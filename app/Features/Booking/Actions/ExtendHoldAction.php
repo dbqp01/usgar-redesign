@@ -7,6 +7,8 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\HttpException;
 use App\Core\BookingStatus;
+use App\Core\BookingHoldToken;
+use App\Core\Config;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
 use App\Features\Shared\Ports\PmsPortInterface;
 
@@ -41,12 +43,7 @@ class ExtendHoldAction {
         }
 
         $guestEmail = $hold['guest_data']['email'] ?? '';
-        $secretKey = \App\Core\Config::get('BOOKING_TOKEN_SECRET', \App\Core\Config::get('CRON_SECRET'));
-        if (empty($secretKey)) {
-            throw HttpException::internal('Falta configuración de seguridad de BOOKING_TOKEN_SECRET en el servidor.');
-        }
-
-        $expectedToken = hash_hmac('sha256', $cartId . ':' . $guestEmail, $secretKey);
+        $expectedToken = BookingHoldToken::derive($cartId, $guestEmail);
         if (empty($providedToken) || !hash_equals($expectedToken, $providedToken)) {
             throw HttpException::unauthorized('Token de autorización inválido o ausente para extender el bloqueo.');
         }
@@ -56,7 +53,7 @@ class ExtendHoldAction {
             throw HttpException::badRequest('El bloqueo ya no está en estado pendiente.');
         }
 
-        $newExpiration = date('Y-m-d H:i:s', strtotime('+15 minutes'));
+        $newExpiration = date('Y-m-d H:i:s', strtotime(Config::get('BOOKING_HOLD_TTL', '+15 minutes')));
 
         if ($this->bookingRepo->extend($cartId, $newExpiration)) {
             $this->pms->extendCartSession($cartId);

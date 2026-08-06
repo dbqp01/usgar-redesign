@@ -35,6 +35,7 @@ Catálogo completo de endpoints del backend PHP. Todos los endpoints se sirven d
 | Method | Endpoint | Action | Auth |
 |--------|----------|--------|------|
 | GET | `/api/rooms` | `GetRoomsAction` |  |
+| GET | `/api/rooms/calendar` | `GetRoomsCalendarAction` |  |
 
 **Query Params:** `?checkIn=YYYY-MM-DD&checkOut=YYYY-MM-DD` (opcionales)
 
@@ -50,7 +51,15 @@ Catálogo completo de endpoints del backend PHP. Todos los endpoints se sirven d
 
 **Frontend consumer:** [book.astro](file:///c:/Users/akim/Desktop/usgar-redesign/src/pages/book.astro) vía [bookingService.ts](file:///c:/Users/akim/Desktop/usgar-redesign/src/services/bookingService.ts)
 
-**Env vars:** `QLOAPPS_DB_*` (conexión directa a QloApps MySQL)
+**Env vars:** `QLOAPP_API_URL` + `QLOAPP_API_KEY` (API XML del PMS QloApps, vía `QloAppAdapter`/`PmsPortInterface`), `HOTEL_BASE_CURRENCY` (moneda de precios), `DB_*` (BD local de la app, no acceso directo a la BD de QloApps)
+
+### GET `/api/rooms/calendar`
+
+Disponibilidad por día y por habitación para el calendario de reservas.
+
+**Query:** `?from=YYYY-MM-DD&to=YYYY-MM-DD&id_hotel=1` (default: hoy → +60 días, máx. 120 días)
+
+**Response:** `{ "success": true, "days": { "YYYY-MM-DD": { "slug": qty, ... } }, "from": "...", "to": "..." }`
 
 ---
 
@@ -127,10 +136,10 @@ Procesa el pago con tarjeta vía Checkout API (Custom Checkout). Verifica `acces
 | Method | Endpoint | Action | Auth |
 |--------|----------|--------|------|
 | POST | `/api/webhook` | `HandleMercadoPagoWebhookAction` | Token |
-| POST | `/api/webhook-mercado-pago` | `HandleMercadoPagoWebhookAction` | Token |
+| POST | `/api/webhook-mercado-pago` | `HandleMercadoPagoWebhookAction` | Token (alias deprecated) |
 | POST | `/api/webhook/channex` | `HandleChannexWebhookAction` | Token |
 
-**Nota:** Ambas rutas `/api/webhook` y `/api/webhook-mercado-pago` apuntan al mismo Action (compatibilidad).
+**Nota:** `/api/webhook-mercado-pago` es un alias de compatibilidad que apunta al mismo Action; **sigue registrado en `public/index.php`** — pendiente de eliminación. El callback canónico registrado en el panel de MercadoPago es `/api/webhook`.
 
 **Configuración del webhook en el panel de MercadoPago (registrada 2026-08-01):**
 
@@ -139,7 +148,7 @@ Procesa el pago con tarjeta vía Checkout API (Custom Checkout). Verifica `acces
 - ⚠️ **Verificar que `MERCADO_PAGO_WEBHOOK_SECRET` del `.env` sea EXACTO al secreto del panel** (developers/panel/app/8501374849722569/webhooks). Si no coincide, la validación de firma HMAC en `HandleMercadoPagoWebhookAction` rechazará todos los webhooks (HTTP 401).
 - Diagnóstico: `mercadopago-mcp-server_notifications_history` (app 8501374849722569). Al 2026-08-01 no había notificaciones registradas → probablemente el webhook nunca recibió eventos o el callback anterior era incorrecto; probar con un pago real/sandbox tras verificar el secreto.
 
-**Env vars:** `MERCADO_PAGO_WEBHOOK_SECRET` (nombre real en el código; `MP_WEBHOOK_SECRET` era el nombre viejo), `CHANNEX_WEBHOOK_TOKEN`
+**Env vars:** `MERCADO_PAGO_WEBHOOK_SECRET` (nombre real en producción; `MP_WEBHOOK_SECRET` solo sobrevive como fallback en los scripts de test `tests/test_sdk_webhook.php` y `scripts/run-stress-tests.php`), `CHANNEX_WEBHOOK_SECRET` (fallback: `CHANNEX_API_KEY`)
 
 ---
 
@@ -163,8 +172,10 @@ Procesa el pago con tarjeta vía Checkout API (Custom Checkout). Verifica `acces
 | POST | `/api/auth/login-email` | `AuthLoginEmailAction` |  |
 | GET | `/api/auth/me` | `AuthMeAction` | JWT |
 | POST | `/api/auth/logout` | `AuthLogoutAction` | JWT |
+| GET | `/api/auth/logout` | `AuthLogoutAction` | JWT |
 | GET | `/api/auth/providers` | `AuthProvidersAction` |  |
 | GET | `/api/user/bookings` | `GetUserBookingsAction` | JWT |
+| POST | `/api/user/profile` | `UpdateUserProfileAction` | JWT |
 
 ### POST `/api/auth/register`
 **Body:** `{ "name": "...", "email": "...", "password": "..." }`
@@ -177,22 +188,54 @@ Procesa el pago con tarjeta vía Checkout API (Custom Checkout). Verifica `acces
 **Header:** Cookie `usgar_session` (JWT HttpOnly)
 **Response:** `{ "success": true, "user": { "id": ..., "name": "...", "email": "..." } }`
 
+### POST `/api/user/profile`
+Actualiza la información personal del usuario autenticado.
+**Body:** `{ "fullName": "...", "last_name": "...", "phone": "..." }` (`fullName` se separa en first/last si falta `last_name`)
+
 ---
 
 ## Variables de Entorno Requeridas
 
+Todas las claves se leen vía `App\Core\Config` (`Config::get('KEY')`, con fallbacks en `app/Core/Config.php::DEFAULTS`). Verificadas contra el código 2026-08-05.
+
 | Variable | Usado por | Descripción |
 |----------|-----------|-------------|
-| `QLOAPPS_DB_HOST` | QloAppAdapter | Host MySQL de QloApps |
-| `QLOAPPS_DB_NAME` | QloAppAdapter | Nombre de DB |
-| `QLOAPPS_DB_USER` | QloAppAdapter | Usuario DB |
-| `QLOAPPS_DB_PASS` | QloAppAdapter | Password DB |
-| `MP_ACCESS_TOKEN` | MercadoPagoAdapter | Token de Mercado Pago |
-| `MP_WEBHOOK_SECRET` | WebhookAction | Secreto para validar webhooks MP |
-| `CHANNEX_API_KEY` | ChannexAdapter | API key de Channex |
+| `DB_HOST` | Database | Host MySQL (default `127.0.0.1`) |
+| `DB_PORT` | Database | Puerto MySQL (default `3306`) |
+| `DB_NAME` | Database | Nombre de la BD local de la app (default `usgar_hotels`) |
+| `DB_USER` | Database | Usuario MySQL |
+| `DB_PASS` | Database | Password MySQL |
+| `QLOAPP_API_URL` | QloAppAdapter | URL de la API XML del PMS (default `https://cms.hotelesusgar.com/api`) |
+| `QLOAPP_API_KEY` | QloAppAdapter | API key del PMS QloApps |
+| `MERCADO_PAGO_ACCESS_TOKEN` | MercadoPagoAdapter | Token de Mercado Pago (fuente de verdad única) |
+| `MERCADO_PAGO_WEBHOOK_SECRET` | MercadoPagoAdapter / WebhookAction | Secreto para validar la firma HMAC de los webhooks MP |
+| `MERCADO_PAGO_CURRENCY` | QloAppAdapter / ChannexAdapter | Moneda de pagos (default `USD`) |
+| `PUBLIC_MERCADO_PAGO_PUBLIC_KEY` | CreateBookingAction | Public key MP para el cardForm del frontend |
+| `MP_STATEMENT_DESCRIPTOR` | MercadoPagoAdapter | Descriptor del extracto (default `USGAR HOTELES CUSCO`) |
+| `MP_BINARY_MODE` | MercadoPagoAdapter | `true`/`false` (default `true`) |
+| `EXCHANGE_RATE_USD_PEN` | Booking actions | Tipo de cambio USD→PEN (default `3.80`) |
+| `BOOKING_TOKEN_SECRET` | Booking actions | Secreto HMAC del hold token (`cart_id:email`); fallback `CRON_SECRET` |
+| `CRON_SECRET` | Cron / Booking actions | Secreto de endpoints cron; fallback de `BOOKING_TOKEN_SECRET` |
+| `HOTEL_BASE_CURRENCY` | GetRoomsAction | Moneda de los precios de habitaciones (default `USD`) |
+| `CHANNEX_API_KEY` | ChannexAdapter | API key de Channex (también fallback del webhook Channex) |
+| `CHANNEX_API_URL` | ChannexAdapter | URL de la API de Channex (default `https://api.channex.io/api/v1`) |
 | `CHANNEX_PROPERTY_ID` | ChannexAdapter | ID de propiedad en Channex |
-| `CHANNEX_ROOM_*` | RoomTypeRegistry | UUIDs de room types en Channex |
-| `CHANNEX_RATE_*` | RoomTypeRegistry | UUIDs de rate plans en Channex |
-| `JWT_SECRET` | SessionService | Secreto para firmar tokens JWT |
-| `APP_ENV` | Config | `development` o `production` |
-| `APP_URL` | Config | URL base de la aplicación |
+| `CHANNEX_WEBHOOK_SECRET` | HandleChannexWebhookAction | Secreto de webhooks de Channex (fallback `CHANNEX_API_KEY`) |
+| `CHANNEX_ROOM_MAP` | ChannexRoomMapper | JSON con el mapeo de room types ↔ UUIDs de Channex |
+| `CHANNEX_ROOM_*` | ChannexRoomMapper | UUID de room type por slug (`CHANNEX_ROOM_MATRIMONIAL`, `CHANNEX_ROOM_DOBLE_SUPERIOR`, …) |
+| `CHANNEX_RATE_*` / `CHANNEX_RATE_PLAN_ID` | RoomTypeRegistry | UUID de rate plan por slug, o fallback global `CHANNEX_RATE_PLAN_ID` |
+| `CHANNEX_PROVIDER_CODE` | ChannexAdapter | Código de provider (default `OpenChannel`) |
+| `CHANNEX_OTA_NAME` | ChannexAdapter | Nombre del OTA (default `Direct`) |
+| `OTA_DEFAULT_EMAIL` | HandleChannexWebhookAction | Email de huésped por defecto (default `guest@ota.com`) |
+| `AUTH_JWT_SECRET` | SessionService | Secreto para firmar tokens JWT (≥32 caracteres) |
+| `SITE_URL` | AuthService / MercadoPagoAdapter | URL base de la aplicación (default `https://usgarhoteles.com`) |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | AuthService | Credenciales OAuth de Google |
+| `MICROSOFT_CLIENT_ID` / `MICROSOFT_CLIENT_SECRET` | AuthService | Credenciales OAuth de Microsoft |
+| `FACEBOOK_APP_ID` / `FACEBOOK_APP_SECRET` | AuthService | Credenciales OAuth de Facebook |
+| `DEFAULT_HOTEL_ID` | Booking / Rooms | `id_hotel` por defecto (default `1`) |
+| `DEFAULT_GUEST_EMAIL` | Listeners | Email de huésped por defecto (default `reserva@hotelesusgar.com`) |
+| `DEFAULT_REPLY_EMAIL` | QloAppAdapter | Email de reply (default `no-reply@hotelesusgar.com`) |
+| `TRUSTED_PROXIES` | Config | IPs de proxies confiables para `X-Forwarded-For` (vacío = seguro) |
+| `ALLOWED_ORIGINS` | Config | Orígenes CORS permitidos (default `*`) |
+| `TIMEZONE` | Config | Zona horaria (default `America/Lima`) |
+| `APP_ENV` | Config / Response | `development` / `production` / `testing` |

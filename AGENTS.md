@@ -18,10 +18,10 @@ Sitio web transaccional del hotel boutique Usgar (San Pedro, Cusco, Perú): rese
 ## Migraciones EN CURSO (importante)
 
 Hay un plan de trabajo pendiente (ver `docs/MIGRATION_PLAN.md`). **Nada de eso está hecho.** No implementes pasos del plan por tu cuenta: el código actual sigue siendo MP+Channex+QloApps. Si el usuario pide algo del plan, consulta el archivo y trabaja solo lo que marque. Estado actual de las decisiones:
-- **Pagos: MercadoPago SE MANTIENE** — no hay migración de pasarela (Stripe+LLC solo se reevaluará con datos de volumen).
+- **Pagos: MercadoPago SE MANTIENE** — pasarela única. Stripe/LLC **descartados definitivamente** (2026-08-05).
 - **Channel manager**: Channex → **QloApps Channel Manager** (pendiente, decisión 2026-08-04: $30/propiedad/mes con conexiones Booking/Expedia/Airbnb incluidas; sustituye la migración a Nobeds).
-- **CMS/PMS**: **QloApps SE MANTIENE** — migración a Filament PHP cancelada (decisión 2026-08-04). El panel Laravel 12/Filament ya desplegado en admin.hotelesusgar.com queda fuera de alcance (pendiente: decidir su destino).
-- **Refactorización completa del código**: pendiente (sección 4 del plan) — incluye limpiar residuos del flujo Checkout Pro de MercadoPago y la falta de comunicación entre capas.
+- **CMS/PMS**: **QloApps SE MANTIENE** — migración a Filament PHP cancelada (decisión 2026-08-04) y el panel **eliminado del repo** (2026-08-05: borrados `backend/`, zip de deploy y docs de la fase). Pendiente en Hostinger: retirar `public_html/admin` y el subdominio admin.hotelesusgar.com.
+- **Refactorización completa del código**: refactor backend cerrado (F2, 2026-08-03); **auditoría de limpieza en curso (2026-08-05)** — código muerto, duplicación, abstracción, hardcodes pendientes (P5-2).
 
 ## Estructura (dónde está cada cosa)
 
@@ -39,8 +39,6 @@ app/                          Backend PHP
     Actions/                  Clases ADR invocables (ruta → action)
     Domain/                   Repositorios, Listeners (ej. ConfirmQloAppsOrderListener)
     Shared/                   Adapters/ (QloApp, Channex, MercadoPago) + Ports/ (interfaces)
-backend/                      Panel admin Laravel 12 + Filament v5 (multi-tenant Property) — se
-                              despliega como subaplicación en el subdominio admin.hotelesusgar.com
 public/                       Entry PHP (.htaccess + index.php) + estáticos
 scripts/                      dev.js (dev:all), tests, auditorías (seguridad/SEO)
 tests/                        api-harness.php (tests PHP) + playwright.config.ts (E2E)
@@ -68,9 +66,10 @@ docs/                         Documentación técnica (API_REGISTRY, ARCHITECTUR
 
 ### Tests y verificación (antes de declarar "listo")
 1. `npm run check` — types + astro.
-2. `php tests/api-harness.php` (o `npm run test:php`) — contrato de la API.
-3. `npm run audit:security` + `npm run audit:seo` si tocas endpoints/SEO.
-4. E2E: `npx playwright test` si el cambio toca flujos de usuario (book, login).
+2. `npm run test:php` (= `php scripts/run-exhaustive-tests.php`) — suite exhaustiva de integración + unit del backend.
+3. `php tests/api-harness.php` — contrato del flujo de reserva vía curl (`POST /api/booking`, casos de validación). Es un contrato distinto del anterior; corre ambos si tocas booking.
+4. `npm run audit:security` + `npm run audit:seo` si tocas endpoints/SEO.
+5. E2E: `npx playwright test` si el cambio toca flujos de usuario (book, login).
 
 ### Deploy (Hostinger)
 - `npm run build` → `dist/` listo para subir (incluye app/, vendor/, .env).
@@ -97,7 +96,7 @@ Aplicar en orden; detente en la primera que aplique. Estas reglas son PARA ESTE 
 5. **Preferir librerías maduras**: no reescribas lo que una librería estable ya resuelve (compatible con "dependencia mínima" del deploy Hostinger).
 6. **Revisar dependencias existentes** antes de añadir paquetes nuevos: revisa `composer.json`/`package.json` y qué ya importa el código antes de instalar algo.
 7. **Decisiones de arquitectura a largo plazo**: rechaza hacks "lo cambiamos luego" para cosas que cruzan capas o la BD; documenta en `docs/` (patrón ADR del proyecto).
-8. **Estudia cómo lo resolvieron productos maduros**: usa patrones probados (PrestaShop/QloApps, Laravel/Filament del backend, estándares del sector) antes de inventar.
+8. **Estudia cómo lo resolvieron productos maduros**: usa patrones probados (PrestaShop/QloApps, estándares del sector) antes de inventar.
 
 ## Herramientas de calidad disponibles (instaladas 2026-08-04)
 

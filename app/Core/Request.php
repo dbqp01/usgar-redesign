@@ -51,16 +51,8 @@ class Request {
         return $this->path;
     }
 
-    public function getQueryParams(): array {
-        return $this->queryParams;
-    }
-
     public function getQuery(string $key, mixed $default = null): mixed {
         return $this->queryParams[$key] ?? $default;
-    }
-
-    public function getHeaders(): array {
-        return $this->headers;
     }
 
     public function getHeader(string $key): ?string {
@@ -74,6 +66,50 @@ class Request {
 
     public function get(string $key, mixed $default = null): mixed {
         return $this->body[$key] ?? $default;
+    }
+
+    /**
+     * Determina si la peticion espera una respuesta HTML (formulario clasico)
+     * en lugar de JSON. Usado por las acciones de auth para redirigir.
+     */
+    public function isHtml(): bool {
+        $accept = $this->getHeader('accept') ?? '';
+        $requestedWith = $this->getHeader('x-requested-with') ?? '';
+        $contentType = $this->getHeader('content-type') ?? '';
+
+        if (str_contains($accept, 'application/json') || strtolower($requestedWith) === 'xmlhttprequest') {
+            return false;
+        }
+
+        if (str_contains($contentType, 'application/x-www-form-urlencoded') || str_contains($contentType, 'multipart/form-data')) {
+            return true;
+        }
+
+        return str_contains($accept, 'text/html');
+    }
+
+    /**
+     * Determina si la peticion llega por HTTPS.
+     */
+    public static function isHttps(): bool {
+        return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? 80) == 443;
+    }
+
+    /**
+     * Inicia la sesion PHP con parametros de cookie seguros si aun no esta activa.
+     */
+    public static function startSession(bool $isSecure): void {
+        if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+            session_set_cookie_params([
+                'lifetime' => 0,
+                'path'     => '/',
+                'domain'   => '',
+                'secure'   => $isSecure,
+                'httponly'  => true,
+                'samesite' => 'Lax'
+            ]);
+            @session_start();
+        }
     }
 
     /**

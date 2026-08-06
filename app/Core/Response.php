@@ -109,15 +109,20 @@ class Response {
         self::error($message, 401);
     }
 
-    public static function forbidden(string $message = 'Forbidden'): void {
-        self::error($message, 403);
-    }
-
     public static function notFound(string $message = 'Not Found'): void {
         self::error($message, 404);
     }
 
-    public static function tooManyRequests(string $message = 'Too Many Requests'): void {
-        self::error($message, 429);
+    /**
+     * Responde un error con fallback HTML: si la peticion espera HTML,
+     * redirige a /login?error=<mensaje>; en caso contrario responde JSON.
+     * Usado por las acciones de auth de formulario clasico.
+     */
+    public static function errorWithHtmlFallback(bool $isHtml, string $message, int $statusCode = 500, string $code = 'ERROR'): void {
+        if ($isHtml) {
+            header('Location: /login?error=' . urlencode($message));
+            exit(0);
+        }
+        self::error($message, $statusCode, $code);
     }
 }

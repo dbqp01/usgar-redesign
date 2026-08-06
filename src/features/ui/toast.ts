@@ -69,7 +69,7 @@ function dismiss(el: HTMLElement): void {
   gsap.to(el, { autoAlpha: 0, y: -10, scale: 0.97, duration: 0.25, ease: 'power2.in', onComplete: done });
 }
 
-export function toast(type: ToastType, options: ToastOptions): void {
+function toast(type: ToastType, options: ToastOptions): void {
   const container = ensureRoot();
   while (active.length >= MAX_VISIBLE) dismiss(active[0]);
 

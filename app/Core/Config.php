@@ -39,6 +39,8 @@ class Config {
         'EXCHANGE_RATE_USD_PEN'=> '3.80',
         'DEFAULT_GUEST_EMAIL'  => 'reserva@hotelesusgar.com',
         'DEFAULT_REPLY_EMAIL'  => 'no-reply@hotelesusgar.com',
+        'RATE_LIMIT_MAX_REQUESTS'   => '300',
+        'RATE_LIMIT_WINDOW_SECONDS' => '600',
     ];
 
     /**

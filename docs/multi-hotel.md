@@ -6,7 +6,7 @@ Esta documentación detalla el funcionamiento del sistema multitienda para **USG
 
 ## 1. Funcionamiento del Mapeo Dinámico
 
-El backend en PHP (`public/api/`) interactúa con una base de datos centralizada de QloApps. Cada hotel en la base de datos se identifica mediante un valor único de `id_hotel` y `id_shop`.
+El backend en PHP (`public/index.php` como entry point + `app/` con las clases Action ADR, patrón Action → Domain → Ports/Adapters) interactúa con una base de datos centralizada de QloApps. Cada hotel en la base de datos se identifica mediante un valor único de `id_hotel` y `id_shop`.
 
 En los endpoints críticos (como `/api/rooms` para listar habitaciones), la consulta SQL filtra dinámicamente utilizando el prefijo de tablas oficial de USGAR (`qlo_`):
 ```sql

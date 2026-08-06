@@ -21,7 +21,6 @@
   "dependencies": {
     "@astrojs/check": "^0.9.9",
     "@astrojs/sitemap": "^3.7.3",
-    "@lucide/astro": "^1.27.0",
     "@playform/compress": "^0.2.3",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.1.1",

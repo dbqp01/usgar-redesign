@@ -7,10 +7,11 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Logger;
 use App\Core\Config;
+use App\Core\BookingStatus;
+use App\Core\CartIdPrefix;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
 use App\Features\Shared\ChannexRoomMapper;
 use App\Features\Shared\Ports\ChannelManagerPortInterface;
-use PDO;
 use Exception;
 
 /**
@@ -77,7 +78,7 @@ class HandleChannexWebhookAction {
         $departureDate = $bookingData['departure_date'] ?? date('Y-m-d', strtotime('+1 day'));
         $otaName       = $bookingData['ota_name'] ?? 'OTA-Channex';
         $customer      = $bookingData['customer'] ?? [];
-        $guestName     = trim(($customer['name'] ?? 'Huesped') . ' ' . ($customer['surname'] ?? 'OTA'));
+        $guestName     = trim(($customer['name'] ?? Config::get('OTA_DEFAULT_NAME', 'Huesped')) . ' ' . ($customer['surname'] ?? Config::get('OTA_DEFAULT_SURNAME', 'OTA')));
         $guestEmail    = $customer['mail'] ?? Config::get('OTA_DEFAULT_EMAIL', 'guest@ota.com');
         $guestPhone    = $customer['phone'] ?? '';
 
@@ -87,11 +88,11 @@ class HandleChannexWebhookAction {
 
         try {
             $hashId = strtoupper(substr(hash('sha256', (string)$reservationId), 0, 12));
-            $cartId = 'OTA-' . $hashId;
+            $cartId = CartIdPrefix::OTA . $hashId;
             
             $holdData = [
                 'cart_id'       => $cartId,
-                'id_hotel'      => 1,
+                'id_hotel'      => (int) Config::get('DEFAULT_HOTEL_ID', '1'),
                 'id_room_type'  => $idRoomType,
                 'guest_data'    => [
                     'name'     => $guestName,
@@ -107,8 +108,8 @@ class HandleChannexWebhookAction {
                 'price_snapshot' => (float)($bookingData['amount'] ?? 0),
                 'checkin'        => $arrivalDate,
                 'checkout'       => $departureDate,
-                'status'         => ($status === 'cancelled') ? 'cancelled' : 'paid',
-                'expires_at'     => date('Y-m-d H:i:s', strtotime('+1 year')),
+                'status'         => ($status === 'cancelled') ? BookingStatus::Cancelled->value : BookingStatus::Paid->value,
+                'expires_at'     => date('Y-m-d H:i:s', strtotime(Config::get('OTA_HOLD_TTL', '+1 year'))),
             ];
 
             $inserted = $this->bookingRepo->create($holdData);

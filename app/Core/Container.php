@@ -22,10 +22,6 @@ class Container implements ContainerInterface {
         return self::$instance;
     }
 
-    public static function setInstance(?Container $container): void {
-        self::$instance = $container;
-    }
-
     public function set(string $id, object $concrete): void {
         $this->instances[$id] = $concrete;
     }

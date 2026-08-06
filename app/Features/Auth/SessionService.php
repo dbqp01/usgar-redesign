@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Features\Auth;
 
 use App\Core\Config;
+use App\Core\Request;
 
 /**
  * Servicio de sesiones basado en JWT (JSON Web Tokens).
@@ -111,8 +112,7 @@ class SessionService {
      * Setea la cookie de sesion con el JWT.
      */
     public static function setAuthCookie(string $jwt): void {
-        $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || 
-                    ($_SERVER['SERVER_PORT'] ?? 80) == 443 || 
+        $isSecure = Request::isHttps() || 
                     (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
         setcookie(self::COOKIE_NAME, $jwt, [
             'expires'  => time() + (self::COOKIE_TTL_DAYS * 86400),
@@ -127,8 +127,7 @@ class SessionService {
      * Elimina la cookie de sesion.
      */
     public static function clearAuthCookie(): void {
-        $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || 
-                    ($_SERVER['SERVER_PORT'] ?? 80) == 443 || 
+        $isSecure = Request::isHttps() || 
                     (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
         setcookie(self::COOKIE_NAME, '', [
             'expires'  => time() - 3600,
@@ -151,6 +150,29 @@ class SessionService {
         }
 
         return self::validateToken($jwt);
+    }
+
+    /**
+     * Expone los datos publicos del usuario para las respuestas JSON de auth.
+     *
+     * @param array<string, mixed> $user
+     * @return array<string, mixed>
+     */
+    public static function toPublicUser(array $user, bool $includePhone = false): array {
+        $payload = [
+            'sub'   => $user['id'],
+            'name'  => trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '')),
+            'email' => $user['email'],
+        ];
+
+        if ($includePhone) {
+            $payload['phone'] = $user['phone'] ?? '';
+        }
+
+        $payload['photo']    = $user['photo_url'] ?? null;
+        $payload['provider'] = $user['provider'];
+
+        return $payload;
     }
 
     // ──────────────────────────────────────

@@ -18,24 +18,16 @@ class AuthLoginEmailAction {
         $data = $request->getBody() ?? [];
         $email = trim($data['email'] ?? '');
         $password = $data['password'] ?? '';
-        $isHtml = $this->isHtmlRequest($request);
+        $isHtml = $request->isHtml();
 
         if (empty($email) || empty($password)) {
-            if ($isHtml) {
-                header('Location: /login?error=' . urlencode('Email and password are required.'));
-                exit(0);
-            }
-            Response::error("Email and password are required.", 400);
+            Response::errorWithHtmlFallback($isHtml, 'Email and password are required.', 400);
             return;
         }
 
         $pdo = Database::getInstance()->getConnection();
         if ($pdo === null) {
-            if ($isHtml) {
-                header('Location: /login?error=' . urlencode('Internal connection error.'));
-                exit(0);
-            }
-            Response::error("Internal connection error.", 500);
+            Response::errorWithHtmlFallback($isHtml, 'Internal connection error.', 500);
             return;
         }
 
@@ -43,11 +35,7 @@ class AuthLoginEmailAction {
         $user = $userModel->verifyPassword($email, $password);
 
         if ($user === null) {
-            if ($isHtml) {
-                header('Location: /login?error=' . urlencode('Invalid email or password.'));
-                exit(0);
-            }
-            Response::error("Invalid email or password.", 401);
+            Response::errorWithHtmlFallback($isHtml, 'Invalid email or password.', 401);
             return;
         }
 
@@ -82,29 +70,7 @@ class AuthLoginEmailAction {
         Response::json([
             'success' => true,
             'message' => 'Signed in successfully.',
-            'user'    => [
-                'sub'      => $user['id'],
-                'name'     => trim($user['first_name'] . ' ' . $user['last_name']),
-                'email'    => $user['email'],
-                'photo'    => $user['photo_url'] ?? null,
-                'provider' => $user['provider'],
-            ],
+            'user'    => SessionService::toPublicUser($user),
         ]);
-    }
-
-    private function isHtmlRequest(Request $request): bool {
-        $accept = $request->getHeader('accept') ?? '';
-        $requestedWith = $request->getHeader('x-requested-with') ?? '';
-        $contentType = $request->getHeader('content-type') ?? '';
-
-        if (str_contains($accept, 'application/json') || strtolower($requestedWith) === 'xmlhttprequest') {
-            return false;
-        }
-
-        if (str_contains($contentType, 'application/x-www-form-urlencoded') || str_contains($contentType, 'multipart/form-data')) {
-            return true;
-        }
-
-        return str_contains($accept, 'text/html');
     }
 }

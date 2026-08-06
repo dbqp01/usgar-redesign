@@ -24,7 +24,7 @@ try {
 }
 
 // Test 4: verifySignature with correct HMAC
-$secret = getenv('MP_WEBHOOK_SECRET') ?: 'test-secret-for-sdk-self-test';
+$secret = getenv('MERCADO_PAGO_WEBHOOK_SECRET') ?: 'test-secret-for-sdk-self-test';
 $dataId = '171073692716';
 $requestId = 'a70c8599-bd35-48e3-b6ea-576ca1c36ba3';
 $ts = '1764699137';

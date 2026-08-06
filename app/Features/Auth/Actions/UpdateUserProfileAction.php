@@ -6,6 +6,7 @@ namespace App\Features\Auth\Actions;
 use App\Core\Request;
 use App\Core\Response;
 use App\Core\Database;
+use App\Core\GuestName;
 use App\Features\Auth\User;
 use App\Features\Auth\SessionService;
 
@@ -28,7 +29,7 @@ class UpdateUserProfileAction {
         $phone = trim($data['phone'] ?? '');
 
         if (!empty($rawName) && empty($lastName)) {
-            $nameParts = explode(' ', $rawName, 2);
+            $nameParts = GuestName::split($rawName);
             $firstName = $nameParts[0];
             $lastName = $nameParts[1] ?? '';
         } else {
@@ -69,14 +70,7 @@ class UpdateUserProfileAction {
         Response::json([
             'success' => true,
             'message' => 'Profile updated successfully.',
-            'user'    => [
-                'sub'      => $freshUser['id'],
-                'name'     => trim($freshUser['first_name'] . ' ' . $freshUser['last_name']),
-                'email'    => $freshUser['email'],
-                'phone'    => $freshUser['phone'] ?? '',
-                'photo'    => $freshUser['photo_url'] ?? null,
-                'provider' => $freshUser['provider'],
-            ],
+            'user'    => SessionService::toPublicUser($freshUser, true),
         ]);
     }
 }

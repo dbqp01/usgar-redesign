@@ -13,6 +13,10 @@ class ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
     );
 
     public static $prefixLengthsPsr4 = array (
+        'c' =>
+        array (
+            'cweagans\\Composer\\' => 18,
+        ),
         'P' =>
         array (
             'PhpParser\\' => 10,
@@ -32,6 +36,11 @@ class ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
     );
 
     public static $prefixDirsPsr4 = array (
+        'cweagans\\Composer\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/cweagans/composer-patches/src',
+            1 => __DIR__ . '/..' . '/cweagans/composer-configurable-plugin/src',
+        ),
         'PhpParser\\' =>
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',

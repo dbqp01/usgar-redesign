@@ -1,8 +1,7 @@
 # STATE — Backend USGAR (Fase 0/2: línea base + limpieza de pagos)
 
-> Memoria de sesión del backend. El `STATE.md` anterior documenta el redesign del frontend;
-> este archivo es el handoff del trabajo de backend (migraciones + refactor).
-> Última actualización: 2026-08-03 (F0 completa; F2 cerrada; verificación webhook completada — queda registrar el webhook en la app de producción para pagos reales).
+> Memoria de sesión del backend: este archivo es el handoff del trabajo de backend (migraciones + refactor).
+> Última actualización: 2026-08-05 (F0 completa; F2 cerrada; verificación webhook y checkout completadas; ola de refactor de limpieza en curso).
 
 ## Contexto (decisiones aprobadas por el usuario)
 
@@ -98,6 +97,16 @@ Cierre de la Fase 2 del refactor backend (plan `f2-close-backend-refactor`), con
 **FUERA del alcance de la app de test (pendiente para pagos reales, no bloquea):**
 - Registrar el webhook en el panel de la app de **producción** (8776209959654245) — el webhook verificado pertenece a la app de test 8501374849722569.
 - Restaurar las credenciales `APP_USR` de producción en el `.env` antes de cualquier deploy (el `.env` local quedó en modo TEST por instrucción del usuario).
+
+## Ola de refactor de limpieza (dead code + helpers + hardcodes → config) — 2026-08-05 (EN CURSO)
+
+Auditoría de limpieza en curso (P5-2, decisión 2026-08-05). Estado verificado con evidencia en el árbol de trabajo al cierre de esta sesión — el agente paralelo trabaja sobre `app/`/`scripts/`/`tests/` y todavía **no ha commiteado** nada de esta ola:
+
+- **Scripts candidatos a eliminar — AÚN EXISTEN (no borrados al 2026-08-05)**: `scripts/seed-database.php`, `scripts/test-db-connection.php`, `scripts/audit-performance.js`, `scripts/test_endpoints.php`, `scripts/test-api-runtime.php`, `scripts/update-i18n.js`. Verificado por listado de `scripts/` + grep: ninguno está referenciado desde `package.json` (scripts), `app/`, `public/` ni `src/` — solo self-references en sus cabeceras. Candidatos seguros a borrar cuando la ola los procese.
+- **Helpers nuevos en `app/Core/`**: NINGUNO verificado todavía. No existen `BookingHoldToken`, `PriceCalculator`, `Retry` ni `GuestName` (grep 0 resultados en `app/`). La extracción de helpers queda pendiente de la ola.
+- **Hardcodes → config (parcial, verificado)**: `app/Core/Config.php::DEFAULTS` ya centraliza `SITE_URL`, `TIMEZONE`, `DB_HOST`/`DB_PORT`/`DB_NAME`, `ALLOWED_ORIGINS`, `DEFAULT_HOTEL_ID`, `EXCHANGE_RATE_USD_PEN`, `DEFAULT_GUEST_EMAIL`, `DEFAULT_REPLY_EMAIL`. Queda auditar los hardcodes restantes en actions/adapters.
+- **Drift de docs corregido en esta misma sesión (2026-08-05)**: `docs/API_REGISTRY.md` (variables de entorno obsoletas → nombres reales verificados con `Config::get()`; endpoints sin documentar añadidos), `AGENTS.md` + `README.md` (distinción de los dos contratos de test), `docs/multi-hotel.md` (estructura `public/index.php` + `app/`).
+- **Cierre**: la ola queda **EN CURSO**; actualizar esta sección cuando el agente paralelo commitee el borrado de scripts muertos, los helpers de `app/Core/` y la migración de hardcodes a config.
 
 ## Hook pre-commit (2026-08-01) — reescrito y VERIFICADO
 - Causa: `.githooks/pre-commit` (sh) fallaba en esta máquina — `sh` del PATH (shim scoop) delegaba en el relay WSL (`execvpe(/bin/bash) failed`).

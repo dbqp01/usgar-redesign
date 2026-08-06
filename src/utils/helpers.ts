@@ -34,16 +34,3 @@ export function translateBeds(beds: string, lang: Locale): string {
   }
   return beds;
 }
-
-/**
- * Calculates the number of nights between two date strings.
- * Shared between server (channex.ts) and client scripts.
- */
-export function daysBetween(date1: string, date2: string): number {
-  if (!date1 || !date2) return 0;
-  const d1 = new Date(date1 + 'T00:00:00');
-  const d2 = new Date(date2 + 'T00:00:00');
-  const diffTime = d2.getTime() - d1.getTime();
-  if (isNaN(diffTime) || diffTime <= 0) return 0;
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-}

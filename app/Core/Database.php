@@ -69,11 +69,4 @@ class Database {
     public function getConnection(): ?PDO {
         return $this->pdo;
     }
-
-    /**
-     * Verifica si la conexion a la base de datos esta activa.
-     */
-    public function isConnected(): bool {
-        return $this->pdo !== null;
-    }
 }

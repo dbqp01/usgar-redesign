@@ -91,18 +91,6 @@ parameters:
 			path: app/Core/HttpException.php
 
 		-
-			message: '#^Method App\\Core\\HttpException\:\:toPayload\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Core/HttpException.php
-
-		-
-			message: '#^Method App\\Core\\Logger\:\:debug\(\) has parameter \$context with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Core/Logger.php
-
-		-
 			message: '#^Method App\\Core\\Logger\:\:error\(\) has parameter \$context with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -158,18 +146,6 @@ parameters:
 
 		-
 			message: '#^Method App\\Core\\Request\:\:getBody\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Core/Request.php
-
-		-
-			message: '#^Method App\\Core\\Request\:\:getHeaders\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Core/Request.php
-
-		-
-			message: '#^Method App\\Core\\Request\:\:getQueryParams\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: app/Core/Request.php
@@ -295,12 +271,6 @@ parameters:
 			path: app/Features/Auth/User.php
 
 		-
-			message: '#^Method App\\Features\\Auth\\User\:\:findByProvider\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Features/Auth/User.php
-
-		-
 			message: '#^Method App\\Features\\Auth\\User\:\:getBookings\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -379,15 +349,9 @@ parameters:
 			path: app/Features/Shared/Adapters/ChannexAdapter.php
 
 		-
-			message: '#^Method App\\Features\\Shared\\Adapters\\ChannexAdapter\:\:processChannelBooking\(\) has parameter \$bookingData with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Features/Shared/Adapters/ChannexAdapter.php
-
-		-
 			message: '#^Call to function is_array\(\) with array\<string, mixed\> will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
-			count: 3
+			count: 1
 			path: app/Features/Shared/Adapters/MercadoPagoAdapter.php
 
 		-
@@ -435,18 +399,18 @@ parameters:
 		-
 			message: '#^Ternary operator condition is always true\.$#'
 			identifier: ternary.alwaysTrue
-			count: 3
+			count: 1
 			path: app/Features/Shared/Adapters/MercadoPagoAdapter.php
 
 		-
-			message: '#^Method App\\Features\\Shared\\Adapters\\QloAppAdapter\:\:getAvailableRooms\(\) return type has no value type specified in iterable type array\.$#'
+			message: '#^Method App\\Features\\Shared\\Adapters\\QloAppAdapter\:\:getAvailabilityCalendar\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: app/Features/Shared/Adapters/QloAppAdapter.php
 
 		-
-			message: '#^Offset 0 on non\-empty\-list\<string\> on left side of \?\? always exists and is not nullable\.$#'
-			identifier: nullCoalesce.offset
+			message: '#^Method App\\Features\\Shared\\Adapters\\QloAppAdapter\:\:getAvailableRooms\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: app/Features/Shared/Adapters/QloAppAdapter.php
 
@@ -476,12 +440,6 @@ parameters:
 
 		-
 			message: '#^Method App\\Features\\Shared\\Ports\\ChannelManagerPortInterface\:\:fetchBookingRevision\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Features/Shared/Ports/ChannelManagerPortInterface.php
-
-		-
-			message: '#^Method App\\Features\\Shared\\Ports\\ChannelManagerPortInterface\:\:processChannelBooking\(\) has parameter \$bookingData with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: app/Features/Shared/Ports/ChannelManagerPortInterface.php
@@ -521,6 +479,12 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: app/Features/Shared/Ports/PaymentGatewayPortInterface.php
+
+		-
+			message: '#^Method App\\Features\\Shared\\Ports\\PmsPortInterface\:\:getAvailabilityCalendar\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Features/Shared/Ports/PmsPortInterface.php
 
 		-
 			message: '#^Method App\\Features\\Shared\\Ports\\PmsPortInterface\:\:getAvailableRooms\(\) return type has no value type specified in iterable type array\.$#'

@@ -18,17 +18,7 @@ use Throwable;
  */
 class AuthCallbackAction {
     public function __invoke(Request $request): void {
-        if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
-            session_set_cookie_params([
-                'lifetime' => 0,
-                'path'     => '/',
-                'domain'   => '',
-                'secure'   => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? 80) == 443,
-                'httponly'  => true,
-                'samesite' => 'Lax'
-            ]);
-            @session_start();
-        }
+        Request::startSession(Request::isHttps());
 
         $config = AuthService::getConfig();
 

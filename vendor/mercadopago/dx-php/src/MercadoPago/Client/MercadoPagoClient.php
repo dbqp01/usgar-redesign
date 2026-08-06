@@ -127,9 +127,14 @@ class MercadoPagoClient
 
     private function headerExists(array $headers, string $header): bool
     {
-        foreach($headers as $h) {
-            $headerName = trim(explode(':', $h, 2)[0]);
-            if (strtolower($headerName) == strtolower($header)) {
+        $target = strtolower($header);
+        foreach ($headers as $name => $value) {
+            if (is_int($name)) {
+                $headerName = trim(explode(':', (string) $value, 2)[0]);
+                if (strtolower($headerName) === $target) {
+                    return true;
+                }
+            } elseif (strtolower((string) $name) === $target) {
                 return true;
             }
         }
@@ -151,8 +156,9 @@ class MercadoPagoClient
         $key = "x-idempotency-key";
         if (!is_null($request_options) && !is_null($request_options->getCustomHeaders())) {
             $headers = $request_options->getCustomHeaders();
-            if (array_key_exists(strtolower($key), array_change_key_case($headers))) {
-                return $headers[strtolower($key)];
+            $lowered = array_change_key_case($headers, CASE_LOWER);
+            if (array_key_exists($key, $lowered)) {
+                return $lowered[$key];
             }
         }
         return $this->generateUUID();

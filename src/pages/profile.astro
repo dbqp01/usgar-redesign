@@ -6,6 +6,15 @@ export const prerender = true;
 
 const lang = (Astro.currentLocale || "en") as Locale;
 const t = useTranslations(lang);
+
+const statusLabels = JSON.stringify({
+  confirmed: t('auth.statusConfirmed'),
+  paid: t('auth.statusPaid'),
+  pending: t('auth.statusPending'),
+  expired: t('auth.statusExpired'),
+  cancelled: t('auth.statusCancelled'),
+  completed: t('auth.statusCompleted'),
+});
 ---
 
 <Layout title={`Profile & Sanctuary Management - USGAR Hotels`} lang={lang}>
@@ -265,8 +274,9 @@ const t = useTranslations(lang);
 
   </div>
 
-  <script is:inline>
+  <script is:inline define:vars={{ statusLabels }}>
     (function() {
+      const STATUS_LABELS = JSON.parse(statusLabels);
       let currentUser = null;
 
       // Escapa valores interpolados en templates HTML (XSS). La API responde
@@ -424,7 +434,7 @@ const t = useTranslations(lang);
                         <div class="flex items-center gap-3">
                           <h3 class="font-display font-bold text-lg text-text-primary-light dark:text-text-primary-dark">${escapeHtml(roomName)}</h3>
                           <span class="text-xs px-2.5 py-1 rounded-full font-semibold uppercase border ${statusClass}">
-                            ${escapeHtml(b.status)}
+                            ${escapeHtml(STATUS_LABELS[b.status] || b.status)}
                           </span>
                         </div>
                         <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">

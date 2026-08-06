@@ -70,8 +70,11 @@ class Middleware {
 
     /**
      * Middleware de Rate Limiting por IP.
+     * Los limites se leen de Config (RATE_LIMIT_MAX_REQUESTS / RATE_LIMIT_WINDOW_SECONDS).
      */
-    public static function rateLimit(int $maxRequests = 60, int $windowSeconds = 600): callable {
+    public static function rateLimit(?int $maxRequests = null, ?int $windowSeconds = null): callable {
+        $maxRequests = $maxRequests ?? (int)(Config::get('RATE_LIMIT_MAX_REQUESTS', '60') ?? '60');
+        $windowSeconds = $windowSeconds ?? (int)(Config::get('RATE_LIMIT_WINDOW_SECONDS', '600') ?? '600');
         return static function (Request $request) use ($maxRequests, $windowSeconds): void {
             $ip = $request->getIp();
             if (!RateLimiter::check($ip, $maxRequests, $windowSeconds)) {

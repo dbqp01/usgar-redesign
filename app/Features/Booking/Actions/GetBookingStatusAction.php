@@ -6,8 +6,10 @@ namespace App\Features\Booking\Actions;
 use App\Core\Request;
 use App\Core\Response;
 use App\Core\HttpException;
-use App\Core\Logger;
 use App\Core\Config;
+use App\Core\BookingStatus;
+use App\Core\BookingHoldToken;
+use App\Core\PriceCalculator;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
 
 use App\Features\Shared\RoomTypeRegistry;
@@ -38,31 +40,25 @@ class GetBookingStatusAction {
         }
 
         $guestEmail = $hold['guest_data']['email'] ?? '';
-        $secretKey = Config::get('BOOKING_TOKEN_SECRET', Config::get('CRON_SECRET'));
-        if (empty($secretKey)) {
-            Logger::error("GetBookingStatusAction: BOOKING_TOKEN_SECRET no estÃ¡ configurado en servidor.");
-            throw HttpException::internal("ConfiguraciÃ³n de seguridad de token no disponible.");
-        }
-
-        $expectedToken = hash_hmac('sha256', $cartId . ':' . $guestEmail, $secretKey);
+        $expectedToken = BookingHoldToken::derive($cartId, $guestEmail);
         $isAuthenticated = (!empty($providedToken) && hash_equals($expectedToken, $providedToken));
 
         $expiresAtStr = $hold['expires_at'] ?? null;
         $expiresTimestamp = $expiresAtStr ? strtotime($expiresAtStr) : 0;
         $now = time();
-        $isExpired = ($hold['status'] === 'pending' && $expiresTimestamp < $now);
+        $isExpired = ($hold['status'] === BookingStatus::Pending->value && $expiresTimestamp < $now);
         $timeLeftSeconds = max(0, $expiresTimestamp - $now);
         $idRoomType = (int)$hold['id_room_type'];
         $slug = RoomTypeRegistry::getSlugById($idRoomType);
 
         $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN');
         $priceUSD = (float)$hold['price_snapshot'];
-        $gatewayPricePEN = round($priceUSD * $exchangeRate, 2);
+        $gatewayPricePEN = PriceCalculator::toGatewayPrice($priceUSD);
 
         $payload = [
             'success'           => true,
             'cart_id'           => $hold['cart_id'],
-            'status'            => $isExpired ? 'expired' : $hold['status'],
+            'status'            => $isExpired ? BookingStatus::Expired->value : $hold['status'],
             'checkin'           => $hold['checkin'],
             'checkout'          => $hold['checkout'],
             'id_room_type'      => $idRoomType,
@@ -70,17 +66,17 @@ class GetBookingStatusAction {
             'room_name'         => $hold['room_data']['room_name'] ?? '',
             'price_per_night'   => (float)($hold['room_data']['price_per_night'] ?? 0),
             'nights'            => (int)($hold['room_data']['nights'] ?? 1),
-            'currency'          => 'USD',
+            'currency'          => Config::get('HOTEL_BASE_CURRENCY', 'USD'),
             'price'             => $priceUSD,
             'exchange_rate'     => $exchangeRate,
-            'gateway_currency'  => 'PEN',
+            'gateway_currency'  => Config::get('MERCADO_PAGO_CURRENCY', 'PEN'),
             'gateway_price'     => $gatewayPricePEN,
             'expires_at'        => $expiresAtStr,
             'is_expired'        => $isExpired,
             'time_left_seconds' => $timeLeftSeconds,
         ];
 
-        if ($isAuthenticated || $hold['status'] === \App\Core\BookingStatus::Paid->value) {
+        if ($isAuthenticated || $hold['status'] === BookingStatus::Paid->value) {
             $payload['guest_name']  = $hold['guest_data']['name'] ?? '';
             $payload['guest_email'] = $guestEmail;
             $payload['guest_phone'] = $hold['guest_data']['phone'] ?? '';

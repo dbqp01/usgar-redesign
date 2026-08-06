@@ -169,7 +169,6 @@ const explore = defineCollection({
     bestTime_es: z.string(),
     bestTime_fr: z.string(),
     bestTime_pt: z.string(),
-    // `image` field in the source is dead data (dropped today by src/data/attractions.ts) — intentionally not in the schema.
   }),
 });
 
@@ -219,15 +218,6 @@ const about = defineCollection({
     purpose_es: z.string(),
     purpose_fr: z.string(),
     purpose_pt: z.string(),
-    // Dead data (no consumer) — kept optional so removing it later is safe.
-    mission_en: z.string().optional(),
-    mission_es: z.string().optional(),
-    mission_fr: z.string().optional(),
-    mission_pt: z.string().optional(),
-    vision_en: z.string().optional(),
-    vision_es: z.string().optional(),
-    vision_fr: z.string().optional(),
-    vision_pt: z.string().optional(),
     values: z.array(
       z.object({
         order: z.number(),

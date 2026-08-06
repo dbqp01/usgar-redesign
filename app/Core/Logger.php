@@ -71,10 +71,6 @@ class Logger {
         self::log('ERROR', $message, $context);
     }
 
-    public static function debug(string $message, array $context = []): void {
-        self::log('DEBUG', $message, $context);
-    }
-
     /**
      * Formatea la entrada de log como JSON estructurado.
      */

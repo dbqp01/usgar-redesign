@@ -44,8 +44,7 @@
       "bestTime_es": "Mayo a Septiembre (Temporada seca, cielos despejados)",
       "bestTime_en": "May to September (Dry season, clear skies)",
       "bestTime_fr": "Mai a Septembre (Saison seche, ciel degage)",
-      "bestTime_pt": "Maio a Setembro (Temporada seca, ceu limpo)",
-      "image": ""
+      "bestTime_pt": "Maio a Setembro (Temporada seca, ceu limpo)"
     },
     {
       "id": "sacred-valley",
@@ -91,8 +90,7 @@
       "bestTime_es": "Mayo a Octubre (Temporada seca)",
       "bestTime_en": "May to October (Dry season)",
       "bestTime_fr": "Mai a Octobre (Saison seche)",
-      "bestTime_pt": "Maio a Outubro (Temporada seca)",
-      "image": ""
+      "bestTime_pt": "Maio a Outubro (Temporada seca)"
     },
     {
       "id": "sacsayhuaman",
@@ -138,8 +136,7 @@
       "bestTime_es": "Todo el ano (Manana recomendada)",
       "bestTime_en": "Year-round (Morning recommended)",
       "bestTime_fr": "Toute l'annee (Le matin recommande)",
-      "bestTime_pt": "O ano todo (Manha recomendada)",
-      "image": ""
+      "bestTime_pt": "O ano todo (Manha recomendada)"
     },
     {
       "id": "rainbow-mountain",
@@ -185,8 +182,7 @@
       "bestTime_es": "Mayo a Septiembre (Cielos despejados)",
       "bestTime_en": "May to September (Clear skies)",
       "bestTime_fr": "Mai a Septembre (Ciel degage)",
-      "bestTime_pt": "Maio a Setembro (Ceu limpo)",
-      "image": ""
+      "bestTime_pt": "Maio a Setembro (Ceu limpo)"
     },
     {
       "id": "san-pedro-market",
@@ -232,8 +228,7 @@
       "bestTime_es": "Manana (7:00 AM - 12:00 PM)",
       "bestTime_en": "Morning (7:00 AM - 12:00 PM)",
       "bestTime_fr": "Matin (7h00 - 12h00)",
-      "bestTime_pt": "Manha (7:00 - 12:00)",
-      "image": ""
+      "bestTime_pt": "Manha (7:00 - 12:00)"
     },
     {
       "id": "plaza-de-armas",
@@ -279,8 +274,7 @@
       "bestTime_es": "Atardecer y Noche",
       "bestTime_en": "Late afternoon and Night",
       "bestTime_fr": "Fin d'apres-midi et nuit",
-      "bestTime_pt": "Fim da tarde e noite",
-      "image": ""
+      "bestTime_pt": "Fim da tarde e noite"
     },
     {
       "id": "qorikancha",
@@ -326,8 +320,7 @@
       "bestTime_es": "Manana o primera hora de la tarde",
       "bestTime_en": "Morning or early afternoon",
       "bestTime_fr": "Matin ou debut d'apres-midi",
-      "bestTime_pt": "Manha ou inicio da tarde",
-      "image": ""
+      "bestTime_pt": "Manha ou inicio da tarde"
     },
     {
       "id": "barrio-de-san-blas",
@@ -373,8 +366,7 @@
       "bestTime_es": "Tarde (2:00 PM - 6:00 PM)",
       "bestTime_en": "Afternoon (2:00 PM - 6:00 PM)",
       "bestTime_fr": "Apres-midi (14h00 - 18h00)",
-      "bestTime_pt": "Tarde (14:00 - 18:00)",
-      "image": ""
+      "bestTime_pt": "Tarde (14:00 - 18:00)"
     },
     {
       "id": "maras-salineras",
@@ -420,8 +412,7 @@
       "bestTime_es": "Temporada seca (Mayo a Octubre) para terrazas mas blancas",
       "bestTime_en": "Dry season (May to October) for whitest pools",
       "bestTime_fr": "Saison seche (Mai a Octobre) pour des terrasses tres blanches",
-      "bestTime_pt": "Temporada seca (Maio a Outubro) para terracos bem brancos",
-      "image": ""
+      "bestTime_pt": "Temporada seca (Maio a Outubro) para terracos bem brancos"
     },
     {
       "id": "moray",
@@ -467,8 +458,7 @@
       "bestTime_es": "Mayo a Octubre",
       "bestTime_en": "May to October",
       "bestTime_fr": "Mai a Octobre",
-      "bestTime_pt": "Maio a Outubro",
-      "image": ""
+      "bestTime_pt": "Maio a Outubro"
     },
     {
       "id": "ollantaytambo",
@@ -514,8 +504,7 @@
       "bestTime_es": "Todo el ano",
       "bestTime_en": "Year-round",
       "bestTime_fr": "Toute l'annee",
-      "bestTime_pt": "O ano todo",
-      "image": ""
+      "bestTime_pt": "O ano todo"
     },
     {
       "id": "pisac",
@@ -561,8 +550,7 @@
       "bestTime_es": "Manana (Martes, Jueves y Domingo)",
       "bestTime_en": "Morning (Tuesday, Thursday, Sunday)",
       "bestTime_fr": "Matin (Mardi, Enjolive le Dimanche)",
-      "bestTime_pt": "Manha (Terca, Quinta e Domingo)",
-      "image": ""
+      "bestTime_pt": "Manha (Terca, Quinta e Domingo)"
     },
     {
       "id": "humantay-lake",
@@ -608,8 +596,7 @@
       "bestTime_es": "Mayo a Octubre (Temporada seca)",
       "bestTime_en": "May to October (Dry season)",
       "bestTime_fr": "Mai a Octobre (Saison seche)",
-      "bestTime_pt": "Maio a Outubro (Temporada seca)",
-      "image": ""
+      "bestTime_pt": "Maio a Outubro (Temporada seca)"
     }
   ]
 }

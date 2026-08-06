@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Features\Auth;
 
 use App\Core\Config;
-use App\Core\Logger;
 
 /**
  * Servicio de autenticacion OAuth usando HybridAuth 3.x.
@@ -104,13 +103,6 @@ class AuthService {
             'provider'    => $provider,
             'provider_id' => $profile->identifier ?? '',
         ];
-    }
-
-    /**
-     * Verifica si un proveedor es valido y esta habilitado.
-     */
-    public static function isValidProvider(string $provider): bool {
-        return in_array($provider, self::getEnabledProviders(), true);
     }
 
     /**

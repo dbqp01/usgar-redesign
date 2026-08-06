@@ -45,15 +45,6 @@ class RoomTypeRegistry {
     }
 
     /**
-     * Retorna todos los slugs validos.
-     *
-     * @return array<int, string> [id => slug]
-     */
-    public static function all(): array {
-        return self::SLUG_MAP;
-    }
-
-    /**
      * Resuelve el UUID de Channex Room Type desde .env.
      * Formato de env key: CHANNEX_ROOM_{SLUG_UPPER_WITH_UNDERSCORES}
      */

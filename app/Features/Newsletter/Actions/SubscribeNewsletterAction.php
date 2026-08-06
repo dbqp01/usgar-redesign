@@ -7,7 +7,6 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Database;
 use App\Core\Logger;
-use PDO;
 use Throwable;
 
 /**
@@ -23,11 +22,13 @@ class SubscribeNewsletterAction {
 
         if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             Response::json(['success' => false, 'error' => 'invalid_email'], 422);
+            return;
         }
 
         $pdo = Database::getInstance()->getConnection();
         if (!$pdo) {
             Response::json(['success' => false, 'error' => 'service_unavailable'], 503);
+            return;
         }
 
         try {

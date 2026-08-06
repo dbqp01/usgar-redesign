@@ -7,6 +7,7 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Validator;
 use App\Core\Logger;
+use App\Core\Config;
 use App\Features\Shared\Ports\PmsPortInterface;
 use App\Features\Shared\RoomTypeRegistry;
 use Exception;
@@ -29,7 +30,7 @@ class GetRoomsCalendarAction {
     public function __invoke(Request $request): void {
         $from = $request->getQuery('from');
         $to   = $request->getQuery('to');
-        $hotelId = (int)($request->getQuery('id_hotel') ?? 1);
+        $hotelId = (int)($request->getQuery('id_hotel') ?? Config::get('DEFAULT_HOTEL_ID', '1'));
 
         // Default: hoy + 60 días si no se especifica
         if (!$from || !$to) {

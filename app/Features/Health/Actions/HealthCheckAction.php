@@ -5,7 +5,6 @@ namespace App\Features\Health\Actions;
 
 use App\Core\Request;
 use App\Core\Response;
-use App\Core\Config;
 use App\Core\Database;
 use Exception;
 
