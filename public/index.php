@@ -32,6 +32,7 @@ use App\Features\Rooms\Actions\GetRoomsCalendarAction;
 use App\Features\Booking\Actions\CreateBookingAction;
 use App\Features\Booking\Actions\ExtendHoldAction;
 use App\Features\Booking\Actions\GetBookingStatusAction;
+use App\Features\Booking\Actions\GetPaymentCheckAction;
 use App\Features\Webhooks\Actions\HandleMercadoPagoWebhookAction;
 use App\Features\Webhooks\Actions\HandleChannexWebhookAction;
 use App\Features\Cron\Actions\CleanExpiredCartsAction;
@@ -74,6 +75,7 @@ $router->post('/api/booking',         CreateBookingAction::class);
 $router->post('/api/process-payment', \App\Features\Booking\Actions\ProcessPaymentAction::class);
 $router->post('/api/extend-hold',     ExtendHoldAction::class);
 $router->get('/api/booking-status',   GetBookingStatusAction::class);
+$router->get('/api/payment-check',    GetPaymentCheckAction::class);
 $router->post('/api/webhook',         HandleMercadoPagoWebhookAction::class);
 $router->post('/api/webhook/channex', HandleChannexWebhookAction::class);
 

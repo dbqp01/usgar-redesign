@@ -46,22 +46,9 @@ export interface BookingResponseData {
   message?: string;
 }
 
-export interface BookingStatusData {
-  booking_id: string;
-  status: string;
-  qloapp_order_id?: string;
-  channex_status?: string;
-  guest_name?: string;
-  room_name?: string;
-  check_in?: string;
-  check_out?: string;
-  amount_paid?: number;
-  created_at?: string;
-}
-
 export type ApiResult<T> =
   | { success: true; data: T }
-  | { success: false; error: { code: string; message: string; status?: number; missingCredentials?: boolean } };
+  | { success: false; error: { code: string; message: string; status?: number; missingCredentials?: boolean; statusDetail?: string; paymentStatus?: string; paymentId?: string } };
 
 /** Disponibilidad por día y por habitación para pintar el calendario. */
 export type CalendarAvailability = Record<string, Record<string, number>>;
@@ -71,12 +58,6 @@ export interface IBookingService {
   getAvailabilityCalendar(from?: string, to?: string): Promise<ApiResult<CalendarAvailability>>;
   createHold(payload: BookingPayload): Promise<ApiResult<BookingResponseData>>;
   processPayment(cartId: string, accessToken: string, paymentData: any): Promise<ApiResult<any>>;
-  extendHoldSession(bookingId: string): Promise<ApiResult<{ extended: boolean; new_expires_at: string }>>;
-  getBookingStatus(bookingId: string): Promise<ApiResult<BookingStatusData>>;
-  subscribeToRoomAvailability?(
-    checkIn?: string,
-    checkOut?: string,
-    callback?: (rooms: RoomAvailability[]) => void,
-    intervalMs?: number
-  ): () => void;
+  getBookingStatus(cartId: string, accessToken: string): Promise<ApiResult<any>>;
+  checkPayment(cartId: string, accessToken: string): Promise<ApiResult<any>>;
 }

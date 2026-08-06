@@ -149,6 +149,16 @@ const t = useTranslations(lang);
           {t('success.verifyingPayment')}...
         </p>
       </div>
+      <button
+        type="button"
+        data-verify-again
+        class="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold uppercase tracking-wider bg-primary hover:bg-primary-dark text-white transition-[background-color,color,box-shadow] duration-300 hover:shadow-lg hover:shadow-primary/25 cursor-pointer"
+      >
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M5.1 9a7 7 0 0111.9-3M18.9 15a7 7 0 01-11.9 3" />
+        </svg>
+        {t('success.verifyAgain')}
+      </button>
       <a
         href={getRelativeLocaleUrl(lang, '')}
         class="inline-block text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary font-semibold text-sm transition-colors duration-200"
@@ -165,10 +175,10 @@ const t = useTranslations(lang);
         </svg>
       </div>
       <div>
-        <h1 class="font-display text-3xl mb-2">
+        <h1 id="error-title" class="font-display text-3xl mb-2">
           {t('success.notFound')}
         </h1>
-        <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm max-w-md mx-auto">
+        <p id="error-message-text" class="text-text-secondary-light dark:text-text-secondary-dark text-sm max-w-md mx-auto">
           {t('success.notFoundMessage')}
         </p>
       </div>
@@ -190,14 +200,29 @@ const t = useTranslations(lang);
   pluralGuest: t('success.pluralGuest') || 'Guests',
   singleNight: t('success.singleNight') || 'night',
   pluralNight: t('success.pluralNight') || 'nights',
-  pollingMsg: t('success.polling') || 'Confirming payment with the bank, please wait...',
-  pendingStatusMsg: t('success.verifyingPayment') || 'We are verifying your payment'
+  pollingMsg: t('success.polling'),
+  pendingStatusMsg: t('success.verifyingPayment'),
+  verifyAgainMsg: t('success.verifyAgain'),
+  inReviewMsg: t('success.inReview'),
+  paymentExpiredTitle: t('success.paymentExpired'),
+  paymentExpiredMsg: t('success.paymentExpiredMessage'),
+  manualReviewMsg: t('success.manualReviewMessage'),
+  retryCooldownMsg: t('success.retryCooldownMessage')
 }}>
   window.__ROOMS_DATA = JSON.parse(serializedRooms);
-  window.__I18N_DATA = { singleGuest, pluralGuest, singleNight, pluralNight, pollingMsg, pendingStatusMsg };
+  window.__I18N_DATA = { singleGuest, pluralGuest, singleNight, pluralNight, pollingMsg, pendingStatusMsg, verifyAgainMsg, inReviewMsg, paymentExpiredTitle, paymentExpiredMsg, manualReviewMsg, retryCooldownMsg };
 </script>
 
 <script>
+  import { mapBookingStatus, isPendingStatus, pendingMessageKey } from '../../utils/paymentStatus';
+
+  // Todo 27: polling continuo cada 15s hasta 10 minutos (el polling anterior
+  // moria ~88s y dejaba la tarjeta pending terminal) + boton manual
+  // "Verificar de nuevo" + fraud_review/manual_review como pendiente con
+  // mensaje "en revision" + expired_paid como pagado (enum nuevo de W2).
+  const POLL_INTERVAL_MS = 15000;
+  const MAX_POLL_ATTEMPTS = 40; // 15s x 40 = 10 min
+
   let pollingAbortController: AbortController | null = null;
 
   /** Fetch booking status with optional token for guest data access */
@@ -205,49 +230,48 @@ const t = useTranslations(lang);
     const API_BASE_URL = (import.meta.env.PUBLIC_API_URL || window.location.origin + '/api').replace(/\/$/, '');
     const tokenParam = token ? `&token=${encodeURIComponent(token)}` : '';
     const response = await fetch(`${API_BASE_URL}/booking-status?cart_id=${bookingId}${tokenParam}`, { signal });
-    if (!response.ok) throw new Error('Booking not found');
+    if (!response.ok) throw new Error('BOOKING_STATUS_ERROR');
     const payload = await response.json();
     return payload.data || payload;
   }
 
-  /** Poll until status changes from pending, with exponential backoff */
-  async function pollForPayment(bookingId: string, token: string, signal: AbortSignal, maxAttempts = 8): Promise<any> {
-    const pollingStatus = document.getElementById('polling-status');
-    let delay = 2000; // Start at 2 seconds
+  function wait(ms: number, signal: AbortSignal): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(resolve, ms);
+      signal.addEventListener('abort', () => {
+        clearTimeout(timeout);
+        reject(new Error('Aborted'));
+      });
+    });
+  }
 
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+  /** Poll hasta que el status deja de ser pendiente (intervalo fijo 15s). */
+  async function pollForPayment(bookingId: string, token: string, signal: AbortSignal): Promise<any> {
+    const pollingStatus = document.getElementById('polling-status');
+    let last: any = null;
+
+    for (let attempt = 0; attempt < MAX_POLL_ATTEMPTS; attempt++) {
       if (signal.aborted) throw new Error('Aborted');
       const booking = await fetchBookingStatus(bookingId, token, signal);
+      last = booking;
 
-      // If status is no longer pending, return immediately
-      if (booking.status && booking.status !== 'pending') {
+      // Si el status ya no es pendiente, devolver inmediatamente.
+      if (booking.status && !isPendingStatus(booking.status)) {
         return booking;
       }
 
-      // Show polling status after first attempt
+      // Mostrar polling status tras el primer intento.
       if (attempt > 0 && pollingStatus) {
-        const L = (window as any).__I18N_DATA || { pollingMsg: 'Confirming payment with the bank, please wait...' };
+        const L = (window as any).__I18N_DATA || {};
         pollingStatus.classList.remove('hidden');
-        pollingStatus.textContent = L.pollingMsg;
+        pollingStatus.textContent = L.pollingMsg || '';
       }
 
-      // Wait with exponential backoff
-      try {
-        await new Promise((resolve, reject) => {
-          const timeout = setTimeout(resolve, delay);
-          signal.addEventListener('abort', () => {
-            clearTimeout(timeout);
-            reject(new Error('Aborted'));
-          });
-        });
-      } catch (e) {
-        if (signal.aborted) throw e;
-      }
-      delay = Math.min(delay * 1.5, 24000);
+      await wait(POLL_INTERVAL_MS, signal);
     }
 
-    // After max attempts, return whatever we have
-    return await fetchBookingStatus(bookingId, token, signal);
+    // Tras 10 min, devolver el ultimo estado conocido (la UI decide).
+    return last;
   }
 
   async function loadSuccessPage() {
@@ -259,14 +283,16 @@ const t = useTranslations(lang);
     const lang: Locale = ['en', 'es', 'fr', 'pt'].includes(rawLang) ? rawLang : 'en';
     const dateLocales: Record<Locale, string> = { en: 'en-US', es: 'es-PE', fr: 'fr-FR', pt: 'pt-PT' };
     const ROOMS_DATA = (window as any).__ROOMS_DATA || [];
-    const L = (window as any).__I18N_DATA || {
-      singleGuest: '1 Guest', pluralGuest: 'Guests', singleNight: 'night', pluralNight: 'nights'
-    };
+    const L = (window as any).__I18N_DATA || {};
 
     const loadingContainer = document.getElementById('loading-container');
     const successContainer = document.getElementById('success-container');
     const pendingContainer = document.getElementById('pending-container');
     const errorContainer = document.getElementById('error-container');
+    const verifyAgainBtn = document.querySelector('[data-verify-again]') as HTMLButtonElement | null;
+    const pendingStatus = document.getElementById('pending-retry-status');
+    const errorTitle = document.getElementById('error-title');
+    const errorMsgText = document.getElementById('error-message-text');
 
     const params = new URLSearchParams(window.location.search);
     const bookingId = params.get('bookingId') || params.get('booking') || params.get('external_reference') || '';
@@ -281,90 +307,121 @@ const t = useTranslations(lang);
       return;
     }
 
-    try {
-      pollingAbortController = new AbortController();
-      // Poll for payment confirmation (handles webhook race condition)
-      const booking = await pollForPayment(bookingId, token, pollingAbortController.signal);
-
+    // Render compartido: lo usa el polling inicial y el boton "Verificar de nuevo".
+    async function renderBooking(booking: any): Promise<void> {
       if (!booking || !booking.id_room_type) throw new Error('Data mismatch');
 
-      // 3-state flow: paid -> success card, pending -> pending card, else -> error
       const status = booking.status || '';
-      const PAID_STATUSES = ['paid', 'approved'];
-      const PENDING_STATUSES = ['pending', 'provisional', 'in_process', 'authorized'];
+      const ui = mapBookingStatus(status);
 
-      if (!PAID_STATUSES.includes(status)) {
-        // Show pending card (or error for failed/expired/cancelled)
-        loadingContainer?.classList.add('hidden');
-        if (PENDING_STATUSES.includes(status)) {
-          const pendingStatus = document.getElementById('pending-retry-status');
-          if (pendingStatus) {
-            pendingStatus.textContent = (window as any).__I18N_DATA?.pendingStatusMsg || 'We are verifying your payment...';
-          }
-          pendingContainer?.classList.remove('hidden');
-        } else {
-          errorContainer?.classList.remove('hidden');
+      if (ui === 'paid') {
+        // paid/approved/expired_paid -> tarjeta de exito.
+        const room = ROOMS_DATA.find((r: any) => r.id === booking.id_room_type || r.slug === booking.id_room_type);
+
+        const formatDate = (dateStr: string) => {
+          if (!dateStr) return '';
+          const d = new Date(dateStr + 'T00:00:00');
+          const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          return d.toLocaleDateString(dateLocales[lang] || 'en-US', options);
+        };
+
+        const currency = booking.currency || 'USD';
+        const currencySymbol = currency === 'PEN' ? 'S/.' : '$';
+
+        const confCodeEl = document.getElementById('success-conf-code');
+        const guestNameEl = document.getElementById('success-guest-name');
+        const guestEmailEl = document.getElementById('success-guest-email');
+        const guestPhoneEl = document.getElementById('success-guest-phone');
+        const roomNameEl = document.getElementById('success-room-name');
+        const guestsTextEl = document.getElementById('success-guests-text');
+        const checkinEl = document.getElementById('success-checkin');
+        const checkoutEl = document.getElementById('success-checkout');
+        const billingNightsEl = document.getElementById('success-billing-nights');
+        const totalPriceEl = document.getElementById('success-total-price');
+        const currencySymbolEl = document.getElementById('success-currency-symbol');
+        const currencyCodeEl = document.getElementById('success-currency-code');
+
+        if (confCodeEl) confCodeEl.textContent = booking.cart_id || booking.id || bookingId;
+        if (guestNameEl) guestNameEl.textContent = booking.guest_name || booking.guestName || '---';
+        if (guestEmailEl) guestEmailEl.textContent = booking.guest_email || booking.guestEmail || '---';
+        if (guestPhoneEl) guestPhoneEl.textContent = booking.guest_phone || booking.guestPhone || '---';
+        if (roomNameEl) roomNameEl.textContent = booking.room_name || (room ? (room.name[lang] || room.name.en) : '---');
+
+        if (guestsTextEl) {
+          const guests = booking.guests || 2;
+          guestsTextEl.textContent = guests === 1
+            ? L.singleGuest || '1 Guest'
+            : `${guests} ${L.pluralGuest || 'Guests'}`;
         }
+
+        if (checkinEl) checkinEl.textContent = formatDate(booking.checkin || booking.checkIn);
+        if (checkoutEl) checkoutEl.textContent = formatDate(booking.checkout || booking.checkOut);
+
+        if (billingNightsEl) {
+          const nights = booking.nights || 1;
+          const priceNight = booking.price_per_night || (room ? room.pricePerNight : 0);
+          billingNightsEl.textContent = nights === 1
+            ? `1 ${L.singleNight || 'night'} x ${currencySymbol} ${priceNight} ${currency}`
+            : `${nights} ${L.pluralNight || 'nights'} x ${currencySymbol} ${priceNight} ${currency}`;
+        }
+
+        if (totalPriceEl) totalPriceEl.textContent = (booking.price || booking.totalPrice || 0).toString();
+        if (currencySymbolEl) currencySymbolEl.textContent = currencySymbol;
+        if (currencyCodeEl) currencyCodeEl.textContent = currency;
+
+        loadingContainer?.classList.add('hidden');
+        pendingContainer?.classList.add('hidden');
+        errorContainer?.classList.add('hidden');
+        successContainer?.classList.remove('hidden');
         return;
       }
 
-      const room = ROOMS_DATA.find((r: any) => r.id === booking.id_room_type || r.slug === booking.id_room_type);
-
-      const formatDate = (dateStr: string) => {
-        if (!dateStr) return '';
-        const d = new Date(dateStr + 'T00:00:00');
-        const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        return d.toLocaleDateString(dateLocales[lang] || 'en-US', options);
-      };
-
-      // Determine currency from API response
-      const currency = booking.currency || 'USD';
-      const currencySymbol = currency === 'PEN' ? 'S/.' : '$';
-
-      const confCodeEl = document.getElementById('success-conf-code');
-      const guestNameEl = document.getElementById('success-guest-name');
-      const guestEmailEl = document.getElementById('success-guest-email');
-      const guestPhoneEl = document.getElementById('success-guest-phone');
-      const roomNameEl = document.getElementById('success-room-name');
-      const guestsTextEl = document.getElementById('success-guests-text');
-      const checkinEl = document.getElementById('success-checkin');
-      const checkoutEl = document.getElementById('success-checkout');
-      const billingNightsEl = document.getElementById('success-billing-nights');
-      const totalPriceEl = document.getElementById('success-total-price');
-      const currencySymbolEl = document.getElementById('success-currency-symbol');
-      const currencyCodeEl = document.getElementById('success-currency-code');
-
-      if (confCodeEl) confCodeEl.textContent = booking.cart_id || booking.id || bookingId;
-      if (guestNameEl) guestNameEl.textContent = booking.guest_name || booking.guestName || '---';
-      if (guestEmailEl) guestEmailEl.textContent = booking.guest_email || booking.guestEmail || '---';
-      if (guestPhoneEl) guestPhoneEl.textContent = booking.guest_phone || booking.guestPhone || '---';
-      if (roomNameEl) roomNameEl.textContent = booking.room_name || (room ? (room.name[lang] || room.name.en) : '---');
-
-      if (guestsTextEl) {
-        const guests = booking.guests || 2;
-        guestsTextEl.textContent = guests === 1
-          ? L.singleGuest
-          : `${guests} ${L.pluralGuest}`;
+      if (ui === 'pending') {
+        // pending/manual_review/fraud_review -> tarjeta pendiente con mensaje
+        // especifico ("en revision" para revisiones manuales/fraude).
+        if (pendingStatus) {
+          const key = pendingMessageKey(status);
+          pendingStatus.textContent = key === 'success.inReview' ? (L.inReviewMsg || '') : ((L.pendingStatusMsg || '') + '...');
+        }
+        loadingContainer?.classList.add('hidden');
+        successContainer?.classList.add('hidden');
+        errorContainer?.classList.add('hidden');
+        pendingContainer?.classList.remove('hidden');
+        return;
       }
 
-      if (checkinEl) checkinEl.textContent = formatDate(booking.checkin || booking.checkIn);
-      if (checkoutEl) checkoutEl.textContent = formatDate(booking.checkout || booking.checkOut);
-
-      if (billingNightsEl) {
-        const nights = booking.nights || 1;
-        const priceNight = booking.price_per_night || (room ? room.pricePerNight : 0);
-        billingNightsEl.textContent = nights === 1
-          ? `1 ${L.singleNight} x ${currencySymbol} ${priceNight} ${currency}`
-          : `${nights} ${L.pluralNight} x ${currencySymbol} ${priceNight} ${currency}`;
-      }
-
-      if (totalPriceEl) totalPriceEl.textContent = (booking.price || booking.totalPrice || 0).toString();
-      if (currencySymbolEl) currencySymbolEl.textContent = currencySymbol;
-      if (currencyCodeEl) currencyCodeEl.textContent = currency;
-
-      // Show details card
+      // error: expired muestra estado correcto; el resto, reserva no encontrada.
+      if (errorTitle && status === 'expired') errorTitle.textContent = L.paymentExpiredTitle || '';
+      if (errorMsgText && status === 'expired') errorMsgText.textContent = L.paymentExpiredMsg || '';
       loadingContainer?.classList.add('hidden');
-      successContainer?.classList.remove('hidden');
+      successContainer?.classList.add('hidden');
+      pendingContainer?.classList.add('hidden');
+      errorContainer?.classList.remove('hidden');
+    }
+
+    // Boton manual "Verificar de nuevo": consulta inmediata sin esperar al poll.
+    if (verifyAgainBtn) {
+      verifyAgainBtn.addEventListener('click', async () => {
+        if (verifyAgainBtn.disabled) return;
+        verifyAgainBtn.disabled = true;
+        if (pendingStatus) pendingStatus.textContent = L.verifyingPaymentMsg || (L.pendingStatusMsg || '') + '...';
+        try {
+          const booking = await fetchBookingStatus(bookingId, token);
+          await renderBooking(booking);
+        } catch (err) {
+          console.error('[Success Page Verify Again]', err);
+          if (pendingStatus) pendingStatus.textContent = L.verifyingPaymentMsg || (L.pendingStatusMsg || '') + '...';
+        } finally {
+          verifyAgainBtn.disabled = false;
+        }
+      });
+    }
+
+    try {
+      pollingAbortController = new AbortController();
+      // Poll para la confirmacion del pago (maneja la carrera del webhook).
+      const booking = await pollForPayment(bookingId, token, pollingAbortController.signal);
+      await renderBooking(booking);
     } catch (err) {
       console.error('[Success Page Error]', err);
       loadingContainer?.classList.add('hidden');

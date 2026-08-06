@@ -1,12 +1,12 @@
 import type { IHttpClient } from './contracts/IHttpClient';
 import { defaultHttpClient } from './httpClient';
+import { normalizePaymentError } from '../utils/paymentErrors';
 import type {
   IBookingService,
   ApiResult,
   RoomAvailability,
   BookingPayload,
   BookingResponseData,
-  BookingStatusData,
   CalendarAvailability,
 } from './contracts/IBookingService';
 
@@ -115,13 +115,22 @@ export class BookingService implements IBookingService {
     });
 
     if (!response.ok || !response.data?.success) {
-      const err = response.data?.error || {};
+      // Todo 26: normalizar cualquier forma plana -> {code, message, status_detail}.
+      // El backend responde Response::error (error.details.status_detail) o
+      // plano (status/status_detail/payment_id) — unificados aqui.
+      const normalized = normalizePaymentError(response.data) || {
+        code: 'PAYMENT_FAILED',
+        message: 'Error al procesar el pago.',
+      };
       return {
         success: false,
         error: {
-          code: err.code || 'PAYMENT_FAILED',
-          message: err.message || 'Error al procesar el pago.',
+          code: normalized.code,
+          message: normalized.message,
           status: response.status,
+          statusDetail: normalized.status_detail,
+          paymentStatus: normalized.status,
+          paymentId: normalized.payment_id,
         },
       };
     }
@@ -132,77 +141,42 @@ export class BookingService implements IBookingService {
     };
   }
 
-  async extendHoldSession(bookingId: string): Promise<ApiResult<{ extended: boolean; new_expires_at: string }>> {
-    const url = `${this.baseUrl}/extend-hold`;
-    const response = await this.httpClient.post<any>(url, { cart_id: bookingId });
+  /** GET /api/booking-status?cart_id&token — estado del hold (todos 27/28/29/31). */
+  async getBookingStatus(cartId: string, accessToken: string): Promise<ApiResult<any>> {
+    const query = new URLSearchParams({ cart_id: cartId });
+    if (accessToken) query.append('token', accessToken);
+    const response = await this.httpClient.get<any>(`${this.baseUrl}/booking-status?${query.toString()}`);
 
     if (!response.ok || !response.data?.success) {
-      const err = response.data?.error || {};
       return {
         success: false,
         error: {
-          code: err.code || 'EXTEND_HOLD_FAILED',
-          message: err.message || 'No se pudo extender el temporizador de retencion de la reserva.',
+          code: 'BOOKING_STATUS_FAILED',
+          message: 'No se pudo consultar el estado de la reserva.',
           status: response.status,
         },
       };
     }
-
-    return {
-      success: true,
-      data: {
-        extended: true,
-        new_expires_at: response.data.expires_at ?? response.data.data?.expires_at,
-      },
-    };
+    return { success: true, data: response.data };
   }
 
-  async getBookingStatus(bookingId: string): Promise<ApiResult<BookingStatusData>> {
-    const url = `${this.baseUrl}/booking-status?cart_id=${encodeURIComponent(bookingId)}`;
-    const response = await this.httpClient.get<any>(url);
+  /** GET /api/payment-check?cart_id&token — pago en MP por external_reference (todo 31). */
+  async checkPayment(cartId: string, accessToken: string): Promise<ApiResult<any>> {
+    const query = new URLSearchParams({ cart_id: cartId });
+    if (accessToken) query.append('token', accessToken);
+    const response = await this.httpClient.get<any>(`${this.baseUrl}/payment-check?${query.toString()}`);
 
     if (!response.ok || !response.data?.success) {
-      const err = response.data?.error || {};
       return {
         success: false,
         error: {
-          code: err.code || 'STATUS_CHECK_FAILED',
-          message: err.message || 'No se pudo verificar el estado de la reserva.',
+          code: 'PAYMENT_CHECK_FAILED',
+          message: 'No se pudo verificar el estado del pago.',
           status: response.status,
         },
       };
     }
-
-    return {
-      success: true,
-      data: (response.data.data ?? response.data) as BookingStatusData,
-    };
-  }
-
-  subscribeToRoomAvailability(
-    checkIn?: string,
-    checkOut?: string,
-    callback?: (rooms: RoomAvailability[]) => void,
-    intervalMs = 4000
-  ): () => void {
-    if (!callback) return () => {};
-
-    const fetchAndUpdate = async () => {
-      const res = await this.getAvailableRooms(checkIn, checkOut);
-      if (res.success && Array.isArray(res.data)) {
-        callback(res.data);
-      }
-    };
-
-    // Ejecucion inicial inmediata
-    fetchAndUpdate();
-
-    // Auto-polling en segundo plano
-    const timerId = setInterval(fetchAndUpdate, intervalMs);
-
-    return () => {
-      clearInterval(timerId);
-    };
+    return { success: true, data: response.data };
   }
 }
 

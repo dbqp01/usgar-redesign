@@ -33,21 +33,12 @@
     "title": "Nuestras Habitaciones",
     "description": "Cada habitacion esta disenada con murales andinos pintados a mano, iluminacion calida y textiles artesanales que celebran la herencia cultural de Cusco.",
     "from": "Desde",
-    "perNight": "/noche",
-    "upTo": "Hasta",
-    "videoTour": "Video Tour",
-    "viewAll": "Ver todas las habitaciones",
-    "viewDetails": "Ver Detalles",
-    "from": "Desde",
-    "upTo": "Hasta",
     "perNight": "por noche",
-    "videoTour": "Video Tour"
+    "upTo": "Hasta",
+    "viewAll": "Ver todas las habitaciones"
   },
   "roomsSection": {
-    "heading": "NUESTRO REFUGIO",
-    "subheading": "Explora nuestros espacios disenados con elegancia y confort, fusionando la herencia colonial con el lujo moderno.",
-    "viewDetails": "VER DETALLES",
-    "tapHint": "Toca una habitacion para ver mas"
+    "viewDetails": "VER DETALLES"
   },
   "room": {
     "about": "Sobre la habitacion",
@@ -79,7 +70,6 @@
   },
   "services": {
     "sectionLabel": "Nuestros Servicios",
-    "title": "Todo Lo Que Necesitas",
     "description": "Desde el momento en que llegas, cuidamos cada detalle para que tu estadia en Cusco sea inolvidable."
   },
   "reviews": {
@@ -104,22 +94,18 @@
     "sectionLabel": "Ubicacion",
     "title": "Encuentranos en Cusco",
     "description": "Ubicado en el corazon de San Pedro, a pasos del mercado historico y a poca distancia de la Plaza de Armas.",
-    "hotelLabel": "USGAR HOTELS",
-    "here": "estas aqui",
     "marketLabel": "Mercado San Pedro",
     "plazaLabel": "Plaza de Armas",
     "walkTime": "Caminando",
     "directions": "Como llegar",
     "addressPrefix": "759 Calle Hospital",
-    "addressHotel": "San Pedro, Cusco"
+    "addressHotel": "San Pedro, Cusco",
+    "locationOverlay": "CUSCO / PE"
   },
   "faq": {
     "sectionLabel": "FAQ",
     "title": "Preguntas Frecuentes",
-    "description": "Todo lo que necesitas saber sobre tu estadia en Cusco: soroche (mal de altura), check-in, traslados y mas.",
-    "assistanceTitle": "Atencion 24/7",
     "assistanceDesc": "Nuestro equipo bilingue en recepcion esta listo las 24 horas para ayudarte con reservas, itinerarios a Machu Picchu y aclimatacion.",
-    "whatsappCta": "Contactar por WhatsApp",
     "receptionAlt": "Recepcion 24 horas USGAR Hotels"
   },
   "footer": {
@@ -146,9 +132,7 @@
   "theme": {
     "toggleDark": "Cambiar modo oscuro"
   },
-  "layout": {
-    "skipToContent": "Ir al contenido principal"
-  },
+  "layout": {},
   "heritage": {
     "sectionLabel": "PATRIMONIO & LEGADO",
     "heading": "UN REFUGIO VIVO",
@@ -170,7 +154,6 @@
     "formName": "Tu Nombre Completo",
     "formEmail": "Tu Correo Electronico",
     "formSubject": "Asunto o Categoria",
-    "subjectSelect": "Selecciona el motivo de tu consulta",
     "subjectBooking": "Reserva de Habitacion",
     "subjectTransfer": "Traslado desde el Aeropuerto",
     "subjectAcclimatization": "Soroche & Asistencia Medica",
@@ -181,9 +164,6 @@
     "whatsappText": "Escribenos por WhatsApp",
     "emailText": "Envianos un Correo",
     "callText": "Llamanos a Recepcion",
-    "internationalCall": "Atencion 24/7 internacional:",
-    "tripadvisorText": "Ver opiniones en TripAdvisor",
-    "bookingText": "Ver tarifas en Booking.com",
     "directionsTitle": "Como Llegar a San Pedro",
     "directionsDesc": "USGAR Hotels se encuentra en el historico barrio de San Pedro, Cusco. Ofrecemos traslados privados desde el aeropuerto para garantizar tu llegada tranquila.",
     "airportPickup": "Servicio de Traslado Privado",
@@ -194,8 +174,6 @@
     "receptionTitle": "Recepcion & Soporte 24/7",
     "receptionDesc": "Atencion continua en espanol e ingles para check-in tardio, custodia de maletas e itinerarios a Machu Picchu.",
     "checkinCheckoutTitle": "Horarios de Entrada y Salida",
-    "checkinTime": "Check-In: 11:00 AM",
-    "checkoutTime": "Check-Out: 09:00 AM",
     "faqTitle": "Preguntas Frecuentes de Llegada",
     "faqLuggageQ": "Puedo guardar mi equipaje antes del check-in o despues del check-out?",
     "faqLuggageA": "Si, ofrecemos guardado de equipaje 100% gratuito y custodiado mientras exploras Cusco o realizas la excursion a Machu Picchu.",
@@ -204,67 +182,25 @@
     "faqTransferQ": "Como coordino mi traslado desde el aeropuerto de Cusco?",
     "faqTransferA": "Puedes seleccionarlo al reservar en nuestra web o enviarnos un mensaje por WhatsApp con los datos de tu vuelo.",
     "successMessage": "Mensaje enviado con exito! Nuestro equipo te respondera a la brevedad.",
-    "messagePlaceholder": "Escribe tus dudas, fechas estimadas o requerimientos especiales aqui..."
+    "messagePlaceholder": "Escribe tus dudas, fechas estimadas o requerimientos especiales aqui...",
+    "checkinHours": "Check-in desde las 11:00 AM"
   },
   "gallery": {
     "title": "Galeria de Fotos",
     "subtitle": "Descubre la belleza y los detalles de USGAR Hotels en San Pedro, Cusco",
     "filterAll": "Todas las Fotos",
     "filterHotel": "Hotel y Areas",
-    "filterRooms": "Habitaciones",
-    "noImages": "No se encontraron imagenes."
+    "filterRooms": "Habitaciones"
   },
   "about": {
     "sectionLabel": "Nosotros",
-    "title": "Descubre Nuestra Esencia",
-    "purpose": "Crear experiencias memorables que permitan a cada viajero descubrir la esencia de Cusco, brindando un servicio calido, personalizado y de excelencia que haga de cada estadia un recuerdo inolvidable.",
     "patioAlt": "Patio Inca Colonial USGAR Hotels",
-    "fachadaAlt": "Fachada USGAR Hotels",
-    "missionTitle": "Nuestra Mision",
-    "missionText": "Brindar una experiencia de hospedaje unica en el corazon de Cusco, ofreciendo un servicio personalizado, calido y de alta calidad que combine confort, hospitalidad y la riqueza de la cultura local. Nos comprometemos a superar las expectativas de nuestros huespedes mediante una atencion excepcional, un equipo humano apasionado y practicas de turismo sostenible que generen recuerdos inolvidables.",
-    "visionTitle": "Nuestra Vision",
-    "visionText": "Ser el hotel referente de Cusco, manteniendo la esencia de nuestra cultura. Aspiramos a ser la primera eleccion de los viajeros que buscan excelencia, calidez y un servicio personalizado, distinguiendonos por nuestra hospitalidad, innovacion y compromiso con la sostenibilidad.",
-    "valuesTitle": "Nuestros Valores",
-    "hospitality": {
-      "title": "Hospitalidad",
-      "desc": "Cercania y calidez"
-    },
-    "excellence": {
-      "title": "Excelencia",
-      "desc": "Mejora continua"
-    },
-    "authenticity": {
-      "title": "Autenticidad",
-      "desc": "Cultura local"
-    },
-    "respect": {
-      "title": "Respeto",
-      "desc": "Consideracion integra"
-    },
-    "commitment": {
-      "title": "Compromiso",
-      "desc": "Pasion y dedicacion"
-    },
-    "sustainability": {
-      "title": "Sostenibilidad",
-      "desc": "Turismo responsable"
-    },
-    "teamwork": {
-      "title": "Trabajo en equipo",
-      "desc": "Colaboracion"
-    },
-    "innovation": {
-      "title": "Innovacion",
-      "desc": "Nuevas ideas"
-    }
+    "fachadaAlt": "Fachada USGAR Hotels"
   },
   "book": {
-    "stepFinal": "Paso Final",
-    "checkingAvailability": "Comprobando disponibilidad...",
     "available": "disponibles",
     "title": "Completa tu Reserva",
     "subtitle": "Por favor, introduce los datos del huesped principal y confirma las fechas para proceder al pago seguro.",
-    "stayDetails": "Detalles de la Estadia",
     "selectRoom": "Selecciona tu Habitacion",
     "selected": "Seleccionada",
     "select": "Seleccionar",
@@ -288,7 +224,6 @@
     "guaranteedText": "Cancelacion gratuita hasta 48 horas antes de tu llegada. Desayuno buffet andino incluido.",
     "videoTour": "Video Tour de la Habitacion",
     "confirmAndPay": "Confirmar y Pagar con Mercado Pago",
-    "confirmAndPayStripe": "Confirmar y Pagar con Stripe",
     "night": "noche",
     "nights": "noches",
     "processing": "Procesando...",
@@ -330,7 +265,18 @@
     "notFoundMessage": "No pudimos encontrar los detalles de la reserva. Si completaste un pago, por favor contactanos.",
     "paymentPending": "Pago Pendiente",
     "verifyingPayment": "Estamos verificando tu pago",
-    "verifyingPaymentMessage": "Tu pago esta siendo verificado con el banco. Recibiras un correo de confirmacion en breve. Por favor manten esta pagina abierta."
+    "verifyingPaymentMessage": "Tu pago esta siendo verificado con el banco. Recibiras un correo de confirmacion en breve. Por favor manten esta pagina abierta.",
+    "singleGuest": "1 Huésped",
+    "pluralGuest": "Huéspedes",
+    "singleNight": "noche",
+    "pluralNight": "noches",
+    "polling":  "Confirmando el pago con el banco, por favor espere...",
+    "verifyAgain": "Verificar de nuevo",
+    "inReview": "Tu pago está en revisión. Puede tardar unos minutos en confirmarse.",
+    "paymentExpired": "Reserva Expirada",
+    "paymentExpiredMessage": "El tiempo de reserva expiró antes de confirmar el pago. Crea una nueva reserva.",
+    "manualReviewMessage": "No pudimos confirmar tu pago. Contacta al hotel con tu número de reserva para completarla.",
+    "retryCooldownMessage": "Podrás verificar de nuevo en {n}"
   },
   "auth": {
     "signIn": "Iniciar Sesion",
@@ -340,19 +286,13 @@
     "myBookings": "Mis Reservas",
     "welcomeTitle": "Bienvenido a USGAR Hotels",
     "welcomeSubtitle": "Inicia sesion para reservar mas rapido y gestionar tus reservas",
-    "continueWith": "Continuar con",
     "continueWithGoogle": "Continuar con Google",
     "continueWithMicrosoft": "Continuar con Microsoft",
     "continueWithFacebook": "Continuar con Facebook",
     "orUseEmail": "O usa tu correo",
     "emailAddress": "Correo electronico",
     "password": "Contrasena",
-    "confirmPassword": "Confirmar contrasena",
     "fullName": "Nombre completo",
-    "firstName": "Nombre",
-    "lastName": "Apellido",
-    "alreadyHaveAccount": "Ya tienes una cuenta?",
-    "dontHaveAccount": "No tienes cuenta?",
     "loginToBookFaster": "Inicia sesion para reservar mas rapido con tus datos guardados",
     "welcomeBack": "Bienvenido de vuelta",
     "noBookingsYet": "Aun no tienes reservas.",
@@ -364,25 +304,16 @@
     "statusExpired": "Expirada",
     "statusCancelled": "Cancelada",
     "statusCompleted": "Completada",
-    "nights": "noches",
-    "night": "noche",
-    "checkinDate": "Entrada",
-    "checkoutDate": "Salida",
-    "totalPaid": "Total",
-    "registrationSuccess": "Cuenta creada exitosamente!",
     "loginError": "Correo o contrasena incorrectos.",
     "emailExists": "Ya existe una cuenta con este correo.",
-    "passwordTooShort": "La contrasena debe tener al menos 8 caracteres."
+    "statusPaid": "Pagado"
   },
   "global": {
     "skipToContent": "Ir al contenido principal",
-    "directions": "Como llegar",
     "contactWhatsApp": "Contactar por WhatsApp",
     "assistance247": "Atencion 24/7",
     "elevatedExperience": "EXPERIENCIA COMPLETA",
     "alsoIncluded": "Tambien incluimos:",
-    "night": "noche",
-    "includedFree": "Incluido sin costo extra",
     "marquee1": "San Pedro",
     "marquee2": "Cusco",
     "marquee3": "Machu Picchu",
@@ -402,34 +333,87 @@
     "altReception": "Recepcion de USGAR Hotels"
   },
   "wizard": {
-    "step1": "Fechas y habitaciones",
-    "step2": "Datos del huesped",
-    "step3": "Pago",
     "step1Label": "Estancia",
     "step2Label": "Huesped",
     "step3Label": "Pagar",
     "stepOf": "Paso {n} de 3",
     "calendarTitle": "Elige tus fechas",
     "guestsLabel": "Huespedes",
-    "prevMonth": "Mes anterior",
-    "nextMonth": "Mes siguiente",
     "checkIn": "Llegada",
     "checkOut": "Salida",
-    "nights": "{n} noches",
     "availabilityChecking": "Comprobando disponibilidad...",
     "availabilityDegraded": "La disponibilidad en vivo no esta disponible. Mostrando disponibilidad completa.",
     "rangeUnavailable": "No hay habitaciones disponibles para estas fechas.",
     "soldOut": "Agotado",
     "availableOn": "Disponible:",
     "alternatives": "Ver alternativas",
-    "onlyThisRoom": "Habitacion elegida", "toast": { "optionsUpdated": "Opciones actualizadas", "bestPrice": "Mejor precio {total}", "datesAdjusted": "Fechas ajustadas", "datesAdjustedDesc": "La salida se movio para mantener tu estancia valida.", "selectDates": "Elige tus fechas", "checkinTo": "Llegada" },
+    "onlyThisRoom": "Habitacion elegida",
+    "toast": {
+      "optionsUpdated": "Opciones actualizadas",
+      "bestPrice": "Mejor precio {total}",
+      "datesAdjusted": "Fechas ajustadas",
+      "datesAdjustedDesc": "La salida se movio para mantener tu estancia valida."
+    },
     "bestPrice": "Mejor precio",
     "perNight": "/noche",
     "roomsCount": "{n} habitaciones",
     "continue": "Continuar",
     "back": "Atras",
-    "summary": "Tu estancia",
-    "total": "Total",
-    "extras": "Huesped extra", "multiRoomNote": "Las combinaciones de varias habitaciones se muestran para comparar. Elige una habitacion para pagar online."
+    "extras": "Huesped extra",
+    "multiRoomNote": "Las combinaciones de varias habitaciones se muestran para comparar. Elige una habitacion para pagar online."
+  },
+  "payment": {
+    "cardNumber": "Número de Tarjeta",
+    "expiration": "Vencimiento",
+    "cvv": "CVV",
+    "cardholderName": "Nombre del Titular",
+    "documentType": "Tipo de Documento",
+    "documentNumber": "Número de Documento",
+    "cardNumberPlaceholder": "0000 0000 0000 0000",
+    "expirationPlaceholder": "MM/AA",
+    "cvvPlaceholder": "CVV",
+    "cardholderNamePlaceholder": "Nombre del titular",
+    "documentNumberPlaceholder": "12345678",
+    "holdCountdown": "La reserva se libera en {n}",
+    "payNow": "Pagar Ahora",
+    "processing": "Procesando pago...",
+    "preparing": "Preparando pago seguro...",
+    "pendingPayment": "Tu pago está pendiente de confirmación. Serás redirigido para verificar su estado.",
+    "verifyingPayment": "Verificando estado del pago...",
+    "rejectedGeneric": "El pago fue rechazado. Revisa los datos e intenta de nuevo.",
+    "retryCooldown": "Podrás reintentar en {n}",
+    "retryButton": "Reintentar pago",
+    "manualReview": "No pudimos confirmar tu pago tras varios intentos. Contacta al hotel para completar la reserva.",
+    "statusDetails": {
+      "pending_challenge": "Debes completar la verificación 3D Secure para confirmar el pago.",
+      "pending_waiting_transfer": "Esperando la transferencia bancaria para confirmar el pago.",
+      "cc_rejected_3ds_challenge": "La verificación 3D Secure no fue completada. Intenta de nuevo.",
+      "cc_rejected_3ds_mandatory": "El banco requiere verificación 3D Secure. Intenta de nuevo.",
+      "cc_rejected_bad_filled_card_number": "Revisa el número de tarjeta e intenta de nuevo.",
+      "cc_rejected_bad_filled_date": "Revisa la fecha de vencimiento de la tarjeta.",
+      "cc_rejected_bad_filled_other": "Revisa los datos de la tarjeta e intenta de nuevo.",
+      "cc_rejected_bad_filled_security_code": "Revisa el código de seguridad de la tarjeta (CVV).",
+      "cc_rejected_blacklist": "No pudimos procesar tu pago. Intenta con otra tarjeta o medio de pago.",
+      "cc_rejected_call_for_authorize": "Debes autorizar el pago con tu banco o emisor de la tarjeta.",
+      "cc_rejected_card_disabled": "Tu tarjeta está deshabilitada. Actívala con tu banco o usa otra tarjeta.",
+      "cc_rejected_card_error": "No pudimos procesar tu pago. Intenta de nuevo.",
+      "cc_rejected_duplicated_payment": "Ya se realizó un pago por este valor. Si necesitas pagar de nuevo, usa otra tarjeta.",
+      "cc_rejected_high_risk": "Tu pago fue rechazado por prevención de fraude. Elige otro medio de pago.",
+      "cc_rejected_insufficient_amount": "Tu tarjeta no tiene fondos suficientes. Usa otra tarjeta o medio de pago.",
+      "cc_rejected_invalid_installments": "El medio de pago no procesa pagos en cuotas. Elige otra opción.",
+      "cc_rejected_max_attempts": "Llegaste al límite de intentos permitidos. Elige otra tarjeta o medio de pago.",
+      "cc_rejected_other_reason": "El medio de pago no procesó el pago. Intenta con otra tarjeta.",
+      "cc_amount_rate_limit_exceeded": "El pago superó el límite del medio de pago. Elige otro medio.",
+      "rejected_insufficient_data": "El pago fue rechazado por falta de información. Revisa los datos e intenta de nuevo.",
+      "rejected_by_bank": "Operación rechazada por el banco. Intenta con otra tarjeta.",
+      "rejected_by_regulations": "Pago rechazado por regulaciones. Contacta con el hotel.",
+      "insufficient_amount": "Pago rechazado por montos insuficientes. Revisa el importe.",
+      "cc_rejected_card_type_not_allowed": "Tu tarjeta no tiene habilitada la función crédito. Usa otra tarjeta.",
+      "bank_error": "El pago fue rechazado por un error con el banco. Intenta de nuevo."
+    }
+  },
+  "status": {
+    "ready": "Sistema listo.",
+    "close": "Cerrar notificación"
   }
 }

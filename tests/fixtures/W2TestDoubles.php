@@ -90,6 +90,12 @@ final class FakeGateway implements PaymentGatewayPortInterface {
         return null;
     }
 
+    public function findPaymentByExternalReference(string $externalRef): ?array {
+        // Test double del port (todo 31): la busqueda por external_reference
+        // no se usa en los workers de carrera de W2 -> sin resultados.
+        return null;
+    }
+
     public function refundPayment(string $paymentId, ?float $amount = null): bool {
         return true;
     }

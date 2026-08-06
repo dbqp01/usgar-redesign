@@ -2,7 +2,9 @@
 // src/components/booking/PaymentStep.astro
 // Paso 3 del wizard: el flujo de pago MercadoPago EXISTENTE, intacto
 // (createHold -> cardForm -> processPayment). Solo maquetado editorial.
-// El backend de pagos NO se toca (no-go del spec).
+// W5 (todos 28-31): pending -> success (sin apilar), pre-retry booking-status
+// + payment-check, countdown del hold + extend, cooldown deterministico,
+// beforeunload guard. Todo texto sale del i18n (todo 30).
 import { useTranslations, type Locale } from '../../i18n/utils';
 
 const lang = (Astro.currentLocale || 'en') as Locale;
@@ -13,7 +15,7 @@ const t = useTranslations(lang);
   <div data-payment-panel class="hidden bg-surface-card-light dark:bg-surface-card-dark p-6 md:p-8 rounded-3xl border border-black/5 dark:border-white/5 shadow-sm space-y-6">
     <h2 class="font-display text-2xl flex items-center gap-3 border-b border-black/5 dark:border-white/5 pb-3">
       <span class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">3</span>
-      {t('book.paymentDetails') || 'Payment Details'}
+      {t('book.paymentDetails')}
     </h2>
 
     <div data-payment-note class="hidden p-4 rounded-xl border border-primary/20 bg-primary/5 text-primary text-sm"></div>
@@ -21,7 +23,7 @@ const t = useTranslations(lang);
     <form id="mp-payment-form" class="space-y-4">
       <div>
         <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-          Card Number *
+          {t('payment.cardNumber')} *
         </label>
         <div id="form-checkout__cardNumber" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm h-[46px] shadow-sm"></div>
       </div>
@@ -29,13 +31,13 @@ const t = useTranslations(lang);
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-            Expiration *
+            {t('payment.expiration')} *
           </label>
           <div id="form-checkout__expirationDate" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm h-[46px] shadow-sm"></div>
         </div>
         <div>
           <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-            CVV *
+            {t('payment.cvv')} *
           </label>
           <div id="form-checkout__securityCode" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm h-[46px] shadow-sm"></div>
         </div>
@@ -43,23 +45,23 @@ const t = useTranslations(lang);
 
       <div>
         <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-          Cardholder Name *
+          {t('payment.cardholderName')} *
         </label>
-        <input type="text" id="form-checkout__cardholderName" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none placeholder:text-stone-400" placeholder="John Doe" />
+        <input type="text" id="form-checkout__cardholderName" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none placeholder:text-stone-400" placeholder={t('payment.cardholderNamePlaceholder')} />
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-            Document Type *
+            {t('payment.documentType')} *
           </label>
           <select id="form-checkout__identificationType" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none appearance-none"></select>
         </div>
         <div>
           <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-            Document Number *
+            {t('payment.documentNumber')} *
           </label>
-          <input type="text" id="form-checkout__identificationNumber" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none placeholder:text-stone-400" placeholder="12345678" />
+          <input type="text" id="form-checkout__identificationNumber" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none placeholder:text-stone-400" placeholder={t('payment.documentNumberPlaceholder')} />
         </div>
       </div>
 
@@ -72,12 +74,14 @@ const t = useTranslations(lang);
       </div>
 
       <button type="submit" id="btn-final-pay" disabled class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-xl transition-[transform,background-color,box-shadow] duration-300 hover:shadow-lg hover:shadow-primary/25 lg:hover:-translate-y-0.5 text-lg cursor-pointer flex items-center justify-center gap-3 mt-6 disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none">
-        <span id="btn-final-text">Pay Now</span>
+        <span id="btn-final-text">{t('payment.payNow')}</span>
         <svg id="btn-final-spinner" class="hidden animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
       </button>
+
+      <p data-hold-countdown class="hidden text-center text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400"></p>
     </form>
 
     <div class="flex items-center justify-between pt-2">
@@ -100,7 +104,7 @@ const t = useTranslations(lang);
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
       </svg>
-      <span data-payment-placeholder-text>Preparing secure payment...</span>
+      <span data-payment-placeholder-text>{t('payment.preparing')}</span>
     </div>
     <button
       type="button"
@@ -116,7 +120,18 @@ const t = useTranslations(lang);
   import { wizardStore } from '../../features/booking/wizardStore';
   import { bookingService } from '../../services/bookingService';
   import { toastApi } from '../../features/ui/toast';
-  import type { Locale } from '@/i18n/utils';
+  import { useTranslations, type Locale } from '@/i18n/utils';
+  import { resolvePaymentOutcome, planRetryAfterFailure } from '@/utils/paymentStatus';
+  import { formatCountdown, shouldExtendHold } from '@/utils/holdCountdown';
+  import { statusDetailKey, paymentErrorFallbackKey } from '@/utils/paymentErrors';
+
+  type TFunc = (key: string) => string;
+
+  // Locales del SDK de MercadoPago por idioma del sitio (todo 30).
+  const MP_LOCALES: Record<Locale, string> = { en: 'en-US', es: 'es-PE', fr: 'fr-FR', pt: 'pt-BR' };
+
+  // Todo 31: cooldown deterministico >= 60s entre reintentos tras fallo de red.
+  const RETRY_COOLDOWN_MS = 60_000;
 
   let abortController = new AbortController();
   let started = false;
@@ -124,6 +139,14 @@ const t = useTranslations(lang);
   // Timer de seguridad: si onReady no llega (iframes bloqueados por adblocker,
   // SDK lento), habilita el botón Pay para no bloquear al usuario para siempre.
   let payReadyTimer: number | null = null;
+  // Todo 29: countdown del hold + extend (una sola vez).
+  let countdownTimer: number | null = null;
+  let holdExtendCalled = false;
+  // Todo 31: estado del reintento.
+  let retryBlockedStreak = 0;
+  let cooldownEndsAt = 0;
+  let retryTimer: number | null = null;
+  let processingPayment = false;
 
   function setProcessing(p: boolean): void {
     wizardStore.setState({ processing: p });
@@ -178,6 +201,165 @@ const t = useTranslations(lang);
     });
   }
 
+  // ---- Todo 28: redirigir a success sin apilar reintentos ----
+  function redirectToSuccess(cartId: string): void {
+    const lang = (document.documentElement.lang || 'en') as Locale;
+    let successUrl = `/book/success?booking=${cartId}`;
+    if (lang !== 'en') successUrl = `/${lang}${successUrl}`;
+    window.location.href = successUrl;
+  }
+
+  // ---- Todo 29: countdown del hold + extend (una vez) + beforeunload ----
+  function stopHoldCountdown(): void {
+    if (countdownTimer !== null) {
+      window.clearInterval(countdownTimer);
+      countdownTimer = null;
+    }
+  }
+
+  async function startHoldCountdown(cartId: string, accessToken: string, t: TFunc): Promise<void> {
+    stopHoldCountdown();
+    const el = document.querySelector('[data-hold-countdown]') as HTMLElement | null;
+    if (!el) return;
+    try {
+      const res = await bookingService.getBookingStatus(cartId, accessToken);
+      if (!res.success) return;
+      let timeLeft = Math.max(0, Number(res.data?.time_left_seconds ?? 0));
+      if (timeLeft <= 0) return;
+
+      const render = () => {
+        el.textContent = t('payment.holdCountdown').replace('{n}', formatCountdown(timeLeft));
+        el.classList.remove('hidden');
+      };
+      render();
+      countdownTimer = window.setInterval(() => {
+        timeLeft -= 1;
+        if (timeLeft <= 0) {
+          stopHoldCountdown();
+          render();
+          return;
+        }
+        render();
+        // Extender UNA vez al llegar a ~60s (endpoint extend-hold del backend).
+        if (shouldExtendHold(timeLeft, 60, holdExtendCalled)) {
+          holdExtendCalled = true;
+          void extendHoldOnce(cartId, accessToken, t);
+        }
+      }, 1000);
+    } catch {
+      // Sin countdown el pago sigue funcionando (best-effort).
+    }
+  }
+
+  async function extendHoldOnce(cartId: string, accessToken: string, t: TFunc): Promise<void> {
+    try {
+      const response = await fetch('/api/extend-hold', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cart_id: cartId, access_token: accessToken }),
+      });
+      const payload = await response.json();
+      if (payload?.success && payload.time_left_seconds) {
+        // Reiniciar el countdown con el nuevo tiempo del hold.
+        stopHoldCountdown();
+        void startHoldCountdown(cartId, accessToken, t);
+      }
+    } catch {
+      // Best-effort: si el extend falla, el countdown sigue y el usuario puede pagar.
+    }
+  }
+
+  // ---- Todo 31: cooldown deterministico visible en el botón ----
+  function startCooldown(seconds: number, t: TFunc): void {
+    const btn = document.getElementById('btn-final-pay') as HTMLButtonElement | null;
+    const text = document.getElementById('btn-final-text');
+    const spinner = document.getElementById('btn-final-spinner');
+    if (spinner) spinner.classList.add('hidden');
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add('disabled:pointer-events-none');
+    }
+    let remaining = seconds;
+    const tick = () => {
+      if (text) text.textContent = t('payment.retryCooldown').replace('{n}', formatCountdown(Math.max(0, remaining)));
+      if (remaining <= 0) {
+        if (retryTimer !== null) { window.clearInterval(retryTimer); retryTimer = null; }
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('disabled:pointer-events-none');
+        }
+        if (text) text.textContent = t('payment.payNow');
+        return;
+      }
+      remaining -= 1;
+    };
+    if (retryTimer !== null) window.clearInterval(retryTimer);
+    retryTimer = window.setInterval(tick, 1000);
+    tick();
+  }
+
+  function stopCooldown(): void {
+    if (retryTimer !== null) {
+      window.clearInterval(retryTimer);
+      retryTimer = null;
+    }
+  }
+
+  // ---- Todo 31: flujo pre-retry (booking-status -> payment-check -> plan) ----
+  async function handlePaymentFailure(
+    error: { code?: string; message?: string; statusDetail?: string },
+    cartId: string,
+    accessToken: string,
+    t: TFunc,
+    showError: (msg: string) => void
+  ): Promise<void> {
+    const isNetworkFailure = error.code === 'TIMEOUT_ERROR' || error.code === 'NETWORK_ERROR';
+
+    // Mensaje accionable por status_detail (todo 26/30) o generico.
+    const detailKey = statusDetailKey(error.statusDetail);
+    showError(detailKey ? t(detailKey) : t(paymentErrorFallbackKey()));
+
+    try {
+      // 1) Estado local: si ya hay payment_id o pago confirmado -> success.
+      const local = await bookingService.getBookingStatus(cartId, accessToken);
+      if (local.success && resolvePaymentOutcome(null, local.data) === 'redirect_success') {
+        redirectToSuccess(cartId);
+        return;
+      }
+      // 2) MP por external_reference (payment-check, todo 31): pago existente
+      //    -> success; NUNCA crear un segundo pago.
+      const check = await bookingService.checkPayment(cartId, accessToken);
+      const plan = planRetryAfterFailure({
+        localStatus: local.success ? local.data : null,
+        paymentCheck: check.success ? check.data : null,
+        blockedStreak: retryBlockedStreak,
+        cooldownEndsAt,
+        now: Date.now(),
+      });
+      if (plan.action === 'redirect_success') {
+        redirectToSuccess(cartId);
+        return;
+      }
+      if (plan.action === 'manual_review') {
+        showError(t('payment.manualReview'));
+        return; // el botón queda deshabilitado; guiado a revisión manual.
+      }
+      if (plan.action === 'cooldown') {
+        startCooldown(plan.cooldownSeconds || 60, t);
+        return;
+      }
+      // retry seguro: marcar bloqueo (solo fallos de red) + cooldown >= 60s.
+      if (isNetworkFailure) retryBlockedStreak += 1;
+      cooldownEndsAt = Date.now() + RETRY_COOLDOWN_MS;
+      startCooldown(Math.ceil(RETRY_COOLDOWN_MS / 1000), t);
+    } catch {
+      // No verificable (red caída también para las consultas): fail-safe.
+      if (isNetworkFailure) retryBlockedStreak += 1;
+      cooldownEndsAt = Date.now() + RETRY_COOLDOWN_MS;
+      startCooldown(Math.ceil(RETRY_COOLDOWN_MS / 1000), t);
+    }
+  }
+
   function initPaymentStep() {
     abortController.abort();
     abortController = new AbortController();
@@ -219,7 +401,7 @@ const t = useTranslations(lang);
 
     const room = allocation.rooms[0].room;
     const lang = (document.documentElement.lang || 'en') as Locale;
-    const LABELS = (window as any).__LABELS || {};
+    const t = useTranslations(lang);
 
     function showError(msg: string) {
       toastApi.error({ title: msg });
@@ -293,7 +475,7 @@ const t = useTranslations(lang);
           resetPaymentUi();
           setProcessing(false);
           started = false;
-          showError(LABELS.noPaymentUrl || 'Missing required payment data from backend');
+          showError(t('book.noPaymentUrl'));
           return;
         }
 
@@ -303,15 +485,19 @@ const t = useTranslations(lang);
           resetPaymentUi();
           setProcessing(false);
           started = false;
-          showError(LABELS.unexpectedError || 'Payment gateway could not load');
+          showError(t('book.unexpectedError'));
           return;
         }
 
-        const mp = new (window as any).MercadoPago(mpPublicKey, { locale: lang === 'es' ? 'es-PE' : 'en-US' });
+        // Todo 30: locale del SDK por idioma (es-PE default para es).
+        const mp = new (window as any).MercadoPago(mpPublicKey, { locale: MP_LOCALES[lang] || 'es-PE' });
 
         const btnFinalPay = document.getElementById('btn-final-pay') as HTMLButtonElement | null;
         const btnFinalSpinner = document.getElementById('btn-final-spinner');
         const btnFinalText = document.getElementById('btn-final-text');
+
+        // Todo 29: countdown del hold desde time_left_seconds (best-effort).
+        void startHoldCountdown(cartId, accessToken, t);
 
         // Mostrar el formulario ANTES de crear el cardForm: MercadoPago monta
         // los iframes de secure-fields sobre elementos visibles con layout.
@@ -337,9 +523,9 @@ const t = useTranslations(lang);
           iframe: true,
           form: {
             id: "mp-payment-form",
-            cardNumber: { id: "form-checkout__cardNumber", placeholder: "0000 0000 0000 0000" },
-            expirationDate: { id: "form-checkout__expirationDate", placeholder: "MM/YY" },
-            securityCode: { id: "form-checkout__securityCode", placeholder: "CVV" },
+            cardNumber: { id: "form-checkout__cardNumber", placeholder: t('payment.cardNumberPlaceholder') },
+            expirationDate: { id: "form-checkout__expirationDate", placeholder: t('payment.expirationPlaceholder') },
+            securityCode: { id: "form-checkout__securityCode", placeholder: t('payment.cvvPlaceholder') },
             cardholderName: { id: "form-checkout__cardholderName" },
             issuer: { id: "form-checkout__issuer" },
             installments: { id: "form-checkout__installments" },
@@ -379,7 +565,7 @@ const t = useTranslations(lang);
               // (fallo al crear token, identificación inválida, red, etc.)
               const msg = (error && error.length > 0 && error[0].message)
                 ? String(error[0].message)
-                : (LABELS.unexpectedError || 'Payment could not be processed');
+                : t('book.unexpectedError');
               showCardError(msg);
             },
             onCardTokenReceived: (error: any) => {
@@ -387,16 +573,17 @@ const t = useTranslations(lang);
               if (error) {
                 const msg = (error && error.length > 0 && error[0].message)
                   ? String(error[0].message)
-                  : (LABELS.cardError || 'Card could not be verified. Check the card details and try again.');
+                  : t('book.cardError');
                 showCardError(msg);
               }
             },
             onSubmit: async (event: any) => {
               event.preventDefault();
               clearCardError();
+              processingPayment = true;
               if (btnFinalPay) btnFinalPay.disabled = true;
               if (btnFinalSpinner) btnFinalSpinner.classList.remove('hidden');
-              if (btnFinalText) btnFinalText.textContent = LABELS.processing || 'Processing...';
+              if (btnFinalText) btnFinalText.textContent = t('payment.processing');
               errorBanner?.classList.add('hidden');
 
               try {
@@ -405,7 +592,7 @@ const t = useTranslations(lang);
                 if (!formData.token) {
                   // La tokenización falló y el SDK no creó el token:
                   // el error ya fue mostrado por onCardTokenReceived/onError.
-                  throw new Error(LABELS.cardError || 'Card could not be verified. Check the card details and try again.');
+                  throw new Error(t('book.cardError'));
                 }
 
                 const processRes = await bookingService.processPayment(cartId!, accessToken!, {
@@ -422,23 +609,43 @@ const t = useTranslations(lang);
                   }
                 });
 
-                if (!processRes.success) {
-                  showError(processRes.error?.message || 'Payment failed');
-                  if (btnFinalPay) btnFinalPay.disabled = false;
-                  if (btnFinalSpinner) btnFinalSpinner.classList.add('hidden');
-                  if (btnFinalText) btnFinalText.textContent = 'Pay Now';
+                if (processRes.success) {
+                  redirectToSuccess(cartId!);
                   return;
                 }
 
-                let successUrl = `/book/success?booking=${cartId}`;
-                if (lang !== 'en') successUrl = `/${lang}${successUrl}`;
-                window.location.href = successUrl;
+                // Todo 28: pago pending/in_process/payment_id -> success
+                // (el polling de success.astro resuelve; nunca apilar).
+                const outcome = resolvePaymentOutcome(processRes.error, null);
+                if (outcome === 'redirect_success') {
+                  redirectToSuccess(cartId!);
+                  return;
+                }
+
+                // Todo 31: fallo (rechazo o red) -> pre-retry check.
+                await handlePaymentFailure(
+                  {
+                    code: processRes.error.code,
+                    message: processRes.error.message,
+                    statusDetail: processRes.error.statusDetail,
+                  },
+                  cartId!,
+                  accessToken!,
+                  t,
+                  showError
+                );
               } catch (err: any) {
                 console.error(err);
-                showError(err.message || 'Payment processing failed');
-                if (btnFinalPay) btnFinalPay.disabled = false;
+                await handlePaymentFailure(
+                  { code: 'NETWORK_ERROR', message: err.message || '' },
+                  cartId!,
+                  accessToken!,
+                  t,
+                  showError
+                );
+              } finally {
+                processingPayment = false;
                 if (btnFinalSpinner) btnFinalSpinner.classList.add('hidden');
-                if (btnFinalText) btnFinalText.textContent = 'Pay Now';
               }
             }
           }
@@ -448,7 +655,7 @@ const t = useTranslations(lang);
         resetPaymentUi();
         setProcessing(false);
         started = false; // permitir reintento tras error inesperado
-        showError(err.message || LABELS.unexpectedError);
+        showError(err.message || t('book.unexpectedError'));
       }
   }
 
@@ -456,6 +663,8 @@ const t = useTranslations(lang);
     // Volver al formulario de datos (guest): desmontar el cardForm (doc MP:
     // unmount() limpia los iframes de secure-fields) y restaurar el guest.
     if (payReadyTimer !== null) { window.clearTimeout(payReadyTimer); payReadyTimer = null; }
+    stopCooldown();
+    stopHoldCountdown();
     if (cardFormInstance && typeof cardFormInstance.unmount === 'function') {
       try { cardFormInstance.unmount(); } catch (e) { console.warn('cardForm unmount error:', e); }
     }
@@ -465,9 +674,21 @@ const t = useTranslations(lang);
     started = false;
   }
 
+  // Todo 29: guard beforeunload durante processPayment (avisar antes de salir
+  // mientras el pago está en vuelo — el doble submit y el abandono son el
+  // riesgo que estos todos mitigan).
+  function handleBeforeUnload(event: BeforeUnloadEvent): void {
+    if (processingPayment) {
+      event.preventDefault();
+    }
+  }
+
   document.addEventListener('astro:page-load', initPaymentStep);
+  window.addEventListener('beforeunload', handleBeforeUnload);
   document.addEventListener('astro:before-preparation', () => {
     if (payReadyTimer !== null) { window.clearTimeout(payReadyTimer); payReadyTimer = null; }
+    stopCooldown();
+    stopHoldCountdown();
     abortController.abort();
   });
 </script>
