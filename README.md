@@ -11,7 +11,7 @@ Requisitos: Node ≥ 22, PHP ≥ 8.2 (con pdo_mysql, xml, mbstring), Composer (s
 ```bash
 npm install
 composer install          # vendor/ (en prod Hostinger no existe: el build lo copia)
-cp .env.example .env      # credenciales reales (BD, MP, QloApps, Channex)
+cp .env.example .env      # credenciales reales (BD, MP, QloApps)
 npm run dev:all           # Astro en :4321 + PHP API en :8000 (proxy /api)
 ```
 
@@ -66,8 +66,8 @@ Para generar el hash: `php -r "echo hash('sha256', getenv('MERCADO_PAGO_ACCESS_T
 
 ## Arquitectura en una línea
 
-`src/` (Astro) → consume `/api/*` → `public/index.php` → `app/Features/<X>/Actions` (ADR, DI PSR-11) → `Ports/Adapters` → QloApps (PMS, XML), Channex (channel manager), MercadoPago (pagos USD, webhooks). Ver `AGENTS.md` para el detalle por capa.
+`src/` (Astro) → consume `/api/*` → `public/index.php` → `app/Features/<X>/Actions` (ADR, DI PSR-11) → `Ports/Adapters` → QloApps (PMS, XML), MercadoPago (pagos USD, webhooks). Channel manager (QloApps CM, Webkul): activación pendiente de pago — ver `docs/CHANNEL_MANAGER_SETUP.md`. Detalle por capa en `AGENTS.md`.
 
 ## Stack
 
-Astro 7 · Tailwind CSS 4 · GSAP · Leaflet · Lenis · PHP 8 (PDO/MySQL, sin framework) · MercadoPago · QloApps · Channex · hybridauth · Playwright · Vitest · PHPStan
+Astro 7 · Tailwind CSS 4 · GSAP · Leaflet · Lenis · PHP 8 (PDO/MySQL, sin framework) · MercadoPago · QloApps (PMS; Channel Manager Webkul pendiente de pago) · hybridauth · Playwright · Vitest · PHPStan
