@@ -20,7 +20,7 @@ const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
   rel="noopener noreferrer"
   id="whatsapp-btn"
   class="fixed bottom-20 lg:bottom-6 right-4 sm:right-6 z-50 w-14 h-14 bg-whatsapp rounded-full flex items-center justify-center shadow-lg shadow-whatsapp/30 hover:scale-110 hover:shadow-xl hover:shadow-whatsapp/40 transition-[transform,box-shadow] duration-300 group"
-  aria-label="Chat on WhatsApp"
+  aria-label={t('whatsapp.ariaLabel')}
 >
   <!-- WhatsApp SVG Icon -->
   <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">

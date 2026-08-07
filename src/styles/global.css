@@ -206,6 +206,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Keep the floating contact action out of the mobile drawer's focus area. */
+body.mobile-menu-open #whatsapp-btn {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 /* Touch responsiveness: Eliminate 300ms tap delay in mobile browsers */
 a, button, input[type="submit"], [role="button"] {
   touch-action: manipulation;

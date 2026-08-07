@@ -13,7 +13,7 @@ const t = useTranslations(lang);
 const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
 ---
 
-<section id="booking-widget" class="relative z-20 -mt-10 sm:-mt-24 mb-2 sm:mb-4" data-story-parallax="0.05">
+<section id="booking-widget" class="relative z-50 -mt-10 sm:-mt-24 mb-2 sm:mb-4" data-story-parallax="0.05">
   <div class="max-w-6xl mx-auto px-4">
     <div class="glass rounded-2xl p-6 shadow-xl shadow-black/5">
       <form id="booking-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
@@ -28,6 +28,7 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
             data-widget-dates
             aria-haspopup="dialog"
             aria-expanded="false"
+            aria-controls="widget-popover"
             class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark text-left hover:border-primary/40 transition-colors cursor-pointer"
           >
             <span data-widget-dates-label class="font-medium">-- / --</span>
@@ -35,9 +36,13 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
 
           <!-- Calendar Popover -->
           <div
+            id="widget-popover"
             data-widget-popover
-            class="absolute left-0 right-0 sm:right-auto sm:w-[560px] top-full mt-3 hidden z-50 p-6 rounded-2xl bg-white dark:bg-surface-card-dark border border-black/10 dark:border-white/10 shadow-2xl shadow-black/15"
+            role="dialog"
+            aria-labelledby="widget-popover-title"
+            class="absolute left-0 right-0 sm:right-auto sm:w-[560px] top-full mt-3 hidden z-50 p-6 rounded-2xl bg-white dark:bg-surface-card-dark border border-black/10 dark:border-white/10 shadow-2xl shadow-black/15 max-sm:fixed max-sm:left-4 max-sm:right-4 max-sm:top-20 max-sm:bottom-[calc(5rem+env(safe-area-inset-bottom)+1px)] max-sm:w-auto max-sm:max-h-[calc(100dvh-9rem)] max-sm:overflow-y-auto max-sm:mt-0"
           >
+            <span id="widget-popover-title" class="sr-only">{t('booking.checkin')} - {t('booking.checkout')}</span>
             <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
               <div class="flex-1 space-y-3" data-widget-month="0"></div>
               <div class="flex-1 space-y-3 hidden lg:block" data-widget-month="1"></div>
@@ -146,6 +151,8 @@ import { formatDate } from '../utils/format';
     const popoverEl = popover;
     const month0El = month0;
     const month1El = month1;
+    const popoverParent = popoverEl.parentElement;
+    const popoverNextSibling = popoverEl.nextSibling;
 
     const lang = (document.documentElement.lang || 'en') as string;
     const W = (window as any).__WIDGET_LABELS || {};
@@ -228,16 +235,48 @@ import { formatDate } from '../utils/format';
 
     let picked: string | null = checkIn;
 
+    function portalPopoverOnMobile() {
+      if (window.matchMedia('(max-width: 639px)').matches && popoverEl.parentElement !== document.body) {
+        document.body.appendChild(popoverEl);
+      }
+    }
+
+    function restorePopoverPosition() {
+      if (popoverParent && popoverEl.parentElement !== popoverParent) {
+        popoverParent.insertBefore(popoverEl, popoverNextSibling);
+      }
+    }
+
+    function positionPopover() {
+      if (window.matchMedia('(max-width: 639px)').matches) {
+        popoverEl.style.top = '';
+        popoverEl.style.bottom = '';
+        popoverEl.style.marginTop = '';
+        popoverEl.style.marginBottom = '';
+        return;
+      }
+
+      const triggerRect = triggerEl.getBoundingClientRect();
+      const shouldOpenAbove = window.innerHeight - triggerRect.bottom < popoverEl.offsetHeight + 12;
+      popoverEl.style.top = shouldOpenAbove ? 'auto' : '';
+      popoverEl.style.bottom = shouldOpenAbove ? '100%' : '';
+      popoverEl.style.marginTop = shouldOpenAbove ? '0' : '';
+      popoverEl.style.marginBottom = shouldOpenAbove ? '0.75rem' : '';
+    }
+
     function openPopover() {
+      portalPopoverOnMobile();
       open = true;
       popoverEl.classList.remove('hidden');
       triggerEl.setAttribute('aria-expanded', 'true');
       render();
+      positionPopover();
     }
     function closePopover() {
       open = false;
       popoverEl.classList.add('hidden');
       triggerEl.setAttribute('aria-expanded', 'false');
+      restorePopoverPosition();
       picked = checkIn;
     }
 
@@ -267,7 +306,8 @@ import { formatDate } from '../utils/format';
     doneBtn.addEventListener('click', closePopover, { signal });
 
     document.addEventListener('click', (e) => {
-      if (open && !form.contains(e.target as Node)) closePopover();
+      const target = e.target as Node;
+      if (open && !form.contains(target) && !popoverEl.contains(target)) closePopover();
     }, { signal });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closePopover();

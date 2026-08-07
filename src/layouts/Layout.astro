@@ -102,8 +102,8 @@ const localeMap: Record<Locale, string> = {
     )}
 
     <!-- Fonts self-hosted (variable woff2, mismo origin — sin 3rd-party ni font-swap tardío) -->
-    <!-- Preload SOLO las 2 familias críticas; --font-ak sin preload (5KB, solo headings) -->
-    <Font cssVariable="--font-ak" />
+    <!-- Preload las familias críticas usadas above-the-fold; Astro recomienda hacerlo de forma selectiva. -->
+    <Font cssVariable="--font-ak" preload />
     <Font cssVariable="--font-montserrat" preload />
     <Font cssVariable="--font-playfair" preload />
 

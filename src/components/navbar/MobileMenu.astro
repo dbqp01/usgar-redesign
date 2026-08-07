@@ -3,7 +3,7 @@
 // Slide-in mobile drawer (sibling of <nav>, outside the desktop flex row).
 // Composes the mobile variants of LanguageSwitcher / AuthNav / CTAGroup.
 // The GSAP open/close choreography lives in the Navbar shell script.
-import { type Locale } from '../../i18n/utils';
+import { useTranslations, type Locale } from '../../i18n/utils';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import AuthNav from './AuthNav.astro';
 import CTAGroup from './CTAGroup.astro';
@@ -15,12 +15,18 @@ interface Props {
 }
 
 const { navLinks, locales, getLocaleUrl } = Astro.props as Props;
+const lang = (Astro.currentLocale || 'en') as Locale;
+const t = useTranslations(lang);
 ---
 
 <!-- Mobile Menu (slide-in) -->
 <div
   id="mobile-menu"
   class="fixed inset-0 z-40 hidden lg:hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-hidden="true"
+  aria-labelledby="mobile-menu-title"
 >
   <!-- Backdrop -->
   <div id="mobile-backdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0"></div>
@@ -34,12 +40,12 @@ const { navLinks, locales, getLocaleUrl } = Astro.props as Props;
     <div class="flex flex-col h-full px-6 py-6">
       <!-- Drawer Header with close button -->
       <div class="flex items-center justify-between pb-4 mb-4 border-b border-black/10 dark:border-white/10">
-        <span class="text-xs font-bold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark">Menu</span>
+        <span id="mobile-menu-title" class="text-xs font-bold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark">{t('nav.menu')}</span>
         <button
           id="mobile-menu-close-btn"
           type="button"
           class="touch-target p-2 rounded-full text-text-primary-light dark:text-text-primary-dark hover:bg-black/5 dark:hover:bg-white/10"
-          aria-label="Close menu"
+          aria-label={t('nav.closeMenu')}
         >
           <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />

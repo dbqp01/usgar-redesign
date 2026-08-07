@@ -47,8 +47,8 @@ const slides = [slide1, slide2, slide3, slide4];
     poster={optimizedPoster.src}
     id="hero-video"
     data-video-parts={JSON.stringify({
-      desktop: ["/videos/hero-1.mp4", "/videos/hero-2.mp4", "/videos/hero-3.mp4"],
-      mobile: ["/videos/hero-mobile-1.mp4", "/videos/hero-mobile-2.mp4", "/videos/hero-mobile-3.mp4"],
+      desktop: ["/videos/hero-1.mp4", "/videos/hero-2.mp4"],
+      mobile: ["/videos/hero-mobile-1.mp4", "/videos/hero-mobile-2.mp4"],
     })}
   >
   </video>
@@ -107,7 +107,8 @@ const slides = [slide1, slide2, slide3, slide4];
   <button
     id="video-audio-toggle"
     class="absolute bottom-28 right-6 z-10 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-[background-color] duration-300"
-    aria-label="Toggle video audio"
+    aria-label={t('hero.toggleAudio')}
+    aria-pressed="false"
   >
     <!-- Muted icon -->
     <svg id="muted-icon" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -164,6 +165,7 @@ const slides = [slide1, slide2, slide3, slide4];
 
     // 2. Sync audio button state with video
     video.muted = true;
+    toggleBtn.setAttribute("aria-pressed", "false");
     mutedIcon.classList.remove("hidden");
     unmutedIcon.classList.add("hidden");
 
@@ -203,6 +205,7 @@ const slides = [slide1, slide2, slide3, slide4];
     // 4. Toggle sound handler (clean direct assignment)
     toggleBtn.onclick = () => {
       video.muted = !video.muted;
+      toggleBtn.setAttribute("aria-pressed", String(!video.muted));
       mutedIcon.classList.toggle("hidden", !video.muted);
       unmutedIcon.classList.toggle("hidden", video.muted);
     };

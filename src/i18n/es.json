@@ -7,14 +7,18 @@
     "gallery": "Galeria",
     "contact": "Contacto",
     "bookNow": "Reservar",
-    "language": "Espanol"
+    "language": "Espanol",
+    "menu": "Menú",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú"
   },
   "hero": {
     "title": "USGAR Hotels",
     "subtitle": "San Pedro, Cusco - Tu puerta a los Andes",
     "cta": "Reserva Tu Estadia",
     "ctaSecondary": "Explorar Habitaciones",
-    "slideAlt": "USGAR Hotels Cusco -"
+    "slideAlt": "USGAR Hotels Cusco -",
+    "toggleAudio": "Activar o silenciar el video"
   },
   "booking": {
     "title": "Reserva Directa",
@@ -122,6 +126,7 @@
     "asFeaturedIn": "Como Aparecemos En"
   },
   "whatsapp": {
+    "ariaLabel": "Chatear por WhatsApp",
     "tooltip": "Necesitas ayuda? Escribenos!",
     "message": "Hola! Me gustaria reservar una habitacion en USGAR Hotels."
   },
