@@ -87,34 +87,34 @@ class Config {
 
     /**
      * Parsea el archivo .env de forma segura.
-     * Compatible con Hostinger (hosting compartido, sin Composer).
+     *
+     * UNA sola ruta canónica (best practice: el .env nunca dentro del web root
+     * — un servidor mal configurado podría servirlo como texto plano; y fuera
+     * del árbol de deploy para que Git no lo borre ni lo regenere):
+     *  - Producción (Hostinger): dirname del DOCUMENT_ROOT, subiendo hasta
+     *    salir de public_html (cubre docroots en subcarpetas como dist/public).
+     *  - Desarrollo/CLI (sin DOCUMENT_ROOT o sin public_html): raíz del proyecto.
      */
     private function loadEnv(): void {
-        $possiblePaths = array_unique(array_filter([
-            dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . '.env',
-            ($_SERVER['DOCUMENT_ROOT'] ?? '') . DIRECTORY_SEPARATOR . '.env',
-            dirname($_SERVER['DOCUMENT_ROOT'] ?? '') . DIRECTORY_SEPARATOR . '.env',
-        ]));
+        $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
 
-        $path = null;
-        foreach ($possiblePaths as $p) {
-            if (file_exists($p)) {
-                $path = $p;
-                break;
+        if (str_contains($docRoot, 'public_html')) {
+            $envPath = dirname($docRoot);
+            while (str_contains($envPath, 'public_html') && dirname($envPath) !== $envPath) {
+                $envPath = dirname($envPath);
             }
+            $envPath .= DIRECTORY_SEPARATOR . '.env';
+        } else {
+            $envPath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . '.env';
         }
 
-        if (!$path) {
-            // No .env file found - log warning in case this is a production server
-            $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
-            if (str_contains($docRoot, 'public_html')) {
-                error_log('[Config] WARNING: No .env file found on what appears to be a production server. Checked: ' . implode(', ', $possiblePaths));
-            }
+        if (!file_exists($envPath)) {
+            error_log('[Config] WARNING: No .env file found. Expected: ' . $envPath);
             return;
         }
         $this->envFileFound = true;
 
-        $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if ($lines === false) {
             return;
         }

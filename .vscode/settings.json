@@ -1,5 +1,16 @@
 {
   "css.lint.unknownAtRules": "ignore",
   "css.validate": false,
-  "tailwindCSS.experimental.configFile": "src/styles/global.css"
+  "tailwindCSS.experimental.configFile": "src/styles/global.css",
+  "files.exclude": {
+    "**/.agents": true,
+    "**/docs": true,
+    "**/AGENTS.md": true,
+    "**/agents.md": true,
+    "**/log": true,
+    "**/opencode.json": true,
+    "**/playwright.config.ts": true,
+    "**/skills-lock.json": true
+  }
 }
+

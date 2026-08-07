@@ -7,7 +7,7 @@
     "dev:php": "php -S localhost:8000 public/index.php",
     "dev:all": "node scripts/dev.js",
     "build": "astro build",
-    "postbuild": "node -e \"import fs from 'fs'; fs.cpSync('app', 'dist/app', { recursive: true }); fs.cpSync('vendor', 'dist/vendor', { recursive: true, force: true }); if (fs.existsSync('.env')) fs.copyFileSync('.env', 'dist/.env'); console.log(' Copied app/, vendor/, and .env to dist/ for Hostinger deployment');\"",
+    "postbuild": "node -e \"import fs from 'fs'; fs.cpSync('app', 'dist/app', { recursive: true }); fs.cpSync('vendor', 'dist/vendor', { recursive: true, force: true }); console.log(' Copied app/ and vendor/ to dist/. El .env NO va en dist/: en prod vive un nivel arriba de public_html (Config.php loadEnv); el deploy Git no lo toca.');\"",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",

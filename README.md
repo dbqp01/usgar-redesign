@@ -28,13 +28,13 @@ npm run dev:all           # Astro en :4321 + PHP API en :8000 (proxy /api)
 | `npm run audit:security` | Auditoría seguridad PHP | Tras tocar endpoints |
 | `npm run audit:seo` | Auditoría SEO/schema | Tras tocar páginas públicas |
 | `npx playwright test` | E2E (book, login) | Cambios en flujos de usuario |
-| `npm run build` | Build estático + copia `app/`, `vendor/`, `.env` a `dist/` | Deploy |
+| `npm run build` | Build estático + copia `app/` y `vendor/` a `dist/` (el `.env` NO va en `dist/`) | Deploy |
 
 ## Deploy (Hostinger)
 
 1. `npm run build`
 2. Subir `dist/` al hosting (PHP + MySQL; Composer no existe en prod).
-3. Verificar `.env` con las credenciales de producción.
+3. `.env` en producción: **un nivel arriba de `public_html`** (ej. `/home/<usuario>/.env`), nunca dentro de `public_html`/`dist/` — es la ruta única que lee `app/Core/Config.php::loadEnv` y el deploy Git no la toca.
 4. Configurar el dominio para que apunte a `dist/public/` (entry: `index.php` + `.htaccess`).
 
 ## Credenciales de Mercado Pago
