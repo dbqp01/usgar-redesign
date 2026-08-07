@@ -7,6 +7,9 @@ declare(strict_types=1);
  * Uso: php cron/reconcile_payments.php (cada 10 minutos)
  */
 
+// Solo CLI (cron): nunca ejecucion via web (dist publicado expone cron/).
+if (PHP_SAPI !== 'cli') { http_response_code(404); exit; }
+
 require_once __DIR__ . '/../app/bootstrap.php';
 
 use App\Core\Container;

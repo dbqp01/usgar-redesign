@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+// Solo CLI (cron): nunca ejecucion via web (dist publicado expone cron/).
+if (PHP_SAPI !== 'cli') { http_response_code(404); exit; }
+
 // Bootstrap compartido: autoloaders, Config, Container, bindings y listeners de dominio.
 require_once __DIR__ . '/../app/bootstrap.php';
 
