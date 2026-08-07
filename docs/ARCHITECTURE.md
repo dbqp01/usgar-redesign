@@ -30,13 +30,13 @@
 ┌──────────────────────────────────────────────────────────┐
 │  app/Features/Shared/                                    │
 │  ├── Ports/     (PmsPort, PaymentGatewayPort, Channel)   │
-│  └── Adapters/  (QloApp, MercadoPago, Channex)           │
+│  └── Adapters/  (QloApp, MercadoPago)                    │
 └────────────────────┬─────────────────────────────────────┘
                      │ HTTP/SQL/XML
                      ▼
 ┌──────────────────────────────────────────────────────────┐
 │  SERVICIOS EXTERNOS                                      │
-│  QloApps (PMS) │ Mercado Pago │ Channex │ MySQL          │
+│  QloApps (PMS) │ Mercado Pago │ MySQL                    │
 └──────────────────────────────────────────────────────────┘
 ```
 
@@ -115,7 +115,7 @@ Cambiar estos archivos puede romper toda la aplicación.
    → MercadoPagoAdapter.getPaymentDetails() + firma HMAC
    → EventDispatcher despacha booking.paid
    → ConfirmQloAppsOrderListener → QloAppAdapter.confirmOrder()
-   → SyncChannexBookingListener → ChannexAdapter.createBooking()
+   (OTA inventory/tarifas: gestionados por el conector del QloApps Channel Manager — cron ~1 min, ver `docs/CHANNEL_MANAGER_SETUP.md`)
    → ProvisionalBookingRepository.updateStatus(BookingStatus::Paid)
    (si el webhook no llega, el cron ReconcilePaymentsAction consulta a MP)
 
