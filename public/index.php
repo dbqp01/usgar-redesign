@@ -34,7 +34,6 @@ use App\Features\Booking\Actions\ExtendHoldAction;
 use App\Features\Booking\Actions\GetBookingStatusAction;
 use App\Features\Booking\Actions\GetPaymentCheckAction;
 use App\Features\Webhooks\Actions\HandleMercadoPagoWebhookAction;
-use App\Features\Webhooks\Actions\HandleChannexWebhookAction;
 use App\Features\Cron\Actions\CleanExpiredCartsAction;
 use App\Features\Cron\Actions\RetryManualReviewAction;
 use App\Features\Auth\Actions\AuthLoginAction;
@@ -77,7 +76,6 @@ $router->post('/api/extend-hold',     ExtendHoldAction::class);
 $router->get('/api/booking-status',   GetBookingStatusAction::class);
 $router->get('/api/payment-check',    GetPaymentCheckAction::class);
 $router->post('/api/webhook',         HandleMercadoPagoWebhookAction::class);
-$router->post('/api/webhook/channex', HandleChannexWebhookAction::class);
 
 // Endpoint de mantenimiento del sistema (Cron)
 $router->post('/api/cron/cleanup',       CleanExpiredCartsAction::class);
