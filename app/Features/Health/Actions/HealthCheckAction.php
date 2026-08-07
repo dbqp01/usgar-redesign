@@ -38,6 +38,7 @@ class HealthCheckAction {
                 'document_root'   => $_SERVER['DOCUMENT_ROOT'] ?? '(empty)',
                 'env_loaded_path' => Config::loadedEnvPath() ?? '(none)',
                 'token_prefix'    => $accessToken ? substr($accessToken, 0, 8) . '...' : '(not set)',
+                'google_client_prefix' => substr(Config::get('GOOGLE_CLIENT_ID', ''), 0, 24) ?: '(not set)',
                 'key_prefix'      => $publicKey ? substr($publicKey, 0, 8) . '...' : '(not set)',
                 'is_test_mode'    => str_starts_with($accessToken, 'TEST-'),
             ],
