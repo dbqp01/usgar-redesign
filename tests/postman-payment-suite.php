@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * Suite de Pruebas de Funcionamiento Completo, Seguridad y Estrés del Sistema de Pagos
- * USGAR Hotels - Monolito Modular PHP 8.x + Mercado Pago + QloApps + Channex
+ * USGAR Hotels - Monolito Modular PHP 8.x + Mercado Pago + QloApps
  */
 
 require_once __DIR__ . '/../app/Core/Autoloader.php';

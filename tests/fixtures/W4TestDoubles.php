@@ -6,7 +6,6 @@ namespace App\Test\Fixtures;
 use App\Core\Events\EventInterface;
 use App\Core\Events\ListenerInterface;
 use App\Features\Shared\Ports\PmsPortInterface;
-use App\Features\Shared\Ports\ChannelManagerPortInterface;
 use DateTimeImmutable;
 use Exception;
 use PDO;
@@ -15,10 +14,10 @@ use PDO;
  * Test doubles in-memory para la Wave 4 (C4 Outbox + sync PMS).
  *
  * MANDATO r10: los test doubles SOLO cubren puertos propios del proyecto
- * (PmsPortInterface / ChannelManagerPortInterface) — sin red, nunca simulan
- * resultados de la API real de MercadoPago. Los listeners del outbox se
- * ejercitan contra estos dobles que CUENTAN llamadas (dedup) y permiten
- * inyectar fallos (null de confirmOrder, PMS caido).
+ * (PmsPortInterface) — sin red, nunca simulan resultados de la API real de
+ * MercadoPago. Los listeners del outbox se ejercitan contra estos dobles que
+ * CUENTAN llamadas (dedup) y permiten inyectar fallos (null de confirmOrder,
+ * PMS caido).
  */
 
 /**
@@ -107,52 +106,6 @@ final class W4PmsPortDouble implements PmsPortInterface {
             throw new Exception('PMS caido durante isOrderConfirmed (fail-closed).');
         }
         return $this->dedupResult;
-    }
-}
-
-/**
- * Doble del puerto ChannelManager (Channex) para tests de listeners.
- * Cuenta llamadas a createBooking y permite inyectar:
- *  - existingBooking != null -> el booking ya existe (dedup-skip)
- *  - findThrows = true       -> Channex caido en el pre-chequeo (fail-closed)
- */
-final class W4ChannexPortDouble implements ChannelManagerPortInterface {
-    public int $createCalls = 0;
-    public ?array $existingBooking = null;
-    public bool $findThrows = false;
-    public bool $createResult = true;
-    /** @var array<int, array<int, mixed>> */
-    public array $createArgs = [];
-
-    public function createBooking(
-        string $bookingId,
-        string $checkIn,
-        string $checkOut,
-        int $idRoomType,
-        float $totalPrice,
-        string $guestName,
-        string $guestEmail,
-        string $guestPhone = '',
-        int $adults = 2
-    ): bool {
-        $this->createCalls++;
-        $this->createArgs[] = [$bookingId, $checkIn, $checkOut, $idRoomType, $totalPrice, $guestName, $guestEmail, $guestPhone, $adults];
-        return $this->createResult;
-    }
-
-    public function fetchBookingRevision(string $revisionId): ?array {
-        return null;
-    }
-
-    public function acknowledgeRevision(string $revisionId): bool {
-        return true;
-    }
-
-    public function findBookingByExternalReference(string $externalReference): ?array {
-        if ($this->findThrows) {
-            throw new Exception('Channex caido durante findBookingByExternalReference (fail-closed).');
-        }
-        return $this->existingBooking;
     }
 }
 
