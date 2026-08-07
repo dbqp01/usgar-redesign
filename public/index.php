@@ -45,6 +45,7 @@ use App\Features\Auth\Actions\AuthMeAction;
 use App\Features\Auth\Actions\AuthLogoutAction;
 use App\Features\Auth\Actions\GetUserBookingsAction;
 use App\Features\Newsletter\Actions\SubscribeNewsletterAction;
+use App\Features\Contact\Actions\SubmitContactAction;
 
 // 2. Soporte para ejecuciones desde la linea de comandos (Cron Jobs)
 if (PHP_SAPI === 'cli') {
@@ -95,6 +96,7 @@ $router->get('/api/auth/logout',       AuthLogoutAction::class);
 $router->get('/api/user/bookings',     GetUserBookingsAction::class);
 $router->post('/api/user/profile',     UpdateUserProfileAction::class);
 $router->post('/api/newsletter',       SubscribeNewsletterAction::class);
+$router->post('/api/contact',          SubmitContactAction::class);
 
 // 6. Despachar la peticion actual
 $router->dispatch($request);

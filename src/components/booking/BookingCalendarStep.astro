@@ -26,6 +26,17 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
     <div class="flex-1 space-y-3 hidden lg:block" data-calendar-month="1"></div>
   </div>
 
+  <div class="flex items-center gap-5 text-xs text-text-secondary-light dark:text-text-secondary-dark" data-calendar-legend>
+    <span class="inline-flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-teal-brand" aria-hidden="true"></span>
+      {t('wizard.legendAvailable')}
+    </span>
+    <span class="inline-flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-black/15 dark:bg-white/25" aria-hidden="true"></span>
+      {t('wizard.legendSoldOut')}
+    </span>
+  </div>
+
   <div class="flex flex-col sm:flex-row sm:items-end gap-4 border-t border-black/5 dark:border-white/5 pt-6">
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 flex-1">
       <div>
@@ -123,6 +134,45 @@ import { formatDate } from '../../utils/format';
     return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
   }
 
+  /** Orden fijo de los dots por habitación (1 dot por slug, teal = disponible ese día). */
+  const ROOM_DOT_ORDER = ['matrimonial', 'doble-superior', 'triple-standar', 'familiar-superior'];
+
+  /** Mini-dots de disponibilidad por habitación para un día con datos. */
+  function roomDots(day: Record<string, number>): string {
+    return ROOM_DOT_ORDER.map((slug) => {
+      const available = (day[slug] ?? 0) > 0;
+      const cls = available ? 'bg-teal-brand' : 'bg-black/15 dark:bg-white/25';
+      return `<span class="w-1 h-1 rounded-full ${cls}" aria-hidden="true"></span>`;
+    }).join('');
+  }
+
+  /** Noches del rango [checkIn, checkOut) — el día de salida no se pernocta. */
+  function rangeDays(checkIn: string, checkOut: string): string[] {
+    const days: string[] = [];
+    const cursor = new Date(checkIn + 'T00:00:00');
+    const end = new Date(checkOut + 'T00:00:00');
+    while (cursor < end) {
+      days.push(formatISODate(cursor));
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return days;
+  }
+
+  /** true si la habitación tiene qty > 0 en TODOS los días del rango con datos por día.
+   *  Días sin datos (fuera de la ventana del calendario) no se validan aquí:
+   *  decide la API de rango. */
+  function roomAvailableEveryDay(slug: string, checkIn: string, checkOut: string): boolean {
+    let withData = 0;
+    for (const d of rangeDays(checkIn, checkOut)) {
+      const day = calendarAvailability[d];
+      if (day && day[slug] !== undefined) {
+        withData++;
+        if ((day[slug] ?? 0) < 1) return false;
+      }
+    }
+    return withData > 0;
+  }
+
   /** Labels i18n del host (evita colisión con el global `L` de Leaflet). */
   function labels(): Record<string, string> {
     return (window as any).__LABELS || {};
@@ -202,7 +252,8 @@ import { formatDate } from '../../utils/format';
             : calendarAvailability[cell.date] && !past
               ? ` title="${escapeAttr(availableRoomsLabel(cell.date))}"`
               : '';
-          return `<button type="button" role="gridcell" data-calendar-day data-date="${cell.date}" data-past="${past}" data-sold-out="${soldOut}" aria-label="${dateLabel}${soldOut ? ' - ' + (labels().soldOut || 'Sold out') : ''}" ${disabledAttr}${tooltip} class="aspect-square rounded-lg text-sm flex items-center justify-center transition-colors duration-200 cursor-pointer select-none ${stateClass}">${dayNum}</button>`;
+          const dots = !past && calendarAvailability[cell.date] ? roomDots(calendarAvailability[cell.date]) : '';
+          return `<button type="button" role="gridcell" data-calendar-day data-date="${cell.date}" data-past="${past}" data-sold-out="${soldOut}" aria-label="${dateLabel}${soldOut ? ' - ' + (labels().soldOut || 'Sold out') : ''}" ${disabledAttr}${tooltip} class="aspect-square rounded-lg text-sm flex items-center justify-center transition-colors duration-200 cursor-pointer select-none ${stateClass}"><span class="flex flex-col items-center justify-center gap-0.5 leading-none"><span>${dayNum}</span>${dots ? `<span class="flex items-center justify-center gap-0.5">${dots}</span>` : ''}</span></button>`;
         }).join('')}
       </div>
     `;
@@ -355,6 +406,17 @@ import { formatDate } from '../../utils/format';
 
       wizardStore.setState({ checkIn, checkOut, guests: Number(guestsSel.value), selecting: true, error: null });
 
+      // Validación día a día (solo cuando hay datos por día): si un día del rango
+      // está totalmente agotado, bloquear sin llamar a la API de rango.
+      if (rangeDays(checkIn, checkOut).some((d) => isDaySoldOut(d))) {
+        checkingEl.classList.add('hidden');
+        bannerEl.textContent = L.rangeUnavailable || '';
+        bannerEl.classList.remove('hidden');
+        toastApi.error({ title: L.rangeUnavailable || '' });
+        wizardStore.setState({ selecting: false, error: L.rangeUnavailable || '', allocation: null, options: null });
+        return;
+      }
+
       const allocatable = ROOMS.map((r) => ({
         slug: r.slug,
         displayName: r.name[lang] || r.slug,
@@ -376,7 +438,17 @@ import { formatDate } from '../../utils/format';
         ? Object.fromEntries((res.data ?? []).map((r: any) => [r.slug ?? r.room_slug, Number(r.available_qty ?? r.available ?? 0)]))
         : null;
 
-      const allocation = allocateRooms({ guests: Number(guestsSel.value), nights, rooms: allocatable, availability });
+      // Filtro por día (calendarAvailability): excluir habitaciones con qty 0 en
+      // CUALQUIER día del rango. Las habitaciones sin datos por día pasan sin
+      // filtrar — decide la API de rango. El allocator recibe availability ya
+      // filtrado y no cambia de contrato.
+      const filteredAvailability: Record<string, number> | null = availability
+        ? Object.fromEntries(
+            Object.entries(availability).filter(([slug, qty]) => qty > 0 && roomAvailableEveryDay(slug, checkIn, checkOut))
+          )
+        : null;
+
+      const allocation = allocateRooms({ guests: Number(guestsSel.value), nights, rooms: allocatable, availability: filteredAvailability });
       const total = allocation.length > 0 ? allocation[0].total : 0;
 
       wizardStore.setState({

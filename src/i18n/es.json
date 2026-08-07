@@ -343,6 +343,8 @@
     "rangeUnavailable": "No hay habitaciones disponibles para estas fechas.",
     "soldOut": "Agotado",
     "availableOn": "Disponible:",
+    "legendAvailable": "Disponible",
+    "legendSoldOut": "Agotado",
     "alternatives": "Ver alternativas",
     "onlyThisRoom": "Habitacion elegida",
     "toast": {

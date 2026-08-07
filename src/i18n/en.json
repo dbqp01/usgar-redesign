@@ -343,6 +343,8 @@
     "rangeUnavailable": "No rooms available for these dates.",
     "soldOut": "Sold out",
     "availableOn": "Available:",
+    "legendAvailable": "Available",
+    "legendSoldOut": "Sold out",
     "alternatives": "View alternatives",
     "onlyThisRoom": "Selected room",
     "toast": {

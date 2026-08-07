@@ -343,6 +343,8 @@
     "rangeUnavailable": "Nenhum quarto disponivel para estas datas.",
     "soldOut": "Esgotado",
     "availableOn": "Disponível:",
+    "legendAvailable": "Disponível",
+    "legendSoldOut": "Esgotado",
     "alternatives": "Ver alternativas",
     "onlyThisRoom": "Quarto selecionado",
     "toast": {

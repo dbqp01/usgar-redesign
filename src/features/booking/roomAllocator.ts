@@ -31,6 +31,13 @@ export interface AllocateInput {
   guests: number;
   nights: number;
   rooms: AllocatableRoom[];
+  /**
+   * Disponibilidad EFECTIVA del rango por habitación (slugs con qty > 0).
+   * Contrato: la validación DÍA A DÍA es del caller (BookingCalendarStep filtra
+   * con calendarAvailability antes de llamar) — este motor trata el valor como
+   * la cantidad disponible para TODO el rango y no puede detectar días
+   * intermedios agotados por sí solo.
+   */
   availability?: Record<string, number> | null;
 }
 
