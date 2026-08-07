@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Core;
 
 use ReflectionClass;
+use ReflectionNamedType;
 use Exception;
 
 /**
@@ -12,7 +13,9 @@ use Exception;
  */
 class Container implements ContainerInterface {
     private static ?Container $instance = null;
+    /** @var array<string, object> */
     private array $instances = [];
+    /** @var array<string, callable|string> */
     private array $bindings = [];
 
     public static function getInstance(): Container {
@@ -67,7 +70,7 @@ class Container implements ContainerInterface {
 
         foreach ($parameters as $parameter) {
             $type = $parameter->getType();
-            if ($type && !$type->isBuiltin()) {
+            if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
                 $dependencyClassName = $type->getName();
                 try {
                     $dependencies[] = $this->get($dependencyClassName);

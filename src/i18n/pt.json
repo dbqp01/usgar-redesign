@@ -179,6 +179,11 @@
     "faqTransferA": "Voce pode solicitar ao enviar este formulario ou selecionar durante a reserva direta online do seu quarto.",
     "successMessage": "Mensagem enviada com sucesso! Nossa equipe respondera em breve.",
     "messagePlaceholder": "Escreva suas duvidas, horario estimado de chegada ou pedidos especiais aqui...",
+    "formError": "Desculpe, nao conseguimos enviar sua mensagem. Tente novamente ou fale conosco pelo WhatsApp.",
+    "formIntro": "Escreva para nos em portugues ou ingles. Respondemos em poucas horas, geralmente no mesmo dia.",
+    "otaLabel": "Encontre-nos em",
+    "heroImageAlt": "O patio do USGAR Hotels em San Pedro, Cusco",
+    "heroImageCaption": "O patio, San Pedro",
     "checkinHours": "Check-in a partir das 11:00"
   },
   "gallery": {

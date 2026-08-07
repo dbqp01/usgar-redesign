@@ -10,8 +10,8 @@ namespace App\Core;
  */
 class Config {
     private static ?Config $instance = null;
+    /** @var array<string, string> */
     private array $cache = [];
-    private bool $envFileFound = false;
 
     private function __construct() {
         $this->loadEnv();
@@ -112,7 +112,6 @@ class Config {
             error_log('[Config] WARNING: No .env file found. Expected: ' . $envPath);
             return;
         }
-        $this->envFileFound = true;
 
         $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if ($lines === false) {

@@ -179,6 +179,11 @@
     "faqTransferA": "Puedes seleccionarlo al reservar en nuestra web o enviarnos un mensaje por WhatsApp con los datos de tu vuelo.",
     "successMessage": "Mensaje enviado con exito! Nuestro equipo te respondera a la brevedad.",
     "messagePlaceholder": "Escribe tus dudas, fechas estimadas o requerimientos especiales aqui...",
+    "formError": "Lo sentimos, no pudimos enviar tu mensaje. Intentalo de nuevo o escribenos por WhatsApp.",
+    "formIntro": "Escribenos en espanol o ingles. Respondemos en pocas horas, normalmente el mismo dia.",
+    "otaLabel": "Encuentranos en",
+    "heroImageAlt": "El patio de USGAR Hotels en San Pedro, Cusco",
+    "heroImageCaption": "El patio, San Pedro",
     "checkinHours": "Check-in desde las 11:00 AM"
   },
   "gallery": {

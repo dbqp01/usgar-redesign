@@ -41,9 +41,7 @@ class Database {
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                     PDO::ATTR_EMULATE_PREPARES   => false,
                 ]);
-                if ($this->pdo !== null) {
-                    return; // Conexion exitosa
-                }
+                return; // Conexion exitosa
             } catch (PDOException $e) {
                 Logger::warning("[Database Connection Attempt Failed on host {$currentHost}]: " . $e->getMessage());
                 $this->pdo = null;
