@@ -7,7 +7,7 @@
     "dev:php": "php -S localhost:8000 public/index.php",
     "dev:all": "node scripts/dev.js",
     "build": "astro build",
-    "postbuild": "node -e \"import fs from 'fs'; fs.cpSync('app', 'dist/app', { recursive: true }); fs.cpSync('vendor', 'dist/vendor', { recursive: true, force: true }); try { fs.unlinkSync('dist/.env'); console.log('REMOVED dist/.env (must NOT ship in dist)'); } catch {} console.log('Copied app/ and vendor/ to dist/. .env must live outside public_html on the server.');\"",
+    "postbuild": "node -e \"import fs from 'fs'; fs.cpSync('app', 'dist/app', { recursive: true }); fs.cpSync('vendor', 'dist/vendor', { recursive: true, force: true }); fs.cpSync('cron', 'dist/cron', { recursive: true }); try { fs.unlinkSync('dist/.env'); console.log('REMOVED dist/.env (must NOT ship in dist)'); } catch {} console.log('Copied app/, vendor/ and cron/ to dist/. .env must live outside public_html on the server.');\"",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
@@ -17,6 +17,9 @@
     "audit:seo": "node scripts/audit-seo-schema.js",
     "audit:all": "npm run check && npm run test:php && npm run audit:security && npm run audit:seo",
     "prepare": "git config core.hooksPath .githooks || true"
+  },
+  "engines": {
+    "node": ">=22 <23"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",
@@ -36,10 +39,6 @@
     "astro-critters": "^2.2.1",
     "typescript": "^6.0.3",
     "vitest": "^3.0.0"
-  },
-  "allowScripts": {
-    "sharp@0.35.3": true,
-    "esbuild@0.28.1": true
   },
   "overrides": {
     "sharp": "0.35.3",

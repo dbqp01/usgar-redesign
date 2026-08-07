@@ -30,12 +30,18 @@ npm run dev:all           # Astro en :4321 + PHP API en :8000 (proxy /api)
 | `npx playwright test` | E2E (book, login) | Cambios en flujos de usuario |
 | `npm run build` | Build estático + copia `app/` y `vendor/` a `dist/` (el `.env` NO va en `dist/`) | Deploy |
 
-## Deploy (Hostinger)
+## Deploy (Hostinger — automático desde GitHub)
 
-1. `npm run build`
-2. Subir `dist/` al hosting (PHP + MySQL; Composer no existe en prod).
-3. `.env` en producción: **un nivel arriba de `public_html`** (ej. `/home/<usuario>/.env`), nunca dentro de `public_html`/`dist/` — es la ruta única que lee `app/Core/Config.php::loadEnv` y el deploy Git no la toca.
-4. Configurar el dominio para que apunte a `dist/public/` (entry: `index.php` + `.htaccess`).
+Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo mira la rama `main`**. No se sube nada manualmente; no existe rama `build` (el workflow `deploy-build-branch.yml` está desactivado y es historial).
+
+1. `git push origin main` → Hostinger hace pull, `npm install` y `npm run build` desde cero, y sirve el resultado (unos minutos; historial y logs en hPanel → **Deployments**).
+2. El `postbuild` (package.json) copia `app/` y `vendor/` a `dist/` (Composer no existe en prod) y elimina cualquier `dist/.env`. Astro vuelca `public/*` en la raíz de `dist/`, así que el entry PHP queda en `dist/index.php` + `dist/.htaccess`.
+3. Config vigente en hPanel: branch `main` · build script `build` · output `dist` · Node **22** · package manager **npm** (Node fijado también en `engines` de package.json).
+
+**Variables de entorno en producción** — nunca dentro de `public_html` ni de `dist/`:
+
+- Fuente efectiva hoy: hPanel → **Environment variables** (la integración las escribe en `/home/<usuario>/domains/usgarhoteles.com/.builds/config/.env`).
+- Fallback soportado por `app/Core/Config.php::loadEnv`: un `.env` **un nivel arriba de `public_html`**; si existe, tiene prioridad sobre las vars de hPanel.
 
 ## Credenciales de Mercado Pago
 
