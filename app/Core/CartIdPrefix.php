@@ -10,5 +10,4 @@ namespace App\Core;
 final class CartIdPrefix {
     public const QLOAPPS_LOCAL = 'USGAR-';
     public const OTA           = 'OTA-';
-    public const CHANNEX       = 'USG-';
 }

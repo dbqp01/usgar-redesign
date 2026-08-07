@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Features\Shared\Ports;
 
 /**
- * Puerto de abstraccion para la interaccion con Channel Managers (Channex).
+ * Puerto de abstraccion para la interaccion con Channel Managers.
  */
 interface ChannelManagerPortInterface {
     public function createBooking(
