@@ -162,15 +162,16 @@ import { formatDate } from '../../utils/format';
    *  Días sin datos (fuera de la ventana del calendario) no se validan aquí:
    *  decide la API de rango. */
   function roomAvailableEveryDay(slug: string, checkIn: string, checkOut: string): boolean {
-    let withData = 0;
     for (const d of rangeDays(checkIn, checkOut)) {
       const day = calendarAvailability[d];
       if (day && day[slug] !== undefined) {
-        withData++;
         if ((day[slug] ?? 0) < 1) return false;
       }
     }
-    return withData > 0;
+    // Sin datos por día (calendarAvailability aún no resolvió o rango fuera de
+    // ventana) NO se filtra: decide la API de rango. Esto arregla la race del
+    // init con params en URL (el fetch de calendario resuelve después).
+    return true;
   }
 
   /** Labels i18n del host (evita colisión con el global `L` de Leaflet). */
