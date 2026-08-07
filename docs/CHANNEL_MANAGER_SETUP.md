@@ -107,7 +107,7 @@ En `channels.qloapps.com` (pestaña PMS del panel del CM).
 3. **Mapear (OBLIGATORIO antes de sincronizar reservas):** la doc es explícita: *"**Note:** Map properties and room types before syncing."* — https://qloapps.com/qloapps-channel-manager/
    - **Property Mapping:** seleccionar la propiedad PMS del desplegable correspondiente a la propiedad del CM → estado **Mapped**.
    - **Room Type Mapping:** por cada room type del CM, seleccionar el room type correspondiente del PMS → **Save**. Un mapeo correcto *"ensures that inventory and booking data can be synchronized accurately"* y *"reduce the risk of overbookings"*. — https://qloapps.com/qloapps-channel-manager/ (sección "Properties / Room Mapping")
-4. **Room types de USGAR a mapear (4)** — slugs del `.env.example` (`CHANNEX_ROOM_*`), a emparejar con los room types del PMS:
+4. **Room types de USGAR a mapear (4)** — slugs canónicos del repo (`app/Features/Shared/RoomTypeRegistry.php`, SLUG_MAP), a emparejar con los room types del PMS:
 
 | Slug (referencia del repo) | Room type en QloApps (PMS) a seleccionar |
 |---|---|
@@ -115,6 +115,8 @@ En `channels.qloapps.com` (pestaña PMS del panel del CM).
 | `matrimonial` | Matrimonial |
 | `familiar-superior` | Familiar Superior |
 | `triple-standar` | Triple Standard |
+
+> **Estado actual hasta que se active el CM (post-pago):** los canales OTA **NO están conectados** — la única vía de reserva activa es la venta directa del sitio (webservice QloApps). Antes de conectar el primer canal en la Sección 5, hacer un **Full Sync de inventario** (Synchronize Inventory de la Sección 4) y verificar contra el calendario del PMS (Sección 6) para cerrar la ventana de overbooking entre el alta del canal y el primer sync del cron.
 
 5. **Sincronizar inventario:** botón **Synchronize Inventory** a nivel de propiedad (todas las room types mapeadas) o junto a cada room type (solo esa). Disponible únicamente con el módulo conector instalado y configurado (Sección 2). — https://qloapps.com/qloapps-channel-manager/
 6. **Sincronizar reservas:** botón **Synchronize Bookings** → *"PMS bookings will be synced to the channel manager and channel manager bookings will be synced to PMS."* — https://qloapps.com/qloapps-channel-manager/
