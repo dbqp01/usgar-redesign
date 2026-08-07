@@ -27,7 +27,7 @@ preview.log
 .superpowers/
 .primer/
 .omo/
-.agents/
+.agents
 .docs/
 tests/latest_payment_id.txt
 

@@ -1,11 +1,11 @@
-name: Deploy — Build branch (Hostinger)
+name: Deploy — Build branch (Hostinger) [DISABLED]
 
-# Fase 2 (B2): genera dist/ en cada push a main y lo publica en la rama `build`.
-# Hostinger Advanced→Git apunta a la rama `build` y COPIA los archivos sin compilar.
-# Ver docs/DEPLOY-B2.md para el switch manual en hPanel.
+# DESACTIVADO 2026-08-06: Hostinger ya no usa la rama `build`.
+# hPanel despliega desde `main` con build propio de Astro (Node.js GitHub integration).
+# La rama `build` fue eliminada del remoto; este workflow quedo como historial.
+# Para reactivar: restaurar `on.push.branches [main]` y crear la rama `build`.
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: write
