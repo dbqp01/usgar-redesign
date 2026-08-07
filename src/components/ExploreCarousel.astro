@@ -128,9 +128,30 @@ const categoryLabels: Record<string, string> = {
 
   let cleanup: (() => void) | null = null;
 
+  // La primera preview ya viene con <Picture loading="eager"> (LCP del bloque),
+  // pero el resto solo se descargaba en hover (exploreAtlas setea img.src en
+  // pointerenter) → 1-3s de gris. Precarga en idle para hover instantáneo,
+  // sin competir con el LCP del hero.
+  function preloadAtlasPreviews(root: HTMLElement): void {
+    const srcs = Array.from(root.querySelectorAll<HTMLElement>('[data-atlas-item]'))
+      .map((el) => el.getAttribute('data-preview-src'))
+      .filter(Boolean) as string[];
+    if (!srcs.length) return;
+    const start = () => {
+      srcs.forEach((src) => {
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = src;
+      });
+    };
+    if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 3000 });
+    else setTimeout(start, 1000);
+  }
+
   function init() {
     const root = document.querySelector('[data-explore-atlas]') as HTMLElement | null;
     if (!root) return;
+    preloadAtlasPreviews(root);
     cleanup?.();
     cleanup = initExploreAtlas(root);
   }

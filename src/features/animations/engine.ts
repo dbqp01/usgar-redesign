@@ -45,11 +45,9 @@ export function bootHomeAnimations(): void {
       void loadHomeModules().then(() => {
         if (!isDesktop) return;
         void Promise.all([
-          import('./modules/heroTextReveal'),
           import('./modules/parallaxCards'),
           import('./modules/mouseTilt'),
-        ]).then(([heroText, parallax, tilt]) => {
-          register('hero-text', heroText.initHeroTextReveal());
+        ]).then(([parallax, tilt]) => {
           register('parallax', parallax.initParallaxCards());
           register('tilt', tilt.initMouseTilt());
           // These ScrollTriggers are created after async imports resolve —
