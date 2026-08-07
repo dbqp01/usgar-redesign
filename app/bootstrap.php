@@ -13,11 +13,8 @@ use App\Core\Container;
 use App\Core\Database;
 use App\Core\Events\EventDispatcher;
 use App\Features\Booking\Domain\Listeners\ConfirmQloAppsOrderListener;
-use App\Features\Booking\Domain\Listeners\SyncChannexBookingListener;
-use App\Features\Shared\Adapters\ChannexAdapter;
 use App\Features\Shared\Adapters\MercadoPagoAdapter;
 use App\Features\Shared\Adapters\QloAppAdapter;
-use App\Features\Shared\Ports\ChannelManagerPortInterface;
 use App\Features\Shared\Ports\PaymentGatewayPortInterface;
 use App\Features\Shared\Ports\PmsPortInterface;
 
@@ -45,9 +42,8 @@ if ($dbConnection !== null) {
 }
 
 // Bindings interfaz -> implementacion (DIP)
-// PaymentGateway y ChannelManager no requieren BD (adaptadores HTTP)
+// PaymentGateway no requiere BD (adaptador HTTP)
 $container->bind(PaymentGatewayPortInterface::class, fn($c) => new MercadoPagoAdapter());
-$container->bind(ChannelManagerPortInterface::class, fn($c) => new ChannexAdapter());
 
 // PMS requiere BD — solo registrar si hay conexion disponible
 if ($dbConnection !== null) {
@@ -61,7 +57,6 @@ $eventDispatcher = EventDispatcher::getInstance();
 if ($dbConnection !== null) {
     $eventDispatcher->subscribe('booking.paid', new ConfirmQloAppsOrderListener($container->get(PmsPortInterface::class)));
 }
-$eventDispatcher->subscribe('booking.paid', new SyncChannexBookingListener($container->get(ChannelManagerPortInterface::class)));
 
 /**
  * Acceso global al container.
