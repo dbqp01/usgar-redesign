@@ -343,12 +343,6 @@ parameters:
 			path: app/Features/Booking/Domain/ProvisionalBookingRepository.php
 
 		-
-			message: '#^Method App\\Features\\Shared\\Adapters\\ChannexAdapter\:\:fetchBookingRevision\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Features/Shared/Adapters/ChannexAdapter.php
-
-		-
 			message: '#^Call to function is_array\(\) with array\<string, mixed\> will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
@@ -413,30 +407,6 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: app/Features/Shared/Adapters/QloAppAdapter.php
-
-		-
-			message: '#^Method App\\Features\\Shared\\ChannexRoomMapper\:\:__construct\(\) has parameter \$mapping with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Features/Shared/ChannexRoomMapper.php
-
-		-
-			message: '#^Method App\\Features\\Shared\\ChannexRoomMapper\:\:getDefaultMapping\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Features/Shared/ChannexRoomMapper.php
-
-		-
-			message: '#^Method App\\Features\\Shared\\ChannexRoomMapper\:\:resolveRoomTypeId\(\) has parameter \$bookingData with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Features/Shared/ChannexRoomMapper.php
-
-		-
-			message: '#^Property App\\Features\\Shared\\ChannexRoomMapper\:\:\$mapping type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Features/Shared/ChannexRoomMapper.php
 
 		-
 			message: '#^Method App\\Features\\Shared\\Ports\\ChannelManagerPortInterface\:\:fetchBookingRevision\(\) return type has no value type specified in iterable type array\.$#'
