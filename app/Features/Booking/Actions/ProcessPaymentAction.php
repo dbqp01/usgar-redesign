@@ -291,8 +291,10 @@ class ProcessPaymentAction {
                 $this->pdo->rollBack();
             }
             $statusCode = $e->getStatusCode();
-            $apiBody = $e->getApiResponse() ? $e->getApiResponse()->getContent() : null;
-            $statusDetail = is_array($apiBody) ? (string)($apiBody['status_detail'] ?? '') : '';
+            // getApiResponse() no es nullable (SDK dx-php 3.12) y getContent()
+            // devuelve array: el ternario/is_array previo era codigo muerto.
+            $apiBody = $e->getApiResponse()->getContent();
+            $statusDetail = (string)($apiBody['status_detail'] ?? '');
             Logger::error('ProcessPaymentAction MPApiException status=' . $statusCode . ' detail=' . ($statusDetail !== '' ? $statusDetail : 'n/a'));
             Response::error(
                 'El pago fue rechazado por la pasarela.',

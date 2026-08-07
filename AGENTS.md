@@ -17,9 +17,9 @@ Sitio web transaccional del hotel boutique Usgar (San Pedro, Cusco, Perú): rese
 
 ## Migraciones EN CURSO (importante)
 
-La integración **Channex fue ELIMINADA del repo (2026-08-06, commits `c7be9f3`..`2e56d2b`, QA verde 22/0 + astro check 0 errores)**: el stack actual es **MP+QloApps**, sin código Channex. Lo único pendiente de la sección 2 del plan (ver `docs/MIGRATION_PLAN.md`) es la **activación del QloApps Channel Manager, gated por el pago del usuario** — runbook en `docs/CHANNEL_MANAGER_SETUP.md`. No implementes pasos del plan por tu cuenta; consulta el archivo y trabaja solo lo que marque. Estado actual de las decisiones:
+El stack actual es **MP+QloApps**; el channel manager (**QloApps Channel Manager** de Webkul) **no requiere código en el repo** — es un módulo del lado PMS que sincroniza vía webservice `cm_api`. Lo único pendiente de la sección 2 del plan (ver `docs/MIGRATION_PLAN.md`) es la **activación del QloApps Channel Manager, gated por el pago del usuario** — runbook en `docs/CHANNEL_MANAGER_SETUP.md`. No implementes pasos del plan por tu cuenta; consulta el archivo y trabaja solo lo que marque. Estado actual de las decisiones:
 - **Pagos: MercadoPago SE MANTIENE** — pasarela única. Stripe/LLC **descartados definitivamente** (2026-08-05).
-- **Channel manager**: Channex → **QloApps Channel Manager** (Webkul): lado código **hecho** (integración Channex eliminada 2026-08-06); **activación pendiente de pago** (decisión 2026-08-04: $30/propiedad/mes con conexiones Booking/Expedia/Airbnb incluidas; sustituye la migración a Nobeds). Runbook: `docs/CHANNEL_MANAGER_SETUP.md`.
+- **Channel manager**: **QloApps Channel Manager** (Webkul): **sin código en el repo** (módulo del PMS, sync vía webservice `cm_api`); **activación pendiente de pago** (decisión 2026-08-04: $30/propiedad/mes con conexiones Booking/Expedia/Airbnb incluidas). Runbook: `docs/CHANNEL_MANAGER_SETUP.md`.
 - **CMS/PMS**: **QloApps SE MANTIENE** — migración a Filament PHP cancelada (decisión 2026-08-04) y el panel **eliminado del repo** (2026-08-05: borrados `backend/`, zip de deploy y docs de la fase). Pendiente en Hostinger: retirar `public_html/admin` y el subdominio admin.usgarhoteles.com.
 - **Refactorización completa del código**: refactor backend cerrado (F2, 2026-08-03); **auditoría de limpieza en curso (2026-08-05)** — código muerto, duplicación, abstracción, hardcodes pendientes (P5-2).
 
@@ -55,7 +55,7 @@ docs/                         Documentación técnica (API_REGISTRY, ARCHITECTUR
 
 ### Backend (PHP ADR) — PATRÓN OBLIGATORIO
 1. **Nunca instancies dependencias dentro de una action**: recíbelas por constructor (el DI `Container` las inyecta).
-2. **Acceso a externos SIEMPRE vía Ports/Adapters**: si necesitas QloApps/MP, usa la interfaz (`PmsPortInterface`, `PaymentGatewayPortInterface`), nunca el adapter directo. (`ChannelManagerPortInterface` sigue existiendo como puerto, pero sin adapter ni binding desde la retirada de Channex, 2026-08-06.)
+2. **Acceso a externos SIEMPRE vía Ports/Adapters**: si necesitas QloApps/MP, usa la interfaz (`PmsPortInterface`, `PaymentGatewayPortInterface`), nunca el adapter directo.
 3. Nueva feature = nuevo `app/Features/<Nombre>/Actions/<Verbo><Sustantivo>Action.php` + ruta en el router (busca dónde se registran: `app/Core` + `public/index.php`).
 4. SQL: preparado (PDO), nunca concatenado. Inputs validados con `App\Core\Validator`.
 5. Errores: `HttpException` con códigos HTTP; en producción no exponer stack traces.

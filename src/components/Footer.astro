@@ -1,7 +1,6 @@
 ---
-import { Image } from 'astro:assets';
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import logo from '../assets/logos/Logo usgar morado.png';
+import LogoUsgar from '../assets/logos/Logo usgar.svg';
 import PlatformLogo from './icons/PlatformLogos.astro';
 import { useTranslations } from '../i18n/utils';
 import { siteSettings } from '../data/settings';
@@ -81,25 +80,10 @@ const newsletterStatusLabels = {
       <p id="newsletter-status" class="hidden mt-3 text-xs font-semibold" role="status"></p>
     </div>
 
-    <!-- Logo -->
+    <!-- Logo (SVG vectorial: queda bien en tema claro y oscuro) -->
     <div class="flex justify-center mb-16">
       <a href={getRelativeLocaleUrl(lang, '')} aria-label="USGAR Hotels Home">
-        <Image
-          src={logo}
-          alt="USGAR Hotels"
-          width={180}
-          layout="none"
-          format="avif"
-          class="h-14 w-auto opacity-80 hover:opacity-100 transition-opacity drop-shadow-sm dark:hidden"
-        />
-        <Image
-          src={logo}
-          alt="USGAR Hotels"
-          width={180}
-          layout="none"
-          format="avif"
-          class="h-14 w-auto opacity-80 hover:opacity-100 transition-opacity drop-shadow-sm hidden dark:block brightness-[100]"
-        />
+        <LogoUsgar class="h-14 w-auto opacity-80 hover:opacity-100 transition-opacity drop-shadow-sm block" />
       </a>
     </div>
 

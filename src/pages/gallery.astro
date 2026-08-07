@@ -45,6 +45,32 @@ const lightboxSrcs = (
     ),
   )
 ).map((img) => img.src);
+
+// Room video tours: cada video usa como poster la primera foto de su habitación
+const roomVideoSlugs = [
+  ...new Set(
+    roomPhotos
+      .map((p) => p.path.match(/rooms\/([^/]+)\//)?.[1])
+      .filter(Boolean) as string[],
+  ),
+];
+const videoItems = roomVideoSlugs.map((slug) => ({
+  slug,
+  video: `/videos/rooms/${slug}.mp4`,
+  poster: roomPhotos.find((p) => p.path.includes(`rooms/${slug}/`))?.metadata,
+}));
+// Media unificado para el lightbox: fotos (imagen) + videos (video)
+type GalleryMedia = { type: "image"; src: string } | { type: "video"; src: string; poster: string };
+const lightboxMedia: GalleryMedia[] = [
+  ...lightboxSrcs.map((src): GalleryMedia => ({ type: "image", src })),
+  ...(await Promise.all(
+    videoItems.map(async (v): Promise<GalleryMedia> => ({
+      type: "video",
+      src: v.video,
+      poster: v.poster ? (await getImage({ src: v.poster, width: 1280, format: "avif", quality: "high" })).src : "",
+    })),
+  )),
+];
 ---
 
 <Layout
@@ -88,11 +114,11 @@ const lightboxSrcs = (
       </div>
     </section>
 
-    <!-- Photo Grid -->
+    <!-- Photo + Video Grid -->
     <div
       id="gallery-grid"
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5"
-      data-images={JSON.stringify(lightboxSrcs)}
+      data-media={JSON.stringify(lightboxMedia)}
     >
       {
         allPhotos.map((photo, index) => (
@@ -118,6 +144,39 @@ const lightboxSrcs = (
                   <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
                 </svg>
               </div>
+            </div>
+          </div>
+        ))
+      }
+      {
+        videoItems.map((video, videoIndex) => (
+          <div
+            class="gallery-item group relative aspect-[4/3] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-[transform,opacity,box-shadow,border-color] duration-500 cursor-pointer border border-black/5 dark:border-white/5 bg-black"
+            data-category="rooms"
+            data-index={allPhotos.length + videoIndex}
+          >
+            {video.poster && (
+              <Picture
+                src={video.poster}
+                alt={`${t("gallery.title")} - ${video.slug} video`}
+                formats={["avif"]}
+                fallbackFormat="avif"
+                quality="high"
+                fit="cover"
+                loading="lazy"
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-70"
+              />
+            )}
+            <!-- Video overlay: play icon + label -->
+            <div class="absolute inset-0 bg-black/20 group-hover:bg-black/45 transition-colors duration-300 flex flex-col items-center justify-center gap-2">
+              <div class="p-4 rounded-full bg-white/15 backdrop-blur-md border border-white/25 shadow-md">
+                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+              <span class="text-white text-xs font-semibold tracking-widest uppercase bg-black/40 px-3 py-1 rounded-full">
+                {t("gallery.videoTour")}
+              </span>
             </div>
           </div>
         ))
@@ -168,6 +227,14 @@ const lightboxSrcs = (
           alt="Lightbox active"
           class="max-w-full max-h-[80vh] rounded-xl object-contain shadow-2xl transition-[transform,opacity] duration-300 border border-white/5"
         />
+        <video
+          id="lightbox-video"
+          src=""
+          controls
+          autoplay
+          playsinline
+          class="hidden max-w-full max-h-[80vh] rounded-xl shadow-2xl border border-white/5 bg-black"
+        ></video>
         <!-- Counter overlay -->
         <div
           id="lightbox-counter"
@@ -183,7 +250,7 @@ const lightboxSrcs = (
 <script>
   let activeIndex = 0;
   let activeFilteredIndexes: number[] = [];
-  let imageUrls: string[] = [];
+  let mediaList: { type: "image" | "video"; src: string; poster?: string }[] = [];
   let abortController = new AbortController();
 
   function initGallery() {
@@ -197,6 +264,7 @@ const lightboxSrcs = (
 
     const lightbox = document.getElementById("gallery-lightbox");
     const lightboxImg = document.getElementById("lightbox-img") as HTMLImageElement | null;
+    const lightboxVideo = document.getElementById("lightbox-video") as HTMLVideoElement | null;
     const closeBtn = document.getElementById("lightbox-close-btn");
     const prevBtn = document.getElementById("lightbox-prev-btn");
     const nextBtn = document.getElementById("lightbox-next-btn");
@@ -213,7 +281,7 @@ const lightboxSrcs = (
       document.body.appendChild(lightbox);
     }
 
-    imageUrls = JSON.parse(grid.getAttribute("data-images") || "[]");
+    mediaList = JSON.parse(grid.getAttribute("data-media") || "[]");
 
     // Apply Filter Function
     function applyFilter(filter: string) {
@@ -260,11 +328,25 @@ const lightboxSrcs = (
 
     // Lightbox Logic
     function updateLightbox() {
-      if (!lightboxImg || imageUrls.length === 0) return;
+      if (!lightboxImg || mediaList.length === 0) return;
       const originalIdx = activeFilteredIndexes[activeIndex];
-      const src = imageUrls[originalIdx];
-      if (src) {
-        lightboxImg.src = src;
+      const media = mediaList[originalIdx];
+      if (!media) return;
+      if (media.type === "video") {
+        lightboxImg.classList.add("hidden");
+        if (lightboxVideo) {
+          lightboxVideo.classList.remove("hidden");
+          lightboxVideo.src = media.src;
+          lightboxVideo.play().catch(() => { /* autoplay blocked, acceptable */ });
+        }
+      } else {
+        if (lightboxVideo) {
+          lightboxVideo.pause();
+          lightboxVideo.src = "";
+          lightboxVideo.classList.add("hidden");
+        }
+        lightboxImg.classList.remove("hidden");
+        lightboxImg.src = media.src;
       }
       if (counter) {
         counter.textContent = `${activeIndex + 1} / ${activeFilteredIndexes.length}`;
@@ -282,6 +364,12 @@ const lightboxSrcs = (
 
     function closeLightbox() {
       if (!lightbox) return;
+      if (lightboxVideo) {
+        lightboxVideo.pause();
+        lightboxVideo.src = "";
+        lightboxVideo.classList.add("hidden");
+      }
+      if (lightboxImg) lightboxImg.classList.remove("hidden");
       lightbox.classList.add("hidden");
       lightbox.classList.remove("flex");
       document.body.style.overflow = "";

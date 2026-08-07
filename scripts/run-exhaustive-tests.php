@@ -14,7 +14,6 @@ use App\Core\HttpException;
 use App\Features\Rooms\Actions\GetRoomsAction;
 use App\Features\Shared\Ports\PmsPortInterface;
 use App\Features\Shared\Ports\PaymentGatewayPortInterface;
-use App\Features\Shared\Ports\ChannelManagerPortInterface;
 use App\Features\Shared\Adapters\QloAppAdapter;
 
 echo "==========================================================" . PHP_EOL;
@@ -49,10 +48,9 @@ assertTest("El Autoloader PSR-4 está cargando las Clases-Acción ADR (Vertical 
 assertTest("El Autoloader PSR-4 está cargando los Puertos Hexagonales", interface_exists(PmsPortInterface::class));
 assertTest("El Autoloader PSR-4 está cargando los Adaptadores Hexagonales", class_exists(QloAppAdapter::class));
 
-// 1.2 Verificacion de Contratos Hexagonales (verifySignature, getPaymentDetails, createBooking)
+// 1.2 Verificacion de Contratos Hexagonales (verifySignature, getPaymentDetails)
 assertTest("PaymentGatewayPortInterface declara 'verifySignature'", method_exists(PaymentGatewayPortInterface::class, 'verifySignature'));
 assertTest("PaymentGatewayPortInterface declara 'getPaymentDetails'", method_exists(PaymentGatewayPortInterface::class, 'getPaymentDetails'));
-assertTest("ChannelManagerPortInterface declara 'createBooking'", method_exists(ChannelManagerPortInterface::class, 'createBooking'));
 
 // 1.3 Config
 Config::boot();

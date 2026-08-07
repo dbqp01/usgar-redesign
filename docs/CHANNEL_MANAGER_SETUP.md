@@ -2,7 +2,7 @@
 
 > **Para:** propietario del hotel + agente ejecutor. **Idioma:** español.
 > **Objetivo:** activar la suscripción SaaS **QloApps Channel Manager** y conectar el PMS QloApps (`https://cms.usgarhoteles.com`) con Booking.com, Expedia y Airbnb, con sincronización de precios/inventario/reservas vía webservice + cron (~1 min) para evitar overbookings.
-> **Contexto:** sustituye a la integración Channex anterior (ya retirada del repo, ver `docs/MIGRATION_PLAN.md` §2). Este documento NO modifica código: solo activación.
+> **Contexto:** el QloApps Channel Manager (Webkul) no requiere código en el repo — es un módulo del lado PMS que sincroniza vía webservice `cm_api` (ver `docs/MIGRATION_PLAN.md` §2). Este documento NO modifica código: solo activación.
 > **Leyenda:** 🔴 **BLOQUEADO** = no se puede completar hasta pagar la suscripción. ✅ = paso verificado en la doc oficial citada. ⚠️ = paso que requiere confirmar en pantalla (la doc no publica el detalle).
 
 **Estado actual (verificado en doc oficial, no inventar):** el **pago de la suscripción fue RECHAZADO** y la sincronización solo funciona con plan activo: *"Users can synchronize price and inventory after upgrading the plan"* — https://qloapps.com/qloapps-channel-manager/ . Ejecutar la **Sección 0 primero**; las secciones 2 (generar credenciales API) y 4-6 quedan 🔴 hasta que el pago se confirme.
@@ -200,7 +200,7 @@ Ejecutar con la propiedad de prueba (5.1) y registrar evidencia (capturas + hora
 | Cancelar suscripción | CM → **Subscriptions → cancel subscription → Cancel Membership**; la cancelación es **efectiva al final del ciclo de facturación** (se sigue usando hasta esa fecha) | https://qloapps.com/qloapps-channel-manager/ (sección "How to Cancel the QloApps Channel Manager Subscription?") |
 | Reembolso | No aplica: *"no refunds will be issued"* una vez comprado | https://qloapps.com/refund-policy/ |
 
-**Rollback de la integración:** la retirada del lado repo (eliminación de la integración Channex antigua) **ya está hecha** — ver `docs/MIGRATION_PLAN.md` §2. Este runbook solo cubre la activación del QloApps CM. Si se cancela la suscripción y se quiere detener el sync, además de cancelar: (a) desactivar el cron de la Sección 3, (b) quitar la clave `cm_api` del webservice QloApps (Sección 7.5) — sin tocar código del repo.
+**Rollback de la integración:** el repo no contiene código de channel manager; este runbook solo cubre la activación del QloApps CM. Si se cancela la suscripción y se quiere detener el sync, además de cancelar: (a) desactivar el cron de la Sección 3, (b) quitar la clave `cm_api` del webservice QloApps (Sección 7.5) — sin tocar código del repo.
 
 ---
 

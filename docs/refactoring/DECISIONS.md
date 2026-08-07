@@ -32,4 +32,4 @@
 - **Cursor**: dot + ring, solo pointer:fine, kill-switch; si no queda impecable se retira.
 - **SplitText ya usado** en el proyecto (licencia presente) → reutilizable para text-reveal.
 - **Verificación**: astro check + build + Chrome DevTools. SIN Playwright (no instalado en este entorno).
-- **Migraciones NO ejecutar**: Channex→Nobeds, QloApps→otro CMS/PMS (solo ToDo).
+- **Migraciones NO ejecutar**: QloApps→otro CMS/PMS (solo ToDo).

@@ -196,7 +196,9 @@
       ],
       "images": [
         "/assets/rooms/familiar-superior/01-familiar.jpg",
-        "/assets/rooms/familiar-superior/02-familiar.jpg"
+        "/assets/rooms/familiar-superior/02-familiar.jpg",
+        "/assets/rooms/familiar-superior/03-familiar.jpg",
+        "/assets/rooms/familiar-superior/04-familiar.jpg"
       ],
       "photoFolder": "familiar-superior",
       "hasVideoTour": true,
@@ -278,7 +280,8 @@
       ],
       "images": [
         "/assets/rooms/triple-standar/01-triple.jpg",
-        "/assets/rooms/triple-standar/02-triple.jpg"
+        "/assets/rooms/triple-standar/02-triple.jpg",
+        "/assets/rooms/triple-standar/03-triple.jpg"
       ],
       "photoFolder": "triple-standar",
       "hasVideoTour": true,

@@ -7,7 +7,7 @@
 
 - **Orden de trabajo**: F0 línea base → F2 limpieza de pagos → F4 frontend (redesign pendiente) → F3 salir de QloApps (tablas propias + Filament) → F1 Nobeds (bloqueada: requiere suscripción pagada, se hace al final).
 - **CMS**: salir de QloApps por completo (estable y simple). **Pagos**: MercadoPago se mantiene (Checkout API).
-- **Nobeds**: sin free trial — requiere sub mensual; se integra cuando el proyecto esté presentado. Channex sigue en producción hasta entonces.
+- **Channel manager**: QloApps Channel Manager (Webkul) — sin código en el repo (módulo del PMS); activación pendiente de pago (runbook `docs/CHANNEL_MANAGER_SETUP.md`).
 
 ## Línea base (2026-08-01, verificada)
 

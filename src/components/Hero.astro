@@ -37,7 +37,7 @@ const slides = [slide1, slide2, slide3, slide4];
   class="relative h-dvh min-h-[500px] sm:min-h-[600px] flex items-center justify-center overflow-hidden"
   id="hero"
 >
-  <!-- Video Background -->
+  <!-- Video Background (3 segmentos encadenados: cada parte arranca al terminar la anterior) -->
   <video
     autoplay
     muted
@@ -46,9 +46,11 @@ const slides = [slide1, slide2, slide3, slide4];
     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 z-0 opacity-100"
     poster={optimizedPoster.src}
     id="hero-video"
+    data-video-parts={JSON.stringify({
+      desktop: ["/videos/hero-1.mp4", "/videos/hero-2.mp4", "/videos/hero-3.mp4"],
+      mobile: ["/videos/hero-mobile-1.mp4", "/videos/hero-mobile-2.mp4", "/videos/hero-mobile-3.mp4"],
+    })}
   >
-    <source media="(max-width: 767px)" src="/videos/hero-video-mobile.mp4" type="video/mp4" />
-    <source src="/videos/hero-video.mp4" type="video/mp4" />
   </video>
 
   <!-- Slideshow Background (Initially hidden) -->
@@ -166,21 +168,37 @@ const slides = [slide1, slide2, slide3, slide4];
     unmutedIcon.classList.add("hidden");
 
     // 3. Reset and play media source (deferred attach)
-    video.currentTime = 0;
-    if (video.dataset.src && (!video.src || video.src.endsWith('#') || !video.src.includes('.mp4'))) {
-      video.src = video.dataset.src;
-    }
-    try {
-      video.load();
-    } catch (e) {
-      // Ignore load errors
-    }
+    // Hero video = 3 segmentos encadenados; la lista depende del viewport
+    const parts: string[] = JSON.parse(
+      video.dataset.videoParts || '{"desktop":[],"mobile":[]}',
+    )[window.matchMedia("(max-width: 767px)").matches ? "mobile" : "desktop"];
+    let partIndex = 0;
 
-    requestAnimationFrame(() => {
+    function playPart(index: number) {
+      const src = parts[index];
+      if (!src) return;
+      video.src = src;
+      video.load();
       video.play().catch((err) => {
         console.log("Hero video autoplay notice:", err);
       });
-    });
+    }
+
+    if (parts.length > 0) {
+      playPart(0);
+    } else if (video.dataset.src) {
+      video.src = video.dataset.src;
+      try {
+        video.load();
+      } catch (e) {
+        // Ignore load errors
+      }
+      requestAnimationFrame(() => {
+        video.play().catch((err) => {
+          console.log("Hero video autoplay notice:", err);
+        });
+      });
+    }
 
     // 4. Toggle sound handler (clean direct assignment)
     toggleBtn.onclick = () => {
@@ -239,11 +257,17 @@ const slides = [slide1, slide2, slide3, slide4];
       }, 4000);
     }
 
-    // 5. Video ended handler (starts slideshow sequence)
+    // 5. Video ended handler: avanza al siguiente segmento (loop infinito);
+    // si no hay segmentos (fallback), inicia la secuencia de slideshow
     video.onended = () => {
-      video.classList.remove("opacity-100");
-      video.classList.add("opacity-0");
-      startSlideshow();
+      if (parts.length > 0) {
+        partIndex = (partIndex + 1) % parts.length;
+        playPart(partIndex);
+      } else {
+        video.classList.remove("opacity-100");
+        video.classList.add("opacity-0");
+        startSlideshow();
+      }
     };
 
     // Cleanup interval on page transition before swap

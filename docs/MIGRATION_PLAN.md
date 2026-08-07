@@ -2,7 +2,7 @@
 
 Plan de trabajo con migraciones en curso y estado verificado (2026-08-03): úsalo como lista de tareas y como documentación del estado real.
 
-Estado global (2026-08-06): **sección 1 cerrada** — Stripe descartado definitivamente; **sección 2 en curso** — código Channex **ELIMINADO** (2026-08-06, commits `c7be9f3`..`2e56d2b`, QA verde 22/0 + astro check 0 errores); **activación del QloApps Channel Manager pendiente de pago** ($30/propiedad/mes, conexiones incluidas; runbook `docs/CHANNEL_MANAGER_SETUP.md`); **sección 3 RESUELTA** — panel Filament eliminado del repo (2026-08-05); **sección 4 completada** (refactor backend, cierre F2 el 2026-08-03) con pendientes menores; auditoría de refactor adicional en curso (2026-08-05).
+Estado global (2026-08-06): **sección 1 cerrada** — Stripe descartado definitivamente; **sección 2 en curso** — activación del **QloApps Channel Manager pendiente de pago** ($30/propiedad/mes, conexiones incluidas; runbook `docs/CHANNEL_MANAGER_SETUP.md`); **sin código en el repo** (el CM es un módulo del lado PMS, sync vía webservice `cm_api`); **sección 3 RESUELTA** — panel Filament eliminado del repo (2026-08-05); **sección 4 completada** (refactor backend, cierre F2 el 2026-08-03) con pendientes menores; auditoría de refactor adicional en curso (2026-08-05).
 
 ---
 
@@ -13,16 +13,15 @@ Estado global (2026-08-06): **sección 1 cerrada** — Stripe descartado definit
 - [x] ~~Reevaluar Stripe + LLC con datos de volumen~~ — **DESCARTADO DEFINITIVAMENTE (2026-08-05)**: no hay migración de pasarela ni reevaluación futura. MercadoPago es la pasarela única.
 - [ ] Los problemas reportados con MP (falta de comunicación, residuos de Checkout Pro) **no se resuelven cambiando de pasarela**: se resuelven en la refactorización (sección 4) — aislar SDK, limpiar flujo viejo, tests de caracterización.
 
-## 2. Channel Manager: Channex → QloApps Channel Manager (código hecho 2026-08-06; activación pendiente de pago — decisión 2026-08-04)
+## 2. Channel Manager: QloApps Channel Manager (Webkul) — sin código en el repo; activación pendiente de pago (decisión 2026-08-04)
 
-**Decisión (2026-08-04, usuario):** sustituir la migración prevista a Nobeds por la suscripción SaaS **QloApps Channel Manager** (Webkul). Investigación de precios exactos (2026-08-04): Channex cuesta $130/mes plataforma + $7/propiedad (**$137/mes** — su único plan publicado); Nobeds €99/mes plan API con el peor historial de fiabilidad/soporte del grupo; el QloApps CM cuesta **$30/propiedad/mes** ($300/año, descuento 16.6%) e **incluye las conexiones** a Booking.com, Expedia, Airbnb (+Agoda, Google Hotels, Ctrip, Despegar, Goibibo/MakeMyTrip, Yatra, Bakuun) **sin costo por canal**, con la conectividad Channex operada por Webkul dentro del plan (no se paga Channex aparte). Requisito del hotel: solo Booking/Expedia/Airbnb — cubierto.
+**Decisión (2026-08-04, usuario):** suscripción SaaS **QloApps Channel Manager** (Webkul): **$30/propiedad/mes** ($300/año, descuento 16.6%) e **incluye las conexiones** a Booking.com, Expedia, Airbnb (+Agoda, Google Hotels, Ctrip, Despegar, Goibibo/MakeMyTrip, Yatra, Bakuun) **sin costo por canal** (la conectividad la opera Webkul dentro del plan). Requisito del hotel: solo Booking/Expedia/Airbnb — cubierto.
 
-- [ ] Confirmar con Webkul (ticket en webkul.uvdesk.com) antes de pagar: (1) conectividad Channex de Booking/Expedia incluida en el $30 (sin factura aparte de Channex), (2) compatibilidad con la versión de QloApps de la instancia, (3) límite de canales por propiedad (la doc lista 10, sin límite publicado).
+- [ ] Confirmar con Webkul (ticket en webkul.uvdesk.com) antes de pagar: (1) conectividad de Booking/Expedia incluida en el $30 (sin costo adicional), (2) compatibilidad con la versión de QloApps de la instancia, (3) límite de canales por propiedad (la doc lista 10, sin límite publicado).
 - [ ] Activar suscripción en channels.qloapps.com — ojo: el trial de 15 días NO sincroniza precios/inventario (solo la versión pagada) y no hay reembolsos.
 - [ ] Conector PMS↔CM: habilitar webservice QloApps (clave + permisos `cm_api`) + módulo gratuito "QloApps PMS & Channel Manager Connector".
 - [ ] Configurar canales siguiendo las guías de qloapps.com: Booking.com y Expedia (seleccionar "Channex" como proveedor en el extranet OTA) + Airbnb (authorize) + mapeo de room types/rate plans.
-- [x] **Eliminado (2026-08-06, commits `c7be9f3`..`2e56d2b`)** — `ChannexAdapter`, `ChannexRoomMapper` y la lógica de sincronización de Channex en `app/Features/Shared/Adapters/` (sustituida por la sync CM↔PMS vía webservice, cron ~1 min — pendiente de activar).
-- [x] **Eliminado (2026-08-06)** — `SyncChannexBookingListener` y su suscripción `booking.paid`; las reservas OTA entran directo a QloApps (verificar flujo con `QloAppAdapter` y webhooks existentes una vez activado el CM).
+- [x] **Repo sin código de channel manager** — por diseño: el QloApps CM es un módulo del lado PMS que sincroniza vía webservice `cm_api` (ver `docs/CHANNEL_MANAGER_SETUP.md`); el sitio web no participa.
 - [ ] Monitoreo: reconciliación periódica inventario/tarifas OTA vs QloApps — el CM de Webkul no tiene status page pública (mitigar con checks propios).
 - [ ] Pruebas con OTAs reales (Booking.com / Airbnb) y verificación de overbooking.
 

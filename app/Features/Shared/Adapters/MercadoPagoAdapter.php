@@ -34,7 +34,6 @@ use Exception;
 class MercadoPagoAdapter implements PaymentGatewayPortInterface {
     private readonly string $accessToken;
     private readonly ?string $webhookSecret;
-    private readonly string $siteUrl;
     private readonly PaymentClient $paymentClient;
     private readonly PaymentRefundClient $refundClient;
 
@@ -57,9 +56,6 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         }
         $this->accessToken = $token;
         $this->webhookSecret = Config::get('MERCADO_PAGO_WEBHOOK_SECRET');
-
-        $url = Config::get('SITE_URL') ?? '';
-        $this->siteUrl = rtrim($url, '/');
 
         $this->paymentClient = $paymentClient ?? new PaymentClient();
         $this->refundClient = $refundClient ?? new PaymentRefundClient();
@@ -125,6 +121,10 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             // ['x-idempotency-key' => $uuid] se pierde en el transporte: el
             // array_merge + CURLOPT_HTTPHEADER deja un valor sin ':' que curl
             // descarta -> MP responde 400 "Header X-Idempotency-Key can't be null".
+            // El SDK documenta setCustomHeaders como lista de strings "Name:
+            // value" (la forma asociativa se pierde en CURLOPT_HTTPHEADER:
+            // curl descarta headers sin ':'). Validado E2E en entorno TEST (live_mode:false, 2026-08-03); pendiente validación LIVE.
+            // @phpstan-ignore argument.type
             $requestOptions->setCustomHeaders(['X-Idempotency-Key: ' . $this->generateUuidV4()]);
             $requestOptions->setConnectionTimeout((int) Config::get('MERCADO_PAGO_TIMEOUT_CREATE_MS', '15000')); // 15s total
 
@@ -278,6 +278,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
                 return null;
             }
 
+            /** @var \MercadoPago\Resources\Payment\PaymentSearchResult $first */
             $first = $results[0];
             return [
                 'id' => (int) ($first->id ?? 0),
@@ -303,6 +304,9 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             // Fix F3 (2026-08-06): mismo contrato del SDK que processPayment —
             // header como string "Name: value" (la forma asociativa se pierde
             // en CURLOPT_HTTPHEADER).
+            // Mismo contrato del SDK que processPayment: lista "Name: value"
+            // (validado E2E en TEST, live_mode:false — pendiente LIVE).
+            // @phpstan-ignore argument.type
             $requestOptions->setCustomHeaders(['X-Idempotency-Key: refund_' . $paymentId . '_' . hash('sha256', $paymentId . '_' . ($amount ?? 'full'))]);
             $requestOptions->setConnectionTimeout(10000); // 10s
 

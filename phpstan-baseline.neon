@@ -409,12 +409,6 @@ parameters:
 			path: app/Features/Shared/Adapters/QloAppAdapter.php
 
 		-
-			message: '#^Method App\\Features\\Shared\\Ports\\ChannelManagerPortInterface\:\:fetchBookingRevision\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Features/Shared/Ports/ChannelManagerPortInterface.php
-
-		-
 			message: '#^Method App\\Features\\Shared\\Ports\\PaymentGatewayPortInterface\:\:getPaymentDetails\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1

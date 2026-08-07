@@ -174,7 +174,7 @@ class HandleMercadoPagoWebhookAction {
                 // procesado corta el retry. El chequeo isPaymentProcessed
                 // corre DENTRO de la txn ANTES del INSERT (patron todo 11) y
                 // el INSERT usa ON DUPLICATE KEY (carrera concurrente segura).
-                Logger::error("HandleMercadoPagoWebhookAction ALERTA ORPHAN: Pago {$paymentIdStr} sin hold para Cart ID " . ($cartId ?? 'n/a'));
+                Logger::error("HandleMercadoPagoWebhookAction ALERTA ORPHAN: Pago {$paymentIdStr} sin hold para Cart ID {$cartId}");
                 $this->markOrphan($paymentIdStr);
                 return;
             }

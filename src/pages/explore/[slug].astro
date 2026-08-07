@@ -6,7 +6,7 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import fallbackImg from "../../assets/hotel/hero-slide-cusco.jpg";
-import logoUrl from "../../assets/logos/Logo usgar morado.png";
+import logoUrl from "../../assets/logos/Logo usgar.svg?url";
 
 interface Props {
   attraction?: Attraction;
@@ -60,7 +60,7 @@ const blogSchema = {
     "name": "USGAR Hotels",
     "logo": {
       "@type": "ImageObject",
-      "url": logoUrl.src
+      "url": logoUrl
     }
   },
   "about": {

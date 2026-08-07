@@ -186,7 +186,8 @@
     "subtitle": "Descubre la belleza y los detalles de USGAR Hotels en San Pedro, Cusco",
     "filterAll": "Todas las Fotos",
     "filterHotel": "Hotel y Areas",
-    "filterRooms": "Habitaciones"
+    "filterRooms": "Habitaciones",
+    "videoTour": "Video Tour"
   },
   "about": {
     "sectionLabel": "Nosotros",
@@ -247,7 +248,7 @@
     "paymentApproved": "Pago Aprobado con Exito",
     "reservationConfirmed": "Tu Reserva esta Confirmada!",
     "confirmationMessage": "Gracias por elegir USGAR Hotels. Recibiras un correo de confirmacion con todos los detalles de tu estadia.",
-    "channexCode": "Codigo de Confirmacion",
+    "confirmationCode": "Codigo de Confirmacion",
     "bookingDetails": "Detalles de la Reserva",
     "primaryGuest": "Huesped Principal",
     "roomType": "Habitacion",

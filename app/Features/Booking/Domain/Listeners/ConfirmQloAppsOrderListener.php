@@ -15,7 +15,7 @@ use RuntimeException;
  * Listener que reacciona a BookingPaidEvent confirmando la orden en QloApps PMS.
  *
  * Todo 21 (Wave 4):
- *  - 1 intento + THROW ante confirmOrder null/false (el outbox reintenta via
+ *  - 1 intento + THROW ante confirmOrder null (el outbox reintenta via
  *    el cron process_outbox — todo 19). Se elimina el retry loop interno.
  *  - DEDUP del consumidor: UNICO mecanismo = pre-chequeo por
  *    external_reference = USGAR-{cartId}. Si la orden YA esta confirmada en
@@ -63,9 +63,9 @@ class ConfirmQloAppsOrderListener implements ListenerInterface {
         // 1 intento + throw (el retry lo gestiona el outbox, todo 19).
         $orderResult = $this->pmsAdapter->confirmOrder($cartId, $amountPen, $guestName, $guestEmail);
 
-        if ($orderResult === null || $orderResult === false) {
+        if ($orderResult === null) {
             Logger::error("ConfirmQloAppsOrderListener Error: confirmOrder devolvio resultado vacio para Cart ID {$cartId} (payment {$paymentId})");
-            throw new RuntimeException("QloApps confirmOrder fallo para cart {$cartId}: resultado null/false.");
+            throw new RuntimeException("QloApps confirmOrder fallo para cart {$cartId}: resultado null.");
         }
 
         Logger::info("ConfirmQloAppsOrderListener: Orden generada en QloApps exitosamente para Cart ID {$cartId}", [

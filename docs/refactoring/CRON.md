@@ -16,7 +16,7 @@ php /home/USER/domains/usgarhoteles.com/public_html/cron/process_outbox.php
 
 Procesa la tabla `event_outbox`: eventos `booking.paid` serializados que no
 pudieron ejecutarse en la peticion HTTP (integraciones externas: QloApps,
-Channex). Los listeners se registran via `app/bootstrap.php` (compartido).
+QloApps). Los listeners se registran via `app/bootstrap.php` (compartido).
 
 ## 2. Reconciliacion de pagos (webhooks que nunca llegaron)
 
