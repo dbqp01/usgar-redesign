@@ -1,0 +1,1 @@
+import{n as e}from"./format.Bg1kTj2l.js";window.__usgarFormatPrice=e;

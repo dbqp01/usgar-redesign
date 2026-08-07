@@ -1,0 +1,277 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Features\Auth;
+
+use PDO;
+use PDOException;
+use App\Core\Logger;
+
+/**
+ * Modelo para la tabla `users`.
+ * Patron Repository/Data Mapper — SQL separado de controllers.
+ *
+ * Soporta autenticacion social (Google, Microsoft, Facebook)
+ * y autenticacion tradicional (email + contrasena con bcrypt).
+ *
+ * Vinculacion por email: si un usuario se registra con Google
+ * y despues intenta con email+password (o viceversa), se vincula
+ * por email para evitar duplicados.
+ */
+class User {
+    public function __construct(private readonly PDO $pdo) {
+        $this->ensureTableExists();
+    }
+
+    /**
+     * Crea la tabla `users` automáticamente si no existe en la base de datos.
+     */
+    private function ensureTableExists(): void {
+        try {
+            $this->pdo->exec("
+                CREATE TABLE IF NOT EXISTS users (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    email VARCHAR(255) UNIQUE NOT NULL,
+                    first_name VARCHAR(100) NULL,
+                    last_name VARCHAR(100) NULL,
+                    password_hash VARCHAR(255) NULL,
+                    phone VARCHAR(50) NULL,
+                    photo_url TEXT NULL,
+                    provider VARCHAR(50) NOT NULL DEFAULT 'email',
+                    provider_id VARCHAR(255) NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    INDEX idx_email (email),
+                    INDEX idx_provider (provider, provider_id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            ");
+        } catch (PDOException $e) {
+            Logger::error('User::ensureTableExists failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Busca un usuario por email.
+     */
+    public function findByEmail(string $email): ?array {
+        try {
+            $stmt = $this->pdo->prepare('SELECT * FROM users WHERE email = :email LIMIT 1');
+            $stmt->execute([':email' => $email]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ?: null;
+        } catch (PDOException $e) {
+            Logger::error('User::findByEmail failed: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Busca un usuario por su ID.
+     */
+    public function findById(int $id): ?array {
+        try {
+            $stmt = $this->pdo->prepare('SELECT * FROM users WHERE id = :id LIMIT 1');
+            $stmt->execute([':id' => $id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ?: null;
+        } catch (PDOException $e) {
+            Logger::error('User::findById failed: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Crea un usuario desde un perfil OAuth.
+     * Si ya existe un usuario con el mismo email, actualiza el proveedor.
+     *
+     * @param array{email: string, first_name: ?string, last_name: ?string, photo_url: ?string, phone: ?string, provider: string, provider_id: string} $profile
+     * @return int|null ID del usuario creado/actualizado, o null en caso de error
+     */
+    public function createFromOAuth(array $profile): ?int {
+        try {
+            // Primero verificar si ya existe por email
+            $existing = $this->findByEmail($profile['email']);
+
+            if ($existing !== null) {
+                // Si el usuario ya tiene un provider asignado y no coincide con el actual, no sobrescribir a ciegas
+                $newProvider = $existing['provider'] === 'email' ? $profile['provider'] : $existing['provider'];
+                $newProviderId = $existing['provider'] === 'email' ? $profile['provider_id'] : $existing['provider_id'];
+
+                $stmt = $this->pdo->prepare('
+                    UPDATE users SET
+                        provider = :provider,
+                        provider_id = :provider_id,
+                        photo_url = COALESCE(:photo_url, photo_url),
+                        first_name = COALESCE(:first_name, first_name),
+                        last_name = COALESCE(:last_name, last_name),
+                        updated_at = NOW()
+                    WHERE id = :id
+                ');
+                $stmt->execute([
+                    ':provider'    => $newProvider,
+                    ':provider_id' => $newProviderId,
+                    ':photo_url'   => $profile['photo_url'] ?? null,
+                    ':first_name'  => $profile['first_name'] ?? null,
+                    ':last_name'   => $profile['last_name'] ?? null,
+                    ':id'          => $existing['id'],
+                ]);
+                return (int) $existing['id'];
+            }
+
+            // Crear nuevo usuario
+            $stmt = $this->pdo->prepare('
+                INSERT INTO users (email, first_name, last_name, phone, photo_url, provider, provider_id)
+                VALUES (:email, :first_name, :last_name, :phone, :photo_url, :provider, :provider_id)
+            ');
+            $stmt->execute([
+                ':email'       => $profile['email'],
+                ':first_name'  => $profile['first_name'] ?? null,
+                ':last_name'   => $profile['last_name'] ?? null,
+                ':phone'       => $profile['phone'] ?? null,
+                ':photo_url'   => $profile['photo_url'] ?? null,
+                ':provider'    => $profile['provider'],
+                ':provider_id' => $profile['provider_id'],
+            ]);
+
+            return (int) $this->pdo->lastInsertId();
+        } catch (PDOException $e) {
+            Logger::error('User::createFromOAuth failed: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Crea un usuario con email y contrasena.
+     * Si ya existe una cuenta de Google OAuth sin contrasena, le vincula la contrasena.
+     *
+     * @return int|null ID del usuario creado o actualizado, o null si el email ya existe con contrasena o por error
+     */
+    public function createFromEmail(string $email, string $password, string $firstName, string $lastName = ''): ?int {
+        try {
+            $existing = $this->findByEmail($email);
+
+            if ($existing !== null) {
+                // Si la cuenta existe pero NO tiene contrasena (fue creada via OAuth), se la vinculamos
+                if (empty($existing['password_hash'])) {
+                    $stmt = $this->pdo->prepare('
+                        UPDATE users SET
+                            password_hash = :password_hash,
+                            first_name = COALESCE(first_name, :first_name),
+                            last_name = COALESCE(last_name, :last_name),
+                            updated_at = NOW()
+                        WHERE id = :id
+                    ');
+                    $stmt->execute([
+                        ':password_hash' => password_hash($password, PASSWORD_BCRYPT),
+                        ':first_name'    => !empty($firstName) ? $firstName : null,
+                        ':last_name'     => !empty($lastName) ? $lastName : null,
+                        ':id'            => $existing['id'],
+                    ]);
+                    return (int) $existing['id'];
+                }
+
+                return null; // Ya existe con contraseña
+            }
+
+            $stmt = $this->pdo->prepare('
+                INSERT INTO users (email, first_name, last_name, password_hash, provider)
+                VALUES (:email, :first_name, :last_name, :password_hash, :provider)
+            ');
+            $stmt->execute([
+                ':email'         => $email,
+                ':first_name'    => $firstName,
+                ':last_name'     => $lastName,
+                ':password_hash' => password_hash($password, PASSWORD_BCRYPT),
+                ':provider'      => 'email',
+            ]);
+
+            return (int) $this->pdo->lastInsertId();
+        } catch (PDOException $e) {
+            Logger::error('User::createFromEmail failed: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Verifica email + contrasena y retorna el usuario.
+     * Retorna un arreglo especial ['error' => 'oauth_only', 'provider' => ...] si la cuenta fue creada via OAuth.
+     */
+    public function verifyPassword(string $email, string $password): ?array {
+        $user = $this->findByEmail($email);
+
+        if ($user === null) {
+            return null;
+        }
+
+        if (empty($user['password_hash'])) {
+            return [
+                'error'    => 'oauth_only',
+                'provider' => $user['provider'] ?? 'Google',
+            ];
+        }
+
+        if (!password_verify($password, $user['password_hash'])) {
+            return null;
+        }
+
+        return $user;
+    }
+
+    /**
+     * Obtiene las reservas de un usuario.
+     */
+    public function getBookings(int $userId): array {
+        try {
+            $stmt = $this->pdo->prepare('
+                SELECT cart_id, id_room_type, room_data, guest_data, price_snapshot,
+                       checkin, checkout, status, created_at
+                FROM provisional_bookings
+                WHERE user_id = :user_id
+                ORDER BY created_at DESC
+            ');
+            $stmt->execute([':user_id' => $userId]);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return array_map(fn(array $row): array => $this->hydrateBookingRow($row), $results);
+        } catch (PDOException $e) {
+            Logger::error('User::getBookings failed: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Decodifica los campos JSON de una fila de reserva.
+     *
+     * @param array<string, mixed> $row
+     * @return array<string, mixed>
+     */
+    private function hydrateBookingRow(array $row): array {
+        $row['room_data'] = json_decode($row['room_data'] ?? '{}', true);
+        $row['guest_data'] = json_decode($row['guest_data'] ?? '{}', true);
+        return $row;
+    }
+    /**
+     * Actualiza los datos del perfil de un usuario.
+     */
+    public function updateProfile(int $id, string $firstName, string $lastName = '', ?string $phone = null): bool {
+        try {
+            $stmt = $this->pdo->prepare('
+                UPDATE users SET
+                    first_name = :first_name,
+                    last_name = :last_name,
+                    phone = :phone,
+                    updated_at = NOW()
+                WHERE id = :id
+            ');
+            return $stmt->execute([
+                ':first_name' => $firstName,
+                ':last_name'  => $lastName,
+                ':phone'      => $phone,
+                ':id'         => $id,
+            ]);
+        } catch (PDOException $e) {
+            Logger::error('User::updateProfile failed: ' . $e->getMessage());
+            return false;
+        }
+    }
+}

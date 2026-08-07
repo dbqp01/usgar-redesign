@@ -1,0 +1,1 @@
+import{t as e}from"./gsap.Bi_c5vh2.js";import{t}from"./autoMotion.Bfrfb02A.js";function n(){return e.context(()=>{let e=document.getElementById(`velocity-marquee-track`),n=document.getElementById(`velocity-marquee-section`);if(!e||!n)return;let r=t(e,n,{baseSpeed:1,velocityFactor:.0025});return()=>r?.()})}export{n as initVelocityMarquee};

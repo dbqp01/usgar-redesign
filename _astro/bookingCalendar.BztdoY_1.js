@@ -1,0 +1,1 @@
+import{t as e}from"./gsap.Bi_c5vh2.js";function t(t){let n=e.context(()=>{let n=window.matchMedia(`(prefers-reduced-motion: reduce)`).matches,r=e.utils.toArray(`[data-calendar-day]`,t);if(r.length){if(n){e.set(r,{autoAlpha:1});return}e.from(r,{autoAlpha:0,y:8,scale:.96,duration:.35,ease:`power2.out`,stagger:.012,overwrite:!0})}},t);return()=>n.revert()}export{t};

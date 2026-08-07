@@ -1,0 +1,1 @@
+import{t as e}from"./roomsGallery.B6QjeSxn.js";var t=null;function n(){let n=document.querySelector(`[data-rooms-gallery]`);n&&(t?.(),t=e(n))}document.addEventListener(`astro:page-load`,n),document.addEventListener(`astro:before-preparation`,()=>{t?.(),t=null});

@@ -1,0 +1,1 @@
+import{t as e}from"./gsap.Bi_c5vh2.js";function t(){let t=e.matchMedia();return t.add(`(min-width: 768px)`,()=>{document.querySelectorAll(`[data-story-parallax]`).forEach(t=>{let n=parseFloat(t.getAttribute(`data-story-parallax`)||`0.15`);e.to(t,{y:()=>-100*n,ease:`none`,scrollTrigger:{trigger:t,start:`top bottom`,end:`bottom top`,scrub:!0}})})}),t}export{t as initParallaxCards};

@@ -1,0 +1,1 @@
+var e={en:`en-US`,es:`es-PE`,fr:`fr-FR`,pt:`pt-PT`},t={weekday:`long`,year:`numeric`,month:`long`,day:`numeric`};function n(n,r){return n?(typeof n==`string`?new Date(`${n}T00:00:00`):n).toLocaleDateString(e[r]??`en-US`,t):``}function r(e,t,n){return`${t===`PEN`?`S/.`:`$`}${Number(e).toFixed(2)} ${t}`}export{r as n,n as t};
