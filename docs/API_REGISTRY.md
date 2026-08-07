@@ -137,7 +137,6 @@ Procesa el pago con tarjeta vía Checkout API (Custom Checkout). Verifica `acces
 |--------|----------|--------|------|
 | POST | `/api/webhook` | `HandleMercadoPagoWebhookAction` | Token |
 | POST | `/api/webhook-mercado-pago` | `HandleMercadoPagoWebhookAction` | Token (alias deprecated) |
-| POST | `/api/webhook/channex` | `HandleChannexWebhookAction` | Token |
 
 **Nota:** `/api/webhook-mercado-pago` es un alias de compatibilidad que apunta al mismo Action; **sigue registrado en `public/index.php`** — pendiente de eliminación. El callback canónico registrado en el panel de MercadoPago es `/api/webhook`.
 
@@ -148,7 +147,7 @@ Procesa el pago con tarjeta vía Checkout API (Custom Checkout). Verifica `acces
 - ⚠️ **Verificar que `MERCADO_PAGO_WEBHOOK_SECRET` del `.env` sea EXACTO al secreto del panel** (developers/panel/app/8501374849722569/webhooks). Si no coincide, la validación de firma HMAC en `HandleMercadoPagoWebhookAction` rechazará todos los webhooks (HTTP 401).
 - Diagnóstico: `mercadopago-mcp-server_notifications_history` (app 8501374849722569). Al 2026-08-01 no había notificaciones registradas → probablemente el webhook nunca recibió eventos o el callback anterior era incorrecto; probar con un pago real/sandbox tras verificar el secreto.
 
-**Env vars:** `MERCADO_PAGO_WEBHOOK_SECRET` (nombre real en producción; `MP_WEBHOOK_SECRET` solo sobrevive como fallback en los scripts de test `tests/test_sdk_webhook.php` y `scripts/run-stress-tests.php`), `CHANNEX_WEBHOOK_SECRET` (fallback: `CHANNEX_API_KEY`)
+**Env vars:** `MERCADO_PAGO_WEBHOOK_SECRET` (nombre real en producción; `MP_WEBHOOK_SECRET` solo sobrevive como fallback en los scripts de test `tests/test_sdk_webhook.php` y `scripts/run-stress-tests.php`).
 
 ---
 
@@ -209,7 +208,7 @@ Todas las claves se leen vía `App\Core\Config` (`Config::get('KEY')`, con fallb
 | `QLOAPP_API_KEY` | QloAppAdapter | API key del PMS QloApps |
 | `MERCADO_PAGO_ACCESS_TOKEN` | MercadoPagoAdapter | Token de Mercado Pago (fuente de verdad única) |
 | `MERCADO_PAGO_WEBHOOK_SECRET` | MercadoPagoAdapter / WebhookAction | Secreto para validar la firma HMAC de los webhooks MP |
-| `MERCADO_PAGO_CURRENCY` | QloAppAdapter / ChannexAdapter | Moneda de pagos (default `USD`) |
+| `MERCADO_PAGO_CURRENCY` | QloAppAdapter | Moneda de pagos (default `USD`) |
 | `PUBLIC_MERCADO_PAGO_PUBLIC_KEY` | CreateBookingAction | Public key MP para el cardForm del frontend |
 | `MP_STATEMENT_DESCRIPTOR` | MercadoPagoAdapter | Descriptor del extracto (default `USGAR HOTELES CUSCO`) |
 | `MP_BINARY_MODE` | MercadoPagoAdapter | `true`/`false` (default `true`) |
@@ -217,16 +216,7 @@ Todas las claves se leen vía `App\Core\Config` (`Config::get('KEY')`, con fallb
 | `BOOKING_TOKEN_SECRET` | Booking actions | Secreto HMAC del hold token (`cart_id:email`); fallback `CRON_SECRET` |
 | `CRON_SECRET` | Cron / Booking actions | Secreto de endpoints cron; fallback de `BOOKING_TOKEN_SECRET` |
 | `HOTEL_BASE_CURRENCY` | GetRoomsAction | Moneda de los precios de habitaciones (default `USD`) |
-| `CHANNEX_API_KEY` | ChannexAdapter | API key de Channex (también fallback del webhook Channex) |
-| `CHANNEX_API_URL` | ChannexAdapter | URL de la API de Channex (default `https://api.channex.io/api/v1`) |
-| `CHANNEX_PROPERTY_ID` | ChannexAdapter | ID de propiedad en Channex |
-| `CHANNEX_WEBHOOK_SECRET` | HandleChannexWebhookAction | Secreto de webhooks de Channex (fallback `CHANNEX_API_KEY`) |
-| `CHANNEX_ROOM_MAP` | ChannexRoomMapper | JSON con el mapeo de room types ↔ UUIDs de Channex |
-| `CHANNEX_ROOM_*` | ChannexRoomMapper | UUID de room type por slug (`CHANNEX_ROOM_MATRIMONIAL`, `CHANNEX_ROOM_DOBLE_SUPERIOR`, …) |
-| `CHANNEX_RATE_*` / `CHANNEX_RATE_PLAN_ID` | RoomTypeRegistry | UUID de rate plan por slug, o fallback global `CHANNEX_RATE_PLAN_ID` |
-| `CHANNEX_PROVIDER_CODE` | ChannexAdapter | Código de provider (default `OpenChannel`) |
-| `CHANNEX_OTA_NAME` | ChannexAdapter | Nombre del OTA (default `Direct`) |
-| `OTA_DEFAULT_EMAIL` | HandleChannexWebhookAction | Email de huésped por defecto (default `guest@ota.com`) |
+| `OTA_DEFAULT_PHONE` | QloAppAdapter | Teléfono de huésped por defecto (default `000000000`) |
 | `AUTH_JWT_SECRET` | SessionService | Secreto para firmar tokens JWT (≥32 caracteres) |
 | `SITE_URL` | AuthService / MercadoPagoAdapter | URL base de la aplicación (default `https://usgarhoteles.com`) |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | AuthService | Credenciales OAuth de Google |
