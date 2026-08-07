@@ -145,14 +145,26 @@ class HandleMercadoPagoWebhookAction {
             }
 
             if ($status !== 'approved') {
+                if (in_array($status, ['refunded', 'charged_back', 'cancelled'], true) && $cartId) {
+                    // Rama refund/chargeback/cancel (fix 2026-08-07): el dinero
+                    // salio y el hold/PMS quedan 'paid' — la reconciliacion con
+                    // QloApps (cancelar la orden) sigue siendo el refactor W3
+                    // diferido. Minimo viable: idempotencia con el MISMO
+                    // $eventType del chequeo (L128) + alerta para resolucion
+                    // manual (mismo canal que expired_paid/fraud_review).
+                    // Antes era un no-op silencioso: updateStatus('failed') es
+                    // fail-closed (target no declarado en el guard del todo 9)
+                    // y, sin markPaymentProcessed, cada notificacion repetida
+                    // de MP reprocesaba el evento para siempre.
+                    $this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, $eventType);
+                    $this->bookingRepo->recordAlert((string)$cartId, $paymentIdStr, $status);
+                    $this->pdo->commit();
+                    Logger::error("HandleMercadoPagoWebhookAction ALERTA: Pago {$paymentIdStr} llego como '{$status}' para Cart ID {$cartId} — registrado para resolucion manual (cancelacion de orden en PMS pendiente, W3).");
+                    Response::json(['success' => true, 'status' => $status, 'message' => 'Refund/chargeback acknowledged; manual resolution required.']);
+                    return;
+                }
                 $this->pdo->rollBack();
                 Logger::info("HandleMercadoPagoWebhookAction: Pago ID {$paymentIdStr} tiene estado '{$status}'. Omitiendo confirmacion.");
-                if (in_array($status, ['refunded', 'charged_back', 'cancelled'], true) && $cartId) {
-                    // Rama refund legacy (refactor completo en W3): el guard de
-                    // updateStatus (todo 9) rechaza la transicion a 'failed'
-                    // hoy — infraestructura lista, sin tragado de eventos.
-                    $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::Failed->value);
-                }
                 Response::json(['success' => true, 'status' => $status, 'message' => 'Payment status is not approved.']);
                 return;
             }

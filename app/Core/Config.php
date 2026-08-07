@@ -127,6 +127,12 @@ class Config {
         // Dev/CLI fallback: raiz del proyecto
         $candidates[] = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . '.env';
 
+        // CLI cron en servidor: las env vars del web runtime NO se heredan
+        // a shells de cron (sin DOCUMENT_ROOT). .builds/config/.env vive un
+        // nivel arriba del directorio publicado (ej. parent de dist/ o public_html).
+        $candidates[] = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . '.builds'
+            . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . '.env';
+
         $envPath = null;
         foreach ($candidates as $candidate) {
             if (file_exists($candidate)) {

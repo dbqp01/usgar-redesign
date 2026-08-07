@@ -223,7 +223,17 @@ class ProcessPaymentAction {
             // responder + success:false(status pending) para que el
             // polling/webhook (todo 31) reconcilien; si ni el attach funciona
             // -> 500.
+            // El dispatch (INSERT outbox) corre DENTRO de la misma unidad de
+            // persistencia (paridad con el webhook, todo 18): antes iba DESPUES
+            // del commit con catch-solo-log — un fallo del INSERT perdia la
+            // confirmacion del PMS para siempre (reconcile salta pagos ya
+            // 'approved'). Si dispatch o commit fallan, aplica el MISMO
+            // recovery: rollback + attach best-effort + status pending.
             try {
+                if ($status === 'approved') {
+                    $event = BookingPaidEvent::fromHold((string)$cartId, $paymentIdStr, $hold);
+                    $this->eventDispatcher->dispatch($event);
+                }
                 $this->pdo->commit();
             } catch (Exception $e) {
                 Logger::error('ProcessPaymentAction: commit fallo tras cobro exitoso (payment_id=' . $paymentIdStr . '): ' . $e->getMessage());
@@ -253,15 +263,9 @@ class ProcessPaymentAction {
             }
 
             if ($status === 'approved') {
-                // Dispatch event asynchronously if possible, or synchronously
-                $event = BookingPaidEvent::fromHold((string)$cartId, $paymentIdStr, $hold);
-
-                try {
-                    $this->eventDispatcher->dispatch($event);
-                } catch (Exception $e) {
-                    Logger::error("ProcessPaymentAction: Fallo al despachar el evento: " . $e->getMessage());
-                }
-
+                // El evento YA quedo persistido en el outbox dentro de la txn
+                // (arriba); el cron process_outbox entrega al PMS aunque este
+                // proceso muera aqui mismo.
                 Response::json([
                     'success' => true,
                     'status' => 'approved',

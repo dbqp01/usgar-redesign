@@ -325,7 +325,7 @@ final class RealSandboxE2ETest extends TestCase {
         // puede ejecutarse; se documenta como desviacion con la cita de doc
         // MP (reembolsos: /checkout-api-payments/payment-management/cancellations-and-refunds)
         // y queda cubierto a nivel unitario por el port refundPayment.
-        F3RealSandboxFixtures::evidence('F3d DESVIACION DOCUMENTADA: refund E2E real bloqueado por el entorno (no se puede crear un payment propio hoy: Card Token not found 2006/404); la rama refunded del handler (HandleMercadoPagoWebhookAction:150-157) queda infra-only — el guard del todo 9 rechaza updateStatus(failed), no se marca processed(refunded), el hold permanece paid. Pendiente de decision de producto.');
+        F3RealSandboxFixtures::evidence('F3d DESVIACION DOCUMENTADA: refund E2E real bloqueado por el entorno (no se puede crear un payment propio hoy: Card Token not found 2006/404); la rama refunded del handler ya NO es infra-only (fix 2026-08-07): marca processed con el $eventType del chequeo y registra alerta en payment_alerts para resolucion manual; el guard del todo 9 sigue intacto y el hold permanece paid por decision W3 diferida (cancelacion de la orden en PMS pendiente de decision de producto).');
     }
 
     // ------------------------------------------------ e. DOBLE ENTREGA secuencial

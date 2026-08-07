@@ -86,12 +86,12 @@ class CreateBookingAction {
             }
 
             if (!$targetRoom) {
-                throw HttpException::badRequest('La habitaciÃ³n seleccionada ya no estÃ¡ disponible para estas fechas.');
+                throw HttpException::badRequest('La habitación seleccionada ya no está disponible para estas fechas.');
             }
 
             $maxGuests = (int)($targetRoom['max_guests'] ?? 2);
             if ($guests > $maxGuests) {
-                throw HttpException::badRequest("El nÃºmero de huÃ©spedes ({$guests}) excede la capacidad mÃ¡xima de esta habitaciÃ³n ({$maxGuests} personas).");
+                throw HttpException::badRequest("El número de huéspedes ({$guests}) excede la capacidad máxima de esta habitación ({$maxGuests} personas).");
             }
 
             $idProduct = (int)($targetRoom['id_product'] ?? $idRoomType);
@@ -120,7 +120,7 @@ class CreateBookingAction {
 
             if ($targetRoom['available_qty'] <= 0) {
                 $this->pdo->rollBack();
-                throw HttpException::badRequest('La habitaciÃ³n seleccionada ya no estÃ¡ disponible para estas fechas.');
+                throw HttpException::badRequest('La habitación seleccionada ya no está disponible para estas fechas.');
             }
             $expiresAt = date('Y-m-d H:i:s', strtotime(Config::get('BOOKING_HOLD_TTL', '+15 minutes')));
             $currentUser = SessionService::getUserFromRequest();

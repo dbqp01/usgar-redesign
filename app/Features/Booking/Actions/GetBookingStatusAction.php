@@ -30,7 +30,7 @@ class GetBookingStatusAction {
         $providedToken = $request->getQuery('token', '');
 
         if (!$cartId) {
-            throw HttpException::badRequest('Falta el parÃ¡metro cart_id.');
+            throw HttpException::badRequest('Falta el parámetro cart_id.');
         }
 
         $hold = $this->bookingRepo->getByCartId($cartId);
@@ -77,6 +77,11 @@ class GetBookingStatusAction {
         ];
 
         if ($isAuthenticated || $hold['status'] === BookingStatus::Paid->value) {
+            // payment_id: contrato del retry plan del frontend (todo 31;
+            // paymentStatus.ts -> resolvePaymentOutcome/planRetryAfterFailure
+            // leen localStatus.payment_id). Sin esta clave la rama local era
+            // codigo muerto y todo retry caia al payment-check contra MP.
+            $payload['payment_id']  = $hold['payment_id'] ?? null;
             $payload['guest_name']  = $hold['guest_data']['name'] ?? '';
             $payload['guest_email'] = $guestEmail;
             $payload['guest_phone'] = $hold['guest_data']['phone'] ?? '';

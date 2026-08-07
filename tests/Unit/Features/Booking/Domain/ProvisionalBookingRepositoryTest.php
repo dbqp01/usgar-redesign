@@ -109,8 +109,9 @@ final class ProvisionalBookingRepositoryTest extends TestCase {
     public function testUpdateStatusUnknownTargetFailsClosedWithoutSql(): void {
         $repo = $this->buildRepo();
 
-        // 'failed' (rama refund legacy del webhook) NO es una transicion
-        // declarada: fail-closed, nunca WHERE solo por cart_id.
+        // 'failed' NO es una transicion declarada: fail-closed, nunca WHERE
+        // solo por cart_id. (El webhook dejo de intentarlo en la rama refund,
+        // fix 2026-08-07 — ahora marca processed + alerta; el guard se mantiene.)
         $this->assertFalse($repo->updateStatus('CART-1', 'failed'));
 
         $this->assertCount(0, $this->sqls, 'No debe ejecutarse SQL para targets no declarados.');
