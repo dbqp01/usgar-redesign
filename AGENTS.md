@@ -71,8 +71,10 @@ docs/                         Documentación técnica (API_REGISTRY, ARCHITECTUR
 4. `npm run audit:security` + `npm run audit:seo` si tocas endpoints/SEO.
 5. E2E: `npx playwright test` si el cambio toca flujos de usuario (book, login).
 
-### Deploy (Hostinger)
-- `npm run build` → `dist/` listo para subir (incluye app/, vendor/, .env).
+### Deploy (Hostinger) — SOLO rama main, build automático
+- **Hostinger mira ÚNICAMENTE la rama `main`** (integración Node.js GitHub, docs oficiales: `docs.hostinger.com/node.js/github`). Cada `git push origin main` → Hostinger hace pull + `npm install` + `npm run build` de 0 y sirve el resultado. **No hay rama `build`, no importa `dist/` local, no se sube nada manualmente.**
+- El workflow `.github/workflows/deploy-build-branch.yml` está **DISABLED** (plan DEPLOY-B2 nunca activado) — ignorarlo. La rama remota `origin/build` existe con contenido viejo pero **Hostinger no la usa**.
+- Nunca sugerir subir `dist/` por FTP/File Manager ni hablar de la rama `build`. Único flujo: commit → `git push origin main` → esperar el build de Hostinger (unos minutos) → https://usgarhoteles.com refleja el cambio.
 - El hook `pre-commit` comprime `.mp4`/imágenes staged (requiere ffmpeg + `scripts/compress-images.js`).
 
 ## Reglas imperativas

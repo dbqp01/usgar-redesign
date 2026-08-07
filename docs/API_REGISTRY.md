@@ -51,7 +51,7 @@ Catálogo completo de endpoints del backend PHP. Todos los endpoints se sirven d
 
 **Frontend consumer:** [book.astro](file:///c:/Users/akim/Desktop/usgar-redesign/src/pages/book.astro) vía [bookingService.ts](file:///c:/Users/akim/Desktop/usgar-redesign/src/services/bookingService.ts)
 
-**Env vars:** `QLOAPP_API_URL` + `QLOAPP_API_KEY` (API XML del PMS QloApps, vía `QloAppAdapter`/`PmsPortInterface`), `HOTEL_BASE_CURRENCY` (moneda de precios), `DB_*` (BD local de la app, no acceso directo a la BD de QloApps)
+**Env vars:** `QLOAPP_API_URL` + `QLOAPP_API_KEY` (API XML del PMS QloApps, vía `QloAppAdapter`/`PmsPortInterface`), `HOTEL_BASE_CURRENCY` (moneda de precios), `DB_*` (**apuntan a la BD de QloApps**: `QloAppAdapter` lee/escribe tablas `qlo_*` por PDO directo — `qlo_htl_room_type`, `qlo_product`, `qlo_htl_room_information`, `qlo_htl_booking_detail`, `qlo_cart`, `qlo_htl_cart_booking_data`; el usuario MySQL necesita SELECT/UPDATE sobre `qlo_*` y CREATE/ALTER para las tablas propias `provisional_bookings`/`event_outbox` que se auto-crean)
 
 ### GET `/api/rooms/calendar`
 
@@ -217,13 +217,16 @@ Todas las claves se leen vía `App\Core\Config` (`Config::get('KEY')`, con fallb
 | `CRON_SECRET` | Cron / Booking actions | Secreto de endpoints cron; fallback de `BOOKING_TOKEN_SECRET` |
 | `HOTEL_BASE_CURRENCY` | GetRoomsAction | Moneda de los precios de habitaciones (default `USD`) |
 | `OTA_DEFAULT_PHONE` | QloAppAdapter | Teléfono de huésped por defecto (default `000000000`) |
+| `OTA_DEFAULT_EMAIL` / `OTA_DEFAULT_NAME` / `OTA_DEFAULT_SURNAME` | — (reservado) | Fallbacks de huésped para reservas OTA; definidos en `.env` pero sin consumo en código (preparados para la sync del QloApps Channel Manager) |
+| `OTA_HOLD_TTL` | — (reservado) | TTL del hold de reservas OTA (`+1 year`); sin consumo en código todavía |
+| `QLOAPPS_DEFAULT_GUEST_NAME` | ConfirmQloAppsOrderListener | Nombre de huésped por defecto al confirmar orden en QloApps (default `Huésped USGAR`) |
 | `AUTH_JWT_SECRET` | SessionService | Secreto para firmar tokens JWT (≥32 caracteres) |
 | `SITE_URL` | AuthService / MercadoPagoAdapter | URL base de la aplicación (default `https://usgarhoteles.com`) |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | AuthService | Credenciales OAuth de Google |
 | `MICROSOFT_CLIENT_ID` / `MICROSOFT_CLIENT_SECRET` | AuthService | Credenciales OAuth de Microsoft |
 | `FACEBOOK_APP_ID` / `FACEBOOK_APP_SECRET` | AuthService | Credenciales OAuth de Facebook |
 | `DEFAULT_HOTEL_ID` | Booking / Rooms | `id_hotel` por defecto (default `1`) |
-| `DEFAULT_GUEST_EMAIL` | Listeners | Email de huésped por defecto (default `reserva@usgarhoteles.com`) |
+| `DEFAULT_GUEST_EMAIL` | ConfirmQloAppsOrderListener | Email de huésped por defecto (default `reserva@usgarhoteles.com`) |
 | `DEFAULT_REPLY_EMAIL` | QloAppAdapter | Email de reply (default `no-reply@usgarhoteles.com`) |
 | `TRUSTED_PROXIES` | Config | IPs de proxies confiables para `X-Forwarded-For` (vacío = seguro) |
 | `ALLOWED_ORIGINS` | Config | Orígenes CORS permitidos (default `*`) |

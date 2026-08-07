@@ -11,8 +11,11 @@ graphify-out/.*
 graphify-out/cost.json
 graphify-out/transcripts/
 logs/
+log/
+log
 *.map
-
+.opencode.json
+opencode.json
 .phpunit.cache/
 .phpstan-cache/
 
@@ -20,6 +23,7 @@ logs/
 playwright-report/
 test-results/
 .playwright-mcp/
+playwright.config.ts
 preview.log
 *.log
 
@@ -27,9 +31,15 @@ preview.log
 .superpowers/
 .primer/
 .omo/
+.agents/
 .agents
-.docs/
+docs/
+docs
+agents.md
+AGENTS.md
+skills-lock.json
 tests/latest_payment_id.txt
 
 # Clones de herramientas externas (nunca subir: repos anidados)
 tools/rsshub/
+
