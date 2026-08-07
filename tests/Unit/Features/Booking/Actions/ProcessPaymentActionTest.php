@@ -122,6 +122,9 @@ final class ProcessPaymentActionTest extends TestCase {
 
         // Todo 3: external_reference compartida con todo 22 (dedup por USGAR-{cartId}).
         $this->assertSame('USGAR-CART-1', $data['external_reference']);
+        // Hallazgo real 2026-08-06: sin 'description' el email del comprador
+        // muestra "Producto sin nombre" — debe ir el nombre de la habitacion.
+        $this->assertSame('2 noche(s) - Suite Deluxe', $data['description']);
         // Fix F3 (2026-08-06): el create /v1/payments NO acepta currency_id
         // (400 bad_request, verificado con MCP + sandbox real); MP infiere la
         // moneda de la cuenta. La moneda se propaga via evento/PMS (todo 34).

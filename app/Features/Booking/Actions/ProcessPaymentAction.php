@@ -160,6 +160,10 @@ class ProcessPaymentAction {
 
             $paymentData['external_reference'] = 'USGAR-' . $cartId; // formato compartido con todo 22 (dedup PMS)
             $paymentData['transaction_amount'] = $gatewayPrice;
+            // Descripcion del producto visible para el comprador (email de
+            // confirmacion/rechazo de MP: sin 'description' el correo muestra
+            // "Producto sin nombre" — hallazgo real de produccion 2026-08-06).
+            $paymentData['description'] = sprintf('%d noche(s) - %s', $nights, $roomName !== '' ? $roomName : 'Habitación');
             // Fix F3 (2026-08-06): el create /v1/payments NO acepta
             // currency_id (verificado con MCP + sandbox real; MP infiere la
             // moneda de la cuenta). La moneda de cobro (Config, todo 34) se

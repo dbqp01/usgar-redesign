@@ -230,6 +230,7 @@ class QloAppAdapter implements PmsPortInterface {
             <price_details api="price_details">
                 <total_paid>0</total_paid>
                 <total_price_with_tax>{$totalPrice}</total_price_with_tax>
+                <total_tax>0</total_tax>
             </price_details>
             <room_types nodeType="room_type" api="room_types">
                 <room_type>
@@ -242,6 +243,7 @@ class QloAppAdapter implements PmsPortInterface {
                             <adults>{$guests}</adults>
                             <child>0</child>
                             <unit_price_without_tax>{$totalPrice}</unit_price_without_tax>
+                            <total_tax>0</total_tax>
                         </room>
                     </rooms>
                 </room_type>
@@ -312,6 +314,7 @@ XML;
             <price_details api="price_details">
                 <total_paid>{$totalPrice}</total_paid>
                 <total_price_with_tax>{$totalPrice}</total_price_with_tax>
+                <total_tax>0</total_tax>
             </price_details>
             <room_types nodeType="room_type" api="room_types">
                 <room_type>
@@ -324,6 +327,7 @@ XML;
                             <adults>{$guests}</adults>
                             <child>0</child>
                             <unit_price_without_tax>{$totalPrice}</unit_price_without_tax>
+                            <total_tax>0</total_tax>
                         </room>
                     </rooms>
                 </room_type>
@@ -350,6 +354,7 @@ XML;
         <price_details api="price_details">
             <total_paid>{$totalPrice}</total_paid>
             <total_price_with_tax>{$totalPrice}</total_price_with_tax>
+            <total_tax>0</total_tax>
         </price_details>
     </booking>
 </qloapps>

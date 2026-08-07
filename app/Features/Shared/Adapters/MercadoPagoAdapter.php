@@ -80,6 +80,9 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             'payment_method_id'   => $paymentData['payment_method_id'] ?? '',
             'payer'               => $payer,
             'external_reference'  => $cartId,
+            // Descripcion del producto: se muestra en el email del comprador
+            // ("Producto sin nombre" si falta — hallazgo real 2026-08-06).
+            'description'         => $paymentData['description'] ?? '',
             // Fix F3 (2026-08-06, verificado con MCP search_documentation
             // "create payment" es/MPE + sandbox real): el create /v1/payments
             // NO acepta currency_id (400 "The name of the following parameters
