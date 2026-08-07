@@ -5,6 +5,7 @@ namespace App\Features\Cron\Actions;
 
 use App\Core\BookingStatus;
 use App\Core\Logger;
+use App\Core\PriceCalculator;
 use App\Core\Events\EventDispatcher;
 use App\Features\Booking\Domain\Events\BookingPaidEvent;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
@@ -71,6 +72,19 @@ class ReconcilePaymentsAction {
                 $skipped++;
                 Logger::info("ReconcilePaymentsAction: Payment {$paymentId} estado '"
                     . ($paymentDetails['status'] ?? 'unknown') . "'. Sin accion.");
+                continue;
+            }
+
+            // Validacion de monto: misma logica que el webhook (centavos
+            // enteros, price_snapshot_pen congelado al cotizar — todo 32).
+            $priceSnapshotPen = $hold['price_snapshot_pen'] ?? null;
+            $expectedPenCents = $priceSnapshotPen !== null
+                ? (int)round((float)$priceSnapshotPen * 100)
+                : (int)round(PriceCalculator::toGatewayPrice((float)($hold['price_snapshot'] ?? 0.0)) * 100);
+            $chargedPenCents = (int)round((float)($paymentDetails['transaction_amount'] ?? 0.0) * 100);
+            if ($chargedPenCents < $expectedPenCents) {
+                Logger::error("ReconcilePaymentsAction ALERTA: monto insuficiente para cart {$cartId} (cobrado={$chargedPenCents} centavos < esperado={$expectedPenCents} centavos)");
+                $skipped++;
                 continue;
             }
 

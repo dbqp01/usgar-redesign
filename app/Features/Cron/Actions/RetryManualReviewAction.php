@@ -142,16 +142,19 @@ class RetryManualReviewAction {
             return;
         }
 
-        // Comparacion de monto (mismo criterio que el webhook: bccomp 2 dec.).
-        $expectedPen = PriceCalculator::toGatewayPrice((float)($hold['price_snapshot'] ?? 0.0));
-        $transactionStr = number_format((float)($paymentDetails['transaction_amount'] ?? 0.0), 2, '.', '');
-        $expectedStr = number_format($expectedPen, 2, '.', '');
-        $matches = bccomp($transactionStr, $expectedStr, 2) >= 0;
+        // Comparacion de monto: misma logica que el webhook (centavos enteros,
+        // price_snapshot_pen congelado al cotizar — todo 32).
+        $priceSnapshotPen = $hold['price_snapshot_pen'] ?? null;
+        $expectedPenCents = $priceSnapshotPen !== null
+            ? (int)round((float)$priceSnapshotPen * 100)
+            : (int)round(PriceCalculator::toGatewayPrice((float)($hold['price_snapshot'] ?? 0.0)) * 100);
+        $chargedPenCents = (int)round((float)($paymentDetails['transaction_amount'] ?? 0.0) * 100);
+        $matches = $chargedPenCents >= $expectedPenCents;
 
         $this->bookingRepo->recordAlert($cartId, $paymentId, 'redispatch');
 
         if (!$matches) {
-            Logger::info("RetryManualReviewAction: cart {$cartId} — monto ({$transactionStr}) < esperado ({$expectedStr}): permanece en revision.");
+            Logger::info("RetryManualReviewAction: cart {$cartId} — monto ({$chargedPenCents} centavos) < esperado ({$expectedPenCents} centavos): permanece en revision.");
             Response::json(['success' => true, 'status' => 'still_fraud_review', 'reason' => 'amount_mismatch']);
             return;
         }

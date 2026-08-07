@@ -43,3 +43,6 @@ tests/latest_payment_id.txt
 # Clones de herramientas externas (nunca subir: repos anidados)
 tools/rsshub/
 
+
+# Fixture de credenciales de prueba (eliminado 2026-08-07: nada lo lee, git lo restauraba).
+.env.testing

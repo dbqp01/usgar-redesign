@@ -7,7 +7,7 @@
     "dev:php": "php -S localhost:8000 public/index.php",
     "dev:all": "node scripts/dev.js",
     "build": "astro build",
-    "postbuild": "node -e \"import fs from 'fs'; fs.cpSync('app', 'dist/app', { recursive: true }); fs.cpSync('vendor', 'dist/vendor', { recursive: true, force: true }); console.log(' Copied app/ and vendor/ to dist/. El .env NO va en dist/: en prod vive un nivel arriba de public_html (Config.php loadEnv); el deploy Git no lo toca.');\"",
+    "postbuild": "node -e \"import fs from 'fs'; fs.cpSync('app', 'dist/app', { recursive: true }); fs.cpSync('vendor', 'dist/vendor', { recursive: true, force: true }); try { fs.unlinkSync('dist/.env'); console.log('REMOVED dist/.env (must NOT ship in dist)'); } catch {} console.log('Copied app/ and vendor/ to dist/. .env must live outside public_html on the server.');\"",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
