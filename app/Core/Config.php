@@ -10,6 +10,7 @@ namespace App\Core;
  */
 class Config {
     private static ?Config $instance = null;
+    private static ?string $loadedEnvPath = null;
     /** @var array<string, string> */
     private array $cache = [];
 
@@ -51,6 +52,14 @@ class Config {
         $fallback = $default ?? (self::DEFAULTS[$key] ?? null);
         $envVal = getenv($key);
         return $instance->cache[$key] ?? ($envVal !== false && $envVal !== '' ? $envVal : $fallback);
+    }
+
+    /**
+     * Ruta del .env efectivamente cargado (null si ninguno).
+     * Diagnostico de deploy: /api/health lo expone.
+     */
+    public static function loadedEnvPath(): ?string {
+        return self::$loadedEnvPath;
     }
 
     /**
@@ -131,6 +140,8 @@ class Config {
                 . implode(', ', $candidates));
             return;
         }
+
+        self::$loadedEnvPath = $envPath;
 
         $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if ($lines === false) {
