@@ -98,18 +98,37 @@ class Config {
     private function loadEnv(): void {
         $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
 
+        // Candidatos en orden de prioridad:
+        // 1. Arriba de public_html (best practice: fuera del web root)
+        // 2. Hostinger .builds/config/.env (donde hPanel guarda las env vars)
+        // 3. Raiz del proyecto (dev/CLI)
+        $candidates = [];
+
         if (str_contains($docRoot, 'public_html')) {
-            $envPath = dirname($docRoot);
-            while (str_contains($envPath, 'public_html') && dirname($envPath) !== $envPath) {
-                $envPath = dirname($envPath);
+            $above = dirname($docRoot);
+            while (str_contains($above, 'public_html') && dirname($above) !== $above) {
+                $above = dirname($above);
             }
-            $envPath .= DIRECTORY_SEPARATOR . '.env';
-        } else {
-            $envPath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . '.env';
+            $candidates[] = $above . DIRECTORY_SEPARATOR . '.env';
+            // Hostinger: .builds/config/.env vive al mismo nivel que public_html
+            $candidates[] = $above . DIRECTORY_SEPARATOR . '.builds'
+                . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . '.env';
         }
 
-        if (!file_exists($envPath)) {
-            error_log('[Config] WARNING: No .env file found. Expected: ' . $envPath);
+        // Dev/CLI fallback: raiz del proyecto
+        $candidates[] = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . '.env';
+
+        $envPath = null;
+        foreach ($candidates as $candidate) {
+            if (file_exists($candidate)) {
+                $envPath = $candidate;
+                break;
+            }
+        }
+
+        if ($envPath === null) {
+            error_log('[Config] WARNING: No .env file found. Checked: '
+                . implode(', ', $candidates));
             return;
         }
 
