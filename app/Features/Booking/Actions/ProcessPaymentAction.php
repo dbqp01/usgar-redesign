@@ -147,6 +147,21 @@ class ProcessPaymentAction {
                 $payer['last_name']  = trim($nameParts[1] ?? '');
             }
 
+            // Quality Checklist MP: forzar email del hold si falta en el request del payer
+            if (empty($payer['email']) && !empty($guestData['email'])) {
+                $payer['email'] = (string)$guestData['email'];
+            }
+
+            // Quality Checklist MP: sanitizar numero de documento de identidad
+            if (!empty($payer['identification']['number']) && is_string($payer['identification']['number'])) {
+                $idType = strtoupper(trim((string)($payer['identification']['type'] ?? '')));
+                if ($idType === 'DNI' || $idType === 'RUC') {
+                    $payer['identification']['number'] = preg_replace('/\D+/', '', $payer['identification']['number']);
+                } else {
+                    $payer['identification']['number'] = trim($payer['identification']['number']);
+                }
+            }
+
             $phoneDigits = preg_replace('/\D+/', '', (string)($guestData['phone'] ?? '')) ?? '';
             if ($phoneDigits !== '') {
                 if (str_starts_with($phoneDigits, '51') && strlen($phoneDigits) > 9) {
@@ -169,6 +184,15 @@ class ProcessPaymentAction {
             // moneda de la cuenta). La moneda de cobro (Config, todo 34) se
             // propaga via BookingPaidEvent al PMS, no en el create.
             $paymentData['payer']              = $payer;
+
+            $additionalInfoPayer = [
+                'first_name' => $payer['first_name'],
+                'last_name'  => $payer['last_name'],
+            ];
+            if (!empty($payer['phone'])) {
+                $additionalInfoPayer['phone'] = $payer['phone'];
+            }
+
             $paymentData['additional_info']    = [
                 'items' => [[
                     'id'          => (string)($hold['id_room_type'] ?? ''),
@@ -178,6 +202,7 @@ class ProcessPaymentAction {
                     'unit_price'  => round($gatewayPrice / $nights, 2),
                     'category_id' => 'travel',
                 ]],
+                'payer' => $additionalInfoPayer,
             ];
 
             // La transaccion del lock SIGUE ABIERTA durante la llamada a la
