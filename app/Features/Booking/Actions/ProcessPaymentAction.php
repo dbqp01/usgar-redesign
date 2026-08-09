@@ -168,8 +168,8 @@ class ProcessPaymentAction {
                     $phoneDigits = substr($phoneDigits, 2); // quitar prefijo pais PE
                 }
                 $payer['phone'] = [
-                    'area_code' => (int) substr($phoneDigits, 0, 2),
-                    'number'    => (int) substr($phoneDigits, 2),
+                    'area_code' => '51',
+                    'number'    => $phoneDigits,
                 ];
             }
 

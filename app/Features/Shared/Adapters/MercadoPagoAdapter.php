@@ -86,7 +86,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             // moneda de cobro sigue siendo Config::get('MERCADO_PAGO_CURRENCY')
             // para el evento/PMS (todo 34); el create simplemente no la envia.
             'statement_descriptor'=> $statementDescriptor,
-            'binary_mode'         => Config::get('MP_BINARY_MODE', 'false') === 'true',
+            'binary_mode'         => false,
             'notification_url'    => Config::get('MP_NOTIFICATION_URL', 'https://usgarhoteles.com/api/webhook'),
         ];
 
