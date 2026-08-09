@@ -446,7 +446,10 @@ const t = useTranslations(lang);
         showPaymentPanel();
         setProcessing(false);
 
-        const bricksBuilder = mp.bricks();
+        const isDark = document.documentElement.classList.contains('dark');
+        const bricksBuilder = mp.bricks({
+          theme: isDark ? 'dark' : 'default',
+        });
 
         cardFormInstance = await bricksBuilder.create('cardPayment', 'cardPaymentBrick_container', {
           initialization: {
@@ -458,7 +461,13 @@ const t = useTranslations(lang);
           customization: {
             visual: {
               style: {
-                theme: 'default',
+                theme: isDark ? 'dark' : 'default',
+                customVariables: {
+                  inputBackgroundColor: isDark ? '#1A1D26' : '#FFFFFF',
+                  textPrimaryColor: isDark ? '#FFFFFF' : '#18181B',
+                  formBackgroundColor: isDark ? '#161922' : '#FFFFFF',
+                  outlinePrimaryColor: '#D4AF37',
+                },
               },
             },
           },

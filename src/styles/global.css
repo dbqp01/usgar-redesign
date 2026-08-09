@@ -107,17 +107,17 @@
   --color-green-bg: #F0F7F6;         /* Service card backgrounds */
 
   /* === FONDOS ESTÉTICOS (Nuevos — v2) === */
-  --color-surface-light: #FFFFFF;         /* Pure White — light mode page bg (Reverted per user) */
-  --color-surface-dark: #121214;          /* Deep Charcoal — quiet luxury dark mode bg */
+  --color-surface-light: #FFFFFF;         /* Pure White — light mode page bg */
+  --color-surface-dark: #0F1117;          /* Obsidian Charcoal — restful quiet luxury dark mode bg */
   --color-surface-light-alt: #FFFFFF;     /* White — testimonial blocks */
   --color-surface-card-light: #FFFFFF;
-  --color-surface-card-dark: #1A1A1E;     /* Deep Slate/Onyx — dark card (toned down purple) */
+  --color-surface-card-dark: #161922;     /* Midnight Onyx — restful dark card */
 
   /* === TEXTO === */
-  --color-text-primary-light: #333333;
-  --color-text-primary-dark: #FAFAF9;
-  --color-text-secondary-light: #57534E;
-  --color-text-secondary-dark: #C6B5CD;   /* Sophisticated Lavender/Silver */
+  --color-text-primary-light: #18181B;
+  --color-text-primary-dark: #F4F4F5;
+  --color-text-secondary-light: #52525B;
+  --color-text-secondary-dark: #A1A1AA;   /* Warm Zinc Silver (sin tinte morado) */
 
   /* === PALETA DE MARCA ADICIONAL (tokenizada 2026-08-06 — remove-ai-slops token drift) === */
   /* Teal brand family (booking/contact accents) */
@@ -126,14 +126,14 @@
   --color-teal-light: #4ECBB8;       /* Teal claro (dark mode) */
   /* Status system (StatusBanner) */
   --color-status-success: #0CB2A3;   /* Status success LED (teal) */
-  --color-status-info: #A980BD;      /* Status info (lavanda) */
-  --color-status-info-deep: #9360AC; /* Status info profundo */
-  --color-status-bg-dark: #2B1D33;   /* Status banner fondo dark */
+  --color-status-info: #D4AF37;      /* Status info (dorado inca) */
+  --color-status-info-deep: #99751C; /* Status info profundo */
+  --color-status-bg-dark: #141822;   /* Status banner fondo dark */
   /* Dorado brillante (LED, bordes, acentos) */
   --color-gold-bright: #EACA1C;      /* Amarillo LED/acento brillante */
   /* Map & misc surfaces */
   --color-map-surface: #E7E4DE;      /* LocationMap panel light */
-  --color-cream-lavender: #EADDF3;   /* Comillas lavanda pálida */
+  --color-cream-lavender: #D4AF37;   /* Comillas doradas */
   /* Social brand colors */
   --color-whatsapp: #25D366;         /* WhatsApp green */
   --color-facebook: #1877F2;         /* Facebook blue */
@@ -146,8 +146,7 @@
   --color-ms-green: #81bc06;
   --color-ms-blue: #05a6f0;
   --color-ms-yellow: #ffba08;
-  /* Tints purpura/gris del dark mode (global.css rgba families) */
-  --color-tint-purple: #4A3056;      /* rgba(74,48,86) — nav border, tag bg, ::selection, scrollbar */
+  --color-tint-purple: #D4AF37;      /* Dorado inca acento (reemplazado morado) */
   --color-glass-tint: #D4BFDE;       /* rgba(212,191,222) — glass border/hover tint */
   --color-gradient-start: #6B4F80;   /* .dark .btn-primary gradient start */
   --color-gradient-end: #4A3163;     /* .dark .btn-primary gradient end */
@@ -342,15 +341,14 @@ h3, h4 {
 }
 
 /* ============================================
-   Scroll Animations
+   Scroll Animations (Nativas con CSS + IntersectionObserver)
    ============================================ */
-/* Hidden by default ONLY when JS is available (html.js) — progressive enhancement:
-   without JS these rules never apply and content is born visible. */
 html.js .animate-on-scroll {
   opacity: 0;
   visibility: hidden;
   transform: translate3d(0, 30px, 0);
-  /* will-change managed dynamically by GSAP ScrollTrigger.batch() */
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
 }
 
 html.js .animate-on-scroll.visible {
@@ -358,6 +356,33 @@ html.js .animate-on-scroll.visible {
   visibility: visible;
   transform: translate3d(0, 0, 0);
   will-change: auto;
+}
+
+/* ============================================
+   Marquee Nativo por CSS Keyframes (100% GPU)
+   ============================================ */
+.marquee-css-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee-scroll 35s linear infinite;
+}
+
+.marquee-css-track-reverse {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee-scroll-reverse 35s linear infinite;
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes marquee-scroll-reverse {
+  0% { transform: translate3d(-50%, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
 }
 
 /* ============================================
@@ -401,8 +426,6 @@ html.js .animate-on-scroll.visible {
 
 /* ============================================
    Typographic Marquee (Editorial Divider)
-   Motion handled by GSAP autoMotion (continuous, scroll-boosted,
-   never pauses on hover). CSS only styles the glyphs.
    ============================================ */
 .marquee-tipographic-track {
   will-change: transform;
@@ -537,4 +560,115 @@ html, body {
   textarea {
     font-size: 16px !important;
   }
+}
+
+/* ============================================
+   Modern CSS 2026 & Magic UI Animations (GPU)
+   ============================================ */
+h1, h2, h3 {
+  text-wrap: balance;
+}
+
+/* Magic UI: Animated Shiny Text */
+.shiny-text-gold {
+  background: linear-gradient(110deg, var(--color-secondary) 30%, #ffffff 50%, var(--color-secondary) 70%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shiny-text 7s ease-in-out infinite;
+}
+
+@keyframes shiny-text {
+  0%, 100% { background-position: -200% 0; }
+  50% { background-position: 200% 0; }
+}
+
+/* Magic UI: Sleek Gold Shimmer Button */
+.btn-shimmer {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  color: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.35) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  transition: transform 0.6s ease;
+  pointer-events: none;
+}
+
+.btn-shimmer:hover::before {
+  transform: translateX(350%) skewX(-20deg);
+}
+
+.btn-shimmer:hover {
+  transform: translateY(-2px);
+  border-color: rgba(212, 175, 55, 0.8);
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.25);
+}
+
+/* ============================================
+   Reglas Universales de Legibilidad de Inputs & MercadoPago (Dark Mode)
+   ============================================ */
+.dark input,
+.dark select,
+.dark textarea {
+  color: #FFFFFF !important;
+  background-color: #1A1D26 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #A1A1AA !important;
+}
+
+/* MercadoPago Card Payment Brick Dark Mode & Autofill Overrides (Verificado en Playwright) */
+.dark #cardPaymentBrick_container iframe[src*="secure-fields"] {
+  filter: invert(0.9) hue-rotate(180deg) !important;
+  color-scheme: dark !important;
+}
+
+.dark #cardPaymentBrick_container input,
+.dark #cardPaymentBrick_container select,
+.dark #cardPaymentBrick_container label,
+.dark #cardPaymentBrick_container p,
+.dark #cardPaymentBrick_container span,
+.dark #cardPaymentBrick_container div[class*="wrapper-"],
+.dark #cardPaymentBrick_container div[class*="svelte-"] {
+  color: #FFFFFF !important;
+  background-color: #1A1D26 !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.dark #cardPaymentBrick_container input::placeholder {
+  color: #A1A1AA !important;
+}
+
+.dark #cardPaymentBrick_container input:-webkit-autofill,
+.dark #cardPaymentBrick_container input:-webkit-autofill:hover,
+.dark #cardPaymentBrick_container input:-webkit-autofill:focus,
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #FFFFFF !important;
+  -webkit-box-shadow: 0 0 0px 1000px #1A1D26 inset !important;
+  transition: background-color 5000s ease-in-out 0s;
 }

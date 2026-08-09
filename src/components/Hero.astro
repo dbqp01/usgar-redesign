@@ -80,8 +80,8 @@ const slides = [slide1, slide2, slide3, slide4];
 
   <!-- Content -->
   <div class="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
-    <p class="micro-label text-secondary mb-4 sm:mb-6 opacity-90">{heroCoordinates}</p>
-    <h1 id="hero-title-reveal" class="font-display fluid-h1 mb-4 sm:mb-6 drop-shadow-lg">
+    <p class="micro-label shiny-text-gold font-mono mb-4 sm:mb-6">{heroCoordinates}</p>
+    <h1 id="hero-title-reveal" class="font-display fluid-h1 mb-4 sm:mb-6 drop-shadow-lg leading-tight">
       {t("hero.title")}
     </h1>
     <p class="text-base sm:text-xl lg:text-2xl font-light tracking-wide opacity-90 mb-6 sm:mb-8">
@@ -90,7 +90,7 @@ const slides = [slide1, slide2, slide3, slide4];
     <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
       <a
         href={getRelativeLocaleUrl(lang, "book")}
-        class="btn-primary font-semibold px-8 py-3.5 rounded-full text-lg"
+        class="btn-primary btn-shimmer font-semibold px-9 py-4 rounded-full text-lg shadow-2xl"
       >
         {t("hero.cta")}
       </a>

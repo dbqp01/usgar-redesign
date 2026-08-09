@@ -65,10 +65,17 @@ const t = useTranslations(lang);
         </h2>
 
         <div class="space-y-4">
+          <div id="summary-room-img-container" class="hidden relative w-full h-36 sm:h-44 rounded-xl overflow-hidden bg-black/10 dark:bg-white/10 border border-black/5 dark:border-white/5 mb-3">
+            <img id="summary-room-img" src="" alt="Room Preview" class="w-full h-full object-cover transition-opacity duration-300" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-3">
+              <span id="summary-room-badge" class="text-[10px] font-mono font-bold uppercase tracking-wider text-white bg-secondary/90 backdrop-blur-md px-2.5 py-1 rounded-md"></span>
+            </div>
+          </div>
+
           <div>
             <h3 id="summary-room-name" class="font-display text-xl text-primary font-bold"></h3>
             <p id="summary-room-beds" class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1 flex items-center gap-1.5">
-              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="w-3.5 h-3.5 text-secondary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M2 4v16M2 20h20M22 20V12a4 4 0 0 0-4-4H4" />
                 <path d="M6 12h4a2 2 0 0 0 2-2V8H6v4Z" />
               </svg>
@@ -163,6 +170,7 @@ const t = useTranslations(lang);
     baseOccupancy: r.baseOccupancy,
     extraGuestCharge: r.extraGuestCharge,
     maxGuests: r.maxGuests,
+    images: r.images,
   }))),
   serializedInventory: JSON.stringify(getRoomInventory()),
   serializedLabels: JSON.stringify({
@@ -276,8 +284,23 @@ const t = useTranslations(lang);
       if (summaryRoomName && s.allocation) {
         const names = s.allocation.rooms.map((e) => e.room.displayName).join(' + ');
         summaryRoomName.textContent = names;
+        const first = ROOMS.find((r: any) => r.slug === s.allocation!.rooms[0].room.slug);
+
+        const imgContainer = document.getElementById('summary-room-img-container');
+        const imgEl = document.getElementById('summary-room-img') as HTMLImageElement | null;
+        const badgeEl = document.getElementById('summary-room-badge');
+
+        if (imgContainer && imgEl && first && first.images?.[0]) {
+          imgContainer.classList.remove('hidden');
+          if (imgEl.src !== first.images[0]) {
+            imgEl.src = first.images[0];
+          }
+          if (badgeEl) {
+            badgeEl.textContent = first.name?.[lang] || first.name?.es || names;
+          }
+        }
+
         if (summaryRoomBedsText) {
-          const first = ROOMS.find((r: any) => r.slug === s.allocation!.rooms[0].room.slug);
           summaryRoomBedsText.textContent = first ? translateBeds(first.beds, lang) : '';
         }
         const nights = nightsBetween(s.checkIn, s.checkOut);

@@ -1,28 +1,26 @@
 ---
 // src/components/common/CustomCursor.astro
-// Dual-layer cinematic cursor: instant dot + lagging ring.
-// Rules (design spec 2026-08-01): only on (hover:hover) and (pointer:fine),
-// disabled with prefers-reduced-motion, kill-switch via <html data-cursor="false">.
+// Dual-layer cinematic cursor nativo: dot instantaneo + ring suavizado con rAF (0% GSAP allocs).
+// Rules (design spec 2026-08-01): solo en (hover:hover) y (pointer:fine),
+// deshabilitado con prefers-reduced-motion, kill-switch via <html data-cursor="false">.
 ---
 
 <div
   id="custom-cursor"
-  class="hidden md:block fixed top-0 left-0 z-[110] pointer-events-none mix-blend-difference"
+  class="hidden md:block fixed top-0 left-0 z-[110] pointer-events-none mix-blend-difference opacity-0 transition-opacity duration-200"
   aria-hidden="true"
 >
-  <span class="cursor-dot absolute rounded-full bg-white will-change-transform"></span>
-  <span class="cursor-ring absolute rounded-full border border-white/60 will-change-transform"></span>
+  <span class="cursor-dot absolute top-0 left-0 rounded-full bg-white will-change-transform w-2 h-2 -translate-x-1/2 -translate-y-1/2 transition-[width,height] duration-200"></span>
+  <span class="cursor-ring absolute top-0 left-0 rounded-full border border-white/60 flex items-center justify-center will-change-transform w-9 h-9 -translate-x-1/2 -translate-y-1/2 transition-[width,height,border-color,background-color] duration-200 overflow-hidden">
+    <span class="cursor-label font-mono text-[9px] uppercase tracking-widest text-white whitespace-nowrap opacity-0 transition-opacity duration-150"></span>
+  </span>
 </div>
 
 <script>
-  import gsap from 'gsap';
-
-  let ctx: gsap.Context | null = null;
+  let rafId: number | null = null;
 
   function initCursor() {
-    // Kill-switch from settings.json (data-cursor="false" on <html>)
     if (document.documentElement.dataset.cursor === 'false') return;
-    // Only precise pointers, never on touch/coarse devices
     if (window.matchMedia('(pointer: coarse)').matches) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -31,82 +29,116 @@
 
     const dot = cursor.querySelector('.cursor-dot') as HTMLElement;
     const ring = cursor.querySelector('.cursor-ring') as HTMLElement;
-    if (!dot || !ring) return;
+    const label = cursor.querySelector('.cursor-label') as HTMLElement;
+    if (!dot || !ring || !label) return;
 
-    if (ctx) ctx.revert();
-    ctx = gsap.context(() => {
-      const SIZE = { dot: 8, ring: 36, ringHover: 64 };
+    let mouseX = -100, mouseY = -100;
+    let ringX = -100, ringY = -100;
+    let isVisible = false;
+    let isHovered = false;
+    let currentLabel = '';
 
-      gsap.set(dot, { width: SIZE.dot, height: SIZE.dot, xPercent: -50, yPercent: -50, autoAlpha: 0 });
-      gsap.set(ring, { width: SIZE.ring, height: SIZE.ring, xPercent: -50, yPercent: -50, autoAlpha: 0 });
+    const update = () => {
+      ringX += (mouseX - ringX) * 0.25;
+      ringY += (mouseY - ringY) * 0.25;
 
-      // Dot tracks instantly, ring lags (power3) — classic cinematic pairing
-      const dotX = gsap.quickTo(dot, 'x', { duration: 0.12, ease: 'power3' });
-      const dotY = gsap.quickTo(dot, 'y', { duration: 0.12, ease: 'power3' });
-      const ringX = gsap.quickTo(ring, 'x', { duration: 0.5, ease: 'power3' });
-      const ringY = gsap.quickTo(ring, 'y', { duration: 0.5, ease: 'power3' });
+      dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+      ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
 
-      let isVisible = false;
+      if (Math.abs(mouseX - ringX) > 0.1 || Math.abs(mouseY - ringY) > 0.1) {
+        rafId = requestAnimationFrame(update);
+      } else {
+        rafId = null;
+      }
+    };
 
-      const onMouseMove = (e: MouseEvent) => {
-        dotX(e.clientX);
-        dotY(e.clientY);
-        ringX(e.clientX);
-        ringY(e.clientY);
+    const onMouseMove = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
 
-        if (!isVisible) {
-          gsap.to([dot, ring], { autoAlpha: 1, duration: 0.25 });
-          isVisible = true;
+      if (!isVisible) {
+        isVisible = true;
+        cursor.classList.remove('opacity-0');
+        cursor.classList.add('opacity-100');
+        ringX = mouseX;
+        ringY = mouseY;
+      }
+
+      const target = e.target as HTMLElement | null;
+      const labelTarget = target?.closest?.('[data-cursor-label]') as HTMLElement | null;
+      const hoverTarget = !!target?.closest?.('a, button, input, select, textarea, [role="button"], [data-cursor-hover]');
+      const nextLabel = labelTarget?.dataset?.cursorLabel || '';
+
+      if (hoverTarget !== isHovered || nextLabel !== currentLabel) {
+        isHovered = hoverTarget;
+        currentLabel = nextLabel;
+
+        if (currentLabel) {
+          ring.style.width = '72px';
+          ring.style.height = '32px';
+          ring.style.borderRadius = '9999px';
+          ring.style.borderColor = 'rgba(255,255,255,0.9)';
+          ring.style.backgroundColor = 'rgba(255,255,255,0.15)';
+          dot.style.width = '0px';
+          dot.style.height = '0px';
+          label.textContent = currentLabel;
+          label.style.opacity = '1';
+        } else if (isHovered) {
+          ring.style.width = '52px';
+          ring.style.height = '52px';
+          ring.style.borderRadius = '50%';
+          ring.style.borderColor = 'rgba(255,255,255,0.9)';
+          ring.style.backgroundColor = 'transparent';
+          dot.style.width = '4px';
+          dot.style.height = '4px';
+          label.textContent = '';
+          label.style.opacity = '0';
+        } else {
+          ring.style.width = '36px';
+          ring.style.height = '36px';
+          ring.style.borderRadius = '50%';
+          ring.style.borderColor = 'rgba(255,255,255,0.6)';
+          ring.style.backgroundColor = 'transparent';
+          dot.style.width = '8px';
+          dot.style.height = '8px';
+          label.textContent = '';
+          label.style.opacity = '0';
         }
+      }
 
-        const target = e.target as HTMLElement | null;
-        const isInteractive = !!target?.closest?.(
-          'a, button, input, select, textarea, [role="button"], [data-cursor-hover]'
-        );
+      if (!rafId) {
+        rafId = requestAnimationFrame(update);
+      }
+    };
 
-        gsap.to(ring, {
-          width: isInteractive ? SIZE.ringHover : SIZE.ring,
-          height: isInteractive ? SIZE.ringHover : SIZE.ring,
-          borderColor: isInteractive ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.6)',
-          duration: 0.35,
-          ease: 'power2.out',
-          overwrite: 'auto',
-        });
-        gsap.to(dot, {
-          width: isInteractive ? 4 : SIZE.dot,
-          height: isInteractive ? 4 : SIZE.dot,
-          duration: 0.35,
-          ease: 'power2.out',
-          overwrite: 'auto',
-        });
-      };
-
-      const onMouseLeave = () => {
-        if (isVisible) {
-          gsap.to([dot, ring], { autoAlpha: 0, duration: 0.2 });
-          isVisible = false;
-        }
-      };
-
-      // Per-init AbortController: this init's listeners are removed together on
-      // navigation (see before-preparation below), so none accumulate across
-      // SPA navigations even though initCursor re-runs on every astro:page-load.
-      const abortController = new AbortController();
-      const signal = abortController.signal;
-
-      window.addEventListener('mousemove', onMouseMove, { signal });
-      document.documentElement.addEventListener('mouseleave', onMouseLeave, { signal });
-
-      // Cleanup on Astro ViewTransitions: abort() removes the listeners above
-      // (and this listener itself). { once: true } is kept as a safety net,
-      // not the primary cleanup mechanism.
-      document.addEventListener('astro:before-preparation', () => {
-        abortController.abort();
+    const onMouseLeave = () => {
+      if (isVisible) {
         isVisible = false;
-        if (ctx) ctx.revert();
-      }, { signal, once: true });
-    });
+        cursor.classList.remove('opacity-100');
+        cursor.classList.add('opacity-0');
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+      }
+    };
+
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    window.addEventListener('mousemove', onMouseMove, { signal, passive: true });
+    document.documentElement.addEventListener('mouseleave', onMouseLeave, { signal });
+
+    document.addEventListener('astro:before-preparation', () => {
+      abortController.abort();
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      isVisible = false;
+    }, { signal, once: true });
   }
 
   document.addEventListener('astro:page-load', initCursor);
 </script>
+

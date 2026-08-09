@@ -15,6 +15,7 @@ export interface WizardState {
   roomType: string | null;
   allocation: AllocationOption | null;
   options: AllocationOption[] | null;
+  availabilityMap: Record<string, number> | null;
   selecting: boolean;
   processing: boolean;
   error: string | null;
@@ -36,6 +37,7 @@ const DEFAULT_STATE: WizardState = {
   roomType: null,
   allocation: null,
   options: null,
+  availabilityMap: null,
   selecting: false,
   processing: false,
   error: null,

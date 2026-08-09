@@ -45,18 +45,28 @@ class QloAppAdapter implements PmsPortInterface {
                     pl.name AS room_name,
                     p.price,
                     rt.max_guests,
-                    COALESCE((
+                    (
                         SELECT COUNT(*) FROM qlo_htl_room_information ri
                         WHERE ri.id_product = rt.id_product
-                    ), 5) AS total_rooms,
-                    COALESCE((
-                        SELECT COUNT(DISTINCT bd.id_room) FROM qlo_htl_booking_detail bd
-                        WHERE bd.id_product = rt.id_product
-                          AND bd.is_cancelled = 0
-                          AND bd.is_refunded = 0
-                          AND bd.date_from < :date_to_booked
-                          AND bd.date_to > :date_from_booked
-                    ), 0) AS booked_count
+                    ) AS total_rooms,
+                    (
+                        COALESCE((
+                            SELECT COUNT(DISTINCT bd.id_room) FROM qlo_htl_booking_detail bd
+                            WHERE bd.id_product = rt.id_product
+                              AND bd.is_cancelled = 0
+                              AND bd.is_refunded = 0
+                              AND bd.date_from < :date_to_booked
+                              AND bd.date_to > :date_from_booked
+                        ), 0) +
+                        COALESCE((
+                            SELECT COUNT(*) FROM provisional_bookings pb
+                            WHERE pb.id_room_type = rt.id
+                              AND (pb.status = 'paid' OR (pb.status = 'pending' AND pb.expires_at > NOW()))
+                              AND pb.checkin < :check_out_date
+                              AND pb.checkout > :check_in_date
+                              AND pb.id_hotel = :id_hotel_holds
+                        ), 0)
+                    ) AS booked_count
                 FROM qlo_htl_room_type rt
                 INNER JOIN qlo_product p ON p.id_product = rt.id_product
                 INNER JOIN qlo_product_lang pl ON pl.id_product = rt.id_product AND pl.id_lang = 1
@@ -65,15 +75,18 @@ class QloAppAdapter implements PmsPortInterface {
 
             $stmt->execute([
                 ':id_hotel'         => $idHotel,
+                ':id_hotel_holds'   => $idHotel,
                 ':date_from_booked' => $checkIn . ' 12:00:00',
                 ':date_to_booked'   => $checkOut . ' 10:30:00',
+                ':check_in_date'    => $checkIn,
+                ':check_out_date'   => $checkOut,
             ]);
 
             $rows = $stmt->fetchAll();
             $availableRooms = [];
 
             foreach ($rows as $row) {
-                $totalRooms = max((int)$row['total_rooms'], 1);
+                $totalRooms = max((int)$row['total_rooms'], 0);
                 $availableCount = max(0, $totalRooms - (int)$row['booked_count']);
 
                 $availableRooms[] = [
@@ -82,6 +95,7 @@ class QloAppAdapter implements PmsPortInterface {
                     'room_name'     => $row['room_name'],
                     'price'         => (float)$row['price'],
                     'max_guests'    => (int)$row['max_guests'],
+                    'total_rooms'   => $totalRooms,
                     'available_qty' => $availableCount,
                 ];
             }
@@ -100,7 +114,7 @@ class QloAppAdapter implements PmsPortInterface {
      *
      * El cálculo replica la semántica de getAvailableRooms() (solapamiento
      * date_from < checkout AND date_to > checkin, excluyendo canceladas/
-     * reembolsadas) pero evaluado día a día para pintar el calendario.
+     * reembolsadas y descontando holds activos en provisional_bookings) evaluado día a día.
      */
     public function getAvailabilityCalendar(string $from, string $to, int $idHotel = 1): array {
         if (!$this->pdo) {
@@ -125,10 +139,10 @@ class QloAppAdapter implements PmsPortInterface {
                     rt.id AS id_room_type,
                     rt.id_product,
                     pl.name AS room_name,
-                    COALESCE((
+                    (
                         SELECT COUNT(*) FROM qlo_htl_room_information ri
                         WHERE ri.id_product = rt.id_product
-                    ), 5) AS total_rooms
+                    ) AS total_rooms
                 FROM qlo_htl_room_type rt
                 INNER JOIN qlo_product p ON p.id_product = rt.id_product
                 INNER JOIN qlo_product_lang pl ON pl.id_product = rt.id_product AND pl.id_lang = 1
@@ -141,8 +155,7 @@ class QloAppAdapter implements PmsPortInterface {
                 return [];
             }
 
-            // Todas las reservas activas (no canceladas/refundadas) que tocan el rango.
-            // Cada fila representa UNA habitación física ocupada durante [date_from, date_to).
+            // Todas las reservas activas (no canceladas/refundadas) en QloApps que tocan el rango.
             $bookingsStmt = $this->pdo->prepare("
                 SELECT bd.id_product, bd.date_from, bd.date_to
                 FROM qlo_htl_booking_detail bd
@@ -160,26 +173,52 @@ class QloAppAdapter implements PmsPortInterface {
             ]);
             $bookings = $bookingsStmt->fetchAll();
 
+            // Todos los holds provisionales activos (paid o pending unexpired) en provisional_bookings
+            $holdsStmt = $this->pdo->prepare("
+                SELECT pb.id_room_type, pb.checkin, pb.checkout
+                FROM provisional_bookings pb
+                WHERE (pb.status = 'paid' OR (pb.status = 'pending' AND pb.expires_at > NOW()))
+                  AND pb.checkin < :range_to_date
+                  AND pb.checkout > :range_from_date
+                  AND pb.id_hotel = :id_hotel
+            ");
+            $holdsStmt->execute([
+                ':range_from_date' => date('Y-m-d', $fromTs),
+                ':range_to_date'   => date('Y-m-d', $toTs),
+                ':id_hotel'        => $idHotel,
+            ]);
+            $holds = $holdsStmt->fetchAll();
+
             // Índice de inventario por id_room_type
             $inventory = [];
             foreach ($rooms as $room) {
-                $inventory[(int)$room['id_room_type']] = max((int)$room['total_rooms'], 1);
+                $inventory[(int)$room['id_room_type']] = max((int)$room['total_rooms'], 0);
             }
 
-            // Para cada día del rango, contar cuántas habitaciones ocupadas
+            // Para cada día del rango, contar cuántas habitaciones ocupadas por QloApps + provisional_bookings
             $days = [];
             for ($ts = $fromTs; $ts <= $toTs; $ts += 86400) {
                 $dateKey = date('Y-m-d', $ts);
                 $occupied = [];
+
                 foreach ($bookings as $b) {
                     $bFrom = strtotime((string)$b['date_from']);
                     $bTo   = strtotime((string)$b['date_to']);
-                    // Solapamiento: día [ts, ts+24h) vs reserva [bFrom, bTo)
                     if ($ts < $bTo && $ts >= $bFrom) {
                         $idRoomType = (int)$b['id_product'];
                         $occupied[$idRoomType] = ($occupied[$idRoomType] ?? 0) + 1;
                     }
                 }
+
+                foreach ($holds as $h) {
+                    $hFrom = strtotime((string)$h['checkin'] . ' 00:00:00');
+                    $hTo   = strtotime((string)$h['checkout'] . ' 00:00:00');
+                    if ($ts < $hTo && $ts >= $hFrom) {
+                        $idRoomType = (int)$h['id_room_type'];
+                        $occupied[$idRoomType] = ($occupied[$idRoomType] ?? 0) + 1;
+                    }
+                }
+
                 $dayAvailability = [];
                 foreach ($inventory as $idRoomType => $total) {
                     $dayAvailability[$idRoomType] = max(0, $total - ($occupied[$idRoomType] ?? 0));

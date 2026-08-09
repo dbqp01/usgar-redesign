@@ -1,6 +1,6 @@
 ---
 // src/components/TypographicMarquee.astro
-// Editorial typographic marquee divider — CSS track animation, GSAP-driven speed via initTypographicMarquee.
+// Divisor tipográfico editorial — Animación nativa CSS en GPU (0% CPU main thread).
 interface Props {
   items: string[];
   reverse?: boolean;
@@ -9,8 +9,8 @@ interface Props {
 const { items, reverse = false } = Astro.props;
 ---
 
-<div class="marquee-tipographic overflow-hidden relative select-none py-6 sm:py-10" aria-hidden="true" data-reverse={reverse ? 'true' : 'false'}>
-  <div class="flex w-max marquee-tipographic-track">
+<div class="marquee-tipographic overflow-hidden relative select-none py-6 sm:py-10" aria-hidden="true">
+  <div class={reverse ? "marquee-css-track-reverse" : "marquee-css-track"}>
     {[0, 1].map(() => (
       <span class="marquee-tipographic-text">
         {items.map((item) => (
@@ -24,19 +24,3 @@ const { items, reverse = false } = Astro.props;
   </div>
 </div>
 
-<script>
-  import { initTypographicMarquee } from '../features/animations/modules/typographicMarquee';
-  import { register } from '../features/animations/animationLifecycle';
-
-  function initMarquees() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    const containers = document.querySelectorAll<HTMLElement>('.marquee-tipographic');
-    containers.forEach((container, i) => {
-      const reverse = container.dataset.reverse === 'true';
-      register(`typographic-${i}`, initTypographicMarquee(container, reverse));
-    });
-  }
-
-  document.addEventListener('astro:page-load', initMarquees);
-</script>

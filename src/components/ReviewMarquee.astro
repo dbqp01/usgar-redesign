@@ -33,7 +33,7 @@ const platforms = [
       {t('reviews.description')}
     </p>
 
-    <!-- Editorial Reputation Metrics Header Bar (High Contrast Typographic Labels) -->
+    <!-- Editorial Reputation Metrics Header Bar -->
     <div class="flex flex-wrap items-center justify-center gap-8 mt-10 pt-8 border-t border-black/10 dark:border-white/10 text-xs font-mono uppercase tracking-widest text-text-secondary-light dark:text-text-secondary-dark">
       <div class="flex items-center gap-2">
         <PlatformLogo platform="tripadvisor" class="w-4 h-4 text-emerald-500" />
@@ -55,29 +55,26 @@ const platforms = [
     </div>
   </div>
 
-  <!-- Marquee Track Container (GSAP Velocity Scroll Driven) -->
+  <!-- Marquee Track Container (CSS GPU Accelerated) -->
   <div id="marquee-track-container" class="overflow-hidden relative w-full py-4 select-none z-10">
     <!-- Gradient Edge Vignettes matching theme -->
     <div class="absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-surface-light dark:from-surface-dark to-transparent z-20 pointer-events-none"></div>
     <div class="absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-surface-light dark:from-surface-dark to-transparent z-20 pointer-events-none"></div>
 
-    <!-- Velocity Track with High Contrast Dark Luxury Cards on Light Background -->
-    <div id="velocity-marquee-track" class="flex gap-8 w-max will-change-transform">
+    <!-- GPU CSS Marquee Track -->
+    <div id="velocity-marquee-track" class="marquee-css-track gap-8">
       {
         [...reviews, ...reviews].map((review, idx) => {
           const platform = platforms[idx % platforms.length];
 
           return (
             <div class="flex-shrink-0 w-[300px] sm:w-[380px] bg-white dark:bg-surface-card-dark p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-none dark:border dark:border-white/10 space-y-6 group flex flex-col justify-between">
-              
               <div>
                 <!-- Top Header: Quote Mark & Platform Logo -->
                 <div class="flex items-start justify-between mb-4">
-                  <!-- Pale Purple Quote Mark -->
                   <div class="text-cream-lavender dark:text-primary-dark font-serif text-6xl leading-none mt-2 select-none">
                     &rdquo;
                   </div>
-                  <!-- Platform Logo -->
                   <div class="flex flex-col items-end gap-1">
                     <PlatformLogo platform={platform.id} class={`w-7 h-7 ${platform.text}`} />
                     <span class="px-2 py-1 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 rounded uppercase text-[8px] font-bold tracking-widest text-slate-500 dark:text-slate-400">
@@ -127,4 +124,3 @@ const platforms = [
     </div>
   </div>
 </section>
-

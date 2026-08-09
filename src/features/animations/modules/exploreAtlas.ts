@@ -11,58 +11,47 @@ export function initExploreAtlas(root: HTMLElement): () => void {
     const meta = root.querySelector<HTMLElement>('[data-atlas-meta]');
     const position = root.querySelector<HTMLElement>('[data-atlas-position]');
     const category = root.querySelector<HTMLElement>('[data-atlas-preview] .text-secondary');
+    const slides = Array.from(root.querySelectorAll<HTMLElement>('[data-atlas-slide]'));
     const items = Array.from(root.querySelectorAll<HTMLElement>('[data-atlas-item]'));
-    const initialImage = root.querySelector<HTMLImageElement>('[data-atlas-preview-image]');
 
-    if (!preview || !name || !meta || !position || !category || !initialImage || !items.length) return;
+    if (!preview || !name || !meta || !position || !category || !items.length || !slides.length) return;
 
-    let currentImage = initialImage;
-
+    let activeIndex = 0;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const activate = scope.add('activate', (item: HTMLElement) => {
-      const nextSrc = item.dataset.previewSrc;
-      if (!nextSrc || nextSrc === currentImage?.currentSrc || nextSrc === currentImage?.src) return;
+    const activate = scope.add('activate', (item: HTMLElement, index: number) => {
+      if (index === activeIndex) return;
 
-      items.forEach((candidate) => candidate.setAttribute('aria-current', candidate === item ? 'true' : 'false'));
-      items.forEach((candidate) => candidate.classList.toggle('is-active', candidate === item));
+      items.forEach((candidate, i) => {
+        const isActive = i === index;
+        candidate.setAttribute('aria-current', isActive ? 'true' : 'false');
+        candidate.classList.toggle('is-active', isActive);
+      });
 
       name.textContent = item.dataset.previewName || '';
       meta.textContent = item.dataset.previewMeta || '';
       position.textContent = item.dataset.previewPosition || '';
       category.textContent = item.dataset.previewCategory || '';
 
-      const nextImage = currentImage.cloneNode(true) as HTMLImageElement;
-      const previousImage = currentImage;
-      nextImage.removeAttribute('srcset');
-      nextImage.removeAttribute('sizes');
-      nextImage.dataset.atlasPreviewImage = 'true';
-      nextImage.src = nextSrc;
-      nextImage.alt = item.dataset.previewName || '';
-      preview.appendChild(nextImage);
+      const currentSlide = slides[activeIndex];
+      const nextSlide = slides[index];
 
-      if (reduceMotion) {
-        currentImage.remove();
-        currentImage = nextImage;
-        return;
+      if (currentSlide && nextSlide) {
+        currentSlide.classList.replace('opacity-100', 'opacity-0');
+        currentSlide.classList.replace('z-10', 'z-0');
+        currentSlide.classList.add('pointer-events-none');
+
+        nextSlide.classList.replace('opacity-0', 'opacity-100');
+        nextSlide.classList.replace('z-0', 'z-10');
+        nextSlide.classList.remove('pointer-events-none');
       }
 
-      gsap.fromTo(nextImage,
-        { autoAlpha: 0, scale: 1.06, clipPath: 'inset(0 100% 0 0)' },
-        { autoAlpha: 1, scale: 1, clipPath: 'inset(0 0% 0 0)', duration: 0.7, ease: 'power3.out' },
-      );
-      gsap.to(currentImage, {
-        autoAlpha: 0,
-        duration: 0.45,
-        ease: 'power2.out',
-        onComplete: () => previousImage.remove(),
-      });
-      currentImage = nextImage;
+      activeIndex = index;
     });
 
-    items.forEach((item) => {
-      const onPointerEnter = () => activate(item);
-      const onFocus = () => activate(item);
+    items.forEach((item, index) => {
+      const onPointerEnter = () => activate(item, index);
+      const onFocus = () => activate(item, index);
       item.addEventListener('pointerenter', onPointerEnter);
       item.addEventListener('focus', onFocus);
       listeners.push(

@@ -32,27 +32,28 @@ const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat}
       <div class="relative min-h-[390px] overflow-hidden rounded-[1.75rem] border border-black/10 bg-map-surface shadow-xl dark:border-white/10 sm:min-h-[500px]">
         <div id="location-map" class="absolute inset-0" data-lat={lat} data-lng={lng}></div>
 
-        <!-- Brutal overlays -->
-        <div class="absolute top-4 left-4 pointer-events-none">
-          <span class="inline-block font-mono text-[10px] tracking-[0.3em] text-white/80 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15">
+        <!-- Overlays elevados sobre Leaflet (z-[1001]) -->
+        <div class="absolute top-4 left-4 pointer-events-none z-[1001]">
+          <span class="inline-block font-mono text-[10px] tracking-[0.3em] text-white/90 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20 shadow-lg">
             {Math.abs(lat).toFixed(4)} {lat < 0 ? 'S' : 'N'} / {Math.abs(lng).toFixed(4)} {lng < 0 ? 'W' : 'E'}
           </span>
         </div>
-        <div class="absolute top-4 right-4 pointer-events-none">
-          <span class="inline-block font-mono text-[10px] tracking-[0.3em] text-white/80 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15">
+        <div class="absolute top-4 right-4 pointer-events-none z-[1001]">
+          <span class="inline-block font-mono text-[10px] tracking-[0.3em] text-white/90 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20 shadow-lg">
             {t('map.locationOverlay')}
           </span>
         </div>
 
         <!-- Directions CTA -->
         <a
+          id="map-directions-btn"
           href={directionsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          class="absolute bottom-5 left-5 inline-flex items-center gap-2 btn-primary px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest group"
+          class="absolute bottom-5 left-5 z-[1001] inline-flex items-center gap-2.5 btn-primary btn-shimmer px-6 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest pointer-events-auto shadow-2xl group transition-all"
         >
-          {t('map.directions')}
-          <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <span>{t('map.directions')}</span>
+          <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
           </svg>
         </a>

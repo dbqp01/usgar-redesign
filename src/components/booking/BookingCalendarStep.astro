@@ -1,4 +1,4 @@
-﻿---
+---
 // debt: oversized module (384 LOC) — split into concept-named components when touched; ceiling 250 pure LOC
 // src/components/booking/BookingCalendarStep.astro
 // Paso 1 del wizard: calendario custom (dual-month desktop / single mobile),
@@ -47,7 +47,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
           type="date"
           id="checkin"
           name="checkin"
-          class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-[border-color,box-shadow] cursor-pointer"
+          class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-card-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-[border-color,box-shadow] cursor-pointer"
         />
       </div>
       <div>
@@ -58,7 +58,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
           type="date"
           id="checkout"
           name="checkout"
-          class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-[border-color,box-shadow] cursor-pointer"
+          class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-card-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-[border-color,box-shadow] cursor-pointer"
         />
       </div>
       <div>
@@ -68,10 +68,10 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
         <select
           id="guests"
           name="guests"
-          class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-[border-color,box-shadow] appearance-none cursor-pointer"
+          class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-card-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-[border-color,box-shadow] appearance-none cursor-pointer"
         >
           {guestOptions.map((g) => (
-            <option value={g} class="bg-white dark:bg-surface-card-dark">{g}</option>
+            <option value={g} class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-white">{g}</option>
           ))}
         </select>
       </div>
@@ -141,7 +141,7 @@ import { formatDate } from '../../utils/format';
   function roomDots(day: Record<string, number>): string {
     return ROOM_DOT_ORDER.map((slug) => {
       const available = (day[slug] ?? 0) > 0;
-      const cls = available ? 'bg-teal-brand' : 'bg-black/15 dark:bg-white/25';
+      const cls = available ? 'bg-teal-brand' : 'bg-rose-500';
       return `<span class="w-1 h-1 rounded-full ${cls}" aria-hidden="true"></span>`;
     }).join('');
   }
@@ -435,6 +435,19 @@ import { formatDate } from '../../utils/format';
         res = { success: false, data: null };
       }
 
+      if (res.success && Array.isArray(res.data)) {
+        for (const item of res.data) {
+          const s = item.slug ?? item.room_slug;
+          const target = allocatable.find((a) => a.slug === s);
+          if (target && item.price) {
+            target.pricePerNight = Number(item.price);
+          }
+          if (target && item.total_rooms) {
+            target.inventory = Number(item.total_rooms);
+          }
+        }
+      }
+
       const availability: Record<string, number> | null = res.success
         ? Object.fromEntries((res.data ?? []).map((r: any) => [r.slug ?? r.room_slug, Number(r.available_qty ?? r.available ?? 0)]))
         : null;
@@ -457,6 +470,7 @@ import { formatDate } from '../../utils/format';
         error: res.success ? null : (L.availabilityDegraded || ''),
         allocation: allocation.length > 0 ? allocation[0] : null,
         options: allocation.length > 0 ? allocation : null,
+        availabilityMap: filteredAvailability || availability,
       });
 
       if (!res.success) {

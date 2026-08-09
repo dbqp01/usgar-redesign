@@ -2,16 +2,19 @@
 // src/components/common/Preloader.astro
 import { siteSettings } from '../../data/settings';
 ---
-<div id="cinematic-preloader" class="fixed inset-0 z-[100] flex items-center justify-center bg-surface-dark text-white overflow-hidden pointer-events-none">
-  <div class="relative flex flex-col items-center">
+<div id="cinematic-preloader" class="fixed inset-0 z-[100] flex items-center justify-center bg-black text-white overflow-hidden pointer-events-none" style="clip-path: inset(0 0 0 0);">
+  <div class="relative flex flex-col items-center select-none">
     <div class="overflow-hidden">
-      <h1 id="preloader-text" class="text-4xl md:text-6xl font-serif tracking-[0.2em] transform translate-y-full opacity-0">{siteSettings.hotelName}</h1>
+      <h1 id="preloader-text" class="text-4xl md:text-6xl font-display tracking-[0.25em] uppercase text-white transform translate-y-full opacity-0">
+        {siteSettings.hotelName}
+      </h1>
     </div>
-    <div 
-      id="preloader-line"
-      class="mt-4 h-[1px] bg-white opacity-60 rounded-full"
-      style="width: 100px; transform: scaleX(0); transform-origin: left; will-change: transform;"
-    ></div>
+    <div class="mt-6 flex items-center gap-3 font-mono text-xs text-secondary tracking-widest">
+      <span id="preloader-counter">00%</span>
+      <span class="w-12 h-[1px] bg-secondary/40 relative overflow-hidden">
+        <span id="preloader-line" class="absolute inset-0 bg-secondary transform -translate-x-full"></span>
+      </span>
+    </div>
   </div>
 </div>
 
@@ -25,8 +28,6 @@ import { siteSettings } from '../../data/settings';
     }
   }
 
-  // Shared done-guard with the is:inline fallback in Layout.astro head:
-  // usgar:preloader-done fires exactly once per load (timeline path OR fallback).
   function done() {
     if (window.__preloaderDone) return;
     window.__preloaderDone = true;
@@ -34,53 +35,64 @@ import { siteSettings } from '../../data/settings';
   }
 
   document.addEventListener("astro:page-load", () => {
-    if (sessionStorage.getItem("usgar_loaded")) {
-      const preloader = document.getElementById("cinematic-preloader");
-      if (preloader) {
-        preloader.style.display = "none";
+    try {
+      if (sessionStorage.getItem("usgar_loaded")) {
+        const preloader = document.getElementById("cinematic-preloader");
+        if (preloader) preloader.style.display = "none";
+        done();
+        return;
       }
-      done();
-      return;
-    }
+    } catch (_) {}
 
     const preloader = document.getElementById("cinematic-preloader");
-    if (!preloader) return;
+    const text = document.getElementById("preloader-text");
+    const counter = document.getElementById("preloader-counter");
+    const line = document.getElementById("preloader-line");
 
-    // gsap.matchMedia() crea su propio context internamente (docs GSAP); el
-    // scope por defecto se pasa como unico parametro (igual que ctx(scope)).
+    if (!preloader || !text || !counter || !line) return;
+
     const mm = gsap.matchMedia(preloader);
 
     mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const obj = { val: 0 };
+
       const tl = gsap.timeline({
         onComplete: () => {
-          sessionStorage.setItem("usgar_loaded", "true");
-          gsap.set(preloader, { autoAlpha: 0, display: "none" });
+          try {
+            sessionStorage.setItem("usgar_loaded", "true");
+          } catch (_) {}
+          gsap.set(preloader, { display: "none" });
           done();
         },
       });
 
-      tl.to("#preloader-text", {
+      tl.to(text, {
         y: 0,
         autoAlpha: 1,
-        duration: 0.6,
-        ease: "power4.out",
+        duration: 0.5,
+        ease: "power3.out",
       })
-      .to("#preloader-line", {
-        scaleX: 1,
-        duration: 0.55,
-        ease: "power3.inOut",
-      }, "-=0.35")
-      .to(preloader, {
-        autoAlpha: 0,
-        duration: 0.4,
+      .to(obj, {
+        val: 100,
+        duration: 0.7,
         ease: "power2.inOut",
-        delay: 0.1
+        onUpdate: () => {
+          counter.textContent = `${Math.floor(obj.val).toString().padStart(2, "0")}%`;
+          line.style.transform = `translateX(${obj.val - 100}%)`;
+        },
+      }, "-=0.2")
+      .to(preloader, {
+        clipPath: "inset(0 0 100% 0)",
+        duration: 0.5,
+        ease: "power4.inOut",
       });
     });
 
     mm.add("(prefers-reduced-motion: reduce)", () => {
-      sessionStorage.setItem("usgar_loaded", "true");
-      gsap.set(preloader, { autoAlpha: 0, display: "none" });
+      try {
+        sessionStorage.setItem("usgar_loaded", "true");
+      } catch (_) {}
+      gsap.set(preloader, { display: "none" });
       done();
     });
 

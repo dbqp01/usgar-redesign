@@ -37,9 +37,10 @@ const galleryRooms = rooms.slice(0, 4).map((room) => ({
       {galleryRooms.map(({ room, image }, index) => (
         <a
           href={getRelativeLocaleUrl(lang, `rooms/${room.slug}`)}
-          data-astro-prefetch="tap"
+        data-astro-prefetch="viewport"
           data-room-card
           data-room-index={String(index + 1).padStart(2, '0')}
+          data-cursor-label="VER"
           class="group relative isolate block min-h-[390px] overflow-hidden rounded-[1.75rem] border border-black/10 bg-surface-card-dark shadow-xl outline-none sm:min-h-[500px]"
           aria-label={room.name[lang]}
         >

@@ -104,6 +104,16 @@ echo PHP_EOL . "---  SECCION 2: PRUEBAS DE INTEGRACION HTTP ---" . PHP_EOL;
 $host = '127.0.0.1';
 $port = 8089;
 
+// Encontrar un puerto libre no bloqueado en TIME_WAIT por ejecuciones previas
+for ($tryPort = 8089; $tryPort <= 8110; $tryPort++) {
+    $fp = @fsockopen($host, $tryPort, $errno, $errstr, 0.1);
+    if (!$fp) {
+        $port = $tryPort;
+        break;
+    }
+    fclose($fp);
+}
+
 // Nombre de log unico por ejecucion: evita locks de Windows cuando un servidor
 // de pruebas anterior quedo vivo (zombie) reteniendo el archivo.
 $serverLogFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php-test-server-' . getmypid() . '.log';

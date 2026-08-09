@@ -1,31 +1,13 @@
 ---
 // src/components/common/NoiseOverlay.astro
-// Crea una textura visual de ruido analogico (desktop only for perf)
+// Textura sutil de grano estático nativo (0% sobrecarga de GPU)
 ---
-<div class="pointer-events-none fixed inset-0 z-50 mix-blend-overlay opacity-30 hidden lg:block">
-  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
-    <filter id="noiseFilter">
-      <feTurbulence 
-        type="fractalNoise" 
-        baseFrequency="0.75" 
-        numOctaves="1" 
-        stitchTiles="stitch"/>
-    </filter>
-    <rect width="100%" height="100%" filter="url(#noiseFilter)" />
-  </svg>
-</div>
+<div class="pointer-events-none fixed inset-0 z-50 opacity-[0.03] hidden lg:block bg-noise"></div>
 
 <style>
-  div {
-    animation: noise-shift 8s infinite alternate;
-  }
-  @keyframes noise-shift {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(-2px, -2px); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    div {
-      animation: none;
-    }
+  .bg-noise {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.8) 1px, transparent 0);
+    background-size: 16px 16px;
   }
 </style>
+

@@ -34,9 +34,9 @@ export async function initLocationMap(
 
   const icon = L.divIcon({
     className: 'usgar-marker',
-    html: '<div style="width:26px;height:26px;background:var(--color-secondary);border:3px solid var(--color-white);transform:rotate(45deg);box-shadow:0 0 0 4px rgba(212,175,55,.35)"></div>',
-    iconSize: [36, 36],
-    iconAnchor: [18, 18],
+    html: '<div style="width:16px;height:16px;background:var(--color-secondary);border-radius:50%;border:2px solid #ffffff;box-shadow:0 0 0 6px rgba(212,175,55,0.3), 0 4px 12px rgba(0,0,0,0.3)"></div>',
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
   });
 
   L.marker([lat, lng], { icon }).addTo(map);
