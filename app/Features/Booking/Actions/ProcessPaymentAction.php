@@ -9,7 +9,6 @@ use App\Core\Logger;
 use App\Core\BookingStatus;
 use App\Core\BookingHoldToken;
 use App\Core\PriceCalculator;
-use App\Core\GuestName;
 use App\Core\Config;
 use App\Core\HttpException;
 use App\Core\Events\EventDispatcher;
@@ -142,7 +141,7 @@ class ProcessPaymentAction {
                 $payer['first_name'] = 'Huesped USGAR';
                 $payer['last_name']  = '';
             } else {
-                $nameParts  = GuestName::split($guestName);
+                $nameParts  = explode(' ', $guestName, 2);
                 $payer['first_name'] = $nameParts[0] ?? '';
                 $payer['last_name']  = trim($nameParts[1] ?? '');
             }
@@ -183,8 +182,8 @@ class ProcessPaymentAction {
             // currency_id (verificado con MCP + sandbox real; MP infiere la
             // moneda de la cuenta). La moneda de cobro (Config, todo 34) se
             // propaga via BookingPaidEvent al PMS, no en el create.
-            if (!empty($rawPaymentData['device_session_id'])) {
-                $paymentData['device_session_id'] = (string)$rawPaymentData['device_session_id'];
+            if (!empty($paymentData['device_session_id'])) {
+                $paymentData['device_session_id'] = (string)$paymentData['device_session_id'];
             }
 
             $paymentData['payer']              = $payer;

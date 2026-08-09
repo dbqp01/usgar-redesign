@@ -542,11 +542,26 @@ const t = useTranslations(lang);
               });
             },
             onError: (error: any) => {
-              console.error('Card Payment Brick error:', error);
-              showCardError(t('book.unexpectedError'));
+              console.warn('Card Payment Brick non-fatal callback:', error);
+              // Robustness fix: ignora fallos de telemetria en segundo plano (ProgressEvent / tracks bloqueados por adblockers/red)
+              // para no colapsar la interfaz del usuario ni mostrar falsas alertas globales antes del submit.
+              const isTelemetryOrProgressError =
+                !error ||
+                error instanceof ProgressEvent ||
+                error?.name === 'ProgressEvent' ||
+                error?.type === 'error' ||
+                (typeof error === 'object' && !error.message && !error.cause && !error.status);
+
+              if (!isTelemetryOrProgressError) {
+                showCardError(t('book.unexpectedError'));
+              }
             },
           },
         });
+
+        // Escuchar interacciones para limpiar errores obsoletos tan pronto el usuario intente corregir sus datos
+        const brickContainer = document.getElementById('cardPaymentBrick_container');
+        brickContainer?.addEventListener('input', () => clearCardError(), { capture: true });
       } catch (err: any) {
         console.error(err);
         resetPaymentUi();

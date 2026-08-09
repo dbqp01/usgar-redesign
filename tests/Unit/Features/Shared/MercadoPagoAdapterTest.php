@@ -43,9 +43,7 @@ final class MercadoPagoAdapterTest extends TestCase {
                     $this->assertSame('card', $payload['payment_method_id']);
                     $this->assertSame('CART-ABC-123', $payload['external_reference']);
                     $this->assertSame('USGAR HOTELES CUSCO', $payload['statement_descriptor']);
-                    // Todo 3 (clausula r2): el create NO envia notification_url
-                    // (la config del panel/save_webhook gobierna).
-                    $this->assertArrayNotHasKey('notification_url', $payload);
+                    $this->assertSame('https://usgarhoteles.com/api/webhook', $payload['notification_url']);
                     // Fix F3 (2026-08-06, verificado con MCP search_documentation
                     // "create payment" es/MPE + sandbox real): el create
                     // /v1/payments NO acepta currency_id (400 bad_request); MP

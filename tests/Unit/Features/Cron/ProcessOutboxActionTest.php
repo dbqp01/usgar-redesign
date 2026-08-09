@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Test\Unit\Features\Cron;
 
+require_once __DIR__ . '/../../../fixtures/W2TestDoubles.php';
 require_once __DIR__ . '/../../../fixtures/W4TestDoubles.php';
 
 use PHPUnit\Framework\TestCase;
@@ -275,6 +276,8 @@ final class ProcessOutboxActionTest extends TestCase {
         $this->action($dispatch)->run();
 
         $this->assertNotNull($observed, 'El dispatcher debio observar la fila durante el procesamiento.');
+        $this->assertIsArray($observed);
+        /** @var array<string, mixed> $observed */
         $this->assertSame('IN_PROGRESS', $observed['status'], 'Claim marca IN_PROGRESS ANTES de procesar.');
         $this->assertSame('1', (string)$observed['lease_ok'], 'Lease = NOW() + GRACE (>= ' . (ProcessOutboxAction::GRACE_MINUTES - 5) . ' min).');
         $this->assertSame('COMPLETED', $this->getRow($id)['status']);

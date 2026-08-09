@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Test\Unit\Features\Booking\Actions;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use App\Core\Request;
 use App\Core\Config;
 use App\Core\BookingHoldToken;
@@ -22,10 +23,10 @@ use PDO;
  * por el mandato r10; nunca se simulan resultados de MercadoPago.
  */
 final class ProcessPaymentActionTest extends TestCase {
-    private PDO $pdo;
-    private PaymentGatewayPortInterface $paymentGateway;
-    private ProvisionalBookingRepository $bookingRepo;
-    private EventDispatcher $eventDispatcher;
+    private MockObject&PDO $pdo;
+    private MockObject&PaymentGatewayPortInterface $paymentGateway;
+    private MockObject&ProvisionalBookingRepository $bookingRepo;
+    private MockObject&EventDispatcher $eventDispatcher;
     private ProcessPaymentAction $action;
 
     /** @var array<string,mixed>|null Ultimo paymentData capturado por el gateway. */
@@ -147,7 +148,7 @@ final class ProcessPaymentActionTest extends TestCase {
         // bad_request ([payer.surname, payer.name]).
         $this->assertSame('Juan', $data['payer']['first_name']);
         $this->assertSame('Perez', $data['payer']['last_name']);
-        $this->assertSame(['area_code' => 84, 'number' => 1234567], $data['payer']['phone']);
+        $this->assertSame(['area_code' => '51', 'number' => '841234567'], $data['payer']['phone']);
         // Los datos del request del cliente se conservan.
         $this->assertSame('juan@test.com', $data['payer']['email']);
         $this->assertSame(['type' => 'DNI', 'number' => '12345678'], $data['payer']['identification']);

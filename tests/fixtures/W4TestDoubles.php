@@ -161,8 +161,26 @@ final class W4Db {
             $pdo->exec("DELETE FROM event_outbox WHERE id IN ({$ids})");
         }
         self::$insertedIds = [];
-        // Barrido best-effort para filas de runs abortados (otro proceso).
-        $pdo->exec("DELETE FROM event_outbox WHERE payload LIKE '%W4TEST-%'");
+        
+        // Barrido robusto para filas de runs abortados: decodifica base64 para detectar W4TEST-
+        try {
+            $stmt = $pdo->query("SELECT id, payload FROM event_outbox");
+            if ($stmt) {
+                $toDelete = [];
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $raw = base64_decode((string)$row['payload'], true);
+                    if ($raw !== false && str_contains($raw, 'W4TEST-')) {
+                        $toDelete[] = (int)$row['id'];
+                    }
+                }
+                if (!empty($toDelete)) {
+                    $pdo->exec("DELETE FROM event_outbox WHERE id IN (" . implode(',', $toDelete) . ")");
+                }
+            }
+        } catch (\Throwable $e) {
+            // best-effort
+        }
+
         $pdo->exec("DELETE FROM provisional_bookings WHERE cart_id LIKE 'W4TEST-%'");
         $pdo->exec("DELETE FROM processed_payments WHERE cart_id LIKE 'W4TEST-%'");
         $pdo->exec("DELETE FROM payment_alerts WHERE cart_id LIKE 'W4TEST-%'");
