@@ -389,11 +389,18 @@ html.js .animate-on-scroll.visible {
    Snappy View Transitions (Perceived Speed Optimization)
    Page chrome (root group) transition duration; main content fade is driven by
    the transition:animate directive (250ms), not this root override.
+   Native theme backdrop prevents mobile white/unthemed canvas flashes.
    ============================================ */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation-duration: 250ms !important;
   animation-timing-function: cubic-bezier(0, 0, 0.2, 1) !important;
+  background-color: var(--color-surface-light) !important;
+}
+
+html.dark ::view-transition-old(root),
+html.dark ::view-transition-new(root) {
+  background-color: var(--color-surface-dark) !important;
 }
 
 /* ============================================

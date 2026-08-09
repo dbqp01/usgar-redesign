@@ -15,6 +15,7 @@ const { navLinks, currentPath } = Astro.props as Props;
   {navLinks.map(link => (
     <a
       href={link.href}
+      data-astro-prefetch="hover"
       class:list={[
         'nav-link nav-link-text text-sm font-medium tracking-wide uppercase transition-colors duration-300 drop-shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md px-2 py-1',
         currentPath === link.href ? 'text-primary' : ''

@@ -142,7 +142,7 @@ class ProcessPaymentAction {
                 $payer['last_name']  = '';
             } else {
                 $nameParts  = explode(' ', $guestName, 2);
-                $payer['first_name'] = $nameParts[0] ?? '';
+                $payer['first_name'] = $nameParts[0];
                 $payer['last_name']  = trim($nameParts[1] ?? '');
             }
 

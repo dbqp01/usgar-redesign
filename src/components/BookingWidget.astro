@@ -122,7 +122,7 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
 </script>
 
 <script>
-  import { buildMonthGrid, nightsBetween, clampRange, formatISODate } from '../features/booking/calendar';
+  import { buildMonthGrid, nightsBetween, clampRange, formatISODate, addDays } from '../features/booking/calendar';
 import { formatDate } from '../utils/format';
   import { animateCalendarDays } from '../features/animations/modules/bookingCalendar';
   import { toastApi } from '../features/ui/toast';
@@ -292,7 +292,7 @@ import { formatDate } from '../utils/format';
       if (!picked || (checkIn && checkOut)) {
         picked = date;
         checkIn = date;
-        checkOut = '';
+        checkOut = addDays(date, 1);
       } else {
         checkOut = date;
         const r = clampRange(checkIn, checkOut);

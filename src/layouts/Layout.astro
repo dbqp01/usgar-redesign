@@ -59,7 +59,7 @@ const localeMap: Record<Locale, string> = {
 ---
 
 <!doctype html>
-<html lang={lang} data-cursor={siteSettings.customCursor ? 'true' : 'false'}>
+<html lang={lang} class="bg-surface-light dark:bg-surface-dark transition-colors duration-300" data-cursor={siteSettings.customCursor ? 'true' : 'false'}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -112,7 +112,7 @@ const localeMap: Record<Locale, string> = {
       <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
     )}
 
-    <!-- Anti-Flash Theme Persistence Script (in Head) -->
+    <!-- Anti-Flash Theme Persistence & Navigation Progress Script (in Head) -->
     <script is:inline>
       (function() {
         function applyTheme(doc) {
@@ -124,7 +124,8 @@ const localeMap: Record<Locale, string> = {
             // Brave Shields / Privacy mode fallback
           }
           const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+          const isDark = savedTheme === 'dark' || (!savedTheme && systemDark);
+          if (isDark) {
             target.classList.add('dark');
           } else {
             target.classList.remove('dark');
@@ -135,7 +136,6 @@ const localeMap: Record<Locale, string> = {
 
         document.addEventListener('astro:before-swap', function(event) {
           applyTheme(event.newDocument.documentElement);
-          // Desactivar scroll-behavior smooth durante la preparación para cambio SPA instantáneo en móviles (Astro Docs)
           document.documentElement.style.scrollBehavior = 'auto';
         });
 
@@ -144,6 +144,25 @@ const localeMap: Record<Locale, string> = {
           requestAnimationFrame(function() {
             document.documentElement.style.scrollBehavior = '';
           });
+        });
+
+        document.addEventListener('astro:before-preparation', function() {
+          var bar = document.getElementById('nav-progress-bar');
+          if (bar) {
+            bar.style.transition = 'transform 0.4s ease-out';
+            bar.style.transform = 'translateX(-30%)';
+          }
+        });
+
+        document.addEventListener('astro:page-load', function() {
+          var bar = document.getElementById('nav-progress-bar');
+          if (bar) {
+            bar.style.transform = 'translateX(0%)';
+            window.setTimeout(function() {
+              bar.style.transition = 'none';
+              bar.style.transform = 'translateX(-100%)';
+            }, 200);
+          }
         });
       })();
     </script>
@@ -212,6 +231,9 @@ const localeMap: Record<Locale, string> = {
 
   </head>
   <body class="bg-surface-light dark:bg-surface-dark text-text-primary-light dark:text-text-primary-dark transition-colors duration-300 min-h-screen flex flex-col">
+    <!-- Top Navigation Progress Indicator (Instant Visual Feedback < 20ms) -->
+    <div id="nav-progress-bar" class="fixed top-0 left-0 right-0 h-1 bg-secondary z-[9999] transform -translate-x-full pointer-events-none" aria-hidden="true"></div>
+
     <!-- Skip to content (accessibility) -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold">
       {t('global.skipToContent')}

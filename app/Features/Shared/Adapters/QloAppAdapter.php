@@ -11,6 +11,7 @@ use PDO;
 use PDOException;
 use SimpleXMLElement;
 use Exception;
+use Throwable;
 
 /**
  * Adaptador Hexagonal para la integracion con QloApps PMS.
@@ -301,109 +302,148 @@ XML;
     }
 
     public function confirmOrder(string $cartId, float $totalPrice, string $guestName, string $guestEmail): ?string {
-        if (empty($this->apiKey) || empty($this->apiUrl)) {
-            throw new Exception('QloApps API key or API URL is not configured.');
-        }
-
-        // Si el cartId es el fallback local (USGAR-), tenemos que usar el flujo antiguo (crearlo de cero)
-        if (str_starts_with($cartId, self::QLOAPPS_LOCAL_PREFIX)) {
-            $stmt = $this->pdo->prepare("SELECT * FROM provisional_bookings WHERE cart_id = :cartId");
-            $stmt->execute([':cartId' => $cartId]);
-            $hold = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$hold) {
-                Logger::error("QloAppAdapter: No se encontró la reserva provisional local para {$cartId}");
-                return null;
-            }
-
-            $idHotel = (int)($hold['id_hotel'] ?? Config::get('DEFAULT_HOTEL_ID', '1'));
-            $idProduct = $hold['id_room_type'];
-            $checkIn = $hold['checkin'];
-            $checkOut = $hold['checkout'];
-            
-            $guestData = json_decode((string)$hold['guest_data'], true) ?? [];
-            $guests = $guestData['guests'] ?? 1;
-            $phone = $guestData['phone'] ?? Config::get('OTA_DEFAULT_PHONE', '000000000');
-            
-            $nameParts = explode(' ', $guestName, 2);
-            $firstName = htmlspecialchars($nameParts[0] ?? $guestName, ENT_XML1);
-            $lastName = htmlspecialchars($nameParts[1] ?? Config::get('DEFAULT_GUEST_NAME', 'Guest'), ENT_XML1);
-            $safeEmail = htmlspecialchars($guestEmail, ENT_XML1);
-            $currency = Config::get('MERCADO_PAGO_CURRENCY', 'USD');
-
-            $xmlData = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<qloapps xmlns:xlink="http://www.w3.org/1999/xlink">
-    <booking>
-        <id_property>{$idHotel}</id_property>
-        <currency>{$currency}</currency>
-        <booking_status>1</booking_status>
-        <payment_status>1</payment_status>
-        <source>website</source>
-        <booking_date>MERCADO PAGO</booking_date>
-        <id_language>1</id_language>
-        <associations>
-            <customer_detail api="customer_detail">
-                <firstname>{$firstName}</firstname>
-                <lastname>{$lastName}</lastname>
-                <email>{$safeEmail}</email>
-                <phone>{$phone}</phone>
-            </customer_detail>
-            <price_details api="price_details">
-                <total_paid>{$totalPrice}</total_paid>
-                <total_price_with_tax>{$totalPrice}</total_price_with_tax>
-                <total_tax>0</total_tax>
-            </price_details>
-            <room_types nodeType="room_type" api="room_types">
-                <room_type>
-                    <id_room_type>{$idProduct}</id_room_type>
-                    <checkin_date>{$checkIn} 12:00:00</checkin_date>
-                    <checkout_date>{$checkOut} 10:00:00</checkout_date>
-                    <number_of_rooms>1</number_of_rooms>
-                    <rooms>
-                        <room>
-                            <adults>{$guests}</adults>
-                            <child>0</child>
-                            <unit_price_without_tax>{$totalPrice}</unit_price_without_tax>
-                            <total_tax>0</total_tax>
-                        </room>
-                    </rooms>
-                </room_type>
-            </room_types>
-        </associations>
-    </booking>
-</qloapps>
-XML;
-            $xml = $this->executeRequest('bookings', 'POST', $xmlData);
-            if ($xml && isset($xml->booking->id)) {
-                return (string)$xml->booking->id;
-            }
+        if (!$this->pdo) {
+            Logger::error("QloAppAdapter: PDO database connection offline. Cannot confirm order {$cartId}.");
             return null;
         }
 
-        // El cartId es un ID real numérico de QloApps, hacemos PUT para actualizar el pago
-        $currency = Config::get('MERCADO_PAGO_CURRENCY', 'USD');
-        $xmlData = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<qloapps xmlns:xlink="http://www.w3.org/1999/xlink">
-    <booking>
-        <id>{$cartId}</id>
-        <payment_status>1</payment_status>
-        <price_details api="price_details">
-            <total_paid>{$totalPrice}</total_paid>
-            <total_price_with_tax>{$totalPrice}</total_price_with_tax>
-            <total_tax>0</total_tax>
-        </price_details>
-    </booking>
-</qloapps>
-XML;
-        $xml = $this->executeRequest('bookings/' . $cartId, 'PUT', $xmlData);
-        if ($xml && isset($xml->booking->id)) {
-            return (string)$xml->booking->id;
+        // Si cartId inicia con USGAR- o es un cart_id local
+        $stmt = $this->pdo->prepare("SELECT * FROM provisional_bookings WHERE cart_id = ? OR cart_id = ?");
+        $fullCartId = str_starts_with($cartId, self::QLOAPPS_LOCAL_PREFIX) ? $cartId : self::QLOAPPS_LOCAL_PREFIX . $cartId;
+        $stmt->execute([$cartId, $fullCartId]);
+        $hold = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$hold) {
+            Logger::error("QloAppAdapter: No se encontró la reserva provisional local para {$cartId}");
+            return null;
         }
 
-        Logger::error("QloAppAdapter: Error al actualizar la reserva {$cartId} a pagada.");
-        return null;
+        $idHotel = (int)($hold['id_hotel'] ?? Config::get('DEFAULT_HOTEL_ID', '1'));
+        $idRoomType = (int)$hold['id_room_type'];
+        $checkIn = (string)$hold['checkin'];
+        $checkOut = (string)$hold['checkout'];
+
+        $guestData = json_decode((string)($hold['guest_data'] ?? '{}'), true) ?? [];
+        $guests = (int)($guestData['guests'] ?? 1);
+        $phone = (string)($guestData['phone'] ?? Config::get('OTA_DEFAULT_PHONE', '000000000'));
+
+        $nameParts = explode(' ', trim($guestName), 2);
+        $firstName = $nameParts[0] ?: 'Guest';
+        $lastName = $nameParts[1] ?? 'Guest';
+
+        try {
+            $this->pdo->beginTransaction();
+
+            // 1. Cliente: buscar por email o insertar
+            $stmtCust = $this->pdo->prepare("SELECT id_customer FROM qlo_customer WHERE email = ?");
+            $stmtCust->execute([$guestEmail]);
+            $idCustomer = (int)$stmtCust->fetchColumn();
+
+            if ($idCustomer === 0) {
+                $stmtInsCust = $this->pdo->prepare("
+                    INSERT INTO qlo_customer (id_shop_group, id_shop, firstname, lastname, email, passwd, secure_key, active, is_guest, date_add, date_upd)
+                    VALUES (1, 1, ?, ?, ?, md5(rand()), md5(rand()), 1, 1, NOW(), NOW())
+                ");
+                $stmtInsCust->execute([$firstName, $lastName, $guestEmail]);
+                $idCustomer = (int)$this->pdo->lastInsertId();
+            }
+
+            // 2. Carrito QloApps
+            $stmtCart = $this->pdo->prepare("
+                INSERT INTO qlo_cart (id_shop_group, id_shop, id_lang, id_currency, id_customer, id_address_delivery, id_address_invoice, date_add, date_upd)
+                VALUES (1, 1, 1, 2, ?, 0, 0, NOW(), NOW())
+            ");
+            $stmtCart->execute([$idCustomer]);
+            $idCart = (int)$this->pdo->lastInsertId();
+
+            // 3. Referencia única de orden (9 caracteres alfanuméricos en mayúsculas)
+            $ref = strtoupper(substr(bin2hex(random_bytes(5)), 0, 9));
+
+            // 4. Orden QloApps (current_state = 2: Pago completo recibido, source = $fullCartId)
+            $stmtOrder = $this->pdo->prepare("
+                INSERT INTO qlo_orders (
+                    reference, id_shop_group, id_shop, id_carrier, id_lang, id_customer, id_cart, id_currency,
+                    id_address_delivery, id_address_invoice, current_state, payment, total_paid, total_paid_tax_incl,
+                    total_paid_tax_excl, total_products, total_products_wt, conversion_rate, module, valid, source, date_add, date_upd
+                ) VALUES (
+                    ?, 1, 1, 0, 1, ?, ?, 2,
+                    0, 0, 2, 'Mercado Pago (Online)', ?, ?,
+                    ?, ?, ?, 1.0, 'mercadopago', 1, ?, NOW(), NOW()
+                )
+            ");
+            $stmtOrder->execute([$ref, $idCustomer, $idCart, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $fullCartId]);
+            $idOrder = (int)$this->pdo->lastInsertId();
+
+            // 5. Nombre del producto de la habitación
+            $stmtRoomName = $this->pdo->prepare("SELECT pl.name FROM qlo_product_lang pl WHERE pl.id_product = ? AND pl.id_lang = 1 LIMIT 1");
+            $stmtRoomName->execute([$idRoomType]);
+            $roomName = (string)($stmtRoomName->fetchColumn() ?: 'Habitación USGAR');
+
+            // 6. Detalle de orden
+            $stmtDetail = $this->pdo->prepare("
+                INSERT INTO qlo_order_detail (
+                    id_order, id_shop, product_id, product_name, product_quantity, product_price,
+                    total_price_tax_incl, total_price_tax_excl, unit_price_tax_incl, unit_price_tax_excl, is_booking_product
+                ) VALUES (
+                    ?, 1, ?, ?, 1, ?,
+                    ?, ?, ?, ?, 1
+                )
+            ");
+            $stmtDetail->execute([$idOrder, $idRoomType, $roomName, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $totalPrice]);
+
+            // 7. Detalle de reserva en carrito (qlo_htl_cart_booking_data)
+            $stmtBookingData = $this->pdo->prepare("
+                INSERT INTO qlo_htl_cart_booking_data (
+                    id_cart, id_guest, id_order, id_customer, id_currency, id_product, id_room, id_hotel,
+                    quantity, booking_type, comment, is_back_order, extra_demands, date_from, date_to, adults, children, child_ages, date_add, date_upd
+                ) VALUES (
+                    ?, 0, ?, ?, 2, ?, 1, ?,
+                    1, 1, '', 0, '[]', ?, ?, ?, 0, '[]', NOW(), NOW()
+                )
+            ");
+            $stmtBookingData->execute([
+                $idCart, $idOrder, $idCustomer, $idRoomType, $idHotel,
+                $checkIn . ' 00:00:00', $checkOut . ' 00:00:00', $guests
+            ]);
+
+            // 8. Detalle en qlo_htl_booking_detail para descuento inmediato de disponibilidad
+            $stmtHtlDetail = $this->pdo->prepare("
+                INSERT INTO qlo_htl_booking_detail (
+                    id_product, id_order, id_order_detail, id_cart, id_room, id_hotel, id_customer,
+                    booking_type, id_status, comment, check_in, check_out, planned_check_out, date_from, date_to,
+                    total_price_tax_excl, total_price_tax_incl, total_paid_amount, is_back_order, hotel_name,
+                    room_type_name, city, phone, email, adults, children, child_ages, is_refunded, is_cancelled, date_add, date_upd
+                ) VALUES (
+                    ?, ?, 0, ?, 1, ?, ?,
+                    1, 1, '', ?, ?, ?, ?, ?,
+                    ?, ?, ?, 0, 'USGAR Hotels',
+                    ?, 'San Pedro', ?, ?, ?, 0, '[]', 0, 0, NOW(), NOW()
+                )
+            ");
+            $stmtHtlDetail->execute([
+                $idRoomType, $idOrder, $idCart, $idHotel, $idCustomer,
+                $checkIn . ' 12:00:00', $checkOut . ' 10:30:00', $checkOut . ' 10:30:00', $checkIn . ' 12:00:00', $checkOut . ' 10:30:00',
+                $totalPrice, $totalPrice, $totalPrice, $roomName, $phone, $guestEmail, $guests
+            ]);
+
+            // 9. Historial de estado de orden (Estado 2 = Pago completo recibido)
+            $stmtHistory = $this->pdo->prepare("
+                INSERT INTO qlo_order_history (id_employee, id_order, id_order_state, date_add)
+                VALUES (0, ?, 2, NOW())
+            ");
+            $stmtHistory->execute([$idOrder]);
+
+            $this->pdo->commit();
+            Logger::info("QloAppAdapter: Orden #{$idOrder} (Ref: {$ref}) creada exitosamente en QloApps via PDO atómico para Cart {$cartId}");
+            return (string)$idOrder;
+
+        } catch (Throwable $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            Logger::error("QloAppAdapter: Excepción al crear orden QloApps via PDO para Cart {$cartId}: " . $e->getMessage());
+            return null;
+        }
     }
 
 
@@ -426,36 +466,50 @@ XML;
     }
 
     /**
-     * Dedup del consumidor (todo 21): consulta la orden de QloApps por su id
-     * (la external_reference USGAR-{cartId} transporta el id de booking de
-     * QloApps) y verifica su payment_status.
+     * Dedup del consumidor: verifica si la orden con el cartId o externalReference
+     * ya fue confirmada en QloApps.
      *
-     * FAIL-CLOSED: una falla de transporte/API (PMS caido) LANZA — nunca
-     * devuelve false por error (el listener reintenta via outbox, nunca
-     * salta la confirmacion por un falso "no confirmada").
-     *
-     * Cart local fallback (USGAR-*): no existe una orden QloApps pre-existente
-     * por la que deduplicar (se crea al confirmar) -> false.
+     * FAIL-CLOSED: si la BD falla, propaga excepción para que el outbox reintente.
      */
     public function isOrderConfirmed(string $externalReference): bool {
+        $cartId = $externalReference;
+        $fullCartId = str_starts_with($cartId, self::QLOAPPS_LOCAL_PREFIX) ? $cartId : self::QLOAPPS_LOCAL_PREFIX . $cartId;
+        $rawCartId = str_starts_with($cartId, self::QLOAPPS_LOCAL_PREFIX) ? substr($cartId, strlen(self::QLOAPPS_LOCAL_PREFIX)) : $cartId;
+
+        if ($this->pdo) {
+            try {
+                $stmt = $this->pdo->prepare("
+                    SELECT current_state
+                    FROM qlo_orders
+                    WHERE source = ? OR source = ? OR source = ? OR id_order = ?
+                    LIMIT 1
+                ");
+                $numericId = ctype_digit($rawCartId) ? (int)$rawCartId : 0;
+                $stmt->execute([$externalReference, $fullCartId, $rawCartId, $numericId]);
+                $state = $stmt->fetchColumn();
+
+                if ($state !== false && (int)$state === 2) {
+                    return true;
+                }
+                return false;
+
+            } catch (Throwable $e) {
+                Logger::error("QloAppAdapter: Error en DB isOrderConfirmed ({$externalReference}): " . $e->getMessage());
+                throw new Exception('Error de base de datos durante isOrderConfirmed (' . $externalReference . ').');
+            }
+        }
+
+        // Fallback HTTP si PDO no está conectado
         if (empty($this->apiKey) || empty($this->apiUrl)) {
             throw new Exception('QloApps API key or API URL is not configured.');
         }
 
-        $cartId = $externalReference;
-        if (str_starts_with($cartId, self::QLOAPPS_LOCAL_PREFIX)) {
-            $cartId = substr($cartId, strlen(self::QLOAPPS_LOCAL_PREFIX));
-        }
         if ($cartId === '' || !ctype_digit($cartId)) {
-            // Cart local (fallback QLOAPPS_LOCAL): sin orden pre-existente.
             return false;
         }
 
         $xml = $this->executeRequest('bookings/' . $cartId, 'GET');
         if ($xml === null) {
-            // executeRequest devuelve null ante error de transporte, HTTP>=400
-            // o XML invalido — indistinguible de "no encontrada" pero
-            // FAIL-CLOSED: tratar como PMS caido y lanzar.
             throw new Exception('QloApps API no disponible durante isOrderConfirmed (' . $cartId . ').');
         }
 

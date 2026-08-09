@@ -101,7 +101,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
 </div>
 
 <script>
-  import { buildMonthGrid, nightsBetween, clampRange, formatISODate } from '../../features/booking/calendar';
+  import { buildMonthGrid, nightsBetween, clampRange, formatISODate, addDays } from '../../features/booking/calendar';
 import { formatDate } from '../../utils/format';
   import { allocateRooms } from '../../features/booking/roomAllocator';
   import { wizardStore } from '../../features/booking/wizardStore';
@@ -321,20 +321,30 @@ import { formatDate } from '../../utils/format';
     if (guestsSelect) guestsSel.value = String(guests);
     wizardStore.setState({ roomType: roomTypeParam, guests });
 
+    const syncMinDates = () => {
+      const todayIso = formatISODate(new Date());
+      checkin.min = todayIso;
+      if (checkIn) {
+        checkout.min = addDays(checkIn, 1);
+      } else {
+        checkout.min = todayIso;
+      }
+    };
+
     const seedDates = () => {
       if (!checkIn) {
         const t = new Date(); t.setDate(t.getDate() + 1);
         checkIn = formatISODate(t);
       }
       if (!checkOut) {
-        const t = new Date(checkIn + 'T00:00:00'); t.setDate(t.getDate() + 2);
-        checkOut = formatISODate(t);
+        checkOut = addDays(checkIn, 1);
       }
       const r = clampRange(checkIn, checkOut);
       checkIn = r.checkIn;
       checkOut = r.checkOut;
       checkin.value = checkIn;
       checkout.value = checkOut;
+      syncMinDates();
     };
     seedDates();
 
@@ -353,45 +363,65 @@ import { formatDate } from '../../utils/format';
       refreshSelection(checkIn, checkOut);
     };
 
-    let picked: string | null = checkIn;
+    let isSelectingRange = false;
 
     function onPick(date: string) {
       if (isPast(date)) return;
-      if (!picked || (checkIn && checkOut)) {
-        picked = date;
+      if (!isSelectingRange) {
         checkIn = date;
         checkOut = '';
-        checkin.value = date;
-        checkout.value = '';
-      } else {
-        checkOut = date;
-        const r = clampRange(checkIn, checkOut);
-        checkIn = r.checkIn;
-        checkOut = r.checkOut;
         checkin.value = checkIn;
-        checkout.value = checkOut;
-        picked = null;
-        void computeAllocation();
+        checkout.value = '';
+        isSelectingRange = true;
+        continueBt.disabled = true;
+        syncMinDates();
+        refreshSelection(checkIn, '');
+      } else {
+        if (date > checkIn) {
+          checkOut = date;
+          checkin.value = checkIn;
+          checkout.value = checkOut;
+          isSelectingRange = false;
+          syncMinDates();
+          refreshSelection(checkIn, checkOut);
+          void computeAllocation();
+        } else {
+          checkIn = date;
+          checkOut = '';
+          checkin.value = checkIn;
+          checkout.value = '';
+          isSelectingRange = true;
+          continueBt.disabled = true;
+          syncMinDates();
+          refreshSelection(checkIn, '');
+        }
       }
-      refreshSelection(checkIn, checkOut);
     }
 
     checkin.addEventListener('change', () => {
       checkIn = checkin.value;
+      if (checkOut && checkOut <= checkIn) {
+        checkOut = addDays(checkIn, 1);
+      }
+      checkout.value = checkOut;
+      isSelectingRange = false;
+      syncMinDates();
+      void computeAllocation();
       refreshSelection(checkIn, checkOut);
     }, { signal: abortController.signal });
+
     checkout.addEventListener('change', () => {
       checkOut = checkout.value;
-      if (checkIn && checkOut) {
-        const r = clampRange(checkIn, checkOut);
-        checkIn = r.checkIn;
-        checkOut = r.checkOut;
+      if (checkIn && checkOut <= checkIn) {
+        checkIn = addDays(checkout.value, -1);
         checkin.value = checkIn;
-        checkout.value = checkOut;
-        void computeAllocation();
       }
+      isSelectingRange = false;
+      syncMinDates();
+      void computeAllocation();
       refreshSelection(checkIn, checkOut);
     }, { signal: abortController.signal });
+
     guestsSel.addEventListener('change', () => {
       if (checkIn && checkOut) void computeAllocation();
     }, { signal: abortController.signal });

@@ -21,6 +21,12 @@ export function nightsBetween(checkIn: string, checkOut: string): number {
   return Math.round((b.getTime() - a.getTime()) / 86_400_000);
 }
 
+export function addDays(isoDate: string, days: number): string {
+  const d = new Date(isoDate + 'T00:00:00');
+  d.setDate(d.getDate() + days);
+  return formatISODate(d);
+}
+
 export function clampRange(
   checkIn: string,
   checkOut: string,
@@ -28,15 +34,12 @@ export function clampRange(
 ): { checkIn: string; checkOut: string } {
   let start = checkIn;
   let end = checkOut;
-  if (nightsBetween(start, end) < 1) {
-    const tmp = start;
-    start = end;
-    end = tmp;
+  if (!start) start = formatISODate(new Date());
+  if (!end || nightsBetween(start, end) < 1) {
+    end = addDays(start, 1);
   }
   if (nightsBetween(start, end) > maxNights) {
-    const d = new Date(start + 'T00:00:00');
-    d.setDate(d.getDate() + maxNights);
-    end = formatISODate(d);
+    end = addDays(start, maxNights);
   }
   return { checkIn: start, checkOut: end };
 }
