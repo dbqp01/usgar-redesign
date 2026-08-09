@@ -476,7 +476,12 @@ const t = useTranslations(lang);
                 errorBanner?.classList.add('hidden');
 
                 try {
-                  const processRes = await bookingService.processPayment(cartId!, accessToken!, cardFormData);
+                  const deviceSessionId = (window as any).MP_DEVICE_SESSION_ID || (window as any).deviceId || '';
+                  const payload = {
+                    ...cardFormData,
+                    device_session_id: deviceSessionId,
+                  };
+                  const processRes = await bookingService.processPayment(cartId!, accessToken!, payload);
 
                   if (processRes.success) {
                     resolve();

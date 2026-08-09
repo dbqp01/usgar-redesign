@@ -150,7 +150,8 @@ const t = useTranslations(lang);
     </div>
   </div>
 
-  <!-- SDK MercadoPago.js: la doc exige cargarlo antes de cualquier lógica de pago (script estándar previo a </body>) -->
+  <!-- SDK MercadoPago.js y script de seguridad para Device ID (prevención de fraude) -->
+  <script is:inline src="https://www.mercadopago.com/v2/security.js" {...{ view: 'checkout' }}></script>
 </Layout>
 
 <script is:inline define:vars={{

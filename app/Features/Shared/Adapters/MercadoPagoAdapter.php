@@ -122,8 +122,12 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             // El SDK documenta setCustomHeaders como lista de strings "Name:
             // value" (la forma asociativa se pierde en CURLOPT_HTTPHEADER:
             // curl descarta headers sin ':'). Validado E2E en entorno TEST (live_mode:false, 2026-08-03); pendiente validación LIVE.
+            $customHeaders = ['X-Idempotency-Key: ' . $this->generateUuidV4()];
+            if (!empty($paymentData['device_session_id'])) {
+                $customHeaders[] = 'X-meli-session-id: ' . trim((string)$paymentData['device_session_id']);
+            }
             // @phpstan-ignore argument.type
-            $requestOptions->setCustomHeaders(['X-Idempotency-Key: ' . $this->generateUuidV4()]);
+            $requestOptions->setCustomHeaders($customHeaders);
             $requestOptions->setConnectionTimeout((int) Config::get('MERCADO_PAGO_TIMEOUT_CREATE_MS', '15000')); // 15s total
 
             $payment = $client->create($payload, $requestOptions);

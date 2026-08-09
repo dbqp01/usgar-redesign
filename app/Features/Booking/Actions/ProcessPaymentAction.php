@@ -183,6 +183,10 @@ class ProcessPaymentAction {
             // currency_id (verificado con MCP + sandbox real; MP infiere la
             // moneda de la cuenta). La moneda de cobro (Config, todo 34) se
             // propaga via BookingPaidEvent al PMS, no en el create.
+            if (!empty($rawPaymentData['device_session_id'])) {
+                $paymentData['device_session_id'] = (string)$rawPaymentData['device_session_id'];
+            }
+
             $paymentData['payer']              = $payer;
 
             $additionalInfoPayer = [
