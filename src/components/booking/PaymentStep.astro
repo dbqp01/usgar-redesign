@@ -1,4 +1,4 @@
-﻿---
+---
 // debt: oversized module (564 LOC) — split into concept-named components when touched; ceiling 250 pure LOC
 // src/components/booking/PaymentStep.astro
 // Paso 3 del wizard: el flujo de pago MercadoPago EXISTENTE, intacto
@@ -21,69 +21,15 @@ const t = useTranslations(lang);
 
     <div data-payment-note class="hidden p-4 rounded-xl border border-primary/20 bg-primary/5 text-primary text-sm"></div>
 
-    <form id="mp-payment-form" class="space-y-4">
-      <div>
-        <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-          {t('payment.cardNumber')} *
-        </label>
-        <div id="form-checkout__cardNumber" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm h-[46px] shadow-sm"></div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-            {t('payment.expiration')} *
-          </label>
-          <div id="form-checkout__expirationDate" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm h-[46px] shadow-sm"></div>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-            {t('payment.cvv')} *
-          </label>
-          <div id="form-checkout__securityCode" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm h-[46px] shadow-sm"></div>
-        </div>
-      </div>
-
-      <div>
-        <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-          {t('payment.cardholderName')} *
-        </label>
-        <input type="text" id="form-checkout__cardholderName" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none placeholder:text-stone-400" placeholder={t('payment.cardholderNamePlaceholder')} />
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-            {t('payment.documentType')} *
-          </label>
-          <select id="form-checkout__identificationType" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none appearance-none"></select>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-            {t('payment.documentNumber')} *
-          </label>
-          <input type="text" id="form-checkout__identificationNumber" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none placeholder:text-stone-400" placeholder={t('payment.documentNumberPlaceholder')} />
-        </div>
-      </div>
-
-      <select id="form-checkout__issuer" class="hidden"></select>
-      <select id="form-checkout__installments" class="hidden"></select>
-      <input type="email" id="form-checkout__cardholderEmail" class="hidden" />
+    <div id="mp-payment-form-wrap" class="space-y-4">
+      <div id="cardPaymentBrick_container"></div>
 
       <div data-payment-error class="hidden p-4 rounded-xl border border-red-400/30 bg-red-500/5 text-red-600 dark:text-red-400 text-sm space-y-1">
         <p data-payment-error-text></p>
       </div>
 
-      <button type="submit" id="btn-final-pay" disabled class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-xl transition-[transform,background-color,box-shadow] duration-300 hover:shadow-lg hover:shadow-primary/25 lg:hover:-translate-y-0.5 text-lg cursor-pointer flex items-center justify-center gap-3 mt-6 disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none">
-        <span id="btn-final-text">{t('payment.payNow')}</span>
-        <svg id="btn-final-spinner" class="hidden animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-      </button>
-
       <p data-hold-countdown class="hidden text-center text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400"></p>
-    </form>
+    </div>
 
     <div class="flex items-center justify-between pt-2">
       <button
@@ -493,163 +439,86 @@ const t = useTranslations(lang);
         // Todo 30: locale del SDK por idioma (es-PE default para es).
         const mp = new (window as any).MercadoPago(mpPublicKey, { locale: MP_LOCALES[lang] || 'es-PE' });
 
-        const btnFinalPay = document.getElementById('btn-final-pay') as HTMLButtonElement | null;
-        const btnFinalSpinner = document.getElementById('btn-final-spinner');
-        const btnFinalText = document.getElementById('btn-final-text');
-
         // Todo 29: countdown del hold desde time_left_seconds (best-effort).
         void startHoldCountdown(cartId, accessToken, t);
 
-        // Mostrar el formulario ANTES de crear el cardForm: MercadoPago monta
-        // los iframes de secure-fields sobre elementos visibles con layout.
+        // Mostrar el formulario ANTES de crear el Card Payment Brick.
         showPaymentPanel();
         setProcessing(false);
 
-        // Seguridad: si onReady no llega en 12s (adblocker bloqueando los
-        // iframes de secure-fields, red lenta, SDK caído), habilitar igual el
-        // botón; al intentar pagar, onError/onCardTokenReceived explicarán el
-        // fallo en lugar de dejar al usuario bloqueado sin explicación.
-        if (payReadyTimer !== null) { window.clearTimeout(payReadyTimer); payReadyTimer = null; }
-        payReadyTimer = window.setTimeout(() => {
-          if (btnFinalPay?.disabled) {
-            btnFinalPay.disabled = false;
-            btnFinalPay.classList.remove('disabled:pointer-events-none');
-            console.warn('cardForm onReady timeout: enabling Pay button as fallback');
-          }
-          payReadyTimer = null;
-        }, 12000);
+        const bricksBuilder = mp.bricks();
 
-        cardFormInstance = mp.cardForm({
-          amount: totalAmount.toString(),
-          iframe: true,
-          form: {
-            id: "mp-payment-form",
-            cardNumber: { id: "form-checkout__cardNumber", placeholder: t('payment.cardNumberPlaceholder') },
-            expirationDate: { id: "form-checkout__expirationDate", placeholder: t('payment.expirationPlaceholder') },
-            securityCode: { id: "form-checkout__securityCode", placeholder: t('payment.cvvPlaceholder') },
-            cardholderName: { id: "form-checkout__cardholderName" },
-            issuer: { id: "form-checkout__issuer" },
-            installments: { id: "form-checkout__installments" },
-            identificationType: { id: "form-checkout__identificationType" },
-            identificationNumber: { id: "form-checkout__identificationNumber" },
-            cardholderEmail: { id: "form-checkout__cardholderEmail" }
+        cardFormInstance = await bricksBuilder.create('cardPayment', 'cardPaymentBrick_container', {
+          initialization: {
+            amount: Number(totalAmount),
+            payer: {
+              email: guestEmailInput?.value || '',
+            },
+          },
+          customization: {
+            visual: {
+              style: {
+                theme: 'default',
+              },
+            },
           },
           callbacks: {
-            onFormMounted: (error: any) => {
-              if (error) return console.warn("Form mounted error:", error);
-              const emailEl = document.getElementById('form-checkout__cardholderEmail') as HTMLInputElement | null;
-              if (emailEl && guestEmailInput) emailEl.value = guestEmailInput.value;
-            },
             onReady: () => {
-              // Doc sdk-js: onReady se dispara cuando getIdentificationTypes()
-              // respondió y los iframes de secure-fields están listos.
-              // Solo entonces el usuario puede pagar con éxito.
-              if (btnFinalPay) {
-                btnFinalPay.disabled = false;
-                btnFinalPay.classList.remove('disabled:pointer-events-none');
-              }
+              if (payReadyTimer !== null) { window.clearTimeout(payReadyTimer); payReadyTimer = null; }
             },
-            onFormUnmounted: (error: any) => {
-              if (error) return console.warn("Form unmounted error:", error);
-            },
-            onValidityChange: (error: any) => {
-              // Doc sdk-js: error = [{ message, code }] - validación por campo
-              // (tarjeta mal escrita, fecha vencida, CVV incompleto, etc.)
-              const msg = (error && error.length > 0 && error[0].message)
-                ? String(error[0].message)
-                : '';
-              if (msg) showCardError(msg);
-              else clearCardError();
+            onSubmit: (cardFormData: any) => {
+              return new Promise<void>(async (resolve, reject) => {
+                clearCardError();
+                processingPayment = true;
+                errorBanner?.classList.add('hidden');
+
+                try {
+                  const processRes = await bookingService.processPayment(cartId!, accessToken!, cardFormData);
+
+                  if (processRes.success) {
+                    resolve();
+                    redirectToSuccess(cartId!);
+                    return;
+                  }
+
+                  const outcome = resolvePaymentOutcome(processRes.error, null);
+                  if (outcome === 'redirect_success') {
+                    resolve();
+                    redirectToSuccess(cartId!);
+                    return;
+                  }
+
+                  reject();
+                  await handlePaymentFailure(
+                    {
+                      code: processRes.error.code,
+                      message: processRes.error.message,
+                      statusDetail: processRes.error.statusDetail,
+                    },
+                    cartId!,
+                    accessToken!,
+                    t,
+                    showError
+                  );
+                } catch (err: any) {
+                  reject();
+                  await handlePaymentFailure(
+                    { code: 'NETWORK_ERROR', message: err.message || '' },
+                    cartId!,
+                    accessToken!,
+                    t,
+                    showError
+                  );
+                } finally {
+                  processingPayment = false;
+                }
+              });
             },
             onError: (error: any) => {
-              // Doc sdk-js: onError = [{ message }] - errores de la SDK
-              // (fallo al crear token, identificación inválida, red, etc.)
-              const msg = (error && error.length > 0 && error[0].message)
-                ? String(error[0].message)
-                : t('book.unexpectedError');
-              showCardError(msg);
+              console.error('Card Payment Brick error:', error);
+              showCardError(t('book.unexpectedError'));
             },
-            onCardTokenReceived: (error: any) => {
-              // Doc sdk-js: se dispara tras createCardToken(); error si falló.
-              if (error) {
-                const msg = (error && error.length > 0 && error[0].message)
-                  ? String(error[0].message)
-                  : t('book.cardError');
-                showCardError(msg);
-              }
-            },
-            onSubmit: async (event: any) => {
-              event.preventDefault();
-              clearCardError();
-              processingPayment = true;
-              if (btnFinalPay) btnFinalPay.disabled = true;
-              if (btnFinalSpinner) btnFinalSpinner.classList.remove('hidden');
-              if (btnFinalText) btnFinalText.textContent = t('payment.processing');
-              errorBanner?.classList.add('hidden');
-
-              try {
-                const formData = cardFormInstance.getCardFormData();
-
-                if (!formData.token) {
-                  // La tokenización falló y el SDK no creó el token:
-                  // el error ya fue mostrado por onCardTokenReceived/onError.
-                  throw new Error(t('book.cardError'));
-                }
-
-                const processRes = await bookingService.processPayment(cartId!, accessToken!, {
-                  token: formData.token,
-                  issuer_id: formData.issuerId,
-                  payment_method_id: formData.paymentMethodId,
-                  installments: Number(formData.installments),
-                  payer: {
-                    email: guestEmailInput?.value || '',
-                    identification: {
-                      type: formData.identificationType,
-                      number: formData.identificationNumber,
-                    }
-                  }
-                });
-
-                if (processRes.success) {
-                  redirectToSuccess(cartId!);
-                  return;
-                }
-
-                // Todo 28: pago pending/in_process/payment_id -> success
-                // (el polling de success.astro resuelve; nunca apilar).
-                const outcome = resolvePaymentOutcome(processRes.error, null);
-                if (outcome === 'redirect_success') {
-                  redirectToSuccess(cartId!);
-                  return;
-                }
-
-                // Todo 31: fallo (rechazo o red) -> pre-retry check.
-                await handlePaymentFailure(
-                  {
-                    code: processRes.error.code,
-                    message: processRes.error.message,
-                    statusDetail: processRes.error.statusDetail,
-                  },
-                  cartId!,
-                  accessToken!,
-                  t,
-                  showError
-                );
-              } catch (err: any) {
-                console.error(err);
-                await handlePaymentFailure(
-                  { code: 'NETWORK_ERROR', message: err.message || '' },
-                  cartId!,
-                  accessToken!,
-                  t,
-                  showError
-                );
-              } finally {
-                processingPayment = false;
-                if (btnFinalSpinner) btnFinalSpinner.classList.add('hidden');
-              }
-            }
-          }
+          },
         });
       } catch (err: any) {
         console.error(err);

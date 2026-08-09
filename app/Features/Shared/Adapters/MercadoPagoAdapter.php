@@ -87,9 +87,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             // para el evento/PMS (todo 34); el create simplemente no la envia.
             'statement_descriptor'=> $statementDescriptor,
             'binary_mode'         => Config::get('MP_BINARY_MODE', 'false') === 'true',
-            // Todo 3 (clausula r2): SIN notification_url en el create — la config
-            // del panel / save_webhook gobierna (doc MP: la URL del create tendria
-            // prioridad sobre el panel; se mantiene AUSENTE a proposito).
+            'notification_url'    => Config::get('MP_NOTIFICATION_URL', 'https://usgarhoteles.com/api/webhook'),
         ];
 
         if (!empty($paymentData['additional_info'])) {
