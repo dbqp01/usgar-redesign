@@ -466,6 +466,9 @@ const t = useTranslations(lang);
             onReady: () => {
               if (payReadyTimer !== null) { window.clearTimeout(payReadyTimer); payReadyTimer = null; }
             },
+            onBinChange: () => {
+              clearCardError();
+            },
             onSubmit: (cardFormData: any) => {
               return new Promise<void>(async (resolve, reject) => {
                 clearCardError();
