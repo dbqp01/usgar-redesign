@@ -1,34 +1,111 @@
-import type { IHttpClient } from './contracts/IHttpClient';
-import { defaultHttpClient } from './httpClient';
 import { normalizePaymentError } from '../utils/paymentErrors';
-import type {
-  IBookingService,
-  ApiResult,
-  RoomAvailability,
-  BookingPayload,
-  BookingResponseData,
-  CalendarAvailability,
-} from './contracts/IBookingService';
+
+export interface RoomAvailability {
+  id: string;
+  slug: string;
+  name: string;
+  pricePerNight: number;
+  available: boolean;
+  maxGuests: number;
+  description?: string;
+  images?: string[];
+}
+
+export interface GuestDetails {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  documentType?: string;
+  documentNumber?: string;
+  specialRequests?: string;
+}
+
+export interface BookingPayload {
+  roomSlug: string;
+  checkIn: string;
+  checkOut: string;
+  guests: number;
+  guestDetails: GuestDetails;
+}
+
+export interface BookingResponseData {
+  booking_id?: string;
+  cart_id?: string;
+  access_token?: string;
+  mp_public_key?: string;
+  status?: string;
+  expires_at?: string;
+  total_amount?: number;
+  gateway_price?: number;
+  price?: number;
+  currency?: string;
+  mock_mode?: boolean;
+  message?: string;
+}
+
+export type ApiResult<T> =
+  | { success: true; data: T }
+  | { success: false; error: { code: string; message: string; status?: number; missingCredentials?: boolean; statusDetail?: string; paymentStatus?: string; paymentId?: string } };
+
+export type CalendarAvailability = Record<string, Record<string, number>>;
+
+async function request(url: string, init: RequestInit = {}): Promise<{ ok: boolean; status: number; data: any }> {
+  try {
+    const res = await fetch(url, {
+      ...init,
+      headers: {
+        'Accept': 'application/json',
+        ...(init.body ? { 'Content-Type': 'application/json' } : {}),
+        ...init.headers,
+      },
+      signal: init.signal ?? AbortSignal.timeout(10000),
+    });
+
+    let data: any;
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      try {
+        data = await res.json();
+      } catch {
+        data = { message: 'Invalid JSON response' };
+      }
+    } else {
+      const text = await res.text();
+      data = text ? { message: text } : {};
+    }
+
+    return { ok: res.ok, status: res.status, data };
+  } catch (error: any) {
+    const isAbort = error?.name === 'AbortError' || error?.name === 'TimeoutError';
+    return {
+      ok: false,
+      status: isAbort ? 408 : 503,
+      data: {
+        success: false,
+        error: {
+          code: isAbort ? 'TIMEOUT_ERROR' : 'NETWORK_ERROR',
+          message: isAbort
+            ? 'La peticion excedio el tiempo limite de espera (timeout).'
+            : (error?.message || 'Error de conexion de red al servidor.'),
+        },
+      },
+    };
+  }
+}
 
 /**
  * Servicio de Negocio de Reservas para el Frontend Astro.
+ * Utiliza fetch nativo con AbortSignal.timeout() de forma directa.
  */
-export class BookingService implements IBookingService {
-  private readonly httpClient: IHttpClient;
-  private readonly baseUrl: string;
-
-  constructor(httpClient: IHttpClient = defaultHttpClient, baseUrl = '/api') {
-    this.httpClient = httpClient;
-    this.baseUrl = baseUrl;
-  }
-
+export const bookingService = {
   async getAvailableRooms(checkIn?: string, checkOut?: string): Promise<ApiResult<RoomAvailability[]>> {
     const query = new URLSearchParams();
     if (checkIn) query.append('checkIn', checkIn);
     if (checkOut) query.append('checkOut', checkOut);
 
-    const url = `${this.baseUrl}/rooms${query.toString() ? '?' + query.toString() : ''}`;
-    const response = await this.httpClient.get<any>(url);
+    const url = `/api/rooms${query.toString() ? '?' + query.toString() : ''}`;
+    const response = await request(url, { method: 'GET' });
 
     if (!response.ok || !response.data?.success) {
       const err = response.data?.error || {};
@@ -51,15 +128,15 @@ export class BookingService implements IBookingService {
       success: true,
       data: (response.data.rooms ?? response.data.data) as RoomAvailability[],
     };
-  }
+  },
 
   async getAvailabilityCalendar(from?: string, to?: string): Promise<ApiResult<CalendarAvailability>> {
     const query = new URLSearchParams();
     if (from) query.append('from', from);
     if (to) query.append('to', to);
 
-    const url = `${this.baseUrl}/rooms/calendar${query.toString() ? '?' + query.toString() : ''}`;
-    const response = await this.httpClient.get<any>(url);
+    const url = `/api/rooms/calendar${query.toString() ? '?' + query.toString() : ''}`;
+    const response = await request(url, { method: 'GET' });
 
     if (!response.ok || !response.data?.success) {
       const err = response.data?.error || {};
@@ -77,11 +154,14 @@ export class BookingService implements IBookingService {
       success: true,
       data: (response.data.days ?? {}) as CalendarAvailability,
     };
-  }
+  },
 
   async createHold(payload: BookingPayload): Promise<ApiResult<BookingResponseData>> {
-    const url = `${this.baseUrl}/booking`;
-    const response = await this.httpClient.post<any>(url, payload);
+    const url = `/api/booking`;
+    const response = await request(url, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
 
     if (!response.ok || !response.data?.success) {
       const err = response.data?.error || {};
@@ -104,20 +184,20 @@ export class BookingService implements IBookingService {
       success: true,
       data: (response.data.data ?? response.data) as BookingResponseData,
     };
-  }
+  },
 
   async processPayment(cartId: string, accessToken: string, paymentData: any): Promise<ApiResult<any>> {
-    const url = `${this.baseUrl}/process-payment`;
-    const response = await this.httpClient.post<any>(url, {
-      cart_id: cartId,
-      access_token: accessToken,
-      payment_data: paymentData
+    const url = `/api/process-payment`;
+    const response = await request(url, {
+      method: 'POST',
+      body: JSON.stringify({
+        cart_id: cartId,
+        access_token: accessToken,
+        payment_data: paymentData,
+      }),
     });
 
     if (!response.ok || !response.data?.success) {
-      // Todo 26: normalizar cualquier forma plana -> {code, message, status_detail}.
-      // El backend responde Response::error (error.details.status_detail) o
-      // plano (status/status_detail/payment_id) — unificados aqui.
       const normalized = normalizePaymentError(response.data) || {
         code: 'PAYMENT_FAILED',
         message: 'Error al procesar el pago.',
@@ -139,13 +219,12 @@ export class BookingService implements IBookingService {
       success: true,
       data: response.data,
     };
-  }
+  },
 
-  /** GET /api/booking-status?cart_id&token — estado del hold (todos 27/28/29/31). */
   async getBookingStatus(cartId: string, accessToken: string): Promise<ApiResult<any>> {
     const query = new URLSearchParams({ cart_id: cartId });
     if (accessToken) query.append('token', accessToken);
-    const response = await this.httpClient.get<any>(`${this.baseUrl}/booking-status?${query.toString()}`);
+    const response = await request(`/api/booking-status?${query.toString()}`, { method: 'GET' });
 
     if (!response.ok || !response.data?.success) {
       return {
@@ -158,13 +237,12 @@ export class BookingService implements IBookingService {
       };
     }
     return { success: true, data: response.data };
-  }
+  },
 
-  /** GET /api/payment-check?cart_id&token — pago en MP por external_reference (todo 31). */
   async checkPayment(cartId: string, accessToken: string): Promise<ApiResult<any>> {
     const query = new URLSearchParams({ cart_id: cartId });
     if (accessToken) query.append('token', accessToken);
-    const response = await this.httpClient.get<any>(`${this.baseUrl}/payment-check?${query.toString()}`);
+    const response = await request(`/api/payment-check?${query.toString()}`, { method: 'GET' });
 
     if (!response.ok || !response.data?.success) {
       return {
@@ -177,8 +255,5 @@ export class BookingService implements IBookingService {
       };
     }
     return { success: true, data: response.data };
-  }
-}
-
-// Instancia global por defecto
-export const bookingService = new BookingService();
+  },
+};

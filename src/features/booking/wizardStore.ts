@@ -1,8 +1,3 @@
-// src/features/booking/wizardStore.ts
-// Estado compartido del wizard de reserva (TS puro, sin librerias).
-// Un solo store por pagina: se crea en el shell de book.astro y se pasa
-// a los componentes de paso.
-
 import type { AllocationOption } from './roomAllocator';
 
 export type WizardStep = 1 | 2 | 3;
@@ -45,10 +40,10 @@ const DEFAULT_STATE: WizardState = {
 
 export function createWizardStore(initial?: Partial<WizardState>): WizardStore {
   let state: WizardState = { ...DEFAULT_STATE, ...initial };
-  const listeners = new Set<(s: WizardState) => void>();
+  const bus = new EventTarget();
 
   const notify = () => {
-    for (const fn of listeners) fn(state);
+    bus.dispatchEvent(new Event('change'));
   };
 
   return {
@@ -58,8 +53,9 @@ export function createWizardStore(initial?: Partial<WizardState>): WizardStore {
       notify();
     },
     subscribe: (fn) => {
-      listeners.add(fn);
-      return () => listeners.delete(fn);
+      const handler = () => fn(state);
+      bus.addEventListener('change', handler);
+      return () => bus.removeEventListener('change', handler);
     },
     next: () => {
       if (state.step < 3) {
@@ -76,5 +72,4 @@ export function createWizardStore(initial?: Partial<WizardState>): WizardStore {
   };
 }
 
-// Singleton compartido por los componentes del wizard de /book.
 export const wizardStore = createWizardStore();

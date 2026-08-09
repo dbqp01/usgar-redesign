@@ -6,7 +6,6 @@ namespace App\Features\Auth\Actions;
 use App\Core\Request;
 use App\Core\Response;
 use App\Core\Database;
-use App\Core\GuestName;
 use App\Features\Auth\User;
 use App\Features\Auth\SessionService;
 
@@ -24,7 +23,7 @@ class AuthRegisterAction {
         $rawName = trim($data['first_name'] ?? $data['fullName'] ?? '');
         $lastName = trim($data['last_name'] ?? '');
         if (!empty($rawName) && empty($lastName)) {
-            $nameParts = GuestName::split($rawName);
+            $nameParts = explode(' ', $rawName, 2);
             $rawName = $nameParts[0];
             $lastName = $nameParts[1] ?? '';
         }

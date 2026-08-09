@@ -7,8 +7,6 @@ use App\Features\Shared\Ports\PmsPortInterface;
 use App\Core\Config;
 use App\Core\Logger;
 use App\Core\Database;
-use App\Core\GuestName;
-use App\Core\CartIdPrefix;
 use PDO;
 use PDOException;
 use SimpleXMLElement;
@@ -19,6 +17,7 @@ use Exception;
  * Cumple estrictamente con PmsPortInterface.
  */
 class QloAppAdapter implements PmsPortInterface {
+    private const QLOAPPS_LOCAL_PREFIX = 'USGAR-';
     private ?PDO $pdo;
     private readonly ?string $apiUrl;
     private readonly ?string $apiKey;
@@ -237,10 +236,10 @@ class QloAppAdapter implements PmsPortInterface {
     public function createCart(int $idHotel, int $idProduct, string $checkIn, string $checkOut, int $guests = 1, float $totalPrice = 0, string $guestName = '', string $guestEmail = '', string $guestPhone = ''): string {
         if (empty($this->apiKey) || empty($this->apiUrl)) {
             Logger::error('QloAppAdapter: QloApps API key or API URL is not configured. Falling back to local cart.');
-            return CartIdPrefix::QLOAPPS_LOCAL . bin2hex(random_bytes(6));
+            return 'USGAR-' . bin2hex(random_bytes(6));
         }
 
-        $nameParts = GuestName::split($guestName);
+        $nameParts = explode(' ', $guestName, 2);
         $firstName = htmlspecialchars($nameParts[0] ?: Config::get('DEFAULT_GUEST_NAME', 'Guest'), ENT_XML1);
         $lastName = htmlspecialchars($nameParts[1] ?? Config::get('DEFAULT_GUEST_NAME', 'Guest'), ENT_XML1);
         $safeEmail = htmlspecialchars($guestEmail ?: Config::get('DEFAULT_REPLY_EMAIL'), ENT_XML1);
@@ -298,7 +297,7 @@ XML;
         }
 
         Logger::error("QloAppAdapter: Error al crear Cart/Booking en QloApps, fallback a USGAR- local.");
-        return CartIdPrefix::QLOAPPS_LOCAL . bin2hex(random_bytes(6));
+        return self::QLOAPPS_LOCAL_PREFIX . bin2hex(random_bytes(6));
     }
 
     public function confirmOrder(string $cartId, float $totalPrice, string $guestName, string $guestEmail): ?string {
@@ -307,7 +306,7 @@ XML;
         }
 
         // Si el cartId es el fallback local (USGAR-), tenemos que usar el flujo antiguo (crearlo de cero)
-        if (str_starts_with($cartId, CartIdPrefix::QLOAPPS_LOCAL)) {
+        if (str_starts_with($cartId, self::QLOAPPS_LOCAL_PREFIX)) {
             $stmt = $this->pdo->prepare("SELECT * FROM provisional_bookings WHERE cart_id = :cartId");
             $stmt->execute([':cartId' => $cartId]);
             $hold = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -326,7 +325,7 @@ XML;
             $guests = $guestData['guests'] ?? 1;
             $phone = $guestData['phone'] ?? Config::get('OTA_DEFAULT_PHONE', '000000000');
             
-            $nameParts = GuestName::split($guestName);
+            $nameParts = explode(' ', $guestName, 2);
             $firstName = htmlspecialchars($nameParts[0] ?? $guestName, ENT_XML1);
             $lastName = htmlspecialchars($nameParts[1] ?? Config::get('DEFAULT_GUEST_NAME', 'Guest'), ENT_XML1);
             $safeEmail = htmlspecialchars($guestEmail, ENT_XML1);
@@ -444,8 +443,8 @@ XML;
         }
 
         $cartId = $externalReference;
-        if (str_starts_with($cartId, CartIdPrefix::QLOAPPS_LOCAL)) {
-            $cartId = substr($cartId, strlen(CartIdPrefix::QLOAPPS_LOCAL));
+        if (str_starts_with($cartId, self::QLOAPPS_LOCAL_PREFIX)) {
+            $cartId = substr($cartId, strlen(self::QLOAPPS_LOCAL_PREFIX));
         }
         if ($cartId === '' || !ctype_digit($cartId)) {
             // Cart local (fallback QLOAPPS_LOCAL): sin orden pre-existente.

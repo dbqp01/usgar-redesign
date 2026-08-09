@@ -26,6 +26,7 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
             type="button"
             id="widget-dates"
             data-widget-dates
+            popovertarget="widget-popover"
             aria-haspopup="dialog"
             aria-expanded="false"
             aria-controls="widget-popover"
@@ -37,6 +38,7 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
           <!-- Calendar Popover -->
           <div
             id="widget-popover"
+            popover="auto"
             data-widget-popover
             role="dialog"
             aria-labelledby="widget-popover-title"

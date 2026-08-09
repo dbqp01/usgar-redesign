@@ -6,40 +6,13 @@ gsap.registerPlugin(ScrollTrigger);
 // MatchMedia wraps a Context internally (GSAP docs) — both expose revert().
 type ContextEntry = { name: string; ctx: gsap.Context | gsap.MatchMedia };
 
-const RESIZE_DEBOUNCE_MS = 200;
 const registry: Map<string, ContextEntry> = new Map();
-let resizeHandler: (() => void) | null = null;
-let resizeTimer: ReturnType<typeof setTimeout> | null = null;
-
-function debounceRefresh(): void {
-  if (resizeTimer) clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => {
-    ScrollTrigger.refresh();
-  }, RESIZE_DEBOUNCE_MS);
-}
-
-function ensureResizeDebounce(): void {
-  if (resizeHandler || typeof window === 'undefined') return;
-  resizeHandler = debounceRefresh;
-  window.addEventListener('resize', resizeHandler, { passive: true });
-}
-
-function teardownResizeDebounce(): void {
-  if (!resizeHandler) return;
-  window.removeEventListener('resize', resizeHandler);
-  if (resizeTimer) {
-    clearTimeout(resizeTimer);
-    resizeTimer = null;
-  }
-  resizeHandler = null;
-}
 
 export function register(name: string, ctx: gsap.Context | gsap.MatchMedia): void {
   if (registry.has(name)) {
     registry.get(name)!.ctx.revert();
   }
   registry.set(name, { name, ctx });
-  ensureResizeDebounce();
 }
 
 export function cleanupAll(): void {
@@ -47,7 +20,6 @@ export function cleanupAll(): void {
     entry.ctx.revert();
   });
   registry.clear();
-  teardownResizeDebounce();
   ScrollTrigger.clearScrollMemory();
 }
 
@@ -75,7 +47,6 @@ export function initLifecycle(): void {
   // way even if a second caller ever appears.
   if (window.__usgarLifecycleInit) return;
   window.__usgarLifecycleInit = true;
-  ensureResizeDebounce();
 
   document.addEventListener('astro:before-preparation', () => {
     cleanupAll();

@@ -625,9 +625,9 @@ h1, h2, h3 {
 }
 
 /* ============================================
-   Reglas Universales de Legibilidad de Inputs & MercadoPago (Dark Mode)
+   Reglas Universales de Legibilidad de Inputs & MercadoPago Integration
    ============================================ */
-.dark input,
+.dark input:not([type="checkbox"]):not([type="radio"]),
 .dark select,
 .dark textarea {
   color: #FFFFFF !important;
@@ -640,34 +640,98 @@ h1, h2, h3 {
   color: #A1A1AA !important;
 }
 
-/* MercadoPago Card Payment Brick Dark Mode & Autofill Overrides (Verificado en Playwright) */
-.dark #cardPaymentBrick_container iframe[src*="secure-fields"] {
-  filter: invert(0.9) hue-rotate(180deg) !important;
-  color-scheme: dark !important;
+/* MercadoPago Card Payment Brick Styling & Integration */
+#cardPaymentBrick_container {
+  background: transparent !important;
+  width: 100%;
 }
 
-.dark #cardPaymentBrick_container input,
-.dark #cardPaymentBrick_container select,
+#cardPaymentBrick_container div[class*="wrapper-"],
+#cardPaymentBrick_container div[class*="svelte-"] {
+  background-color: transparent !important;
+}
+
+#cardPaymentBrick_container label,
+#cardPaymentBrick_container p,
+#cardPaymentBrick_container span:not(#cardPaymentBrick_container button span) {
+  background-color: transparent !important;
+  color: #52525B !important;
+}
+
 .dark #cardPaymentBrick_container label,
 .dark #cardPaymentBrick_container p,
-.dark #cardPaymentBrick_container span,
-.dark #cardPaymentBrick_container div[class*="wrapper-"],
-.dark #cardPaymentBrick_container div[class*="svelte-"] {
-  color: #FFFFFF !important;
-  background-color: #1A1D26 !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
-}
-
-.dark #cardPaymentBrick_container input::placeholder {
+.dark #cardPaymentBrick_container span:not(#cardPaymentBrick_container button span) {
+  background-color: transparent !important;
   color: #A1A1AA !important;
 }
 
-.dark #cardPaymentBrick_container input:-webkit-autofill,
-.dark #cardPaymentBrick_container input:-webkit-autofill:hover,
-.dark #cardPaymentBrick_container input:-webkit-autofill:focus,
+#cardPaymentBrick_container input,
+#cardPaymentBrick_container select {
+  background-color: #FAFAFA !important;
+  color: #18181B !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+.dark #cardPaymentBrick_container input,
+.dark #cardPaymentBrick_container select {
+  background-color: #1A1D26 !important;
+  color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+#cardPaymentBrick_container input::placeholder,
+#cardPaymentBrick_container select::placeholder {
+  color: #71717A !important;
+}
+
+.dark #cardPaymentBrick_container input::placeholder,
+.dark #cardPaymentBrick_container select::placeholder {
+  color: #A1A1AA !important;
+}
+
+/* Brick submit button text background fix (removes dark rectangle around 'Pay') */
+#cardPaymentBrick_container button span,
+#cardPaymentBrick_container button div,
+#cardPaymentBrick_container button p {
+  background-color: transparent !important;
+  color: #FFFFFF !important;
+}
+
+#cardPaymentBrick_container button[type="submit"],
+#cardPaymentBrick_container .mp-button {
+  font-family: var(--font-body) !important;
+  font-weight: 600 !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 4px 14px 0 rgba(6, 89, 82, 0.25) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+#cardPaymentBrick_container button[type="submit"]:hover,
+#cardPaymentBrick_container .mp-button:hover {
+  transform: translateY(-1px) !important;
+}
+
+/* Universal Input Autofill Overrides (prevents Chrome green/blue tint in light & dark mode) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: #18181B !important;
+  -webkit-box-shadow: 0 0 0px 1000px #FAFAFA inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 .dark input:-webkit-autofill,
 .dark input:-webkit-autofill:hover,
-.dark input:-webkit-autofill:focus {
+.dark input:-webkit-autofill:focus,
+.dark select:-webkit-autofill,
+.dark select:-webkit-autofill:hover,
+.dark select:-webkit-autofill:focus,
+.dark #cardPaymentBrick_container input:-webkit-autofill,
+.dark #cardPaymentBrick_container input:-webkit-autofill:hover,
+.dark #cardPaymentBrick_container input:-webkit-autofill:focus {
   -webkit-text-fill-color: #FFFFFF !important;
   -webkit-box-shadow: 0 0 0px 1000px #1A1D26 inset !important;
   transition: background-color 5000s ease-in-out 0s;

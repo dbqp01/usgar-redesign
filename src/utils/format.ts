@@ -40,7 +40,17 @@ export function formatDate(date: Date | string, locale: string): string {
  * Sin agrupacion de miles y SIN Intl.NumberFormat (igual que profile.astro:450 /
  * my-bookings.astro:180); locale NO altera la salida hoy.
  */
-export function formatPrice(amount: number, currency: string, _locale: string): string {
-  const symbol = currency === 'PEN' ? 'S/.' : '$';
-  return `${symbol}${Number(amount).toFixed(2)} ${currency}`;
+export function formatPrice(amount: number, currency: string, locale: string = 'en'): string {
+  const intlLocale = DATE_LOCALES[locale] ?? 'en-US';
+  try {
+    return new Intl.NumberFormat(intlLocale, {
+      style: 'currency',
+      currency: currency || 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(Number(amount));
+  } catch {
+    const symbol = currency === 'PEN' ? 'S/.' : '$';
+    return `${symbol}${Number(amount).toFixed(2)} ${currency}`;
+  }
 }

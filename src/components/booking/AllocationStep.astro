@@ -93,7 +93,6 @@ const t = useTranslations(lang);
     const L = (window as any).__LABELS || {};
 
     let selected: AllocationOption | null = null;
-    let showAlternatives = false;
 
     function formatMoney(n: number): string {
       return `$${n.toFixed(0)}`;
@@ -113,17 +112,8 @@ const t = useTranslations(lang);
       }
       empty.classList.add('hidden');
 
-      const roomType = state.roomType;
-      let visible = options;
-      let alternativesAvailable = false;
-      if (roomType) {
-        const direct = options.filter((o) => o.rooms.length === 1 && o.rooms[0].room.slug === roomType);
-        if (direct.length > 0) {
-          alternativesAvailable = options.some((o) => !(o.rooms.length === 1 && o.rooms[0].room.slug === roomType));
-          visible = showAlternatives ? options : direct.slice(0, 1);
-        }
-      }
-      const top = visible.slice(0, 4);
+      const visible = options;
+      const top = visible.slice(0, 6);
 
       optEl.innerHTML = top.map((opt, i) => {
         const multi = opt.rooms.length > 1;
@@ -176,7 +166,7 @@ const t = useTranslations(lang);
 
               ${imgUrl ? `
                 <div class="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden flex-shrink-0 bg-black/10 dark:bg-white/10 border border-black/5 dark:border-white/5">
-                  <img src="${imgUrl}" alt="${roomNames}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                  <img src="${imgUrl}" alt="${roomNames}" onerror="this.onerror=null;this.src='/assets/rooms/doble-superior/01-doble.jpg';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                 </div>
               ` : ''}
 
@@ -212,18 +202,6 @@ const t = useTranslations(lang);
           </label>
         `;
       }).join('');
-
-      if (alternativesAvailable) {
-        const toggle = document.createElement('button');
-        toggle.type = 'button';
-        toggle.className = 'mt-3 text-xs font-semibold uppercase tracking-wider text-primary hover:text-primary-dark underline underline-offset-4 cursor-pointer';
-        toggle.textContent = showAlternatives ? L.onlyThisRoom || '' : L.alternatives || '';
-        toggle.addEventListener('click', () => {
-          showAlternatives = !showAlternatives;
-          render();
-        }, { signal });
-        optEl.appendChild(toggle);
-      }
 
       optEl.querySelectorAll<HTMLLabelElement>('[data-allocation-option]').forEach((label) => {
         label.addEventListener('click', () => {
