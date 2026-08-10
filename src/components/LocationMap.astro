@@ -1,8 +1,7 @@
 ---
 // src/components/LocationMap.astro
-// Brutal static map: CARTO dark tiles + non-interactive Leaflet, custom
-// diamond marker, typographic coordinate overlays and a Google Maps
-// directions CTA. Leaflet JS/CSS load on demand (IntersectionObserver).
+// Luxury Boutique Location Map: CARTO Dark Matter + Interactive Leaflet,
+// gold hotel radar marker, POI landmarks, glassmorphism overlays and Google Maps CTA.
 import { useTranslations, type Locale } from '../i18n/utils';
 import { siteSettings } from '../data/settings';
 
@@ -11,6 +10,30 @@ const t = useTranslations(lang);
 
 const { latitude: lat, longitude: lng } = siteSettings;
 const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+
+const pois = [
+  {
+    id: 'market',
+    name: t('map.marketLabel'),
+    lat: -13.5209,
+    lng: -71.9823,
+    timeText: `6 min ${t('map.walkTime')}`,
+  },
+  {
+    id: 'plaza',
+    name: t('map.plazaLabel'),
+    lat: -13.5167,
+    lng: -71.9781,
+    timeText: `8 min ${t('map.walkTime')}`,
+  },
+  {
+    id: 'station',
+    name: lang === 'es' ? 'Estación de Tren San Pedro' : 'San Pedro Train Station',
+    lat: -13.5222,
+    lng: -71.9835,
+    timeText: `3 min ${t('map.walkTime')}`,
+  },
+];
 ---
 
 <section id="map-section" class="relative overflow-hidden bg-surface-card-light px-4 py-16 text-text-primary-light transition-colors duration-500 dark:bg-surface-dark dark:text-white sm:py-24">
@@ -27,19 +50,22 @@ const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat}
       </p>
     </div>
 
-    <div class="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
-      <!-- Static map -->
-      <div class="relative min-h-[390px] overflow-hidden rounded-[1.75rem] border border-black/10 bg-map-surface shadow-xl dark:border-white/10 sm:min-h-[500px]">
-        <div id="location-map" class="absolute inset-0" data-lat={lat} data-lng={lng}></div>
+    <div class="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
+      <!-- Luxury Dark Map Container -->
+      <div class="relative min-h-[420px] overflow-hidden rounded-[2rem] border border-amber-500/20 bg-stone-950 shadow-2xl shadow-amber-950/20 sm:min-h-[520px]">
+        <div id="location-map" class="absolute inset-0" data-lat={lat} data-lng={lng} data-pois={JSON.stringify(pois)}></div>
 
-        <!-- Overlays elevados sobre Leaflet (z-[1001]) -->
-        <div class="absolute top-4 left-4 pointer-events-none z-[1001]">
-          <span class="inline-block font-mono text-[10px] tracking-[0.3em] text-white/90 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20 shadow-lg">
-            {Math.abs(lat).toFixed(4)} {lat < 0 ? 'S' : 'N'} / {Math.abs(lng).toFixed(4)} {lng < 0 ? 'W' : 'E'}
+        <!-- Coordinates overlay -->
+        <div class="absolute top-5 left-5 pointer-events-none z-[1001]">
+          <span class="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-widest text-amber-200 bg-stone-950/80 backdrop-blur-md px-4 py-2 rounded-full border border-amber-500/30 shadow-xl">
+            <span class="h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span>
+            {Math.abs(lat).toFixed(4)}° {lat < 0 ? 'S' : 'N'} / {Math.abs(lng).toFixed(4)}° {lng < 0 ? 'W' : 'E'}
           </span>
         </div>
-        <div class="absolute top-4 right-4 pointer-events-none z-[1001]">
-          <span class="inline-block font-mono text-[10px] tracking-[0.3em] text-white/90 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20 shadow-lg">
+
+        <!-- Location Badge overlay -->
+        <div class="absolute top-5 right-5 pointer-events-none z-[1001]">
+          <span class="inline-block font-mono text-[11px] tracking-widest text-white/90 bg-stone-950/80 backdrop-blur-md px-4 py-2 rounded-full border border-white/15 shadow-xl">
             {t('map.locationOverlay')}
           </span>
         </div>
@@ -50,34 +76,46 @@ const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat}
           href={directionsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          class="absolute bottom-5 left-5 z-[1001] inline-flex items-center gap-2.5 btn-primary btn-shimmer px-6 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest pointer-events-auto shadow-2xl group transition-all"
+          class="absolute bottom-5 left-5 z-[1001] inline-flex items-center gap-3 bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 text-stone-950 px-6 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest pointer-events-auto shadow-2xl shadow-amber-600/30 hover:brightness-110 group transition-all duration-300 transform hover:-translate-y-0.5"
         >
           <span>{t('map.directions')}</span>
-          <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
           </svg>
         </a>
       </div>
 
       <!-- Info column -->
-      <div class="flex flex-col justify-center gap-6 lg:px-2">
-        <p class="font-mono text-xs uppercase tracking-[0.3em] text-secondary">
-          {t('map.addressPrefix')}
-        </p>
-        <h3 class="font-display text-3xl sm:text-4xl text-text-primary-light dark:text-white leading-tight">
-          {t('map.addressHotel')}
-        </h3>
-        <div class="divide-y divide-black/10 dark:divide-white/10 border-y border-black/10 dark:border-white/10">
-          <div class="flex justify-between py-4">
-            <span class="text-sm text-text-secondary-light dark:text-text-secondary-dark">{t('map.marketLabel')}</span>
-            <span class="font-mono text-xs text-text-primary-light dark:text-white">{t('map.walkTime')} / 6 min</span>
-          </div>
-          <div class="flex justify-between py-4">
-            <span class="text-sm text-text-secondary-light dark:text-text-secondary-dark">{t('map.plazaLabel')}</span>
-            <span class="font-mono text-xs text-text-primary-light dark:text-white">{t('map.walkTime')} / 8 min</span>
-          </div>
+      <div class="flex flex-col justify-center gap-6 lg:px-4 bg-surface-card-light/50 dark:bg-surface-dark/50 p-6 rounded-[2rem] border border-black/5 dark:border-white/5">
+        <div>
+          <p class="font-mono text-xs uppercase tracking-[0.3em] text-amber-600 dark:text-amber-400 font-semibold">
+            {t('map.addressPrefix')}
+          </p>
+          <h3 class="font-display text-3xl sm:text-4xl text-text-primary-light dark:text-white leading-tight mt-1">
+            {t('map.addressHotel')}
+          </h3>
         </div>
-        <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark font-light">
+
+        <div class="divide-y divide-black/10 dark:divide-white/10 border-y border-black/10 dark:border-white/10">
+          {pois.map((poi) => (
+            <div
+              data-map-poi={poi.id}
+              class="flex items-center justify-between py-4 cursor-pointer group transition-colors hover:text-amber-500"
+            >
+              <div class="flex items-center gap-3">
+                <span class="h-2 w-2 rounded-full bg-amber-500/60 group-hover:bg-amber-400 group-hover:scale-150 transition-all"></span>
+                <span class="text-sm font-medium text-text-primary-light dark:text-white group-hover:text-amber-500 transition-colors">
+                  {poi.name}
+                </span>
+              </div>
+              <span class="font-mono text-xs text-text-secondary-light dark:text-text-secondary-dark group-hover:text-amber-400 transition-colors">
+                {poi.timeText}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark font-light leading-relaxed">
           {siteSettings.address[lang]}
         </p>
       </div>
@@ -85,8 +123,54 @@ const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat}
   </div>
 </section>
 
+<style is:global>
+  .leaflet-container {
+    background-color: #0c0a09 !important;
+    font-family: inherit;
+  }
+  .usgar-leaflet-popup .leaflet-popup-content-wrapper {
+    background: rgba(12, 10, 9, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 1rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+    color: #f5f5f4;
+  }
+  .usgar-leaflet-popup .leaflet-popup-tip {
+    background: rgba(12, 10, 9, 0.95);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+  .usgar-leaflet-tooltip {
+    background: rgba(12, 10, 9, 0.9) !important;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(245, 158, 11, 0.3) !important;
+    border-radius: 9999px !important;
+    color: #f5f5f4 !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6) !important;
+  }
+  .leaflet-control-zoom {
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 0.75rem !important;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    background: rgba(12, 10, 9, 0.75) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+    margin-right: 1.25rem !important;
+    margin-bottom: 1.25rem !important;
+  }
+  .leaflet-control-zoom a {
+    background: transparent !important;
+    color: #f5f5f4 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+  .leaflet-control-zoom a:hover {
+    background: rgba(245, 158, 11, 0.25) !important;
+    color: #fbbf24 !important;
+  }
+</style>
+
 <script>
-  import { initLocationMap } from '../features/animations/modules/locationMap';
+  import { initLocationMap, type MapPOI } from '../features/animations/modules/locationMap';
 
   let cleanup: (() => void) | null = null;
   let observer: IntersectionObserver | null = null;
@@ -102,20 +186,26 @@ const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat}
     cleanup = null;
     const lat = parseFloat(el.dataset.lat || '-13.521528');
     const lng = parseFloat(el.dataset.lng || '-71.984886');
+    let pois: MapPOI[] = [];
+    try {
+      if (el.dataset.pois) {
+        pois = JSON.parse(el.dataset.pois);
+      }
+    } catch {}
 
     observer = new IntersectionObserver(async (entries) => {
       if (!entries[0].isIntersecting) return;
       observer?.disconnect();
       observer = null;
       try {
-        const mapCleanup = await initLocationMap(el, lat, lng);
+        const mapCleanup = await initLocationMap(el, lat, lng, pois);
         if (token !== initToken || !el.isConnected) {
           mapCleanup();
           return;
         }
         cleanup = mapCleanup;
       } catch {
-        // map load failed — keep the dark panel + CTA visible
+        // map load failed — keep dark panel + CTA visible
       }
     }, { rootMargin: '400px' });
     observer.observe(el);
@@ -130,3 +220,4 @@ const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat}
     cleanup = null;
   });
 </script>
+
