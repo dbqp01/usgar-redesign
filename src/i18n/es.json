@@ -8,6 +8,7 @@
     "contact": "Contacto",
     "bookNow": "Reservar",
     "language": "Espanol",
+    "languageTitle": "Idioma",
     "menu": "Menú",
     "openMenu": "Abrir menú",
     "closeMenu": "Cerrar menú"
@@ -66,7 +67,10 @@
     "backToRooms": "Volver a habitaciones",
     "home": "Inicio",
     "unitText": "persona",
-    "photoGallery": "Galeria de fotos"
+    "photoGallery": "Galeria de fotos",
+    "closeGallery": "Cerrar galería de fotos",
+    "prevSlide": "Foto anterior",
+    "nextSlide": "Foto siguiente"
   },
   "services": {
     "sectionLabel": "Nuestros Servicios",
@@ -110,8 +114,9 @@
   },
   "footer": {
     "contact": "Contacto",
-    "quickLinks": "Enlaces Rapidos",
-    "followUs": "Siguenos",
+    "quickLinks": "Enlaces Rápidos",
+    "quickLinksNav": "Navegación de enlaces rápidos",
+    "followUs": "Síguenos",
     "findUs": "Encuentranos en tu plataforma de viajes favorita",
     "rights": "Todos los derechos reservados.",
     "madeWith": "Hecho por MarcaRed",
@@ -341,6 +346,9 @@
     "statusPaid": "Pagado"
   },
   "global": {
+    "close": "Cerrar",
+    "previous": "Anterior",
+    "next": "Siguiente",
     "skipToContent": "Ir al contenido principal",
     "contactWhatsApp": "Contactar por WhatsApp",
     "assistance247": "Atencion 24/7",

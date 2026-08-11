@@ -64,7 +64,7 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
           <select
             id="guests"
             name="guests"
-            class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-[border-color,box-shadow] appearance-none cursor-pointer"
+            class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent focus-visible:outline-none transition-[border-color,box-shadow] appearance-none cursor-pointer"
           >
             <option value="1" class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-text-primary-dark">1 {t('booking.guest')}</option>
             <option value="2" selected class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-text-primary-dark">2 {t('booking.guests_plural')}</option>
@@ -84,7 +84,7 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
           <select
             id="room-type"
             name="room-type"
-            class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-[border-color,box-shadow] appearance-none cursor-pointer"
+            class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary focus:border-transparent focus-visible:outline-none transition-[border-color,box-shadow] appearance-none cursor-pointer"
           >
             <option value="" class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-text-primary-dark">{t('booking.anyRoom')}</option>
             {roomTypes.map(rt => (
@@ -182,7 +182,8 @@ import { formatDate } from '../utils/format';
     function renderMonth(container: HTMLElement, year: number, month: number) {
       const cells = buildMonthGrid(year, month);
       const monthName = new Date(year, month, 1).toLocaleDateString(lang === 'es' ? 'es' : lang === 'fr' ? 'fr' : lang === 'pt' ? 'pt' : 'en', { month: 'long', year: 'numeric' });
-      const weekDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+      const weekDaysFormatter = new Intl.DateTimeFormat(lang, { weekday: 'narrow' });
+      const weekDays = Array.from({ length: 7 }, (_, i) => weekDaysFormatter.format(new Date(2026, 0, 4 + i)));
 
       container.innerHTML = `
         <div class="font-display text-lg capitalize">${monthName}</div>

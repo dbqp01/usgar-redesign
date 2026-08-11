@@ -49,6 +49,9 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
 <div
   id="mobile-booking-sheet"
   class="fixed inset-0 z-50 hidden lg:hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="mobile-booking-sheet-title"
 >
   <!-- Backdrop -->
   <div id="mobile-sheet-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 hidden"></div>
@@ -63,7 +66,7 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
     <div class="sticky top-0 z-10 bg-surface-card-light dark:bg-surface-card-dark pt-3 pb-2 px-6 border-b border-black/10 dark:border-white/10 flex flex-col items-center">
       <div class="w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mb-3"></div>
       <div class="w-full flex items-center justify-between">
-        <h3 class="text-base font-bold text-text-primary-light dark:text-text-primary-dark flex items-center gap-2">
+        <h3 id="mobile-booking-sheet-title" class="text-base font-bold text-text-primary-light dark:text-text-primary-dark flex items-center gap-2">
           <svg class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
@@ -73,7 +76,7 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
           id="close-mobile-booking-sheet"
           type="button"
           class="touch-target p-2 rounded-full text-text-secondary-light hover:text-text-primary-light dark:text-text-secondary-dark dark:hover:text-text-primary-dark"
-          aria-label="Close"
+          aria-label={t('global.close')}
         >
           <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />

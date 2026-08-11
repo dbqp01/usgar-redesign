@@ -36,7 +36,9 @@ const t = useTranslations(lang);
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
           
           <div class="absolute bottom-10 left-10 right-10 text-white space-y-4">
+            <h3 class="font-display text-2xl font-bold text-white">
               {t('global.assistance247')}
+            </h3>
             <p class="text-sm text-white/80 font-light leading-relaxed">
               {t('faq.assistanceDesc')}
             </p>
@@ -83,7 +85,7 @@ const t = useTranslations(lang);
                 <summary class="flex items-center justify-between py-6 cursor-pointer font-body text-lg sm:text-xl font-semibold list-none select-none [&::-webkit-details-marker]:hidden text-text-primary-light dark:text-white hover:text-primary-light dark:hover:text-secondary transition-colors">
                   <span>{question}</span>
                   
-                  <span class="flex-shrink-0 ml-4 text-secondary/60 group-hover:text-secondary group-open:rotate-45 transition-transform duration-300">
+                  <span class="flex-shrink-0 ml-4 text-secondary/60 group-hover:text-secondary group-open:rotate-45 transition-transform duration-300" aria-hidden="true">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                     </svg>

@@ -375,6 +375,20 @@ html.js .animate-on-scroll.visible {
   animation: marquee-scroll-reverse 35s linear infinite;
 }
 
+.marquee-css-track:hover,
+.marquee-css-track:focus-within,
+.marquee-css-track-reverse:hover,
+.marquee-css-track-reverse:focus-within {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-css-track,
+  .marquee-css-track-reverse {
+    animation: none !important;
+  }
+}
+
 @keyframes marquee-scroll {
   0% { transform: translate3d(0, 0, 0); }
   100% { transform: translate3d(-50%, 0, 0); }

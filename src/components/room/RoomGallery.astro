@@ -123,8 +123,8 @@ const sliderSrcs = (
     <!-- Close Button -->
     <button
       id="lightbox-close-btn"
-      class="w-11 h-11 rounded-full bg-white/5 hover:bg-white/15 text-white hover:text-secondary flex items-center justify-center transition-[background-color,color] duration-300 cursor-pointer border border-white/5 focus:outline-none"
-      aria-label="Close gallery"
+      class="w-11 h-11 rounded-full bg-white/5 hover:bg-white/15 text-white hover:text-secondary flex items-center justify-center transition-[background-color,color] duration-300 cursor-pointer border border-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+      aria-label={t('room.closeGallery')}
     >
       <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
@@ -155,8 +155,8 @@ const sliderSrcs = (
   <!-- Prev Arrow -->
   <button
     id="lightbox-prev-btn"
-    class="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/5 hover:bg-white/15 text-white hover:text-secondary flex items-center justify-center transition-[background-color,color] duration-300 cursor-pointer border border-white/5 focus:outline-none"
-    aria-label="Previous slide"
+    class="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/5 hover:bg-white/15 text-white hover:text-secondary flex items-center justify-center transition-[background-color,color] duration-300 cursor-pointer border border-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+    aria-label={t('room.prevSlide')}
   >
     <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
@@ -166,8 +166,8 @@ const sliderSrcs = (
   <!-- Next Arrow -->
   <button
     id="lightbox-next-btn"
-    class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/5 hover:bg-white/15 text-white hover:text-secondary flex items-center justify-center transition-[background-color,color] duration-300 cursor-pointer border border-white/5 focus:outline-none"
-    aria-label="Next slide"
+    class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/5 hover:bg-white/15 text-white hover:text-secondary flex items-center justify-center transition-[background-color,color] duration-300 cursor-pointer border border-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+    aria-label={t('room.nextSlide')}
   >
     <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>

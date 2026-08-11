@@ -7,6 +7,10 @@ import critters from 'astro-critters';
 export default defineConfig({
   site: 'https://usgarhoteles.com',
   output: 'static',
+  redirects: {
+    // Ahrefs/GSC piden /sitemap.xml (404 actual); el sitemap real es /sitemap-index.xml
+    '/sitemap.xml': '/sitemap-index.xml',
+  },
   fonts: [
     {
       provider: fontProviders.local(),

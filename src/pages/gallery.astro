@@ -186,13 +186,16 @@ const lightboxMedia: GalleryMedia[] = [
     <!-- Visor Modal (Lightbox) -->
     <div
       id="gallery-lightbox"
+      role="dialog"
+      aria-modal="true"
+      aria-label={t('room.photoGallery')}
       class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/95 backdrop-blur-md transition-[opacity,visibility,background-color] duration-300"
     >
       <!-- Close Button -->
       <button
         id="lightbox-close-btn"
-        class="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-primary text-white flex items-center justify-center border border-white/10 transition-[background-color,color,transform] cursor-pointer z-50 lg:hover:scale-105"
-        aria-label="Close"
+        class="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-primary text-white flex items-center justify-center border border-white/10 transition-[background-color,color,transform] cursor-pointer z-50 lg:hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+        aria-label={t('global.close')}
       >
         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -202,8 +205,8 @@ const lightboxMedia: GalleryMedia[] = [
       <!-- Navigation Arrows -->
       <button
         id="lightbox-prev-btn"
-        class="absolute left-6 w-14 h-14 rounded-full bg-white/5 hover:bg-primary text-white flex items-center justify-center border border-white/10 transition-[background-color,color,transform] cursor-pointer z-50 lg:hover:scale-105"
-        aria-label="Previous"
+        class="absolute left-6 w-14 h-14 rounded-full bg-white/5 hover:bg-primary text-white flex items-center justify-center border border-white/10 transition-[background-color,color,transform] cursor-pointer z-50 lg:hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+        aria-label={t('global.previous')}
       >
         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
@@ -211,8 +214,8 @@ const lightboxMedia: GalleryMedia[] = [
       </button>
       <button
         id="lightbox-next-btn"
-        class="absolute right-6 w-14 h-14 rounded-full bg-white/5 hover:bg-primary text-white flex items-center justify-center border border-white/10 transition-[background-color,color,transform] cursor-pointer z-50 lg:hover:scale-105"
-        aria-label="Next"
+        class="absolute right-6 w-14 h-14 rounded-full bg-white/5 hover:bg-primary text-white flex items-center justify-center border border-white/10 transition-[background-color,color,transform] cursor-pointer z-50 lg:hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+        aria-label={t('global.next')}
       >
         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />

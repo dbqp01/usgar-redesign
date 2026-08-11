@@ -8,6 +8,7 @@
     "contact": "Contact",
     "bookNow": "Book Now",
     "language": "English",
+    "languageTitle": "Language",
     "menu": "Menu",
     "openMenu": "Open menu",
     "closeMenu": "Close menu"
@@ -66,7 +67,10 @@
     "backToRooms": "Back to rooms",
     "home": "Home",
     "unitText": "person",
-    "photoGallery": "Photo gallery"
+    "photoGallery": "Photo gallery",
+    "closeGallery": "Close photo gallery",
+    "prevSlide": "Previous photo",
+    "nextSlide": "Next photo"
   },
   "services": {
     "sectionLabel": "Our Services",
@@ -111,6 +115,7 @@
   "footer": {
     "contact": "Contact",
     "quickLinks": "Quick Links",
+    "quickLinksNav": "Quick links navigation",
     "followUs": "Follow Us",
     "findUs": "Find us on your favorite travel platform",
     "rights": "All rights reserved.",
@@ -341,6 +346,9 @@
     "statusPaid": "Paid"
   },
   "global": {
+    "close": "Close",
+    "previous": "Previous",
+    "next": "Next",
     "skipToContent": "Skip to main content",
     "contactWhatsApp": "Contact via WhatsApp",
     "assistance247": "24/7 Assistance",

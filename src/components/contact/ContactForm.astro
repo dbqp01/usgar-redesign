@@ -39,7 +39,7 @@ const t = useTranslations(lang);
         name="name"
         required
         autocomplete="name"
-        class="w-full bg-transparent border-b-2 border-black/10 dark:border-white/15 focus:border-secondary px-0 py-3 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none transition-colors duration-300"
+        class="w-full bg-transparent border-b-2 border-black/10 dark:border-white/15 focus:border-secondary px-0 py-3 text-sm text-text-primary-light dark:text-text-primary-dark focus-visible:outline-none transition-colors duration-300"
       />
     </div>
 
@@ -57,7 +57,7 @@ const t = useTranslations(lang);
         name="email"
         required
         autocomplete="email"
-        class="w-full bg-transparent border-b-2 border-black/10 dark:border-white/15 focus:border-secondary px-0 py-3 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none transition-colors duration-300"
+        class="w-full bg-transparent border-b-2 border-black/10 dark:border-white/15 focus:border-secondary px-0 py-3 text-sm text-text-primary-light dark:text-text-primary-dark focus-visible:outline-none transition-colors duration-300"
       />
     </div>
 
@@ -73,7 +73,7 @@ const t = useTranslations(lang);
         <select
           id="contact-subject"
           name="subject"
-          class="w-full appearance-none bg-transparent border-b-2 border-black/10 dark:border-white/15 focus:border-secondary px-0 py-3 pr-8 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none transition-colors duration-300 cursor-pointer"
+          class="w-full appearance-none bg-transparent border-b-2 border-black/10 dark:border-white/15 focus:border-secondary px-0 py-3 pr-8 text-sm text-text-primary-light dark:text-text-primary-dark focus-visible:outline-none transition-colors duration-300 cursor-pointer"
         >
           <option value="general" class="bg-surface-light dark:bg-surface-card-dark">{t("contact.subjectGeneral")}</option>
           <option value="booking" class="bg-surface-light dark:bg-surface-card-dark">{t("contact.subjectBooking")}</option>
@@ -106,7 +106,7 @@ const t = useTranslations(lang);
         required
         rows="4"
         placeholder={t("contact.messagePlaceholder")}
-        class="w-full bg-transparent border-b-2 border-black/10 dark:border-white/15 focus:border-secondary px-0 py-3 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none transition-colors duration-300 resize-none placeholder:text-stone-400 dark:placeholder:text-stone-500"
+        class="w-full bg-transparent border-b-2 border-black/10 dark:border-white/15 focus:border-secondary px-0 py-3 text-sm text-text-primary-light dark:text-text-primary-dark focus-visible:outline-none transition-colors duration-300 resize-none placeholder:text-stone-400 dark:placeholder:text-stone-500"
       ></textarea>
     </div>
 
@@ -164,6 +164,8 @@ const t = useTranslations(lang);
     <!-- Success Message -->
     <div
       id="contact-success"
+      role="status"
+      aria-live="polite"
       class="hidden p-4 rounded-lg bg-teal-brand/10 border-l-4 border-teal-brand text-teal-deep dark:text-teal-light text-xs leading-relaxed flex items-start gap-2.5"
     >
       <svg
