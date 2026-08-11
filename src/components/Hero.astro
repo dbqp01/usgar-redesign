@@ -1,11 +1,10 @@
 ---
 // src/components/Hero.astro
 // Full-screen cinematic hero: autoplay video -> slideshow fallback, audio toggle,
-// editorial headline with coordinates micro-label.
+// editorial headline with hero micro-label.
 import { Image, getImage } from "astro:assets";
 import { useTranslations, type Locale } from "../i18n/utils";
 import { getRelativeLocaleUrl } from "astro:i18n";
-import { siteSettings } from "../data/settings";
 
 import slide1 from "../assets/hotel/hero-slide-patio.jpg";
 import slide2 from "../assets/hotel/hero-slide-recepcion.jpg";
@@ -25,8 +24,6 @@ const optimizedPoster = await getImage({
   quality: 80,
   format: "avif",
 });
-
-const heroCoordinates = `${Math.abs(siteSettings.latitude).toFixed(4)} ${siteSettings.latitude >= 0 ? 'N' : 'S'} / ${Math.abs(siteSettings.longitude).toFixed(4)} ${siteSettings.longitude >= 0 ? 'E' : 'W'} / ${siteSettings.city}, ${siteSettings.region}`;
 
 const slides = [slide1, slide2, slide3, slide4];
 ---
@@ -80,7 +77,6 @@ const slides = [slide1, slide2, slide3, slide4];
 
   <!-- Content -->
   <div class="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
-    <p class="micro-label shiny-text-gold font-mono mb-4 sm:mb-6">{heroCoordinates}</p>
     <h1 id="hero-title-reveal" class="font-display fluid-h1 mb-4 sm:mb-6 drop-shadow-lg leading-tight">
       {t("hero.title")}
     </h1>
@@ -223,8 +219,26 @@ const slides = [slide1, slide2, slide3, slide4];
 
       toggleBtn.classList.add("opacity-0", "pointer-events-none");
 
+      // Slides ocultas con loading="lazy" no se descargan hasta un reflow
+      // (zoom/resize); forzar la carga real re-asignando el src (Brave/Chrome
+      // se queda "stuck" con lazy en opacity-0, incluso cambiando loading).
+      const forceEager = (slide: Element) => {
+        requestAnimationFrame(() => {
+          const img = slide.querySelector("img");
+          if (!img) return;
+          img.loading = "eager";
+          img.removeAttribute("loading");
+          if (!img.complete || img.naturalWidth === 0) {
+            const src = img.currentSrc || img.src;
+            img.removeAttribute("srcset");
+            img.src = src;
+          }
+        });
+      };
+
       let currentSlide = 0;
       if (slides[0]) {
+        forceEager(slides[0]);
         slides[0].classList.remove("opacity-0");
         slides[0].classList.add("opacity-100");
       }
@@ -241,6 +255,7 @@ const slides = [slide1, slide2, slide3, slide4];
 
         if (currentSlide < slides.length) {
           if (slides[currentSlide]) {
+            forceEager(slides[currentSlide]);
             slides[currentSlide].classList.remove("opacity-0");
             slides[currentSlide].classList.add("opacity-100");
           }

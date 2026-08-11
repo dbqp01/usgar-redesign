@@ -108,10 +108,18 @@
       if (isModifiedClick(ev)) return; // new tab/window/download: leave native
       const origin = ev.composedPath()[0];
       if (!(origin instanceof Element)) return;
-      const anchor = origin.closest('a[href^="#"]');
+      const anchor = origin.closest('a[href*="#"]');
       if (!anchor) return;
-      const hash = anchor.getAttribute('href');
+      const href = anchor.getAttribute('href') || '';
+      const hashIndex = href.indexOf('#');
+      if (hashIndex === -1) return;
+      const pathPart = href.slice(0, hashIndex);
+      const hash = href.slice(hashIndex);
       if (!hash || hash === '#') return; // bare "#" = top: leave native
+      // Links de nav usan "/#services" (ruta + hash): solo intervenimos si el
+      // destino vive en ESTA pagina; si apunta a otra ruta, lo deja al router.
+      const samePage = !pathPart || pathPart.replace(/\/+$/, '') === location.pathname.replace(/\/+$/, '');
+      if (!samePage) return;
       const target = resolveHashTarget(hash);
       if (!target) return; // unknown id: leave native/router behavior
       ev.preventDefault(); // router bails out (ev.defaultPrevented check)

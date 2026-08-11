@@ -68,7 +68,13 @@ export default defineConfig({
     }),
     // Inline del CSS crítico (above-the-fold) + carga diferida del resto:
     // elimina las 2 peticiones CSS render-blocking del primer paint
-    critters(),
+    // allowRules [/\.dark/] — CRITICO: critters filtra TODO selector que no matchee
+    // el DOM estático (sin clase .dark) y purga las utilities `dark:*` de Tailwind
+    // (aunque pruneSource:false) → el toggle dark muere en prod.
+    critters({
+      pruneSource: false,
+      allowRules: [/\.dark/],
+    }),
     // Compress ULTIMO (mandato README PlayForm/Compress): minifica el CSS
     // crítico que critters acaba de inlinear
     compress({

@@ -44,6 +44,22 @@ export function initExploreAtlas(root: HTMLElement): () => void {
         nextSlide.classList.replace('opacity-0', 'opacity-100');
         nextSlide.classList.replace('z-0', 'z-10');
         nextSlide.classList.remove('pointer-events-none');
+
+        // Chromium (Brave/Chrome) no descarga imagenes lazy dentro de elementos
+        // opacity-0 y a veces se queda "stuck" aunque se cambie loading. Tras
+        // hacer visible el slide, re-asignar el src real fuerza la descarga
+        // (eager + srcset eliminado: la carga ya no depende del lazy loading).
+        requestAnimationFrame(() => {
+          const img = nextSlide.querySelector('img');
+          if (!img) return;
+          img.loading = 'eager';
+          img.removeAttribute('loading');
+          if (!img.complete || img.naturalWidth === 0) {
+            const src = img.currentSrc || img.src;
+            img.removeAttribute('srcset');
+            img.src = src;
+          }
+        });
       }
 
       activeIndex = index;

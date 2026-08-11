@@ -39,11 +39,11 @@
 
 .dark .btn-primary {
   background-image: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end));
-  box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--color-glass-tint) 25%, transparent);
+  box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--color-gold-bright) 25%, transparent);
 }
 
 .dark .btn-primary:hover {
-  box-shadow: 0 8px 32px -6px color-mix(in srgb, var(--color-glass-tint) 45%, transparent);
+  box-shadow: 0 8px 32px -6px color-mix(in srgb, var(--color-gold-bright) 45%, transparent);
 }
 
 /* ============================================
@@ -93,9 +93,13 @@
   --color-purple-bg: #F4F0F6;        /* Light mode section alternating bg */
 
   /* === AMARILLOS / DORADOS (Familia Secundaria) === */
-  --color-secondary: #D4AF37;       /* Amarillo Base — secondary CTAs */
-  --color-secondary-light: #E8D48B; /* Amarillo Suave — promotions */
-  --color-secondary-dark: #99751C;  /* Dorado Oscuro — prices, stars */
+  /* Dual-mode: este valor es el LIGHT (legible 5.1:1 sobre blanco); en dark se
+     restaura el dorado brillante #D4AF37 via .dark (ver bloque dual al final). */
+  --color-secondary: #8C6900;        /* Dorado legible — secondary CTAs, labels, estrellas */
+  /* Aprobado por cliente 2026-08-11: dual-mode legible. Light: #806D23 (5.1:1);
+     dark: #E8D48B (amarillo suave de promos) via .dark. */
+  --color-secondary-light: #806D23; /* Amarillo Suave — promotions */
+  --color-secondary-dark: #8C6903;  /* Dorado profundo — prices, stars (light); dark: #9E7A23 */
   --color-cream-active: #F7EAA4;    /* Input focus ring */
 
   /* === VERDES / TURQUESAS (Familia Terciaria) === */
@@ -108,32 +112,32 @@
 
   /* === FONDOS ESTÉTICOS (Nuevos — v2) === */
   --color-surface-light: #FFFFFF;         /* Pure White — light mode page bg */
-  --color-surface-dark: #0F1117;          /* Obsidian Charcoal — restful quiet luxury dark mode bg */
+  --color-surface-dark: #0A0A0A;          /* Negro puro neutro — dark mode page bg (sin tinte azul) */
   --color-surface-light-alt: #FFFFFF;     /* White — testimonial blocks */
   --color-surface-card-light: #FFFFFF;
-  --color-surface-card-dark: #161922;     /* Midnight Onyx — restful dark card */
+  --color-surface-card-dark: #141414;     /* Grafito neutro — dark card (jerarquía sobre #0A0A0A) */
 
   /* === TEXTO === */
-  --color-text-primary-light: #18181B;
-  --color-text-primary-dark: #F4F4F5;
-  --color-text-secondary-light: #52525B;
-  --color-text-secondary-dark: #A1A1AA;   /* Warm Zinc Silver (sin tinte morado) */
+  --color-text-primary-light: #181818;
+  --color-text-primary-dark: #F4F4F4;
+  --color-text-secondary-light: #535353;
+  --color-text-secondary-dark: #A2A2A2;   /* Gris zinc puro (sin tinte morado) */
 
   /* === PALETA DE MARCA ADICIONAL (tokenizada 2026-08-06 — remove-ai-slops token drift) === */
   /* Teal brand family (booking/contact accents) */
   --color-teal-brand: #2DB5A0;       /* Teal brand — contact/booking accents */
-  --color-teal-deep: #1F9484;        /* Teal oscuro legible */
+  --color-teal-deep: #007C6D;        /* Teal legible (light 5.1:1); dark: #1F9484 via .dark */
   --color-teal-light: #4ECBB8;       /* Teal claro (dark mode) */
   /* Status system (StatusBanner) */
   --color-status-success: #0CB2A3;   /* Status success LED (teal) */
   --color-status-info: #D4AF37;      /* Status info (dorado inca) */
   --color-status-info-deep: #99751C; /* Status info profundo */
-  --color-status-bg-dark: #141822;   /* Status banner fondo dark */
+  --color-status-bg-dark: #101010;   /* Status banner fondo dark */
   /* Dorado brillante (LED, bordes, acentos) */
   --color-gold-bright: #EACA1C;      /* Amarillo LED/acento brillante */
   /* Map & misc surfaces */
   --color-map-surface: #E7E4DE;      /* LocationMap panel light */
-  --color-cream-lavender: #D4AF37;   /* Comillas doradas */
+  --color-cream-lavender: #8C6900;   /* Comillas doradas (light legible); dark usa text-secondary */
   /* Social brand colors */
   --color-whatsapp: #25D366;         /* WhatsApp green */
   --color-facebook: #1877F2;         /* Facebook blue */
@@ -148,8 +152,8 @@
   --color-ms-yellow: #ffba08;
   --color-tint-purple: #D4AF37;      /* Dorado inca acento (reemplazado morado) */
   --color-glass-tint: #D4BFDE;       /* rgba(212,191,222) — glass border/hover tint */
-  --color-gradient-start: #6B4F80;   /* .dark .btn-primary gradient start */
-  --color-gradient-end: #4A3163;     /* .dark .btn-primary gradient end */
+  --color-gradient-start: #6D4D85;   /* .dark .btn-primary gradient start (C 0.095, OKLCH) */
+  --color-gradient-end: #4B2F66;     /* .dark .btn-primary gradient end (C 0.095, OKLCH) */
 
   /* === TIPOGRAFÍA === */
   /* Familias registradas vía Fonts API de Astro (astro.config.mjs):
@@ -183,6 +187,19 @@
     0%, 100% { opacity: 1; filter: drop-shadow(0 0 4px currentColor); }
     50% { opacity: 0.4; filter: drop-shadow(0 0 1px currentColor); }
   }
+}
+
+/* ============================================
+   Tokens dual-mode (light/dark)
+   Un acento no puede pasar 4.5:1 sobre blanco Y conservar brillo sobre negro
+   a la vez (rango de L incompatible). En dark se restaura el brillo de marca;
+   en light los valores del @theme arriba son los legibles (verificados WCAG AA).
+   ============================================ */
+.dark {
+  --color-secondary: #D4AF37;        /* Dorado brillante de marca */
+  --color-secondary-dark: #9E7A23;   /* Dorado oscuro precios/estrellas (4.6:1 card, 4.96:1 negro) */
+  --color-secondary-light: #E8D48B;  /* Amarillo suave de promociones */
+  --color-teal-deep: #1F9484;        /* Teal oscuro (botones/bordes dark) */
 }
 
 .glow-card-hover {
@@ -375,9 +392,8 @@ html.js .animate-on-scroll.visible {
   animation: marquee-scroll-reverse 35s linear infinite;
 }
 
-.marquee-css-track:hover,
+/* Pausa SOLO al enfocar con teclado (a11y); el hover ya no detiene el carrusel */
 .marquee-css-track:focus-within,
-.marquee-css-track-reverse:hover,
 .marquee-css-track-reverse:focus-within {
   animation-play-state: paused;
 }
@@ -652,13 +668,13 @@ h1, h2, h3 {
 .dark select,
 .dark textarea {
   color: #FFFFFF !important;
-  background-color: #1A1D26 !important;
+  background-color: #141414 !important;
   border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
 .dark input::placeholder,
 .dark textarea::placeholder {
-  color: #A1A1AA !important;
+  color: #A2A2A2 !important;
 }
 
 /* MercadoPago Card Payment Brick Styling & Integration */
@@ -676,14 +692,14 @@ h1, h2, h3 {
 #cardPaymentBrick_container p,
 #cardPaymentBrick_container span:not(#cardPaymentBrick_container button span) {
   background-color: transparent !important;
-  color: #52525B !important;
+  color: #535353 !important;
 }
 
 .dark #cardPaymentBrick_container label,
 .dark #cardPaymentBrick_container p,
 .dark #cardPaymentBrick_container span:not(#cardPaymentBrick_container button span) {
   background-color: transparent !important;
-  color: #A1A1AA !important;
+  color: #A2A2A2 !important;
 }
 
 #cardPaymentBrick_container input,
@@ -695,7 +711,7 @@ h1, h2, h3 {
 
 .dark #cardPaymentBrick_container input,
 .dark #cardPaymentBrick_container select {
-  background-color: #1A1D26 !important;
+  background-color: #141414 !important;
   color: #FFFFFF !important;
   border-color: rgba(255, 255, 255, 0.12) !important;
 }
@@ -707,7 +723,7 @@ h1, h2, h3 {
 
 .dark #cardPaymentBrick_container input::placeholder,
 .dark #cardPaymentBrick_container select::placeholder {
-  color: #A1A1AA !important;
+  color: #A2A2A2 !important;
 }
 
 /* Brick submit button text background fix (removes dark rectangle around 'Pay') */
@@ -739,7 +755,7 @@ input:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
-  -webkit-text-fill-color: #18181B !important;
+  -webkit-text-fill-color: #181818 !important;
   -webkit-box-shadow: 0 0 0px 1000px #FAFAFA inset !important;
   transition: background-color 5000s ease-in-out 0s;
 }
@@ -754,6 +770,6 @@ select:-webkit-autofill:focus {
 .dark #cardPaymentBrick_container input:-webkit-autofill:hover,
 .dark #cardPaymentBrick_container input:-webkit-autofill:focus {
   -webkit-text-fill-color: #FFFFFF !important;
-  -webkit-box-shadow: 0 0 0px 1000px #1A1D26 inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px #141414 inset !important;
   transition: background-color 5000s ease-in-out 0s;
 }

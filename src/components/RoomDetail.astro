@@ -414,6 +414,7 @@ const roomSchema = {
       activeImg.style.opacity = "0.2";
       setTimeout(() => {
         if (imageUrls[activeIndex]) {
+          activeImg.removeAttribute("srcset");
           activeImg.src = imageUrls[activeIndex];
         }
         activeImg.style.opacity = "1";

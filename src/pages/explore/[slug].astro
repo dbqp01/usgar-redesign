@@ -241,9 +241,11 @@ const blogSchema = {
                 <Image
                   src={exploreImages[`../../assets/explore/${rel.id}.jpg`]?.default ?? fallbackImg}
                   alt={rel.name[lang]}
-                  layout="full-width"
-                  fit="cover"
+                  width={600}
+                  height={400}
                   format="avif"
+                  quality={80}
+                  loading="lazy"
                   class="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div class="p-4">
