@@ -136,6 +136,22 @@ const t = useTranslations(lang);
         const images = roomObj?.images ?? [];
         const bedsText = roomObj?.beds || '';
         const roomDesc = roomObj?.description?.[lang] || roomObj?.description?.es || '';
+        // Servicios relevantes de la habitacion (los 8 del cliente), desde
+        // room.amenities + amenityLabels (serializados en __ROOMS_DATA).
+        const amenityChips = (roomObj?.amenities ?? [])
+          .map((key: string) => {
+            const lbl = roomObj?.amenityLabels?.[key]?.[lang]
+              || roomObj?.amenityLabels?.[key]?.en
+              || roomObj?.amenityLabels?.[key]?.es
+              || '';
+            return lbl
+              ? `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full border border-black/8 dark:border-white/10 bg-black/2 dark:bg-white/2 text-[10px] font-medium text-text-secondary-light dark:text-text-secondary-dark">
+                  <svg class="w-2.5 h-2.5 text-teal-brand flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                  ${escapeHtml(lbl)}
+                </span>`
+              : '';
+          })
+          .join('');
         const availQty = (!multi && availabilityMap && mainSlug) ? (availabilityMap[mainSlug] ?? null) : null;
         const outOfStock = availQty !== null && availQty <= 0;
         const payable = !multi && !outOfStock;
@@ -212,6 +228,8 @@ const t = useTranslations(lang);
                   <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1 line-clamp-2 leading-relaxed">
                     ${escapeHtml(roomDesc)}
                   </p>
+
+                  ${amenityChips ? `<div class="flex flex-wrap gap-1.5 mt-3">${amenityChips}</div>` : ''}
                 </div>
 
                 <!-- Tariff Options Selector -->

@@ -1,61 +1,61 @@
 ---
 // src/components/room/RoomAmenities.astro
-// Amenities grid derived from room.amenityLabels (own concern: icon map + labels).
-import SVGIcons from "../icons/SVGIcons.astro";
-import type { Room } from "../../data/rooms";
+// Servicios COMPLETOS del hotel (fuente: lista oficial del cliente): secciones
+// "Servicios del hotel" + "Servicios en la habitacion". Son globales del hotel,
+// identicas para todas las habitaciones (src/data/hotelServices.ts).
+import { hotelServices, roomServices } from "../../data/hotelServices";
 import { useTranslations, type Locale } from "../../i18n/utils";
 
 interface Props {
-  room: Room;
   lang: Locale;
 }
 
-const { room, lang } = Astro.props;
+const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-const amenityIconNames: Record<string, "wifi" | "breakfast" | "hot-water" | "heating" | "tv" | "laundry"> = {
-  wifi: "wifi",
-  breakfast: "breakfast",
-  hot_water: "hot-water",
-  heating: "heating",
-  tv: "tv",
-  laundry: "laundry",
-};
-
-const amenitiesMap: Record<string, { label: Record<string, string>; iconName: "wifi" | "breakfast" | "hot-water" | "heating" | "tv" | "laundry" }> = {};
-for (const [key, labelObj] of Object.entries(room.amenityLabels || {})) {
-  amenitiesMap[key === 'hot_water' ? 'hot-water' : key] = {
-    label: labelObj as unknown as Record<string, string>,
-    iconName: amenityIconNames[key] || "wifi",
-  };
+function label(item: { label: Record<string, string> }, locale: Locale): string {
+  return item.label[locale] || item.label.en || item.label.es;
 }
 ---
 
-<div>
-  <h2 class="font-display text-2xl md:text-3xl mb-6">
-    {t('room.amenities')}
-  </h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-    {
-      room.amenities.map((amenityKey) => {
-        const amenity = amenitiesMap[amenityKey];
-        if (!amenity) return null;
-        return (
-          <div class="flex items-start gap-4 p-4 rounded-xl bg-surface-card-light dark:bg-surface-card-dark border border-black/5 dark:border-white/5 shadow-sm">
-            <div class="p-2.5 rounded-lg bg-teal-brand/10 dark:bg-teal-brand/15 flex items-center justify-center">
-              <SVGIcons name={amenity.iconName} class="w-5 h-5 text-tertiary" />
-            </div>
-            <div>
-              <h3 class="font-medium text-sm text-text-primary-light dark:text-text-primary-dark">
-                {amenity.label[lang] || amenity.label.en || amenity.label.es}
-              </h3>
-              <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
-                {t('room.includedFree')}
-              </p>
-            </div>
-          </div>
-        );
-      })
-    }
-  </div>
+<div class="space-y-10">
+  <!-- Servicios del hotel -->
+  <section>
+    <h2 class="font-display text-2xl md:text-3xl mb-6">
+      {t('room.hotelServices')}
+    </h2>
+    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+      {
+        hotelServices.map((item) => (
+          <li class="flex items-start gap-3 text-sm text-text-secondary-light dark:text-text-secondary-dark">
+            <svg class="w-4 h-4 text-teal-brand mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span>{label(item, lang)}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <hr class="border-black/5 dark:border-white/5" />
+
+  <!-- Servicios en la habitacion -->
+  <section>
+    <h2 class="font-display text-2xl md:text-3xl mb-6">
+      {t('room.inRoomServices')}
+    </h2>
+    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+      {
+        roomServices.map((item) => (
+          <li class="flex items-start gap-3 text-sm text-text-secondary-light dark:text-text-secondary-dark">
+            <svg class="w-4 h-4 text-teal-brand mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span>{label(item, lang)}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 </div>

@@ -21,9 +21,9 @@
   "priceRange": "$$",
   "roomInventory": {
     "doble-superior": 8,
-    "matrimonial": 6,
-    "triple-standar": 4,
-    "familiar-superior": 2
+    "matrimonial": 3,
+    "triple-standar": 3,
+    "familiar-superior": 3
   },
   "customCursor": true,
   "siteDescription_es": "USGAR Hotels - Hotel boutique en San Pedro, Cusco. Tu puerta de entrada a Machu Picchu y el Valle Sagrado.",

@@ -15,14 +15,14 @@
       "beds": "2 double beds",
       "pricePerNight": 90,
       "amenities": [
-        "wifi",
         "breakfast",
+        "wifi",
         "hot_water",
         "heating",
         "tv",
-        "laundry",
         "safe_box",
-        "hair_dryer"
+        "hair_dryer",
+        "bathroom_amenities"
       ],
       "images": [
         "/assets/rooms/doble-superior/01-doble.jpg",
@@ -80,6 +80,12 @@
           "en": "Hair Dryer",
           "fr": "Seche-cheveux",
           "pt": "Secador de cabelo"
+        },
+        "bathroom_amenities": {
+          "es": "Amenities para el bano",
+          "en": "Bathroom Amenities",
+          "fr": "Accessoires de salle de bain",
+          "pt": "Amenidades de banheiro"
         }
       },
       "baseOccupancy": 2,
@@ -100,14 +106,14 @@
       "beds": "1 king bed",
       "pricePerNight": 90,
       "amenities": [
-        "wifi",
         "breakfast",
+        "wifi",
         "hot_water",
         "heating",
         "tv",
-        "laundry",
         "safe_box",
-        "hair_dryer"
+        "hair_dryer",
+        "bathroom_amenities"
       ],
       "images": [
         "/assets/rooms/matrimonial/01-matr-cama.jpg",
@@ -165,6 +171,12 @@
           "en": "Hair Dryer",
           "fr": "Seche-cheveux",
           "pt": "Secador de cabelo"
+        },
+        "bathroom_amenities": {
+          "es": "Amenities para el bano",
+          "en": "Bathroom Amenities",
+          "fr": "Accessoires de salle de bain",
+          "pt": "Amenidades de banheiro"
         }
       },
       "baseOccupancy": 2,
@@ -185,14 +197,14 @@
       "beds": "3 double beds + 1 single bed",
       "pricePerNight": 150,
       "amenities": [
-        "wifi",
         "breakfast",
+        "wifi",
         "hot_water",
         "heating",
         "tv",
-        "laundry",
         "safe_box",
-        "hair_dryer"
+        "hair_dryer",
+        "bathroom_amenities"
       ],
       "images": [
         "/assets/rooms/familiar-superior/01-familiar.jpg",
@@ -250,6 +262,12 @@
           "en": "Hair Dryer",
           "fr": "Seche-cheveux",
           "pt": "Secador de cabelo"
+        },
+        "bathroom_amenities": {
+          "es": "Amenities para el bano",
+          "en": "Bathroom Amenities",
+          "fr": "Accessoires de salle de bain",
+          "pt": "Amenidades de banheiro"
         }
       },
       "baseOccupancy": 7,
@@ -270,13 +288,14 @@
       "beds": "3 single beds",
       "pricePerNight": 120,
       "amenities": [
-        "wifi",
         "breakfast",
+        "wifi",
         "hot_water",
         "heating",
         "tv",
         "safe_box",
-        "hair_dryer"
+        "hair_dryer",
+        "bathroom_amenities"
       ],
       "images": [
         "/assets/rooms/triple-standar/01-triple.jpg",
@@ -327,6 +346,12 @@
           "en": "Hair Dryer",
           "fr": "Seche-cheveux",
           "pt": "Secador de cabelo"
+        },
+        "bathroom_amenities": {
+          "es": "Amenities para el bano",
+          "en": "Bathroom Amenities",
+          "fr": "Accessoires de salle de bain",
+          "pt": "Amenidades de banheiro"
         }
       },
       "baseOccupancy": 3,
