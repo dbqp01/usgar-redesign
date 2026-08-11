@@ -160,10 +160,15 @@ class RetryManualReviewAction {
         }
 
         // NOTA r2: monto ya coincide -> fraud_review -> paid (guard todo 9).
+        // FIX 2026-08-11: dispatch DENTRO de la txn (transactional-outbox,
+        // patrón del webhook) — antes el evento se insertaba post-commit con
+        // catch silencioso: si el outbox fallaba, paid sin sincronizar PMS y
+        // sin reintento posible.
         try {
             $this->pdo->beginTransaction();
             $this->bookingRepo->updateStatus($cartId, BookingStatus::Paid->value);
             $this->bookingRepo->markPaymentProcessed($paymentId, $cartId, 'approved');
+            $this->eventDispatcher->dispatch(BookingPaidEvent::fromHold($cartId, $paymentId, $hold));
             $this->pdo->commit();
         } catch (Throwable $e) {
             if ($this->pdo->inTransaction()) {
@@ -172,14 +177,6 @@ class RetryManualReviewAction {
             Logger::error("RetryManualReviewAction: error al marcar paid para {$cartId}: " . $e->getMessage());
             Response::error('Error interno al completar el hold.', 500);
             return;
-        }
-
-        // Re-despacha el evento (INSERT outbox en autocommit, todo 18) para
-        // que los listeners sincronicen el PMS.
-        try {
-            $this->eventDispatcher->dispatch(BookingPaidEvent::fromHold($cartId, $paymentId, $hold));
-        } catch (Throwable $e) {
-            Logger::error("RetryManualReviewAction: fallo al re-despachar evento para {$cartId}: " . $e->getMessage());
         }
 
         Logger::info("RetryManualReviewAction: cart {$cartId} completado a paid tras re-despacho (monto coincide).");

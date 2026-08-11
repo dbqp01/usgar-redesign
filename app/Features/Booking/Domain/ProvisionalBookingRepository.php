@@ -531,12 +531,16 @@ class ProvisionalBookingRepository {
     public function getPendingHoldsWithPaymentId(): array {
         if (!$this->pdo) return [];
         try {
+            // FIX 2026-08-11 (auditoría webhooks): incluye 'expired' y elimina
+            // el filtro de expiración — un hold expirado con pago approved y
+            // webhook perdido quedaba huérfano para siempre (nadie lo
+            // reconciliaba). El action decide: pending -> paid, expired ->
+            // expired_paid + alerta.
             $stmt = $this->pdo->prepare("
                 SELECT * FROM provisional_bookings
-                WHERE status = '".BookingStatus::Pending->value."'
+                WHERE status IN ('".BookingStatus::Pending->value."','".BookingStatus::Expired->value."')
                   AND payment_id IS NOT NULL
                   AND payment_id <> ''
-                  AND expires_at > NOW()
                 LIMIT 50
             ");
             $stmt->execute();

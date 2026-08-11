@@ -88,10 +88,42 @@ class ReconcilePaymentsAction {
                 continue;
             }
 
+            // FIX 2026-08-11 (auditoría webhooks): hold expirado + pago
+            // approved con webhook nunca llegado -> misma semántica que el
+            // webhook (rama expired_paid): alerta para resolución manual, NO
+            // se revive la reserva (la habitación pudo re-venderse) y NO se
+            // despacha el evento (no confirmar el PMS en ese caso).
+            $holdStatus = BookingStatus::tryFrom((string)($hold['status'] ?? ''));
+            if ($holdStatus === BookingStatus::Expired) {
+                try {
+                    $this->pdo->beginTransaction();
+                    $this->bookingRepo->updateStatus($cartId, BookingStatus::ExpiredPaid->value);
+                    $this->bookingRepo->markPaymentProcessed($paymentId, $cartId, 'approved');
+                    $this->bookingRepo->recordAlert($cartId, $paymentId, 'expired_paid');
+                    $this->pdo->commit();
+                    $reconciled++;
+                } catch (Throwable $e) {
+                    if ($this->pdo->inTransaction()) {
+                        $this->pdo->rollBack();
+                    }
+                    Logger::error("ReconcilePaymentsAction Error expired_paid para cart {$cartId}: " . $e->getMessage());
+                    continue;
+                }
+                Logger::error("ReconcilePaymentsAction ALERTA: pago approved {$paymentId} sobre hold expirado {$cartId} (posible reventa). Marcado expired_paid.");
+                continue;
+            }
+
             try {
                 $this->pdo->beginTransaction();
                 $this->bookingRepo->updateStatus($cartId, BookingStatus::Paid->value);
                 $this->bookingRepo->markPaymentProcessed($paymentId, $cartId, 'approved');
+                // FIX 2026-08-11: transactional-outbox — el evento se persiste
+                // en la MISMA txn (patrón del webhook). Antes: dispatch
+                // post-commit con catch silencioso = si el INSERT del outbox
+                // fallaba, el pago quedaba paid/processed y el evento
+                // (confirmOrder en QloApps) se perdía para siempre.
+                $event = BookingPaidEvent::fromHold($cartId, $paymentId, $hold);
+                $this->eventDispatcher->dispatch($event);
                 $this->pdo->commit();
                 $reconciled++;
             } catch (Throwable $e) {
@@ -100,14 +132,6 @@ class ReconcilePaymentsAction {
                 }
                 Logger::error("ReconcilePaymentsAction Error para cart {$cartId}: " . $e->getMessage());
                 continue;
-            }
-
-            $event = BookingPaidEvent::fromHold($cartId, $paymentId, $hold);
-
-            try {
-                $this->eventDispatcher->dispatch($event);
-            } catch (Throwable $e) {
-                Logger::error("ReconcilePaymentsAction: Fallo al despachar evento para cart {$cartId}: " . $e->getMessage());
             }
         }
 
