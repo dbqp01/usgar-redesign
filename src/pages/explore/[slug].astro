@@ -28,6 +28,10 @@ const attraction = propAttraction || attractions.find(a => a.id === slug) || att
 const lang = (Astro.currentLocale || "en") as "en" | "es" | "fr" | "pt";
 const t = useTranslations(lang);
 
+// Interlinking SEO: 3 atracciones siguientes en orden de negocio
+const currentIdx = attractions.findIndex((a) => a.id === attraction.id);
+const relatedAttractions = [1, 2, 3].map((offset) => attractions[(currentIdx + offset) % attractions.length]);
+
 const exploreImages = import.meta.glob<{ default: ImageMetadata }>('../../assets/explore/*.jpg', { eager: true });
 
 // Category Labels and Icons
@@ -68,6 +72,14 @@ const blogSchema = {
     "name": attraction.name[lang],
     "description": attraction.description[lang],
     "distance": attraction.distance
+  },
+  "mainEntity": {
+    "@type": "FAQPage",
+    "mainEntity": attraction.faq[lang].map(({ q, a }) => ({
+      "@type": "Question",
+      "name": q,
+      "acceptedAnswer": { "@type": "Answer", "text": a }
+    }))
   }
 };
 ---
@@ -141,6 +153,20 @@ const blogSchema = {
           </p>
         </section>
 
+        <!-- What to expect (SEO: guia ampliada) -->
+        <section class="bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-3xl border border-black/5 dark:border-white/5 shadow-sm space-y-4 animate-on-scroll">
+          <h2 class="font-display text-2xl text-text-primary-light dark:text-text-primary-dark flex items-center gap-3">
+            <svg class="w-6 h-6 text-primary dark:text-mint flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            {t('exploreDetail.overviewTitle')}
+          </h2>
+          <p class="text-text-secondary-light dark:text-text-secondary-dark font-body leading-relaxed text-base md:text-lg font-light">
+            {attraction.overview[lang]}
+          </p>
+        </section>
+
         <!-- How to get there -->
         <section class="bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-3xl border border-black/5 dark:border-white/5 shadow-sm space-y-4 animate-on-scroll">
           <h2 class="font-display text-2xl text-text-primary-light dark:text-text-primary-dark flex items-center gap-3">
@@ -174,6 +200,63 @@ const blogSchema = {
               </li>
             ))}
           </ul>
+        </section>
+
+        <!-- FAQ (SEO: featured snippets + schema FAQPage) -->
+        {attraction.faq[lang].length > 0 && (
+        <section class="bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-3xl border border-black/5 dark:border-white/5 shadow-sm space-y-5 animate-on-scroll">
+          <h2 class="font-display text-2xl text-text-primary-light dark:text-text-primary-dark flex items-center gap-3 border-b border-black/5 dark:border-white/5 pb-3">
+            <svg class="w-6 h-6 text-primary dark:text-mint flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {t('exploreDetail.faqTitle')}
+          </h2>
+          <div class="space-y-3 font-body">
+            {attraction.faq[lang].map(({ q, a }) => (
+              <details class="group rounded-2xl border border-black/5 dark:border-white/10 bg-white/50 dark:bg-white/5 px-5 py-4 open:shadow-sm transition-shadow">
+                <summary class="cursor-pointer list-none font-medium text-text-primary-light dark:text-text-primary-dark flex items-center justify-between gap-4 select-none">
+                  {q}
+                  <svg class="w-5 h-5 text-secondary/70 flex-shrink-0 transition-transform duration-300 group-open:rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                  </svg>
+                </summary>
+                <p class="mt-3 text-sm leading-relaxed text-text-secondary-light dark:text-text-secondary-dark font-light">{a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+        )}
+
+        <!-- Interlinking SEO: continue exploring -->
+        <section class="space-y-6 animate-on-scroll">
+          <h2 class="font-display text-2xl text-text-primary-light dark:text-text-primary-dark">
+            {t('exploreDetail.continueExploring')}
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {relatedAttractions.map((rel) => (
+              <a
+                href={getRelativeLocaleUrl(lang, `explore/${rel.id}`)}
+                class="group rounded-2xl overflow-hidden border border-black/5 dark:border-white/10 bg-surface-card-light dark:bg-surface-card-dark shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-[transform,box-shadow]"
+              >
+                <Image
+                  src={exploreImages[`../../assets/explore/${rel.id}.jpg`]?.default ?? fallbackImg}
+                  alt={rel.name[lang]}
+                  layout="full-width"
+                  fit="cover"
+                  format="avif"
+                  class="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div class="p-4">
+                  <h3 class="font-display text-base text-text-primary-light dark:text-text-primary-dark group-hover:text-primary transition-colors">
+                    {rel.name[lang]}
+                  </h3>
+                  <p class="mt-1 text-xs text-text-secondary-light dark:text-text-secondary-dark font-light line-clamp-2">
+                    {rel.description[lang]}
+                  </p>
+                </div>
+              </a>
+            ))}
+          </div>
         </section>
       </article>
 

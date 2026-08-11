@@ -44,7 +44,67 @@
       "bestTime_es": "Mayo a Septiembre (Temporada seca, cielos despejados)",
       "bestTime_en": "May to September (Dry season, clear skies)",
       "bestTime_fr": "Mai a Septembre (Saison seche, ciel degage)",
-      "bestTime_pt": "Maio a Setembro (Temporada seca, ceu limpo)"
+      "bestTime_pt": "Maio a Setembro (Temporada seca, ceu limpo)",
+      "overview_en": "Perched 2,430 meters above the Urubamba Valley, Machu Picchu is the crown jewel of Inca engineering — a citadel of temples, terraces and plazas carved into a mountain ridge. Most visitors spend 3–4 hours exploring the Sun Gate, the Temple of the Sun and the Intihuatana stone, then return to Aguas Calientes for lunch and the train back. Tickets are limited to a few thousand per day, and the site closes in the late afternoon, so plan a full day from Cusco.",
+      "faq_en": [
+        {
+          "q": "Do I need to book Machu Picchu tickets in advance?",
+          "a": "Yes — tickets are strictly limited and often sell out weeks ahead, especially May to September. Book online through the official platform as soon as your dates are fixed."
+        },
+        {
+          "q": "Can I visit Machu Picchu in one day from Cusco?",
+          "a": "Yes. The most common plan is a 6:00 a.m. train from Poroy or Ollantaytambo, 2–3 hours at the citadel, and an afternoon train back to Cusco."
+        },
+        {
+          "q": "Is Machu Picchu included in the Boleto Turistico?",
+          "a": "No. Machu Picchu requires its own entrance ticket and a separate train ticket; the Boleto Turistico covers Cusco's city sites and the Sacred Valley circuit."
+        }
+      ],
+      "overview_es": "Ubicada a 2.430 metros sobre el valle del Urubamba, Machu Picchu es la joya de la ingenieria inca: una ciudadela de templos, terrazas y plazas tallada en la cresta de la montana. La mayoria de visitantes dedica 3 a 4 horas a recorrer la Puerta del Sol, el Templo del Sol y la piedra Intihuatana, para luego volver a Aguas Calientes a almorzar y tomar el tren de regreso. Los ingresos son limitados a unos miles por dia y el sitio cierra al atardecer; planea un dia completo desde Cusco.",
+      "faq_es": [
+        {
+          "q": "¿Necesito reservar las entradas a Machu Picchu con anticipacion?",
+          "a": "Si — las entradas son limitadas y suelen agotarse con semanas de anticipacion, sobre todo de mayo a septiembre. Reserva en la plataforma oficial apenas fijes tus fechas."
+        },
+        {
+          "q": "¿Puedo visitar Machu Picchu en un dia desde Cusco?",
+          "a": "Si. El plan mas comun es tomar el tren de las 6:00 a.m. desde Poroy u Ollantaytambo, pasar 2 a 3 horas en la ciudadela y volver a Cusco en el tren de la tarde."
+        },
+        {
+          "q": "¿Machu Picchu esta incluido en el Boleto Turistico?",
+          "a": "No. Machu Picchu requiere entrada propia y boleto de tren aparte; el Boleto Turistico cubre los sitios de la ciudad de Cusco y el circuito del Valle Sagrado."
+        }
+      ],
+      "overview_fr": "Perchee a 2 430 metres au-dessus de la vallee de l'Urubamba, le Machu Picchu est le joyau de l'ingenierie inca : une citadelle de temples, de terrasses et de places taillee dans la crete de la montagne. La plupart des visiteurs y consacrent 3 a 4 heures — porte du Soleil, temple du Soleil, pierre Intihuatana — avant de redescendre a Aguas Calientes pour le dejeuner et le train du retour. Les entrees sont limitees a quelques milliers par jour et le site ferme en fin d'apres-midi ; prevoyez une journee complete depuis Cusco.",
+      "faq_fr": [
+        {
+          "q": "Faut-il reserver les billets du Machu Picchu a l'avance ?",
+          "a": "Oui — les billets sont strictement limites et s'epuisent souvent des semaines a l'avance, surtout de mai a septembre. Reservez sur la plateforme officielle des que vos dates sont fixees."
+        },
+        {
+          "q": "Peut-on visiter le Machu Picchu en une journee depuis Cusco ?",
+          "a": "Oui. Le plan le plus courant : train de 6h00 depuis Poroy ou Ollantaytambo, 2 a 3 heures sur le site, et train de l'apres-midi pour revenir a Cusco."
+        },
+        {
+          "q": "Le Machu Picchu est-il inclus dans le Boleto Turistico ?",
+          "a": "Non. Le Machu Picchu necessite son propre billet d'entree et un billet de train separe ; le Boleto Turistico couvre les sites de la ville de Cusco et le circuit de la Vallee Sacree."
+        }
+      ],
+      "overview_pt": "Empoleirada a 2.430 metros acima do vale do Urubamba, Machu Picchu e a joia da engenharia inca: uma cidadela de templos, terraços e pracas esculpida na crista da montanha. A maioria dos visitantes dedica 3 a 4 horas para explorar o Portao do Sol, o Templo do Sol e a pedra Intihuatana, antes de voltar a Aguas Calientes para almocar e pegar o trem de regresso. As entradas sao limitadas a poucos milhares por dia e o sitio fecha no fim da tarde; planeje um dia completo a partir de Cusco.",
+      "faq_pt": [
+        {
+          "q": "Preciso reservar os ingressos de Machu Picchu com antecedencia?",
+          "a": "Sim — os ingressos sao limitados e costumam esgotar semanas antes, principalmente de maio a setembro. Reserve na plataforma oficial assim que definir suas datas."
+        },
+        {
+          "q": "Posso visitar Machu Picchu em um dia saindo de Cusco?",
+          "a": "Sim. O plano mais comum e pegar o trem das 6h de Poroy ou Ollantaytambo, passar 2 a 3 horas na cidadela e voltar a Cusco no trem da tarde."
+        },
+        {
+          "q": "Machu Picchu esta incluido no Boleto Turistico?",
+          "a": "Nao. Machu Picchu exige ingresso proprio e bilhete de trem separado; o Boleto Turistico cobre os sitios da cidade de Cusco e o circuito do Vale Sagrado."
+        }
+      ]
     },
     {
       "id": "sacred-valley",
@@ -90,7 +150,67 @@
       "bestTime_es": "Mayo a Octubre (Temporada seca)",
       "bestTime_en": "May to October (Dry season)",
       "bestTime_fr": "Mai a Octobre (Saison seche)",
-      "bestTime_pt": "Maio a Outubro (Temporada seca)"
+      "bestTime_pt": "Maio a Outubro (Temporada seca)",
+      "overview_en": "The Sacred Valley is a lush corridor of the Urubamba River linking Cusco to Machu Picchu, dotted with living Inca towns — Pisac with its hilltop citadel and Sunday market, Ollantaytambo with its fortress and cobbled streets, Chinchero with its colonial church and weaving traditions. A full-day tour takes you to 3–4 towns with lunch in a valley restaurant, and it is the ideal first day trip after arriving in Cusco to acclimatize below 3,000 meters.",
+      "faq_en": [
+        {
+          "q": "How long should I spend in the Sacred Valley?",
+          "a": "A full day covers the highlights: Pisac ruins and market, lunch in Urubamba, and Ollantaytambo. With more time, add Chinchero and Moray-Maras."
+        },
+        {
+          "q": "Is the Sacred Valley included in the Boleto Turistico?",
+          "a": "The main sites (Pisac, Ollantaytambo, Chinchero) are included in the Boleto Turistico's Sacred Valley circuit; Maras salt mines and Moray need a separate ticket."
+        },
+        {
+          "q": "Is the Sacred Valley good for altitude acclimatization?",
+          "a": "Yes — it sits lower (2,800–3,000 m) than Cusco (3,400 m), making it a gentler first excursion before attempting higher treks."
+        }
+      ],
+      "overview_es": "El Valle Sagrado es un corredor fertil del rio Urubamba que une Cusco con Machu Picchu, salpicado de pueblos incas vivos: Pisac con su ciudadela en la cima y su mercado dominical, Ollantaytambo con su fortaleza y calles empedradas, Chinchero con su iglesia colonial y tradiciones textiles. Un tour de dia completo recorre 3 a 4 pueblos con almuerzo en un restaurante del valle, y es la excursión ideal del primer dia tras llegar a Cusco para aclimatarse por debajo de los 3.000 metros.",
+      "faq_es": [
+        {
+          "q": "¿Cuanto tiempo dedicarle al Valle Sagrado?",
+          "a": "Un dia completo cubre lo esencial: ruinas y mercado de Pisac, almuerzo en Urubamba y Ollantaytambo. Con mas tiempo, agrega Chinchero y Moray-Maras."
+        },
+        {
+          "q": "¿El Valle Sagrado esta incluido en el Boleto Turistico?",
+          "a": "Los sitios principales (Pisac, Ollantaytambo, Chinchero) estan incluidos en el circuito del Valle Sagrado; las Salineras de Maras y Moray requieren entrada aparte."
+        },
+        {
+          "q": "¿El Valle Sagrado sirve para aclimatarse?",
+          "a": "Si — esta a menor altitud (2.800–3.000 m) que Cusco (3.400 m), por lo que es una excursión mas suave antes de intentar caminatas de mayor altura."
+        }
+      ],
+      "overview_fr": "La Vallee Sacree est un corridor verdoyant du rio Urubamba reliant Cusco au Machu Picchu, jalonne de villages incas vivants : Pisac et sa citadelle surplombante et son marche du dimanche, Ollantaytambo et sa forteresse aux ruelles pavees, Chinchero et son eglise coloniale et ses traditions textiles. Un circuit d'une journee couvre 3 a 4 villages avec dejeuner dans un restaurant de la vallee — l'excursion ideale le premier jour apres l'arrivee a Cusco pour s'acclimater sous 3 000 metres.",
+      "faq_fr": [
+        {
+          "q": "Combien de temps consacrer a la Vallee Sacree ?",
+          "a": "Une journee complete suffit pour l'essentiel : ruines et marche de Pisac, dejeuner a Urubamba et Ollantaytambo. Avec plus de temps, ajoutez Chinchero et Moray-Maras."
+        },
+        {
+          "q": "La Vallee Sacree est-elle incluse dans le Boleto Turistico ?",
+          "a": "Les sites principaux (Pisac, Ollantaytambo, Chinchero) sont inclus dans le circuit de la Vallee Sacree ; les salines de Maras et Moray necessitent un billet separe."
+        },
+        {
+          "q": "La Vallee Sacree aide-t-elle a s'acclimater ?",
+          "a": "Oui — elle se situe plus bas (2 800–3 000 m) que Cusco (3 400 m), ce qui en fait une premiere excursion plus douce avant les randonnees en altitude."
+        }
+      ],
+      "overview_pt": "O Vale Sagrado e um corredor fertil do rio Urubamba que liga Cusco a Machu Picchu, repleto de vilas incas vivas: Pisac com sua cidadela no topo e mercado de domingo, Ollantaytambo com sua fortaleza e ruas de pedra, Chinchero com sua igreja colonial e tradicoes tecidas. Um passeio de dia inteiro percorre 3 a 4 vilas com almoco em um restaurante do vale — a excursao ideal para o primeiro dia apos chegar em Cusco, aclimatando abaixo dos 3.000 metros.",
+      "faq_pt": [
+        {
+          "q": "Quanto tempo devo dedicar ao Vale Sagrado?",
+          "a": "Um dia inteiro cobre o essencial: ruinas e mercado de Pisac, almoco em Urubamba e Ollantaytambo. Com mais tempo, acrescente Chinchero e Moray-Maras."
+        },
+        {
+          "q": "O Vale Sagrado esta incluido no Boleto Turistico?",
+          "a": "Os sitios principais (Pisac, Ollantaytambo, Chinchero) estao incluidos no circuito do Vale Sagrado; as Salineras de Maras e Moray exigem ingresso separado."
+        },
+        {
+          "q": "O Vale Sagrado ajuda na aclimatacao?",
+          "a": "Sim — fica em altitude menor (2.800–3.000 m) que Cusco (3.400 m), sendo uma primeira excursao mais suave antes de trilhas mais altas."
+        }
+      ]
     },
     {
       "id": "sacsayhuaman",
@@ -136,7 +256,67 @@
       "bestTime_es": "Todo el ano (Manana recomendada)",
       "bestTime_en": "Year-round (Morning recommended)",
       "bestTime_fr": "Toute l'annee (Le matin recommande)",
-      "bestTime_pt": "O ano todo (Manha recomendada)"
+      "bestTime_pt": "O ano todo (Manha recomendada)",
+      "overview_en": "Sacsayhuaman is the colossal zigzag fortress overlooking Cusco, built with stones up to 128 tons fitted so precisely that a blade cannot pass between them. The site hosts the Inti Raymi festival every June 24. From its terraces you get the best panoramic view of the city, and the walk back down through the San Blas neighborhood makes a perfect half-day circuit.",
+      "faq_en": [
+        {
+          "q": "How do I get to Sacsayhuaman from the city center?",
+          "a": "A 30-minute uphill walk from Plaza de Armas, or 10 minutes by taxi. Many tours include it with Qenqo and Tambomachay nearby."
+        },
+        {
+          "q": "Is Sacsayhuaman included in the Boleto Turistico?",
+          "a": "Yes — it is part of the city circuit of the Boleto Turistico (also valid for Qenqo, Puca Pucara and Tambomachay)."
+        },
+        {
+          "q": "When is the Inti Raymi celebrated?",
+          "a": "Every June 24 on the winter solstice, with a theatrical reenactment of the Inca sun festival at Sacsayhuaman — book your seats months in advance."
+        }
+      ],
+      "overview_es": "Sacsayhuaman es la colosal fortaleza en zigzag que domina Cusco, construida con piedras de hasta 128 toneladas ensambladas con tal precision que no cabe una hoja entre ellas. El sitio acoge la fiesta del Inti Raymi cada 24 de junio. Desde sus terrazas se obtiene la mejor vista panoramica de la ciudad, y la bajada a pie por el barrio de San Blas completa un circuito perfecto de medio dia.",
+      "faq_es": [
+        {
+          "q": "¿Como llegar a Sacsayhuaman desde el centro?",
+          "a": "A 30 minutos de caminata en subida desde la Plaza de Armas, o 10 minutos en taxi. Muchos tours lo incluyen junto a Qenqo y Tambomachay."
+        },
+        {
+          "q": "¿Sacsayhuaman esta incluido en el Boleto Turistico?",
+          "a": "Si — forma parte del circuito ciudad del Boleto Turistico (valido tambien para Qenqo, Puca Pucara y Tambomachay)."
+        },
+        {
+          "q": "¿Cuando se celebra el Inti Raymi?",
+          "a": "Cada 24 de junio, en el solsticio de invierno, con la representacion teatral de la fiesta inca del sol en Sacsayhuaman — reserva tu asiento con meses de anticipacion."
+        }
+      ],
+      "overview_fr": "Sacsayhuaman est la colossale forteresse en zigzag qui domine Cusco, batie avec des pierres allant jusqu'a 128 tonnes assemblees si precisement qu'une lame ne peut passer entre elles. Le site accueille la fete de l'Inti Raymi chaque 24 juin. Depuis ses terrasses, vous profitez de la plus belle vue panoramique sur la ville, et la descente a pied par le quartier de San Blas forme un circuit ideal d'une demi-journee.",
+      "faq_fr": [
+        {
+          "q": "Comment se rendre a Sacsayhuaman depuis le centre ?",
+          "a": "A 30 minutes de montee a pied depuis la Plaza de Armas, ou 10 minutes en taxi. De nombreux circuits l'incluent avec Qenqo et Tambomachay."
+        },
+        {
+          "q": "Sacsayhuaman est-il inclus dans le Boleto Turistico ?",
+          "a": "Oui — il fait partie du circuit ville du Boleto Turistico (egalement valable pour Qenqo, Puca Pucara et Tambomachay)."
+        },
+        {
+          "q": "Quand a lieu l'Inti Raymi ?",
+          "a": "Chaque 24 juin, au solstice d'hiver, avec la reconstitution theatrale de la fete inca du soleil a Sacsayhuaman — reservez vos places des mois a l'avance."
+        }
+      ],
+      "overview_pt": "Sacsayhuaman e a colossal fortaleza em zigue-zague que domina Cusco, construida com pedras de ate 128 toneladas encaixadas com tanta precisao que uma lamina nao passa entre elas. O sitio recebe a festa do Inti Raymi todo 24 de junho. De seus terraços voce tem a melhor vista panoramica da cidade, e a descida a pe pelo bairro de San Blas completa um circuito perfeito de meio dia.",
+      "faq_pt": [
+        {
+          "q": "Como chegar a Sacsayhuaman a partir do centro?",
+          "a": "A 30 minutos de caminhada em subida da Plaza de Armas, ou 10 minutos de taxi. Muitos passeios a incluem junto com Qenqo e Tambomachay."
+        },
+        {
+          "q": "Sacsayhuaman esta incluido no Boleto Turistico?",
+          "a": "Sim — faz parte do circuito cidade do Boleto Turistico (valido tambem para Qenqo, Puca Pucara e Tambomachay)."
+        },
+        {
+          "q": "Quando e celebrado o Inti Raymi?",
+          "a": "Todo 24 de junho, no solsticio de inverno, com a reproducao teatral da festa inca do sol em Sacsayhuaman — reserve seu lugar com meses de antecedencia."
+        }
+      ]
     },
     {
       "id": "rainbow-mountain",
@@ -182,7 +362,67 @@
       "bestTime_es": "Mayo a Septiembre (Cielos despejados)",
       "bestTime_en": "May to September (Clear skies)",
       "bestTime_fr": "Mai a Septembre (Ciel degage)",
-      "bestTime_pt": "Maio a Setembro (Ceu limpo)"
+      "bestTime_pt": "Maio a Setembro (Ceu limpo)",
+      "overview_en": "Vinicunca, the Rainbow Mountain, is a 5,200-meter summit striped in turquoise, gold and magenta by mineral sedimentation. The trek starts at 4,300 meters and takes 1.5–2 hours each way on a steady uphill trail — demanding but doable with acclimatization. The colors are brightest in the dry season, and the mountain is sacred to the local Ausangate communities who manage access.",
+      "faq_en": [
+        {
+          "q": "How hard is the Rainbow Mountain trek?",
+          "a": "Moderate to challenging: about 10 km round trip starting at 4,300 m with a climb to 5,200 m. Most people complete it in 3–5 hours; horses are available at the start."
+        },
+        {
+          "q": "Do I need to acclimatize before Vinicunca?",
+          "a": "Yes — spend at least 2–3 days in Cusco first, or better, do a Sacred Valley day trip before this trek. Coca tea and altitude pills help."
+        },
+        {
+          "q": "What is the best time of year?",
+          "a": "May to September (dry season) for clear skies and visible colors. Avoid the rainy months of January–March when trails are muddy and the view often clouded."
+        }
+      ],
+      "overview_es": "Vinicunca, la Montana de Siete Colores, es una cumbre de 5.200 metros rayada en turquesa, dorado y magenta por la sedimentacion mineral. La caminata parte a 4.300 metros y toma 1.5 a 2 horas por trayecto por un sendero continuo en subida — exigente pero factible con aclimatacion. Los colores son mas vivos en temporada seca, y la montana es sagrada para las comunidades de Ausangate que gestionan el acceso.",
+      "faq_es": [
+        {
+          "q": "¿Que tan dificil es la caminata a la Montana de Colores?",
+          "a": "Moderada a exigente: unos 10 km ida y vuelta desde los 4.300 m hasta los 5.200 m. La mayoria la completa en 3 a 5 horas; hay caballos al inicio del sendero."
+        },
+        {
+          "q": "¿Necesito aclimatarme antes de Vinicunca?",
+          "a": "Si — pasa al menos 2 a 3 dias en Cusco primero, o mejor, haz una excursion al Valle Sagrado antes de esta caminata. El te de coca y las pastillas para la altura ayudan."
+        },
+        {
+          "q": "¿Cual es la mejor epoca?",
+          "a": "De mayo a septiembre (temporada seca) por los cielos despejados y colores visibles. Evita los meses lluviosos de enero a marzo, con senderos embarrados y vistas nubladas."
+        }
+      ],
+      "overview_fr": "Vinicunca, la montagne aux sept couleurs, est un sommet de 5 200 metres strie de turquoise, d'or et de magenta par la sedimentation minerale. La randonnee part de 4 300 metres et prend 1 h 30 a 2 h par trajet sur un sentier en montee continue — exigeante mais realisable avec acclimatation. Les couleurs sont les plus vives en saison seche, et la montagne est sacree pour les communautes d'Ausangate qui gerent l'acces.",
+      "faq_fr": [
+        {
+          "q": "La randonnee de la montagne aux sept couleurs est-elle difficile ?",
+          "a": "Moderee a exigeante : environ 10 km aller-retour de 4 300 m a 5 200 m. La plupart la terminent en 3 a 5 heures ; des chevaux sont disponibles au depart."
+        },
+        {
+          "q": "Faut-il s'acclimater avant Vinicunca ?",
+          "a": "Oui — passez au moins 2 a 3 jours a Cusco d'abord, ou mieux, faites une excursion dans la Vallee Sacree avant cette randonnee. Le the de coca et les comprimes contre le mal d'altitude aident."
+        },
+        {
+          "q": "Quelle est la meilleure saison ?",
+          "a": "De mai a septembre (saison seche) pour les ciels degages et les couleurs visibles. Evitez les mois pluvieux de janvier a mars : sentiers boueux et vues souvent couvertes."
+        }
+      ],
+      "overview_pt": "Vinicunca, a Montanha das Sete Cores, e um cume de 5.200 metros listrado em turquesa, dourado e magenta pela sedimentacao mineral. A trilha parte de 4.300 metros e leva 1h30 a 2h por trecho em subida continua — exigente, mas viavel com aclimatacao. As cores sao mais vivas na estacao seca, e a montanha e sagrada para as comunidades de Ausangate que gerenciam o acesso.",
+      "faq_pt": [
+        {
+          "q": "Qual a dificuldade da trilha da Montanha Colorida?",
+          "a": "Moderada a exigente: cerca de 10 km ida e volta, de 4.300 m a 5.200 m. A maioria conclui em 3 a 5 horas; ha cavalos no inicio da trilha."
+        },
+        {
+          "q": "Preciso aclimatar antes de Vinicunca?",
+          "a": "Sim — passe pelo menos 2 a 3 dias em Cusco primeiro, ou melhor, faca um passeio ao Vale Sagrado antes desta trilha. Cha de coca e comprimidos para altitude ajudam."
+        },
+        {
+          "q": "Qual a melhor epoca?",
+          "a": "De maio a setembro (estacao seca), com ceu limpo e cores visiveis. Evite janeiro a marco: trilhas enlameadas e vistas encobertas."
+        }
+      ]
     },
     {
       "id": "san-pedro-market",
@@ -228,7 +468,67 @@
       "bestTime_es": "Manana (7:00 AM - 12:00 PM)",
       "bestTime_en": "Morning (7:00 AM - 12:00 PM)",
       "bestTime_fr": "Matin (7h00 - 12h00)",
-      "bestTime_pt": "Manha (7:00 - 12:00)"
+      "bestTime_pt": "Manha (7:00 - 12:00)",
+      "overview_en": "San Pedro Market has been the beating heart of Cusco's daily life for a century. Under its Eiffel-designed iron roof you will find fruit and juice stalls, a legendary breakfast and lunch area, butcher and cheese counters, herbalists selling coca leaves and remedies, and an artisan section for textiles, alpaca goods and souvenirs. It is the cheapest, most authentic meal in the city — and it is three minutes from our door.",
+      "faq_en": [
+        {
+          "q": "What should I eat at San Pedro Market?",
+          "a": "The juice bars are legendary — order a fresh fruit juice or a 'jugo especial' with oats and honey. The breakfast stalls serve pancakes, tamales and local soups like chairo."
+        },
+        {
+          "q": "Is the market open every day?",
+          "a": "Yes, daily from approximately 6:00 a.m. to 6:00 p.m. Mornings are livelier; most food stalls close around 4:00–5:00 p.m."
+        },
+        {
+          "q": "Is it safe to visit?",
+          "a": "Yes — it is busy and safe, but keep your phone and wallet secure and watch for pickpockets in crowded aisles, as in any busy market."
+        }
+      ],
+      "overview_es": "El Mercado de San Pedro es el corazon de la vida diaria de Cusco desde hace un siglo. Bajo su techo de hierro disenado por Eiffel encontraras puestos de frutas y jugos, una legendaria zona de desayunos y almuerzos, mostradores de carnes y quesos, herbolarios con hojas de coca y remedios, y una seccion de artesania con textiles, alpaca y recuerdos. Es la comida mas barata y autentica de la ciudad — y esta a tres minutos de nuestra puerta.",
+      "faq_es": [
+        {
+          "q": "¿Que comer en el Mercado de San Pedro?",
+          "a": "Los puestos de jugos son legendarios — prueba un jugo de frutas frescas o un 'jugo especial' con avena y miel. Los puestos de desayuno sirven panqueques, tamales y sopas locales como el chairo."
+        },
+        {
+          "q": "¿El mercado abre todos los dias?",
+          "a": "Si, a diario de aproximadamente 6:00 a.m. a 6:00 p.m. Las mananas son mas animadas; la mayoria de puestos de comida cierra hacia las 4:00–5:00 p.m."
+        },
+        {
+          "q": "¿Es seguro visitarlo?",
+          "a": "Si — es concurrido y seguro, pero cuida tu telefono y billetera y atento a los carteristas en los pasillos llenos, como en cualquier mercado concurrido."
+        }
+      ],
+      "overview_fr": "Le marche de San Pedro est le coeur battant de la vie quotidienne de Cusco depuis un siecle. Sous son toit de fer concu par Eiffel, vous trouverez des etals de fruits et de jus, une zone legendaire de petits-dejeuners et de dejeuners, des comptoirs de viandes et de fromages, des herboristes vendant feuilles de coca et remedes, et une section artisanale de textiles, d'alpaga et de souvenirs. C'est la cuisine la plus authentique et la moins chere de la ville — a trois minutes de notre porte.",
+      "faq_fr": [
+        {
+          "q": "Que manger au marche de San Pedro ?",
+          "a": "Les bars a jus sont legendaires — commandez un jus de fruits frais ou un « jugo especial » a l'avoine et au miel. Les etals de petit-dejeuner servent pancakes, tamales et soupes locales comme le chairo."
+        },
+        {
+          "q": "Le marche est-il ouvert tous les jours ?",
+          "a": "Oui, tous les jours d'environ 6h00 a 18h00. Les matins sont plus vivants ; la plupart des etals alimentaires ferment vers 16h00–17h00."
+        },
+        {
+          "q": "Est-il sur de le visiter ?",
+          "a": "Oui — il est anime et sur, mais gardez telephone et portefeuille en securite et mefiez-vous des pickpockets dans les allees bondes, comme dans tout marche anime."
+        }
+      ],
+      "overview_pt": "O Mercado de San Pedro e o coracao da vida diaria de Cusco ha um seculo. Sob seu telhado de ferro projetado por Eiffel, voce encontra bancas de frutas e sucos, uma lendaria area de cafes da manha e almocos, balcoes de carnes e queijos, ervanarios vendendo folhas de coca e remedios, e uma secao de artesanato com tecidos, alpaca e lembrancas. E a comida mais barata e autentica da cidade — a tres minutos da nossa porta.",
+      "faq_pt": [
+        {
+          "q": "O que comer no Mercado de San Pedro?",
+          "a": "Os bares de suco sao lendarios — peca um suco de frutas frescas ou um 'jugo especial' com aveia e mel. As bancas de cafe da manha servem panquecas, tamales e sopas locais como o chairo."
+        },
+        {
+          "q": "O mercado abre todos os dias?",
+          "a": "Sim, diariamente das 6h as 18h aproximadamente. As manhas sao mais movimentadas; a maioria das bancas de comida fecha por volta das 16h–17h."
+        },
+        {
+          "q": "E seguro visitar?",
+          "a": "Sim — e movimentado e seguro, mas mantenha celular e carteira protegidos e atencao aos batedores de carteira nos corredores lotados, como em qualquer mercado movimentado."
+        }
+      ]
     },
     {
       "id": "plaza-de-armas",
@@ -274,7 +574,67 @@
       "bestTime_es": "Atardecer y Noche",
       "bestTime_en": "Late afternoon and Night",
       "bestTime_fr": "Fin d'apres-midi et nuit",
-      "bestTime_pt": "Fim da tarde e noite"
+      "bestTime_pt": "Fim da tarde e noite",
+      "overview_en": "Cusco's Plaza de Armas has been the city's living room since Inca times, when it was the ceremonial Huacaypata. Today the square is framed by the Cathedral and the Church of La Compania, ringed with colonial arcades, cafes and balconies. By day it fills with travelers, street performers and tour companies; at night the illuminated facades are spectacular. It is a 10-minute walk from USGAR.",
+      "faq_en": [
+        {
+          "q": "What is there to see at the Plaza de Armas?",
+          "a": "The Cathedral (with its famous Last Supper featuring cuy on the table), the Church of La Compania, and the arcades. Both churches are museums worth visiting inside."
+        },
+        {
+          "q": "Is there a good viewpoint?",
+          "a": "Yes — climb to the balconies of the arcades for a coffee with a view, or walk up to San Blas viewpoint for the classic postcard angle over the square."
+        },
+        {
+          "q": "Are there ATMs and exchange offices nearby?",
+          "a": "Yes — the square and its surroundings concentrate banks, ATMs and exchange houses with fair rates, useful for your whole trip."
+        }
+      ],
+      "overview_es": "La Plaza de Armas de Cusco es el salon de la ciudad desde tiempos incas, cuando era la Huacaypata ceremonial. Hoy la plaza esta enmarcada por la Catedral y la Iglesia de la Compania, rodeada de arquerias coloniales, cafes y balcones. De dia se llena de viajeros, artistas callejeros y agencias de tours; de noche, las fachadas iluminadas son espectaculares. Esta a 10 minutos a pie de USGAR.",
+      "faq_es": [
+        {
+          "q": "¿Que ver en la Plaza de Armas?",
+          "a": "La Catedral (con su famosa Ultima Cena con cuy en la mesa), la Iglesia de la Compania y las arquerias. Ambas iglesias son museos que valen la pena visitar por dentro."
+        },
+        {
+          "q": "¿Hay algun buen mirador?",
+          "a": "Si — sube a los balcones de las arquerias para un cafe con vista, o camina hasta el mirador de San Blas para la clasica postal sobre la plaza."
+        },
+        {
+          "q": "¿Hay cajeros y casas de cambio cerca?",
+          "a": "Si — la plaza y sus alrededores concentran bancos, cajeros y casas de cambio con buen tipo de cambio, utiles para todo tu viaje."
+        }
+      ],
+      "overview_fr": "La Plaza de Armas de Cusco est le salon de la ville depuis l'epoque inca, quand elle etait la Huacaypata ceremonielle. Aujourd'hui, la place est encadree par la Cathedrale et l'eglise de La Compania, entouree de portiques coloniaux, de cafes et de balcons. Le jour, elle se remplit de voyageurs, d'artistes de rue et d'agences ; la nuit, les facades illuminees sont spectaculaires. Elle se trouve a 10 minutes a pied de l'USGAR.",
+      "faq_fr": [
+        {
+          "q": "Que voir sur la Plaza de Armas ?",
+          "a": "La Cathedrale (avec sa celebre Cene ou le cuy trone sur la table), l'eglise de La Compania et les portiques. Les deux eglises sont des musees qui valent la visite interieure."
+        },
+        {
+          "q": "Y a-t-il un bon point de vue ?",
+          "a": "Oui — montez aux balcons des portiques pour un cafe avec vue, ou grimpez au mirador de San Blas pour l'angle carte postale classique sur la place."
+        },
+        {
+          "q": "Y a-t-il des distributeurs et des bureaux de change a proximite ?",
+          "a": "Oui — la place et ses abords concentrent banques, distributeurs et bureaux de change aux taux corrects, utiles pour tout le voyage."
+        }
+      ],
+      "overview_pt": "A Plaza de Armas de Cusco e a sala de estar da cidade desde os tempos incas, quando era a Huacaypata cerimonial. Hoje a praca e emoldurada pela Catedral e pela Igreja da Companhia, cercada de arcadas coloniais, cafes e varandas. De dia se enche de viajantes, artistas de rua e agencias; a noite, as fachadas iluminadas sao espetaculares. Fica a 10 minutos a pe do USGAR.",
+      "faq_pt": [
+        {
+          "q": "O que ver na Plaza de Armas?",
+          "a": "A Catedral (com sua famosa Ultima Ceia com cuy na mesa), a Igreja da Companhia e as arcadas. As duas igrejas sao museus que valem a visita interna."
+        },
+        {
+          "q": "Ha algum bom mirante?",
+          "a": "Sim — suba as varandas das arcadas para um cafe com vista, ou caminhe ate o mirante de San Blas para o classico cartao postal sobre a praca."
+        },
+        {
+          "q": "Ha caixas eletronicos e casas de cambio por perto?",
+          "a": "Sim — a praca e seus arredores concentram bancos, caixas e casas de cambio com boas taxas, uteis para toda a viagem."
+        }
+      ]
     },
     {
       "id": "qorikancha",
@@ -320,7 +680,67 @@
       "bestTime_es": "Manana o primera hora de la tarde",
       "bestTime_en": "Morning or early afternoon",
       "bestTime_fr": "Matin ou debut d'apres-midi",
-      "bestTime_pt": "Manha ou inicio da tarde"
+      "bestTime_pt": "Manha ou inicio da tarde",
+      "overview_en": "Qorikancha — 'Golden Enclosure' — was the most sacred temple of the Inca Empire, its walls once sheeted in solid gold and dedicated to the Sun God Inti. The Spanish built the Santo Domingo Convent on top of the Inca foundations, and today you can see both layers: precision Inca stonework that survived earthquakes, and the colonial church above it. A small museum displays Inca artifacts and the famous stone of the 12 angles.",
+      "faq_en": [
+        {
+          "q": "How much time do I need at Qorikancha?",
+          "a": "About 1 hour is enough to tour the temple, the convent and the museum. Go early morning to avoid tour groups."
+        },
+        {
+          "q": "Is Qorikancha included in the Boleto Turistico?",
+          "a": "No — it requires a separate entrance fee, but it is one of the most worthwhile paid sites in the city."
+        },
+        {
+          "q": "Can I take photos inside?",
+          "a": "Photography is allowed in most areas (no flash). Some colonial paintings and the museum rooms may restrict photos."
+        }
+      ],
+      "overview_es": "Qorikancha — 'Recinto de Oro' — fue el templo mas sagrado del Imperio Inca, con muros alguna vez recubiertos de oro macizo y dedicado al Dios Sol Inti. Los espanoles construyeron el Convento de Santo Domingo sobre los cimientos incas, y hoy se ven ambas capas: la mamposteria inca de precision que sobrevivio a los terremotos, y la iglesia colonial encima. Un pequeno museo exhibe artefactos incas y la famosa piedra de los 12 angulos.",
+      "faq_es": [
+        {
+          "q": "¿Cuanto tiempo necesito en Qorikancha?",
+          "a": "Con una hora basta para recorrer el templo, el convento y el museo. Ve temprano por la manana para evitar los grupos de tours."
+        },
+        {
+          "q": "¿Qorikancha esta incluido en el Boleto Turistico?",
+          "a": "No — requiere entrada pagada aparte, pero es uno de los sitios pagados mas valiosos de la ciudad."
+        },
+        {
+          "q": "¿Se pueden tomar fotos adentro?",
+          "a": "Se permite fotografiar en la mayoria de areas (sin flash). Algunas pinturas coloniales y salas del museo pueden restringir fotos."
+        }
+      ],
+      "overview_fr": "Qorikancha — « l'Enclos d'Or » — fut le temple le plus sacre de l'Empire Inca, ses murs autrefois plaques d'or massif et dedie au Dieu Soleil Inti. Les Espagnols batirent le couvent de Saint-Domingue sur les fondations incas ; on voit aujourd'hui les deux couches : la maçonnerie inca de precision qui a survécu aux seismes, et l'eglise coloniale au-dessus. Un petit musee expose des artefacts incas et la fameuse pierre aux 12 angles.",
+      "faq_fr": [
+        {
+          "q": "Combien de temps faut-il pour visiter Qorikancha ?",
+          "a": "Environ 1 heure suffit pour le temple, le couvent et le musee. Allez-y tot le matin pour eviter les groupes."
+        },
+        {
+          "q": "Qorikancha est-il inclus dans le Boleto Turistico ?",
+          "a": "Non — l'entree est payante separement, mais c'est l'un des sites payants les plus interessants de la ville."
+        },
+        {
+          "q": "Peut-on photographier a l'interieur ?",
+          "a": "La photo est autorisee dans la plupart des zones (sans flash). Certaines peintures coloniales et salles du musee peuvent la restreindre."
+        }
+      ],
+      "overview_pt": "Qorikancha — 'Recinto de Ouro' — foi o templo mais sagrado do Imperio Inca, com paredes um dia cobertas de ouro macico e dedicado ao Deus Sol Inti. Os espanhois construiram o Convento de Santo Domingo sobre as fundacoes incas, e hoje se veem as duas camadas: a alvenaria inca de precisao que sobreviveu aos terremotos e a igreja colonial acima. Um pequeno museu exibe artefatos incas e a famosa pedra dos 12 angulos.",
+      "faq_pt": [
+        {
+          "q": "Quanto tempo preciso em Qorikancha?",
+          "a": "Cerca de 1 hora basta para o templo, o convento e o museu. Va de manha cedo para evitar os grupos de turistas."
+        },
+        {
+          "q": "Qorikancha esta incluido no Boleto Turistico?",
+          "a": "Nao — exige ingresso pago separado, mas e um dos sitios pagos mais valiosos da cidade."
+        },
+        {
+          "q": "Posso tirar fotos dentro?",
+          "a": "Fotografias sao permitidas na maioria das areas (sem flash). Algumas pinturas coloniais e salas do museu podem restringir."
+        }
+      ]
     },
     {
       "id": "barrio-de-san-blas",
@@ -366,7 +786,67 @@
       "bestTime_es": "Tarde (2:00 PM - 6:00 PM)",
       "bestTime_en": "Afternoon (2:00 PM - 6:00 PM)",
       "bestTime_fr": "Apres-midi (14h00 - 18h00)",
-      "bestTime_pt": "Tarde (14:00 - 18:00)"
+      "bestTime_pt": "Tarde (14:00 - 18:00)",
+      "overview_en": "San Blas is Cusco's artisan quarter, a maze of steep cobblestone streets where the Inca court's master craftsmen once lived. Today its workshops produce the famous Mendivil woodcarvings with elongated figures, and its galleries and cozy cafes draw artists from around the world. The neighborhood's mirador offers one of the best sunset views over the city, and the walk up from Plaza de Armas is an experience in itself.",
+      "faq_en": [
+        {
+          "q": "What is San Blas known for?",
+          "a": "Woodcarving: the Mendivil school, with its iconic elongated figures, is the neighborhood's signature craft. You will also find painting, jewelry and textile galleries."
+        },
+        {
+          "q": "How do I get to San Blas?",
+          "a": "A 15-minute uphill walk from Plaza de Armas via Cuesta de San Blas, or a short taxi ride. From USGAR Hotels it is a pleasant walk through the historic center."
+        },
+        {
+          "q": "Is the San Blas viewpoint free?",
+          "a": "Yes — the mirador at the top of the neighborhood is public and free, perfect for sunset photos over Cusco's red-tiled roofs."
+        }
+      ],
+      "overview_es": "San Blas es el barrio de artesanos de Cusco, un laberinto de calles empedradas en subida donde vivieron los maestros artesanos de la corte inca. Hoy sus talleres producen las famosas imaginerias Mendivil de figuras alargadas, y sus galerias y cafes acogedores atraen a artistas de todo el mundo. El mirador del barrio ofrece una de las mejores vistas del atardecer sobre la ciudad, y la subida desde la Plaza de Armas es una experiencia en si misma.",
+      "faq_es": [
+        {
+          "q": "¿Por que es conocido San Blas?",
+          "a": "Por la talla en madera: la escuela Mendivil, con sus iconicas figuras alargadas, es el arte distintivo del barrio. Tambien hay galerias de pintura, joyeria y textiles."
+        },
+        {
+          "q": "¿Como llegar a San Blas?",
+          "a": "A 15 minutos de caminata en subida desde la Plaza de Armas por la Cuesta de San Blas, o en un corto viaje en taxi. Desde USGAR Hotels es un paseo agradable por el centro historico."
+        },
+        {
+          "q": "¿El mirador de San Blas es gratis?",
+          "a": "Si — el mirador en la parte alta del barrio es publico y gratuito, perfecto para fotos del atardecer sobre los techos rojos de Cusco."
+        }
+      ],
+      "overview_fr": "San Blas est le quartier des artisans de Cusco, un labyrinthe de ruelles pavees en pente ou vecurent les maitres artisans de la cour inca. Aujourd'hui, ses ateliers produisent les celebres sculptures Mendivil aux figures allongees, et ses galeries et cafes douillets attirent des artistes du monde entier. Le mirador du quartier offre l'une des plus belles vues de coucher de soleil sur la ville, et la montee depuis la Plaza de Armas est une experience en soi.",
+      "faq_fr": [
+        {
+          "q": "Pourquoi San Blas est-il celebre ?",
+          "a": "La sculpture sur bois : l'ecole Mendivil, avec ses figures allongees iconiques, est l'art emblematique du quartier. On y trouve aussi des galeries de peinture, de bijouterie et de textiles."
+        },
+        {
+          "q": "Comment se rendre a San Blas ?",
+          "a": "A 15 minutes de montee a pied depuis la Plaza de Armas par la Cuesta de San Blas, ou en un court trajet en taxi. Depuis l'hotel USGAR, c'est une belle promenade dans le centre historique."
+        },
+        {
+          "q": "Le mirador de San Blas est-il gratuit ?",
+          "a": "Oui — le mirador en haut du quartier est public et gratuit, parfait pour des photos au coucher de soleil sur les toits de tuiles rouges de Cusco."
+        }
+      ],
+      "overview_pt": "San Blas e o bairro dos artesaos de Cusco, um labirinto de ruas de pedra em subida onde viveram os mestres artesaos da corte inca. Hoje suas oficinas produzem as famosas imaginarias Mendivil de figuras alongadas, e suas galerias e cafes aconchegantes atraem artistas do mundo todo. O mirante do bairro oferece uma das melhores vistas do por do sol sobre a cidade, e a subida desde a Plaza de Armas e uma experiencia por si so.",
+      "faq_pt": [
+        {
+          "q": "Pelo que San Blas e conhecido?",
+          "a": "Pela talha em madeira: a escola Mendivil, com suas iconicas figuras alongadas, e a arte distintiva do bairro. Ha tambem galerias de pintura, joalheria e tecidos."
+        },
+        {
+          "q": "Como chegar a San Blas?",
+          "a": "A 15 minutos de caminhada em subida da Plaza de Armas pela Cuesta de San Blas, ou em uma curta viagem de taxi. Do USGAR Hotels e uma caminhada agradavel pelo centro historico."
+        },
+        {
+          "q": "O mirante de San Blas e gratuito?",
+          "a": "Sim — o mirante no alto do bairro e publico e gratuito, perfeito para fotos do por do sol sobre os telhados vermelhos de Cusco."
+        }
+      ]
     },
     {
       "id": "maras-salineras",
@@ -412,7 +892,67 @@
       "bestTime_es": "Temporada seca (Mayo a Octubre) para terrazas mas blancas",
       "bestTime_en": "Dry season (May to October) for whitest pools",
       "bestTime_fr": "Saison seche (Mai a Octobre) pour des terrasses tres blanches",
-      "bestTime_pt": "Temporada seca (Maio a Outubro) para terracos bem brancos"
+      "bestTime_pt": "Temporada seca (Maio a Outubro) para terracos bem brancos",
+      "overview_en": "The Maras Salt Mines are thousands of shallow evaporation pools cascading down a hillside, fed by a warm subterranean spring that has been harvested for salt since pre-Inca times. Families of the nearby communities still work the pools by hand, and the pink salt of Maras is prized by chefs worldwide. The site pairs perfectly with the Moray terraces on a half-day Sacred Valley tour.",
+      "faq_en": [
+        {
+          "q": "How do I visit Maras and Moray together?",
+          "a": "They are 15 minutes apart by car and are usually combined on a half-day tour from Cusco or Urubamba. Your hotel can arrange transport and a driver."
+        },
+        {
+          "q": "Are the salt mines included in the Boleto Turistico?",
+          "a": "No — Maras and Moray each have a separate entrance fee (around 10–15 soles at Maras)."
+        },
+        {
+          "q": "Can I buy the pink salt?",
+          "a": "Yes — local families sell bags of pink salt and salt products at the entrance and in the village; it makes an excellent souvenir."
+        }
+      ],
+      "overview_es": "Las Salineras de Maras son miles de pozas de evaporacion que caen en cascada por la ladera, alimentadas por un manantial subterraneo de agua tibia que se explota desde epocas preincas. Familias de las comunidades cercanas trabajan las pozas a mano, y la sal rosada de Maras es apreciada por chefs de todo el mundo. El sitio combina perfectamente con las terrazas de Moray en un tour de medio dia por el Valle Sagrado.",
+      "faq_es": [
+        {
+          "q": "¿Como visitar Maras y Moray juntos?",
+          "a": "Estan a 15 minutos en auto y suelen combinarse en un tour de medio dia desde Cusco o Urubamba. En el hotel te organizamos el transporte con chofer."
+        },
+        {
+          "q": "¿Las salineras estan incluidas en el Boleto Turistico?",
+          "a": "No — Maras y Moray tienen entrada aparte (unos 10–15 soles en Maras)."
+        },
+        {
+          "q": "¿Se puede comprar la sal rosada?",
+          "a": "Si — las familias locales venden bolsas de sal rosada y productos de sal en la entrada y en el pueblo; es un excelente recuerdo."
+        }
+      ],
+      "overview_fr": "Les salines de Maras sont des milliers de bassins d'evaporation peu profonds en cascade sur le flanc de la colline, alimentes par une source souterraine chaude exploitee depuis l'epoque pre-inca. Des familles des communautes voisines travaillent encore les bassins a la main, et le sel rose de Maras est recherche par les chefs du monde entier. Le site se combine parfaitement avec les terrasses de Moray lors d'un circuit d'une demi-journee dans la Vallee Sacree.",
+      "faq_fr": [
+        {
+          "q": "Comment visiter Maras et Moray ensemble ?",
+          "a": "Ils sont a 15 minutes en voiture et se combinent habituellement lors d'un circuit d'une demi-journee depuis Cusco ou Urubamba. L'hotel peut organiser le transport avec chauffeur."
+        },
+        {
+          "q": "Les salines sont-elles incluses dans le Boleto Turistico ?",
+          "a": "Non — Maras et Moray ont chacune une entree payante separee (environ 10 a 15 soles a Maras)."
+        },
+        {
+          "q": "Peut-on acheter le sel rose ?",
+          "a": "Oui — les familles locales vendent des sachets de sel rose et des produits derives a l'entree et au village ; un excellent souvenir."
+        }
+      ],
+      "overview_pt": "As Salineras de Maras sao milhares de pocos de evaporacao em cascata pela encosta, alimentados por uma nascente subterranea morna explorada desde a epoca pre-inca. Familias das comunidades vizinhas ainda trabalham os pocos manualmente, e o sal rosa de Maras e apreciado por chefs do mundo todo. O sitio combina perfeitamente com os terraços de Moray em um passeio de meio dia pelo Vale Sagrado.",
+      "faq_pt": [
+        {
+          "q": "Como visitar Maras e Moray juntos?",
+          "a": "Ficam a 15 minutos de carro e costumam ser combinados em um passeio de meio dia saindo de Cusco ou Urubamba. No hotel organizamos o transporte com motorista."
+        },
+        {
+          "q": "As salineras estao incluídas no Boleto Turistico?",
+          "a": "Nao — Maras e Moray tem entrada separada (cerca de 10–15 soles em Maras)."
+        },
+        {
+          "q": "Posso comprar o sal rosa?",
+          "a": "Sim — as familias locais vendem sacos de sal rosa e derivados na entrada e na vila; um excelente souvenir."
+        }
+      ]
     },
     {
       "id": "moray",
@@ -458,7 +998,67 @@
       "bestTime_es": "Mayo a Octubre",
       "bestTime_en": "May to October",
       "bestTime_fr": "Mai a Octobre",
-      "bestTime_pt": "Maio a Outubro"
+      "bestTime_pt": "Maio a Outubro",
+      "overview_en": "Moray is an Inca agricultural laboratory: enormous concentric terraces carved into natural sinkholes, each level reproducing a different microclimate — up to 15°C of temperature difference between top and bottom. Inca agronomists used it to acclimatize crops from every region of the Empire. From the top rim you see the full amphitheater of concentric rings, an unforgettable sight only 20 minutes from Maras.",
+      "faq_en": [
+        {
+          "q": "How long do I need at Moray?",
+          "a": "30–45 minutes is enough to walk the rim and descend into the terraces. Combine it with the Maras salt mines for a half-day outing."
+        },
+        {
+          "q": "Is Moray included in the Boleto Turistico?",
+          "a": "Yes — Moray is part of the Boleto Turistico (Sacred Valley circuit), unlike Maras which is separate."
+        },
+        {
+          "q": "Can I walk down into the terraces?",
+          "a": "You can walk along the outer terraces, but access to the central circles is restricted to preserve the site — follow the marked paths."
+        }
+      ],
+      "overview_es": "Moray es un laboratorio agricola inca: enormes terrazas concentricas talladas en hundimientos naturales, donde cada nivel reproduce un microclima distinto — hasta 15°C de diferencia entre la parte superior e inferior. Los agronomos incas lo usaban para aclimatar cultivos de todas las regiones del Imperio. Desde el borde superior se ve el anfiteatro completo de anillos concentricos, una vista inolvidable a solo 20 minutos de Maras.",
+      "faq_es": [
+        {
+          "q": "¿Cuanto tiempo necesito en Moray?",
+          "a": "Con 30 a 45 minutos basta para recorrer el borde y bajar a las terrazas. Combinado con las Salineras de Maras forma una excursion de medio dia."
+        },
+        {
+          "q": "¿Moray esta incluido en el Boleto Turistico?",
+          "a": "Si — Moray forma parte del Boleto Turistico (circuito Valle Sagrado), a diferencia de Maras que es aparte."
+        },
+        {
+          "q": "¿Se puede bajar a las terrazas?",
+          "a": "Se puede caminar por las terrazas exteriores, pero el acceso a los circulos centrales esta restringido para preservar el sitio — sigue los senderos marcados."
+        }
+      ],
+      "overview_fr": "Moray est un laboratoire agricole inca : d'enormes terrasses concentriques taillees dans des dolines naturelles, chaque niveau reproduisant un microclimat different — jusqu'a 15 °C d'ecart entre le haut et le bas. Les agronomes incas l'utilisaient pour acclimater les cultures de toutes les regions de l'Empire. Depuis le rebord superieur, on decouvre l'amphitheatre complet d'anneaux concentriques, une vue inoubliable a 20 minutes seulement de Maras.",
+      "faq_fr": [
+        {
+          "q": "Combien de temps faut-il a Moray ?",
+          "a": "30 a 45 minutes suffisent pour longer le rebord et descendre dans les terrasses. Combine avec les salines de Maras, cela forme une excursion d'une demi-journee."
+        },
+        {
+          "q": "Moray est-il inclus dans le Boleto Turistico ?",
+          "a": "Oui — Moray fait partie du Boleto Turistico (circuit Vallee Sacree), contrairement a Maras qui est separe."
+        },
+        {
+          "q": "Peut-on descendre dans les terrasses ?",
+          "a": "On peut marcher sur les terrasses exterieures, mais l'acces aux cercles centraux est restreint pour preserver le site — suivez les sentiers balises."
+        }
+      ],
+      "overview_pt": "Moray e um laboratorio agricola inca: enormes terraços concentricos esculpidos em dolinas naturais, cada nivel reproduzindo um microclima diferente — ate 15°C de diferenca entre o topo e a base. Os agronomos incas o usavam para aclimatar cultivos de todas as regioes do Imperio. Da borda superior ve-se o anfiteatro completo de aneis concentricos, uma vista inesquecivel a apenas 20 minutos de Maras.",
+      "faq_pt": [
+        {
+          "q": "Quanto tempo preciso em Moray?",
+          "a": "30 a 45 minutos bastam para percorrer a borda e descer aos terraços. Combinado com as Salineras de Maras forma um passeio de meio dia."
+        },
+        {
+          "q": "Moray esta incluido no Boleto Turistico?",
+          "a": "Sim — Moray faz parte do Boleto Turistico (circuito Vale Sagrado), ao contrario de Maras, que e separado."
+        },
+        {
+          "q": "Posso descer aos terraços?",
+          "a": "Pode-se caminhar pelos terraços externos, mas o acesso aos circulos centrais e restrito para preservar o sitio — siga as trilhas demarcadas."
+        }
+      ]
     },
     {
       "id": "ollantaytambo",
@@ -504,7 +1104,67 @@
       "bestTime_es": "Todo el ano",
       "bestTime_en": "Year-round",
       "bestTime_fr": "Toute l'annee",
-      "bestTime_pt": "O ano todo"
+      "bestTime_pt": "O ano todo",
+      "overview_en": "Ollantaytambo is the best-preserved living Inca town: the original street grid and stone canals still function, and the monumental fortress above the village was the site of the Incas' greatest victory over the Spanish, led by Manco Inca. It is also the main train station for Machu Picchu, making it both a day-trip destination and a strategic overnight stop on the way to Aguas Calientes.",
+      "faq_en": [
+        {
+          "q": "Can I take the train to Machu Picchu from Ollantaytambo?",
+          "a": "Yes — PeruRail and Inca Rail depart from Ollantaytambo station regularly, and the journey to Aguas Calientes is about 1.5 hours. Staying overnight here is a smart way to catch an early train."
+        },
+        {
+          "q": "How long should I spend at the fortress?",
+          "a": "1.5–2 hours covers the terraces, the Sun Temple and the quarry above the village. Combine with a visit to the town's cobblestone streets and a local lunch."
+        },
+        {
+          "q": "Is Ollantaytambo included in the Boleto Turistico?",
+          "a": "Yes — the archaeological site is part of the Boleto Turistico's Sacred Valley circuit."
+        }
+      ],
+      "overview_es": "Ollantaytambo es el pueblo inca vivo mejor conservado: la cuadricula original de calles y los canales de piedra siguen funcionando, y la fortaleza monumental sobre el pueblo fue el escenario de la mayor victoria inca sobre los espanoles, liderada por Manco Inca. Es tambien la principal estacion de tren hacia Machu Picchu, lo que lo convierte en destino de dia completo y en parada estrategica para pernoctar rumbo a Aguas Calientes.",
+      "faq_es": [
+        {
+          "q": "¿Puedo tomar el tren a Machu Picchu desde Ollantaytambo?",
+          "a": "Si — PeruRail e Inca Rail salen regularmente de la estacion de Ollantaytambo, y el viaje a Aguas Calientes dura unas 1.5 horas. Pasar la noche aqui es una estrategia inteligente para tomar el tren temprano."
+        },
+        {
+          "q": "¿Cuanto tiempo dedicar a la fortaleza?",
+          "a": "Con 1.5 a 2 horas se recorren las terrazas, el Templo del Sol y la cantera sobre el pueblo. Combinalo con las calles empedradas y un almuerzo local."
+        },
+        {
+          "q": "¿Ollantaytambo esta incluido en el Boleto Turistico?",
+          "a": "Si — el sitio arqueologico forma parte del circuito Valle Sagrado del Boleto Turistico."
+        }
+      ],
+      "overview_fr": "Ollantaytambo est le village inca vivant le mieux preserve : le trace original des rues et les canaux de pierre fonctionnent toujours, et la forteresse monumentale au-dessus du village fut le theatre de la plus grande victoire inca sur les Espagnols, menee par Manco Inca. C'est aussi la principale gare de train vers le Machu Picchu, ce qui en fait a la fois une destination d'excursion et une etape strategique vers Aguas Calientes.",
+      "faq_fr": [
+        {
+          "q": "Peut-on prendre le train pour le Machu Picchu depuis Ollantaytambo ?",
+          "a": "Oui — PeruRail et Inca Rail partent regulierement de la gare d'Ollantaytambo, et le trajet vers Aguas Calientes dure environ 1 h 30. Y dormir est une strategie intelligente pour attraper un train matinal."
+        },
+        {
+          "q": "Combien de temps consacrer a la forteresse ?",
+          "a": "1 h 30 a 2 heures couvrent les terrasses, le temple du Soleil et la carriere au-dessus du village. Combinez avec les ruelles pavees et un dejeuner local."
+        },
+        {
+          "q": "Ollantaytambo est-il inclus dans le Boleto Turistico ?",
+          "a": "Oui — le site archeologique fait partie du circuit Vallee Sacree du Boleto Turistico."
+        }
+      ],
+      "overview_pt": "Ollantaytambo e a vila inca viva mais bem preservada: o tracado original das ruas e os canais de pedra ainda funcionam, e a fortaleza monumental acima da vila foi o cenario da maior vitoria inca sobre os espanhois, liderada por Manco Inca. E tambem a principal estacao de trem para Machu Picchu, sendo ao mesmo tempo destino de dia inteiro e parada estrategica para pernoitar rumo a Aguas Calientes.",
+      "faq_pt": [
+        {
+          "q": "Posso pegar o trem para Machu Picchu em Ollantaytambo?",
+          "a": "Sim — PeruRail e Inca Rail partem regularmente da estacao de Ollantaytambo, e a viagem a Aguas Calientes dura cerca de 1h30. Dormir aqui e uma estrategia inteligente para pegar o trem cedo."
+        },
+        {
+          "q": "Quanto tempo dedicar a fortaleza?",
+          "a": "1h30 a 2 horas cobrem os terraços, o Templo do Sol e a pedreira acima da vila. Combine com as ruas de pedra e um almoco local."
+        },
+        {
+          "q": "Ollantaytambo esta incluido no Boleto Turistico?",
+          "a": "Sim — o sitio arqueologico faz parte do circuito Vale Sagrado do Boleto Turistico."
+        }
+      ]
     },
     {
       "id": "pisac",
@@ -550,7 +1210,67 @@
       "bestTime_es": "Manana (Martes, Jueves y Domingo)",
       "bestTime_en": "Morning (Tuesday, Thursday, Sunday)",
       "bestTime_fr": "Matin (Mardi, Enjolive le Dimanche)",
-      "bestTime_pt": "Manha (Terca, Quinta e Domingo)"
+      "bestTime_pt": "Manha (Terca, Quinta e Domingo)",
+      "overview_en": "Pisac is the gateway town of the Sacred Valley, crowned by one of the most spectacular Inca citadels in Peru — a mountain of agricultural terraces, temples and the Intihuatana stone. Below, the town's market fills the plaza on Sundays, Tuesdays and Thursdays with textiles, ceramics and silver from valley communities. The Sunday market is the largest and most traditional.",
+      "faq_en": [
+        {
+          "q": "Which market day should I visit Pisac?",
+          "a": "Sunday is the biggest and most traditional market, when villagers come down from the surrounding communities. Tuesday and Thursday are smaller but still lively."
+        },
+        {
+          "q": "How long does the Pisac citadel visit take?",
+          "a": "2–3 hours: the ruins climb the hillside with remarkable views, ending at the Sun Temple and Intihuatana. A guide at the entrance explains the terraces and aqueducts."
+        },
+        {
+          "q": "Is Pisac included in the Boleto Turistico?",
+          "a": "Yes — the archaeological site is part of the Boleto Turistico's Sacred Valley circuit."
+        }
+      ],
+      "overview_es": "Pisac es la puerta de entrada del Valle Sagrado, coronada por una de las ciudadelas incas mas espectaculares del Peru: una montana de terrazas agricolas, templos y la piedra Intihuatana. Abajo, el mercado del pueblo llena la plaza los domingos, martes y jueves con textiles, ceramica y plateria de las comunidades del valle. El mercado dominical es el mas grande y tradicional.",
+      "faq_es": [
+        {
+          "q": "¿Que dia de mercado conviene visitar Pisac?",
+          "a": "El domingo es el mas grande y tradicional, cuando los campesinos bajan de las comunidades cercanas. Martes y jueves son mas pequenos pero igual de animados."
+        },
+        {
+          "q": "¿Cuanto dura la visita a la ciudadela?",
+          "a": "De 2 a 3 horas: las ruinas suben por la ladera con vistas notables, terminando en el Templo del Sol y la Intihuatana. Un guia en la entrada explica las terrazas y acueductos."
+        },
+        {
+          "q": "¿Pisac esta incluido en el Boleto Turistico?",
+          "a": "Si — el sitio arqueologico forma parte del circuito Valle Sagrado del Boleto Turistico."
+        }
+      ],
+      "overview_fr": "Pisac est la porte d'entree de la Vallee Sacree, couronnee par l'une des citadelles incas les plus spectaculaires du Perou : une montagne de terrasses agricoles, de temples et la pierre Intihuatana. En contrebas, le marche du village remplit la place les dimanches, mardis et jeudis de textiles, ceramiques et argenterie des communautes de la vallee. Le marche du dimanche est le plus grand et le plus traditionnel.",
+      "faq_fr": [
+        {
+          "q": "Quel jour de marche choisir pour visiter Pisac ?",
+          "a": "Le dimanche est le plus grand et le plus traditionnel, quand les villageois descendent des communautes environnantes. Mardi et jeudi sont plus petits mais tout aussi vivants."
+        },
+        {
+          "q": "Combien de temps dure la visite de la citadelle ?",
+          "a": "2 a 3 heures : les ruines gravissent le flanc de la colline avec des vues remarquables, jusqu'au temple du Soleil et a l'Intihuatana. Un guide a l'entree explique les terrasses et aqueducs."
+        },
+        {
+          "q": "Pisac est-il inclus dans le Boleto Turistico ?",
+          "a": "Oui — le site archeologique fait partie du circuit Vallee Sacree du Boleto Turistico."
+        }
+      ],
+      "overview_pt": "Pisac e a porta de entrada do Vale Sagrado, coroada por uma das cidadelas incas mais espetaculares do Peru: uma montanha de terraços agricolas, templos e a pedra Intihuatana. Abaixo, a feira da vila enche a praca aos domingos, tercas e quintas com tecidos, ceramicas e prataria das comunidades do vale. A feira de domingo e a maior e mais tradicional.",
+      "faq_pt": [
+        {
+          "q": "Qual dia de feira escolher para visitar Pisac?",
+          "a": "Domingo e o maior e mais tradicional, quando os camponeses descem das comunidades vizinhas. Terca e quinta sao menores, mas igualmente animadas."
+        },
+        {
+          "q": "Quanto dura a visita a cidadela?",
+          "a": "2 a 3 horas: as ruinas sobem a encosta com vistas notaveis, terminando no Templo do Sol e na Intihuatana. Um guia na entrada explica os terraços e aquedutos."
+        },
+        {
+          "q": "Pisac esta incluido no Boleto Turistico?",
+          "a": "Sim — o sitio arqueologico faz parte do circuito Vale Sagrado do Boleto Turistico."
+        }
+      ]
     },
     {
       "id": "humantay-lake",
@@ -596,7 +1316,67 @@
       "bestTime_es": "Mayo a Octubre (Temporada seca)",
       "bestTime_en": "May to October (Dry season)",
       "bestTime_fr": "Mai a Octobre (Saison seche)",
-      "bestTime_pt": "Maio a Outubro (Temporada seca)"
+      "bestTime_pt": "Maio a Outubro (Temporada seca)",
+      "overview_en": "Laguna Humantay is a turquoise glacial lake at 4,200 meters, cradled beneath the snow-capped Humantay peak in the Vilcabamba range. The hike from the trailhead takes 1–1.5 hours uphill (or 30 minutes on horseback), rewarded by one of the most photographed landscapes in the Cusco region. Tours depart Cusco around 4:00 a.m. and return by late afternoon — a long but unforgettable day.",
+      "faq_en": [
+        {
+          "q": "How difficult is the Humantay Lake hike?",
+          "a": "Moderate: about 3–4 km uphill from the parking area at 3,850 m to the lake at 4,200 m. Horses are available for part of the route if needed."
+        },
+        {
+          "q": "Do I need altitude acclimatization?",
+          "a": "Yes — spend at least 2–3 days in Cusco first. The altitude hits harder here than at Machu Picchu; bring coca tea, water and warm layers."
+        },
+        {
+          "q": "What should I bring?",
+          "a": "Sturdy shoes, warm clothing (mornings are freezing), sunscreen, rain jacket and cash for the entrance fee and optional horse rental."
+        }
+      ],
+      "overview_es": "La Laguna Humantay es un lago glaciar turquesa a 4.200 metros, custodiado por el nevado Humantay en la cordillera de Vilcabamba. La caminata desde el punto de partida toma 1 a 1.5 horas en subida (o 30 minutos a caballo), y la recompensa es uno de los paisajes mas fotografiados de la region del Cusco. Los tours salen de Cusco hacia las 4:00 a.m. y regresan al atardecer — un dia largo pero inolvidable.",
+      "faq_es": [
+        {
+          "q": "¿Que tan dificil es la caminata a la Laguna Humantay?",
+          "a": "Moderada: unos 3 a 4 km en subida desde el estacionamiento a 3.850 m hasta el lago a 4.200 m. Hay caballos disponibles para parte del recorrido si lo necesitas."
+        },
+        {
+          "q": "¿Necesito aclimatacion?",
+          "a": "Si — pasa al menos 2 a 3 dias en Cusco primero. La altura golpea mas fuerte aqui que en Machu Picchu; lleva te de coca, agua y capas de abrigo."
+        },
+        {
+          "q": "¿Que llevar?",
+          "a": "Calzado firme, ropa de abrigo (las mananas son heladas), protector solar, impermeable y efectivo para la tarifa de entrada y el alquiler opcional de caballo."
+        }
+      ],
+      "overview_fr": "La laguna Humantay est un lac glaciaire turquoise a 4 200 metres, blotti sous le sommet enneige de l'Humantay dans la cordillere de Vilcabamba. La randonnee depuis le point de depart prend 1 h a 1 h 30 en montee (ou 30 minutes a cheval), recompensee par l'un des paysages les plus photographies de la region de Cusco. Les circuits partent de Cusco vers 4h00 et reviennent en fin d'apres-midi — une journee longue mais inoubliable.",
+      "faq_fr": [
+        {
+          "q": "La randonnee de la laguna Humantay est-elle difficile ?",
+          "a": "Moderee : environ 3 a 4 km en montee du parking (3 850 m) au lac (4 200 m). Des chevaux sont disponibles pour une partie du parcours si besoin."
+        },
+        {
+          "q": "Faut-il s'acclimater ?",
+          "a": "Oui — passez au moins 2 a 3 jours a Cusco d'abord. L'altitude frappe plus fort ici qu'au Machu Picchu ; apportez the de coca, eau et vetements chauds en couches."
+        },
+        {
+          "q": "Que faut-il apporter ?",
+          "a": "Chaussures solides, vetements chauds (les matins sont glacials), creme solaire, veste de pluie et especes pour l'entree et l'eventuelle location de cheval."
+        }
+      ],
+      "overview_pt": "A Laguna Humantay e um lago glacial turquesa a 4.200 metros, aninhado sob o pico nevado de Humantay na cordilheira de Vilcabamba. A trilha do ponto de partida leva 1h a 1h30 de subida (ou 30 minutos a cavalo), recompensada por uma das paisagens mais fotografadas da regiao de Cusco. Os passeios saem de Cusco por volta das 4h e voltam no fim da tarde — um dia longo, mas inesquecivel.",
+      "faq_pt": [
+        {
+          "q": "Qual a dificuldade da trilha da Laguna Humantay?",
+          "a": "Moderada: cerca de 3 a 4 km de subida do estacionamento (3.850 m) ao lago (4.200 m). Ha cavalos disponiveis para parte do percurso, se necessario."
+        },
+        {
+          "q": "Preciso de aclimatacao?",
+          "a": "Sim — passe pelo menos 2 a 3 dias em Cusco primeiro. A altitude atinge mais forte aqui do que em Machu Picchu; leve cha de coca, agua e camadas quentes."
+        },
+        {
+          "q": "O que levar?",
+          "a": "Calcado firme, roupas quentes (as manhas sao geladas), protetor solar, capa de chuva e dinheiro para a entrada e o opcional aluguel de cavalo."
+        }
+      ]
     }
   ]
 }

@@ -48,6 +48,8 @@
   "room": {
     "about": "About the room",
     "amenities": "Amenities & Comforts",
+    "hotelServices": "Hotel Services",
+    "inRoomServices": "In-Room Services",
     "includedFree": "Included at no extra cost",
     "baseRate": "Base rate",
     "maxCapacity": "Max capacity",
@@ -280,7 +282,10 @@
     "travelTime": "Travel Time",
     "bestSeason": "Best Season",
     "readyToExplore": "Ready to explore Cusco?",
-    "readyToExploreText": "Book your stay at USGAR Hotels and discover all the wonders of Cusco and the Sacred Valley."
+    "readyToExploreText": "Book your stay at USGAR Hotels and discover all the wonders of Cusco and the Sacred Valley.",
+    "overviewTitle": "What to Expect",
+    "faqTitle": "Frequently Asked Questions",
+    "continueExploring": "Continue Exploring Cusco"
   },
   "success": {
     "title": "Booking Confirmed",

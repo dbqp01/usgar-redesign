@@ -48,6 +48,8 @@
   "room": {
     "about": "Sobre la habitacion",
     "amenities": "Servicios y comodidades",
+    "hotelServices": "Servicios del hotel",
+    "inRoomServices": "Servicios en la habitacion",
     "includedFree": "Incluido sin costo extra",
     "baseRate": "Tarifa base",
     "maxCapacity": "Capacidad maxima",
@@ -279,8 +281,11 @@
     "distanceFromHotel": "Distancia desde el Hotel",
     "travelTime": "Tiempo de Viaje",
     "bestSeason": "Mejor Epoca",
-    "readyToExplore": "Listo para explorar Cusco?",
-    "readyToExploreText": "Reserva tu estadia en USGAR Hotels y descubre todas las maravillas de Cusco y el Valle Sagrado."
+    "readyToExplore": "¿Listo para explorar Cusco?",
+    "readyToExploreText": "Reserva tu estadia en USGAR Hotels y descubre todas las maravillas de Cusco y el Valle Sagrado.",
+    "overviewTitle": "Que esperar",
+    "faqTitle": "Preguntas Frecuentes",
+    "continueExploring": "Sigue Explorando Cusco"
   },
   "success": {
     "title": "Reserva Confirmada",

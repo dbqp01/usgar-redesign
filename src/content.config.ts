@@ -169,6 +169,15 @@ const explore = defineCollection({
     bestTime_es: z.string(),
     bestTime_fr: z.string(),
     bestTime_pt: z.string(),
+    // SEO: guia extendida por atraccion (overview + FAQ)
+    overview_en: z.string(),
+    overview_es: z.string(),
+    overview_fr: z.string(),
+    overview_pt: z.string(),
+    faq_en: z.array(z.object({ q: z.string(), a: z.string() })),
+    faq_es: z.array(z.object({ q: z.string(), a: z.string() })),
+    faq_fr: z.array(z.object({ q: z.string(), a: z.string() })),
+    faq_pt: z.array(z.object({ q: z.string(), a: z.string() })),
   }),
 });
 

@@ -48,6 +48,8 @@
   "room": {
     "about": "A propos de la chambre",
     "amenities": "Services et conforts",
+    "hotelServices": "Services de l'hotel",
+    "inRoomServices": "Services dans la chambre",
     "includedFree": "Inclus sans frais supplementaires",
     "baseRate": "Tarif de base",
     "maxCapacity": "Capacite maximale",
@@ -280,7 +282,10 @@
     "travelTime": "Temps de Trajet",
     "bestSeason": "Meilleure Saison",
     "readyToExplore": "Pret a explorer Cusco ?",
-    "readyToExploreText": "Reservez votre sejour a USGAR Hotels et decouvrez toutes les merveilles de Cusco et de la Vallee Sacree."
+    "readyToExploreText": "Reservez votre sejour a l'USGAR Hotels et decouvrez toutes les merveilles de Cusco et de la Vallee Sacree.",
+    "overviewTitle": "A quoi s'attendre",
+    "faqTitle": "Questions Frequentes",
+    "continueExploring": "Continuez a Explorer Cusco"
   },
   "success": {
     "title": "Reservation Confirmee",

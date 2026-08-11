@@ -7,6 +7,11 @@ export interface LocalizedField<T = string> {
   pt: T;
 }
 
+export interface AttractionFaq {
+  q: string;
+  a: string;
+}
+
 export interface Attraction {
   id: string;
   name: LocalizedField<string>;
@@ -15,8 +20,10 @@ export interface Attraction {
   travelTime: string;
   category: 'historical' | 'nature' | 'cultural' | 'adventure';
   history: LocalizedField<string>;
+  overview: LocalizedField<string>;
   howToGet: LocalizedField<string>;
   tips: LocalizedField<string[]>;
+  faq: LocalizedField<AttractionFaq[]>;
   bestTime: LocalizedField<string>;
 }
 
@@ -49,6 +56,12 @@ export const attractions: Attraction[] = rawAttractions.map(({ data: attr }) => 
     fr: attr.history_fr || attr.history_en,
     pt: attr.history_pt || attr.history_es
   },
+  overview: {
+    en: attr.overview_en,
+    es: attr.overview_es,
+    fr: attr.overview_fr || attr.overview_en,
+    pt: attr.overview_pt || attr.overview_es
+  },
   howToGet: {
     en: attr.howToGet_en,
     es: attr.howToGet_es,
@@ -60,6 +73,12 @@ export const attractions: Attraction[] = rawAttractions.map(({ data: attr }) => 
     es: attr.tips_es || [],
     fr: attr.tips_fr || attr.tips_en || [],
     pt: attr.tips_pt || attr.tips_es || []
+  },
+  faq: {
+    en: attr.faq_en || [],
+    es: attr.faq_es || [],
+    fr: attr.faq_fr || attr.faq_en || [],
+    pt: attr.faq_pt || attr.faq_es || []
   },
   bestTime: {
     en: attr.bestTime_en,
