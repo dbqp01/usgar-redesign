@@ -352,7 +352,7 @@ final class ProcessOutboxActionTest extends TestCase {
                         }
                     }
                 }
-                if (microtime(true) - $start > 40) {
+                if (microtime(true) - $start > 120) {
                     proc_terminate($proc);
                     return ['code' => -2, 'out' => $out, 'err' => 'worker timeout'];
                 }

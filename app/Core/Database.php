@@ -40,6 +40,10 @@ class Database {
                     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                     PDO::ATTR_EMULATE_PREPARES   => false,
+                    // Timeout de conexión: sin esto, con la BD caída cada intento
+                    // espera el timeout TCP del OS (~21s+) x 3 hosts => requests
+                    // colgados y suites de test que parecen no terminar (P3-2).
+                    PDO::ATTR_TIMEOUT            => 3,
                 ]);
                 return; // Conexion exitosa
             } catch (PDOException $e) {
