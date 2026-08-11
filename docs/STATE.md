@@ -7,6 +7,12 @@
 - `php vendor/bin/phpunit` → **160 tests / 569 assertions, 12 skipped, 1 fallo flaky** (`ProcessOutboxActionTest::testConcurrentRunsProcessEachEventExactlyOnce` — pasa aislado; workers proc_open + timing en Windows). Backlog: ROADMAP P3-7.
 - `scripts/run-exhaustive-tests.php` → **no termina**: golpea MP real (404 "Payment not found", timeouts 8s c/u) y BD remota (1045 si la IP no está re-anillada). Evidencia: `logs/app.log` 12:47. Backlog: ROADMAP P3-6.
 
+## Verificación 2026-08-11 (fixes de suite — commits `7472967`)
+- **Causa raíz del cuelgue de la suite exhaustiva**: `Database` sin `PDO::ATTR_TIMEOUT` (3 hosts × timeout TCP del OS ~21s+ cuando la BD remota no responde) + host alias viejo `us-imm-web909.main-hosting.eu`. FIX: `PDO::ATTR_TIMEOUT=3` + `.env` local con `DB_HOST=srv909.hstgr.io` (host canónico del panel Hostinger).
+- `php scripts/run-exhaustive-tests.php` → **21/21 PASS, EXIT=0 en <1 min** (antes: colgaba >7 min).
+- `php vendor/bin/phpunit` → **160 tests / 578 assertions, 12 skipped, 0 fallos** (fix P3-7: timeout worker 120s).
+- Credenciales MP de producción verificadas contra la API (HTTP 200, live_mode=true; coinciden con `.env`).
+
 ## Historial — STATE original (Fase 0/2: línea base + limpieza de pagos)
 
 > Memoria de sesión del backend: este archivo es el handoff del trabajo de backend (migraciones + refactor).
