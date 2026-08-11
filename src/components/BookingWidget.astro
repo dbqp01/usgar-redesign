@@ -26,7 +26,6 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
             type="button"
             id="widget-dates"
             data-widget-dates
-            popovertarget="widget-popover"
             aria-haspopup="dialog"
             aria-expanded="false"
             aria-controls="widget-popover"
@@ -38,7 +37,6 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
           <!-- Calendar Popover -->
           <div
             id="widget-popover"
-            popover="auto"
             data-widget-popover
             role="dialog"
             aria-labelledby="widget-popover-title"
@@ -235,7 +233,7 @@ import { formatDate } from '../utils/format';
       renderRange();
     }
 
-    let picked: string | null = checkIn;
+    let isSelectingRange = false;
 
     function portalPopoverOnMobile() {
       if (window.matchMedia('(max-width: 639px)').matches && popoverEl.parentElement !== document.body) {
@@ -279,7 +277,7 @@ import { formatDate } from '../utils/format';
       popoverEl.classList.add('hidden');
       triggerEl.setAttribute('aria-expanded', 'false');
       restorePopoverPosition();
-      picked = checkIn;
+      isSelectingRange = false;
     }
 
     triggerEl.addEventListener('click', () => (open ? closePopover() : openPopover()), { signal });
@@ -289,16 +287,20 @@ import { formatDate } from '../utils/format';
       if (!day) return;
       const date = day.dataset.date || '';
       if (day.dataset.past === 'true' || !date) return;
-      if (!picked || (checkIn && checkOut)) {
-        picked = date;
+      if (!isSelectingRange) {
+        // Primer click: fija check-in, checkout default +1 noche.
         checkIn = date;
         checkOut = addDays(date, 1);
-      } else {
+        isSelectingRange = true;
+      } else if (date > checkIn) {
+        // Segundo click posterior: fija checkout (rango completo).
         checkOut = date;
-        const r = clampRange(checkIn, checkOut);
-        checkIn = r.checkIn;
-        checkOut = r.checkOut;
-        picked = null;
+        isSelectingRange = false;
+      } else {
+        // Segundo click anterior o igual: re-pick del check-in.
+        checkIn = date;
+        checkOut = addDays(date, 1);
+        isSelectingRange = true;
       }
       refreshSelection();
       renderLabel();
@@ -309,7 +311,9 @@ import { formatDate } from '../utils/format';
 
     document.addEventListener('click', (e) => {
       const target = e.target as Node;
-      if (open && !form.contains(target) && !popoverEl.contains(target)) closePopover();
+      // Cierra si el click es fuera del popover y del trigger (el resto del
+      // form — selects, submit — también cierra).
+      if (open && !triggerEl.contains(target) && !popoverEl.contains(target)) closePopover();
     }, { signal });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closePopover();

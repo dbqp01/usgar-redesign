@@ -102,10 +102,11 @@ const localeMap: Record<Locale, string> = {
     )}
 
     <!-- Fonts self-hosted (variable woff2, mismo origin — sin 3rd-party ni font-swap tardío) -->
-    <!-- Preload las familias críticas usadas above-the-fold; Astro recomienda hacerlo de forma selectiva. -->
+    <!-- Preload solo las variantes above-the-fold (latin normal): la doc de Astro
+         recomienda preload selectivo (docs.astro.build/guides/fonts/#preloading-fonts). -->
     <Font cssVariable="--font-ak" preload />
-    <Font cssVariable="--font-montserrat" preload />
-    <Font cssVariable="--font-playfair" preload />
+    <Font cssVariable="--font-montserrat" preload={[{ subset: 'latin', style: 'normal' }]} />
+    <Font cssVariable="--font-playfair" preload={[{ subset: 'latin', style: 'normal' }]} />
 
     <!-- Schema.org JSON-LD -->
     {schema && (

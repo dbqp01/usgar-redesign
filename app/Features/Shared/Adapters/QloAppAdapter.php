@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Features\Shared\Adapters;
 
 use App\Features\Shared\Ports\PmsPortInterface;
+use App\Features\Shared\DiscountResolver;
 use App\Core\Config;
 use App\Core\Logger;
 use App\Core\Database;
@@ -85,18 +86,33 @@ class QloAppAdapter implements PmsPortInterface {
             $rows = $stmt->fetchAll();
             $availableRooms = [];
 
+            // Planes de precio (Feature Price) para la tarifa No Reembolsable,
+            // centralizados en el admin de QloApps. Si falla la consulta =>
+            // sin descuento (fail-safe, nunca rompe la reserva).
+            [$plans, $restrictionsByPlan] = $this->loadFeaturePricePlans();
+
             foreach ($rows as $row) {
                 $totalRooms = max((int)$row['total_rooms'], 0);
                 $availableCount = max(0, $totalRooms - (int)$row['booked_count']);
+                $basePrice = (float)$row['price'];
+                $idProduct = (int)$row['id_product'];
+
+                $plan = DiscountResolver::pickPlan(
+                    $plans[$idProduct] ?? [],
+                    $restrictionsByPlan,
+                    $checkIn,
+                    $checkOut
+                );
 
                 $availableRooms[] = [
-                    'id_room_type'  => (int)$row['id_room_type'],
-                    'id_product'    => (int)$row['id_product'],
-                    'room_name'     => $row['room_name'],
-                    'price'         => (float)$row['price'],
-                    'max_guests'    => (int)$row['max_guests'],
-                    'total_rooms'   => $totalRooms,
-                    'available_qty' => $availableCount,
+                    'id_room_type'       => (int)$row['id_room_type'],
+                    'id_product'         => $idProduct,
+                    'room_name'          => $row['room_name'],
+                    'price'              => $basePrice,
+                    'non_refundable_price' => DiscountResolver::nonRefundablePrice($basePrice, $plan),
+                    'max_guests'         => (int)$row['max_guests'],
+                    'total_rooms'        => $totalRooms,
+                    'available_qty'      => $availableCount,
                 ];
             }
 
@@ -105,6 +121,41 @@ class QloAppAdapter implements PmsPortInterface {
         } catch (PDOException $e) {
             Logger::error('QloAppAdapter: Error en consulta SQL: ' . $e->getMessage());
             return [];
+        }
+    }
+
+    /**
+     * Carga los planes maestros de Feature Price (id_cart=0) y sus restricciones
+     * de fechas. Devuelve [planesPorProducto, restriccionesPorPlan].
+     * Schema verificado contra la BD real y el modulo hotelreservationsystem.
+     */
+    private function loadFeaturePricePlans(): array {
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT id_feature_price, id_product, impact_way, impact_type, impact_value
+                FROM qlo_htl_room_type_feature_pricing
+                WHERE id_cart = 0 AND id_guest = 0 AND id_room = 0 AND active = 1
+            ");
+            $stmt->execute();
+            $plans = [];
+            foreach ($stmt->fetchAll() as $r) {
+                $plans[(int)$r['id_product']][] = $r;
+            }
+
+            $restrictions = [];
+            $stmt2 = $this->pdo->prepare("
+                SELECT id_feature_price, date_selection_type, special_days, date_from, date_to
+                FROM qlo_htl_room_type_feature_pricing_restriction
+            ");
+            $stmt2->execute();
+            foreach ($stmt2->fetchAll() as $r) {
+                $restrictions[(int)$r['id_feature_price']][] = $r;
+            }
+
+            return [$plans, $restrictions];
+        } catch (Throwable $e) {
+            Logger::warning('QloAppAdapter: Feature Price Plans no disponibles (' . $e->getMessage() . '); sin descuento no reembolsable.');
+            return [[], []];
         }
     }
 

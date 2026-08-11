@@ -1,6 +1,7 @@
 import type { AllocationOption } from './roomAllocator';
 
 export type WizardStep = 1 | 2 | 3;
+export type RateType = 'standard' | 'non_refundable';
 
 export interface WizardState {
   step: WizardStep;
@@ -11,6 +12,13 @@ export interface WizardState {
   allocation: AllocationOption | null;
   options: AllocationOption[] | null;
   availabilityMap: Record<string, number> | null;
+  /** Tarifa elegida en AllocationStep; se envía al backend (única fuente del precio). */
+  rateType: RateType;
+  /**
+   * Tarifas por habitación servidas por GET /api/rooms (rate_plans, resueltas
+   * por el backend desde las Catalog Price Rules de QloApps). null = API caída.
+   */
+  ratePlans: Record<string, { standard: number; non_refundable: number }> | null;
   selecting: boolean;
   processing: boolean;
   error: string | null;
@@ -33,6 +41,8 @@ const DEFAULT_STATE: WizardState = {
   allocation: null,
   options: null,
   availabilityMap: null,
+  rateType: 'standard',
+  ratePlans: null,
   selecting: false,
   processing: false,
   error: null,

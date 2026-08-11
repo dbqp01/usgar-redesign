@@ -49,6 +49,10 @@ class GetRoomsAction {
                 $room['slug']             = $slug;
                 $currency = Config::get('HOTEL_BASE_CURRENCY', 'USD');
                 $room['currency']         = $currency;
+                $room['rate_plans']       = [
+                    'standard'      => $price,
+                    'non_refundable' => (float)($room['non_refundable_price'] ?? $price),
+                ];
                 
                 if (class_exists('NumberFormatter')) {
                     $fmt = new \NumberFormatter('es_PE', \NumberFormatter::CURRENCY);

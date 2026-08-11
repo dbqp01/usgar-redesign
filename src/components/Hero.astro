@@ -47,8 +47,8 @@ const slides = [slide1, slide2, slide3, slide4];
     poster={optimizedPoster.src}
     id="hero-video"
     data-video-parts={JSON.stringify({
-      desktop: ["/videos/hero-1.mp4", "/videos/hero-2.mp4"],
-      mobile: ["/videos/hero-mobile-1.mp4", "/videos/hero-mobile-2.mp4"],
+      desktop: ["/videos/hero-1.mp4", "/videos/hero-2.mp4", "/videos/hero-3.mp4"],
+      mobile: ["/videos/hero-mobile-1.mp4", "/videos/hero-mobile-2.mp4", "/videos/hero-mobile-3.mp4"],
     })}
   >
   </video>
@@ -179,11 +179,18 @@ const slides = [slide1, slide2, slide3, slide4];
     function playPart(index: number) {
       const src = parts[index];
       if (!src) return;
-      video.src = src;
-      video.load();
-      video.play().catch((err) => {
-        console.log("Hero video autoplay notice:", err);
-      });
+      // Transicion animada entre segmentos: fade-out, swap de fuente, fade-in.
+      // La clase del <video> ya tiene transition-opacity duration-1000; el swap
+      // ocurre a mitad de la transicion (~450ms) para que el cruce sea suave.
+      video.classList.add("opacity-0");
+      window.setTimeout(() => {
+        video.src = src;
+        video.load();
+        video.classList.remove("opacity-0");
+        video.play().catch((err) => {
+          console.log("Hero video autoplay notice:", err);
+        });
+      }, 450);
     }
 
     if (parts.length > 0) {

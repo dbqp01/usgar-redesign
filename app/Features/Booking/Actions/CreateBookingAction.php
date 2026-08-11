@@ -70,6 +70,11 @@ class CreateBookingAction {
         $guestName  = trim($body['guestName']);
         $guestEmail = Validator::email($body['guestEmail']);
         $guestPhone = trim($body['guestPhone'] ?? '');
+        // Tarifa elegida por el cliente. Whitelist cerrada; valor desconocido
+        // cae a 'standard' (precio completo) — fail-safe: nunca regalar descuento.
+        $rateType   = in_array($body['rateType'] ?? 'standard', ['standard', 'non_refundable'], true)
+            ? $body['rateType']
+            : 'standard';
 
         Validator::dateRange($checkIn, $checkOut);
 
@@ -97,6 +102,13 @@ class CreateBookingAction {
             $idProduct = (int)($targetRoom['id_product'] ?? $idRoomType);
             $nights = (int)max(1, round((strtotime($checkOut) - strtotime($checkIn)) / 86400));
             $pricePerNight = (float)$targetRoom['price'];
+            // Precio de la tarifa elegida. Fuente unica: el adapter resuelve la
+            // Catalog Price Rule de QloApps (non_refundable_price) — el frontend
+            // solo envia rateType; jamas confiar en precios enviados por el cliente.
+            // Sin regla configurada en QloApps => non_refundable == standard.
+            $pricePerNight = $rateType === 'non_refundable'
+                ? (float)($targetRoom['non_refundable_price'] ?? $pricePerNight)
+                : $pricePerNight;
             $totalPrice = round($pricePerNight * $nights, 2);
 
             $cartId = $this->pms->createCart($hotelId, $idProduct, $checkIn, $checkOut, $guests, $totalPrice, $guestName, $guestEmail, $guestPhone);
@@ -147,6 +159,7 @@ class CreateBookingAction {
                     'room_name'       => $targetRoom['room_name'],
                     'price_per_night' => $pricePerNight,
                     'nights'          => $nights,
+                    'rate_type'       => $rateType,
                 ],
                 'price_snapshot'          => $totalPrice,
                 'price_snapshot_pen'      => $priceSnapshotPen,
@@ -178,6 +191,7 @@ class CreateBookingAction {
                 'access_token'      => $accessToken,
                 'currency'          => Config::get('HOTEL_BASE_CURRENCY', 'USD'),
                 'price'             => $totalPrice,
+                'rate_type'         => $rateType,
                 'exchange_rate'     => $exchangeRate,
                 'gateway_currency'  => Config::get('MERCADO_PAGO_CURRENCY', 'PEN'),
                 'gateway_price'     => $gatewayPricePEN,

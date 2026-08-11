@@ -9,6 +9,8 @@ export interface RoomAvailability {
   maxGuests: number;
   description?: string;
   images?: string[];
+  /** Tarifas servidas por el backend (fuente única). standard = precio QloApps, non_refundable = -descuento config. */
+  rate_plans?: { standard: number; non_refundable: number };
 }
 
 export interface GuestDetails {
@@ -27,6 +29,8 @@ export interface BookingPayload {
   checkOut: string;
   guests: number;
   guestDetails: GuestDetails;
+  /** Tarifa elegida; el backend calcula y congela el precio (nunca confiar en precios del cliente). */
+  rateType?: 'standard' | 'non_refundable';
 }
 
 export interface BookingResponseData {
