@@ -157,6 +157,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
 
   let abortController = new AbortController();
   let cleanupAnim: (() => void) | null = null;
+  let stopPolling: (() => void) | null = null;
   let firstCompute = true;
 
   let calendarAvailability: Record<string, Record<string, number>> = {};
@@ -463,21 +464,26 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
       if (checkIn && checkOut) void computeAllocation();
     }, { signal: abortController.signal });
 
-    async function computeAllocation() {
+    async function computeAllocation(silent = false) {
+      const prevAllocation = silent ? wizardStore.getState().allocation : null;
       if (!checkIn || !checkOut) return;
       const nights = nightsBetween(checkIn, checkOut);
       if (nights < 1) return;
 
-      checkingEl.classList.remove('hidden');
-      bannerEl.classList.add('hidden');
+      if (!silent) {
+        checkingEl.classList.remove('hidden');
+        bannerEl.classList.add('hidden');
+      }
 
       wizardStore.setState({ checkIn, checkOut, guests: Number(guestsSel.value), selecting: true, error: null });
 
       if (rangeDays(checkIn, checkOut).some((d) => isDaySoldOut(d))) {
         checkingEl.classList.add('hidden');
-        bannerEl.textContent = L.rangeUnavailable || '';
-        bannerEl.classList.remove('hidden');
-        toastApi.error({ title: L.rangeUnavailable || '' });
+        if (!silent) {
+          bannerEl.textContent = L.rangeUnavailable || '';
+          bannerEl.classList.remove('hidden');
+          toastApi.error({ title: L.rangeUnavailable || '' });
+        }
         wizardStore.setState({ selecting: false, error: L.rangeUnavailable || '', allocation: null, options: null });
         return;
       }
@@ -549,18 +555,32 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
         ratePlans: Object.keys(ratePlans).length > 0 ? ratePlans : null,
       });
 
-      if (!res.success) {
-        bannerEl.textContent = L.availabilityDegraded || '';
-        bannerEl.classList.remove('hidden');
-      } else if (allocation.length === 0) {
-        bannerEl.textContent = L.rangeUnavailable || '';
-        bannerEl.classList.remove('hidden');
-        toastApi.error({ title: L.rangeUnavailable || '' });
+      if (silent && prevAllocation && prevAllocation.rooms.length > 0) {
+        // El poll no debe saltar la selección del usuario: restaurar su
+        // opción si sigue disponible y al mismo precio; si se agotó, la
+        // nueva asignación (correcta) queda.
+        const cur = wizardStore.getState();
+        const stillViable = cur.availabilityMap
+          && prevAllocation.rooms.every((e) => (cur.availabilityMap?.[e.room.slug] ?? 0) > 0);
+        if (stillViable && cur.allocation?.total === prevAllocation.total) {
+          wizardStore.setState({ allocation: prevAllocation });
+        }
+      }
+
+      if (!silent) {
+        if (!res.success) {
+          bannerEl.textContent = L.availabilityDegraded || '';
+          bannerEl.classList.remove('hidden');
+        } else if (allocation.length === 0) {
+          bannerEl.textContent = L.rangeUnavailable || '';
+          bannerEl.classList.remove('hidden');
+          toastApi.error({ title: L.rangeUnavailable || '' });
+        }
       }
 
       checkingEl.classList.add('hidden');
 
-      if (!firstCompute && allocation.length > 0) {
+      if (!silent && !firstCompute && allocation.length > 0) {
         toastApi.success({
           title: L.toastOptionsUpdated || 'Options updated',
           description: (L.toastBestPrice || 'Best price {total}').replace('{total}', `$${total}`),
@@ -568,6 +588,47 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
       }
       firstCompute = false;
     }
+
+    // ---- Frescura de disponibilidad (Fase A): polling silencioso ----
+    // Refresca rooms/options cada 45s mientras el paso 1 está visible y el
+    // usuario no está interactuando (ni seleccionando rango, ni con un
+    // fetch/processing en curso). Pausa con document.hidden (Page Visibility
+    // API, Baseline 2021). El techo de frescura lo pone la fuente (QloApps +
+    // channel manager sincroniza en minutos): 45s es más rápido que el dato.
+    const POLL_INTERVAL_MS = 45_000;
+    let pollTimer: number | null = null;
+    let lastPollAt = 0;
+
+    function pollAvailability(): void {
+      const now = Date.now();
+      // Throttle: el intervalo y visibilitychange pueden coincidir; 10s evita
+      // dobles fetches inmediatos sin retrasar el primer poll tras un cambio.
+      if (document.hidden || now - lastPollAt < 10_000) return;
+      const s = wizardStore.getState();
+      if (s.step !== 1 || s.selecting || s.processing || isSelectingRange) return;
+      if (!checkIn || !checkOut) return;
+      lastPollAt = now;
+      void computeAllocation(true);
+    }
+
+    function startPolling(): void {
+      if (pollTimer !== null) return;
+      pollTimer = window.setInterval(pollAvailability, POLL_INTERVAL_MS);
+    }
+
+    function stopPollingFn(): void {
+      if (pollTimer !== null) {
+        window.clearInterval(pollTimer);
+        pollTimer = null;
+      }
+    }
+    stopPolling = stopPollingFn;
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) pollAvailability();
+    }, { signal: abortController.signal });
+
+    startPolling();
 
     render();
     if (checkIn && checkOut) void computeAllocation();
@@ -586,6 +647,8 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
 
   document.addEventListener('astro:page-load', initCalendar);
   document.addEventListener('astro:before-preparation', () => {
+    stopPolling?.();
+    stopPolling = null;
     abortController.abort();
     cleanupAnim?.();
     cleanupAnim = null;
