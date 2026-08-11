@@ -2,7 +2,7 @@
 
 Sitio transaccional del hotel boutique Usgar (San Pedro, Cusco, Perú): reservas directas, 4 idiomas (en/es/fr/pt), pagos USD. Frontend Astro 7 estático + API PHP nativa (monolito ADR).
 
-> **Para agentes:** lee primero `AGENTS.md` (estructura y cómo modificar). **Migraciones en curso:** `docs/MIGRATION_PLAN.md` (QloApps Channel Manager pendiente; migración de PMS cancelada — nos quedamos con QloApps).
+> **Para agentes:** lee primero `AGENTS.md` (estructura, reglas y fuentes de verdad). **Documentación centralizada en `docs/`** (8 archivos): arquitectura, API, deploy, PMS, seguridad, roadmap y decisiones — ver la tabla de fuentes en `AGENTS.md`.
 
 ## Quickstart
 
@@ -72,7 +72,7 @@ Para generar el hash: `php -r "echo hash('sha256', getenv('MERCADO_PAGO_ACCESS_T
 
 ## Arquitectura en una línea
 
-`src/` (Astro) → consume `/api/*` → `public/index.php` → `app/Features/<X>/Actions` (ADR, DI PSR-11) → `Ports/Adapters` → QloApps (PMS, XML), MercadoPago (pagos USD, webhooks). Channel manager (QloApps CM, Webkul): activación pendiente de pago — ver `docs/CHANNEL_MANAGER_SETUP.md`. Detalle por capa en `AGENTS.md`.
+`src/` (Astro) → consume `/api/*` → `public/index.php` → `app/Features/<X>/Actions` (ADR, DI PSR-11) → `Ports/Adapters` → QloApps (PMS, XML), MercadoPago (pagos USD, webhooks). Channel manager (QloApps CM, Webkul): activación pendiente de pago — ver `docs/PMS.md` §D. Detalle por capa en `AGENTS.md` y `docs/ARCHITECTURE.md`.
 
 ## Stack
 

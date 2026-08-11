@@ -31,12 +31,6 @@ preview.log
 .superpowers/
 .primer/
 .omo/
-.agents/
-.agents
-docs/
-docs
-agents.md
-AGENTS.md
 skills-lock.json
 tests/latest_payment_id.txt
 
