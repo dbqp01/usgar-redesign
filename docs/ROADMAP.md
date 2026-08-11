@@ -50,6 +50,8 @@ Auditoría de mejores prácticas PHP realizada el 2026-08-11 (evidencia en `docs
 - [ ] **P3-3** Rate limiter: archivos `limit_*.json` nunca se limpian → purgar >2 ventanas en `init()`; límites por endpoint (auth estricto, webhook/health exentos o altos).
 - [ ] **P3-4** PHPStan nivel 6 → 7 (`phpstan.neon:5`) consumiendo el baseline progresivamente.
 - [ ] **P3-5** composer.json sin `"php": ">=8.2"` ni `config.platform` → declararlos para reproducibilidad del lock.
+- [ ] **P3-6** Suite `run-exhaustive-tests.php` NO es hermética: golpea MercadoPago real (404 "Payment not found" con timeouts 8s por llamada → cuelgues de >5 min) y la BD remota (Access denied 1045 si la IP dinámica no está re-anillada). Diagnóstico 2026-08-11 en `logs/app.log`. Fix: skippear tests de integración sin credenciales válidas o mockear los adapters (los unit ya están mockeados: phpunit corre 160 tests/569 assertions sin red).
+- [ ] **P3-7** `ProcessOutboxActionTest::testConcurrentRunsProcessEachEventExactlyOnce` es flaky en Windows bajo la suite completa (workers proc_open + timing); pasa aislado. Revisar el harness de workers (sync/espera determinista).
 
 ### F — Frontend y contenido
 - [ ] **F-6** Duplicación `src/content/*.json` vs `src/data/*.ts` (rooms, services, faq, reviews, settings, about) → elegir una fuente por dominio y migrar consumidores.

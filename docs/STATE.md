@@ -1,7 +1,13 @@
 # STATE — Backend USGAR (handoff de sesión)
 
 > Documento canónico de estado del backend (antes `docs/refactoring/BACKEND_STATE.md`). Fuente de la auditoría de mejores prácticas 2026-08-11: `docs/ROADMAP.md`.
-# STATE — Backend USGAR (Fase 0/2: línea base + limpieza de pagos)
+
+## Verificación 2026-08-11 (centralización de docs; sin cambios de código)
+- `npm run check` → 0 errors / 0 warnings (1 hint pre-existente en `scripts/dev.js`).
+- `php vendor/bin/phpunit` → **160 tests / 569 assertions, 12 skipped, 1 fallo flaky** (`ProcessOutboxActionTest::testConcurrentRunsProcessEachEventExactlyOnce` — pasa aislado; workers proc_open + timing en Windows). Backlog: ROADMAP P3-7.
+- `scripts/run-exhaustive-tests.php` → **no termina**: golpea MP real (404 "Payment not found", timeouts 8s c/u) y BD remota (1045 si la IP no está re-anillada). Evidencia: `logs/app.log` 12:47. Backlog: ROADMAP P3-6.
+
+## Historial — STATE original (Fase 0/2: línea base + limpieza de pagos)
 
 > Memoria de sesión del backend: este archivo es el handoff del trabajo de backend (migraciones + refactor).
 > Última actualización: 2026-08-05 (F0 completa; F2 cerrada; verificación webhook y checkout completadas; ola de refactor de limpieza en curso).
