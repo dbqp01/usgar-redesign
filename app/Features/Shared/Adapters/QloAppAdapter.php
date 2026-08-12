@@ -20,6 +20,18 @@ use Throwable;
  */
 class QloAppAdapter implements PmsPortInterface {
     private const QLOAPPS_LOCAL_PREFIX = 'USGAR-';
+
+    // Fix P2-3 (2026-08-12): literales de la instalacion QloApps verificada
+    // que estaban duplicados en varias consultas de confirmOrder().
+    private const SHOP_GROUP_ID = 1;
+    private const SHOP_ID = 1;
+    private const LANG_ID = 1;
+    private const ORDER_STATE_PAID = 2;        // current_state / id_order_state
+    private const CHECKIN_TIME = '12:00:00';   // horario de entrada del hotel
+    private const CHECKOUT_TIME = '10:30:00';  // horario de salida del hotel
+    private const HOTEL_NAME = 'USGAR Hotels';
+    private const HOTEL_CITY = 'San Pedro';
+
     private ?PDO $pdo;
     private readonly ?string $apiUrl;
     private readonly ?string $apiKey;
@@ -82,8 +94,8 @@ class QloAppAdapter implements PmsPortInterface {
                 ':id_hotel'         => $idHotel,
                 ':id_hotel_holds'   => $idHotel,
                 ':id_lang'          => $idLang,
-                ':date_from_booked' => $checkIn . ' 12:00:00',
-                ':date_to_booked'   => $checkOut . ' 10:30:00',
+                ':date_from_booked' => $checkIn . ' ' . self::CHECKIN_TIME,
+                ':date_to_booked'   => $checkOut . ' ' . self::CHECKOUT_TIME,
                 ':check_in_date'    => $checkIn,
                 ':check_out_date'   => $checkOut,
             ]);
@@ -182,6 +194,9 @@ class QloAppAdapter implements PmsPortInterface {
             return [];
         }
 
+        // Mismo default que getAvailableRooms() (P2-3: id_lang ya no hardcodeado)
+        $idLang = (int)Config::get('QLOAPPS_DEFAULT_LANG_ID', '1');
+
         $fromTs = strtotime($from . ' 00:00:00');
         $toTs   = strtotime($to . ' 00:00:00');
         if ($fromTs === false || $toTs === false || $toTs < $fromTs) {
@@ -205,7 +220,7 @@ class QloAppAdapter implements PmsPortInterface {
                     ) AS total_rooms
                 FROM qlo_htl_room_type rt
                 INNER JOIN qlo_product p ON p.id_product = rt.id_product
-                INNER JOIN qlo_product_lang pl ON pl.id_product = rt.id_product AND pl.id_lang = 1
+                INNER JOIN qlo_product_lang pl ON pl.id_product = rt.id_product AND pl.id_lang = {$idLang}
                 WHERE p.active = 1 AND rt.id_hotel = :id_hotel
             ");
             $roomsStmt->execute([':id_hotel' => $idHotel]);
@@ -461,6 +476,16 @@ XML;
             // fallback conserva el id 1 (PEN en la instalacion verificada).
             $penCurrencyId = 1;
             $penConversionRate = 1.0;
+            // P2-3: constantes del adapter como variables interpolables
+            // (los strings SQL de doble comilla no expanden self::CONST).
+            $shopGroupId = self::SHOP_GROUP_ID;
+            $shopId = self::SHOP_ID;
+            $langId = self::LANG_ID;
+            $checkinTime = self::CHECKIN_TIME;
+            $checkoutTime = self::CHECKOUT_TIME;
+            $orderStatePaid = self::ORDER_STATE_PAID;
+            $hotelName = self::HOTEL_NAME;
+            $hotelCity = self::HOTEL_CITY;
             $stmtCur = $this->pdo->prepare(
                 "SELECT id_currency, conversion_rate FROM qlo_currency WHERE iso_code = 'PEN' AND active = 1 LIMIT 1"
             );
@@ -481,7 +506,7 @@ XML;
             if ($idCustomer === 0) {
                 $stmtInsCust = $this->pdo->prepare("
                     INSERT INTO qlo_customer (id_shop_group, id_shop, firstname, lastname, email, passwd, secure_key, active, is_guest, date_add, date_upd)
-                    VALUES (1, 1, ?, ?, ?, ?, ?, 1, 1, NOW(), NOW())
+                    VALUES ({$shopGroupId}, {$shopId}, ?, ?, ?, ?, ?, 1, 1, NOW(), NOW())
                 ");
                 // passwd/secure_key de clientes guest: valores criptograficamente
                 // aleatorios (fix 2026-08-10 — antes md5(rand()), CWE-338: PRNG
@@ -496,7 +521,7 @@ XML;
             // 2. Carrito QloApps (moneda PEN)
             $stmtCart = $this->pdo->prepare("
                 INSERT INTO qlo_cart (id_shop_group, id_shop, id_lang, id_currency, id_customer, id_address_delivery, id_address_invoice, date_add, date_upd)
-                VALUES (1, 1, 1, {$penCurrencyId}, ?, 0, 0, NOW(), NOW())
+                VALUES ({$shopGroupId}, {$shopId}, {$langId}, {$penCurrencyId}, ?, 0, 0, NOW(), NOW())
             ");
             $stmtCart->execute([$idCustomer]);
             $idCart = (int)$this->pdo->lastInsertId();
@@ -511,8 +536,8 @@ XML;
                     id_address_delivery, id_address_invoice, current_state, payment, total_paid, total_paid_tax_incl,
                     total_paid_tax_excl, total_products, total_products_wt, conversion_rate, module, valid, source, date_add, date_upd
                 ) VALUES (
-                    ?, 1, 1, 0, 1, ?, ?, {$penCurrencyId},
-                    0, 0, 2, 'Mercado Pago (Online)', ?, ?,
+                    ?, {$shopGroupId}, {$shopId}, 0, {$langId}, ?, ?, {$penCurrencyId},
+                    0, 0, {$orderStatePaid}, 'Mercado Pago (Online)', ?, ?,
                     ?, ?, ?, {$penConversionRate}, 'mercadopago', 1, ?, NOW(), NOW()
                 )
             ");
@@ -520,7 +545,7 @@ XML;
             $idOrder = (int)$this->pdo->lastInsertId();
 
             // 5. Nombre del producto de la habitación
-            $stmtRoomName = $this->pdo->prepare("SELECT pl.name FROM qlo_product_lang pl WHERE pl.id_product = ? AND pl.id_lang = 1 LIMIT 1");
+            $stmtRoomName = $this->pdo->prepare("SELECT pl.name FROM qlo_product_lang pl WHERE pl.id_product = ? AND pl.id_lang = {$langId} LIMIT 1");
             $stmtRoomName->execute([$idRoomType]);
             $roomName = (string)($stmtRoomName->fetchColumn() ?: 'Habitación USGAR');
 
@@ -530,7 +555,7 @@ XML;
                     id_order, id_shop, product_id, product_name, product_quantity, product_price,
                     total_price_tax_incl, total_price_tax_excl, unit_price_tax_incl, unit_price_tax_excl, is_booking_product
                 ) VALUES (
-                    ?, 1, ?, ?, 1, ?,
+                    ?, {$shopId}, ?, ?, 1, ?,
                     ?, ?, ?, ?, 1
                 )
             ");
@@ -561,20 +586,20 @@ XML;
                 ) VALUES (
                     ?, ?, 0, ?, 1, ?, ?,
                     1, 1, '', ?, ?, ?, ?, ?,
-                    ?, ?, ?, 0, 'USGAR Hotels',
-                    ?, 'San Pedro', ?, ?, ?, 0, '[]', 0, 0, NOW(), NOW()
+                    ?, ?, ?, 0, '{$hotelName}',
+                    ?, '{$hotelCity}', ?, ?, ?, 0, '[]', 0, 0, NOW(), NOW()
                 )
             ");
             $stmtHtlDetail->execute([
                 $idRoomType, $idOrder, $idCart, $idHotel, $idCustomer,
-                $checkIn . ' 12:00:00', $checkOut . ' 10:30:00', $checkOut . ' 10:30:00', $checkIn . ' 12:00:00', $checkOut . ' 10:30:00',
+                $checkIn . ' ' . $checkinTime, $checkOut . ' ' . $checkoutTime, $checkOut . ' ' . $checkoutTime, $checkIn . ' ' . $checkinTime, $checkOut . ' ' . $checkoutTime,
                 $totalPrice, $totalPrice, $totalPrice, $roomName, $phone, $guestEmail, $guests
             ]);
 
             // 9. Historial de estado de orden (Estado 2 = Pago completo recibido)
             $stmtHistory = $this->pdo->prepare("
                 INSERT INTO qlo_order_history (id_employee, id_order, id_order_state, date_add)
-                VALUES (0, ?, 2, NOW())
+                VALUES (0, ?, {$orderStatePaid}, NOW())
             ");
             $stmtHistory->execute([$idOrder]);
 
