@@ -18,7 +18,7 @@
         }
     },
     "scripts": {
-        "test": "phpunit",
+        "test": "@php vendor/bin/phpunit",
         "analyse": "@php -d memory_limit=1G vendor/bin/phpstan analyse --no-progress",
         "check": [
             "@test",
