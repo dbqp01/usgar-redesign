@@ -92,6 +92,9 @@ const t = useTranslations(lang);
 
     let selected: AllocationOption | null = null;
     let selectedRateType: 'standard' | 'non_refundable' = 'standard';
+    // v4: combinaciones multi-habitacion detras de un toggle (ruido para
+    // grupos pequenos, necesarias para grupos grandes).
+    let showMulti = false;
 
     function formatMoney(n: number): string {
       return `$${Math.round(n)}`;
@@ -126,7 +129,12 @@ const t = useTranslations(lang);
       }
       empty.classList.add('hidden');
 
-      const top = options.slice(0, 6);
+      // v4: primero las opciones de UNA habitacion (comparables de un vistazo);
+      // las combinaciones multi-habitacion van detras de un toggle.
+      const singles = options.filter((o) => o.rooms.length === 1).slice(0, 4);
+      const multis = options.filter((o) => o.rooms.length > 1).slice(0, 4);
+      const hasMulti = multis.length > 0 && singles.length > 0;
+      const top = singles.length > 0 ? (showMulti ? [...singles, ...multis] : singles) : multis;
 
       optEl.innerHTML = top.map((opt, i) => {
         const multi = opt.rooms.length > 1;
@@ -138,7 +146,9 @@ const t = useTranslations(lang);
         const roomDesc = roomObj?.description?.[lang] || roomObj?.description?.es || '';
         // Servicios relevantes de la habitacion (los 8 del cliente), desde
         // room.amenities + amenityLabels (serializados en __ROOMS_DATA).
+        // v3: solo los 3 primeros (recomendaciones compactas, estilo IBE).
         const amenityChips = (roomObj?.amenities ?? [])
+          .slice(0, 3)
           .map((key: string) => {
             const lbl = roomObj?.amenityLabels?.[key]?.[lang]
               || roomObj?.amenityLabels?.[key]?.en
@@ -166,12 +176,17 @@ const t = useTranslations(lang);
         const pct = Math.round((1 - ratio) * 100);
         const offerBadge = pct > 0 ? (L.allocationOfferBadge || 'Web Deal -{pct}%').replace('{pct}', String(pct)) : '';
 
-        // Availability Pill
+        // Availability Pill — v3: las unidades disponibles se ven de un
+        // vistazo (estilo "Sólo quedan 2" del IBE de referencia).
         let availBadge = '';
         if (outOfStock) {
           availBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-500 border border-rose-500/20 uppercase tracking-wider">${L.soldOut || 'Sold out'}</span>`;
         } else if (availQty === 1) {
           availBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 uppercase tracking-wider">${L.allocationLastUnit || 'Last unit!'}</span>`;
+        } else if (availQty === 2) {
+          availBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 uppercase tracking-wider">${(L.allocationUnitsLeft || 'Only {n} left').replace('{n}', String(availQty))}</span>`;
+        } else if (availQty !== null && availQty > 2) {
+          availBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-brand/10 text-teal-deep dark:text-teal-light border border-teal-brand/25">${(L.allocationUnitsAvailable || '{n} available').replace('{n}', String(availQty))}</span>`;
         } else if (opt.bestPrice) {
           availBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-secondary/15 text-secondary-dark dark:text-secondary border border-secondary/20 uppercase tracking-wider">${L.bestPrice || 'Best price'}</span>`;
         }
@@ -182,129 +197,110 @@ const t = useTranslations(lang);
 
         const photoCount = (L.allocationPhotoCount || '1 / {n}').replace('{n}', String(images.length || 1));
         const totalLabel = (L.allocationTotalLabel || 'Total ({n} n)').replace('{n}', String(opt.nights));
+        const perNight = Math.round(opt.total / opt.nights);
 
+        // v4: fila compacta (patron Booking.com/SimpleBooking): foto miniatura,
+        // info en una linea, tarifas como pills, precio/noche a la derecha.
         return `
           <div
             data-allocation-card="${i}"
-            class="rounded-2xl border ${borderClass} overflow-hidden transition-all duration-300 bg-surface-card-light dark:bg-surface-card-dark"
+            class="rounded-xl border ${borderClass} overflow-hidden transition-all duration-300 bg-surface-card-light dark:bg-surface-card-dark"
           >
-            <div class="grid grid-cols-1 md:grid-cols-12">
-
-              <!-- Left Column: Image (5 cols) -->
-              <div class="md:col-span-5 relative h-52 md:h-auto min-h-[220px] bg-black/10 overflow-hidden group">
+            <div class="flex items-stretch gap-3 sm:gap-4 p-3 sm:p-4">
+              <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-black/10 relative flex-shrink-0">
                 ${images[0] ? `
                   <img
                     src="${images[0]}"
                     alt="${roomName}"
-                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    class="w-full h-full object-cover"
                     loading="lazy"
                   />
                 ` : ''}
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-between p-3">
-                  <div class="flex items-center justify-between gap-2">
-                    ${availBadge}
-                    <span class="text-[10px] font-mono font-bold bg-black/60 backdrop-blur-md text-white px-2 py-0.5 rounded">
-                      ${photoCount}
-                    </span>
-                  </div>
-                  <div class="flex items-center gap-1.5 text-white/90 text-xs font-medium">
-                    <svg class="w-3.5 h-3.5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <span class="absolute bottom-1 right-1 text-[9px] font-mono font-bold bg-black/60 backdrop-blur-md text-white px-1.5 py-0.5 rounded">
+                  ${photoCount}
+                </span>
+              </div>
+
+              <div class="flex-1 min-w-0 flex flex-col justify-center gap-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="font-display text-sm sm:text-base font-bold text-text-primary-light dark:text-white leading-tight">
+                    ${roomName}
+                  </h3>
+                  ${availBadge}
+                </div>
+                <p class="text-[11px] text-text-secondary-light dark:text-text-secondary-dark line-clamp-1">
+                  ${escapeHtml(roomDesc)}
+                </p>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="inline-flex items-center gap-1 text-[10px] font-medium text-text-secondary-light dark:text-text-secondary-dark">
+                    <svg class="w-3 h-3 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path d="M2 4v16M2 20h20M22 20V12a4 4 0 0 0-4-4H4" />
                     </svg>
-                    <span>${escapeHtml(bedsText)}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Right Column: Details & Tariff Options (7 cols) -->
-              <div class="md:col-span-7 p-4 sm:p-6 flex flex-col justify-between space-y-4">
-                <div>
-                  <div class="flex items-start justify-between gap-2">
-                    <h3 class="font-display text-lg sm:text-xl font-bold text-text-primary-light dark:text-white leading-tight">
-                      ${roomName}
-                    </h3>
-                  </div>
-
-                  <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1 line-clamp-2 leading-relaxed">
-                    ${escapeHtml(roomDesc)}
-                  </p>
-
-                  ${amenityChips ? `<div class="flex flex-wrap gap-1.5 mt-3">${amenityChips}</div>` : ''}
-                </div>
-
-                <!-- Tariff Options Selector -->
-                <div class="pt-3 border-t border-black/6 dark:border-white/6 space-y-2.5">
-                  <span class="text-[11px] font-bold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark block">
-                    ${L.allocationSelectRate || 'Select your rate:'}
+                    ${escapeHtml(bedsText)}
                   </span>
-
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-
-                    <!-- Plan 1: Tarifa Estándar -->
-                    <button
-                      type="button"
-                      data-select-rate="standard"
-                      data-option-index="${i}"
-                      ${payable ? '' : 'disabled aria-disabled="true"'}
-                      class="p-3 rounded-xl border border-black/10 dark:border-white/10 text-left hover:border-secondary transition-all flex flex-col justify-between gap-2 bg-black/2 dark:bg-white/2 cursor-pointer ${isSelected && selectedRateType === 'standard' ? 'border-secondary bg-secondary/10 ring-1 ring-secondary' : ''} ${payable ? '' : 'opacity-40 cursor-not-allowed'}"
-                    >
-                      <div>
-                        <div class="flex items-center justify-between">
-                          <span class="text-xs font-bold text-text-primary-light dark:text-white">${L.allocationStandardRate || 'Standard Rate'}</span>
-                          <span class="w-3.5 h-3.5 rounded-full border border-black/20 dark:border-white/20 flex items-center justify-center">
-                            <span class="${isSelected && selectedRateType === 'standard' ? 'w-2 h-2 rounded-full bg-secondary' : ''}"></span>
-                          </span>
-                        </div>
-                        <p class="text-[10px] text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
-                          ${L.allocationStandardRateDesc || 'Free cancellation up to 48h before arrival'}
-                        </p>
-                      </div>
-                      <div class="mt-1 pt-1 border-t border-black/4 dark:border-white/4 flex items-baseline justify-between">
-                        <span class="text-[10px] text-text-secondary-light">${totalLabel}:</span>
-                        <span class="font-display text-base font-bold text-primary dark:text-primary-soft">${formatMoney(standardTotal)}</span>
-                      </div>
-                    </button>
-
-                    <!-- Plan 2: Tarifa No Reembolsable -->
-                    <button
-                      type="button"
-                      data-select-rate="non_refundable"
-                      data-option-index="${i}"
-                      ${payable ? '' : 'disabled aria-disabled="true"'}
-                      class="p-3 rounded-xl border border-secondary/30 text-left hover:border-secondary transition-all flex flex-col justify-between gap-2 bg-secondary/5 cursor-pointer ${isSelected && selectedRateType === 'non_refundable' ? 'border-secondary bg-secondary/15 ring-1 ring-secondary' : ''} ${payable ? '' : 'opacity-40 cursor-not-allowed'}"
-                    >
-                      <div>
-                        <div class="flex items-center justify-between">
-                          <span class="text-xs font-bold text-secondary-dark dark:text-secondary flex items-center gap-1">
-                            ${L.allocationNonRefundableRate || 'Non-Refundable Rate'}
-                            ${offerBadge ? `<span class="px-1.5 py-0.5 rounded bg-secondary/15 text-[9px] font-bold uppercase tracking-wider">${offerBadge}</span>` : ''}
-                          </span>
-                          <span class="w-3.5 h-3.5 rounded-full border border-secondary/40 flex items-center justify-center">
-                            <span class="${isSelected && selectedRateType === 'non_refundable' ? 'w-2 h-2 rounded-full bg-secondary' : ''}"></span>
-                          </span>
-                        </div>
-                        <p class="text-[10px] text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
-                          ${L.allocationNonRefundableRateDesc || 'Non-refundable · Immediate payment'}
-                        </p>
-                      </div>
-                      <div class="mt-1 pt-1 border-t border-black/4 dark:border-white/4 flex items-baseline justify-between">
-                        <span class="text-[10px] text-text-secondary-light">${totalLabel}:</span>
-                        <div class="text-right">
-                          ${nonRefundableTotal !== standardTotal ? `<span class="text-[10px] line-through opacity-50 mr-1">${formatMoney(standardTotal)}</span>` : ''}
-                          <span class="font-display text-base font-bold text-secondary-dark dark:text-secondary">${formatMoney(nonRefundableTotal)}</span>
-                        </div>
-                      </div>
-                    </button>
-
-                  </div>
+                  ${amenityChips}
                 </div>
-
+                <div class="flex items-center gap-2 mt-0.5 flex-wrap">
+                  <button
+                    type="button"
+                    data-select-rate="standard"
+                    data-option-index="${i}"
+                    ${payable ? '' : 'disabled aria-disabled="true"'}
+                    title="${escapeHtml(L.allocationStandardRateDesc || 'Free cancellation up to 48h before arrival')}"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[11px] font-bold transition-all cursor-pointer ${isSelected && selectedRateType === 'standard' ? 'border-secondary bg-secondary/10 ring-1 ring-secondary' : 'border-black/10 dark:border-white/10 hover:border-secondary'} ${payable ? '' : 'opacity-40 cursor-not-allowed'}"
+                  >
+                    <span class="w-2.5 h-2.5 rounded-full border border-black/20 dark:border-white/20 flex items-center justify-center">
+                      <span class="${isSelected && selectedRateType === 'standard' ? 'w-1.5 h-1.5 rounded-full bg-secondary' : ''}"></span>
+                    </span>
+                    <span class="text-text-primary-light dark:text-white">${L.allocationStandardRate || 'Standard'}</span>
+                    <span class="text-primary dark:text-primary-soft">${formatMoney(standardTotal)}</span>
+                  </button>
+                  <button
+                    type="button"
+                    data-select-rate="non_refundable"
+                    data-option-index="${i}"
+                    ${payable ? '' : 'disabled aria-disabled="true"'}
+                    title="${escapeHtml(L.allocationNonRefundableRateDesc || 'Non-refundable · Immediate payment')}"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[11px] font-bold transition-all cursor-pointer ${isSelected && selectedRateType === 'non_refundable' ? 'border-secondary bg-secondary/15 ring-1 ring-secondary' : 'border-secondary/30 hover:border-secondary'} ${payable ? '' : 'opacity-40 cursor-not-allowed'}"
+                  >
+                    <span class="w-2.5 h-2.5 rounded-full border border-secondary/40 flex items-center justify-center">
+                      <span class="${isSelected && selectedRateType === 'non_refundable' ? 'w-1.5 h-1.5 rounded-full bg-secondary' : ''}"></span>
+                    </span>
+                    <span class="text-secondary-dark dark:text-secondary flex items-center gap-1">
+                      ${L.allocationNonRefundableRate || 'Non-refundable'}
+                      ${offerBadge ? `<span class="px-1 py-0.5 rounded bg-secondary/15 text-[9px] font-bold uppercase tracking-wider">${offerBadge}</span>` : ''}
+                    </span>
+                    <span class="text-secondary-dark dark:text-secondary">
+                      ${nonRefundableTotal !== standardTotal ? `<span class="line-through opacity-50 mr-0.5">${formatMoney(standardTotal)}</span>` : ''}${formatMoney(nonRefundableTotal)}
+                    </span>
+                  </button>
+                </div>
               </div>
 
+              <div class="flex flex-col items-end justify-center gap-0.5 flex-shrink-0">
+                <span class="font-display text-lg font-bold text-primary dark:text-primary-soft">${formatMoney(perNight)}</span>
+                <span class="text-[10px] text-text-secondary-light dark:text-text-secondary-dark whitespace-nowrap">${L.perNight || '/night'} · ${totalLabel.toLowerCase()}</span>
+              </div>
             </div>
           </div>
         `;
       }).join('');
+
+      // Toggle de combinaciones multi-habitacion (solo si existen).
+      if (hasMulti) {
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.dataset.showMulti = 'true';
+        toggle.className = 'w-full mt-3 py-2.5 rounded-xl border border-black/10 dark:border-white/10 text-xs font-bold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark hover:border-secondary transition-all cursor-pointer';
+        toggle.textContent = showMulti
+          ? (L.allocationHideMulti || 'Hide room combinations')
+          : (L.allocationShowMulti || 'View {n} options with multiple rooms').replace('{n}', String(multis.length));
+        toggle.addEventListener('click', () => {
+          showMulti = !showMulti;
+          render();
+        }, { signal });
+        optEl.appendChild(toggle);
+      }
 
       // Click en tarifa: selecciona la opción + tarifa. Sin auto-avance:
       // el usuario compara y continúa con el botón (patrón del IBE de referencia).

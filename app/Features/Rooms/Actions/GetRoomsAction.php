@@ -28,6 +28,13 @@ class GetRoomsAction {
         $checkIn  = $request->getQuery('checkIn');
         $checkOut = $request->getQuery('checkOut');
         $hotelId  = (int)($request->getQuery('id_hotel') ?? Config::get('DEFAULT_HOTEL_ID', '1'));
+        // Idioma del nombre de la habitacion: el CMS solo tiene es(1)/en(2);
+        // fr cae a en y pt a es (mismo fallbackChain del frontend).
+        $idLang = match ((string)$request->getQuery('lang', '')) {
+            'en', 'fr' => 2,
+            'pt'       => 1,
+            default    => 1, // es / sin parametro
+        };
 
         if (!$checkIn || !$checkOut) {
             $checkIn = date('Y-m-d');
@@ -37,7 +44,7 @@ class GetRoomsAction {
         Validator::dateRange($checkIn, $checkOut);
 
         try {
-            $availableRooms = $this->pms->getAvailableRooms($checkIn, $checkOut, $hotelId);
+            $availableRooms = $this->pms->getAvailableRooms($checkIn, $checkOut, $hotelId, $idLang);
             $nights = (int)max(1, round((strtotime($checkOut) - strtotime($checkIn)) / 86400));
 
             $enrichedRooms = array_map(function(array $room) use ($nights) {

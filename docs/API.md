@@ -149,6 +149,17 @@ Webhook de MercadoPago (topic `payment`). Registrado en el panel MP (app de prod
 - `POST /api/newsletter` — `{ "email", "locale" }` → tabla `newsletter_subscribers` (auto-creada). 422 email inválido, 503 BD offline.
 - `POST /api/contact` — formulario de contacto → `SubmitContactAction`.
 
+## Panel de disponibilidad del dueño (cookie `usgar_panel`, JWT HMAC, 12h)
+
+Página `/panel` (Astro, `noindex`) + API protegida para el dueño del hotel: calendario mensual de reservas por habitación física (timeline por canal) con import/export CSV y Excel.
+
+- `POST /api/panel/login` — `{ "password" }` → 200 + cookie `usgar_panel`. Password = env `PANEL_PASSWORD` (fail-closed: si no está configurada, nadie entra; comparación `hash_equals`).
+- `POST /api/panel/logout` — limpia la cookie.
+- `GET /api/panel/availability?month=YYYY-MM` — grid del mes: `{ month, today, rooms[], bookings[] }`. `rooms` = habitaciones físicas de `qlo_htl_room_information` (join `qlo_htl_room_type` por `id_product`); `bookings` = reservas confirmadas de `qlo_htl_booking_detail` (con `id_room`/`room_num`/cliente/`total_paid_amount`), holds web de `provisional_bookings`, bloqueos manuales de `manual_blocks` (tabla propia, auto-creada) y fuera-de-servicio de `qlo_htl_room_disable_dates`. Canales: `web | walkin | ota | phone | qlo | maint`; estados: `confirmed | hold | maint`.
+- `GET /api/panel/export?format=csv|xlsx&month=YYYY-MM` — descarga de reservas del mes. CSV con BOM UTF-8 (abre directo en Excel); XLSX real vía PhpSpreadsheet (hoja Reservas + hoja Resumen con ocupación/ingreso por canal).
+- `POST /api/panel/import` — `{ "filename", "content_base64" }` (o `{ "csv" }`). Formato: `habitacion, checkin (YYYY-MM-DD), checkout, huesped, canal, estado, precio` (cabecera opcional). CSV parseado nativo; XLSX vía PhpSpreadsheet. Cada fila válida crea un bloqueo en `manual_blocks` (la habitación deja de venderse en la web); filas con habitación inexistente → `skipped` con detalle. Respuesta: `{ success, imported, skipped, errors[] }`.
+- Dependencia nueva: `phpoffice/phpspreadsheet` (solo usado por export/import del panel).
+
 ## Variables de entorno
 
 Fuente completa: `.env.example` (canónico). Lectura: `App\Core\Config::get()` con defaults en `app/Core/Config.php::DEFAULTS`. Ubicación del `.env` en prod: un nivel arriba de `public_html` o `.builds/config/.env` (hPanel); el build NO lo copia a `dist/`.
@@ -166,7 +177,8 @@ Fuente completa: `.env.example` (canónico). Lectura: `App\Core\Config::get()` c
 | `MP_STATEMENT_DESCRIPTOR` / `MP_BINARY_MODE` | MercadoPagoAdapter | Descriptor de extracto / modo binario |
 | `MERCADO_PAGO_TIMEOUT_CREATE_MS` / `MERCADO_PAGO_TIMEOUT_GET_MS` | MercadoPagoAdapter | Timeouts totales SDK (15s / 8s) |
 | `BOOKING_TOKEN_SECRET` (fallback `CRON_SECRET`) | Booking | Secreto HMAC del access_token de hold |
-| `AUTH_JWT_SECRET` | SessionService | Secreto JWT (≥32 chars) |
+| `AUTH_JWT_SECRET` | SessionService / PanelAuth | Secreto JWT (≥32 chars); el panel firma su cookie con el mismo secret |
+| `PANEL_PASSWORD` | PanelLoginAction | Password del panel del dueño (`/panel`). Sin valor = panel inaccesible (fail-closed) |
 | `BOOKING_HOLD_TTL` | CreateBookingAction | TTL del hold (strtotime, `+15 minutes`) |
 | `ALLOWED_ORIGINS` / `TRUSTED_PROXIES` / `TIMEZONE` / `SITE_URL` | Core | CORS, proxies confiables, zona, URL base |
 | `RATE_LIMIT_MAX_REQUESTS` / `RATE_LIMIT_WINDOW_SECONDS` | RateLimiter | Límite global por IP (300/600s) |

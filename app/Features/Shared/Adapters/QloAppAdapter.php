@@ -32,11 +32,12 @@ class QloAppAdapter implements PmsPortInterface {
         $this->apiKey = Config::get('QLOAPP_API_KEY');
     }
 
-    public function getAvailableRooms(string $checkIn, string $checkOut, int $idHotel = 1): array {
+    public function getAvailableRooms(string $checkIn, string $checkOut, int $idHotel = 1, ?int $idLang = null): array {
         if (!$this->pdo) {
             Logger::error('QloAppAdapter: DB Connection is offline. Cannot get availability.');
             return [];
         }
+        $idLang = $idLang ?? (int)Config::get('QLOAPPS_DEFAULT_LANG_ID', '1');
 
         try {
             $stmt = $this->pdo->prepare("
@@ -52,7 +53,7 @@ class QloAppAdapter implements PmsPortInterface {
                     ) AS total_rooms,
                     (
                         COALESCE((
-                            SELECT COUNT(DISTINCT bd.id_room) FROM qlo_htl_booking_detail bd
+                            SELECT COUNT(*) FROM qlo_htl_booking_detail bd
                             WHERE bd.id_product = rt.id_product
                               AND bd.is_cancelled = 0
                               AND bd.is_refunded = 0
@@ -70,13 +71,14 @@ class QloAppAdapter implements PmsPortInterface {
                     ) AS booked_count
                 FROM qlo_htl_room_type rt
                 INNER JOIN qlo_product p ON p.id_product = rt.id_product
-                INNER JOIN qlo_product_lang pl ON pl.id_product = rt.id_product AND pl.id_lang = 1
+                INNER JOIN qlo_product_lang pl ON pl.id_product = rt.id_product AND pl.id_lang = :id_lang
                 WHERE p.active = 1 AND rt.id_hotel = :id_hotel
             ");
 
             $stmt->execute([
                 ':id_hotel'         => $idHotel,
                 ':id_hotel_holds'   => $idHotel,
+                ':id_lang'          => $idLang,
                 ':date_from_booked' => $checkIn . ' 12:00:00',
                 ':date_to_booked'   => $checkOut . ' 10:30:00',
                 ':check_in_date'    => $checkIn,
@@ -285,6 +287,30 @@ class QloAppAdapter implements PmsPortInterface {
         }
     }
 
+    /**
+     * Tasa de conversion USD -> PEN del PMS (qlo_currency, iso_code PEN).
+     * Fuente unica coherente con el back-office; Config queda como FAIL-SAFE
+     * si la consulta falla (nunca rompe la cotizacion).
+     */
+    public function getExchangeRatePEN(): float {
+        if (!$this->pdo) {
+            return (float)Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
+        }
+        try {
+            $stmt = $this->pdo->prepare(
+                "SELECT conversion_rate FROM qlo_currency WHERE iso_code = 'PEN' AND active = 1 LIMIT 1"
+            );
+            $stmt->execute();
+            $rate = $stmt->fetchColumn();
+            return $rate !== false && (float)$rate > 0
+                ? (float)$rate
+                : (float)Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
+        } catch (Throwable $e) {
+            Logger::warning('QloAppAdapter: tasa PEN no disponible (' . $e->getMessage() . '); fallback Config.');
+            return (float)Config::get('EXCHANGE_RATE_USD_PEN', '3.80');
+        }
+    }
+
     public function createCart(int $idHotel, int $idProduct, string $checkIn, string $checkOut, int $guests = 1, float $totalPrice = 0, string $guestName = '', string $guestEmail = '', string $guestPhone = ''): string {
         if (empty($this->apiKey) || empty($this->apiUrl)) {
             Logger::error('QloAppAdapter: QloApps API key or API URL is not configured. Falling back to local cart.');
@@ -383,6 +409,24 @@ XML;
         $lastName = $nameParts[1] ?? 'Guest';
 
         try {
+            // Moneda de la orden: la pasarela cobra PEN (MERCADO_PAGO_CURRENCY).
+            // La tienda QloApps opera en USD (PS_CURRENCY_DEFAULT=2) y el codigo
+            // antiguo fijaba id_currency=2 creyendo que era PEN — las ordenes
+            // nacian "USD 684" con montos PEN (auditoria 2026-08-11). Se resuelve
+            // la moneda PEN real (id + conversion_rate de qlo_currency); el
+            // fallback conserva el id 1 (PEN en la instalacion verificada).
+            $penCurrencyId = 1;
+            $penConversionRate = 1.0;
+            $stmtCur = $this->pdo->prepare(
+                "SELECT id_currency, conversion_rate FROM qlo_currency WHERE iso_code = 'PEN' AND active = 1 LIMIT 1"
+            );
+            $stmtCur->execute();
+            $penCur = $stmtCur->fetch(PDO::FETCH_ASSOC);
+            if ($penCur) {
+                $penCurrencyId = (int)$penCur['id_currency'];
+                $penConversionRate = (float)$penCur['conversion_rate'];
+            }
+
             $this->pdo->beginTransaction();
 
             // 1. Cliente: buscar por email o insertar
@@ -399,10 +443,10 @@ XML;
                 $idCustomer = (int)$this->pdo->lastInsertId();
             }
 
-            // 2. Carrito QloApps
+            // 2. Carrito QloApps (moneda PEN)
             $stmtCart = $this->pdo->prepare("
                 INSERT INTO qlo_cart (id_shop_group, id_shop, id_lang, id_currency, id_customer, id_address_delivery, id_address_invoice, date_add, date_upd)
-                VALUES (1, 1, 1, 2, ?, 0, 0, NOW(), NOW())
+                VALUES (1, 1, 1, {$penCurrencyId}, ?, 0, 0, NOW(), NOW())
             ");
             $stmtCart->execute([$idCustomer]);
             $idCart = (int)$this->pdo->lastInsertId();
@@ -417,9 +461,9 @@ XML;
                     id_address_delivery, id_address_invoice, current_state, payment, total_paid, total_paid_tax_incl,
                     total_paid_tax_excl, total_products, total_products_wt, conversion_rate, module, valid, source, date_add, date_upd
                 ) VALUES (
-                    ?, 1, 1, 0, 1, ?, ?, 2,
+                    ?, 1, 1, 0, 1, ?, ?, {$penCurrencyId},
                     0, 0, 2, 'Mercado Pago (Online)', ?, ?,
-                    ?, ?, ?, 1.0, 'mercadopago', 1, ?, NOW(), NOW()
+                    ?, ?, ?, {$penConversionRate}, 'mercadopago', 1, ?, NOW(), NOW()
                 )
             ");
             $stmtOrder->execute([$ref, $idCustomer, $idCart, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $fullCartId]);
@@ -448,7 +492,7 @@ XML;
                     id_cart, id_guest, id_order, id_customer, id_currency, id_product, id_room, id_hotel,
                     quantity, booking_type, comment, is_back_order, extra_demands, date_from, date_to, adults, children, child_ages, date_add, date_upd
                 ) VALUES (
-                    ?, 0, ?, ?, 2, ?, 1, ?,
+                    ?, 0, ?, ?, {$penCurrencyId}, ?, 1, ?,
                     1, 1, '', 0, '[]', ?, ?, ?, 0, '[]', NOW(), NOW()
                 )
             ");

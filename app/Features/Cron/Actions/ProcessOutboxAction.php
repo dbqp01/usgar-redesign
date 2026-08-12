@@ -277,7 +277,21 @@ class ProcessOutboxAction {
         $preAttempts = (int)($row['attempts'] ?? 0);
 
         try {
-            $eventObj = unserialize(base64_decode((string)$row['payload']));
+            // Auditoría 2026-08-11 (semgrep): unserialize sin restricciones
+            // sobre el payload del outbox. El origen es interno (solo
+            // EventDispatcher escribe event_outbox), pero allowed_classes
+            // elimina la clase entera de ataques de object injection si la BD
+            // se compromete. Solo existen BookingPaidEvent + DateTimeImmutable
+            // (propiedad occurredAt del evento — sin ella el unserialize lanza
+            // TypeError: __PHP_Incomplete_Class en propiedad tipada) en el
+            // grafo; añadir aqui cualquier clase nueva que se serialice.
+            $eventObj = unserialize(
+                base64_decode((string)$row['payload']),
+                ['allowed_classes' => [
+                    \App\Features\Booking\Domain\Events\BookingPaidEvent::class,
+                    \DateTimeImmutable::class,
+                ]]
+            );
             if (!$eventObj instanceof EventInterface) {
                 throw new \Exception('Unserialized payload is not an EventInterface');
             }

@@ -5,6 +5,7 @@ import { useTranslations, type Locale } from "../i18n/utils";
 import { Picture, getImage } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import SectionHeader from "../components/ui/SectionHeader.astro";
+import { rooms } from "../data/rooms";
 
 const lang = (Astro.currentLocale || "en") as Locale;
 const t = useTranslations(lang);
@@ -46,19 +47,16 @@ const lightboxSrcs = (
   )
 ).map((img) => img.src);
 
-// Room video tours: cada video usa como poster la primera foto de su habitación
-const roomVideoSlugs = [
-  ...new Set(
-    roomPhotos
-      .map((p) => p.path.match(/rooms\/([^/]+)\//)?.[1])
-      .filter(Boolean) as string[],
-  ),
-];
-const videoItems = roomVideoSlugs.map((slug) => ({
-  slug,
-  video: `/videos/rooms/${slug}.mp4`,
-  poster: roomPhotos.find((p) => p.path.includes(`rooms/${slug}/`))?.metadata,
-}));
+// Room video tours: orden de negocio (rooms.json) — el orden del glob (alfabético)
+// mezclaba familiar-superior y matrimonial respecto al orden de las habitaciones.
+// Poster = primera foto de la habitación.
+const videoItems = rooms
+  .filter((r) => r.hasVideoTour)
+  .map((r) => ({
+    slug: r.slug,
+    video: `/videos/rooms/${r.slug}.mp4`,
+    poster: roomPhotos.find((p) => p.path.includes(`rooms/${r.slug}/`))?.metadata,
+  }));
 // Media unificado para el lightbox: fotos (imagen) + videos (video)
 type GalleryMedia = { type: "image"; src: string } | { type: "video"; src: string; poster: string };
 const lightboxMedia: GalleryMedia[] = [

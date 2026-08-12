@@ -76,7 +76,10 @@ class GetBookingStatusAction {
             'time_left_seconds' => $timeLeftSeconds,
         ];
 
-        if ($isAuthenticated || $hold['status'] === BookingStatus::Paid->value) {
+        // PII SOLO con token valido (auditoria 2026-08-11): los cart_id del
+        // webservice son INTs secuenciales; devolver nombre/email/telefono con
+        // solo el status paid hacia la PII enumerable sin autenticacion.
+        if ($isAuthenticated) {
             // payment_id: contrato del retry plan del frontend (todo 31;
             // paymentStatus.ts -> resolvePaymentOutcome/planRetryAfterFailure
             // leen localStatus.payment_id). Sin esta clave la rama local era

@@ -148,6 +148,14 @@ class ProvisionalBookingRepository {
             // un evento refunded del mismo payment_id ya no colisiona con el
             // registro approved.
             $this->migrateProcessedPaymentsEventType();
+
+            // Auto-heal (auditoria 2026-08-11): extend_count limita las
+            // extensiones del hold (el tope por expires_at fallaba con
+            // extensiones inmediatas — cada una resetea expires_at a +TTL).
+            if (!$this->columnExists('provisional_bookings', 'extend_count')) {
+                $this->pdo->exec("ALTER TABLE provisional_bookings ADD COLUMN extend_count INT NOT NULL DEFAULT 0 AFTER expires_at");
+                Logger::info('ProvisionalBookingRepository: Columna extend_count creada automaticamente en provisional_bookings.');
+            }
         } catch (PDOException $e) {
             Logger::error('ProvisionalBookingRepository::ensureTablesExist Error: ' . $e->getMessage());
         }
@@ -416,12 +424,24 @@ class ProvisionalBookingRepository {
 
     public function extend(string $cartId, string $newExpiration): bool {
         try {
+            // Tope por CONTEO de extensiones (auditoria 2026-08-11): sin
+            // limite, un bot con el token podia acaparar la habitacion
+            // indefinidamente (5 extensiones seguidas verificadas). Un tope
+            // temporal por expires_at falla con extensiones inmediatas (cada
+            // una resetea expires_at a +TTL); el contador es exacto.
+            // El frontend extiende 1 vez para cubrir el pago en vuelo; 3 es
+            // margen de sobra (MAX_HOLD_EXTENSIONS).
+            $maxExtensions = (int)Config::get('BOOKING_HOLD_MAX_EXTENSIONS', '3');
             $stmt = $this->pdo->prepare("
                 UPDATE provisional_bookings 
-                SET expires_at = :newExp 
+                SET expires_at = :newExp, extend_count = extend_count + 1
                 WHERE cart_id = :cartId AND status = '".BookingStatus::Pending->value."'
+                  AND extend_count < {$maxExtensions}
             ");
-            return $stmt->execute([':newExp' => $newExpiration, ':cartId' => $cartId]);
+            // rowCount > 0: sin esto, un UPDATE que matchea 0 filas (limite
+            // alcanzado) devuelve true y el action respondia success sin
+            // haber extendido nada (verificado en la auditoria 2026-08-11).
+            return $stmt->execute([':newExp' => $newExpiration, ':cartId' => $cartId]) && $stmt->rowCount() > 0;
         } catch (PDOException $e) {
             Logger::error('ProvisionalBookingRepository::extend Error: ' . $e->getMessage());
             return false;
@@ -494,27 +514,40 @@ class ProvisionalBookingRepository {
 
     /**
      * Cuenta holds paid/pending-no-expirados que solapan el rango de fechas.
-     * SIN FOR UPDATE (todo 10): el lock de serializacion es la fila de
-     * room_locks tomada con lockRoom(); un FOR UPDATE sobre el rango de
-     * fechas no bloquearia nada si el rango esta vacio.
+     * $createdAfter (opcional): limita al conteo a holds creados DESPUÉS de un
+     * timestamp — el re-check de CreateBookingAction lo usa para no volver a
+     * restar los holds que getAvailableRooms YA descontó (doble conteo,
+     * auditoría 2026-08-11). SIN FOR UPDATE (todo 10): el lock de serializacion
+     * es la fila de room_locks tomada con lockRoom(); un FOR UPDATE sobre el
+     * rango de fechas no bloquearia nada si el rango esta vacio.
      */
-    public function getHoldCountForRoomForUpdate(int $idRoomType, string $checkIn, string $checkOut, int $idHotel): int {
+    public function getHoldCountForRoomForUpdate(int $idRoomType, string $checkIn, string $checkOut, int $idHotel, ?string $createdAfter = null): int {
         if (!$this->pdo) return 0;
         try {
-            $stmt = $this->pdo->prepare("
+            $sql = "
                 SELECT COUNT(*) FROM provisional_bookings
                 WHERE id_hotel = :idHotel
                   AND id_room_type = :idRoomType
                   AND (status = '".BookingStatus::Paid->value."' OR (status = '".BookingStatus::Pending->value."' AND expires_at > NOW()))
                   AND checkin < :checkout
                   AND checkout > :checkin
-            ");
-            $stmt->execute([
+            ";
+            $params = [
                 ':idHotel'    => $idHotel,
                 ':idRoomType' => $idRoomType,
                 ':checkin'    => $checkIn,
                 ':checkout'   => $checkOut,
-            ]);
+            ];
+            if ($createdAfter !== null) {
+                // >= para no perder holds commiteados en el mismo segundo que la
+                // lectura inicial (created_at == lectura): un falso rechazo en
+                // una ventana de 1s es preferible a un hold no contado (overbooking).
+                // ponytail: el re-check solo cubre la ventana lectura->lock (~ms).
+                $sql .= " AND created_at >= :createdAfter";
+                $params[':createdAfter'] = $createdAfter;
+            }
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
             return (int)$stmt->fetchColumn();
         } catch (PDOException $e) {
             Logger::error('ProvisionalBookingRepository::getHoldCountForRoomForUpdate Error: ' . $e->getMessage());

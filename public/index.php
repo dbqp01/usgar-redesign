@@ -46,6 +46,11 @@ use App\Features\Auth\Actions\AuthLogoutAction;
 use App\Features\Auth\Actions\GetUserBookingsAction;
 use App\Features\Newsletter\Actions\SubscribeNewsletterAction;
 use App\Features\Contact\Actions\SubmitContactAction;
+use App\Features\Panel\Actions\PanelLoginAction;
+use App\Features\Panel\Actions\PanelLogoutAction;
+use App\Features\Panel\Actions\GetAvailabilityAction;
+use App\Features\Panel\Actions\ExportAvailabilityAction;
+use App\Features\Panel\Actions\ImportAvailabilityAction;
 
 // 2. Soporte para ejecuciones desde la linea de comandos (Cron Jobs)
 if (PHP_SAPI === 'cli') {
@@ -97,6 +102,13 @@ $router->get('/api/user/bookings',     GetUserBookingsAction::class);
 $router->post('/api/user/profile',     UpdateUserProfileAction::class);
 $router->post('/api/newsletter',       SubscribeNewsletterAction::class);
 $router->post('/api/contact',          SubmitContactAction::class);
+
+// Panel de disponibilidad del dueno (protegido por cookie usgar_panel)
+$router->post('/api/panel/login',        PanelLoginAction::class);
+$router->post('/api/panel/logout',       PanelLogoutAction::class);
+$router->get('/api/panel/availability',  GetAvailabilityAction::class);
+$router->get('/api/panel/export',        ExportAvailabilityAction::class);
+$router->post('/api/panel/import',       ImportAvailabilityAction::class);
 
 // 6. Despachar la peticion actual
 $router->dispatch($request);

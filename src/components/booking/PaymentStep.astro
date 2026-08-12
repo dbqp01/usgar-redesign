@@ -164,9 +164,16 @@ const t = useTranslations(lang);
   }
 
   // ---- Todo 28: redirigir a success sin apilar reintentos ----
-  function redirectToSuccess(cartId: string): void {
+  function redirectToSuccess(cartId: string, accessToken?: string): void {
     const lang = (document.documentElement.lang || 'en') as Locale;
+    // Auditoría 2026-08-11: el token se persiste (sessionStorage + URL) para
+    // que la página de éxito pueda mostrar los datos del huésped. Sin él, el
+    // backend ya no expone PII a peticiones sin token.
+    if (accessToken) {
+      try { sessionStorage.setItem(`booking_token_${cartId}`, accessToken); } catch { /* best-effort */ }
+    }
     let successUrl = `/book/success?booking=${cartId}`;
+    if (accessToken) successUrl += `&token=${encodeURIComponent(accessToken)}`;
     if (lang !== 'en') successUrl = `/${lang}${successUrl}`;
     window.location.href = successUrl;
   }
@@ -285,7 +292,7 @@ const t = useTranslations(lang);
       // 1) Estado local: si ya hay payment_id o pago confirmado -> success.
       const local = await bookingService.getBookingStatus(cartId, accessToken);
       if (local.success && resolvePaymentOutcome(null, local.data) === 'redirect_success') {
-        redirectToSuccess(cartId);
+        redirectToSuccess(cartId, accessToken);
         return;
       }
       // 2) MP por external_reference (payment-check, todo 31): pago existente
@@ -299,7 +306,7 @@ const t = useTranslations(lang);
         now: Date.now(),
       });
       if (plan.action === 'redirect_success') {
-        redirectToSuccess(cartId);
+        redirectToSuccess(cartId, accessToken);
         return;
       }
       if (plan.action === 'manual_review') {
@@ -520,14 +527,14 @@ const t = useTranslations(lang);
 
                   if (processRes.success) {
                     resolve();
-                    redirectToSuccess(cartId!);
+                    redirectToSuccess(cartId!, accessToken!);
                     return;
                   }
 
                   const outcome = resolvePaymentOutcome(processRes.error, null);
                   if (outcome === 'redirect_success') {
                     resolve();
-                    redirectToSuccess(cartId!);
+                    redirectToSuccess(cartId!, accessToken!);
                     return;
                   }
 

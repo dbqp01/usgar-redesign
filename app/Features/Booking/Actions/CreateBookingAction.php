@@ -127,8 +127,15 @@ class CreateBookingAction {
                 throw new Exception('No se pudo adquirir el lock de serializacion para la habitacion.');
             }
 
-            $holdsCount = $this->bookingRepo->getHoldCountForRoomForUpdate($idRoomType, $checkIn, $checkOut, $hotelId);
-            $targetRoom['available_qty'] -= $holdsCount;
+            // Re-check (auditoria 2026-08-11): getAvailableRooms YA descontó
+            // los holds existentes en available_qty; restar todos otra vez era
+            // doble conteo (rechazos falsos con inventario parcialmente
+            // ocupado). El re-check cuenta SOLO los holds creados DESPUÉS de la
+            // lectura inicial (ventana lectura->lock, ~ms), que es lo único que
+            // el available_qty no pudo ver.
+            $readAt = date('Y-m-d H:i:s');
+            $newHoldsCount = $this->bookingRepo->getHoldCountForRoomForUpdate($idRoomType, $checkIn, $checkOut, $hotelId, $readAt);
+            $targetRoom['available_qty'] -= $newHoldsCount;
 
             if ($targetRoom['available_qty'] <= 0) {
                 $this->pdo->rollBack();
@@ -138,11 +145,11 @@ class CreateBookingAction {
             $currentUser = SessionService::getUserFromRequest();
 
             // Todo 25 (Wave 4): congelar tasa + PEN al cotizar (UNA sola
-            // lectura de EXCHANGE_RATE_USD_PEN). Sin este WRITE,
-            // BookingPaidEvent::fromHold obtendria rate NULL y el webhook
-            // compararia contra la tasa ACTUAL (falso fraude por descalce).
-            $exchangeRate = (float)Config::get('EXCHANGE_RATE_USD_PEN');
-            $priceSnapshotPen = PriceCalculator::toGatewayPrice($totalPrice);
+            // lectura de la tasa). La tasa sale del PMS (qlo_currency), no de
+            // Config (auditoria 2026-08-11): el back-office reporta con la
+            // tasa del CMS; Config queda como fallback si el PMS no responde.
+            $exchangeRate = $this->pms->getExchangeRatePEN();
+            $priceSnapshotPen = PriceCalculator::toGatewayPrice($totalPrice, $exchangeRate);
 
             $holdData = [
                 'cart_id'                 => $cartId,

@@ -1,8 +1,14 @@
 ---
 // src/components/booking/BookingCalendarStep.astro
-// Step 1: Sleek Date Bar + Collapsible Dual-Month Calendar (Single Unified Calendar - No Native Browser Popups).
-// Preserves: data-booking-calendar, data-calendar-month="0", data-calendar-month="1",
-// #checkin, #checkout, #guests, data-calendar-continue, data-calendar-banner, data-calendar-checking
+// Step 1: Compact Search Bar + Calendar Popover + Auto-Search.
+// v4 (Booking.com / SimpleBooking pattern): la pagina no es vertical.
+// Arriba solo la barra de busqueda (checkin/checkout/guests + boton Buscar);
+// el calendario doble aparece en un POPOVER al hacer click en las fechas y se
+// cierra al completar el rango (el calendario nunca empuja el layout). Al
+// completar el rango, la busqueda corre automaticamente y scrollea a las
+// recomendaciones (la magia del wizard).
+// Preserves: data-booking-calendar, data-calendar-month="0"/"1", #checkin,
+// #checkout, #guests, data-calendar-banner, data-calendar-checking
 import { useTranslations, type Locale } from '../../i18n/utils';
 
 const lang = (Astro.currentLocale || 'en') as Locale;
@@ -15,51 +21,37 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
   data-booking-calendar
   class="bg-surface-card-light dark:bg-surface-card-dark p-4 sm:p-6 rounded-2xl border border-black/8 dark:border-white/10 shadow-sm space-y-4"
 >
-  <!-- Sleek Top Inputs Bar (Custom text inputs - opens single custom calendar) -->
-  <div class="grid grid-cols-2 sm:grid-cols-12 gap-3 items-end">
-    <div class="sm:col-span-4">
+  <!-- Compact Search Bar -->
+  <div class="grid grid-cols-2 sm:grid-cols-12 gap-3 items-end relative">
+    <div class="sm:col-span-3">
       <label for="checkin" class="block text-[10px] font-bold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-1">
         {t('wizard.checkIn')}
       </label>
-      <div class="relative">
-        <input
-          type="text"
-          id="checkin"
-          name="checkin"
-          readonly
-          placeholder="YYYY-MM-DD"
-          class="w-full px-3 py-2 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-xs font-semibold text-text-primary-light dark:text-white focus:ring-2 focus:ring-secondary/40 focus:border-secondary outline-none transition-all cursor-pointer pr-8 select-none"
-        />
-        <div class="absolute inset-y-0 right-0 flex items-center pr-2.5 pointer-events-none text-text-secondary-light dark:text-text-secondary-dark">
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-        </div>
-      </div>
+      <input
+        type="text"
+        id="checkin"
+        name="checkin"
+        readonly
+        placeholder="YYYY-MM-DD"
+        class="w-full px-3 py-2 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-xs font-semibold text-text-primary-light dark:text-white focus:ring-2 focus:ring-secondary/40 focus:border-secondary outline-none transition-all cursor-pointer pr-7 select-none"
+      />
     </div>
 
-    <div class="sm:col-span-4">
+    <div class="sm:col-span-3">
       <label for="checkout" class="block text-[10px] font-bold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-1">
         {t('wizard.checkOut')}
       </label>
-      <div class="relative">
-        <input
-          type="text"
-          id="checkout"
-          name="checkout"
-          readonly
-          placeholder="YYYY-MM-DD"
-          class="w-full px-3 py-2 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-xs font-semibold text-text-primary-light dark:text-white focus:ring-2 focus:ring-secondary/40 focus:border-secondary outline-none transition-all cursor-pointer pr-8 select-none"
-        />
-        <div class="absolute inset-y-0 right-0 flex items-center pr-2.5 pointer-events-none text-text-secondary-light dark:text-text-secondary-dark">
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-        </div>
-      </div>
+      <input
+        type="text"
+        id="checkout"
+        name="checkout"
+        readonly
+        placeholder="YYYY-MM-DD"
+        class="w-full px-3 py-2 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-xs font-semibold text-text-primary-light dark:text-white focus:ring-2 focus:ring-secondary/40 focus:border-secondary outline-none transition-all cursor-pointer pr-7 select-none"
+      />
     </div>
 
-    <div class="sm:col-span-2">
+    <div class="sm:col-span-3">
       <label for="guests" class="block text-[10px] font-bold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-1">
         {t('wizard.guestsLabel')}
       </label>
@@ -67,71 +59,69 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
         <select
           id="guests"
           name="guests"
-          class="w-full px-3 py-2 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-xs font-medium text-text-primary-light dark:text-white focus:ring-2 focus:ring-secondary/40 focus:border-secondary outline-none transition-all appearance-none cursor-pointer pr-8"
+          class="w-full px-3 py-2 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-xs font-medium text-text-primary-light dark:text-white focus:ring-2 focus:ring-secondary/40 focus:border-secondary outline-none transition-all appearance-none cursor-pointer pr-7"
         >
           {guestOptions.map((g) => (
             <option value={g} class="bg-white dark:bg-surface-dark">{g} {g === 1 ? t('booking.guest') : t('booking.guests_plural')}</option>
           ))}
         </select>
         <div class="absolute inset-y-0 right-0 flex items-center pr-2.5 pointer-events-none text-text-secondary-light dark:text-text-secondary-dark">
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
         </div>
       </div>
     </div>
 
-    <div class="sm:col-span-2">
+    <div class="sm:col-span-3">
       <button
         type="button"
-        data-toggle-calendar
-        class="w-full px-3 py-2 rounded-xl border border-secondary/30 bg-secondary/5 hover:bg-secondary/15 text-secondary-dark dark:text-secondary text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5"
+        data-calendar-search
+        class="w-full px-4 py-2 rounded-xl btn-primary text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
       >
-        <span>{t('wizard.toggleCalendar')}</span>
-        <svg class="w-3.5 h-3.5 transition-transform" data-calendar-chevron fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
+        {t('wizard.searchAvailability')}
       </button>
     </div>
-  </div>
 
-  <!-- Collapsible Calendar Drawer -->
-  <div data-calendar-drawer class="hidden space-y-4 pt-3 border-t border-black/6 dark:border-white/6 animate-fade-in">
-    <!-- Month Header Controls -->
-    <div class="flex items-center justify-between">
-      <h3 class="font-display text-sm font-bold text-text-primary-light dark:text-white">
-        {t('wizard.calendarTitle')}
-      </h3>
-      <div class="flex items-center gap-1">
-        <button type="button" data-calendar-prev class="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer text-text-secondary-light dark:text-text-secondary-dark" aria-label={t('wizard.prevMonth')}>
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <button type="button" data-calendar-next-month class="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer text-text-secondary-light dark:text-text-secondary-dark" aria-label={t('wizard.nextMonth')}>
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+    <!-- Calendar Popover (no ocupa espacio en el layout; se abre al click en fechas).
+         max-h + overflow: en viewports bajos el calendario no puede empujar la
+         pagina (estaria oculto bajo el pliegue); scrollea internamente. -->
+    <div
+      data-calendar-popover
+      class="absolute left-0 right-0 sm:left-1/2 sm:right-auto sm:w-[640px] sm:-translate-x-1/2 top-full mt-3 hidden z-50 max-h-[70vh] overflow-y-auto p-5 rounded-2xl bg-white dark:bg-surface-card-dark border border-black/10 dark:border-white/10 shadow-2xl shadow-black/15"
+    >
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-display text-sm font-bold text-text-primary-light dark:text-white">
+          {t('wizard.calendarTitle')}
+        </h3>
+        <div class="flex items-center gap-1">
+          <button type="button" data-calendar-prev class="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer text-text-secondary-light dark:text-text-secondary-dark" aria-label={t('wizard.prevMonth')}>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button type="button" data-calendar-next-month class="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer text-text-secondary-light dark:text-text-secondary-dark" aria-label={t('wizard.nextMonth')}>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
       </div>
-    </div>
-
-    <!-- Calendar Grids -->
-    <div class="flex flex-col gap-4 lg:flex-row lg:gap-6">
-      <div class="flex-1" data-calendar-month="0"></div>
-      <div class="flex-1 hidden lg:block" data-calendar-month="1"></div>
-    </div>
-
-    <!-- Legend -->
-    <div class="flex items-center gap-4 text-[10px] text-text-secondary-light dark:text-text-secondary-dark font-body pt-2">
-      <span class="inline-flex items-center gap-1.5">
-        <span class="w-2 h-2 rounded-full bg-teal-brand" aria-hidden="true"></span>
-        {t('wizard.legendAvailable')}
-      </span>
-      <span class="inline-flex items-center gap-1.5">
-        <span class="w-2 h-2 rounded-full bg-rose-400" aria-hidden="true"></span>
-        {t('wizard.legendSoldOut')}
-      </span>
+      <div class="flex flex-col gap-4 sm:flex-row sm:gap-6">
+        <div class="flex-1" data-calendar-month="0"></div>
+        <div class="flex-1 hidden sm:block" data-calendar-month="1"></div>
+      </div>
+      <!-- Legend -->
+      <div class="flex items-center gap-4 text-[10px] text-text-secondary-light dark:text-text-secondary-dark font-body pt-3">
+        <span class="inline-flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-teal-brand" aria-hidden="true"></span>
+          {t('wizard.legendAvailable')}
+        </span>
+        <span class="inline-flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-rose-400" aria-hidden="true"></span>
+          {t('wizard.legendSoldOut')}
+        </span>
+      </div>
     </div>
   </div>
 
@@ -159,6 +149,8 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
   let cleanupAnim: (() => void) | null = null;
   let stopPolling: (() => void) | null = null;
   let firstCompute = true;
+  let userPicked = false;
+  let scrolledOnce = false;
 
   let calendarAvailability: Record<string, Record<string, number>> = {};
 
@@ -177,17 +169,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
   }
 
   function escapeAttr(value: string): string {
-    return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-  }
-
-  const ROOM_DOT_ORDER = ['matrimonial', 'doble-superior', 'triple-standar', 'familiar-superior'];
-
-  function roomDots(day: Record<string, number>): string {
-    return ROOM_DOT_ORDER.map((slug) => {
-      const available = (day[slug] ?? 0) > 0;
-      const cls = available ? 'bg-teal-brand' : 'bg-rose-400';
-      return `<span class="w-1 h-1 rounded-full ${cls}" aria-hidden="true"></span>`;
-    }).join('');
+    return value.replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/</g, '&lt;');
   }
 
   function rangeDays(checkIn: string, checkOut: string): string[] {
@@ -211,32 +193,12 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
     return true;
   }
 
-  function labels(): Record<string, string> {
-    return (window as any).__LABELS || {};
-  }
-
   function isDaySoldOut(date: string): boolean {
     const day = calendarAvailability[date];
     if (!day) return false;
     const slugs = Object.keys(day);
     if (slugs.length === 0) return false;
     return slugs.every((slug) => (day[slug] ?? 0) <= 0);
-  }
-
-  function availableRoomsLabel(date: string): string {
-    const day = calendarAvailability[date];
-    if (!day) return '';
-    const lang = (document.documentElement.lang || 'en') as string;
-    const rooms = (window as any).__ROOMS_DATA as SerializedRoom[] || [];
-    const available = Object.entries(day)
-      .filter(([, qty]) => (qty ?? 0) > 0)
-      .map(([slug]) => {
-        const room = rooms.find((r) => r.slug === slug);
-        return room ? (room.name[lang] || slug) : slug;
-      });
-    if (available.length === 0) return '';
-    const lb = labels();
-    return `${lb.availableOn || 'Available:'} ${available.slice(0, 4).join(', ')}${available.length > 4 ? '...' : ''}`;
   }
 
   async function loadCalendarAvailability(): Promise<void> {
@@ -257,6 +219,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
   function renderMonth(container: HTMLElement, year: number, month: number, opts: {
     lang: string;
     weekDays: string[];
+    labels: Record<string, string>;
     onPick: (date: string) => void;
   }) {
     const cells = buildMonthGrid(year, month);
@@ -264,6 +227,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
       opts.lang === 'es' ? 'es' : opts.lang === 'fr' ? 'fr' : opts.lang === 'pt' ? 'pt' : 'en',
       { month: 'long', year: 'numeric' }
     );
+    const todayIso = formatISODate(new Date());
 
     container.innerHTML = `
       <div class="text-center mb-2">
@@ -278,20 +242,21 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
           const past = cell.past;
           const dayNum = Number(cell.date.slice(-2));
           const dateLabel = formatDate(cell.date, opts.lang);
+          // Dia agotado SOLO si la API respondio para ese dia (fail-safe:
+          // sin datos, el dia queda seleccionable y el backend re-verifica).
           const soldOut = !past && calendarAvailability[cell.date] !== undefined && isDaySoldOut(cell.date);
+          const isToday = !past && cell.date === todayIso;
           const disabledAttr = past || soldOut ? 'tabindex="-1" aria-disabled="true"' : '';
           const stateClass = past
             ? 'opacity-20 pointer-events-none'
             : soldOut
-              ? 'opacity-30 pointer-events-none line-through text-rose-400'
+              ? 'opacity-45 pointer-events-none line-through text-rose-500 dark:text-rose-400'
               : 'hover:bg-secondary/10 hover:text-secondary-dark dark:hover:text-secondary';
+          const todayRing = isToday && !soldOut ? ' ring-1 ring-primary/40 ring-inset' : '';
           const tooltip = soldOut
-            ? ` title="${escapeAttr(labels().soldOut || 'Sold out')}"`
-            : calendarAvailability[cell.date] && !past
-              ? ` title="${escapeAttr(availableRoomsLabel(cell.date))}"`
-              : '';
-          const dots = !past && calendarAvailability[cell.date] ? roomDots(calendarAvailability[cell.date]) : '';
-          return `<button type="button" role="gridcell" data-calendar-day data-date="${cell.date}" data-past="${past}" data-sold-out="${soldOut}" aria-label="${dateLabel}${soldOut ? ' - ' + (labels().soldOut || 'Sold out') : ''}" ${disabledAttr}${tooltip} class="aspect-square rounded text-xs font-body flex items-center justify-center transition-all duration-150 cursor-pointer select-none ${stateClass}"><span class="flex flex-col items-center justify-center gap-0.5 leading-none"><span>${dayNum}</span>${dots ? `<span class="flex items-center justify-center gap-px">${dots}</span>` : ''}</span></button>`;
+            ? ` title="${escapeAttr(opts.labels.soldOut || 'Sold out')}"`
+            : '';
+          return `<button type="button" role="gridcell" data-calendar-day data-date="${cell.date}" data-past="${past}" data-sold-out="${soldOut}" aria-label="${dateLabel}${soldOut ? ' - ' + (opts.labels.soldOut || 'Sold out') : ''}" ${disabledAttr}${tooltip} class="aspect-square rounded text-xs font-body flex items-center justify-center transition-all duration-150 cursor-pointer select-none${todayRing} ${stateClass}">${dayNum}</button>`;
         }).join('')}
       </div>
     `;
@@ -324,6 +289,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
   function initCalendar() {
     abortController.abort();
     abortController = new AbortController();
+    const signal = abortController.signal;
 
     const root = document.querySelector('[data-booking-calendar]') as HTMLElement | null;
     if (!root) return;
@@ -337,29 +303,15 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
     const checking = root.querySelector('[data-calendar-checking]') as HTMLElement | null;
     const prevBtn = root.querySelector('[data-calendar-prev]') as HTMLButtonElement | null;
     const nextMonthBtn = root.querySelector('[data-calendar-next-month]') as HTMLButtonElement | null;
-    const toggleBtn = root.querySelector('[data-toggle-calendar]') as HTMLButtonElement | null;
-    const drawer = root.querySelector('[data-calendar-drawer]') as HTMLElement | null;
-    const chevron = root.querySelector('[data-calendar-chevron]') as HTMLElement | null;
+    const searchBtn = root.querySelector('[data-calendar-search]') as HTMLButtonElement | null;
+    const popover = root.querySelector('[data-calendar-popover]') as HTMLElement | null;
 
-    if (!month0 || !month1 || !checkinInput || !checkoutInput || !guestsSelect || !banner || !checking) return;
+    if (!month0 || !month1 || !checkinInput || !checkoutInput || !guestsSelect || !banner || !checking || !searchBtn || !popover) return;
     const checkin = checkinInput!;
     const checkout = checkoutInput!;
     const guestsSel = guestsSelect!;
     const bannerEl = banner!;
     const checkingEl = checking!;
-
-    // Toggle drawer functionality (Clicking inputs also toggles custom calendar!)
-    const toggleDrawer = (open?: boolean) => {
-      if (drawer) {
-        const isHidden = open !== undefined ? !open : drawer.classList.contains('hidden');
-        drawer.classList.toggle('hidden', !isHidden);
-        if (chevron) chevron.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
-      }
-    };
-
-    toggleBtn?.addEventListener('click', () => toggleDrawer(), { signal: abortController.signal });
-    checkin.addEventListener('click', () => toggleDrawer(true), { signal: abortController.signal });
-    checkout.addEventListener('click', () => toggleDrawer(true), { signal: abortController.signal });
 
     const lang = (document.documentElement.lang || 'en') as string;
     const ROOMS = (window as any).__ROOMS_DATA as SerializedRoom[] || [];
@@ -377,7 +329,6 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
 
     const seedDates = () => {
       const todayIso = formatISODate(new Date());
-      // DYNAMIC DEFAULT DATES: If missing or in the past, default to Tomorrow -> +3 days
       if (!checkIn || checkIn < todayIso) {
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
@@ -406,13 +357,44 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
       : ['Su','Mo','Tu','We','Th','Fr','Sa'];
 
     const render = () => {
-      renderMonth(month0, viewYear, viewMonth, { lang, weekDays, onPick });
+      renderMonth(month0, viewYear, viewMonth, { lang, weekDays, labels: L, onPick });
       const next = new Date(viewYear, viewMonth + 1, 1);
-      renderMonth(month1, next.getFullYear(), next.getMonth(), { lang, weekDays, onPick });
+      renderMonth(month1, next.getFullYear(), next.getMonth(), { lang, weekDays, labels: L, onPick });
       cleanupAnim?.();
       cleanupAnim = animateCalendarDays(month0);
       refreshSelection(checkIn, checkOut);
     };
+
+    // --- Popover open/close (patron Booking.com/SimpleBooking) ---
+    const openPopover = () => {
+      render();
+      popover.classList.remove('hidden');
+    };
+    const closePopover = () => {
+      popover.classList.add('hidden');
+    };
+
+    checkin.addEventListener('click', openPopover, { signal });
+    checkout.addEventListener('click', openPopover, { signal });
+    searchBtn.addEventListener('click', () => {
+      if (checkIn && checkOut) {
+        closePopover();
+        const scroll = userPicked && !scrolledOnce;
+        if (scroll) scrolledOnce = true;
+        const p = computeAllocation();
+        if (scroll) void p.then(() => document.querySelector('[data-allocation-step]')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+      } else {
+        openPopover();
+      }
+    }, { signal });
+
+    document.addEventListener('click', (e) => {
+      const t = e.target as Node;
+      if (!popover.classList.contains('hidden') && !root.contains(t)) closePopover();
+    }, { signal });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closePopover();
+    }, { signal });
 
     prevBtn?.addEventListener('click', () => {
       const today = new Date();
@@ -421,13 +403,13 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
         if (viewMonth < 0) { viewMonth = 11; viewYear -= 1; }
         render();
       }
-    }, { signal: abortController.signal });
+    }, { signal });
 
     nextMonthBtn?.addEventListener('click', () => {
       viewMonth += 1;
       if (viewMonth > 11) { viewMonth = 0; viewYear += 1; }
       render();
-    }, { signal: abortController.signal });
+    }, { signal });
 
     let isSelectingRange = false;
 
@@ -439,6 +421,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
         checkin.value = checkIn;
         checkout.value = '';
         isSelectingRange = true;
+        userPicked = true;
         refreshSelection(checkIn, '');
       } else {
         if (date > checkIn) {
@@ -447,8 +430,16 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
           checkout.value = checkOut;
           isSelectingRange = false;
           refreshSelection(checkIn, checkOut);
-          toggleDrawer(false); // Close calendar drawer once full range is selected
-          void computeAllocation();
+          // Magia: rango completo -> cierra el popover y busca automaticamente.
+          closePopover();
+          const scroll = userPicked && !scrolledOnce;
+          if (scroll) scrolledOnce = true;
+          const p = computeAllocation();
+          if (scroll) {
+            void p.then(() => {
+              document.querySelector('[data-allocation-step]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+          }
         } else {
           checkIn = date;
           checkOut = '';
@@ -462,7 +453,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
 
     guestsSel.addEventListener('change', () => {
       if (checkIn && checkOut) void computeAllocation();
-    }, { signal: abortController.signal });
+    }, { signal });
 
     async function computeAllocation(silent = false) {
       const prevAllocation = silent ? wizardStore.getState().allocation : null;
@@ -500,7 +491,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
 
       let res: { success: boolean; data?: any[] | null };
       try {
-        res = await bookingService.getAvailableRooms(checkIn, checkOut);
+        res = await bookingService.getAvailableRooms(checkIn, checkOut, lang);
       } catch {
         res = { success: false, data: null };
       }
@@ -512,14 +503,15 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
           if (target && item.price) {
             target.pricePerNight = Number(item.price);
           }
+          if (target && item.room_name) {
+            target.displayName = String(item.room_name);
+          }
           if (target && item.total_rooms) {
             target.inventory = Number(item.total_rooms);
           }
         }
       }
 
-      // Tarifas por habitación servidas por el backend (rate_plans resueltos
-      // desde las Catalog Price Rules de QloApps) — fuente del % no reembolsable.
       const ratePlans: Record<string, { standard: number; non_refundable: number }> = {};
       if (res.success && Array.isArray(res.data)) {
         for (const item of res.data) {
@@ -556,9 +548,6 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
       });
 
       if (silent && prevAllocation && prevAllocation.rooms.length > 0) {
-        // El poll no debe saltar la selección del usuario: restaurar su
-        // opción si sigue disponible y al mismo precio; si se agotó, la
-        // nueva asignación (correcta) queda.
         const cur = wizardStore.getState();
         const stillViable = cur.availabilityMap
           && prevAllocation.rooms.every((e) => (cur.availabilityMap?.[e.room.slug] ?? 0) > 0);
@@ -589,20 +578,13 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
       firstCompute = false;
     }
 
-    // ---- Frescura de disponibilidad (Fase A): polling silencioso ----
-    // Refresca rooms/options cada 45s mientras el paso 1 está visible y el
-    // usuario no está interactuando (ni seleccionando rango, ni con un
-    // fetch/processing en curso). Pausa con document.hidden (Page Visibility
-    // API, Baseline 2021). El techo de frescura lo pone la fuente (QloApps +
-    // channel manager sincroniza en minutos): 45s es más rápido que el dato.
+    // ---- Polling silencioso (frescura de disponibilidad) ----
     const POLL_INTERVAL_MS = 45_000;
     let pollTimer: number | null = null;
     let lastPollAt = 0;
 
     function pollAvailability(): void {
       const now = Date.now();
-      // Throttle: el intervalo y visibilitychange pueden coincidir; 10s evita
-      // dobles fetches inmediatos sin retrasar el primer poll tras un cambio.
       if (document.hidden || now - lastPollAt < 10_000) return;
       const s = wizardStore.getState();
       if (s.step !== 1 || s.selecting || s.processing || isSelectingRange) return;
@@ -626,21 +608,23 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
 
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) pollAvailability();
-    }, { signal: abortController.signal });
+    }, { signal });
 
     startPolling();
 
     render();
     if (checkIn && checkOut) void computeAllocation();
     void loadCalendarAvailability().then(() => {
-      if (calendarAvailability && Object.keys(calendarAvailability).length > 0) {
-        render();
-        if (checkIn && checkOut) {
-          const r = clampRange(checkIn, checkOut);
-          checkIn = r.checkIn;
-          checkOut = r.checkOut;
-          refreshSelection(checkIn, checkOut);
-        }
+      render();
+      if (checkIn && checkOut) {
+        const r = clampRange(checkIn, checkOut);
+        checkIn = r.checkIn;
+        checkOut = r.checkOut;
+        refreshSelection(checkIn, checkOut);
+      }
+      if (!calendarAvailability || Object.keys(calendarAvailability).length === 0) {
+        bannerEl.textContent = L.availabilityDegraded || '';
+        bannerEl.classList.remove('hidden');
       }
     });
   }

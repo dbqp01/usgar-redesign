@@ -78,8 +78,13 @@ final class W4PmsPortDouble implements PmsPortInterface {
     /** @var array<int, array{0:string,1:float,2:string,3:string}> */
     public array $confirmArgs = [];
 
-    public function getAvailableRooms(string $checkIn, string $checkOut, int $idHotel = 1): array {
+    public function getAvailableRooms(string $checkIn, string $checkOut, int $idHotel = 1, ?int $idLang = null): array {
         return [];
+    }
+
+    /** Tasa fija del doble (el adapter real lee qlo_currency). */
+    public function getExchangeRatePEN(): float {
+        return 3.8;
     }
 
     public function getAvailabilityCalendar(string $from, string $to, int $idHotel = 1): array {
@@ -137,7 +142,11 @@ final class W4Db {
         ?string $nextAtSql = null
     ): int {
         $nextAtSql = $nextAtSql ?? 'NOW()';
-        $event = new W4TestEvent($cartId);
+        // Auditoría 2026-08-11: se serializa el evento REAL de dominio
+        // (BookingPaidEvent) — el cron unserializa con allowed_classes que
+        // solo admite eventos de dominio; un fake romperia el contrato
+        // (ademas el test cubre el payload real de produccion).
+        $event = new \App\Features\Booking\Domain\Events\BookingPaidEvent($cartId, 'W4TEST-PAY', 100.0);
         $payload = base64_encode(serialize($event));
         $stmt = $pdo->prepare(
             "INSERT INTO event_outbox (event_name, payload, status, attempts, next_attempt_at, created_at)

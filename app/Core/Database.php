@@ -44,6 +44,14 @@ class Database {
                     // espera el timeout TCP del OS (~21s+) x 3 hosts => requests
                     // colgados y suites de test que parecen no terminar (P3-2).
                     PDO::ATTR_TIMEOUT            => 3,
+                    // Zona horaria de la sesión: el servidor MySQL de Hostinger
+                    // corre en UTC (verificado 2026-08-11) y el PHP en
+                    // America/Lima (Config::boot). Sin este pin, los expires_at
+                    // escritos por PHP (hora Lima) nacen "expirados" frente a
+                    // NOW() (UTC) y los holds NUNCA descuentan disponibilidad.
+                    // Peru no usa DST (UTC-5 fijo), el offset numerico no
+                    // requiere las tablas mysql.time_zone.
+                    PDO::MYSQL_ATTR_INIT_COMMAND  => "SET time_zone = '-05:00'",
                 ]);
                 return; // Conexion exitosa
             } catch (PDOException $e) {

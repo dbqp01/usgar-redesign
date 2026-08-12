@@ -17,13 +17,20 @@ class ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
         array (
             'cweagans\\Composer\\' => 18,
         ),
+        'Z' =>
+        array (
+            'ZipStream\\' => 10,
+        ),
         'P' =>
         array (
+            'Psr\\SimpleCache\\' => 16,
             'PhpParser\\' => 10,
+            'PhpOffice\\PhpSpreadsheet\\' => 25,
         ),
         'M' =>
         array (
             'MercadoPago\\' => 12,
+            'Matrix\\' => 7,
         ),
         'H' =>
         array (
@@ -33,6 +40,11 @@ class ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
         array (
             'DeepCopy\\' => 9,
         ),
+        'C' =>
+        array (
+            'Composer\\Pcre\\' => 14,
+            'Complex\\' => 8,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -41,13 +53,29 @@ class ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
             0 => __DIR__ . '/..' . '/cweagans/composer-patches/src',
             1 => __DIR__ . '/..' . '/cweagans/composer-configurable-plugin/src',
         ),
+        'ZipStream\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
+        ),
+        'Psr\\SimpleCache\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
+        ),
         'PhpParser\\' =>
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
         ),
+        'PhpOffice\\PhpSpreadsheet\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet',
+        ),
         'MercadoPago\\' =>
         array (
             0 => __DIR__ . '/..' . '/mercadopago/dx-php/src/MercadoPago',
+        ),
+        'Matrix\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/markbaker/matrix/classes/src',
         ),
         'Hybridauth\\' =>
         array (
@@ -56,6 +84,14 @@ class ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
         'DeepCopy\\' =>
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
+        ),
+        'Composer\\Pcre\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/composer/pcre/src',
+        ),
+        'Complex\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/markbaker/complex/classes/src',
         ),
     );
 

@@ -1,0 +1,560 @@
+---
+// Panel de disponibilidad del dueno — pagina estatica que consume /api/panel/*
+// (cookie HttpOnly usgar_panel). No usa el Layout publico (sin navbar del sitio).
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>USGAR — Calendario de reservas</title>
+<style>
+  :root {
+    --bg: #F6F5F1; --card: #FFFFFF; --border: #E5E1D7;
+    --text: #211E18; --text-dim: #6E695E; --text-faint: #A09A8C;
+    --gold: #8C6900; --gold-bg: #F6EED8;
+    --web: #157A67; --walkin: #3E7C46; --ota: #2F5578; --phone: #6B4F8C; --qlo: #5A6B7B; --hold: #9E7A23;
+    --maint: #B5B0A5; --maint-bg: #EDEBE5; --today: #8C6900;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: "Segoe UI", system-ui, sans-serif; font-size: 13px; padding: 26px 30px; }
+  .top { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  h1 { font-size: 25px; font-weight: 600; } h1 .g { color: var(--gold); }
+  .sub { color: var(--text-dim); font-size: 12.5px; }
+  .toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 16px 0 8px; }
+  .month-nav { display: flex; align-items: center; gap: 6px; }
+  .month-nav button, .btn { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; font-size: 12.5px; cursor: pointer; color: var(--text); }
+  .month-nav button:hover, .btn:hover { border-color: var(--gold); color: var(--gold); }
+  .month-nav button { width: 28px; height: 28px; padding: 0; font-size: 15px; }
+  #monthLabel { min-width: 158px; text-align: center; font-weight: 700; color: var(--gold); font-size: 14px; }
+  .btn.today-btn { border-color: var(--gold); color: var(--gold); font-weight: 600; }
+  .spacer { flex: 1; }
+  .btn.primary { background: var(--gold); border-color: var(--gold); color: #fff; font-weight: 600; }
+  .btn.primary:hover { background: #7A5C10; }
+  .btn.logout { color: var(--text-dim); }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; color: var(--text-dim); font-size: 12px; margin-bottom: 10px; }
+  .legend .bar { display: inline-block; height: 10px; width: 24px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+  .bar.web { background: var(--web); } .bar.walkin { background: var(--walkin); } .bar.ota { background: var(--ota); }
+  .bar.phone { background: var(--phone); } .bar.qlo { background: var(--qlo); }
+  .bar.hold { background: repeating-linear-gradient(45deg, var(--hold) 0 3px, #B8912F 3px 6px); }
+  .bar.maint { background: var(--maint-bg); border: 1px solid #D6D2C8; }
+  .layout { display: grid; grid-template-columns: 1fr 280px; gap: 16px; align-items: start; }
+  .wrap { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: auto; max-height: calc(100vh - 280px); }
+  table { border-collapse: collapse; width: max-content; min-width: 100%; }
+  th, td { border: 1px solid var(--border); }
+  thead th { position: sticky; top: 0; background: #F1EFE7; z-index: 5; font-weight: 600; font-size: 10.5px; color: var(--text-dim); padding: 3px 0; min-width: 30px; text-align: center; }
+  thead th.dow { color: var(--text-faint); font-size: 9px; border-bottom: none; padding: 2px 0 0; }
+  thead th.dow.we { color: var(--gold); }
+  thead th.num { padding: 0 0 4px; cursor: pointer; }
+  thead th.num.today { color: var(--today); box-shadow: inset 0 -2px 0 var(--today); }
+  thead th.num.sel { background: var(--gold-bg); }
+  tbody td.room { position: sticky; left: 0; background: #F1EFE7; z-index: 4; font-size: 12.5px; padding: 8px 12px; white-space: nowrap; min-width: 185px; border-right: 1px solid var(--border); }
+  tbody td.room .rnum { font-weight: 600; color: var(--gold); }
+  tbody td.room .rtype { color: var(--text-dim); font-size: 11px; margin-left: 7px; }
+  .group td { background: var(--card); color: var(--text-faint); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; padding: 5px 12px; font-weight: 700; }
+  .unassigned td.room { color: var(--text-faint); font-style: italic; }
+  .unassigned td.room .rnum { color: var(--text-faint); font-weight: 400; }
+  tbody td.day { height: 36px; min-width: 30px; padding: 0; background: #FDFCFA; position: relative; }
+  tbody td.day.we { background: #FBF9F2; }
+  tbody td.day.today { background: #FBF5E2; }
+  tbody td.day.off { background: var(--maint-bg); }
+  .bk { position: absolute; top: 5px; bottom: 5px; border-radius: 4px; cursor: pointer; min-width: 3px; box-shadow: 0 1px 2px rgba(40,30,10,0.18); }
+  .bk.web { background: linear-gradient(180deg, #1B8A74, #126756); }
+  .bk.walkin { background: linear-gradient(180deg, #4C9155, #35693C); }
+  .bk.ota { background: linear-gradient(180deg, #37648C, #274A6B); }
+  .bk.phone { background: linear-gradient(180deg, #7E5FA3, #5C4378); }
+  .bk.qlo { background: linear-gradient(180deg, #6C8093, #4C5C6B); }
+  .bk.hold { background: repeating-linear-gradient(45deg, #C9A227 0 6px, #8F6F1B 6px 12px); border: 1px solid #6E5312; }
+  .bk.maint { background: repeating-linear-gradient(45deg, #C9C4B8 0 4px, #B5B0A5 4px 8px); cursor: default; }
+  .bk:hover { filter: brightness(1.1); z-index: 3; }
+  .side { display: flex; flex-direction: column; gap: 12px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .card h2 { font-size: 12px; font-weight: 700; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+  .big { font-size: 26px; font-weight: 700; color: var(--gold); }
+  .big small { font-size: 12px; color: var(--text-dim); font-weight: 400; }
+  .statline { display: flex; justify-content: space-between; padding: 5px 0; font-size: 12.5px; border-bottom: 1px dashed var(--border); }
+  .statline:last-child { border-bottom: none; }
+  .statline span:first-child { color: var(--text-dim); }
+  .statline b { font-weight: 600; }
+  .channels { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { border: 1px solid var(--border); background: var(--card); border-radius: 20px; padding: 4px 11px; font-size: 11.5px; cursor: pointer; color: var(--text-dim); display: inline-flex; align-items: center; gap: 6px; }
+  .chip .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .chip.on { border-color: var(--gold); color: var(--text); background: var(--gold-bg); }
+  .chip .cnt { font-weight: 700; color: var(--text); }
+  .daylist { list-style: none; max-height: 220px; overflow: auto; }
+  .daylist li { padding: 6px 8px; border-radius: 6px; background: var(--bg); margin-bottom: 5px; font-size: 12px; line-height: 1.4; }
+  .daylist li b { color: var(--gold); }
+  .daylist li .src { float: right; font-size: 10px; border-radius: 10px; padding: 1px 8px; color: #fff; }
+  #tip { position: fixed; z-index: 50; pointer-events: none; display: none; background: #fff; border: 1px solid var(--gold); border-radius: 8px; padding: 11px 14px; min-width: 230px; box-shadow: 0 12px 30px rgba(30,25,10,0.2); }
+  #tip .t-g { font-weight: 600; font-size: 13.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+  #tip .t-g .src { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 12px; color: #fff; }
+  #tip .t-r { color: var(--text-dim); font-size: 11.5px; line-height: 1.6; }
+  #tip .t-r b { color: var(--text); font-weight: 600; }
+  #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #22201A; color: #F5EFDF; border: 1px solid var(--gold); border-radius: 8px; padding: 10px 18px; font-size: 12.5px; display: none; z-index: 60; }
+  footer { margin-top: 16px; color: var(--text-faint); font-size: 11px; }
+  .login-wrap { max-width: 380px; margin: 12vh auto; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 28px 30px; }
+  .login-wrap h2 { font-size: 18px; margin-bottom: 4px; } .login-wrap h2 .g { color: var(--gold); }
+  .login-wrap p { color: var(--text-dim); font-size: 12px; margin-bottom: 16px; }
+  .login-wrap input { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; margin-bottom: 10px; }
+  .login-wrap .err { color: #B23A2C; font-size: 12px; margin-bottom: 8px; display: none; }
+  .hidden { display: none !important; }
+  .empty-note { padding: 14px; color: var(--text-dim); font-size: 12.5px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginView" class="login-wrap hidden">
+  <h2>USGAR <span class="g">· Panel</span></h2>
+  <p>Acceso restringido al dueno del hotel.</p>
+  <div class="err" id="loginErr">Password incorrecta.</div>
+  <input type="password" id="passInput" placeholder="Password" autocomplete="current-password">
+  <button class="btn primary" id="loginBtn" style="width:100%">Entrar</button>
+</div>
+
+<!-- CALENDARIO -->
+<div id="appView" class="hidden">
+  <header class="top">
+    <h1>USGAR <span class="g">· Calendario de reservas</span></h1>
+    <span class="sub">Timeline por cuarto — color por canal de venta · importa / exporta CSV y Excel</span>
+  </header>
+
+  <div class="toolbar">
+    <div class="month-nav">
+      <button id="prevM" title="Mes anterior">&lsaquo;</button>
+      <span id="monthLabel">—</span>
+      <button id="nextM" title="Mes siguiente">&rsaquo;</button>
+      <button class="today-btn" id="goToday">Hoy</button>
+    </div>
+    <span class="spacer"></span>
+    <button class="btn" id="expCsv">Exportar CSV</button>
+    <button class="btn" id="expXls">Exportar Excel</button>
+    <button class="btn primary" id="impBtn">Importar CSV / Excel</button>
+    <button class="btn logout" id="logoutBtn">Salir</button>
+    <input type="file" id="impFile" accept=".csv,.xlsx,.xls" style="display:none">
+  </div>
+
+  <div class="legend">
+    <span><span class="bar web"></span>Web</span>
+    <span><span class="bar walkin"></span>Walk-in</span>
+    <span><span class="bar ota"></span>OTA</span>
+    <span><span class="bar phone"></span>Telefono</span>
+    <span><span class="bar qlo"></span>PMS</span>
+    <span><span class="bar hold"></span>Hold — pago pendiente</span>
+    <span><span class="bar maint"></span>Fuera de servicio</span>
+  </div>
+
+  <div class="layout">
+    <div class="wrap">
+      <table id="cal"></table>
+      <div id="emptyNote" class="empty-note hidden">Sin habitaciones fisicas registradas en el CMS (Catalog → Manage Room Types → agregar habitaciones).</div>
+    </div>
+    <div class="side">
+      <div class="card">
+        <h2 id="sideTitle">—</h2>
+        <div style="margin-bottom:8px"><span class="big" id="occPct">0%</span> <small>ocupacion del mes</small></div>
+        <div class="statline"><span>Noches vendidas</span><b id="stNights">0</b></div>
+        <div class="statline"><span>Reservas</span><b id="stBookings">0</b></div>
+        <div class="statline"><span>Ingreso estimado</span><b id="stRevenue">USD 0</b></div>
+      </div>
+      <div class="card">
+        <h2>Por canal</h2>
+        <div class="channels" id="channels"></div>
+      </div>
+      <div class="card">
+        <h2 id="dayTitle">Reservas del dia</h2>
+        <ul class="daylist" id="daylist"><li style="color:var(--text-faint)">Clic en un dia de la cuadricula</li></ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tip"></div>
+<div id="toast"></div>
+
+<footer id="foot" class="hidden">Formato CSV: habitacion, checkin (YYYY-MM-DD), checkout, huesped, canal (web|walkin|ota|phone), estado (confirmed|hold), precio — lo exportado se puede reimportar.</footer>
+
+<script>
+"use strict";
+function $(id: string): HTMLElement {
+  const el = document.getElementById(id);
+  if (!el) throw new Error("missing #" + id);
+  return el;
+}
+
+interface Booking {
+  room_id: number | null;
+  room: string | null;
+  checkin: string;
+  checkout: string;
+  guest: string;
+  channel: string;
+  status: string;
+  price: number | null;
+  source?: string;
+}
+interface Room {
+  room_id: number;
+  room_num: string;
+  floor: string | null;
+  id_room_type: number;
+  type: string;
+  price: number;
+  status?: number;
+}
+interface MonthData {
+  month: string;
+  today: string;
+  rooms: Room[];
+  bookings: Booking[];
+}
+
+const MONTHS = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+const state: { year: number; month: number; selDay: number; filter: string; data: MonthData | null; today: string } = {
+  year: 0, month: 0, selDay: 0, filter: "all", data: null, today: ""
+};
+const TIP = $("tip");
+
+function toast(msg: string): void {
+  const t = $("toast");
+  t.textContent = msg; t.style.display = "block";
+  clearTimeout((t as any)._h); (t as any)._h = setTimeout(() => { t.style.display = "none"; }, 3200);
+}
+function monthKey(): string { return state.year + "-" + String(state.month).padStart(2, "0"); }
+function dimsOf(y: number, m: number): number { return new Date(y, m, 0).getDate(); }
+function todayInMonth(): number {
+  const t = state.today ? new Date(state.today + "T00:00:00") : new Date();
+  return (t.getFullYear() === state.year && t.getMonth() + 1 === state.month) ? t.getDate() : 0;
+}
+function dayInMonth(iso: string): number | null {
+  if (!iso) return null;
+  const d = new Date(String(iso).slice(0, 10) + "T00:00:00");
+  if (isNaN(d.getTime()) || d.getFullYear() !== state.year || d.getMonth() + 1 !== state.month) return null;
+  return d.getDate();
+}
+function channelClass(b: Booking): string {
+  if (b.status === "hold") return "hold";
+  if (b.status === "maint") return "maint";
+  return ["web", "walkin", "ota", "phone", "qlo"].indexOf(b.channel) !== -1 ? b.channel : "qlo";
+}
+function channelLabel(b: Booking): string {
+  if (b.status === "hold") return "HOLD · pago pendiente";
+  if (b.status === "maint") return "Fuera de servicio";
+  return { web: "Web", walkin: "Walk-in", ota: "OTA", phone: "Telefono", qlo: "PMS" }[b.channel] || "PMS";
+}
+function channelColor(b: Booking): string {
+  if (b.status === "hold") return "var(--hold)";
+  if (b.status === "maint") return "var(--maint)";
+  return { web: "var(--web)", walkin: "var(--walkin)", ota: "var(--ota)", phone: "var(--phone)", qlo: "var(--qlo)" }[b.channel] || "var(--qlo)";
+}
+function visibleBookings(): Booking[] {
+  if (!state.data) return [];
+  return state.data.bookings.filter((b) => state.filter === "all" || b.channel === state.filter);
+}
+
+/* ---------- render ---------- */
+function render(): void {
+  const cal = $("cal");
+  const dims = dimsOf(state.year, state.month);
+  const today = todayInMonth();
+  let html = "<thead><tr><th class='dow'></th>";
+  for (let d = 1; d <= dims; d++) {
+    const dow = new Date(state.year, state.month - 1, d).getDay();
+    html += "<th class='dow" + (dow === 0 || dow === 6 ? " we" : "") + "'>" + ["D","L","M","X","J","V","S"][dow] + "</th>";
+  }
+  html += "</tr><tr><th></th>";
+  for (let d2 = 1; d2 <= dims; d2++) {
+    html += "<th class='num" + (d2 === today ? " today" : "") + (d2 === state.selDay ? " sel" : "") + "' data-day='" + d2 + "'>" + d2 + "</th>";
+  }
+  html += "</tr></thead><tbody>";
+
+  const rooms: Room[] = state.data ? state.data.rooms : [];
+  const bookings = visibleBookings();
+  const roomByNum: Record<string, Room> = {};
+  rooms.forEach((r) => { roomByNum[r.room_num] = r; });
+
+  // reservas sin habitacion fisica, agrupadas por tipo
+  const unassigned: Record<string, Booking[]> = {};
+  bookings.forEach((b) => {
+    if (b.room_id != null) return;
+    const key = b.room || "Habitacion";
+    (unassigned[key] = unassigned[key] || []).push(b);
+  });
+
+  let lastType: string | null = null;
+  const unassignedRow = (typeName: string): string => {
+    return "<tr class='unassigned' data-utype='" + typeName + "'><td class='room'><span class='rnum'>" + typeName + "</span><span class='rtype'>sin cuarto asignado</span></td>"
+      + Array(dims + 1).join("<td class='day'></td>") + "</tr>";
+  };
+  rooms.forEach((r) => {
+    if (r.type !== lastType) {
+      if (lastType !== null && unassigned[lastType] && unassigned[lastType].length) {
+        html += unassignedRow(lastType); // cierre del tipo anterior
+      }
+      html += "<tr class='group'><td colspan='" + (dims + 1) + "'>" + r.type + "</td></tr>";
+      lastType = r.type;
+    }
+    html += rowHtml(r, bookings.filter((b) => b.room_id != null && b.room != null && roomByNum[b.room] && roomByNum[b.room].room_num === r.room_num), dims, today);
+  });
+  if (lastType !== null && unassigned[lastType] && unassigned[lastType].length) {
+    html += unassignedRow(lastType);
+  }
+  Object.keys(unassigned).forEach((typeName) => {
+    if (!rooms.some((r) => r.type === typeName) && unassigned[typeName].length) {
+      html += "<tr class='group'><td colspan='" + (dims + 1) + "'>" + typeName + "</td></tr>" + unassignedRow(typeName);
+    }
+  });
+
+  html += "</tbody>";
+  cal.innerHTML = html;
+
+  // pintar barras sobre las celdas
+  bookings.forEach((b) => {
+    const ci = dayInMonth(b.checkin);
+    const co = dayInMonth(b.checkout);
+    if (ci === null && co === null) return;
+    const dims2 = dimsOf(state.year, state.month);
+    const start = ci === null ? 1 : ci;
+    const end = co === null ? dims2 + 1 : co;
+    if (start >= end) return;
+
+    let cells: NodeListOf<Element>;
+    if (b.room_id != null && b.room != null && roomByNum[b.room]) {
+      cells = document.querySelectorAll('td.day[data-room="' + b.room + '"]');
+    } else {
+      const typeName = b.room || "Habitacion";
+      cells = document.querySelectorAll('tr.unassigned[data-utype="' + typeName + '"] td.day');
+      if (!cells.length) return;
+    }
+    const spanV = end - start;
+    for (let d = start; d < end; d++) {
+      const cell = cells[d - 1];
+      if (!cell) continue;
+      cell.innerHTML += "<div class='bk " + channelClass(b) + "' data-bk='" + encodeURIComponent(JSON.stringify(b)) + "' style='left:" + ((d - start) / spanV * 100) + "%;right:" + ((end - 1 - d) / spanV * 100) + "%'></div>";
+    }
+  });
+
+  $("monthLabel").textContent = MONTHS[state.month - 1] + " " + state.year;
+  $("emptyNote").classList.toggle("hidden", rooms.length > 0);
+  renderStats(); renderChannels(); renderDayList();
+}
+
+function rowHtml(r: Room, bks: Booking[], dims: number, today: number): string {
+  let html = "<tr><td class='room'><span class='rnum'>" + r.room_num + "</span><span class='rtype'>" + String(r.type).replace(" Superior", "") + "</span></td>";
+  for (let d = 1; d <= dims; d++) {
+    const dow = new Date(state.year, state.month - 1, d).getDay();
+    const we = dow === 0 || dow === 6;
+    const ci = dayInMonth(bks[0] ? bks[0].checkin : "");
+    const maint = bks.some((b) => b.status === "maint" && d >= (dayInMonth(b.checkin) ?? 0) && d < (dayInMonth(b.checkout) ?? dims + 1));
+    void ci;
+    const cls = "day" + (we ? " we" : "") + (d === today ? " today" : "") + (d === state.selDay ? " sel" : "") + (maint ? " off" : "");
+    html += "<td class='" + cls + "' data-room='" + r.room_num + "' data-day='" + d + "'></td>";
+  }
+  return html + "</tr>";
+}
+
+function renderStats(): void {
+  const bs = visibleBookings();
+  let nights = 0, revenue = 0;
+  bs.forEach((b) => {
+    if (b.status === "maint") return;
+    const n = Math.round((new Date(b.checkout).getTime() - new Date(b.checkin).getTime()) / 86400000);
+    if (n > 0) nights += n;
+    if (b.price) revenue += parseFloat(String(b.price));
+  });
+  const totalRoomNights = (state.data ? state.data.rooms.length : 0) * dimsOf(state.year, state.month);
+  $("occPct").textContent = (totalRoomNights ? Math.round(nights / totalRoomNights * 100) : 0) + "%";
+  $("stNights").textContent = String(nights);
+  $("stBookings").textContent = String(bs.length);
+  $("stRevenue").textContent = "USD " + revenue.toLocaleString("en-US");
+}
+
+function renderChannels(): void {
+  const counts: Record<string, number> = {};
+  visibleBookings().forEach((b) => {
+    const k = channelClass(b);
+    counts[k] = (counts[k] || 0) + 1;
+  });
+  const order: [string, string][] = [["web", "Web"], ["walkin", "Walk-in"], ["ota", "OTA"], ["phone", "Telefono"], ["qlo", "PMS"], ["hold", "Holds"], ["maint", "Mantenimiento"]];
+  let html = "";
+  order.forEach((pair) => {
+    const k = pair[0], label = pair[1];
+    if (!counts[k]) return;
+    html += "<span class='chip" + (state.filter === "all" || state.filter === k ? " on" : "") + "' data-f='" + k + "'><span class='dot' style='background:" + (k === "hold" ? "var(--hold)" : k === "maint" ? "var(--maint)" : "var(--" + k + ")") + "'></span>" + label + " <span class='cnt'>" + counts[k] + "</span></span>";
+  });
+  $("channels").innerHTML = html;
+}
+
+function renderDayList(): void {
+  const el = $("daylist");
+  $("dayTitle").textContent = "Reservas del dia " + state.selDay;
+  if (!state.data) { el.innerHTML = "<li style='color:var(--text-faint)'>Sin datos</li>"; return; }
+  const list = visibleBookings().filter((b) => {
+    const ci = dayInMonth(b.checkin), co = dayInMonth(b.checkout);
+    if (ci === null && co === null) return false;
+    const start = ci === null ? 1 : ci, end = co === null ? dimsOf(state.year, state.month) + 1 : co;
+    return state.selDay >= start && state.selDay < end;
+  });
+  if (!list.length) { el.innerHTML = "<li style='color:var(--text-faint)'>Sin reservas este dia</li>"; return; }
+  el.innerHTML = list.map((b) => {
+    const bg = channelColor(b);
+    const room = b.room || "Sin cuarto";
+    return "<li><b>" + room + "</b> " + b.guest + "<span class='src' style='background:" + bg + "'>" + channelLabel(b) + "</span><br><span style='color:var(--text-dim)'>" + String(b.checkin).slice(0, 10) + " &rarr; " + String(b.checkout).slice(0, 10) + (b.price ? " · USD " + b.price : "") + "</span></li>";
+  }).join("");
+}
+
+/* ---------- tooltip ---------- */
+document.addEventListener("mouseover", (e: Event) => {
+  const target = e.target as Element;
+  const bk = target.closest(".bk");
+  if (!bk || !(bk as HTMLElement).dataset.bk) return;
+  let b: Booking;
+  try { b = JSON.parse(decodeURIComponent((bk as HTMLElement).dataset.bk || "")); } catch (err) { return; }
+  if (b.status === "maint") {
+    TIP.innerHTML = "<div class='t-g'>Fuera de servicio</div><div class='t-r'>Mantenimiento / no vendible</div>";
+  } else {
+    const badge = "<span class='src' style='background:" + channelColor(b) + "'>" + channelLabel(b) + "</span>";
+    const n = Math.round((new Date(b.checkout).getTime() - new Date(b.checkin).getTime()) / 86400000);
+    TIP.innerHTML = "<div class='t-g'>" + b.guest + badge + "</div>" +
+      "<div class='t-r'>" + String(b.checkin).slice(0, 10) + " &rarr; " + String(b.checkout).slice(0, 10) + " · " + n + " noche(s)</div>" +
+      (b.price ? "<div class='t-r'>Total <b>USD " + b.price + "</b></div>" : "");
+  }
+  TIP.style.display = "block";
+  const r = bk.getBoundingClientRect();
+  TIP.style.left = Math.min(r.left + r.width / 2 - 115, window.innerWidth - 250) + "px";
+  TIP.style.top = (r.top - TIP.offsetHeight - 12 > 0 ? r.top - TIP.offsetHeight - 12 : r.bottom + 12) + "px";
+});
+document.addEventListener("mouseout", (e: Event) => {
+  if ((e.target as Element).closest(".bk")) TIP.style.display = "none";
+});
+document.addEventListener("click", (e: Event) => {
+  const target = e.target as Element;
+  const th = target.closest("th.num");
+  const td = target.closest("td.day");
+  const chip = target.closest(".chip[data-f]");
+  if (th) { state.selDay = parseInt((th as HTMLElement).dataset.day || "1", 10); render(); }
+  else if (td && (td as HTMLElement).dataset.day) { state.selDay = parseInt((td as HTMLElement).dataset.day || "1", 10); render(); }
+  else if (chip) { state.filter = state.filter === (chip as HTMLElement).dataset.f ? "all" : ((chip as HTMLElement).dataset.f || "all"); render(); }
+});
+
+/* ---------- datos ---------- */
+function load(): Promise<void> {
+  if (state.year === 0) {
+    const now = new Date();
+    state.year = now.getFullYear();
+    state.month = now.getMonth() + 1;
+  }
+  return fetch("/api/panel/availability?month=" + monthKey(), { credentials: "same-origin" })
+    .then((res) => {
+      if (res.status === 401) throw { unauthorized: true };
+      if (!res.ok) throw { http: res.status };
+      return res.json() as Promise<MonthData>;
+    })
+    .then((data) => {
+      state.data = data;
+      state.today = data.today || "";
+      const now = state.today ? new Date(state.today + "T00:00:00") : new Date();
+      state.year = now.getFullYear(); state.month = now.getMonth() + 1;
+      state.selDay = todayInMonth() || 1;
+      $("appView").classList.remove("hidden");
+      $("foot").classList.remove("hidden");
+      $("loginView").classList.add("hidden");
+      render();
+    })
+    .catch((err) => {
+      if (err && err.unauthorized) {
+        $("appView").classList.add("hidden");
+        $("foot").classList.add("hidden");
+        $("loginView").classList.remove("hidden");
+      } else {
+        toast("Error al cargar el calendario (HTTP " + (err && err.http ? err.http : "red") + ").");
+      }
+    });
+}
+
+/* ---------- login / logout ---------- */
+$("loginBtn").addEventListener("click", () => {
+  const pass = ($("passInput") as HTMLInputElement).value;
+  fetch("/api/panel/login", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password: pass })
+  }).then((res) => {
+    if (res.ok) { $("loginErr").style.display = "none"; load(); }
+    else { $("loginErr").style.display = "block"; }
+  }).catch(() => { $("loginErr").style.display = "block"; });
+});
+$("passInput").addEventListener("keydown", (e: KeyboardEvent) => {
+  if (e.key === "Enter") $("loginBtn").click();
+});
+$("logoutBtn").addEventListener("click", () => {
+  fetch("/api/panel/logout", { method: "POST", credentials: "same-origin" })
+    .then(() => { $("appView").classList.add("hidden"); $("loginView").classList.remove("hidden"); });
+});
+
+/* ---------- export ---------- */
+function downloadBlob(url: string): void {
+  fetch(url, { credentials: "same-origin" })
+    .then((res) => {
+      if (!res.ok) throw 0;
+      return res.blob();
+    })
+    .then((blob) => {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "usgar-reservas-" + monthKey() + (url.indexOf("xlsx") !== -1 ? ".xlsx" : ".csv");
+      document.body.appendChild(a); a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 300);
+      toast("Exportado " + a.download);
+    })
+    .catch(() => { toast("Error al exportar."); });
+}
+$("expCsv").addEventListener("click", () => { downloadBlob("/api/panel/export?format=csv&month=" + monthKey()); });
+$("expXls").addEventListener("click", () => { downloadBlob("/api/panel/export?format=xlsx&month=" + monthKey()); });
+
+/* ---------- import ---------- */
+$("impBtn").addEventListener("click", () => { $("impFile").click(); });
+$("impFile").addEventListener("change", (e: Event) => {
+  const input = e.target as HTMLInputElement;
+  const f = input.files && input.files[0];
+  input.value = "";
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const dataUrl = String(reader.result || "");
+    const b64 = dataUrl.indexOf(",") !== -1 ? dataUrl.slice(dataUrl.indexOf(",") + 1) : dataUrl;
+    fetch("/api/panel/import", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filename: f.name, content_base64: b64 })
+    }).then((res) => res.json())
+      .then((r: { success?: boolean; imported?: number; skipped?: number; errors?: string[] }) => {
+        toast(r.success ? ("Importadas " + r.imported + " · omitidas " + r.skipped + (r.errors && r.errors.length ? " · " + r.errors[0] : "")) : "Error al importar.");
+        load();
+      })
+      .catch(() => { toast("Error al importar."); });
+  };
+  reader.readAsDataURL(f);
+});
+
+/* ---------- navegacion ---------- */
+$("prevM").addEventListener("click", () => {
+  state.month--; if (state.month < 1) { state.month = 12; state.year--; }
+  state.selDay = 1; load();
+});
+$("nextM").addEventListener("click", () => {
+  state.month++; if (state.month > 12) { state.month = 1; state.year++; }
+  state.selDay = 1; load();
+});
+$("goToday").addEventListener("click", () => {
+  const now = state.today ? new Date(state.today + "T00:00:00") : new Date();
+  state.year = now.getFullYear(); state.month = now.getMonth() + 1; state.selDay = todayInMonth() || 1; load();
+});
+
+load();
+</script>
+</body>
+</html>

@@ -103,10 +103,11 @@ async function request(url: string, init: RequestInit = {}): Promise<{ ok: boole
  * Utiliza fetch nativo con AbortSignal.timeout() de forma directa.
  */
 export const bookingService = {
-  async getAvailableRooms(checkIn?: string, checkOut?: string): Promise<ApiResult<RoomAvailability[]>> {
+  async getAvailableRooms(checkIn?: string, checkOut?: string, lang?: string): Promise<ApiResult<RoomAvailability[]>> {
     const query = new URLSearchParams();
     if (checkIn) query.append('checkIn', checkIn);
     if (checkOut) query.append('checkOut', checkOut);
+    if (lang) query.append('lang', lang);
 
     const url = `/api/rooms${query.toString() ? '?' + query.toString() : ''}`;
     const response = await request(url, { method: 'GET' });
