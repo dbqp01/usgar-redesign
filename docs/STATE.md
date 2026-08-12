@@ -2,6 +2,20 @@
 
 > Documento canónico de estado del backend (antes `docs/refactoring/BACKEND_STATE.md`). Fuente de la auditoría de mejores prácticas 2026-08-11: `docs/ROADMAP.md`.
 
+## P2 — Deuda estructural (2026-08-12, commits pendientes de push local)
+
+- **P2-2** `Request::sanitize()` (no-op recursivo) eliminado: método + llamadas en constructor. Verificado: `grep -rn sanitize app/ tests/` → solo `tests/pentest.php` (variable local ajena).
+- **P2-3** Constantes de instalación en `QloAppAdapter` (`SHOP_GROUP_ID/SHOP_ID/LANG_ID/ORDER_STATE_PAID/CHECKIN_TIME/CHECKOUT_TIME/HOTEL_NAME/HOTEL_CITY`) + variables interpolables en los SQL (los strings de doble comilla NO expanden `self::CONST` — pitfall detectado 2× en el desarrollo, cubierto por test de regresión). Bonus: `getAvailabilityCalendar()` ignoraba el parámetro `id_lang` (hardcode 1) — ahora usa `QLOAPPS_DEFAULT_LANG_ID`.
+- **P2-5** 405 + `Allow` en `Router::dispatch` (RFC 9110 §9.6.2). Evidencia real con `php -S 127.0.0.1:8891 public/index.php` + curl:
+  - `POST /api/rooms` → `HTTP/1.1 405 Method Not Allowed` + `Allow: GET` ✓
+  - `GET /api/health` → 200 ✓ · `GET /api/nonexistent` → 404 ✓
+  - Pitfall: en phpunit CLI `header()` no se registra en `headers_list()` (el banner ya envió output, `headers_sent()`=true) → el test unitario valida contrato observable (status + JSON), el header se verifica en integración.
+- **P2-6** `Request::getRequestId()` (generate-if-missing, bin2hex CSPRNG de 16 bytes) + `Middleware::requestId()` en el pipeline + `request_id` en logs de error del Router.
+- **P2-8** Sección F en `docs/PMS.md`: contrato de escritura directa al schema `qlo_*` (7 tablas) + valores fijos + reglas para el upgrade de QloApps (pendiente).
+- **P2-7 DIFERIDO (deuda)**: mover `exit()` de `Response::json` al front controller — ~40 call sites asumen terminación; no se toca sin refactor mayor.
+
+Verificación: `php vendor/bin/phpunit` → **184 tests / 633 assertions, 12 skipped, OK** · `php -l` en los 5 archivos tocados → sin errores · `composer analyse` (phpstan nivel 6) → **No errors**.
+
 ## Multi-room + ocupancia/extras (2026-08-12, commits e2ed07d/e25b238 + WIP)
 
 - **Reservas multi-habitación**: `POST /api/booking` acepta `rooms[]` (1-3, {slug, guests}) con `rateType` GLOBAL por reserva; legacy `roomSlug` normaliza internamente (sin regresión, verificado con harness). `room_data` en el hold pasa a LISTA; consumidores (GetBookingStatus, ProcessPayment, my-bookings, success) normalizan en el punto de lectura (primer room para campos legacy; `room_summary` en respuestas).

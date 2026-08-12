@@ -541,3 +541,45 @@ Contrato verificado contra la colección pública de Webkul "Qlo Channel Manager
 El repo ya prueba los mismos contratos sin Postman:
 - `php tests/api-harness.php` — contrato de booking del sitio (requiere servidor dev en :8000).
 - `php scripts/run-exhaustive-tests.php` — suite exhaustiva (incluye asserts del port del channel manager).
+
+---
+
+## Sección F — Contrato de escritura directa al schema `qlo_*` (P2-8, 2026-08-12)
+
+> **Riesgo documentado:** `QloAppAdapter::confirmOrder()` escribe DIRECTAMENTE en
+> tablas del schema PrestaShop/QloApps (`qlo_*`) vía PDO local — NO usa el
+> webservice para crear órdenes (el POST `bookings` del webservice da 500 en
+> QloApps 1.7.0.0, bug #1471 arreglado en versiones posteriores; el fallback
+> `USGAR-` es el diseño resiliente vigente). Escribir contra el schema interno
+> de un PMS es frágil ante upgrades: PrestaShop/QloApps NO garantiza estabilidad
+> de columnas/tablas entre versiones.
+
+### Tablas y columnas que toca el adapter (verificado en código, 2026-08-12)
+
+| Tabla | Operación | Columnas escritas |
+|---|---|---|
+| `qlo_customer` | INSERT (solo si el email no existe) | `id_shop_group, id_shop, firstname, lastname, email, passwd, secure_key, active, is_guest` |
+| `qlo_cart` | INSERT | `id_shop_group, id_shop, id_lang, id_currency, id_customer, id_address_delivery, id_address_invoice` |
+| `qlo_orders` | INSERT | `reference, id_shop_group, id_shop, id_carrier, id_lang, id_customer, id_cart, id_currency, current_state, payment, total_paid*, conversion_rate, module, valid, source` |
+| `qlo_order_detail` | INSERT | `id_order, id_shop, product_id, product_name, product_quantity, product_price, total_price_tax_*, unit_price_tax_*, is_booking_product` |
+| `qlo_htl_cart_booking_data` | INSERT | `id_cart, id_guest, id_order, id_customer, id_currency, id_product, id_room, id_hotel, quantity, booking_type, is_back_order, extra_demands, date_from, date_to, adults, children, child_ages` |
+| `qlo_htl_booking_detail` | INSERT | `id_product, id_order, id_order_detail, id_cart, id_room, id_hotel, id_customer, booking_type, id_status, check_in, check_out, planned_check_out, date_from, date_to, total_price_tax_*, total_paid_amount, is_back_order, hotel_name, room_type_name, city, phone, email, adults, children, child_ages, is_refunded, is_cancelled` |
+| `qlo_order_history` | INSERT | `id_employee, id_order, id_order_state, date_add` |
+
+### Valores fijos de la instalación (constantes de `QloAppAdapter`, P2-3)
+
+- `id_shop_group=1`, `id_shop=1`, `id_lang=1` (constantes `SHOP_GROUP_ID`/`SHOP_ID`/`LANG_ID`).
+- `id_currency` = PEN resuelto dinámicamente de `qlo_currency` (fallback 1).
+- `current_state`/`id_order_state` = 2 (Pago completo recibido, `ORDER_STATE_PAID`).
+- `hotel_name='USGAR Hotels'`, `city='San Pedro'`, checkin `12:00:00` / checkout `10:30:00`
+  (`HOTEL_NAME`/`HOTEL_CITY`/`CHECKIN_TIME`/`CHECKOUT_TIME`).
+
+### Reglas
+
+1. **No alterar tablas `qlo_*` manualmente** sin confirmar primero en `docs/` y
+   con el administrador del PMS (un upgrade de QloApps puede cambiar columnas).
+2. Antes de **actualizar QloApps** en el servidor (pendiente, bug #1471): verificar
+   con `SHOW COLUMNS` cada tabla de la tabla anterior contra la versión nueva.
+3. Si se restaura el webservice de `bookings`, evaluar migrar `confirmOrder` a
+   webservice y dejar el PDO directo como fallback (el schema interno quedaría
+   solo de lectura).
