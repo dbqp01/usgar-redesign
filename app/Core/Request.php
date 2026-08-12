@@ -29,7 +29,7 @@ class Request {
         ?array $body = null
     ) {
         $this->method = strtoupper($method ?? ($_SERVER['REQUEST_METHOD'] ?? 'GET'));
-        $this->queryParams = $this->sanitize($_GET);
+        $this->queryParams = $_GET;
 
         $rawHeaders = $this->extractHeaders();
         if (is_array($headers)) {
@@ -47,7 +47,7 @@ class Request {
             $this->path = '/' . trim($parts[0], '/');
         }
 
-        $this->body = $this->sanitize($body ?? $this->parseBody());
+        $this->body = $body ?? $this->parseBody();
     }
 
     public function getMethod(): string {
@@ -65,6 +65,21 @@ class Request {
     public function getHeader(string $key): ?string {
         $normalizedKey = strtolower($key);
         return $this->headers[$normalizedKey] ?? null;
+    }
+
+    private ?string $requestId = null;
+
+    /**
+     * ID de correlacion de la peticion (P2-6): respeta el header
+     * x-request-id entrante si existe (patron generate-if-missing,
+     * http.dev/x-request-id) o genera uno CSPRNG. El middleware
+     * Middleware::requestId() lo refleja en la respuesta y los logs.
+     */
+    public function getRequestId(): string {
+        if ($this->requestId === null) {
+            $this->requestId = $this->getHeader('x-request-id') ?? bin2hex(random_bytes(16));
+        }
+        return $this->requestId;
     }
 
     /** @return array<string, mixed>|null */
@@ -205,26 +220,5 @@ class Request {
             }
         }
         return $headers;
-    }
-
-    /**
-     * Normaliza los datos de entrada recursivamente sin alterar su contenido.
-     *
-     * NOTA (2026-08-01): antes aplicaba htmlspecialchars() a todos los strings.
-     * Eso corrompia datos legitimos (contrasenas con '&'/'<', nombres con
-     * '&', comillas) causando doble-escape y logins rotos. El modelo correcto
-     * es: validar/tipar la entrada aqui (Validator en cada action) y escapar
-     * la salida SOLO donde se renderiza HTML (frontend / escapes de salida).
-     * La API responde JSON, que no interpreta HTML.
-     */
-    private function sanitize(mixed $data): mixed {
-        if (is_array($data)) {
-            $sanitized = [];
-            foreach ($data as $k => $v) {
-                $sanitized[$k] = $this->sanitize($v);
-            }
-            return $sanitized;
-        }
-        return $data;
     }
 }

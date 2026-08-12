@@ -99,4 +99,16 @@ class Middleware {
             header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
         };
     }
+
+    /**
+     * Middleware de correlacion de peticiones (P2-6, 2026-08-12): refleja en
+     * la respuesta el header x-request-id entrante o uno generado (patron
+     * generate-if-missing, http.dev/x-request-id). El valor queda disponible
+     * via Request::getRequestId() para logs y errores.
+     */
+    public static function requestId(): callable {
+        return static function (Request $request): void {
+            header('X-Request-ID: ' . $request->getRequestId());
+        };
+    }
 }
