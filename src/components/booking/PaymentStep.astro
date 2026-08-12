@@ -1,8 +1,10 @@
 ---
-// debt: oversized module (564 LOC) — split into concept-named components when touched; ceiling 250 pure LOC
+// debt: oversized module (637 LOC @2026-08-12) — split into concept-named components when touched; ceiling 250 pure LOC
 // src/components/booking/PaymentStep.astro
 // Paso 3 del wizard: el flujo de pago MercadoPago EXISTENTE, intacto
 // (createHold -> cardForm -> processPayment). Solo maquetado editorial.
+// (audit 2026-08-12: flujo confirmado en este script — createHold L421,
+// bricksBuilder cardPayment L485, processPayment L534)
 // W5 (todos 28-31): pending -> success (sin apilar), pre-retry booking-status
 // + payment-check, countdown del hold + extend, cooldown deterministico,
 // beforeunload guard. Todo texto sale del i18n (todo 30).
@@ -372,13 +374,12 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
     const allocation = state.allocation;
     const errorBanner = document.getElementById('error-banner');
     const errorMessage = document.getElementById('error-message');
-    if (!allocation || allocation.rooms.length !== 1) return;
+    if (!allocation || allocation.rooms.length === 0) return;
 
     // Feedback inmediato: mostramos el placeholder "Preparing secure payment..."
     // mientras se crea el hold, y recién al éxito mostramos el formulario real.
     showPaymentPlaceholder();
 
-    const room = allocation.rooms[0].room;
     const lang = (document.documentElement.lang || 'en') as Locale;
     const t = useTranslations(lang);
 
@@ -420,10 +421,9 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
 
     try {
         const result = await bookingService.createHold({
-          roomSlug: room.slug,
+          rooms: allocation.rooms.map((r: any) => ({ slug: r.room.slug, guests: r.guests })),
           checkIn: state.checkIn,
           checkOut: state.checkOut,
-          guests: state.guests,
           rateType: state.rateType,
           guestDetails: {
             firstName: guestNameInput.value.split(' ')[0] || guestNameInput.value,

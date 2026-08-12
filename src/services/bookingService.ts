@@ -9,7 +9,7 @@ export interface RoomAvailability {
   maxGuests: number;
   description?: string;
   images?: string[];
-  /** Tarifas servidas por el backend (fuente única). standard = precio QloApps, non_refundable = -descuento config. */
+  /** Tarifas servidas por el backend (fuente única). standard = precio QloApps, non_refundable = precio con descuento del Feature Price Plan de QloApps. (audit 2026-08-12) */
   rate_plans?: { standard: number; non_refundable: number };
 }
 
@@ -24,12 +24,15 @@ export interface GuestDetails {
 }
 
 export interface BookingPayload {
-  roomSlug: string;
+  /** Multi-room (2026-08-12): lista de habitaciones con sus huespedes. */
+  rooms: { slug: string; guests: number }[];
   checkIn: string;
   checkOut: string;
-  guests: number;
+  /** Back-compat: 1 habitacion (payload legacy roomSlug). (audit 2026-08-12) */
+  roomSlug?: string;
+  guests?: number;
   guestDetails: GuestDetails;
-  /** Tarifa elegida; el backend calcula y congela el precio (nunca confiar en precios del cliente). */
+  /** Tarifa elegida (global por reserva); el backend calcula y congela el precio (nunca confiar en precios del cliente). (audit 2026-08-12) */
   rateType?: 'standard' | 'non_refundable';
 }
 
@@ -101,6 +104,7 @@ async function request(url: string, init: RequestInit = {}): Promise<{ ok: boole
 /**
  * Servicio de Negocio de Reservas para el Frontend Astro.
  * Utiliza fetch nativo con AbortSignal.timeout() de forma directa.
+ * (audit 2026-08-12)
  */
 export const bookingService = {
   async getAvailableRooms(checkIn?: string, checkOut?: string, lang?: string): Promise<ApiResult<RoomAvailability[]>> {

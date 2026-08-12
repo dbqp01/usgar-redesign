@@ -17,4 +17,17 @@ class PriceCalculator {
         $exchangeRate = $rate ?? (float) Config::get('EXCHANGE_RATE_USD_PEN');
         return round($priceUsd * $exchangeRate, 2);
     }
+
+    /**
+     * Cargo por huesped adicional (regla del negocio, 2026-08-12): toda
+     * habitacion admite +1 persona sobre su ocupancia base (base = maxGuests - 1)
+     * pagando un cargo por noche a PRECIO COMPLETO (no se descuenta con la
+     * tarifa no reembolsable — decision del negocio: -10% solo sobre el base).
+     * Devuelve el cargo total: extraGuests * cargoPorNoche * nights.
+     */
+    public static function extraGuestCharge(int $guests, int $maxGuests, int $nights, float $extraChargePerNight): float {
+        $baseOccupancy = max(1, $maxGuests - 1);
+        $extraGuests = max(0, $guests - $baseOccupancy);
+        return round($extraGuests * $extraChargePerNight * $nights, 2);
+    }
 }

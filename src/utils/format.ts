@@ -1,5 +1,7 @@
 // Formateo compartido de precio y fecha — extraido de las implementaciones
 // inline duplicadas (contrato: tests/Unit/format.test.ts, W3/21 behavior lock).
+// (audit 2026-08-12: format.test.ts existe; profile.astro, my-bookings.astro,
+// success.astro y BookingCalendarStep importan estos helpers desde utils/format)
 //
 //   formatDate  <- success.astro:321-326 (dateLocales:284 + opciones:324) y
 //                  los aria-label full de BookingWidget.astro:188 /

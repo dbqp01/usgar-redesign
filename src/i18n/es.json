@@ -7,7 +7,7 @@
     "gallery": "Galeria",
     "contact": "Contacto",
     "bookNow": "Reservar",
-    "language": "Espanol",
+    "language": "Español",
     "languageTitle": "Idioma",
     "menu": "Menú",
     "openMenu": "Abrir menú",
@@ -16,7 +16,7 @@
   "hero": {
     "title": "USGAR Hotels",
     "subtitle": "San Pedro, Cusco - Tu puerta a los Andes",
-    "cta": "Reserva Tu Estadia",
+    "cta": "Reserva Tu Estadía",
     "ctaSecondary": "Explorar Habitaciones",
     "slideAlt": "USGAR Hotels Cusco -",
     "toggleAudio": "Activar o silenciar el video"
@@ -26,17 +26,17 @@
     "bestRateGuaranteed": "Mejor Precio Garantizado",
     "checkin": "Llegada",
     "checkout": "Salida",
-    "guests": "Huespedes",
-    "roomType": "Tipo de Habitacion",
-    "anyRoom": "Cualquier Habitacion",
+    "guests": "Huéspedes",
+    "roomType": "Tipo de Habitación",
+    "anyRoom": "Cualquier Habitación",
     "search": "Buscar Disponibilidad",
-    "guest": "Huesped",
-    "guests_plural": "Huespedes"
+    "guest": "Huésped",
+    "guests_plural": "Huéspedes"
   },
   "rooms": {
     "sectionLabel": "Alojamiento",
     "title": "Nuestras Habitaciones",
-    "description": "Cada habitacion esta disenada con murales andinos pintados a mano, iluminacion calida y textiles artesanales que celebran la herencia cultural de Cusco.",
+    "description": "Cada habitación esta diseñada con murales andinos pintados a mano, iluminación calida y textiles artesanales que celebran la herencia cultural de Cusco.",
     "from": "Desde",
     "perNight": "por noche",
     "upTo": "Hasta",
@@ -46,21 +46,21 @@
     "viewDetails": "VER DETALLES"
   },
   "room": {
-    "about": "Sobre la habitacion",
+    "about": "Sobre la habitación",
     "amenities": "Servicios y comodidades",
     "hotelServices": "Servicios del hotel",
-    "inRoomServices": "Servicios en la habitacion",
+    "inRoomServices": "Servicios en la habitación",
     "includedFree": "Incluido sin costo extra",
     "baseRate": "Tarifa base",
     "maxCapacity": "Capacidad maxima",
-    "guests": "huespedes",
+    "guests": "huéspedes",
     "persons": "personas",
     "bedConfig": "Distribucion",
-    "bookThisRoom": "Reservar Habitacion",
+    "bookThisRoom": "Reservar Habitación",
     "bestRateGuarantee": "Garantia de mejor tarifa disponible reservando directamente en nuestra web.",
     "visualExperience": "Experiencia Visual",
-    "videoTourTitle": "Video Tour de la Habitacion",
-    "videoTourDesc": "Recorre la habitacion de forma interactiva y admira sus detalles antes de tu llegada.",
+    "videoTourTitle": "Video Tour de la Habitación",
+    "videoTourDesc": "Recorre la habitación de forma interactiva y admira sus detalles antes de tu llegada.",
     "startVideoTour": "Iniciar Video Tour",
     "noSound": "Sin sonido",
     "soundActive": "Sonido activo",
@@ -76,11 +76,11 @@
   },
   "services": {
     "sectionLabel": "Nuestros Servicios",
-    "description": "Desde el momento en que llegas, cuidamos cada detalle para que tu estadia en Cusco sea inolvidable."
+    "description": "Desde el momento en que llegas, cuidamos cada detalle para que tu estadía en Cusco sea inolvidable."
   },
   "reviews": {
-    "sectionLabel": "Resenas de Huespedes",
-    "title": "Lo Que Dicen Nuestros Huespedes",
+    "sectionLabel": "Resenas de Huéspedes",
+    "title": "Lo Que Dicen Nuestros Huéspedes",
     "description": "Escucha a los viajeros que han experimentado USGAR Hotels"
   },
   "explore": {
@@ -97,9 +97,9 @@
     "schemaDescription": "Descubre los mejores destinos historicos, culturales y naturales cerca de USGAR Hotels en Cusco."
   },
   "map": {
-    "sectionLabel": "Ubicacion",
+    "sectionLabel": "Ubicación",
     "title": "Encuentranos en Cusco",
-    "description": "Ubicado en el corazon de San Pedro, a pasos del mercado historico y a poca distancia de la Plaza de Armas.",
+    "description": "Ubicado en el corazón de San Pedro, a pasos del mercado histórico y a poca distancia de la Plaza de Armas.",
     "marketLabel": "Mercado San Pedro",
     "plazaLabel": "Plaza de Armas",
     "walkTime": "Caminando",
@@ -111,8 +111,8 @@
   "faq": {
     "sectionLabel": "FAQ",
     "title": "Preguntas Frecuentes",
-    "assistanceDesc": "Nuestro equipo bilingue en recepcion esta listo las 24 horas para ayudarte con reservas, itinerarios a Machu Picchu y aclimatacion.",
-    "receptionAlt": "Recepcion 24 horas USGAR Hotels"
+    "assistanceDesc": "Nuestro equipo bilingüe en recepción está listo las 24 horas para ayudarte con reservas, itinerarios a Machu Picchu y aclimatación.",
+    "receptionAlt": "Recepción 24 horas USGAR Hotels"
   },
   "footer": {
     "contact": "Contacto",
@@ -137,7 +137,7 @@
   "whatsapp": {
     "ariaLabel": "Chatear por WhatsApp",
     "tooltip": "Necesitas ayuda? Escribenos!",
-    "message": "Hola! Me gustaria reservar una habitacion en USGAR Hotels."
+    "message": "¡Hola! Me gustaría reservar una habitación en USGAR Hotels."
   },
   "theme": {
     "toggleDark": "Cambiar modo oscuro"
@@ -145,25 +145,25 @@
   "heritage": {
     "sectionLabel": "PATRIMONIO & LEGADO",
     "heading": "UN REFUGIO VIVO",
-    "description": "Ubicado a pasos del historico Mercado de San Pedro, nuestro hotel ofrece un oasis de lujo sereno. Cada muro cuenta una historia de misticismo andino y calidez humana, disenado para que descanses antes o despues de Machu Picchu.",
+    "description": "Ubicado a pasos del histórico Mercado de San Pedro, nuestro hotel ofrece un oasis de lujo sereno. Cada muro cuenta una historia de misticismo andino y calidez humana, diseñado para que descanses antes o después de Machu Picchu.",
     "fusionTitle": "Fusion Inca-Colonial",
-    "fusionDesc": "500 anos de historia custodiados en arcos coloniales y piedra ancestral.",
+    "fusionDesc": "500 años de historia custodiados en arcos coloniales y piedra ancestral.",
     "patioAlt": "Patio Inca Colonial USGAR Hotels",
     "pasilloAlt": "Pasillos de Piedra USGAR Hotels"
   },
   "gastronomy": {
     "sectionLabel": "GASTRONOMIA & CAFETERIA",
-    "description": "Una experiencia gastronomica inolvidable con ingredientes andinos frescos en el corazon del Cusco."
+    "description": "Una experiencia gastronomica inolvidable con ingredientes andinos frescos en el corazón del Cusco."
   },
   "contact": {
     "sectionTag": "CENTRO DE ATENCION Y SOPORTE 24/7",
     "title": "Contactanos & Planifica tu Viaje",
-    "subtitle": "Nos encantaria saber de ti. Ponte en contacto con nuestro equipo bilingue para reservas directas, traslados privados o consejos de viaje.",
+    "subtitle": "Nos encantaria saber de ti. Ponte en contacto con nuestro equipo bilingüe para reservas directas, traslados privados o consejos de viaje.",
     "getInTouch": "Envia un Mensaje",
     "formName": "Tu Nombre Completo",
     "formEmail": "Tu Correo Electronico",
     "formSubject": "Asunto o Categoria",
-    "subjectBooking": "Reserva de Habitacion",
+    "subjectBooking": "Reserva de Habitación",
     "subjectTransfer": "Traslado desde el Aeropuerto",
     "subjectAcclimatization": "Soroche & Asistencia Medica",
     "subjectGeneral": "Consulta General",
@@ -173,28 +173,28 @@
     "whatsappText": "Escribenos por WhatsApp",
     "whatsappDirect": "WhatsApp directo",
     "emailText": "Envianos un Correo",
-    "callText": "Llamanos a Recepcion",
+    "callText": "Llámanos a Recepción",
     "directionsTitle": "Como Llegar a San Pedro",
-    "directionsDesc": "USGAR Hotels se encuentra en el historico barrio de San Pedro, Cusco. Ofrecemos traslados privados desde el aeropuerto para garantizar tu llegada tranquila.",
+    "directionsDesc": "USGAR Hotels se encuentra en el histórico barrio de San Pedro, Cusco. Ofrecemos traslados privados desde el aeropuerto para garantizar tu llegada tranquila.",
     "airportPickup": "Servicio de Traslado Privado",
     "airportPickupDesc": "El Aeropuerto Velasco Astete esta a ~20 minutos en auto. Coordinamos tu recogida privada con chofer de confianza.",
-    "whatsappQuery": "Hola, tengo una consulta sobre mi proxima estadia en USGAR Hotels.",
+    "whatsappQuery": "Hola, tengo una consulta sobre mi proxima estadía en USGAR Hotels.",
     "altitudeTitle": "Soroche (Mal de Altura)",
-    "altitudeDesc": "Cusco se encuentra a 3,400m de altitud. Contamos con oxigeno concentrado de cortesia las 24 horas e infusiones de mate de coca para tu confort.",
-    "receptionTitle": "Recepcion & Soporte 24/7",
-    "receptionDesc": "Atencion continua en espanol e ingles para check-in tardio, custodia de maletas e itinerarios a Machu Picchu.",
+    "altitudeDesc": "Cusco se encuentra a 3,400m de altitud. Contamos con oxígeno concentrado de cortesía las 24 horas e infusiones de mate de coca para tu confort.",
+    "receptionTitle": "Recepción & Soporte 24/7",
+    "receptionDesc": "Atencion continua en español e inglés para check-in tardio, custodia de maletas e itinerarios a Machu Picchu.",
     "checkinCheckoutTitle": "Horarios de Entrada y Salida",
     "faqTitle": "Preguntas Frecuentes de Llegada",
-    "faqLuggageQ": "Puedo guardar mi equipaje antes del check-in o despues del check-out?",
-    "faqLuggageA": "Si, ofrecemos guardado de equipaje 100% gratuito y custodiado mientras exploras Cusco o realizas la excursion a Machu Picchu.",
-    "faqOxygenQ": "El oxigeno medicinal para el soroche tiene costo adicional?",
-    "faqOxygenA": "No, el suministro de oxigeno concentrado y el mate de coca son de cortesia para todos nuestros huespedes las 24 horas.",
+    "faqLuggageQ": "Puedo guardar mi equipaje antes del check-in o después del check-out?",
+    "faqLuggageA": "Si, ofrecemos guardado de equipaje 100% gratuito y custodiado mientras exploras Cusco o realizas la excursión a Machu Picchu.",
+    "faqOxygenQ": "El oxígeno medicinal para el soroche tiene costo adicional?",
+    "faqOxygenA": "No, el suministro de oxígeno concentrado y el mate de coca son de cortesía para todos nuestros huéspedes las 24 horas.",
     "faqTransferQ": "Como coordino mi traslado desde el aeropuerto de Cusco?",
     "faqTransferA": "Puedes seleccionarlo al reservar en nuestra web o enviarnos un mensaje por WhatsApp con los datos de tu vuelo.",
     "successMessage": "Mensaje enviado con exito! Nuestro equipo te respondera a la brevedad.",
-    "messagePlaceholder": "Escribe tus dudas, fechas estimadas o requerimientos especiales aqui...",
+    "messagePlaceholder": "Escribe tus dudas, fechas estimadas o requerimientos especiales aquí...",
     "formError": "Lo sentimos, no pudimos enviar tu mensaje. Intentalo de nuevo o escribenos por WhatsApp.",
-    "formIntro": "Escribenos en espanol o ingles. Respondemos en pocas horas, normalmente el mismo dia.",
+    "formIntro": "Escribenos en español o inglés. Respondemos en pocas horas, normalmente el mismo día.",
     "otaLabel": "Encuentranos en",
     "heroImageAlt": "El patio de USGAR Hotels en San Pedro, Cusco",
     "heroImageCaption": "El patio, San Pedro",
@@ -216,11 +216,11 @@
   "book": {
     "available": "disponibles",
     "title": "Completa tu Reserva",
-    "subtitle": "Por favor, introduce los datos del huesped principal y confirma las fechas para proceder al pago seguro.",
-    "selectRoom": "Selecciona tu Habitacion",
+    "subtitle": "Por favor, introduce los datos del huésped principal y confirma las fechas para proceder al pago seguro.",
+    "selectRoom": "Selecciona tu Habitación",
     "selected": "Seleccionada",
     "select": "Seleccionar",
-    "guestDetails": "Datos del Huesped Principal",
+    "guestDetails": "Datos del Huésped Principal",
     "paymentDetails": "Detalles de Pago",
     "fullName": "Nombre Completo",
     "phoneWhatsApp": "Telefono / WhatsApp",
@@ -263,7 +263,7 @@
     "priceNote": "Desayuno incluido",
     "guaranteedTitle": "Reserva Garantizada",
     "guaranteedText": "Cancelacion gratuita hasta 48 horas antes de tu llegada. Desayuno buffet andino incluido.",
-    "videoTour": "Video Tour de la Habitacion",
+    "videoTour": "Video Tour de la Habitación",
     "confirmAndPay": "Confirmar y Pagar con Mercado Pago",
     "night": "noche",
     "nights": "noches",
@@ -282,9 +282,9 @@
     "quickFacts": "Detalles Rapidos",
     "distanceFromHotel": "Distancia desde el Hotel",
     "travelTime": "Tiempo de Viaje",
-    "bestSeason": "Mejor Epoca",
+    "bestSeason": "Mejor Época",
     "readyToExplore": "¿Listo para explorar Cusco?",
-    "readyToExploreText": "Reserva tu estadia en USGAR Hotels y descubre todas las maravillas de Cusco y el Valle Sagrado.",
+    "readyToExploreText": "Reserva tu estadía en USGAR Hotels y descubre todas las maravillas de Cusco y el Valle Sagrado.",
     "overviewTitle": "Que esperar",
     "faqTitle": "Preguntas Frecuentes",
     "continueExploring": "Sigue Explorando Cusco"
@@ -294,11 +294,11 @@
     "retrieving": "Recuperando detalles de reserva...",
     "paymentApproved": "Pago Aprobado con Exito",
     "reservationConfirmed": "Tu Reserva esta Confirmada!",
-    "confirmationMessage": "Gracias por elegir USGAR Hotels. Recibiras un correo de confirmacion con todos los detalles de tu estadia.",
+    "confirmationMessage": "Gracias por elegir USGAR Hotels. Recibiras un correo de confirmacion con todos los detalles de tu estadía.",
     "confirmationCode": "Codigo de Confirmacion",
     "bookingDetails": "Detalles de la Reserva",
-    "primaryGuest": "Huesped Principal",
-    "roomType": "Habitacion",
+    "primaryGuest": "Huésped Principal",
+    "roomType": "Habitación",
     "checkinDate": "Fecha de Entrada (Check-In)",
     "checkoutDate": "Fecha de Salida (Check-Out)",
     "billingDetail": "Detalle de Facturacion",
@@ -320,16 +320,17 @@
     "paymentExpired": "Reserva Expirada",
     "paymentExpiredMessage": "El tiempo de reserva expiró antes de confirmar el pago. Crea una nueva reserva.",
     "manualReviewMessage": "No pudimos confirmar tu pago. Contacta al hotel con tu número de reserva para completarla.",
-    "retryCooldownMessage": "Podrás verificar de nuevo en {n}"
+    "retryCooldownMessage": "Podrás verificar de nuevo en {n}",
+    "pluralRooms": "Habitaciones"
   },
   "auth": {
-    "signIn": "Iniciar Sesion",
+    "signIn": "Iniciar Sesión",
     "signUp": "Crear Cuenta",
-    "signOut": "Cerrar Sesion",
+    "signOut": "Cerrar Sesión",
     "myProfile": "Mi Perfil",
     "myBookings": "Mis Reservas",
     "welcomeTitle": "Bienvenido a USGAR Hotels",
-    "welcomeSubtitle": "Inicia sesion para reservar mas rapido y gestionar tus reservas",
+    "welcomeSubtitle": "Inicia sesión para reservar más rapido y gestionar tus reservas",
     "continueWithGoogle": "Continuar con Google",
     "continueWithMicrosoft": "Continuar con Microsoft",
     "continueWithFacebook": "Continuar con Facebook",
@@ -337,12 +338,12 @@
     "emailAddress": "Correo electronico",
     "password": "Contrasena",
     "fullName": "Nombre completo",
-    "loginToBookFaster": "Inicia sesion para reservar mas rapido con tus datos guardados",
+    "loginToBookFaster": "Inicia sesión para reservar más rapido con tus datos guardados",
     "welcomeBack": "Bienvenido de vuelta",
     "noBookingsYet": "Aun no tienes reservas.",
-    "startBooking": "Reserva tu primera estadia",
+    "startBooking": "Reserva tu primera estadía",
     "bookingHistory": "Historial de Reservas",
-    "loginRequired": "Inicia sesion para ver tus reservas.",
+    "loginRequired": "Inicia sesión para ver tus reservas.",
     "statusConfirmed": "Confirmada",
     "statusPending": "Pendiente",
     "statusExpired": "Expirada",
@@ -360,7 +361,7 @@
     "contactWhatsApp": "Contactar por WhatsApp",
     "assistance247": "Atencion 24/7",
     "elevatedExperience": "EXPERIENCIA COMPLETA",
-    "alsoIncluded": "Tambien incluimos:",
+    "alsoIncluded": "También incluimos:",
     "marquee1": "San Pedro",
     "marquee2": "Cusco",
     "marquee3": "Machu Picchu",
@@ -369,15 +370,15 @@
   "instagram": {
     "sectionLabel": "Instagram",
     "title": "Vive USGAR en Instagram",
-    "description": "Arte mural, mananas en el patio colonial y platos de Auka Restobar - sigue el dia a dia del hotel.",
+    "description": "Arte mural, mananas en el patio colonial y platos de Auka Restobar - sigue el día a día del hotel.",
     "followCta": "Siguenos en Instagram",
     "handle": "@hotelesusgar",
     "altPatio": "Patio inca colonial de USGAR Hotels",
     "altFacade": "Fachada colonial de USGAR Hotels",
     "altBreakfast": "Desayuno buffet andino en USGAR",
-    "altRoom": "Habitacion con mural pintado a mano en USGAR",
+    "altRoom": "Habitación con mural pintado a mano en USGAR",
     "altCusco": "Vista de la ciudad de Cusco",
-    "altReception": "Recepcion de USGAR Hotels"
+    "altReception": "Recepción de USGAR Hotels"
   },
   "wizard": {
     "step1Label": "Alojamiento",
@@ -403,7 +404,7 @@
     "legendAvailable": "Disponible",
     "legendSoldOut": "Agotado",
     "alternatives": "Ver alternativas",
-    "onlyThisRoom": "Habitacion elegida",
+    "onlyThisRoom": "Habitación elegida",
     "toast": {
       "optionsUpdated": "Opciones actualizadas",
       "bestPrice": "Mejor precio {total}",
@@ -415,8 +416,8 @@
     "roomsCount": "{n} habitaciones",
     "continue": "Continuar",
     "back": "Atras",
-    "extras": "Huesped extra",
-    "multiRoomNote": "Las combinaciones de varias habitaciones se muestran para comparar. Elige una habitacion para pagar online."
+    "extras": "Huésped extra",
+    "multiRoomNote": "Las combinaciones de varias habitaciones se muestran para comparar. Elige una habitación para pagar online."
   },
   "allocation": {
     "title": "Habitaciones Disponibles",
@@ -507,7 +508,7 @@
   },
   "cookie": {
     "title": "Cookies",
-    "text": "Solo usamos cookies esenciales para proteger tu reserva e inicio de sesion. No usamos cookies de marketing ni de analitica.",
+    "text": "Solo usamos cookies esenciales para proteger tu reserva e inicio de sesión. No usamos cookies de marketing ni de analitica.",
     "accept": "Aceptar",
     "decline": "Rechazar"
   }

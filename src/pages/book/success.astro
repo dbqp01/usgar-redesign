@@ -1,5 +1,5 @@
 ---
-// debt: oversized module (357 LOC) — split into concept-named components when touched; ceiling 250 pure LOC
+// debt: oversized module (453 LOC @2026-08-12) — split into concept-named components when touched; ceiling 250 pure LOC
 import Layout from '../../layouts/Layout.astro';
 import { rooms } from '../../data/rooms';
 import { useTranslations, type Locale } from '../../i18n/utils';
@@ -201,6 +201,7 @@ const t = useTranslations(lang);
   pluralGuest: t('success.pluralGuest'),
   singleNight: t('success.singleNight'),
   pluralNight: t('success.pluralNight'),
+  pluralRooms: t('success.pluralRooms'),
   pollingMsg: t('success.polling'),
   pendingStatusMsg: t('success.verifyingPayment'),
   verifyAgainMsg: t('success.verifyAgain'),
@@ -211,7 +212,7 @@ const t = useTranslations(lang);
   retryCooldownMsg: t('success.retryCooldownMessage')
 }}>
   window.__ROOMS_DATA = JSON.parse(serializedRooms);
-  window.__I18N_DATA = { singleGuest, pluralGuest, singleNight, pluralNight, pollingMsg, pendingStatusMsg, verifyAgainMsg, inReviewMsg, paymentExpiredTitle, paymentExpiredMsg, manualReviewMsg, retryCooldownMsg };
+  window.__I18N_DATA = { singleGuest, pluralGuest, singleNight, pluralNight, pluralRooms, pollingMsg, pendingStatusMsg, verifyAgainMsg, inReviewMsg, paymentExpiredTitle, paymentExpiredMsg, manualReviewMsg, retryCooldownMsg };
 </script>
 
 <script>
@@ -339,7 +340,15 @@ const t = useTranslations(lang);
         if (guestNameEl) guestNameEl.textContent = booking.guest_name || booking.guestName || '---';
         if (guestEmailEl) guestEmailEl.textContent = booking.guest_email || booking.guestEmail || '---';
         if (guestPhoneEl) guestPhoneEl.textContent = booking.guest_phone || booking.guestPhone || '---';
-        if (roomNameEl) roomNameEl.textContent = booking.room_name || (room ? (room.name[lang] || room.name.en) : '---');
+        if (roomNameEl) {
+          // Multi-room (2026-08-12): room_summary lista todas las habitaciones.
+          const summary = Array.isArray(booking.room_summary) ? booking.room_summary : null;
+          if (summary && summary.length > 1) {
+            roomNameEl.textContent = summary.map((r: any) => r.room_name || 'Room').join(' + ');
+          } else {
+            roomNameEl.textContent = booking.room_name || (room ? (room.name[lang] || room.name.en) : '---');
+          }
+        }
 
         if (guestsTextEl) {
           const guests = booking.guests || 2;
@@ -353,10 +362,17 @@ const t = useTranslations(lang);
 
         if (billingNightsEl) {
           const nights = booking.nights || 1;
-          const priceNight = booking.price_per_night || (room ? room.pricePerNight : 0);
-          billingNightsEl.textContent = nights === 1
-            ? `1 ${L.singleNight || 'night'} x ${currencySymbol} ${priceNight} ${currency}`
-            : `${nights} ${L.pluralNight || 'nights'} x ${currencySymbol} ${priceNight} ${currency}`;
+          const summary = Array.isArray(booking.room_summary) ? booking.room_summary : null;
+          if (summary && summary.length > 1) {
+            // Multi-room: el desglose por noche solo refleja la habitacion
+            // principal — mostrar cantidad de habitaciones + noches.
+            billingNightsEl.textContent = `${summary.length} ${L.pluralRooms || 'Rooms'} · ${nights} ${nights === 1 ? (L.singleNight || 'night') : (L.pluralNight || 'nights')}`;
+          } else {
+            const priceNight = booking.price_per_night || (room ? room.pricePerNight : 0);
+            billingNightsEl.textContent = nights === 1
+              ? `1 ${L.singleNight || 'night'} x ${currencySymbol} ${priceNight} ${currency}`
+              : `${nights} ${L.pluralNight || 'nights'} x ${currencySymbol} ${priceNight} ${currency}`;
+          }
         }
 
         if (totalPriceEl) totalPriceEl.textContent = (booking.price || booking.totalPrice || 0).toString();

@@ -32,18 +32,35 @@ export async function initLocationMap(
     attributionControl: false,
   });
 
-  // Tile layer: CARTO Dark Matter (obsidian luxury theme)
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  // Tile layer: CARTO Dark Matter (obsidian luxury theme).
+  // Fallback to OSM Standard if the CARTO CDN is blocked or down (DNS blockers, outages).
+  const cartoTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     maxZoom: 19,
     subdomains: 'abcd',
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-  }).addTo(map);
+  });
+  cartoTiles.addTo(map);
+
+  // ponytail: single provider switch after 3 errors; add retry/second fallback if a real outage shows up
+  let tileErrors = 0;
+  cartoTiles.on('tileerror', () => {
+    if (++tileErrors < 3) return; // ignore isolated tile hiccups
+    cartoTiles.off('tileerror');
+    cartoTiles.remove();
+    // No {r}: OSM Standard serves no @2x tiles (Leaflet docs) — would 404 on retina.
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+    L.control.attribution({ prefix: false }).addTo(map); // OSM policy: attribution must stay visible
+  });
 
   // Custom Zoom Control at bottom right
   const zoomControl = L.control.zoom({ position: 'bottomright' });
   zoomControl.addTo(map);
 
-  // Gold Luxury Hotel Pin with Radar Pulse
+  // Hotel Pin Blanco with Gold Radar Pulse (pin blanco + anillo blanco; el
+  // pulso radar y los POIs usan el dorado secondary) (audit 2026-08-12)
   const mainIcon = L.divIcon({
     className: 'usgar-hotel-marker',
     html: `

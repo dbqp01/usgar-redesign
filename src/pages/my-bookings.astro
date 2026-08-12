@@ -165,7 +165,10 @@ const statusLabels = JSON.stringify({
                 ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
                 : 'bg-stone-500/10 text-stone-600 dark:text-stone-400 border-stone-500/20';
 
-              const roomName = b.room_data?.name?.en || b.room_data?.name || b.id_room_type || 'Hotel Room';
+              // room_data: LISTA desde 2026-08-12 (multi-room); primer room para
+              // el nombre (legacy: objeto unico con room_name).
+              const rd = Array.isArray(b.room_data) ? b.room_data[0] : b.room_data;
+              const roomName = rd?.room_name || rd?.name?.en || rd?.name || b.id_room_type || 'Hotel Room';
 
               return `
                 <div class="bg-surface-card-light dark:bg-surface-card-dark p-6 rounded-2xl border border-black/10 dark:border-white/10 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">

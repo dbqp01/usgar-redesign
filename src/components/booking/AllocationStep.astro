@@ -2,7 +2,8 @@
 // src/components/booking/AllocationStep.astro
 // Seleccion de habitacion + tarifas (Estándar / No Reembolsable).
 // Los precios de ambas tarifas vienen del backend (GET /api/rooms rate_plans,
-// resueltos desde las Catalog Price Rules de QloApps) — NUNCA hardcodear precios aqui.
+// resueltos desde los Feature Price Plans de QloApps, ver DiscountResolver) —
+// NUNCA hardcodear precios aqui. (audit 2026-08-12)
 // Preserves: data-allocation-step, data-allocation-options, data-allocation-next, data-allocation-empty
 import { useTranslations, type Locale } from '../../i18n/utils';
 
@@ -101,8 +102,9 @@ const t = useTranslations(lang);
     }
 
     // Ratio no reembolsable de la habitación principal de la opción, servido
-    // por el backend (rate_plans resueltos desde Catalog Price Rules de QloApps).
-    // Sin datos (API caída) => ratio 1: ambas tarifas al mismo precio (honesto).
+    // por el backend (rate_plans resueltos desde los Feature Price Plans de
+    // QloApps). Sin datos (API caída) => ratio 1: ambas tarifas al mismo
+    // precio (honesto). (audit 2026-08-12)
     function rateRatio(opt: AllocationOption): number {
       const plans = wizardStore.getState().ratePlans;
       const slug = opt.rooms[0]?.room?.slug;
@@ -164,15 +166,19 @@ const t = useTranslations(lang);
           .join('');
         const availQty = (!multi && availabilityMap && mainSlug) ? (availabilityMap[mainSlug] ?? null) : null;
         const outOfStock = availQty !== null && availQty <= 0;
-        const payable = !multi && !outOfStock;
+        // Multi-room reservable desde 2026-08-12 (pipeline rooms[] completo);
+        // solo se bloquea si la habitacion principal no tiene unidades.
+        const payable = !outOfStock;
 
         const roomName = opt.rooms.map((e) => escapeHtml(e.room.displayName)).join(' + ');
 
         // Precios de tarifas: standard = total de la opción; no reembolsable =
-        // mismo total con el ratio del backend (nunca calcular el % en el cliente).
+        // descuento SOLO sobre el base de la habitacion (roomTotal); el cargo
+        // por huesped adicional va a precio completo (decision del negocio,
+        // paridad con CreateBookingAction). Ratio del backend (rate_plans).
         const standardTotal = opt.total;
         const ratio = rateRatio(opt);
-        const nonRefundableTotal = Math.round(opt.total * ratio);
+        const nonRefundableTotal = Math.round(opt.roomTotal * ratio + opt.extrasTotal);
         const pct = Math.round((1 - ratio) * 100);
         const offerBadge = pct > 0 ? (L.allocationOfferBadge || 'Web Deal -{pct}%').replace('{pct}', String(pct)) : '';
 
@@ -310,7 +316,7 @@ const t = useTranslations(lang);
           const idx = Number(btn.dataset.optionIndex);
           const rateType = btn.dataset.selectRate as 'standard' | 'non_refundable';
           const opt = top[idx];
-          if (!opt || opt.rooms.length > 1) return;
+          if (!opt) return;
 
           selected = opt;
           selectedRateType = rateType;

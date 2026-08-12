@@ -44,6 +44,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteBase);
 // Hreflang alternate URLs for all 4 supported locales via the native astro:i18n
 // helper (getRelativeLocaleUrl). Only the locale prefix is stripped by hand —
 // there is no native "remove locale from path" helper; the URL building is native.
+// (audit 2026-08-12: L47-52 confirman getRelativeLocaleUrl + regex de prefijo)
 const pathWithoutLocale = Astro.url.pathname.replace(/^\/(es|fr|pt)(\/|$)/, '/');
 
 const enURL = new URL(getRelativeLocaleUrl('en', pathWithoutLocale), siteBase);

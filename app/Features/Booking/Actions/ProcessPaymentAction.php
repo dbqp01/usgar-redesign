@@ -118,6 +118,12 @@ class ProcessPaymentAction {
             // cliente); additional_info.items[] con categoria travel (noches PEN).
             $guestData = is_array($hold['guest_data']) ? $hold['guest_data'] : [];
             $roomData  = is_array($hold['room_data']) ? $hold['room_data'] : [];
+            // room_data es LISTA desde 2026-08-12 (multi-room): campos legacy
+            // del primer room (nights identico para todas las habitaciones).
+            if (isset($roomData['room_name'])) {
+                $roomData = [$roomData];
+            }
+            $firstRoom = $roomData[0] ?? [];
 
             // Todo 32 (W6): usar el PEN congelado al cotizar (sin re-leer la tasa
             // actual); fallback legacy a la derivacion USD x tasa actual.
@@ -125,8 +131,8 @@ class ProcessPaymentAction {
             $gatewayPrice = $frozenPen !== null
                 ? (float)$frozenPen
                 : PriceCalculator::toGatewayPrice((float)$hold['price_snapshot']);
-            $nights  = max(1, (int)($roomData['nights'] ?? 1));
-            $roomName = trim((string)($roomData['room_name'] ?? ''));
+            $nights  = max(1, (int)($firstRoom['nights'] ?? 1));
+            $roomName = trim((string)($firstRoom['room_name'] ?? ''));
 
             $guestName = trim((string)($guestData['name'] ?? ''));
 

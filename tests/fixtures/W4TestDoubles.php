@@ -95,6 +95,10 @@ final class W4PmsPortDouble implements PmsPortInterface {
         return 'W4CART';
     }
 
+    public function createCartMulti(int $idHotel, array $rooms, string $checkIn, string $checkOut, string $guestName = '', string $guestEmail = '', string $guestPhone = '', float $totalPrice = 0): string {
+        return 'W4CART';
+    }
+
     public function extendCartSession(string $cartId): bool {
         return true;
     }

@@ -3,6 +3,9 @@
 // Banner informativo de cookies (Ley 29733 / GDPR ePrivacy): el sitio solo usa
 // cookies estrictamente necesarias, asi que no hay cookies que bloquear — solo
 // se informa y se guarda la eleccion en localStorage.
+// (audit 2026-08-12: sin scripts de tracking/analytics en src/; cookies propias
+// usgar_session y usgar_panel, ambas de sesión/funcionales. Nota: el iframe del
+// Brick de MP puede fijar sus propias cookies de terceros, fuera del control del sitio)
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { useTranslations, type Locale } from "../i18n/utils";
 

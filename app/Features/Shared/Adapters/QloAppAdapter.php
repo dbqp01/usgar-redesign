@@ -318,7 +318,19 @@ class QloAppAdapter implements PmsPortInterface {
         }
     }
 
-    public function createCart(int $idHotel, int $idProduct, string $checkIn, string $checkOut, int $guests = 1, float $totalPrice = 0, string $guestName = '', string $guestEmail = '', string $guestPhone = ''): string {
+    /**
+     * Crea un cart/booking en QloApps con UNA o VARIAS habitaciones (multi-room).
+     * $rooms = list<array{id_product:int, guests:int, price:float}> (price = aporte
+     * total de esa habitacion: base x nights + cargo extra).
+     * El XML agrupa por tipo de habitacion (id_product) con number_of_rooms=N y N
+     * <room> hijos — schema verificado en el codigo fuente de QloApps
+     * (WebserviceSpecificManagementBookings::formatRoomTypesInRequestData:
+     * duplicados del mismo tipo+ fechas se fusionan sumando number_of_rooms).
+     *
+     * @param list<array{id_product:int, guests:int, price:float}> $rooms
+     */
+    public function createCartMulti(int $idHotel, array $rooms, string $checkIn, string $checkOut, string $guestName = '', string $guestEmail = '', string $guestPhone = '', float $totalPrice = 0): string
+    {
         if (empty($this->apiKey) || empty($this->apiUrl)) {
             Logger::error('QloAppAdapter: QloApps API key or API URL is not configured. Falling back to local cart.');
             return 'USGAR-' . bin2hex(random_bytes(6));
@@ -330,8 +342,40 @@ class QloAppAdapter implements PmsPortInterface {
         $safeEmail = htmlspecialchars($guestEmail ?: Config::get('DEFAULT_REPLY_EMAIL'), ENT_XML1);
         $phone = htmlspecialchars($guestPhone ?: Config::get('OTA_DEFAULT_PHONE', '000000000'), ENT_XML1);
         $currency = Config::get('MERCADO_PAGO_CURRENCY', 'USD');
-        
-        // payment_status 2 is generally Pending in QloApps/PrestaShop
+
+        // Agrupar por tipo de habitacion (mismas fechas para todas).
+        $grouped = [];
+        foreach ($rooms as $r) {
+            $pid = (int)$r['id_product'];
+            if ($pid <= 0) {
+                continue;
+            }
+            $grouped[$pid][] = $r;
+        }
+
+        $roomTypesXml = '';
+        foreach ($grouped as $pid => $group) {
+            $roomsXml = '';
+            foreach ($group as $r) {
+                $adults = max(1, (int)$r['guests']);
+                $price = (float)$r['price'];
+                $roomsXml .= "<room><adults>{$adults}</adults><child>0</child>"
+                    . "<unit_price_without_tax>{$price}</unit_price_without_tax>"
+                    . '<total_tax>0</total_tax></room>';
+            }
+            $roomTypesXml .= "<room_type>"
+                . "<id_room_type>{$pid}</id_room_type>"
+                . "<checkin_date>{$checkIn} 12:00:00</checkin_date>"
+                . "<checkout_date>{$checkOut} 10:00:00</checkout_date>"
+                . '<number_of_rooms>' . count($group) . '</number_of_rooms>'
+                . "<rooms>{$roomsXml}</rooms>"
+                . '</room_type>';
+        }
+
+        // payment_status valido para HOLD sin pagar: 3 = Awaiting
+        // (WebserviceSpecificManagementBookings: API_BOOKING_PAYMENT_STATUS_*
+        // 1=Completed, 2=Partial, 3=Awaiting; 0 => 400 "Estado de pago invalido",
+        // bug verificado en codigo fuente 2026-08-12).
         $xmlData = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <qloapps xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -339,7 +383,7 @@ class QloAppAdapter implements PmsPortInterface {
         <id_property>{$idHotel}</id_property>
         <currency>{$currency}</currency>
         <booking_status>1</booking_status>
-        <payment_status>0</payment_status>
+        <payment_status>3</payment_status>
         <source>website</source>
         <booking_date>MERCADO PAGO (HOLD)</booking_date>
         <id_language>1</id_language>
@@ -356,20 +400,7 @@ class QloAppAdapter implements PmsPortInterface {
                 <total_tax>0</total_tax>
             </price_details>
             <room_types nodeType="room_type" api="room_types">
-                <room_type>
-                    <id_room_type>{$idProduct}</id_room_type>
-                    <checkin_date>{$checkIn} 12:00:00</checkin_date>
-                    <checkout_date>{$checkOut} 10:00:00</checkout_date>
-                    <number_of_rooms>1</number_of_rooms>
-                    <rooms>
-                        <room>
-                            <adults>{$guests}</adults>
-                            <child>0</child>
-                            <unit_price_without_tax>{$totalPrice}</unit_price_without_tax>
-                            <total_tax>0</total_tax>
-                        </room>
-                    </rooms>
-                </room_type>
+                {$roomTypesXml}
             </room_types>
         </associations>
     </booking>
@@ -383,6 +414,12 @@ XML;
 
         Logger::error("QloAppAdapter: Error al crear Cart/Booking en QloApps, fallback a USGAR- local.");
         return self::QLOAPPS_LOCAL_PREFIX . bin2hex(random_bytes(6));
+    }
+
+    public function createCart(int $idHotel, int $idProduct, string $checkIn, string $checkOut, int $guests = 1, float $totalPrice = 0, string $guestName = '', string $guestEmail = '', string $guestPhone = ''): string {
+        return $this->createCartMulti($idHotel, [
+            ['id_product' => $idProduct, 'guests' => $guests, 'price' => $totalPrice],
+        ], $checkIn, $checkOut, $guestName, $guestEmail, $guestPhone, $totalPrice);
     }
 
     public function confirmOrder(string $cartId, float $totalPrice, string $guestName, string $guestEmail): ?string {

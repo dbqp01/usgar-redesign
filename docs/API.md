@@ -74,28 +74,43 @@ Respuesta: `{ "success": true, "days": { "YYYY-MM-DD": { "<id_room_type>": qty, 
 
 ## POST /api/booking
 
-Crea el hold (bloqueo 15 min, `BOOKING_HOLD_TTL`). **Body:**
+Crea el hold (bloqueo 15 min, `BOOKING_HOLD_TTL`), de 1 a 3 habitaciones (multi-room, 2026-08-12).
+**Body (multi-room):**
 ```json
 {
-  "roomSlug": "matrimonial",           // o "id_room_type" (normalización adaptativa)
+  "rooms": [                                  // lista de habitaciones (1-3)
+    { "slug": "doble-superior", "guests": 2 },
+    { "slug": "matrimonial", "guests": 3 }    // 3 = 2 base + 1 extra ($30/noche)
+  ],
   "checkIn": "2026-08-01", "checkOut": "2026-08-03",
-  "guests": 2, "rateType": "standard", // standard | non_refundable (whitelist cerrada)
+  "rateType": "standard",                     // standard | non_refundable (whitelist cerrada, GLOBAL por reserva)
   "guestDetails": { "firstName": "...", "lastName": "...", "email": "...", "phone": "..." }
 }
 ```
-El backend recalcula el precio (fuente única QloApps) y lo congela junto con el tipo de cambio — **el cliente nunca envía precios**. Campos requeridos: `id_room_type | roomSlug`, `checkIn`, `checkOut`, `guestName`, `guestEmail`.
+**Legacy (1 habitación, sin regresión):** `roomSlug` (o `id_room_type`) + `guests` — se normaliza a `rooms[]` internamente.
+
+El backend recalcula el precio por habitación (fuente única QloApps) y lo congela junto con el tipo de cambio — **el cliente nunca envía precios**. Reglas de precio (2026-08-12):
+- Por habitación: `price_per_night (rate) × nights` + cargo extra `EXTRA_GUEST_CHARGE_USD (30) × nights` por el 1er huésped sobre la ocupancia base (`max_guests − 1`, tope +1 persona — verificado en `qlo_htl_room_type`).
+- El descuento no reembolsable (−10%) aplica SOLO al precio base; el cargo extra va a precio completo (decisión del negocio).
+- Total = Σ por habitación. Campos requeridos: `rooms` (o legacy `id_room_type|roomSlug`), `checkIn`, `checkOut`, `guestName`, `guestEmail`.
 
 Respuesta:
 ```json
 {
   "success": true, "cart_id": "...", "access_token": "<HMAC cart_id:email>",
-  "currency": "USD", "price": 214.5, "rate_type": "standard",
-  "exchange_rate": 3.80, "gateway_currency": "PEN", "gateway_price": 815.1,
+  "currency": "USD", "price": 420.0, "rate_type": "standard",
+  "exchange_rate": 3.80, "gateway_currency": "PEN", "gateway_price": 1596.0,
   "mp_public_key": "APP_USR-...", "expires_at": "...", "time_left_seconds": 900,
-  "room_summary": { "id_room_type": 1, "slug": "matrimonial", "room_name": "...", "price_per_night": 90.0, "nights": 2, "guests": 2 }
+  "id_room_type": 2, "slug": "doble-superior", "room_name": "Doble Superior",
+  "room_summary": [
+    { "id_room_type": 2, "slug": "doble-superior", "room_name": "...", "price_per_night": 90.0, "nights": 2, "guests": 2, "room_total": 180.0 },
+    { "id_room_type": 1, "slug": "matrimonial", "room_name": "...", "price_per_night": 90.0, "nights": 2, "guests": 3, "room_total": 240.0 }
+  ]
 }
 ```
-Errores: 400 (validación/disponibilidad), 500. Concurrencia: lock de serialización por habitación (`room_locks` FOR UPDATE) — dos creates simultáneos no duplican holds.
+`id_room_type`/`slug`/`room_name` de primer room = back-compat con success flow y payment-status polling.
+
+Errores: 400 (validación/disponibilidad/capacidad), 500. Concurrencia: lock de serialización por CADA habitación (`room_locks` FOR UPDATE, orden ascendente de room types anti-deadlock); el re-check exige la CANTIDAD pedida (2 rooms del mismo tipo ⇒ 2 unidades).
 
 ## POST /api/process-payment
 

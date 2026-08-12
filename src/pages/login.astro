@@ -11,6 +11,7 @@ const t = useTranslations(lang);
 // BUILD, no por request — por eso ?error= y ?redirect= se leen en el CLIENTE
 // (URLSearchParams(window.location.search)) dentro del script, y aquí solo
 // queda una constante por defecto para el SSR inicial.
+// (audit 2026-08-12: output:'static' + prefixDefaultLocale:false confirmados en astro.config.mjs)
 const DEFAULT_REDIRECT = '/my-bookings';
 ---
 

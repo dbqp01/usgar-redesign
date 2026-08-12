@@ -7,6 +7,8 @@
 // mapeo status_detail -> clave i18n accionable (lista estandar MP, verificada
 // con mercadopago-mcp-server search_documentation "rejected payments
 // status_detail" — MPE/es, 2026-08-06).
+// (audit 2026-08-12: forma 1 confirmada en Response::error + rama MPApiException
+// de ProcessPaymentAction; forma 2 en los gates pending/expired/rejected/commit-falla)
 
 export interface NormalizedPaymentError {
   code: string;

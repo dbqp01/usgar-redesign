@@ -23,6 +23,14 @@ interface PmsPortInterface {
      */
     public function getExchangeRatePEN(): float;
     public function createCart(int $idHotel, int $idProduct, string $checkIn, string $checkOut, int $guests = 1, float $totalPrice = 0, string $guestName = '', string $guestEmail = '', string $guestPhone = ''): string;
+
+    /**
+     * Crea un cart/booking con UNA o VARIAS habitaciones (multi-room).
+     * $rooms = list<array{id_product:int, guests:int, price:float}>; $totalPrice = Σ.
+     *
+     * @param list<array{id_product:int, guests:int, price:float}> $rooms
+     */
+    public function createCartMulti(int $idHotel, array $rooms, string $checkIn, string $checkOut, string $guestName = '', string $guestEmail = '', string $guestPhone = '', float $totalPrice = 0): string;
     public function extendCartSession(string $cartId): bool;
     public function confirmOrder(string $cartId, float $totalPrice, string $guestName, string $guestEmail): ?string;
 

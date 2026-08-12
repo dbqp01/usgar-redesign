@@ -55,6 +55,24 @@ class GetBookingStatusAction {
         $priceUSD = (float)$hold['price_snapshot'];
         $gatewayPricePEN = PriceCalculator::toGatewayPrice($priceUSD);
 
+        // room_data: LISTA desde 2026-08-12 (multi-room). Los campos legacy
+        // (room_name/price_per_night/nights) se resuelven del PRIMER room;
+        // nights es identico para todas las habitaciones de la reserva.
+        $roomData = $hold['room_data'] ?? [];
+        if (isset($roomData['room_name'])) {
+            $roomData = [$roomData]; // hold legacy pre-multi-room (objeto unico)
+        }
+        $firstRoom = $roomData[0] ?? [];
+        $roomSummaries = array_map(static function (array $r): array {
+            return [
+                'room_name'       => $r['room_name'] ?? '',
+                'price_per_night' => (float)($r['price_per_night'] ?? 0),
+                'nights'          => (int)($r['nights'] ?? 1),
+                'guests'          => (int)($r['guests'] ?? 0),
+                'rate_type'       => $r['rate_type'] ?? null,
+            ];
+        }, $roomData);
+
         $payload = [
             'success'           => true,
             'cart_id'           => $hold['cart_id'],
@@ -63,9 +81,10 @@ class GetBookingStatusAction {
             'checkout'          => $hold['checkout'],
             'id_room_type'      => $idRoomType,
             'slug'              => $slug,
-            'room_name'         => $hold['room_data']['room_name'] ?? '',
-            'price_per_night'   => (float)($hold['room_data']['price_per_night'] ?? 0),
-            'nights'            => (int)($hold['room_data']['nights'] ?? 1),
+            'room_name'         => $firstRoom['room_name'] ?? '',
+            'price_per_night'   => (float)($firstRoom['price_per_night'] ?? 0),
+            'nights'            => (int)($firstRoom['nights'] ?? 1),
+            'room_summary'      => $roomSummaries,
             'currency'          => Config::get('HOTEL_BASE_CURRENCY', 'USD'),
             'price'             => $priceUSD,
             'exchange_rate'     => $exchangeRate,

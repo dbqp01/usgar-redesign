@@ -2,6 +2,8 @@
 // Countdown del hold de reserva (todo 29): el backend expone
 // time_left_seconds en GetBookingStatusAction; el UI muestra el countdown y
 // llama extend-hold UNA vez al llegar a ~60s.
+// (audit 2026-08-12: time_left_seconds confirmado en GetBookingStatusAction;
+// POST /api/extend-hold registrado en public/index.php)
 
 /** Formatea segundos a mm:ss para el countdown visible. */
 export function formatCountdown(totalSeconds: number): string {

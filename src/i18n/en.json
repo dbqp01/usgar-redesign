@@ -320,7 +320,8 @@
     "paymentExpired": "Booking Expired",
     "paymentExpiredMessage": "The booking time expired before the payment was confirmed. Please create a new booking.",
     "manualReviewMessage": "We could not confirm your payment. Please contact the hotel with your booking number to complete it.",
-    "retryCooldownMessage": "You can check again in {n}"
+    "retryCooldownMessage": "You can check again in {n}",
+    "pluralRooms": "Rooms"
   },
   "auth": {
     "signIn": "Sign In",

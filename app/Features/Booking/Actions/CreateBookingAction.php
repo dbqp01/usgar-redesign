@@ -21,8 +21,14 @@ use Exception;
 
 /**
  * Accion ADR: POST /api/booking
- * Crea un bloqueo temporal en QloApps y devuelve los datos para el pago
- * con Custom Checkout (Checkout API) desde el cliente.
+ * Crea un bloqueo temporal en QloApps (1 o varias habitaciones) y devuelve los
+ * datos para el pago con Custom Checkout (Checkout API) desde el cliente.
+ *
+ * Contrato (2026-08-12, multi-room): body con `rooms[]` (list de
+ * {slug|id_room_type, guests}) o `roomSlug` legacy (1 habitacion). Precios
+ * SIEMPRE resueltos server-side (nunca del cliente). Tarifa (rateType) global
+ * por reserva; cargo por huesped adicional a precio completo (decision del
+ * negocio: -10% no reembolsable solo sobre el base de cada habitacion).
  */
 class CreateBookingAction {
     private PDO $pdo;
@@ -43,16 +49,6 @@ class CreateBookingAction {
         $body = $request->getBody() ?? [];
 
         // --- Normalizacion Adaptativa de Payload (Zero-Breakage) ---
-        if (isset($body['roomSlug']) && empty($body['id_room_type'])) {
-            // Slug desconocido -> 400, jamas mapear silenciosamente a otro tipo
-            // (antes: ?? 1 reservaba matrimonial con un slug inexistente).
-            $idFromSlug = RoomTypeRegistry::getIdBySlug($body['roomSlug']);
-            if ($idFromSlug === null) {
-                throw HttpException::badRequest("Tipo de habitación desconocido: {$body['roomSlug']}.");
-            }
-            $body['id_room_type'] = $idFromSlug;
-        }
-
         if (isset($body['guestDetails']) && is_array($body['guestDetails'])) {
             $gd = $body['guestDetails'];
             if (empty($body['guestName'])) {
@@ -66,13 +62,31 @@ class CreateBookingAction {
             }
         }
 
-        Validator::requireFields($body, ['id_room_type', 'checkIn', 'checkOut', 'guestName', 'guestEmail']);
+        // Legacy (1 habitacion): roomSlug o id_room_type -> rooms[] (mismo camino).
+        if (empty($body['rooms']) || !is_array($body['rooms'])) {
+            if (isset($body['roomSlug'])) {
+                $idFromSlug = RoomTypeRegistry::getIdBySlug($body['roomSlug']);
+                if ($idFromSlug === null) {
+                    throw HttpException::badRequest("Tipo de habitación desconocido: {$body['roomSlug']}.");
+                }
+                $body['id_room_type'] = $idFromSlug;
+            }
+            if (isset($body['id_room_type'])) {
+                $body['rooms'] = [[
+                    'id_room_type' => $body['id_room_type'],
+                    'guests'       => (int)($body['guests'] ?? 2),
+                ]];
+            }
+        }
+
+        Validator::requireFields($body, ['checkIn', 'checkOut', 'guestName', 'guestEmail']);
+        if (!isset($body['rooms']) || !is_array($body['rooms']) || count($body['rooms']) === 0 || count($body['rooms']) > 3) {
+            throw HttpException::badRequest('Debe reservarse entre 1 y 3 habitaciones.');
+        }
+
+        $requestedRooms = $body['rooms'];
 
         $hotelId    = (int)($body['id_hotel'] ?? Config::get('DEFAULT_HOTEL_ID', '1'));
-        $idRoomType = Validator::positiveInt($body['id_room_type'], 'id_room_type');
-        // guests: entero positivo estricto. Antes: max(1, (int)$guests) aceptaba
-        // -5/0 silenciosamente y creaba holds con 1 huesped (validacion laxa).
-        $guests     = Validator::positiveInt($body['guests'] ?? 2, 'guests');
         $checkIn    = $body['checkIn'];
         $checkOut   = $body['checkOut'];
         $guestName  = trim($body['guestName']);
@@ -90,93 +104,156 @@ class CreateBookingAction {
         try {
 
             $availableRooms = $this->pms->getAvailableRooms($checkIn, $checkOut, $hotelId);
-            $targetRoom = null;
+            $nights = (int)max(1, round((strtotime($checkOut) - strtotime($checkIn)) / 86400));
 
-            foreach ($availableRooms as $room) {
-                if ((int)$room['id_room_type'] === $idRoomType) {
-                    $targetRoom = $room;
-                    break;
+            // --- Resolver cada habitacion: validacion + precio server-side ---
+            $resolved = [];   // detalle por room para el hold
+            $cartRooms = [];  // {id_product, guests, price} para el webservice
+            $totalPrice = 0.0;
+
+            foreach ($requestedRooms as $i => $req) {
+                if (!is_array($req)) {
+                    throw HttpException::badRequest('Formato invalido en rooms[' . $i . '].');
+                }
+
+                $idRoomType = isset($req['id_room_type'])
+                    ? Validator::positiveInt($req['id_room_type'], "rooms[$i].id_room_type")
+                    : RoomTypeRegistry::getIdBySlug((string)($req['slug'] ?? ''));
+                if ($idRoomType === null) {
+                    throw HttpException::badRequest("Tipo de habitación desconocido en rooms[$i].");
+                }
+
+                $guests = Validator::positiveInt($req['guests'] ?? 1, "rooms[$i].guests");
+
+                $targetRoom = null;
+                foreach ($availableRooms as $room) {
+                    if ((int)$room['id_room_type'] === $idRoomType) {
+                        $targetRoom = $room;
+                        break;
+                    }
+                }
+                if (!$targetRoom) {
+                    throw HttpException::badRequest('Una de las habitaciones seleccionadas ya no está disponible para estas fechas.');
+                }
+
+                $maxGuests = (int)($targetRoom['max_guests'] ?? 2);
+                if ($guests > $maxGuests) {
+                    throw HttpException::badRequest("El número de huéspedes ({$guests}) excede la capacidad máxima de esta habitación ({$maxGuests} personas).");
+                }
+
+                $idProduct = (int)($targetRoom['id_product'] ?? $idRoomType);
+                $pricePerNight = (float)$targetRoom['price'];
+                // Tarifa elegida: el adapter resuelve la regla de QloApps
+                // (non_refundable_price); sin regla => == standard (fail-safe).
+                $pricePerNight = $rateType === 'non_refundable'
+                    ? (float)($targetRoom['non_refundable_price'] ?? $pricePerNight)
+                    : $pricePerNight;
+
+                // Cargo por huesped adicional (regla del negocio, verificada en BD
+                // real 2026-08-12): +1 persona sobre la ocupancia base (max-1),
+                // a PRECIO COMPLETO (el -10% no reembolsable solo aplica al base).
+                $baseOccupancy = max(1, $maxGuests - 1);
+                $extraGuests = max(0, $guests - $baseOccupancy);
+                $extraChargePerNight = (float)Config::get('EXTRA_GUEST_CHARGE_USD', '30');
+                $extraChargeTotal = PriceCalculator::extraGuestCharge($guests, $maxGuests, $nights, $extraChargePerNight);
+
+                $roomTotal = round($pricePerNight * $nights + $extraChargeTotal, 2);
+                $totalPrice += $roomTotal;
+
+                $resolved[] = [
+                    'id_room_type'       => $idRoomType,
+                    'id_product'         => $idProduct,
+                    'room_name'          => $targetRoom['room_name'],
+                    'guests'             => $guests,
+                    'max_guests'         => $maxGuests,
+                    'base_occupancy'     => $baseOccupancy,
+                    'extra_guests'       => $extraGuests,
+                    'extra_charge'       => $extraChargePerNight,
+                    'price_per_night'    => $pricePerNight,
+                    'nights'             => $nights,
+                    'rate_type'          => $rateType,
+                    'room_total'         => $roomTotal,
+                    'available_qty'      => (int)($targetRoom['available_qty'] ?? 0),
+                ];
+                $cartRooms[] = [
+                    'id_product' => $idProduct,
+                    'guests'     => $guests,
+                    'price'      => $roomTotal,
+                ];
+            }
+
+            $totalPrice = round($totalPrice, 2);
+            $cartId = $this->pms->createCartMulti($hotelId, $cartRooms, $checkIn, $checkOut, $guestName, $guestEmail, $guestPhone, $totalPrice);
+
+            $this->pdo->beginTransaction();
+
+            // Serializacion de holds por HABITACION (todo 10 / W2): lock por room
+            // type dentro de la misma transaccion que el re-check y el INSERT.
+            // Orden ascendente de room types para evitar deadlocks entre requests
+            // concurrentes con combos cruzados (A+B vs B+A).
+            $roomTypeIds = array_unique(array_map(fn(array $r): int => $r['id_room_type'], $resolved));
+            sort($roomTypeIds);
+            foreach ($roomTypeIds as $idRoomType) {
+                if (!$this->bookingRepo->lockRoom($hotelId . ':' . $idRoomType)) {
+                    $this->pdo->rollBack();
+                    throw new Exception('No se pudo adquirir el lock de serializacion para la habitacion.');
                 }
             }
 
-            if (!$targetRoom) {
-                throw HttpException::badRequest('La habitación seleccionada ya no está disponible para estas fechas.');
-            }
-
-            $maxGuests = (int)($targetRoom['max_guests'] ?? 2);
-            if ($guests > $maxGuests) {
-                throw HttpException::badRequest("El número de huéspedes ({$guests}) excede la capacidad máxima de esta habitación ({$maxGuests} personas).");
-            }
-
-            $idProduct = (int)($targetRoom['id_product'] ?? $idRoomType);
-            $nights = (int)max(1, round((strtotime($checkOut) - strtotime($checkIn)) / 86400));
-            $pricePerNight = (float)$targetRoom['price'];
-            // Precio de la tarifa elegida. Fuente unica: el adapter resuelve la
-            // Catalog Price Rule de QloApps (non_refundable_price) — el frontend
-            // solo envia rateType; jamas confiar en precios enviados por el cliente.
-            // Sin regla configurada en QloApps => non_refundable == standard.
-            $pricePerNight = $rateType === 'non_refundable'
-                ? (float)($targetRoom['non_refundable_price'] ?? $pricePerNight)
-                : $pricePerNight;
-            $totalPrice = round($pricePerNight * $nights, 2);
-
-            $cartId = $this->pms->createCart($hotelId, $idProduct, $checkIn, $checkOut, $guests, $totalPrice, $guestName, $guestEmail, $guestPhone);
-            
-            $this->pdo->beginTransaction();
-
-            // Todo 10 (W2): serializar la creacion de holds con un objetivo de
-            // lock que SIEMPRE existe (fila room_locks get-or-create + FOR
-            // UPDATE) DENTRO de la misma transaccion que la verificacion de
-            // disponibilidad y el INSERT del hold. Elimina los holds fantasma:
-            // dos creates concurrentes sobre la misma habitacion se
-            // serializan aqui, y el segundo ve el hold del primero en el COUNT.
-            $roomLockId = $hotelId . ':' . $idRoomType;
-            if (!$this->bookingRepo->lockRoom($roomLockId)) {
-                $this->pdo->rollBack();
-                throw new Exception('No se pudo adquirir el lock de serializacion para la habitacion.');
-            }
-
-            // Re-check (auditoria 2026-08-11): getAvailableRooms YA descontó
-            // los holds existentes en available_qty; restar todos otra vez era
-            // doble conteo (rechazos falsos con inventario parcialmente
-            // ocupado). El re-check cuenta SOLO los holds creados DESPUÉS de la
-            // lectura inicial (ventana lectura->lock, ~ms), que es lo único que
-            // el available_qty no pudo ver.
+            // Re-check por room type exigiendo la CANTIDAD pedida (2 rooms del
+            // mismo tipo => 2 unidades). El available_qty del adapter YA descontó
+            // holds existentes; aqui solo se resta lo creado despues de la
+            // lectura inicial (ventana lectura->lock, ~ms).
             $readAt = date('Y-m-d H:i:s');
-            $newHoldsCount = $this->bookingRepo->getHoldCountForRoomForUpdate($idRoomType, $checkIn, $checkOut, $hotelId, $readAt);
-            $targetRoom['available_qty'] -= $newHoldsCount;
-
-            if ($targetRoom['available_qty'] <= 0) {
-                $this->pdo->rollBack();
-                throw HttpException::badRequest('La habitación seleccionada ya no está disponible para estas fechas.');
+            $neededByType = array_count_values($roomTypeIds);
+            foreach ($resolved as &$r) {
+                $needed = $neededByType[$r['id_room_type']];
+                $newHoldsCount = $this->bookingRepo->getHoldCountForRoomForUpdate($r['id_room_type'], $checkIn, $checkOut, $hotelId, $readAt);
+                $r['available_qty'] -= $newHoldsCount;
+                if ($r['available_qty'] < $needed) {
+                    $this->pdo->rollBack();
+                    throw HttpException::badRequest('Una de las habitaciones seleccionadas ya no está disponible para estas fechas.');
+                }
             }
+            unset($r);
+
             $expiresAt = date('Y-m-d H:i:s', strtotime(Config::get('BOOKING_HOLD_TTL', '+15 minutes')));
             $currentUser = SessionService::getUserFromRequest();
 
-            // Todo 25 (Wave 4): congelar tasa + PEN al cotizar (UNA sola
-            // lectura de la tasa). La tasa sale del PMS (qlo_currency), no de
-            // Config (auditoria 2026-08-11): el back-office reporta con la
-            // tasa del CMS; Config queda como fallback si el PMS no responde.
+            // Congelar tasa + PEN al cotizar (UNA sola lectura). La tasa sale del
+            // PMS (qlo_currency), no de Config (auditoria 2026-08-11).
             $exchangeRate = $this->pms->getExchangeRatePEN();
             $priceSnapshotPen = PriceCalculator::toGatewayPrice($totalPrice, $exchangeRate);
+
+            // room_data pasa a LISTA de habitaciones (multi-room); los consumidores
+            // legacy leen el primer room (nights identico para todas). La tarifa
+            // es global por reserva ($rateType) — misma para todas las habitaciones.
+            $roomDataList = array_map(static function (array $r) use ($rateType): array {
+                return [
+                    'room_name'       => $r['room_name'],
+                    'price_per_night' => $r['price_per_night'],
+                    'nights'          => $r['nights'],
+                    'rate_type'       => $rateType,
+                    'guests'          => $r['guests'],
+                    'base_occupancy'  => $r['base_occupancy'],
+                    'extra_guests'    => $r['extra_guests'],
+                    'extra_charge'    => $r['extra_charge'],
+                    'room_total'      => $r['room_total'],
+                ];
+            }, $resolved);
 
             $holdData = [
                 'cart_id'                 => $cartId,
                 'user_id'                 => $currentUser['sub'] ?? null,
                 'id_hotel'                => $hotelId,
-                'id_room_type'            => $idRoomType,
+                'id_room_type'            => $resolved[0]['id_room_type'],
                 'guest_data'              => [
                     'name'   => $guestName,
                     'email'  => $guestEmail,
                     'phone'  => $guestPhone,
-                    'guests' => $guests,
+                    'guests' => array_sum(array_column($resolved, 'guests')),
                 ],
-                'room_data'               => [
-                    'room_name'       => $targetRoom['room_name'],
-                    'price_per_night' => $pricePerNight,
-                    'nights'          => $nights,
-                    'rate_type'       => $rateType,
-                ],
+                'room_data'               => $roomDataList,
                 'price_snapshot'          => $totalPrice,
                 'price_snapshot_pen'      => $priceSnapshotPen,
                 'exchange_rate_snapshot'  => $exchangeRate,
@@ -196,10 +273,21 @@ class CreateBookingAction {
             $this->pdo->commit();
 
             $timeLeftSeconds = max(0, strtotime($expiresAt) - time());
-            $roomSlug = RoomTypeRegistry::getSlugById($idRoomType);
 
             // Reutiliza la tasa/PEN congelados (una sola lectura, todo 25).
             $gatewayPricePEN = $priceSnapshotPen;
+
+            $roomSummaries = array_map(static function (array $r): array {
+                return [
+                    'id_room_type'    => $r['id_room_type'],
+                    'slug'            => RoomTypeRegistry::getSlugById($r['id_room_type']),
+                    'room_name'       => $r['room_name'],
+                    'price_per_night' => $r['price_per_night'],
+                    'nights'          => $r['nights'],
+                    'guests'          => $r['guests'],
+                    'room_total'      => $r['room_total'],
+                ];
+            }, $resolved);
 
             Response::json([
                 'success'           => true,
@@ -214,14 +302,12 @@ class CreateBookingAction {
                 'mp_public_key'     => Config::get('PUBLIC_MERCADO_PAGO_PUBLIC_KEY'),
                 'expires_at'        => $expiresAt,
                 'time_left_seconds' => $timeLeftSeconds,
-                'room_summary'      => [
-                    'id_room_type'    => $idRoomType,
-                    'slug'            => $roomSlug,
-                    'room_name'       => $targetRoom['room_name'],
-                    'price_per_night' => $pricePerNight,
-                    'nights'          => $nights,
-                    'guests'          => $guests,
-                ],
+                // Back-compat: campos legacy = primer room (success flow y
+                // payment-status polling esperan shape de 1 habitacion).
+                'id_room_type'      => $resolved[0]['id_room_type'],
+                'slug'              => RoomTypeRegistry::getSlugById($resolved[0]['id_room_type']),
+                'room_name'         => $resolved[0]['room_name'],
+                'room_summary'      => $roomSummaries,
             ]);
 
         } catch (HttpException $e) {

@@ -6,6 +6,8 @@
  *
  * Usa sessionStorage como cache para evitar llamadas repetidas a /api/auth/me
  * en cada navegación (las View Transitions de Astro recargan scripts).
+ * (audit 2026-08-12: /api/auth/me + cookie HttpOnly usgar_session confirmados
+ * en public/index.php y SessionService)
  */
 
 const AUTH_API_BASE = '/api/auth';

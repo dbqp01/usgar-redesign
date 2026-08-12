@@ -1,7 +1,9 @@
 ---
 // src/components/LocationMap.astro
 // Luxury Boutique Location Map: CARTO Dark Matter + Interactive Leaflet,
-// gold hotel radar marker, POI landmarks, glassmorphism overlays and Google Maps CTA.
+// hotel pin blanco con pulso radar dorado, POI landmarks, glassmorphism
+// overlays y Google Maps CTA. (audit 2026-08-12: tiles dark_all de cartocdn y
+// pin blanco + ping bg-secondary confirmados en locationMap.ts)
 import { useTranslations, type Locale } from '../i18n/utils';
 import { siteSettings } from '../data/settings';
 
@@ -175,6 +177,13 @@ const pois = [
   }
   .leaflet-control-zoom a:hover {
     background: rgba(212, 175, 55, 0.25) !important;
+    color: #d4af37 !important;
+  }
+  .leaflet-control-attribution {
+    background: rgba(10, 10, 10, 0.7) !important;
+    color: #a8a29e !important;
+  }
+  .leaflet-control-attribution a {
     color: #d4af37 !important;
   }
 </style>

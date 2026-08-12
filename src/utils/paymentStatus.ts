@@ -3,6 +3,8 @@
 // El backend expone status: pending/paid/expired/manual_review/fraud_review/
 // expired_paid/in_process/approved/rejected (GetBookingStatusAction +
 // ProcessPaymentAction, waves 1-4).
+// (audit 2026-08-12: confirmado contra BookingStatus enum + ramas de
+// ProcessPaymentAction; 'rejected'/'approved'/'in_process' son passthrough de MP)
 
 const PAID_STATUSES: readonly string[] = ['paid', 'approved', 'expired_paid'];
 const PENDING_STATUSES: readonly string[] = [
