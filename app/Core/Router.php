@@ -106,6 +106,15 @@ class Router {
                 throw HttpException::internal("Action class {$handler} is not invocable and has no handle/execute method.");
             }
 
+            // Fix P2-5 (2026-08-12, RFC 9110 §9.6.2): si la ruta existe pero no
+            // para este metodo, responder 405 con header Allow (antes: 404).
+            $allowed = $this->allowedMethods($path);
+            if ($allowed !== []) {
+                header('Allow: ' . implode(', ', $allowed));
+                Response::error('Method Not Allowed', 405, 'METHOD_NOT_ALLOWED');
+                return;
+            }
+
             Response::notFound("Endpoint {$method} {$path} not found on this server.");
 
         } catch (HttpException $e) {
@@ -114,9 +123,25 @@ class Router {
             Logger::error('Unhandled exception in Router: ' . $e->getMessage(), [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
+                'request_id' => $request->getRequestId(),
             ]);
             Response::error('Internal Server Error', 500, 'UNHANDLED_EXCEPTION');
         }
+    }
+
+    /**
+     * Metodos HTTP registrados para una ruta (para el header Allow del 405).
+     *
+     * @return list<string>
+     */
+    private function allowedMethods(string $path): array {
+        $allowed = [];
+        foreach ($this->routes as $method => $paths) {
+            if (isset($paths[$path])) {
+                $allowed[] = $method;
+            }
+        }
+        return $allowed;
     }
 
     /**
