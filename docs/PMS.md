@@ -549,7 +549,9 @@ El repo ya prueba los mismos contratos sin Postman:
 > **Riesgo documentado:** `QloAppAdapter::confirmOrder()` escribe DIRECTAMENTE en
 > tablas del schema PrestaShop/QloApps (`qlo_*`) vía PDO local — NO usa el
 > webservice para crear órdenes (el POST `bookings` del webservice da 500 en
-> QloApps 1.7.0.0, bug #1471 arreglado en versiones posteriores; el fallback
+> esta instalación; verificado 2026-08-12: `QLO_VERSION_DB=1.7.0.0` = release
+> v1.7.0, la última — el fix de #1471 de v1.7.0 eliminó el specific management
+> qlo web service, así que el 500 no se resuelve con un upgrade; el fallback
 > `USGAR-` es el diseño resiliente vigente). Escribir contra el schema interno
 > de un PMS es frágil ante upgrades: PrestaShop/QloApps NO garantiza estabilidad
 > de columnas/tablas entre versiones.

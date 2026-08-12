@@ -8,7 +8,7 @@ Estado de migraciones y backlog de mejoras priorizado. Cada ítem se marca `[x]`
 |---|---|---|
 | Pagos | **MercadoPago se mantiene** como pasarela única. Stripe/LLC descartados definitivamente (2026-08-05) | Cerrado |
 | CMS/PMS | **QloApps se mantiene**; migración a Filament cancelada (2026-08-04) y panel eliminado del repo (2026-08-05; `admin.usgarhoteles.com` ya no existe) | Cerrado |
-| Channel manager | **QloApps Channel Manager (Webkul)**: sin código en el repo (módulo del lado PMS, sync vía webservice `cm_api`); **activación pendiente de pago** ($30/propiedad/mes). Runbook: `docs/PMS.md` §D | En curso (gated por pago) |
+| Channel manager | **QloApps Channel Manager (Webkul)**: sin código en el repo (módulo del lado PMS, sync vía webservice `cm_api`); **pendiente hasta la entrega final** (activación paga, $30/propiedad/mes). Runbook: `docs/PMS.md` §D | Pendiente hasta entrega final |
 | Refactor backend | Cerrado (F2, 2026-08-03); auditoría de limpieza en curso | En curso |
 
 ### Channel manager — pasos pendientes (detalle en `docs/PMS.md` §D)

@@ -21,7 +21,7 @@ Verificación: `php vendor/bin/phpunit` → **184 tests / 633 assertions, 12 ski
 - **Reservas multi-habitación**: `POST /api/booking` acepta `rooms[]` (1-3, {slug, guests}) con `rateType` GLOBAL por reserva; legacy `roomSlug` normaliza internamente (sin regresión, verificado con harness). `room_data` en el hold pasa a LISTA; consumidores (GetBookingStatus, ProcessPayment, my-bookings, success) normalizan en el punto de lectura (primer room para campos legacy; `room_summary` en respuestas).
 - **Ocupancia +1 persona / $30 (regla del negocio, verificada en BD real)**: `qlo_htl_room_type.max_guests` = 3/3/4/8 → base = max−1 = 2/2/3/7. rooms.json sincronizado. Cargo extra `EXTRA_GUEST_CHARGE_USD` (Config, default 30) a PRECIO COMPLETO (el −10% no reembolsable solo aplica al base — decisión del negocio). Lógica pura en `PriceCalculator::extraGuestCharge` + tests.
 - **XML webservice bookings**: `createCartMulti` agrupa por tipo con `number_of_rooms=N` (schema verificado en `WebserviceSpecificManagementBookings.php` de QloApps).
-- **BUG encontrado (doc-first, fuente de QloApps)**: el adapter enviaba `payment_status=0` → 400 "Estado de pago inválido" (valores válidos: 1 Completed / 2 Partial / 3 Awaiting). FIX: `3` (hold sin pagar). **PERO** el POST del webservice `bookings` sigue dando **500** en esta instalación (QloApps 1.7.0.0) en la creación de la orden (`validateOrder`) — bug pre-existente de la plataforma (changelog: #1471 "Fixed issues in bookings webservices" en versiones posteriores). El fallback a cart local `USGAR-` es el diseño resiliente documentado (holds + webhook `confirmOrder` funcionan por PDO local); pendiente de decisión del usuario: actualizar QloApps en el servidor.
+- **BUG encontrado (doc-first, fuente de QloApps)**: el adapter enviaba `payment_status=0` → 400 "Estado de pago inválido" (valores válidos: 1 Completed / 2 Partial / 3 Awaiting). FIX: `3` (hold sin pagar). **PERO** el POST del webservice `bookings` sigue dando **500** en esta instalación en la creación de la orden (`validateOrder`). Corrección 2026-08-12 (verificado en BD de prod: `QLO_VERSION_DB=1.7.0.0` = release v1.7.0, 2025-07-04 — la instalación YA está en la última versión; no hay upgrade disponible): el changelog de v1.7.0 arregla #1471 "issues in bookings and services web services" y **elimina el specific management qlo web service** — el claim previo de "bug pre-existente arreglado en versiones posteriores" era falso; el 500 no se resuelve con un upgrade. El fallback a cart local `USGAR-` es el diseño resiliente vigente (holds + webhook `confirmOrder` funcionan por PDO local).
 
 ## Verificación 2026-08-11 (centralización de docs; sin cambios de código)
 - `npm run check` → 0 errors / 0 warnings (1 hint pre-existente en `scripts/dev.js`).
@@ -41,7 +41,7 @@ Verificación: `php vendor/bin/phpunit` → **184 tests / 633 assertions, 12 ski
 
 ## Contexto (decisiones aprobadas por el usuario)
 
-- **Orden de trabajo**: F0 línea base → F2 limpieza de pagos → F4 frontend (redesign pendiente) → F1 Nobeds (bloqueada: requiere suscripción pagada, se hace al final). **F3 (salir de QloApps) CANCELADA — QloApps se mantiene como PMS (decisión 2026-08-04); ver `docs/DECISIONS.md`.**
+- **Orden de trabajo**: F0 línea base → F2 limpieza de pagos → F4 frontend (redesign pendiente). **F3 (salir de QloApps) CANCELADA — QloApps se mantiene como PMS (decisión 2026-08-04); ver `docs/DECISIONS.md`.**
 - **CMS**: QloApps se mantiene. **Pagos**: MercadoPago se mantiene (Checkout API).
 - **Channel manager**: QloApps Channel Manager (Webkul) — sin código en el repo (módulo del PMS); activación pendiente de pago (runbook `docs/PMS.md` §D).
 
@@ -222,7 +222,6 @@ Verificación end-to-end del flujo de webhooks de MercadoPago ejecutada el 2026-
 - Para el cierre definitivo en producción: desplegar los fixes + primera reserva real (user-gated) → verificar webhook 200 + email + booking Paid (y `quality_evaluation` del MCP funcionará con ese pago LIVE).
 - F4 frontend (fases 3-4 redesign: internas + wizard reserva).
 - F3 CMS (mini-contrato de alcance al empezar).
-- F1 Nobeds (requiere sub pagada; instrucciones de cuenta/API key al llegar).
 
 ## Verificación 2026-08-12 (eliminación del baseline de PHPStan)
 - **`phpstan-baseline.neon` ELIMINADO (67 entradas / 17 archivos → 0)**. `composer analyse` → `[OK] No errors` sin baseline.
