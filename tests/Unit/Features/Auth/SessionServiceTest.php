@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Features\Auth;
 
+use App\Core\Config;
 use App\Core\HttpException;
 use App\Core\Request;
 use App\Features\Auth\SessionService;
@@ -14,10 +15,11 @@ use PHPUnit\Framework\TestCase;
  */
 final class SessionServiceTest extends TestCase {
     protected function setUp(): void {
-        // AUTH_JWT_SECRET exigido por SessionService::getSecret (>= 32 chars)
-        if (getenv('AUTH_JWT_SECRET') === false) {
-            putenv('AUTH_JWT_SECRET=unit-test-secret-0123456789abcdef');
-        }
+        // Fix CI 2026-08-12: Config::set() pisa la CACHE de Config (el .env
+        // del CI copia .env.example cuyo AUTH_JWT_SECRET de ejemplo no cumple
+        // el minimo de 32 chars; putenv() no vence a la cache). Hermetico
+        // contra cualquier .env del entorno.
+        Config::set('AUTH_JWT_SECRET', 'unit-test-secret-0123456789abcdef');
     }
 
     public function testCreateTokenIncludesIssAudJti(): void {
