@@ -69,6 +69,15 @@ class Middleware {
     }
 
     /**
+     * P3-3 (OWASP API4:2023, "limits missing or set inappropriately"): rutas
+     * exentas del rate limit global por tener limites apropiados por diseno:
+     * - /api/webhook: MercadoPago reintenta en rafagas legitimas; la unica
+     *   ruta cara (fetch de detalles) solo corre con firma HMAC valida.
+     * - /api/health: probe de monitoreo; un 429 aqui falsifica una caida.
+     */
+    private const EXEMPT_RATE_LIMIT_PATHS = ['/api/webhook', '/api/health'];
+
+    /**
      * Middleware de Rate Limiting por IP.
      * Los limites se leen de Config (RATE_LIMIT_MAX_REQUESTS / RATE_LIMIT_WINDOW_SECONDS).
      */
@@ -76,6 +85,9 @@ class Middleware {
         $maxRequests = $maxRequests ?? (int)(Config::get('RATE_LIMIT_MAX_REQUESTS', '60') ?? '60');
         $windowSeconds = $windowSeconds ?? (int)(Config::get('RATE_LIMIT_WINDOW_SECONDS', '600') ?? '600');
         return static function (Request $request) use ($maxRequests, $windowSeconds): void {
+            if (in_array($request->getPath(), self::EXEMPT_RATE_LIMIT_PATHS, true)) {
+                return;
+            }
             $ip = $request->getIp();
             if (!RateLimiter::check($ip, $maxRequests, $windowSeconds)) {
                 throw HttpException::tooManyRequests(

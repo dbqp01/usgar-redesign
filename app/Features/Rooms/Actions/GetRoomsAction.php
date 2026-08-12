@@ -9,6 +9,7 @@ use App\Core\Validator;
 use App\Core\HttpException;
 use App\Core\Logger;
 use App\Core\Config;
+use App\Core\FileCache;
 use App\Features\Shared\Ports\PmsPortInterface;
 use App\Features\Shared\RoomTypeRegistry;
 use Exception;
@@ -43,6 +44,17 @@ class GetRoomsAction {
 
         Validator::dateRange($checkIn, $checkOut);
 
+        // P3-1 (RFC 9111): cache de display de 30s (Config ROOMS_CACHE_TTL).
+        // Solo vitrina: CreateBookingAction re-verifica stock con FOR UPDATE.
+        $cacheTtl = (int)(Config::get('ROOMS_CACHE_TTL', '30') ?? '30');
+        $cacheKey = "rooms:{$checkIn}:{$checkOut}:{$hotelId}:{$idLang}";
+        $cached = FileCache::get($cacheKey, $cacheTtl);
+        if ($cached !== null) {
+            header('Cache-Control: public, max-age=' . $cacheTtl);
+            Response::json($cached);
+            return; // ponytail: Response::json hace exit fuera de testing
+        }
+
         try {
             $availableRooms = $this->pms->getAvailableRooms($checkIn, $checkOut, $hotelId, $idLang);
             $nights = (int)max(1, round((strtotime($checkOut) - strtotime($checkIn)) / 86400));
@@ -75,6 +87,10 @@ class GetRoomsAction {
                 return $room;
             }, $availableRooms);
 
+            // P3-1: cachear la respuesta de display + Cache-Control explicito
+            // (sin header, los caches aplican heuristica implicita, RFC 9111).
+            FileCache::set($cacheKey, ['success' => true, 'rooms' => $enrichedRooms]);
+            header('Cache-Control: public, max-age=' . $cacheTtl);
             Response::json([
                 'success' => true,
                 'rooms'   => $enrichedRooms,

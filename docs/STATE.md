@@ -223,6 +223,17 @@ Verificación end-to-end del flujo de webhooks de MercadoPago ejecutada el 2026-
 - F4 frontend (fases 3-4 redesign: internas + wizard reserva).
 - F3 CMS (mini-contrato de alcance al empezar).
 
+## P3 cerrado (2026-08-12) — rendimiento/ops + PHP 8.4 en prod
+
+- **P3-1** `App\Core\FileCache` (data/cache/, TTL por mtime, escritura atómica tmp+rename) + `GetRoomsAction` cachea la respuesta de display 30s (`ROOMS_CACHE_TTL`) y envía `Cache-Control: public, max-age=N` explícito. Nunca en `CreateBookingAction` (FOR UPDATE). Test: `FileCacheTest` (4 casos: miss/hit/expiración/sobreescritura).
+- **P3-3** `RateLimiter::purgeOldFiles(dir, maxAge)` público (purga 2×ventana en cada check) + exenciones en `Middleware::rateLimit` para `/api/webhook` y `/api/health` (OWASP API4:2023: límites por endpoint; MP reintenta en ráfagas y la ruta cara solo corre con firma HMAC válida). Tests: `RateLimiterPurgeTest` (3) + `MiddlewareRateLimitExemptTest` (3).
+- **P3-5** composer.json: `"php": ">=8.2"` + `config.platform.php: 8.4.0`; lock refrescado (`composer update --lock`, sin cambios de dependencias); `check-platform-reqs` OK.
+- **PHP prod 8.3.30 → 8.4.19** (decisión del usuario: 8.4 = máximo soportado por QloApps 1.7.0, changelog #1464 8.1→8.4; 8.5 queda fuera por el PMS, que comparte versión del sitio en cms.usgarhoteles.com). Verificado en vivo vía MCP Hostinger (`getPHPDetailsV1`) + curl: `X-Powered-By: PHP/8.4.19`, `/api/health` 200, `/api/rooms` 200, webservice QloApps responde (401 = auth, vivo). Extensiones intactas (bcmath, gd, intl, mbstring, openssl, pdo_mysql...).
+- **Nota bcmath (corrección de supuesto)**: `bcmath` SÍ está habilitado en prod 8.4 — el fix P1-6 (céntimos enteros) se mantiene como está (ya verificado y testeado); la nota "no garantizado en Hostinger" era un supuesto, no una limitación real.
+- **Compatibilidad 8.4/8.5 verificada por grep**: 0 implicitly nullable params (deprecación 8.4), 0 casts no canónicos `(integer|boolean|double|binary)` (deprecación 8.5), `round()` default intacto (HALF_UP, dinero ya en céntimos). `password_needs_rehash()` de P1-4 rehashea automáticamente los hashes bcrypt al nuevo cost 12 de 8.4 en el próximo login.
+
+Verificación: `php vendor/bin/phpunit` → **194 tests / 648 assertions, 12 skipped, OK** · `composer analyse` → **No errors** · `npm run check` → 0 errors / 0 warnings (2 hints pre-existentes) · `composer validate` OK.
+
 ## Verificación 2026-08-12 (eliminación del baseline de PHPStan)
 - **`phpstan-baseline.neon` ELIMINADO (67 entradas / 17 archivos → 0)**. `composer analyse` → `[OK] No errors` sin baseline.
 - Fixes aplicados (cero impacto runtime, salvo código probadamente muerto):

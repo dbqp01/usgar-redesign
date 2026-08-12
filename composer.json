@@ -1,5 +1,6 @@
 {
     "require": {
+        "php": ">=8.2",
         "hybridauth/hybridauth": "^3.13",
         "mercadopago/dx-php": "^3.12",
         "phpoffice/phpspreadsheet": "^3.9",
@@ -36,6 +37,9 @@
     "config": {
         "allow-plugins": {
             "cweagans/composer-patches": true
+        },
+        "platform": {
+            "php": "8.4.0"
         }
     }
 }
