@@ -166,7 +166,7 @@ class User {
                         WHERE id = :id
                     ');
                     $stmt->execute([
-                        ':password_hash' => password_hash($password, PASSWORD_BCRYPT),
+                        ':password_hash' => password_hash($password, PASSWORD_DEFAULT),
                         ':first_name'    => !empty($firstName) ? $firstName : null,
                         ':last_name'     => !empty($lastName) ? $lastName : null,
                         ':id'            => $existing['id'],
@@ -185,7 +185,7 @@ class User {
                 ':email'         => $email,
                 ':first_name'    => $firstName,
                 ':last_name'     => $lastName,
-                ':password_hash' => password_hash($password, PASSWORD_BCRYPT),
+                ':password_hash' => password_hash($password, PASSWORD_DEFAULT),
                 ':provider'      => 'email',
             ]);
 
@@ -218,6 +218,20 @@ class User {
 
         if (!password_verify($password, $user['password_hash'])) {
             return null;
+        }
+
+        // Fix P1-4 (2026-08-12): rehash automatico en login exitoso cuando el
+        // algoritmo/costos del hash actual quedaron obsoletos (PASSWORD_DEFAULT
+        // permite migrar de bcrypt a argon2 sin intervencion manual).
+        if (password_needs_rehash($user['password_hash'], PASSWORD_DEFAULT)) {
+            try {
+                $this->pdo->prepare('UPDATE users SET password_hash = :hash WHERE id = :id')->execute([
+                    ':hash' => password_hash($password, PASSWORD_DEFAULT),
+                    ':id'   => (int)$user['id'],
+                ]);
+            } catch (PDOException $e) {
+                Logger::error('User::verifyPassword rehash failed: ' . $e->getMessage());
+            }
         }
 
         return $user;
