@@ -30,10 +30,10 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
-      - name: Configurar PHP 8.2
+      - name: Configurar PHP 8.3
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           coverage: none
 
       - name: Verificar disponibilidad de puerto 8089 para pruebas
