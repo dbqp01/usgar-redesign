@@ -150,7 +150,6 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
   let stopPolling: (() => void) | null = null;
   let firstCompute = true;
   let userPicked = false;
-  let scrolledOnce = false;
 
   let calendarAvailability: Record<string, Record<string, number>> = {};
 
@@ -251,8 +250,8 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
             ? 'opacity-20 pointer-events-none'
             : soldOut
               ? 'opacity-45 pointer-events-none line-through text-rose-500 dark:text-rose-400'
-              : 'hover:bg-secondary/10 hover:text-secondary-dark dark:hover:text-secondary';
-          const todayRing = isToday && !soldOut ? ' ring-1 ring-primary/40 ring-inset' : '';
+              : 'text-text-primary-light dark:text-white hover:bg-gold-vibrant/20 hover:text-stone-900 dark:hover:text-gold-vibrant';
+          const todayRing = isToday && !soldOut ? ' ring-1 ring-gold-vibrant/60 ring-inset' : '';
           const tooltip = soldOut
             ? ` title="${escapeAttr(opts.labels.soldOut || 'Sold out')}"`
             : '';
@@ -277,10 +276,10 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
       const isEnd = date === checkOut;
       const range = checkIn && checkOut && date > checkIn && date < checkOut;
       const stateClass = isStart || isEnd
-        ? 'bg-primary text-white font-semibold shadow-sm'
+        ? 'bg-gold-vibrant text-stone-900 font-extrabold shadow-sm'
         : range
-          ? 'bg-primary/10 text-primary dark:text-primary-soft'
-          : 'hover:bg-secondary/10 hover:text-secondary-dark dark:hover:text-secondary';
+          ? 'bg-gold-vibrant/20 text-stone-900 dark:text-gold-vibrant font-semibold'
+          : 'text-text-primary-light dark:text-white hover:bg-gold-vibrant/20 hover:text-stone-900 dark:hover:text-gold-vibrant';
       btn.className = `aspect-square rounded text-xs font-body flex items-center justify-center transition-all duration-150 cursor-pointer select-none ${stateClass}`;
       btn.setAttribute('aria-selected', isStart || isEnd ? 'true' : 'false');
     });
@@ -379,10 +378,16 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
     searchBtn.addEventListener('click', () => {
       if (checkIn && checkOut) {
         closePopover();
-        const scroll = userPicked && !scrolledOnce;
-        if (scroll) scrolledOnce = true;
         const p = computeAllocation();
-        if (scroll) void p.then(() => document.querySelector('[data-allocation-step]')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+        if (userPicked) {
+          // La magia: cada busqueda disparada por el usuario baja a las
+          // recomendaciones (scrollIntoView es no-op si ya estan visibles).
+          void p.then(() => {
+            if ((wizardStore.getState().options?.length ?? 0) > 0) {
+              document.querySelector('[data-allocation-step]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          });
+        }
       } else {
         openPopover();
       }
@@ -430,14 +435,17 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
           checkout.value = checkOut;
           isSelectingRange = false;
           refreshSelection(checkIn, checkOut);
-          // Magia: rango completo -> cierra el popover y busca automaticamente.
+          // Magia: rango completo -> cierra el popover, busca automaticamente
+          // y baja a las recomendaciones (cada vez que el usuario elige
+          // fechas; no-op si ya estan visibles). Si el rango quedo sin
+          // opciones (agotado), no scrollea a un panel vacio.
           closePopover();
-          const scroll = userPicked && !scrolledOnce;
-          if (scroll) scrolledOnce = true;
           const p = computeAllocation();
-          if (scroll) {
+          if (userPicked) {
             void p.then(() => {
-              document.querySelector('[data-allocation-step]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              if ((wizardStore.getState().options?.length ?? 0) > 0) {
+                document.querySelector('[data-allocation-step]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
             });
           }
         } else {

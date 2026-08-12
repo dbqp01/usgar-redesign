@@ -36,6 +36,9 @@ jobs:
           php-version: '8.3'
           coverage: none
 
+      - name: Instalar dependencias PHP (Composer)
+        run: composer install --no-interaction --prefer-dist --no-progress
+
       - name: Verificar disponibilidad de puerto 8089 para pruebas
         run: |
           if ss -ltn | grep -q ':8089 '; then
@@ -47,8 +50,14 @@ jobs:
       - name: Crear .env para pruebas (sin BD real)
         run: cp .env.example .env
 
-      - name: Ejecutar pruebas unitarias de backend
+      - name: Suite unitaria PHPUnit (160 tests, 578 aserciones)
+        run: composer test
+
+      - name: Ejecutar pruebas de integracion HTTP
         run: php scripts/run-exhaustive-tests.php
+
+      - name: PHPStan (nivel 6, baseline commiteado)
+        run: composer analyse
 
       - name: Verificación de tipos TypeScript y Astro
         run: npx astro check

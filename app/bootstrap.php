@@ -18,16 +18,15 @@ use App\Features\Shared\Adapters\QloAppAdapter;
 use App\Features\Shared\Ports\PaymentGatewayPortInterface;
 use App\Features\Shared\Ports\PmsPortInterface;
 
-if (!class_exists('App\Core\Autoloader')) {
-    require_once __DIR__ . '/Core/Autoloader.php';
-}
+// Autoloader de Composer (PSR-4: App\ => app/, + dependencias). Es el unico
+// autoloader del proyecto desde 2026-08-10: el Autoloader.php casero quedo
+// eliminado al declarar "autoload" psr-4 en composer.json.
 if (!class_exists(\Composer\Autoload\ClassLoader::class)) {
     $vendorAutoload = __DIR__ . '/../vendor/autoload.php';
     if (file_exists($vendorAutoload)) {
         require_once $vendorAutoload;
     }
 }
-\App\Core\Autoloader::register(__DIR__);
 
 // Inicializar configuracion centralizada (parsea .env)
 Config::boot();

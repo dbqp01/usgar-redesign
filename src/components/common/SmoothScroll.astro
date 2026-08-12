@@ -39,7 +39,8 @@
           lenisInstance!.raf(time * 1000);
         };
         gsap.ticker.add(rafCallback);
-        gsap.ticker.lagSmoothing(500, 33);
+        // Disable GSAP lag smoothing: prevents frame-skipping micro-stutters during Lenis scroll
+        gsap.ticker.lagSmoothing(0);
       });
     }
   }

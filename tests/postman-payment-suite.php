@@ -6,8 +6,7 @@ declare(strict_types=1);
  * USGAR Hotels - Monolito Modular PHP 8.x + Mercado Pago + QloApps
  */
 
-require_once __DIR__ . '/../app/Core/Autoloader.php';
-\App\Core\Autoloader::register(dirname(__DIR__) . '/app');
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Core\Config;
 

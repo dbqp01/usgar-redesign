@@ -8,6 +8,7 @@ namespace App\Core;
  * Soporta registacion mediante arrays [Clase, Metodo] o Nombres de Clase Invocable.
  */
 class Router {
+    /** @var array<string, array<string, array{0: class-string, 1: string}|string>> */
     private array $routes = [];
     private ?Middleware $middleware = null;
 
@@ -22,7 +23,7 @@ class Router {
      * Registra una ruta para el metodo GET.
      *
      * @param string $path Ruta HTTP
-     * @param array|string $handler Array [Clase, Metodo] o Nombre de Clase Invocable
+     * @param array{0: class-string, 1: string}|string $handler Array [Clase, Metodo] o Nombre de Clase Invocable
      */
     public function get(string $path, array|string $handler): void {
         $this->routes['GET'][$this->normalizePath($path)] = $handler;
@@ -32,7 +33,7 @@ class Router {
      * Registra una ruta para el metodo POST.
      *
      * @param string $path Ruta HTTP
-     * @param array|string $handler Array [Clase, Metodo] o Nombre de Clase Invocable
+     * @param array{0: class-string, 1: string}|string $handler Array [Clase, Metodo] o Nombre de Clase Invocable
      */
     public function post(string $path, array|string $handler): void {
         $this->routes['POST'][$this->normalizePath($path)] = $handler;
@@ -80,30 +81,29 @@ class Router {
                     return;
                 }
 
-                if (is_string($handler)) {
-                    if (!class_exists($handler)) {
-                        throw HttpException::internal("Action class {$handler} not found.");
-                    }
-
-                    $actionInstance = Container::getInstance()->get($handler);
-
-                    if (is_callable($actionInstance)) {
-                        $actionInstance($request);
-                        return;
-                    }
-
-                    if (method_exists($actionInstance, 'handle')) {
-                        $actionInstance->handle($request);
-                        return;
-                    }
-
-                    if (method_exists($actionInstance, 'execute')) {
-                        $actionInstance->execute($request);
-                        return;
-                    }
-
-                    throw HttpException::internal("Action class {$handler} is not invocable and has no handle/execute method.");
+                // $handler es string aquí: PHPStan lo prueba (no array y no null).
+                if (!class_exists($handler)) {
+                    throw HttpException::internal("Action class {$handler} not found.");
                 }
+
+                $actionInstance = Container::getInstance()->get($handler);
+
+                if (is_callable($actionInstance)) {
+                    $actionInstance($request);
+                    return;
+                }
+
+                if (method_exists($actionInstance, 'handle')) {
+                    $actionInstance->handle($request);
+                    return;
+                }
+
+                if (method_exists($actionInstance, 'execute')) {
+                    $actionInstance->execute($request);
+                    return;
+                }
+
+                throw HttpException::internal("Action class {$handler} is not invocable and has no handle/execute method.");
             }
 
             Response::notFound("Endpoint {$method} {$path} not found on this server.");
@@ -121,6 +121,8 @@ class Router {
 
     /**
      * Resuelve una ruta registrada. Retorna el handler o null.
+     *
+     * @return array{0: class-string, 1: string}|string|null
      */
     private function resolveRoute(string $method, string $path): array|string|null {
         return $this->routes[$method][$path] ?? null;

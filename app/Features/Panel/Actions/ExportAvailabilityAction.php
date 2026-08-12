@@ -49,24 +49,39 @@ class ExportAvailabilityAction {
     }
 
     /**
-     * @param list<array<string,mixed>> $data
+     * @param array{month: string, today: string, rooms: list<array<string,mixed>>, bookings: list<array<string,mixed>>} $data
      * @return list<list<string|int|float>>
      */
     private function buildRows(array $data): array {
         $roomInfo = []; // room_num => type
+        $roomById = []; // room_id => room (maint viene sin room_num)
         foreach ($data['rooms'] as $r) {
             $roomInfo[(string)$r['room_num']] = (string)$r['type'];
+            if (isset($r['room_id'])) {
+                $roomById[(int)$r['room_id']] = $r;
+            }
         }
 
         $rows = [];
         foreach ($data['bookings'] as $b) {
             $roomNum = (string)($b['room'] ?? '');
             $type = $roomNum !== '' && isset($roomInfo[$roomNum]) ? $roomInfo[$roomNum] : (string)($b['room'] ?? '');
+            // Fuera de servicio: el cuarto fisico llega solo por room_id.
+            if ($roomNum === '' && isset($b['room_id']) && isset($roomById[(int)$b['room_id']])) {
+                $room = $roomById[(int)$b['room_id']];
+                $roomNum = (string)$room['room_num'];
+                $type = (string)$room['type'];
+            } elseif ($roomNum !== '' && !isset($roomInfo[$roomNum])) {
+                // Hold / reserva a nivel de tipo (sin cuarto fisico): el nombre
+                // es el tipo, no una habitacion.
+                $type = $roomNum;
+                $roomNum = 'Sin asignar';
+            }
             $checkin = substr((string)$b['checkin'], 0, 10);
             $checkout = substr((string)$b['checkout'], 0, 10);
             $nights = max(0, (int)round((strtotime($checkout) - strtotime($checkin)) / 86400));
             $rows[] = [
-                $roomNum !== '' ? $roomNum : (string)($b['room'] ?? ''),
+                $roomNum !== '' ? $roomNum : 'Sin asignar',
                 $type,
                 $checkin,
                 $checkout,
@@ -114,7 +129,7 @@ class ExportAvailabilityAction {
 
     /**
      * @param list<list<string|int|float>> $rows
-     * @param list<array<string,mixed>> $data
+     * @param array{month: string, today: string, rooms: list<array<string,mixed>>, bookings: list<array<string,mixed>>} $data
      */
     private function sendXlsx(array $rows, array $data, string $month): void {
         if (ob_get_length()) {

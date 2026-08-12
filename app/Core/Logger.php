@@ -40,6 +40,8 @@ class Logger {
     /**
      * Escribe un mensaje en el archivo de log con rotacion automatica.
      * Si el directorio de logs no existe o no es escribible, usa error_log() como fallback.
+     *
+     * @param array<string, mixed> $context
      */
     public static function log(string $level, string $message, array $context = []): void {
         self::init();
@@ -59,20 +61,25 @@ class Logger {
         error_log("[USGAR-{$level}] {$message}" . (!empty($context) ? ' ' . json_encode($context, JSON_UNESCAPED_UNICODE) : ''));
     }
 
+    /** @param array<string, mixed> $context */
     public static function info(string $message, array $context = []): void {
         self::log('INFO', $message, $context);
     }
 
+    /** @param array<string, mixed> $context */
     public static function warning(string $message, array $context = []): void {
         self::log('WARNING', $message, $context);
     }
 
+    /** @param array<string, mixed> $context */
     public static function error(string $message, array $context = []): void {
         self::log('ERROR', $message, $context);
     }
 
     /**
      * Formatea la entrada de log como JSON estructurado.
+     *
+     * @param array<string, mixed> $context
      */
     private static function formatEntry(string $level, string $message, array $context): string {
         $entry = [

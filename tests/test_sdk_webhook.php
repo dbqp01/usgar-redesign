@@ -1,7 +1,5 @@
 <?php
 require dirname(__DIR__) . '/vendor/autoload.php';
-require dirname(__DIR__) . '/app/Core/Autoloader.php';
-App\Core\Autoloader::register(dirname(__DIR__) . '/app');
 
 // Test 1: Adapter instantiation
 try {

@@ -130,7 +130,9 @@
     "newsletterSuccess": "Listo! Bienvenido a la newsletter de USGAR.",
     "newsletterError": "Algo salio mal - intenta de nuevo.",
     "newsletterEmailInvalid": "Ingresa un correo valido.",
-    "asFeaturedIn": "Como Aparecemos En"
+    "asFeaturedIn": "Como Aparecemos En",
+    "privacy": "Política de Privacidad",
+    "terms": "Términos y Condiciones"
   },
   "whatsapp": {
     "ariaLabel": "Chatear por WhatsApp",
@@ -312,7 +314,7 @@
     "pluralGuest": "Huéspedes",
     "singleNight": "noche",
     "pluralNight": "noches",
-    "polling":  "Confirmando el pago con el banco, por favor espere...",
+    "polling": "Confirmando el pago con el banco, por favor espere...",
     "verifyAgain": "Verificar de nuevo",
     "inReview": "Tu pago está en revisión. Puede tardar unos minutos en confirmarse.",
     "paymentExpired": "Reserva Expirada",
@@ -482,7 +484,9 @@
       "insufficient_amount": "Pago rechazado por montos insuficientes. Revisa el importe.",
       "cc_rejected_card_type_not_allowed": "Tu tarjeta no tiene habilitada la función crédito. Usa otra tarjeta.",
       "bank_error": "El pago fue rechazado por un error con el banco. Intenta de nuevo."
-    }
+    },
+    "acceptTerms": "Al continuar aceptas nuestros",
+    "acceptAnd": "y"
   },
   "status": {
     "ready": "Sistema listo.",
@@ -494,5 +498,17 @@
     "accountProvider": "Proveedor de cuenta",
     "sanctuaryPerk": "Beneficio Sanctuary",
     "totalPaid": "Total pagado"
+  },
+  "legal": {
+    "eyebrow": "Legal",
+    "privacyTitle": "Política de Privacidad",
+    "termsTitle": "Términos y Condiciones",
+    "updatedLabel": "Última actualización"
+  },
+  "cookie": {
+    "title": "Cookies",
+    "text": "Solo usamos cookies esenciales para proteger tu reserva e inicio de sesion. No usamos cookies de marketing ni de analitica.",
+    "accept": "Aceptar",
+    "decline": "Rechazar"
   }
 }

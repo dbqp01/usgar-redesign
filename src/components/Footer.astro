@@ -185,6 +185,10 @@ const newsletterStatusLabels = {
         <p>
           &copy; {currentYear} USGAR Hotels. {t('footer.rights')}
         </p>
+        <nav class="flex items-center gap-6" aria-label="Legal">
+          <a href={getRelativeLocaleUrl(lang, 'privacy')} class="hover:text-secondary transition-colors">{t('footer.privacy')}</a>
+          <a href={getRelativeLocaleUrl(lang, 'terms')} class="hover:text-secondary transition-colors">{t('footer.terms')}</a>
+        </nav>
         <p>
           {t('footer.madeWith')}
         </p>

@@ -52,6 +52,8 @@ class User {
 
     /**
      * Busca un usuario por email.
+     *
+     * @return array<string, mixed>|null
      */
     public function findByEmail(string $email): ?array {
         try {
@@ -67,6 +69,8 @@ class User {
 
     /**
      * Busca un usuario por su ID.
+     *
+     * @return array<string, mixed>|null
      */
     public function findById(int $id): ?array {
         try {
@@ -195,6 +199,8 @@ class User {
     /**
      * Verifica email + contrasena y retorna el usuario.
      * Retorna un arreglo especial ['error' => 'oauth_only', 'provider' => ...] si la cuenta fue creada via OAuth.
+     *
+     * @return array<string, mixed>|null
      */
     public function verifyPassword(string $email, string $password): ?array {
         $user = $this->findByEmail($email);
@@ -219,6 +225,8 @@ class User {
 
     /**
      * Obtiene las reservas de un usuario.
+     *
+     * @return array<int, array<string, mixed>>
      */
     public function getBookings(int $userId): array {
         try {

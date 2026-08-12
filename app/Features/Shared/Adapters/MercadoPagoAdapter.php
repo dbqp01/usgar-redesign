@@ -61,6 +61,10 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         $this->refundClient = $refundClient ?? new PaymentRefundClient();
     }
 
+    /**
+     * @param array<string, mixed> $paymentData
+     * @return array<string, mixed>|null
+     */
     public function processPayment(array $paymentData): ?array {
         $cartId = $paymentData['external_reference'] ?? '';
         
@@ -132,10 +136,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
 
             $payment = $client->create($payload, $requestOptions);
 
-            if (!$payment) {
-                return null;
-            }
-
+            // $payment nunca es null: el SDK lanza MPApiException en errores (create(): Payment).
             return [
                 'id'                 => $payment->id,
                 'status'             => $payment->status,
@@ -152,6 +153,11 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         }
     }
 
+    /**
+     * @param array<string, mixed> $payload
+     * @param array<string, mixed> $headers
+     * @return array<string, mixed>|null
+     */
     public function verifyNotification(array $payload, array $headers = []): ?array {
         $signatureHeader = $headers['x-signature'] ?? $headers['X-Signature'] ?? null;
         $requestId = $headers['x-request-id'] ?? $headers['X-Request-Id'] ?? null;
@@ -211,6 +217,9 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         }
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getPaymentDetails(string $paymentId): ?array {
         // Todo 7 (QA-): guard ctype_digit antes del cast — un id alfanumerico
         // no debe llegar a la API como (int)0 ni lanzar TypeError.
@@ -235,11 +244,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
 
             $payment = $client->get((int)$paymentId, $requestOptions);
 
-            if (!$payment) {
-                Logger::error("MercadoPagoAdapter: Error al obtener pago.");
-                return null;
-            }
-
+            // $payment nunca es null: el SDK lanza MPApiException en errores (get(): Payment).
             return [
                 'id' => $payment->id,
                 'status' => $payment->status,
@@ -349,9 +354,11 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
      */
     private function logApiError(MPApiException $e, string $message, array $context): void {
         $statusCode = $e->getStatusCode();
-        $apiBody = $e->getApiResponse() ? $e->getApiResponse()->getContent() : 'N/A';
+        // getApiResponse() no es nullable (SDK dx-php 3.12) y getContent() devuelve
+        // array: el ternario/is_array previo era codigo muerto (paridad con ProcessPaymentAction).
+        $apiBody = $e->getApiResponse()->getContent();
         $context['status_code'] = $statusCode;
-        $context['api_response'] = is_array($apiBody) ? json_encode($apiBody) : $apiBody;
+        $context['api_response'] = json_encode($apiBody);
         Logger::error($message, $context);
     }
 }

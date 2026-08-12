@@ -11,6 +11,9 @@ use Exception;
  * facilitando testing y manejo uniforme de errores en el Router/Middleware.
  */
 class HttpException extends Exception {
+    /**
+     * @param array<string, mixed> $details
+     */
     public function __construct(
         string $message,
         private readonly int $statusCode = 500,
@@ -28,12 +31,14 @@ class HttpException extends Exception {
         return $this->errorCode;
     }
 
+    /** @return array<string, mixed> */
     public function getDetails(): array {
         return $this->details;
     }
 
     // --- Factory methods para errores comunes ---
 
+    /** @param array<string, mixed> $details */
     public static function badRequest(string $message = 'Bad Request', array $details = []): self {
         return new self($message, 400, 'BAD_REQUEST', $details);
     }

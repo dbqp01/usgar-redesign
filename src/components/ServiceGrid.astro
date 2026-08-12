@@ -2,6 +2,7 @@
 import { Picture } from 'astro:assets';
 import SectionHeader from './ui/SectionHeader.astro';
 import { services } from '../data/services';
+import { hotelServices, roomServices } from '../data/hotelServices';
 import { useTranslations, type Locale } from '../i18n/utils';
 import breakfastImage from '../assets/hotel/fallback-room-desayuno.jpg';
 import oxygenImage from '../assets/hotel/fallback-room-oxigeno.jpg';
@@ -26,9 +27,9 @@ const featureServices = featureIds
   })
   .filter((service): service is NonNullable<typeof service> => Boolean(service));
 
-const includedServices = services
-  .filter((service) => !featureIds.includes(service.id))
-  .slice(0, 6);
+function label(item: { label: Record<string, string> }, locale: Locale): string {
+  return item.label[locale] || item.label.en || item.label.es;
+}
 ---
 
 <section id="services" class="scroll-mt-28 sm:scroll-mt-32 overflow-hidden bg-surface-light px-4 py-16 transition-colors duration-500 dark:bg-surface-dark sm:py-24">
@@ -72,20 +73,39 @@ const includedServices = services
       ))}
     </div>
 
-    <div class="mt-8 rounded-[1.5rem] border border-black/10 bg-white p-6 dark:border-white/10 dark:bg-surface-card-dark sm:mt-10 sm:p-8">
-      <div class="mb-6 flex items-center gap-4">
-        <h3 class="font-display text-2xl font-bold text-text-primary-light dark:text-white">{t('global.alsoIncluded')}</h3>
-        <span class="h-px flex-1 bg-black/10 dark:bg-white/10"></span>
-        <span class="font-mono text-[10px] uppercase tracking-[0.3em] text-text-secondary-light dark:text-text-secondary-dark">06</span>
+    <div class="mt-8 grid gap-8 rounded-[1.5rem] border border-black/10 bg-white p-6 dark:border-white/10 dark:bg-surface-card-dark sm:mt-10 sm:p-8 lg:grid-cols-2 lg:gap-10">
+      <div>
+        <div class="mb-6 flex items-center gap-4">
+          <h3 class="font-display text-2xl font-bold text-text-primary-light dark:text-white">{t('room.hotelServices')}</h3>
+          <span class="h-px flex-1 bg-black/10 dark:bg-white/10"></span>
+          <span class="font-mono text-[10px] uppercase tracking-[0.3em] text-text-secondary-light dark:text-text-secondary-dark">{String(hotelServices.length).padStart(2, '0')}</span>
+        </div>
+        <ul class="grid grid-cols-1 gap-x-10 gap-y-4 sm:grid-cols-2">
+          {hotelServices.map((service, index) => (
+            <li class="flex items-center gap-3 text-text-primary-light dark:text-white">
+              <span class="w-5 flex-shrink-0 font-mono text-[10px] text-secondary">{String(index + 1).padStart(2, '0')}</span>
+              <span class="h-px w-4 flex-shrink-0 bg-secondary"></span>
+              <span class="font-body text-sm font-medium">{label(service, lang)}</span>
+            </li>
+          ))}
+        </ul>
       </div>
-      <div class="grid grid-cols-1 gap-x-10 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
-        {includedServices.map((service, index) => (
-          <div class="flex items-center gap-3 text-text-primary-light dark:text-white">
-            <span class="w-5 flex-shrink-0 font-mono text-[10px] text-secondary">{String(index + 1).padStart(2, '0')}</span>
-            <span class="h-px w-4 flex-shrink-0 bg-secondary"></span>
-            <span class="truncate font-body text-sm font-medium">{service.name[lang]}</span>
-          </div>
-        ))}
+
+      <div class="border-t border-black/10 pt-8 dark:border-white/10 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+        <div class="mb-6 flex items-center gap-4">
+          <h3 class="font-display text-2xl font-bold text-text-primary-light dark:text-white">{t('room.inRoomServices')}</h3>
+          <span class="h-px flex-1 bg-black/10 dark:bg-white/10"></span>
+          <span class="font-mono text-[10px] uppercase tracking-[0.3em] text-text-secondary-light dark:text-text-secondary-dark">{String(roomServices.length).padStart(2, '0')}</span>
+        </div>
+        <ul class="grid grid-cols-1 gap-x-10 gap-y-4 sm:grid-cols-2">
+          {roomServices.map((service, index) => (
+            <li class="flex items-center gap-3 text-text-primary-light dark:text-white">
+              <span class="w-5 flex-shrink-0 font-mono text-[10px] text-secondary">{String(index + 1).padStart(2, '0')}</span>
+              <span class="h-px w-4 flex-shrink-0 bg-secondary"></span>
+              <span class="font-body text-sm font-medium">{label(service, lang)}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   </div>

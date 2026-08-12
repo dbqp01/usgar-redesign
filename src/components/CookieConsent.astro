@@ -1,0 +1,121 @@
+---
+// src/components/CookieConsent.astro
+// Banner informativo de cookies (Ley 29733 / GDPR ePrivacy): el sitio solo usa
+// cookies estrictamente necesarias, asi que no hay cookies que bloquear — solo
+// se informa y se guarda la eleccion en localStorage.
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { useTranslations, type Locale } from "../i18n/utils";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const privacyUrl = getRelativeLocaleUrl(lang, "privacy");
+const termsUrl = getRelativeLocaleUrl(lang, "terms");
+---
+
+<div
+  id="cookie-consent"
+  class="fixed inset-x-0 bottom-0 z-[1200] hidden px-4 pb-4"
+  role="region"
+  aria-label={t("cookie.title")}
+>
+  <div class="mx-auto flex max-w-3xl flex-col gap-4 rounded-2xl border border-black/10 bg-white/95 p-5 shadow-2xl backdrop-blur-md dark:border-white/10 dark:bg-surface-card-dark/95 sm:flex-row sm:items-center">
+    <div class="flex-1">
+      <p class="font-display text-sm font-bold uppercase tracking-wider text-text-primary-light dark:text-white">
+        {t("cookie.title")}
+      </p>
+      <p class="mt-1 text-xs leading-relaxed text-text-secondary-light dark:text-text-secondary-dark">
+        {t("cookie.text")}{" "}
+        <a href={privacyUrl} class="underline decoration-secondary underline-offset-2 hover:text-secondary transition-colors">
+          {t("footer.privacy")}
+        </a>
+        {" · "}
+        <a href={termsUrl} class="underline decoration-secondary underline-offset-2 hover:text-secondary transition-colors">
+          {t("footer.terms")}
+        </a>
+      </p>
+    </div>
+    <div class="flex flex-shrink-0 gap-2">
+      <button
+        type="button"
+        data-cookie-choice="declined"
+        class="rounded-full border border-black/10 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-text-secondary-light transition-colors hover:border-secondary hover:text-secondary dark:border-white/15 dark:text-text-secondary-dark"
+      >
+        {t("cookie.decline")}
+      </button>
+      <button
+        type="button"
+        data-cookie-choice="accepted"
+        class="btn-primary rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-wider"
+      >
+        {t("cookie.accept")}
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Persistente entre páginas: el módulo se ejecuta UNA vez (cache del bundler),
+  // así que la lógica debe re-correr en cada navegación (astro:page-load) y
+  // limpiarse antes de preparar la transición (astro:before-preparation).
+  const STORAGE_KEY = "usgar-cookie-consent";
+  let timer: number | null = null;
+
+  function hasStoredChoice(): boolean {
+    try {
+      return localStorage.getItem(STORAGE_KEY) !== null;
+    } catch {
+      return true; // localStorage bloqueado (Safari privado): no molestar
+    }
+  }
+
+  function save(choice: string) {
+    try {
+      localStorage.setItem(STORAGE_KEY, choice);
+    } catch {
+      /* no-op */
+    }
+    hideBanner();
+  }
+
+  function showBanner(el: HTMLElement) {
+    el.classList.remove("hidden");
+  }
+
+  function hideBanner() {
+    const el = document.getElementById("cookie-consent");
+    el?.classList.add("hidden");
+    if (timer !== null) window.clearTimeout(timer);
+    timer = null;
+  }
+
+  function initCookieConsent() {
+    const banner = document.getElementById("cookie-consent") as HTMLElement | null;
+    if (!banner) return;
+
+    // Estado ya decidido (esta página o una anterior): oculto, sin eventos.
+    if (hasStoredChoice()) {
+      banner.classList.add("hidden");
+      return;
+    }
+
+    // Primera visita: mostrar tras un respiro; aceptar/rechazar guarda la elección.
+    if (timer === null) {
+      timer = window.setTimeout(() => showBanner(banner), 1500);
+    }
+    banner.querySelectorAll<HTMLButtonElement>("[data-cookie-choice]").forEach((btn) => {
+      if (btn.dataset.hooked) return;
+      btn.dataset.hooked = "1";
+      btn.addEventListener("click", () => save(btn.dataset.cookieChoice || "accepted"));
+    });
+  }
+
+  document.addEventListener("astro:page-load", initCookieConsent);
+  document.addEventListener("astro:before-preparation", () => {
+    if (timer !== null) window.clearTimeout(timer);
+    timer = null;
+  });
+</script>

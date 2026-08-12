@@ -3,6 +3,7 @@ import { ClientRouter, fade } from 'astro:transitions';
 import { Font } from 'astro:assets';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
+import CookieConsent from '../components/CookieConsent.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import MobileBookingBar from '../components/MobileBookingBar.astro';
 import { siteSettings } from '../data/settings';
@@ -20,7 +21,7 @@ import { getRelativeLocaleUrl } from 'astro:i18n';
 interface Props {
   title: string;
   description?: string;
-  lang?: string;
+  lang?: Locale;
   ogImage?: string;
   schema?: Record<string, any> | Record<string, any>[];
   preloadImage?: string;
@@ -260,6 +261,7 @@ const localeMap: Record<Locale, string> = {
     </main>
 
     <Footer />
+    <CookieConsent lang={lang} />
     <WhatsAppButton />
     <MobileBookingBar />
     <StatusBanner />

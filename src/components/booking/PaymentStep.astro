@@ -7,9 +7,12 @@
 // + payment-check, countdown del hold + extend, cooldown deterministico,
 // beforeunload guard. Todo texto sale del i18n (todo 30).
 import { useTranslations, type Locale } from '../../i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
 
 const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
+const termsUrl = getRelativeLocaleUrl(lang, 'terms');
+const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
 ---
 
 <div data-payment-step class="space-y-5">
@@ -45,6 +48,13 @@ const t = useTranslations(lang);
         {t('payment.securePayment')}
       </span>
     </div>
+
+    <p class="pt-1 text-[10px] text-text-secondary-light dark:text-text-secondary-dark font-body">
+      {t('payment.acceptTerms')}{' '}
+      <a href={termsUrl} class="underline decoration-secondary underline-offset-2 hover:text-secondary transition-colors">{t('footer.terms')}</a>
+      {' '}{t('payment.acceptAnd')}{' '}
+      <a href={privacyUrl} class="underline decoration-secondary underline-offset-2 hover:text-secondary transition-colors">{t('footer.privacy')}</a>
+    </p>
 
     <div class="flex items-center justify-between pt-2">
       <button

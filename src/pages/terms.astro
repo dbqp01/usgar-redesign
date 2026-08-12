@@ -1,0 +1,32 @@
+---
+// src/pages/terms.astro — Terms of Service (Ley 29571 / INDECOPI)
+import Layout from "../layouts/Layout.astro";
+import LegalDoc from "../components/LegalDoc.astro";
+import { termsSections, type LegalSection } from "../data/legal";
+import type { Locale } from "../i18n/utils";
+import { siteSettings } from "../data/settings";
+
+const lang = (Astro.currentLocale || "en") as Locale;
+const sections = (termsSections as Record<string, LegalSection[] | undefined>)[lang] ?? termsSections.en;
+// Títulos con tilde en ES (documento legal); el i18n JSON del sitio es ASCII.
+const title = lang === "es" ? "Términos y Condiciones" : "Terms of Service";
+const updatedLabel = lang === "es" ? "Última actualización" : "Last updated";
+const updatedDate = lang === "es" ? "12 de agosto de 2026" : "August 12, 2026";
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: title,
+  isPartOf: { "@type": "WebSite", name: siteSettings.hotelName, url: "https://usgarhoteles.com" },
+};
+---
+
+<Layout title={`${title} | ${siteSettings.hotelName}`} lang={lang} schema={schema}>
+  <LegalDoc
+    lang={lang}
+    title={title}
+    updatedLabel={updatedLabel}
+    updatedDate={updatedDate}
+    sections={sections}
+  />
+</Layout>

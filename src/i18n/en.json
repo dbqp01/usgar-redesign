@@ -130,6 +130,8 @@
     "newsletterSuccess": "You're in! Welcome to the USGAR newsletter.",
     "newsletterError": "Something went wrong - please try again.",
     "newsletterEmailInvalid": "Please enter a valid email address.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
     "asFeaturedIn": "As Featured In"
   },
   "whatsapp": {
@@ -312,7 +314,7 @@
     "pluralGuest": "Guests",
     "singleNight": "night",
     "pluralNight": "nights",
-    "polling":  "Confirming payment with the bank, please wait...",
+    "polling": "Confirming payment with the bank, please wait...",
     "verifyAgain": "Check again",
     "inReview": "Your payment is under review. It may take a few minutes to confirm.",
     "paymentExpired": "Booking Expired",
@@ -482,7 +484,9 @@
       "insufficient_amount": "The payment was rejected due to insufficient amount. Check the total.",
       "cc_rejected_card_type_not_allowed": "Your card does not have the credit feature enabled. Use another card.",
       "bank_error": "The payment was rejected due to a bank error. Try again."
-    }
+    },
+    "acceptTerms": "By continuing you accept our",
+    "acceptAnd": "&"
   },
   "status": {
     "ready": "System ready",
@@ -494,5 +498,17 @@
     "accountProvider": "Account Provider",
     "sanctuaryPerk": "Sanctuary Perk",
     "totalPaid": "Total Paid"
+  },
+  "legal": {
+    "eyebrow": "Legal",
+    "privacyTitle": "Privacy Policy",
+    "termsTitle": "Terms of Service",
+    "updatedLabel": "Last updated"
+  },
+  "cookie": {
+    "title": "Cookies",
+    "text": "We use only essential cookies to keep your booking and login secure. We do not use marketing or analytics cookies.",
+    "accept": "Accept",
+    "decline": "Decline"
   }
 }

@@ -12,7 +12,7 @@ class Validator {
     /**
      * Valida que todos los campos requeridos esten presentes y no vacios.
      *
-     * @param array       $data   Datos de entrada (body o query)
+     * @param array<string, mixed> $data   Datos de entrada (body o query)
      * @param list<string> $fields Lista de campos requeridos
      * @throws HttpException Si falta algun campo
      */

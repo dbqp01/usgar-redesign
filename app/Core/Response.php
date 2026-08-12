@@ -12,6 +12,8 @@ class Response {
      * Envia una respuesta JSON formateada y finaliza la ejecucion.
      * Usa JSON_THROW_ON_ERROR para deteccion temprana de errores de serializacion
      * (per json-standards skill).
+     *
+     * @param array<string, mixed> $data
      */
     public static function json(array $data, int $statusCode = 200): void {
         // Limpiar cualquier bufer de salida previo para evitar JSON corrompido
@@ -42,6 +44,8 @@ class Response {
     /**
      * Envia una respuesta JSON y cierra la conexión HTTP con el cliente sin detener el script PHP.
      * Ideal para webhooks en entornos FastCGI, permitiendo tareas pesadas en background.
+     *
+     * @param array<string, mixed> $data
      */
     public static function jsonAsync(array $data, int $statusCode = 200): void {
         if (ob_get_length()) {
@@ -82,6 +86,8 @@ class Response {
 
     /**
      * Envia una respuesta de error uniforme.
+     *
+     * @param array<string, mixed> $details
      */
     public static function error(string $message, int $statusCode = 500, string $code = 'ERROR', array $details = []): void {
         $payload = [

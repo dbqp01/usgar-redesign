@@ -1,6 +1,4 @@
 <?php
-require __DIR__ . '/../app/Core/Autoloader.php';
-\App\Core\Autoloader::register(__DIR__ . '/../app');
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Core\Config;

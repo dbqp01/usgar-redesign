@@ -74,6 +74,8 @@ class Config {
     /**
      * Retorna los origenes CORS permitidos como array.
      * En desarrollo retorna ['*']. En produccion solo dominios configurados.
+     *
+     * @return list<string>
      */
     public static function getAllowedOrigins(): array {
         $origins = self::get('ALLOWED_ORIGINS', '*');
@@ -85,6 +87,8 @@ class Config {
 
     /**
      * Retorna las IPs de proxies confiables para X-Forwarded-For.
+     *
+     * @return list<string>
      */
     public static function getTrustedProxies(): array {
         $proxies = self::get('TRUSTED_PROXIES', '');

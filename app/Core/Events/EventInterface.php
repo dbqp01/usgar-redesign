@@ -8,6 +8,8 @@ namespace App\Core\Events;
  */
 interface EventInterface {
     public function getName(): string;
+
+    /** @return array<string, mixed> */
     public function getPayload(): array;
     public function getOccurredAt(): \DateTimeImmutable;
 }

@@ -202,3 +202,14 @@ Verificación end-to-end del flujo de webhooks de MercadoPago ejecutada el 2026-
 - F4 frontend (fases 3-4 redesign: internas + wizard reserva).
 - F3 CMS (mini-contrato de alcance al empezar).
 - F1 Nobeds (requiere sub pagada; instrucciones de cuenta/API key al llegar).
+
+## Verificación 2026-08-12 (eliminación del baseline de PHPStan)
+- **`phpstan-baseline.neon` ELIMINADO (67 entradas / 17 archivos → 0)**. `composer analyse` → `[OK] No errors` sin baseline.
+- Fixes aplicados (cero impacto runtime, salvo código probadamente muerto):
+  - 60× `missingType.iterableValue` → PHPDoc `array<string, mixed>` / shapes (`array{...}`) en Core (Config, Request, Response, Router, Validator, Logger, HttpException, EventInterface) y Features (Auth, Booking, Shared).
+  - 3× `function.alreadyNarrowedType` → guard redundante de `getallheaders()` (Request: `?: []`), wrapper `is_string` del dispatch (Router: PHPStan prueba string), `is_array` en `logApiError` (simplificado).
+  - 1× `nullCoalesce.offset` → `$user['provider']` (columna `NOT NULL DEFAULT 'email'`).
+  - 2× `booleanNot.alwaysFalse` (MercadoPagoAdapter) → guards eliminados; SDK `create()/get(): Payment` no-nullable, lanza MPApiException (verificado en vendor dx-php 3.12).
+  - 1× `ternary.alwaysTrue` (logApiError) → simplificado, paridad con ProcessPaymentAction.
+  - 1× `if.alwaysFalse` (AuthService) → resuelto por refactor de autoload (2026-08-12, bootstrap.php).
+- Verificación: suite exhaustiva 21/21 PASS; api-harness 6/6 (400×5 + 200 happy path); phpunit 161 tests / 573 assertions, 12 skipped, **2 fallos flaky documentados (P3-7)**: `ProcessOutboxActionTest::testRunWithSlowListenersCompletesAllEvents` y `testConcurrentRunsProcessEachEventExactlyOnce` (workers + timing Windows + cuota MySQL Hostinger 500 conn/h — el run aislado siguiente saltó por BD no disponible).

@@ -32,6 +32,9 @@ class QloAppAdapter implements PmsPortInterface {
         $this->apiKey = Config::get('QLOAPP_API_KEY');
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getAvailableRooms(string $checkIn, string $checkOut, int $idHotel = 1, ?int $idLang = null): array {
         if (!$this->pdo) {
             Logger::error('QloAppAdapter: DB Connection is offline. Cannot get availability.');
@@ -130,6 +133,8 @@ class QloAppAdapter implements PmsPortInterface {
      * Carga los planes maestros de Feature Price (id_cart=0) y sus restricciones
      * de fechas. Devuelve [planesPorProducto, restriccionesPorPlan].
      * Schema verificado contra la BD real y el modulo hotelreservationsystem.
+     *
+     * @return array{0: array<int, list<array<string,mixed>>>, 1: array<int, list<array<string,mixed>>>}
      */
     private function loadFeaturePricePlans(): array {
         try {
@@ -140,7 +145,7 @@ class QloAppAdapter implements PmsPortInterface {
             ");
             $stmt->execute();
             $plans = [];
-            foreach ($stmt->fetchAll() as $r) {
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $r) {
                 $plans[(int)$r['id_product']][] = $r;
             }
 
@@ -150,7 +155,7 @@ class QloAppAdapter implements PmsPortInterface {
                 FROM qlo_htl_room_type_feature_pricing_restriction
             ");
             $stmt2->execute();
-            foreach ($stmt2->fetchAll() as $r) {
+            foreach ($stmt2->fetchAll(PDO::FETCH_ASSOC) as $r) {
                 $restrictions[(int)$r['id_feature_price']][] = $r;
             }
 
@@ -168,6 +173,8 @@ class QloAppAdapter implements PmsPortInterface {
      * El cálculo replica la semántica de getAvailableRooms() (solapamiento
      * date_from < checkout AND date_to > checkin, excluyendo canceladas/
      * reembolsadas y descontando holds activos en provisional_bookings) evaluado día a día.
+     *
+     * @return array<string, array<int, int>>
      */
     public function getAvailabilityCalendar(string $from, string $to, int $idHotel = 1): array {
         if (!$this->pdo) {
@@ -437,9 +444,15 @@ XML;
             if ($idCustomer === 0) {
                 $stmtInsCust = $this->pdo->prepare("
                     INSERT INTO qlo_customer (id_shop_group, id_shop, firstname, lastname, email, passwd, secure_key, active, is_guest, date_add, date_upd)
-                    VALUES (1, 1, ?, ?, ?, md5(rand()), md5(rand()), 1, 1, NOW(), NOW())
+                    VALUES (1, 1, ?, ?, ?, ?, ?, 1, 1, NOW(), NOW())
                 ");
-                $stmtInsCust->execute([$firstName, $lastName, $guestEmail]);
+                // passwd/secure_key de clientes guest: valores criptograficamente
+                // aleatorios (fix 2026-08-10 — antes md5(rand()), CWE-338: PRNG
+                // predecible para secretos de acceso a ordenes de PrestaShop).
+                // Formato 32-hex compatible con el schema de PrestaShop/QloApps.
+                $guestPasswd = bin2hex(random_bytes(16));
+                $guestSecureKey = bin2hex(random_bytes(16));
+                $stmtInsCust->execute([$firstName, $lastName, $guestEmail, $guestPasswd, $guestSecureKey]);
                 $idCustomer = (int)$this->pdo->lastInsertId();
             }
 

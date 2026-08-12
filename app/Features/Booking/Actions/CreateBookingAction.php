@@ -44,7 +44,13 @@ class CreateBookingAction {
 
         // --- Normalizacion Adaptativa de Payload (Zero-Breakage) ---
         if (isset($body['roomSlug']) && empty($body['id_room_type'])) {
-            $body['id_room_type'] = RoomTypeRegistry::getIdBySlug($body['roomSlug']) ?? 1;
+            // Slug desconocido -> 400, jamas mapear silenciosamente a otro tipo
+            // (antes: ?? 1 reservaba matrimonial con un slug inexistente).
+            $idFromSlug = RoomTypeRegistry::getIdBySlug($body['roomSlug']);
+            if ($idFromSlug === null) {
+                throw HttpException::badRequest("Tipo de habitación desconocido: {$body['roomSlug']}.");
+            }
+            $body['id_room_type'] = $idFromSlug;
         }
 
         if (isset($body['guestDetails']) && is_array($body['guestDetails'])) {
@@ -64,7 +70,9 @@ class CreateBookingAction {
 
         $hotelId    = (int)($body['id_hotel'] ?? Config::get('DEFAULT_HOTEL_ID', '1'));
         $idRoomType = Validator::positiveInt($body['id_room_type'], 'id_room_type');
-        $guests     = max(1, (int)($body['guests'] ?? 2));
+        // guests: entero positivo estricto. Antes: max(1, (int)$guests) aceptaba
+        // -5/0 silenciosamente y creaba holds con 1 huesped (validacion laxa).
+        $guests     = Validator::positiveInt($body['guests'] ?? 2, 'guests');
         $checkIn    = $body['checkIn'];
         $checkOut   = $body['checkOut'];
         $guestName  = trim($body['guestName']);
@@ -72,8 +80,9 @@ class CreateBookingAction {
         $guestPhone = trim($body['guestPhone'] ?? '');
         // Tarifa elegida por el cliente. Whitelist cerrada; valor desconocido
         // cae a 'standard' (precio completo) — fail-safe: nunca regalar descuento.
-        $rateType   = in_array($body['rateType'] ?? 'standard', ['standard', 'non_refundable'], true)
-            ? $body['rateType']
+        $requestedRate = $body['rateType'] ?? 'standard';
+        $rateType   = in_array($requestedRate, ['standard', 'non_refundable'], true)
+            ? $requestedRate
             : 'standard';
 
         Validator::dateRange($checkIn, $checkOut);

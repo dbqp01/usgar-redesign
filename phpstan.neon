@@ -1,11 +1,8 @@
-includes:
-    - phpstan-baseline.neon
-
 parameters:
     level: 6
     paths:
         - app/Core
         - app/Features
     bootstrapFiles:
-        - app/Core/Autoloader.php
+        - vendor/autoload.php
     tmpDir: .phpstan-cache

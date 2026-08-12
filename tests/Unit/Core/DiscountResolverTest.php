@@ -57,6 +57,18 @@ final class DiscountResolverTest extends TestCase {
         $this->assertNull(DiscountResolver::pickPlan($plans, $restrictions, '2026-08-10', '2026-08-12'));
     }
 
+    public function testEmptyJsonSpecialDaysCountsAsNoRestriction(): void {
+        // QloApps guarda "sin dias especiales" como '[]' (JSON vacio) en
+        // qlo_htl_room_type_feature_pricing_restriction — debe tratarse como
+        // plan sin restriccion de dias (bug real 2026-08-12: se rechazaba).
+        $plans = [$this->plan()];
+        $restrictions = [1 => [$this->restriction(['special_days' => '[]'])]];
+
+        $picked = DiscountResolver::pickPlan($plans, $restrictions, '2026-08-10', '2026-08-12');
+        $this->assertNotNull($picked);
+        $this->assertSame(1, $picked['id_feature_price']);
+    }
+
     public function testMultiplePlansPickLowestId(): void {
         $plans = [
             $this->plan(['id_feature_price' => 7, 'impact_value' => 5]),

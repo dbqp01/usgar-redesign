@@ -45,8 +45,9 @@ final class DiscountResolver {
      * producto/activa). Un plan aplica si NO tiene restricciones o si su
      * restriccion de rango intersecta la estadia. Varios aplicables => menor id.
      *
-     * @param array<int, array<string, mixed>> $plans
-     * @param array<int, array<string, mixed>> $restrictionsByPlan id_feature_price => restricciones
+     * @param list<array<string, mixed>> $plans planes maestros del producto (id_feature_price => fila)
+     * @param array<int, list<array<string, mixed>>> $restrictionsByPlan id_feature_price => restricciones
+     * @return array<string, mixed>|null
      */
     public static function pickPlan(array $plans, array $restrictionsByPlan, string $checkIn, string $checkOut): ?array {
         $applicable = array_values(array_filter($plans, static function (array $p) use ($restrictionsByPlan, $checkIn, $checkOut): bool {
@@ -54,7 +55,10 @@ final class DiscountResolver {
             foreach ($restrictions as $r) {
                 $type = (int)($r['date_selection_type'] ?? self::DATE_SELECTION_TYPE_RANGE);
                 $specialDays = trim((string)($r['special_days'] ?? ''));
-                if ($type !== self::DATE_SELECTION_TYPE_RANGE || $specialDays !== '') {
+                // QloApps guarda "sin días especiales" como JSON vacio "[]",
+                // no como string vacio — ambos significan "sin restriccion de dias".
+                $hasSpecialDays = $specialDays !== '' && $specialDays !== '[]';
+                if ($type !== self::DATE_SELECTION_TYPE_RANGE || $hasSpecialDays) {
                     return false; // Rango con dias especiales o seleccion por dias: no resoluble aqui.
                 }
                 $from = (string)($r['date_from'] ?? '');
@@ -77,6 +81,8 @@ final class DiscountResolver {
     /**
      * Aplica el plan al precio base (misma formula que QloApps, verificada en
      * el codigo del modulo hotelreservationsystem).
+     *
+     * @param array<string, mixed> $plan
      */
     public static function applyPlan(float $basePrice, array $plan): float {
         $way = (int)($plan['impact_way'] ?? self::IMPACT_WAY_DECREASE);
@@ -100,6 +106,8 @@ final class DiscountResolver {
      * Precio no reembolsable por noche: precio base tras aplicar el plan.
      * Sin plan aplicable => mismo precio (honesto; el descuento se activa
      * cuando el admin configure el Feature Price en QloApps).
+     *
+     * @param array<string, mixed>|null $plan
      */
     public static function nonRefundablePrice(float $basePrice, ?array $plan): float {
         if ($plan === null) return round($basePrice, 2);

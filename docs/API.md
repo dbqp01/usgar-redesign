@@ -188,7 +188,7 @@ Fuente completa: `.env.example` (canónico). Lectura: `App\Core\Config::get()` c
 
 ## Pruebas del contrato
 
-- `php tests/api-harness.php` — contrato del flujo de reserva vía curl (requiere dev server en :8000).
+- `php tests/user-flow.php` — **flujo completo del usuario** (buen + mal usuario): health → rooms → booking → extend-hold → booking-status → payment-check → process-payment, + 20 casos adversariales (fechas pasadas/invertidas/0 noches, guests negativos/cero/overcapacity, slug inexistente, XSS, SQLi, webhook sin firma/firma falsa, sin auth, email inválido, rateType inventado, cart inexistente). Fechas dinámicas (nunca hardcodeadas). Arranca server propio en puerto libre o acepta `php tests/user-flow.php 8000` contra uno existente. Reemplaza funcionalmente a `pentest.php` y `api-harness.php` (ambos con fechas stale).
 - `php scripts/run-exhaustive-tests.php` — suite exhaustiva (unit + integración + asserts del port del channel manager).
 - `npm run audit:security` / `npm run audit:seo` — auditorías.
 - `npx playwright test` — E2E de flujos de usuario.

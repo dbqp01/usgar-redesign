@@ -48,25 +48,21 @@ export async function initLocationMap(
     className: 'usgar-hotel-marker',
     html: `
       <div class="relative flex items-center justify-center cursor-pointer group">
-        <span class="absolute inline-flex h-12 w-12 animate-ping rounded-full bg-amber-400/35 opacity-75"></span>
-        <span class="absolute inline-flex h-16 w-16 rounded-full bg-amber-500/10 blur-sm"></span>
-        <div class="relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 p-[2px] shadow-[0_0_25px_rgba(245,158,11,0.7)] transition-transform duration-300 group-hover:scale-110">
-          <div class="flex h-full w-full items-center justify-center rounded-full bg-stone-950 font-serif font-bold text-amber-300 text-sm shadow-inner">
-            U
-          </div>
-        </div>
+        <span class="absolute h-7 w-7 rounded-full border-2 border-white/90 shadow-[0_0_18px_rgba(255,255,255,0.35)]"></span>
+        <span class="absolute h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.9)]"></span>
+        <span class="absolute inline-flex h-10 w-10 animate-ping rounded-full bg-secondary/30 opacity-60"></span>
       </div>
     `,
     iconSize: [44, 44],
     iconAnchor: [22, 22],
-    popupAnchor: [0, -24],
+    popupAnchor: [0, -26],
   });
 
   const hotelMarker = L.marker([lat, lng], { icon: mainIcon }).addTo(map);
 
   const popupHtml = `
     <div class="p-2 text-stone-100 font-sans max-w-[200px]">
-      <div class="text-amber-400 font-mono text-[10px] tracking-widest uppercase font-semibold">Boutique Hotel</div>
+      <div class="text-secondary font-mono text-[10px] tracking-widest uppercase font-semibold">Boutique Hotel</div>
       <h4 class="font-serif text-base font-bold text-white mt-0.5">USGAR Hotels</h4>
       <p class="text-xs text-stone-300 mt-1 leading-tight">759 Calle Hospital, San Pedro, Cusco</p>
     </div>
@@ -84,7 +80,7 @@ export async function initLocationMap(
       className: 'usgar-poi-marker',
       html: `
         <div class="group relative flex items-center justify-center transition-transform hover:scale-125 cursor-pointer" data-poi-id="${poi.id}">
-          <div class="h-3.5 w-3.5 rounded-full border-2 border-amber-400 bg-amber-500/90 shadow-[0_0_12px_rgba(245,158,11,0.5)] backdrop-blur-sm"></div>
+          <div class="h-3.5 w-3.5 rounded-full border-2 border-secondary bg-secondary shadow-[0_0_12px_rgba(212,175,55,0.6)] backdrop-blur-sm"></div>
         </div>
       `,
       iconSize: [16, 16],

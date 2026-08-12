@@ -3,8 +3,7 @@
 // Uso: php scripts/inspect-room-stock.php
 declare(strict_types=1);
 
-require_once __DIR__ . '/../app/Core/Autoloader.php';
-\App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'app');
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Core\Config;
 use App\Core\Database;

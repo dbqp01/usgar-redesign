@@ -10,8 +10,8 @@
    (astro.config.mjs → fontProviders.local())
    ============================================ */
 
-/* Dark mode: class-based toggle (NOT media query) */
-@custom-variant dark (&:where(.dark, .dark *));
+/* Dark mode: class-based toggle (NOT media query) — uses :is() so dark: utilities have (0,2,0) specificity and properly override light mode utilities */
+@custom-variant dark (&:is(.dark, .dark *));
 
 /* ============================================
    Dark Mode Purple Correction (Design decision 2026-08-01)
@@ -92,9 +92,9 @@
   --color-purple-pastel: #C8B8D0;    /* Dark mode secondary text, card bg */
   --color-purple-bg: #F4F0F6;        /* Light mode section alternating bg */
 
-  /* === AMARILLOS / DORADOS (Familia Secundaria) === */
-  /* Dual-mode: este valor es el LIGHT (legible 5.1:1 sobre blanco); en dark se
-     restaura el dorado brillante #D4AF37 via .dark (ver bloque dual al final). */
+  /* === AMARILLOS / DORADOS (Familia Secundaria & Logo Brand) === */
+  --color-gold-vibrant: #F7D100;     /* Amarillo intenso exacto del logo Usgar SVG */
+  --color-gold-vibrant-hover: #E5C100; /* Hover state para botones CTA amarillos */
   --color-secondary: #8C6900;        /* Dorado legible — secondary CTAs, labels, estrellas */
   /* Aprobado por cliente 2026-08-11: dual-mode legible. Light: #806D23 (5.1:1);
      dark: #E8D48B (amarillo suave de promos) via .dark. */

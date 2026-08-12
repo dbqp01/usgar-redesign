@@ -11,10 +11,17 @@ namespace App\Core;
 class Request {
     private readonly string $method;
     private readonly string $path;
+    /** @var array<string, mixed> */
     private readonly array $queryParams;
+    /** @var array<string, string> */
     private readonly array $headers;
+    /** @var array<string, mixed>|null */
     private readonly ?array $body;
 
+    /**
+     * @param array<string, string>|null $headers
+     * @param array<string, mixed>|null  $body
+     */
     public function __construct(
         ?string $method = null,
         ?string $path = null,
@@ -60,6 +67,7 @@ class Request {
         return $this->headers[$normalizedKey] ?? null;
     }
 
+    /** @return array<string, mixed>|null */
     public function getBody(): ?array {
         return $this->body;
     }
@@ -139,6 +147,8 @@ class Request {
 
     /**
      * Parsea el body de la peticion (JSON o Form Data) de forma segura (SEC-06).
+     *
+     * @return array<string, mixed>|null
      */
     private function parseBody(): ?array {
         if (!in_array($this->method, ['POST', 'PUT', 'PATCH'], true)) {
@@ -166,16 +176,17 @@ class Request {
         }
     }
 
+    /**
+     * @return array<string, string>
+     */
     private function extractHeaders(): array {
         $headers = [];
         
         // 1. Fallback primario para entornos FastCGI (LiteSpeed/Apache) que omiten headers en $_SERVER
         if (function_exists('getallheaders')) {
-            $all = getallheaders();
-            if (is_array($all)) {
-                foreach ($all as $k => $v) {
-                    $headers[strtolower((string)$k)] = (string)$v;
-                }
+            $all = getallheaders() ?: [];
+            foreach ($all as $k => $v) {
+                $headers[strtolower((string)$k)] = (string)$v;
             }
         }
 

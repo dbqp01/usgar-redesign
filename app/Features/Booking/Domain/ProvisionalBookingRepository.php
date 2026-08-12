@@ -20,6 +20,9 @@ class ProvisionalBookingRepository {
         $this->pdo = $pdo ?? Database::getInstance()->getConnection();
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data): bool {
         try {
             return $this->doInsert($data);
@@ -280,6 +283,9 @@ class ProvisionalBookingRepository {
         return ['hasComposite' => $hasComposite, 'legacy' => $legacy, 'failClosed' => false];
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getByCartId(string $cartId, bool $forUpdate = false): ?array {
         try {
             $sql = "SELECT * FROM provisional_bookings WHERE cart_id = :cart_id LIMIT 1" . ($forUpdate ? ' FOR UPDATE' : '');
@@ -296,6 +302,8 @@ class ProvisionalBookingRepository {
 
     /**
      * Obtiene una reserva provisional con bloqueo pesimista (FOR UPDATE) dentro de una transaccion activa.
+     *
+     * @return array<string, mixed>|null
      */
     public function getByCartIdForUpdate(string $cartId): ?array {
         return $this->getByCartId($cartId, true);

@@ -24,6 +24,7 @@ class ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
         'P' =>
         array (
             'Psr\\SimpleCache\\' => 16,
+            'Psr\\Container\\' => 14,
             'PhpParser\\' => 10,
             'PhpOffice\\PhpSpreadsheet\\' => 25,
         ),
@@ -36,6 +37,10 @@ class ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
         array (
             'Hybridauth\\' => 11,
         ),
+        'F' =>
+        array (
+            'Firebase\\JWT\\' => 13,
+        ),
         'D' =>
         array (
             'DeepCopy\\' => 9,
@@ -44,6 +49,10 @@ class ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
         array (
             'Composer\\Pcre\\' => 14,
             'Complex\\' => 8,
+        ),
+        'A' =>
+        array (
+            'App\\' => 4,
         ),
     );
 
@@ -60,6 +69,10 @@ class ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
         'Psr\\SimpleCache\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/simple-cache/src',
+        ),
+        'Psr\\Container\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/psr/container/src',
         ),
         'PhpParser\\' =>
         array (
@@ -81,6 +94,10 @@ class ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
         array (
             0 => __DIR__ . '/..' . '/hybridauth/hybridauth/src',
         ),
+        'Firebase\\JWT\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
         'DeepCopy\\' =>
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
@@ -92,6 +109,10 @@ class ComposerStaticInit66501ca8fa27c2f60c8a58c36c7c5686
         'Complex\\' =>
         array (
             0 => __DIR__ . '/..' . '/markbaker/complex/classes/src',
+        ),
+        'App\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/app',
         ),
     );
 

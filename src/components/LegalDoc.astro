@@ -1,0 +1,44 @@
+---
+// src/components/LegalDoc.astro
+// Shared renderer for privacy/terms pages: editorial numbered sections.
+import type { LegalSection } from "../data/legal";
+import { useTranslations, type Locale } from "../i18n/utils";
+
+interface Props {
+  lang: Locale;
+  title: string;
+  updatedLabel: string;
+  updatedDate: string;
+  sections: LegalSection[];
+}
+
+const { lang, title, updatedLabel, updatedDate, sections } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<div class="mx-auto max-w-3xl px-4 py-16 sm:py-24">
+  <span class="tag-dash-title block mb-3">{t('nav.legal')}</span>
+  <h1 class="font-display text-4xl sm:text-6xl text-text-primary-light dark:text-white tracking-tight leading-tight mb-4">
+    {title}
+  </h1>
+  <p class="font-mono text-[11px] uppercase tracking-[0.25em] text-text-secondary-light dark:text-text-secondary-dark mb-12">
+    {updatedLabel} {updatedDate}
+  </p>
+
+  <div class="space-y-10">
+    {sections.map((section) => (
+      <section>
+        <h2 class="font-display text-2xl sm:text-3xl text-text-primary-light dark:text-white mb-4">
+          {section.title}
+        </h2>
+        <div class="space-y-3">
+          {section.body.map((paragraph) => (
+            <p class="text-sm sm:text-base leading-relaxed text-text-secondary-light dark:text-text-secondary-dark font-body font-light">
+              {paragraph}
+            </p>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</div>

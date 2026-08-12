@@ -12,6 +12,7 @@
     "astro": "astro",
     "check": "astro check",
     "test:php": "php scripts/run-exhaustive-tests.php",
+    "test:user-flow": "php tests/user-flow.php",
     "test": "astro check && php scripts/run-exhaustive-tests.php",
     "audit:security": "php scripts/audit-security.php",
     "audit:seo": "node scripts/audit-seo-schema.js",

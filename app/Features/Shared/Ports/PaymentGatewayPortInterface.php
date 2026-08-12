@@ -7,12 +7,24 @@ namespace App\Features\Shared\Ports;
  * Puerto de abstraccion para la interaccion con pasarelas de pago (Mercado Pago).
  */
 interface PaymentGatewayPortInterface {
+    /**
+     * @param array<string, mixed> $paymentData
+     * @return array<string, mixed>|null
+     */
     public function processPayment(array $paymentData): ?array;
 
+    /**
+     * @param array<string, mixed> $payload
+     * @param array<string, mixed> $headers
+     * @return array<string, mixed>|null
+     */
     public function verifyNotification(array $payload, array $headers = []): ?array;
 
     public function verifySignature(?string $signatureHeader, ?string $requestId, ?string $dataId): bool;
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getPaymentDetails(string $paymentId): ?array;
 
     /**

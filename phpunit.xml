@@ -6,6 +6,9 @@
          cacheDirectory=".phpunit.cache"
          failOnWarning="true"
          failOnRisky="true">
+    <extensions>
+        <bootstrap class="DG\BypassFinals\PHPUnitExtension"/>
+    </extensions>
     <testsuites>
         <testsuite name="USGAR Hotels Backend Test Suite">
             <directory>tests/Unit</directory>

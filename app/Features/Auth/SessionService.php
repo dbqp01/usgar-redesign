@@ -5,10 +5,15 @@ namespace App\Features\Auth;
 
 use App\Core\Config;
 use App\Core\Request;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Throwable;
 
 /**
  * Servicio de sesiones basado en JWT (JSON Web Tokens).
- * Implementacion nativa en PHP 8 sin dependencias externas.
+ * Implementado con firebase/php-jwt (RFC 7519) — reemplaza la
+ * implementacion casera anterior (2026-08-10): la libreria valida
+ * algoritmo/exp/firma de forma estandar y resiste alg-confusion/alg=none.
  *
  * Seguridad:
  * - Firma HMAC-SHA256 con secret del .env (AUTH_JWT_SECRET)
@@ -36,27 +41,18 @@ class SessionService {
     public static function createToken(array $user): string {
         $secret = self::getSecret();
 
-        $header = self::base64UrlEncode(json_encode([
-            'alg' => self::ALG,
-            'typ' => 'JWT',
-        ], JSON_THROW_ON_ERROR));
-
         $now = time();
-        $payload = self::base64UrlEncode(json_encode([
+        $payload = [
             'sub'      => $user['id'],
             'name'     => trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '')),
             'email'    => $user['email'],
             'photo'    => $user['photo_url'] ?? null,
-            'provider' => $user['provider'] ?? 'email',
+            'provider' => $user['provider'],
             'iat'      => $now,
             'exp'      => $now + (self::COOKIE_TTL_DAYS * 86400),
-        ], JSON_THROW_ON_ERROR));
+        ];
 
-        $signature = self::base64UrlEncode(
-            hash_hmac('sha256', "{$header}.{$payload}", $secret, true)
-        );
-
-        return "{$header}.{$payload}.{$signature}";
+        return JWT::encode($payload, $secret, self::ALG);
     }
 
     // ──────────────────────────────────────
@@ -66,42 +62,18 @@ class SessionService {
     /**
      * Valida un JWT y retorna el payload decodificado.
      * Retorna null si el token es invalido, expirado o la firma no coincide.
+     * La libreria firebase/php-jwt valida de forma estandar: alg fijo HS256
+     * (rechaza alg=none y alg-confusion), expiracion (exp) y firma HMAC.
+     *
+     * @return array<string, mixed>|null
      */
     public static function validateToken(string $jwt): ?array {
-        $parts = explode('.', $jwt);
-        if (count($parts) !== 3) {
+        try {
+            $decoded = JWT::decode($jwt, new Key(self::getSecret(), self::ALG));
+            return (array) $decoded;
+        } catch (Throwable $e) {
             return null;
         }
-
-        [$header, $payload, $signature] = $parts;
-
-        $decodedHeader = json_decode(self::base64UrlDecode($header), true);
-        if (!is_array($decodedHeader) || !isset($decodedHeader['alg']) || $decodedHeader['alg'] !== self::ALG) {
-            return null;
-        }
-
-        // Verificar firma
-        $secret = self::getSecret();
-        $expectedSig = self::base64UrlEncode(
-            hash_hmac('sha256', "{$header}.{$payload}", $secret, true)
-        );
-
-        if (!hash_equals($expectedSig, $signature)) {
-            return null;
-        }
-
-        // Decodificar payload
-        $decoded = json_decode(self::base64UrlDecode($payload), true);
-        if (!is_array($decoded)) {
-            return null;
-        }
-
-        // Verificar expiracion
-        if (isset($decoded['exp']) && $decoded['exp'] < time()) {
-            return null;
-        }
-
-        return $decoded;
     }
 
     // ──────────────────────────────────────
@@ -141,6 +113,8 @@ class SessionService {
     /**
      * Obtiene los datos del usuario de la cookie JWT actual.
      * Retorna null si no hay cookie o el token es invalido.
+     *
+     * @return array<string, mixed>|null
      */
     public static function getUserFromRequest(): ?array {
         $jwt = $_COOKIE[self::COOKIE_NAME] ?? null;
@@ -185,13 +159,5 @@ class SessionService {
             throw \App\Core\HttpException::unauthorized('AUTH_JWT_SECRET must be configured and at least 32 characters.');
         }
         return $secret;
-    }
-
-    private static function base64UrlEncode(string $data): string {
-        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
-    }
-
-    private static function base64UrlDecode(string $data): string {
-        return base64_decode(strtr($data, '-_', '+/'), true) ?: '';
     }
 }

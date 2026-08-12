@@ -26,10 +26,16 @@ class BookingPaidEvent implements EventInterface {
     private string $checkIn;
     private string $checkOut;
     private int $idRoomType;
+    /** @var array<string, mixed> */
     private array $guestData;
+    /** @var array<string, mixed> */
     private array $roomData;
     private DateTimeImmutable $occurredAt;
 
+    /**
+     * @param array<string, mixed> $guestData
+     * @param array<string, mixed> $roomData
+     */
     public function __construct(
         string $cartId,
         string $paymentId,
@@ -132,14 +138,17 @@ class BookingPaidEvent implements EventInterface {
         return $this->idRoomType;
     }
 
+    /** @return array<string, mixed> */
     public function getGuestData(): array {
         return $this->guestData;
     }
 
+    /** @return array<string, mixed> */
     public function getRoomData(): array {
         return $this->roomData;
     }
 
+    /** @return array<string, mixed> */
     public function getPayload(): array {
         return [
             'cart_id'       => $this->cartId,

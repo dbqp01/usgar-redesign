@@ -130,7 +130,9 @@
     "newsletterSuccess": "Vous etes inscrit ! Bienvenue dans la newsletter USGAR.",
     "newsletterError": "Une erreur est survenue - reessayez.",
     "newsletterEmailInvalid": "Veuillez saisir une adresse e-mail valide.",
-    "asFeaturedIn": "Comme Presente Dans"
+    "asFeaturedIn": "Comme Presente Dans",
+    "privacy": "Politique de Confidentialite",
+    "terms": "Conditions Generales"
   },
   "whatsapp": {
     "ariaLabel": "Discuter sur WhatsApp",
@@ -482,7 +484,9 @@
       "insufficient_amount": "Paiement refusé en raison d'un montant insuffisant. Vérifiez le total.",
       "cc_rejected_card_type_not_allowed": "Votre carte n'a pas la fonction crédit activée. Utilisez une autre carte.",
       "bank_error": "Le paiement a été refusé en raison d'une erreur bancaire. Réessayez."
-    }
+    },
+    "acceptTerms": "En continuant, vous acceptez nos",
+    "acceptAnd": "et"
   },
   "status": {
     "ready": "Système prêt",
@@ -494,5 +498,17 @@
     "accountProvider": "Fournisseur du compte",
     "sanctuaryPerk": "Avantage Sanctuary",
     "totalPaid": "Total payé"
+  },
+  "legal": {
+    "eyebrow": "Juridique",
+    "privacyTitle": "Politique de Confidentialite",
+    "termsTitle": "Conditions Generales",
+    "updatedLabel": "Derniere mise a jour"
+  },
+  "cookie": {
+    "title": "Cookies",
+    "text": "Nous utilisons uniquement des cookies essentiels pour securiser votre reservation et votre connexion. Nous n'utilisons ni cookies marketing ni cookies d'analyse.",
+    "accept": "Accepter",
+    "decline": "Refuser"
   }
 }

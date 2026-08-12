@@ -2,6 +2,10 @@ DirectoryIndex index.html index.php
 
 RewriteEngine On
 
+# Canonical domain: redirect www -> apex (301). Survives deploys (lives in repo).
+RewriteCond %{HTTP_HOST} ^www\.usgarhoteles\.com$ [NC]
+RewriteRule ^(.*)$ https://usgarhoteles.com/$1 [L,R=301]
+
 # Handle CORS preflight (OPTIONS) at server level
 RewriteCond %{REQUEST_METHOD} OPTIONS
 RewriteRule ^api/ index.php [L,QSA]

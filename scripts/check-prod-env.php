@@ -111,7 +111,5 @@ final class CheckProdEnv {
 // (php scripts/check-prod-env.php), nunca al ser incluido por PHPUnit.
 if (PHP_SAPI === 'cli' && isset($argv[0]) && realpath($argv[0]) === __FILE__) {
     require_once __DIR__ . '/../vendor/autoload.php';
-    require_once __DIR__ . '/../app/Core/Autoloader.php';
-    \App\Core\Autoloader::register(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'app');
     exit(\App\Scripts\CheckProdEnv::run());
 }

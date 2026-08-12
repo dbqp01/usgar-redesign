@@ -130,7 +130,9 @@
     "newsletterSuccess": "Voce esta inscrito! Bem-vindo a newsletter do USGAR.",
     "newsletterError": "Algo deu errado - tente novamente.",
     "newsletterEmailInvalid": "Digite um e-mail valido.",
-    "asFeaturedIn": "Como Aparecemos Em"
+    "asFeaturedIn": "Como Aparecemos Em",
+    "privacy": "Politica de Privacidade",
+    "terms": "Termos e Condicoes"
   },
   "whatsapp": {
     "ariaLabel": "Conversar no WhatsApp",
@@ -482,7 +484,9 @@
       "insufficient_amount": "Pagamento rejeitado por valor insuficiente. Verifique o total.",
       "cc_rejected_card_type_not_allowed": "Seu cartão não tem a função crédito habilitada. Use outro cartão.",
       "bank_error": "O pagamento foi rejeitado por um erro no banco. Tente novamente."
-    }
+    },
+    "acceptTerms": "Ao continuar, voce aceita nossos",
+    "acceptAnd": "e"
   },
   "status": {
     "ready": "Sistema pronto",
@@ -494,5 +498,17 @@
     "accountProvider": "Provedor da conta",
     "sanctuaryPerk": "Vantagem Sanctuary",
     "totalPaid": "Total pago"
+  },
+  "legal": {
+    "eyebrow": "Legal",
+    "privacyTitle": "Politica de Privacidade",
+    "termsTitle": "Termos e Condicoes",
+    "updatedLabel": "Ultima atualizacao"
+  },
+  "cookie": {
+    "title": "Cookies",
+    "text": "Usamos apenas cookies essenciais para proteger sua reserva e login. Nao usamos cookies de marketing nem de analise.",
+    "accept": "Aceitar",
+    "decline": "Recusar"
   }
 }
