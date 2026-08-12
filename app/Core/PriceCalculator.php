@@ -30,4 +30,15 @@ class PriceCalculator {
         $extraGuests = max(0, $guests - $baseOccupancy);
         return round($extraGuests * $extraChargePerNight * $nights, 2);
     }
+
+    /**
+     * Total de una habitacion en CENTIMOS enteros (fix P1-6 2026-08-12):
+     * las sumas de dinero se acumulan en int, nunca en float. El float solo
+     * aparece en la frontera (JSON/display) via / 100. Precio por noche de
+     * QloApps (2 decimales) -> centimos exactos; el cargo extra (float
+     * redondeado a 2) tambien se convierte a centimos inmediatamente.
+     */
+    public static function roomTotalCents(float $pricePerNight, int $nights, float $extraChargeTotal): int {
+        return (int)round($pricePerNight * 100) * $nights + (int)round($extraChargeTotal * 100);
+    }
 }

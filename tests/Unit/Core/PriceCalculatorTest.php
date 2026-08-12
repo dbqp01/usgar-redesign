@@ -37,4 +37,14 @@ final class PriceCalculatorTest extends TestCase
         $this->assertSame(339.0, PriceCalculator::toGatewayPrice(100.0, 3.39));
         $this->assertSame(380.0, PriceCalculator::toGatewayPrice(100.0, 3.80));
     }
+
+    public function testRoomTotalCentsAcumulaEnEnteros(): void
+    {
+        // 100.10 USD/noche x 2 noches + 30.00 extra = 20020 + 3000 = 23020 centimos.
+        $this->assertSame(23020, PriceCalculator::roomTotalCents(100.10, 2, 30.0));
+        // Sin extra y precio entero: 100 x 3 = 30000 centimos.
+        $this->assertSame(30000, PriceCalculator::roomTotalCents(100.0, 3, 0.0));
+        // Dos habitaciones sumadas en centimos: 23020 + 515 = 23535.
+        $this->assertSame(23535, PriceCalculator::roomTotalCents(100.10, 2, 30.0) + PriceCalculator::roomTotalCents(5.15, 1, 0.0));
+    }
 }

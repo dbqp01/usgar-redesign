@@ -109,7 +109,7 @@ class CreateBookingAction {
             // --- Resolver cada habitacion: validacion + precio server-side ---
             $resolved = [];   // detalle por room para el hold
             $cartRooms = [];  // {id_product, guests, price} para el webservice
-            $totalPrice = 0.0;
+            $totalPriceCents = 0;  // acumulacion en centimos enteros (P1-6)
 
             foreach ($requestedRooms as $i => $req) {
                 if (!is_array($req)) {
@@ -157,8 +157,10 @@ class CreateBookingAction {
                 $extraChargePerNight = (float)Config::get('EXTRA_GUEST_CHARGE_USD', '30');
                 $extraChargeTotal = PriceCalculator::extraGuestCharge($guests, $maxGuests, $nights, $extraChargePerNight);
 
-                $roomTotal = round($pricePerNight * $nights + $extraChargeTotal, 2);
-                $totalPrice += $roomTotal;
+                $roomTotalCents = PriceCalculator::roomTotalCents($pricePerNight, $nights, $extraChargeTotal);
+                // Float solo en la frontera (JSON/display); la acumulacion es en centimos (P1-6).
+                $roomTotal = $roomTotalCents / 100;
+                $totalPriceCents += $roomTotalCents;
 
                 $resolved[] = [
                     'id_room_type'       => $idRoomType,
@@ -182,7 +184,7 @@ class CreateBookingAction {
                 ];
             }
 
-            $totalPrice = round($totalPrice, 2);
+            $totalPrice = round($totalPriceCents / 100, 2);
             $cartId = $this->pms->createCartMulti($hotelId, $cartRooms, $checkIn, $checkOut, $guestName, $guestEmail, $guestPhone, $totalPrice);
 
             $this->pdo->beginTransaction();
