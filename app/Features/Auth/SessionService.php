@@ -26,8 +26,10 @@ use Throwable;
  */
 class SessionService {
     private const COOKIE_NAME = 'usgar_session';
+    private const CSRF_COOKIE = 'usgar_csrf';
     private const COOKIE_TTL_DAYS = 30;
     private const ALG = 'HS256';
+    private const AUDIENCE = 'usgar-web';
 
     // ──────────────────────────────────────
     // Token Generation
@@ -43,6 +45,9 @@ class SessionService {
 
         $now = time();
         $payload = [
+            'iss'      => Config::get('SITE_URL', 'https://usgarhoteles.com'),
+            'aud'      => self::AUDIENCE,
+            'jti'      => bin2hex(random_bytes(8)),
             'sub'      => $user['id'],
             'name'     => trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '')),
             'email'    => $user['email'],
@@ -70,6 +75,14 @@ class SessionService {
     public static function validateToken(string $jwt): ?array {
         try {
             $decoded = JWT::decode($jwt, new Key(self::getSecret(), self::ALG));
+            // Fix P1-7 (2026-08-12): validar iss/aud explicitamente (la
+            // libreria solo valida exp/iat/firma). Rechaza tokens emitidos
+            // para otro origen/audiencia; los tokens viejos sin estos claims
+            // quedan invalidados (re-login unica vez).
+            $expectedIss = Config::get('SITE_URL', 'https://usgarhoteles.com');
+            if (($decoded->iss ?? null) !== $expectedIss || ($decoded->aud ?? null) !== self::AUDIENCE) {
+                return null;
+            }
             return (array) $decoded;
         } catch (Throwable $e) {
             return null;
@@ -82,6 +95,9 @@ class SessionService {
 
     /**
      * Setea la cookie de sesion con el JWT.
+     * Tambien regenera la cookie CSRF (doble cookie, P1-8): valor aleatorio
+     * legible por JS (no HttpOnly) que las mutaciones autenticadas deben
+     * devolver en el header X-CSRF-Token.
      */
     public static function setAuthCookie(string $jwt): void {
         $isSecure = Request::isHttps() || 
@@ -93,6 +109,38 @@ class SessionService {
             'httponly'  => true,
             'samesite' => 'Lax',
         ]);
+        setcookie(self::CSRF_COOKIE, self::csrfToken(), [
+            'expires'  => time() + (self::COOKIE_TTL_DAYS * 86400),
+            'path'     => '/',
+            'secure'   => $isSecure,
+            'httponly' => false, // debe ser legible por JS del frontend
+            'samesite' => 'Lax',
+        ]);
+    }
+
+    /**
+     * Token CSRF aleatorio (CSPRNG) para la cookie de doble envio.
+     */
+    public static function csrfToken(): string {
+        return bin2hex(random_bytes(16));
+    }
+
+    /**
+     * Valida el patron de doble cookie CSRF (P1-8): el header X-CSRF-Token
+     * debe coincidir con la cookie usgar_csrf. Los formularios HTML clasicos
+     * quedan exentos (SameSite=Lax ya los protege del CSRF cross-site).
+     *
+     * @throws \App\Core\HttpException
+     */
+    public static function assertCsrf(Request $request): void {
+        if ($request->isHtml()) {
+            return;
+        }
+        $cookie = $_COOKIE[self::CSRF_COOKIE] ?? '';
+        $header = $request->getHeader('x-csrf-token') ?? '';
+        if ($cookie === '' || !hash_equals($cookie, $header)) {
+            throw \App\Core\HttpException::forbidden('CSRF token mismatch.');
+        }
     }
 
     /**

@@ -12,6 +12,16 @@
 
 const AUTH_API_BASE = '/api/auth';
 const CACHE_KEY = 'usgar_auth_user';
+const CSRF_COOKIE = 'usgar_csrf';
+
+/**
+ * Token CSRF de la cookie de doble envio (P1-8): las mutaciones autenticadas
+ * deben mandarlo en el header X-CSRF-Token. '' si no hay sesión.
+ */
+export function csrfToken(): string {
+  const match = document.cookie.match(new RegExp(`(?:^|; )${CSRF_COOKIE}=([^;]+)`));
+  return match ? decodeURIComponent(match[1]) : '';
+}
 
 interface AuthUser {
   sub: number;
@@ -78,6 +88,7 @@ export async function logout(): Promise<void> {
     await fetch(`${AUTH_API_BASE}/logout`, {
       method: 'POST',
       credentials: 'include',
+      headers: { 'X-CSRF-Token': csrfToken() },
     });
   } catch {
     // Silenciar errores de red — la cookie se limpia en el servidor

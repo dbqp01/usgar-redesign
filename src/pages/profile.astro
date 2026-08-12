@@ -258,11 +258,16 @@ const totalPaidLabel = t('profile.totalPaid');
 
           const fullName = editFullName?.value || '';
           const phone = editPhone?.value || '';
+          // P1-8: doble cookie CSRF (mismo valor que la cookie usgar_csrf)
+          const csrfMatch = document.cookie.match(/(?:^|; )usgar_csrf=([^;]+)/);
 
           try {
             const res = await fetch('/api/user/profile', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfMatch ? decodeURIComponent(csrfMatch[1]) : '',
+              },
               body: JSON.stringify({ fullName, phone }),
             });
 

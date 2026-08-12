@@ -13,6 +13,7 @@ use App\Features\Auth\SessionService;
  */
 class AuthLogoutAction {
     public function __invoke(Request $request): void {
+        SessionService::assertCsrf($request);  // P1-8
         SessionService::clearAuthCookie();
 
         $accept = $request->getHeader('accept') ?? '';

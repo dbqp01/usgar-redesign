@@ -15,6 +15,8 @@ use App\Features\Auth\SessionService;
  */
 class UpdateUserProfileAction {
     public function __invoke(Request $request): void {
+        SessionService::assertCsrf($request);  // P1-8
+
         $sessionUser = SessionService::getUserFromRequest();
 
         if ($sessionUser === null) {
