@@ -161,37 +161,54 @@ class Config {
         }
 
         foreach ($lines as $line) {
-            $line = trim($line);
-
-            if (str_starts_with($line, '#')) {
+            $parsed = self::parseLine($line);
+            if ($parsed === null) {
                 continue;
             }
-            if (str_contains($line, ' #')) {
-                $partsComment = explode(' #', $line, 2);
-                $line = trim($partsComment[0]);
-            }
-            if ($line === '') {
-                continue;
-            }
-
-            $parts = explode('=', $line, 2);
-            if (count($parts) !== 2) {
-                continue;
-            }
-
-            $key = trim($parts[0]);
-            $value = trim($parts[1]);
-
-            // Remover comillas unicamente si envuelven el valor completo
-            if (strlen($value) >= 2 && (
-                (str_starts_with($value, '"') && str_ends_with($value, '"')) ||
-                (str_starts_with($value, "'") && str_ends_with($value, "'"))
-            )) {
-                $value = substr($value, 1, -1);
-            }
-
-            $this->cache[$key] = $value;
-            putenv("{$key}={$value}");
+            $this->cache[$parsed['key']] = $parsed['value'];
+            putenv("{$parsed['key']}={$parsed['value']}");
         }
+    }
+
+    /**
+     * Parsea una linea del .env a [key, value].
+     * Comentarios inline (" #") SOLO se recortan cuando el valor no esta
+     * entre comillas (fix P1-2 2026-08-12: contrasenas con " #" se
+     * truncaban; ej. DB_PASS="ab #cd" se cortaba a "ab").
+     *
+     * @return array{key: string, value: string}|null
+     */
+    public static function parseLine(string $line): ?array {
+        $line = trim($line);
+        if ($line === '' || str_starts_with($line, '#')) {
+            return null;
+        }
+
+        $parts = explode('=', $line, 2);
+        if (count($parts) !== 2) {
+            return null;
+        }
+
+        $key = trim($parts[0]);
+        if ($key === '') {
+            return null;
+        }
+
+        $value = trim($parts[1]);
+
+        // Comentario inline solo cuando el valor no esta envuelto en comillas
+        if (!str_starts_with($value, '"') && !str_starts_with($value, "'") && str_contains($value, ' #')) {
+            $value = trim(explode(' #', $value, 2)[0]);
+        }
+
+        // Remover comillas unicamente si envuelven el valor completo
+        if (strlen($value) >= 2 && (
+            (str_starts_with($value, '"') && str_ends_with($value, '"')) ||
+            (str_starts_with($value, "'") && str_ends_with($value, "'"))
+        )) {
+            $value = substr($value, 1, -1);
+        }
+
+        return ['key' => $key, 'value' => $value];
     }
 }
