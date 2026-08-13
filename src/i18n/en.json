@@ -319,6 +319,8 @@
     "inReview": "Your payment is under review. It may take a few minutes to confirm.",
     "paymentExpired": "Booking Expired",
     "paymentExpiredMessage": "The booking time expired before the payment was confirmed. Please create a new booking.",
+    "paymentRejected": "Payment Rejected",
+    "paymentRejectedMessage": "Your payment was rejected by the bank or card issuer. No charge was made. Please try again or contact us.",
     "manualReviewMessage": "We could not confirm your payment. Please contact the hotel with your booking number to complete it.",
     "retryCooldownMessage": "You can check again in {n}",
     "pluralRooms": "Rooms"

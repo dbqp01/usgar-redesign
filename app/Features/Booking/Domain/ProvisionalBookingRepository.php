@@ -394,6 +394,13 @@ class ProvisionalBookingRepository {
             BookingStatus::Paid->value        => "status IN ({$transient})",
             BookingStatus::FraudReview->value => "status IN ({$transient})",
             BookingStatus::ExpiredPaid->value => "status IN ('" . BookingStatus::Expired->value . "')",
+            // Pago final-rechazado/cancelado (fix 2026-08-13): desde pending
+            // (caso normal) y desde expired (el pago tardo mas que el TTL del
+            // hold y el cron ya lo marco — la UI debe mostrar "rechazado", no
+            // "expirado"; failed es terminal, sin dinero ni inventario).
+            // NUNCA desde paid/expired_paid (dinero capturado) ni desde
+            // manual/fraud review (los resuelve RetryManualReviewAction).
+            BookingStatus::Failed->value      => "status IN ('" . BookingStatus::Pending->value . "','" . BookingStatus::Expired->value . "')",
         ];
 
         if (!isset($guards[$status])) {

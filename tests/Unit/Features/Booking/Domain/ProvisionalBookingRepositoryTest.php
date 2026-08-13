@@ -109,12 +109,23 @@ final class ProvisionalBookingRepositoryTest extends TestCase {
     public function testUpdateStatusUnknownTargetFailsClosedWithoutSql(): void {
         $repo = $this->buildRepo();
 
-        // 'failed' NO es una transicion declarada: fail-closed, nunca WHERE
-        // solo por cart_id. (El webhook dejo de intentarlo en la rama refund,
-        // fix 2026-08-07 — ahora marca processed + alerta; el guard se mantiene.)
-        $this->assertFalse($repo->updateStatus('CART-1', 'failed'));
+        // 'rejected' NO es una transicion declarada (el enum usa 'failed'
+        // como destino del rechazo): fail-closed, nunca WHERE solo por
+        // cart_id.
+        $this->assertFalse($repo->updateStatus('CART-1', 'rejected'));
 
         $this->assertCount(0, $this->sqls, 'No debe ejecutarse SQL para targets no declarados.');
+    }
+
+    public function testUpdateStatusFailedTargetsPendingAndExpiredHolds(): void {
+        // Fix 2026-08-13: el webhook de rechazo transiciona pending -> failed
+        // (y expired -> failed cuando el pago tardo mas que el TTL del hold).
+        // Guard declarado: nunca revivir paid/expired_paid ni manual/fraud.
+        $repo = $this->buildRepo();
+
+        $this->assertTrue($repo->updateStatus('CART-1', BookingStatus::Failed->value));
+
+        $this->assertSqlCount(1, "WHERE cart_id = :cartId AND status IN ('pending','expired')");
     }
 
     public function testCleanExpiredCartsFromSetIncludesManualAndFraudReview(): void {

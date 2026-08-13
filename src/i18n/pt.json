@@ -319,6 +319,8 @@
     "inReview": "Seu pagamento está em revisão. Pode levar alguns minutos para confirmar.",
     "paymentExpired": "Reserva Expirada",
     "paymentExpiredMessage": "O tempo de reserva expirou antes da confirmação do pagamento. Crie uma nova reserva.",
+    "paymentRejected": "Pagamento Recusado",
+    "paymentRejectedMessage": "Seu pagamento foi recusado pelo banco ou pelo emissor do cartão. Nenhuma cobrança foi feita. Tente novamente ou entre em contato.",
     "manualReviewMessage": "Não foi possível confirmar seu pagamento. Entre em contato com o hotel com seu número de reserva para concluí-la.",
     "retryCooldownMessage": "Você poderá verificar novamente em {n}",
     "pluralRooms": "Quartos"

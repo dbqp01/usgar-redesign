@@ -136,7 +136,15 @@ class HandleMercadoPagoWebhookAction {
             // markPaymentProcessed('rejected') (cart_id del hold si existe,
             // '' si no). NUNCA 400/500: un error haria que MP reintente la
             // notificacion cada 15 min por siempre (doc MP retries).
+            // FIX 2026-08-13: transicion del hold pending -> failed. Sin
+            // ella el hold quedaba pending hasta vencer el TTL y la pagina
+            // de exito mostraba "BOOKING EXPIRED" aunque MP ya habia
+            // rechazado el pago (correo de rechazo llegaba igual). El guard
+            // de updateStatus (solo desde pending) la hace segura.
             if (in_array($status, ['rejected', 'failed'], true)) {
+                if ($cartId !== null && $cartId !== '') {
+                    $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::Failed->value);
+                }
                 $this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)($cartId ?? ''), 'rejected');
                 $this->pdo->commit();
                 Logger::info("HandleMercadoPagoWebhookAction: Pago ID {$paymentIdStr} marcado como rechazado ({$status}). Reconocido para cortar reintentos.");
@@ -156,6 +164,12 @@ class HandleMercadoPagoWebhookAction {
                     // fail-closed (target no declarado en el guard del todo 9)
                     // y, sin markPaymentProcessed, cada notificacion repetida
                     // de MP reprocesaba el evento para siempre.
+                    // FIX 2026-08-13: 'cancelled' SI es terminal sin dinero
+                    // capturado -> pending -> failed (mismo guard); un pago
+                    // cancelado no debe dejar el hold pending hasta el TTL.
+                    if ($status === 'cancelled') {
+                        $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::Failed->value);
+                    }
                     $this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, $eventType);
                     $this->bookingRepo->recordAlert((string)$cartId, $paymentIdStr, $status);
                     $this->pdo->commit();

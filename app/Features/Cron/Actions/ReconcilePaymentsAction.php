@@ -68,10 +68,39 @@ class ReconcilePaymentsAction {
             }
 
             $paymentDetails = $this->paymentGateway->getPaymentDetails($paymentId);
-            if (!$paymentDetails || ($paymentDetails['status'] ?? '') !== 'approved') {
+            if (!$paymentDetails) {
                 $skipped++;
-                Logger::info("ReconcilePaymentsAction: Payment {$paymentId} estado '"
-                    . ($paymentDetails['status'] ?? 'unknown') . "'. Sin accion.");
+                Logger::info("ReconcilePaymentsAction: Payment {$paymentId} no verificable. Sin accion.");
+                continue;
+            }
+            $mpStatus = (string)($paymentDetails['status'] ?? '');
+
+            // FIX 2026-08-13 (clase rechazo): pago final-rechazado/cancelado
+            // con webhook nunca llegado -> transicion pending -> failed (mismo
+            // guard que el webhook). Antes: skip sin transicion -> el hold
+            // quedaba pending hasta el TTL -> el usuario veia "BOOKING
+            // EXPIRED" aunque MP habia rechazado.
+            if (in_array($mpStatus, ['rejected', 'failed', 'cancelled'], true)) {
+                try {
+                    $this->pdo->beginTransaction();
+                    $this->bookingRepo->updateStatus($cartId, BookingStatus::Failed->value);
+                    $this->bookingRepo->markPaymentProcessed($paymentId, $cartId, 'rejected');
+                    $this->pdo->commit();
+                    $reconciled++;
+                } catch (Throwable $e) {
+                    if ($this->pdo->inTransaction()) {
+                        $this->pdo->rollBack();
+                    }
+                    Logger::error("ReconcilePaymentsAction Error rejected para cart {$cartId}: " . $e->getMessage());
+                    continue;
+                }
+                Logger::info("ReconcilePaymentsAction: Payment {$paymentId} rechazado ({$mpStatus}); hold {$cartId} -> failed.");
+                continue;
+            }
+
+            if ($mpStatus !== 'approved') {
+                $skipped++;
+                Logger::info("ReconcilePaymentsAction: Payment {$paymentId} estado '{$mpStatus}'. Sin accion.");
                 continue;
             }
 

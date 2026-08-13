@@ -179,6 +179,8 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
     public function testRejectedPaymentIsMarkedProcessedAndAcked(): void {
         // Todo 13 (r1/r2): status rejected -> 200 + markPaymentProcessed('rejected')
         // (nunca 400/500 — causaria reintentos eternos de MP).
+        // Fix 2026-08-13: ademas transiciona el hold pending -> failed (si no,
+        // la pagina de exito mostraba 'expired' por TTL aunque MP habia rechazado).
         $this->acceptSignature();
         $this->paymentGateway->method('getPaymentDetails')->willReturn([
             'id' => 555666777,
@@ -188,8 +190,8 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
             'transaction_amount' => 285.0,
         ]);
         $this->bookingRepo->method('isPaymentProcessed')->willReturnOnConsecutiveCalls(false, true);
+        $this->bookingRepo->expects($this->once())->method('updateStatus')->with('CART-42', 'failed');
         $this->bookingRepo->expects($this->once())->method('markPaymentProcessed')->with('555666777', 'CART-42', 'rejected');
-        $this->bookingRepo->expects($this->never())->method('updateStatus');
         $this->eventDispatcher->expects($this->never())->method('dispatch');
 
         $request = $this->signedRequest('555666777');
@@ -212,6 +214,7 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
             'transaction_amount' => 285.0,
         ]);
         $this->bookingRepo->method('isPaymentProcessed')->willReturn(false);
+        $this->bookingRepo->expects($this->once())->method('updateStatus')->with('CART-42', 'failed');
         $this->bookingRepo->expects($this->once())->method('markPaymentProcessed')->with('555666777', 'CART-42', 'rejected');
         $this->eventDispatcher->expects($this->never())->method('dispatch');
 

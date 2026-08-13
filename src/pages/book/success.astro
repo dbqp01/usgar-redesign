@@ -208,11 +208,13 @@ const t = useTranslations(lang);
   inReviewMsg: t('success.inReview'),
   paymentExpiredTitle: t('success.paymentExpired'),
   paymentExpiredMsg: t('success.paymentExpiredMessage'),
+  paymentRejectedTitle: t('success.paymentRejected'),
+  paymentRejectedMsg: t('success.paymentRejectedMessage'),
   manualReviewMsg: t('success.manualReviewMessage'),
   retryCooldownMsg: t('success.retryCooldownMessage')
 }}>
   window.__ROOMS_DATA = JSON.parse(serializedRooms);
-  window.__I18N_DATA = { singleGuest, pluralGuest, singleNight, pluralNight, pluralRooms, pollingMsg, pendingStatusMsg, verifyAgainMsg, inReviewMsg, paymentExpiredTitle, paymentExpiredMsg, manualReviewMsg, retryCooldownMsg };
+  window.__I18N_DATA = { singleGuest, pluralGuest, singleNight, pluralNight, pluralRooms, pollingMsg, pendingStatusMsg, verifyAgainMsg, inReviewMsg, paymentExpiredTitle, paymentExpiredMsg, paymentRejectedTitle, paymentRejectedMsg, manualReviewMsg, retryCooldownMsg };
 </script>
 
 <script>
@@ -400,9 +402,18 @@ const t = useTranslations(lang);
         return;
       }
 
-      // error: expired muestra estado correcto; el resto, reserva no encontrada.
+      // error: expired muestra estado correcto; failed/rejected/cancelled ->
+      // pago rechazado (fix 2026-08-13: antes el webhook de rechazo dejaba
+      // el hold pending hasta el TTL y la UI mostraba 'expired' en vez de
+      // 'rejected'); el resto, reserva no encontrada.
       if (errorTitle && status === 'expired') errorTitle.textContent = L.paymentExpiredTitle || '';
       if (errorMsgText && status === 'expired') errorMsgText.textContent = L.paymentExpiredMsg || '';
+      if (errorTitle && (status === 'failed' || status === 'rejected' || status === 'cancelled')) {
+        errorTitle.textContent = L.paymentRejectedTitle || '';
+      }
+      if (errorMsgText && (status === 'failed' || status === 'rejected' || status === 'cancelled')) {
+        errorMsgText.textContent = L.paymentRejectedMsg || '';
+      }
       loadingContainer?.classList.add('hidden');
       successContainer?.classList.add('hidden');
       pendingContainer?.classList.add('hidden');

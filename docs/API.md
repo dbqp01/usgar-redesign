@@ -136,7 +136,7 @@ Comportamiento verificado:
 ## POST /api/extend-hold · GET /api/booking-status · GET /api/payment-check
 
 - `POST /api/extend-hold` — body `{ "cart_id": "..." }` → `{ "success": true, "expires_at": "..." }`.
-- `GET /api/booking-status?cart_id=...` → estado del hold (`pending|paid|expired|cancelled`).
+- `GET /api/booking-status?cart_id=...` → estado del hold (`pending|paid|failed|expired|cancelled`; `failed` desde 2026-08-13: pago rechazado/cancelado transiciona el hold para que la página de éxito muestre "pago rechazado" y no "expirado" por TTL).
 - `GET /api/payment-check?cart_id=...` → estado del pago (usa el payment_id persistido; polling del frontend en `book/success.astro`).
 
 ## POST /api/webhook
@@ -145,6 +145,7 @@ Webhook de MercadoPago (topic `payment`). Registrado en el panel MP (app de prod
 
 - Verificación: firma HMAC `x-signature` + `x-request-id` vía `WebhookSignatureValidator` del SDK (tolerancia 300s de replay); si `MERCADO_PAGO_WEBHOOK_SECRET` no está configurado, el webhook se rechaza (fail-closed).
 - Flujo: getPaymentDetails (1 solo intento, timeout 8s — el ACK de MP espera ≤22s) → dedup (`isOrderConfirmed`) → confirmación de orden en QloApps + evento outbox → ACK 200.
+- Rechazo (`rejected`/`failed`/`cancelled`): ACK 200 + `markPaymentProcessed('rejected')` + transición del hold `pending → failed` (fix 2026-08-13 — antes el hold quedaba pending hasta el TTL y la página de éxito mostraba "expired" aunque MP había rechazado; el cron `reconcile_payments` hace lo mismo cuando el webhook nunca llegó).
 - Responder 200 rápido: `Response::jsonAsync` cierra la conexión antes del trabajo pesado (fastcgi_finish_request).
 
 ## Auth (cookie JWT `usgar_session`, HttpOnly, SameSite=Lax, 30 días)

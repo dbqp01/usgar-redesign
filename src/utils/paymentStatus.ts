@@ -1,8 +1,9 @@
 // src/utils/paymentStatus.ts
 // Estados del flujo de pago -> UI (todos 27/28/31).
-// El backend expone status: pending/paid/expired/manual_review/fraud_review/
-// expired_paid/in_process/approved/rejected (GetBookingStatusAction +
-// ProcessPaymentAction, waves 1-4).
+// El backend expone status: pending/paid/failed/expired/manual_review/
+// fraud_review/expired_paid/in_process/approved/rejected (GetBookingStatusAction
+// + ProcessPaymentAction, waves 1-4; 'failed' desde 2026-08-13: el webhook de
+// rechazo transiciona pending -> failed para que la UI muestre "rejected").
 // (audit 2026-08-12: confirmado contra BookingStatus enum + ramas de
 // ProcessPaymentAction; 'rejected'/'approved'/'in_process' son passthrough de MP)
 

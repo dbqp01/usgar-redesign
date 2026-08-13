@@ -104,6 +104,30 @@ final class ReconcilePaymentsActionTest extends TestCase {
         $this->assertSame(0, $result['reconciled']);
     }
 
+    public function testRejectedPaymentInMpMarksHoldFailed(): void {
+        // Fix 2026-08-13 (clase rechazo): webhook nunca llegado + pago
+        // rejected en MP -> pending -> failed (antes: skip sin transicion y
+        // la pagina de exito mostraba 'expired' por TTL).
+        $this->bookingRepo->method('getPendingHoldsWithPaymentId')->willReturn([$this->hold()]);
+        $this->bookingRepo->method('isPaymentProcessed')->willReturn(false);
+        $this->paymentGateway->method('getPaymentDetails')->willReturn([
+            'id' => 777888999,
+            'status' => 'rejected',
+            'status_detail' => 'cc_rejected_other_reason',
+            'external_reference' => 'CART-REC-1',
+            'transaction_amount' => 285.0,
+        ]);
+
+        $this->bookingRepo->expects($this->once())->method('updateStatus')->with('CART-REC-1', 'failed');
+        $this->bookingRepo->expects($this->once())->method('markPaymentProcessed')->with('777888999', 'CART-REC-1', 'rejected');
+        $this->eventDispatcher->expects($this->never())->method('dispatch');
+
+        $result = ($this->action)();
+
+        $this->assertSame(1, $result['checked']);
+        $this->assertSame(1, $result['reconciled']);
+    }
+
     public function testAlreadyProcessedPaymentIsSkipped(): void {
         $this->bookingRepo->method('getPendingHoldsWithPaymentId')->willReturn([$this->hold()]);
         $this->bookingRepo->method('isPaymentProcessed')->willReturn(true);
