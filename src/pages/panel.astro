@@ -441,38 +441,36 @@ document.addEventListener("click", (e: Event) => {
 });
 
 /* ---------- datos ---------- */
-function load(): Promise<void> {
+async function load(): Promise<void> {
   if (state.year === 0) {
     const now = new Date();
     state.year = now.getFullYear();
     state.month = now.getMonth() + 1;
   }
-  return fetch("/api/panel/availability?month=" + monthKey(), { credentials: "same-origin" })
-    .then((res) => {
-      if (res.status === 401) throw { unauthorized: true };
-      if (!res.ok) throw { http: res.status };
-      return res.json() as Promise<MonthData>;
-    })
-    .then((data) => {
-      state.data = data;
-      state.today = data.today || "";
-      const now = state.today ? new Date(state.today + "T00:00:00") : new Date();
-      state.year = now.getFullYear(); state.month = now.getMonth() + 1;
-      state.selDay = todayInMonth() || 1;
-      $("appView").classList.remove("hidden");
-      $("foot").classList.remove("hidden");
-      $("loginView").classList.add("hidden");
-      render();
-    })
-    .catch((err) => {
-      if (err && err.unauthorized) {
-        $("appView").classList.add("hidden");
-        $("foot").classList.add("hidden");
-        $("loginView").classList.remove("hidden");
-      } else {
-        toast("Error al cargar el calendario (HTTP " + (err && err.http ? err.http : "red") + ").");
-      }
-    });
+  try {
+    const res = await fetch("/api/panel/availability?month=" + monthKey(), { credentials: "same-origin" });
+    if (res.status === 401) throw { unauthorized: true };
+    if (!res.ok) throw { http: res.status };
+    const data = await (res.json() as Promise<MonthData>);
+    state.data = data;
+    state.today = data.today || "";
+    const now = state.today ? new Date(state.today + "T00:00:00") : new Date();
+    state.year = now.getFullYear(); state.month = now.getMonth() + 1;
+    state.selDay = todayInMonth() || 1;
+    $("appView").classList.remove("hidden");
+    $("foot").classList.remove("hidden");
+    $("loginView").classList.add("hidden");
+    render();
+  } catch (err) {
+    const e = err as { unauthorized?: boolean; http?: number };
+    if (e.unauthorized) {
+      $("appView").classList.add("hidden");
+      $("foot").classList.add("hidden");
+      $("loginView").classList.remove("hidden");
+    } else {
+      toast("Error al cargar el calendario (HTTP " + (e.http ?? "red") + ").");
+    }
+  }
 }
 
 /* ---------- login / logout ---------- */

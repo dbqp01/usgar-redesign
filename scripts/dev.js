@@ -16,14 +16,15 @@ const DEV_PORTS = [
 // en silencio y que el navegador siga viendo el .env ANTERIOR (Vite inlinea
 // import.meta.env al arrancar; Config.php cachea el .env por proceso PHP).
 // Es la causa tipica de "cambie el .env y siguen llegando las credenciales viejas".
-function isPortBusy(port) {
-  return Promise.all(['127.0.0.1', '::1'].map((host) => new Promise((resolve) => {
+async function isPortBusy(port) {
+  const results = await Promise.all(['127.0.0.1', '::1'].map((host) => new Promise((resolve) => {
     const socket = net.connect({ port, host });
     socket.setTimeout(800);
     socket.once('connect', () => { socket.destroy(); resolve(true); });
     socket.once('timeout', () => { socket.destroy(); resolve(false); });
     socket.once('error', () => resolve(false));
-  }))).then((results) => results.some(Boolean));
+  })));
+  return results.some(Boolean);
 }
 
 for (const { port, name } of DEV_PORTS) {

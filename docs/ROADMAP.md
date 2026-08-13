@@ -54,8 +54,8 @@ Auditoría de mejores prácticas PHP realizada el 2026-08-11 (evidencia en `docs
 - [x] **P3-7** `ProcessOutboxActionTest::testConcurrentRunsProcessEachEventExactlyOnce` flaky en Windows (workers proc_open + timing 40s) → **FIX 2026-08-11 (commit `7472967`)**: timeout del worker 120s. Verificado: suite completa verde (160/578).
 
 ### F — Frontend y contenido
-- [ ] **F-6** Duplicación `src/content/*.json` vs `src/data/*.ts` (rooms, services, faq, reviews, settings, about) → elegir una fuente por dominio y migrar consumidores.
-- [ ] **F-7** Pendientes TS de `astro check` (hints pre-existentes en Hero.astro, RoomCard, TypographicMarquee, Layout, profile) — ver `docs/STATE.md`.
+- [x] **F-6** Duplicación `src/content/*.json` vs `src/data/*.ts` (rooms, services, faq, reviews, settings, about) → elegir una fuente por dominio y migrar consumidores. **CERRADO 2026-08-12 como NO-duplicación (corroborado con astro-docs, Astro 7.1.1)**: es la arquitectura oficial de content collections — `src/content/*.json` = datos (copia única por dominio), `src/content.config.ts` = loaders `file()` con `parser` + schema zod (validación en build), `src/data/*.ts` = wrappers tipados con `getCollection()` + fallbackChain i18n (re-anidan `name_en`→`{en,es,fr,pt}` y quitan `order`). Verificado: 6 wrappers con `getCollection` (rooms/faq/reviews/explore/services/about), **0 imports directos de `content/` fuera de `data/`** (no hay consumidores que migrar), 3 archivos inline son fuentes ÚNICAS deliberadas (`hotelServices.ts` = lista oficial del cliente, `legal.ts` = páginas legales, `settings.ts` = defaults sobre la colección). Fusionar content+data destruiría la validación zod y la capa i18n sin beneficio.
+- [x] **F-7** Pendientes TS de `astro check` (hints pre-existentes) → **CERRADO 2026-08-12**: los hints viejos (Hero/RoomCard/TypographicMarquee/Layout/profile) ya no existían; los 2 warnings reales `ts(80006)` eran `src/pages/panel.astro:444` (`load()` → async/await + catch tipado `{unauthorized?, http?}`) y `scripts/dev.js:19` (`isPortBusy` → async). Resultado: `astro check` → **0 errors / 0 warnings / 0 hints**.
 
 ## Reglas del roadmap
 
