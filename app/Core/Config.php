@@ -64,6 +64,24 @@ class Config {
     }
 
     /**
+     * Timestamp absoluto de expiracion del hold de reserva (P3-4, 2026-08-12).
+     * El valor de BOOKING_HOLD_TTL es relativo (ej. '+15 minutes') y pasa por
+     * strtotime: si el .env lo trae mal escrito, strtotime devuelve false y
+     * date() producia 1970-01-01 (hold expiraba al instante). Fallback
+     * conservador a +15 min con log. $ttl es inyectable para testeo hermetico
+     * (mismo patron que RateLimiter::purgeOldFiles).
+     */
+    public static function holdExpirationTimestamp(?string $ttl = null): int {
+        $ttl ??= self::get('BOOKING_HOLD_TTL', '+15 minutes') ?? '+15 minutes';
+        $ts = strtotime($ttl);
+        if ($ts === false) {
+            error_log("[Config] BOOKING_HOLD_TTL invalido ('{$ttl}'), usando +15 minutes.");
+            return time() + 900;
+        }
+        return $ts;
+    }
+
+    /**
      * Define o sobreescribe una variable de configuracion en runtime/testing.
      */
     public static function set(string $key, string $value): void {

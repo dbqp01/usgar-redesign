@@ -219,7 +219,7 @@ class CreateBookingAction {
             }
             unset($r);
 
-            $expiresAt = date('Y-m-d H:i:s', strtotime(Config::get('BOOKING_HOLD_TTL', '+15 minutes')));
+            $expiresAt = date('Y-m-d H:i:s', Config::holdExpirationTimestamp());
             $currentUser = SessionService::getUserFromRequest();
 
             // Congelar tasa + PEN al cotizar (UNA sola lectura). La tasa sale del

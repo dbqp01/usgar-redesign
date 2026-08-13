@@ -53,7 +53,7 @@ class ExtendHoldAction {
             throw HttpException::badRequest('El bloqueo ya no está en estado pendiente.');
         }
 
-        $newExpiration = date('Y-m-d H:i:s', strtotime(Config::get('BOOKING_HOLD_TTL', '+15 minutes')));
+        $newExpiration = date('Y-m-d H:i:s', Config::holdExpirationTimestamp());
 
         if ($this->bookingRepo->extend($cartId, $newExpiration)) {
             $this->pms->extendCartSession($cartId);
