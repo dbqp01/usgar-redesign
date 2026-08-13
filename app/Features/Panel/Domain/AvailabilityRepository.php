@@ -72,8 +72,8 @@ class AvailabilityRepository {
 
         [$y, $m] = array_map('intval', explode('-', $month));
         $first = sprintf('%04d-%02d-01', $y, $m);
-        $last  = date('Y-m-t', strtotime($first));
-        $monthEnd = date('Y-m-d', strtotime($last));
+        $last  = date('Y-m-t', strtotime($first) ?: 0);
+        $monthEnd = date('Y-m-d', strtotime($last) ?: 0);
         $monthStart = $first;
 
         try {
@@ -108,7 +108,7 @@ class AvailabilityRepository {
             WHERE rt.id_hotel = :id_hotel
         ");
         $stmt->execute([':id_hotel' => $hotelId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        return array_values($stmt->fetchAll(PDO::FETCH_ASSOC) ?: []);
     }
 
     /**

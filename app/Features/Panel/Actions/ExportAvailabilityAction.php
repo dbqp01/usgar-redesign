@@ -116,6 +116,10 @@ class ExportAvailabilityAction {
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="usgar-reservas-' . $month . '.csv"');
         $out = fopen('php://output', 'w');
+        if ($out === false) {
+            Response::error('No se pudo abrir la salida CSV.', 500);
+            return;
+        }
         fwrite($out, "\xEF\xBB\xBF"); // BOM: tildes correctas en Excel
         fputcsv($out, self::HEADERS);
         foreach ($rows as $r) {
@@ -166,7 +170,7 @@ class ExportAvailabilityAction {
             $byChannel[$key] = ($byChannel[$key] ?? 0) + 1;
         }
         $totalRooms = count($data['rooms']);
-        $totalRoomNights = $totalRooms * (int)date('t', strtotime($month . '-01'));
+        $totalRoomNights = $totalRooms * (int)date('t', strtotime($month . '-01') ?: 0);
         $summary->setCellValue('A3', 'Noches vendidas')->setCellValue('B3', $nights);
         $summary->setCellValue('A4', 'Reservas')->setCellValue('B4', count($data['bookings']));
         $summary->setCellValue('A5', 'Ocupacion %')->setCellValue('B5', $totalRoomNights > 0 ? round(($nights / $totalRoomNights) * 100, 1) : 0);

@@ -245,12 +245,17 @@ class ProvisionalBookingRepository {
      * @return array{hasComposite: bool, legacy: ?string, failClosed: bool}
      */
     private function resolveProcessedPaymentIndexes(): array {
-        $rows = $this->pdo->query(
+        $stmt = $this->pdo->query(
             "SELECT INDEX_NAME, NON_UNIQUE, GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) AS cols
              FROM information_schema.STATISTICS
              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'processed_payments'
              GROUP BY INDEX_NAME, NON_UNIQUE"
-        )->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        );
+        if ($stmt === false) {
+            // No se puede inspeccionar: FAIL-CLOSED, nunca dropear el indice.
+            return ['hasComposite' => false, 'legacy' => null, 'failClosed' => true];
+        }
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
         $hasComposite = false;
         $legacy = null;

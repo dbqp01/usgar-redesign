@@ -103,7 +103,7 @@ class AuthService {
             'photo_url'   => $profile->photoURL ?? null,
             'phone'       => $profile->phone ?? null,
             'provider'    => $provider,
-            'provider_id' => $profile->identifier ?? '',
+            'provider_id' => (string)($profile->identifier ?? ''),
         ];
     }
 

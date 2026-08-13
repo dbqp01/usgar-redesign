@@ -219,7 +219,11 @@ class ProcessOutboxAction {
      * @return array<int, int>
      */
     private function staleIds(string $where): array {
-        $rows = $this->pdo->query("SELECT id FROM event_outbox WHERE {$where}")->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $this->pdo->query("SELECT id FROM event_outbox WHERE {$where}");
+        if ($stmt === false) {
+            return [];
+        }
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return array_map('intval', array_column($rows, 'id'));
     }
 

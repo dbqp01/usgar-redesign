@@ -723,7 +723,7 @@ XML;
             return null;
         }
 
-        if ($httpCode >= 400 || !$response) {
+        if ($httpCode >= 400 || !is_string($response)) {
             Logger::error("QloAppAdapter: API Error {$httpCode}. Respuesta: {$response}");
             return null;
         }

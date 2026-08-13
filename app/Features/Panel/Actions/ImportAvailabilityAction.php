@@ -42,6 +42,7 @@ class ImportAvailabilityAction {
             $raw = base64_decode($contentB64, true);
             if ($raw === false) {
                 Response::badRequest('Contenido base64 invalido.');
+                return;
             }
             $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
             if (in_array($ext, ['xlsx', 'xls'], true)) {
@@ -115,6 +116,7 @@ class ImportAvailabilityAction {
         $tmp = tempnam(sys_get_temp_dir(), 'usgimp');
         if ($tmp === false) {
             Response::error('No se pudo crear archivo temporal.', 500);
+            return [];
         }
         file_put_contents($tmp, $raw);
 

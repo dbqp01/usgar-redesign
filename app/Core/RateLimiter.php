@@ -106,7 +106,7 @@ class RateLimiter {
         // Truncar y escribir estado actualizado de forma atomica
         ftruncate($fp, 0);
         rewind($fp);
-        fwrite($fp, json_encode($requests));
+        fwrite($fp, json_encode($requests) ?: '[]');
         fflush($fp);
         flock($fp, LOCK_UN);
         fclose($fp);
