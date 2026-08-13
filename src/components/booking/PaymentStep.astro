@@ -72,6 +72,79 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
     </div>
   </div>
 
+  <!-- Resultado del pago inline (2026-08-13): el wizard ya NO redirige a
+       /book/success; el estado (aprobado/pendiente/rechazado/expirado) se
+       muestra aqui mismo. success.astro sigue existiendo como recibo
+       imprimible / URL compartible, no como destino obligatorio. -->
+  <div data-payment-result class="hidden space-y-5">
+    <!-- Exito -->
+    <div data-result-success class="hidden bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-2xl border border-black/6 dark:border-white/6 shadow-sm text-center space-y-4">
+      <div class="mx-auto w-16 h-16 rounded-full bg-green-500/10 dark:bg-green-500/15 text-green-500 flex items-center justify-center border border-green-500/20 shadow-inner">
+        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <div>
+        <span class="text-xs font-semibold text-green-600 dark:text-green-400 uppercase tracking-widest">{t('success.paymentApproved')}</span>
+        <h3 class="font-display text-2xl mt-1 mb-2">{t('success.reservationConfirmed')}</h3>
+        <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark max-w-md mx-auto">{t('success.confirmationMessage')}</p>
+      </div>
+      <div class="inline-block bg-stone-50 dark:bg-stone-900 border border-black/5 dark:border-white/5 px-5 py-3 rounded-xl">
+        <span class="block text-[10px] uppercase tracking-widest text-text-secondary-light dark:text-text-secondary-dark">{t('success.confirmationCode')}</span>
+        <span data-result-conf-code class="font-mono text-lg font-bold text-primary select-all">---</span>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center pt-1">
+        <button type="button" data-result-print class="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 border border-black/5 dark:border-white/5 cursor-pointer">
+          {t('success.printReceipt')}
+        </button>
+        <a href={getRelativeLocaleUrl(lang, '')} class="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold bg-primary hover:bg-primary-dark text-white cursor-pointer">
+          {t('success.returnHome')}
+        </a>
+      </div>
+    </div>
+
+    <!-- Pendiente (verificacion en curso) -->
+    <div data-result-pending class="hidden bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-2xl border border-black/6 dark:border-white/6 shadow-sm text-center space-y-4">
+      <div class="mx-auto w-16 h-16 rounded-full bg-amber-500/10 dark:bg-amber-500/15 text-amber-500 flex items-center justify-center border border-amber-500/20 shadow-inner">
+        <svg class="w-8 h-8 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <div>
+        <h3 class="font-display text-2xl mb-2">{t('success.paymentPending')}</h3>
+        <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark max-w-md mx-auto">{t('success.verifyingPaymentMessage')}</p>
+        <p data-result-pending-status class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-3">{t('success.verifyingPayment')}...</p>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center pt-1">
+        <button type="button" data-result-verify class="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold uppercase tracking-wider bg-primary hover:bg-primary-dark text-white cursor-pointer">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M5.1 9a7 7 0 0111.9-3M18.9 15a7 7 0 01-11.9 3" />
+          </svg>
+          {t('success.verifyAgain')}
+        </button>
+        <a href={getRelativeLocaleUrl(lang, '')} class="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold border border-black/8 dark:border-white/8 text-text-secondary-light dark:text-text-secondary-dark cursor-pointer">
+          {t('success.returnHome')}
+        </a>
+      </div>
+    </div>
+
+    <!-- Error (rechazado/expirado/no encontrada) -->
+    <div data-result-error class="hidden bg-surface-card-light dark:bg-surface-card-dark p-8 rounded-2xl border border-black/6 dark:border-white/6 shadow-sm text-center space-y-4">
+      <div class="mx-auto w-16 h-16 rounded-full bg-red-500/10 dark:bg-red-500/15 text-red-500 flex items-center justify-center border border-red-500/20 shadow-inner">
+        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <div>
+        <h3 data-result-error-title class="font-display text-2xl mb-2">{t('success.notFound')}</h3>
+        <p data-result-error-message class="text-sm text-text-secondary-light dark:text-text-secondary-dark max-w-md mx-auto">{t('success.notFoundMessage')}</p>
+      </div>
+      <a href={getRelativeLocaleUrl(lang, '')} class="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold bg-primary hover:bg-primary-dark text-white cursor-pointer">
+        {t('success.returnHome')}
+      </a>
+    </div>
+  </div>
+
   <div data-payment-placeholder class="hidden flex-col items-center justify-center gap-4 p-8 rounded-2xl border border-dashed border-black/8 dark:border-white/8 text-sm text-text-secondary-light dark:text-text-secondary-dark">
     <div class="flex items-center justify-center gap-3">
       <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -95,7 +168,8 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
   import { bookingService } from '../../services/bookingService';
   import { toastApi } from '../../features/ui/toast';
   import { useTranslations, type Locale } from '@/i18n/utils';
-  import { resolvePaymentOutcome, planRetryAfterFailure } from '@/utils/paymentStatus';
+  import { resolvePaymentOutcome, planRetryAfterFailure, mapBookingStatus, isPendingStatus } from '@/utils/paymentStatus';
+  import { fetchBookingStatus, pollForPayment } from '../../features/booking/bookingStatus';
   import { formatCountdown, shouldExtendHold } from '@/utils/holdCountdown';
   import { statusDetailKey, paymentErrorFallbackKey } from '@/utils/paymentErrors';
 
@@ -144,8 +218,11 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
   function showPaymentPlaceholder(): void {
     const panel = document.querySelector('[data-payment-panel]') as HTMLElement | null;
     const placeholder = document.querySelector('[data-payment-placeholder]') as HTMLElement | null;
+    const result = document.querySelector('[data-payment-result]') as HTMLElement | null;
     if (panel) panel.classList.add('hidden');
     if (placeholder) placeholder.classList.remove('hidden');
+    // Un intento previo pudo mostrar el resultado inline; limpiar al reintentar.
+    if (result) result.classList.add('hidden');
   }
 
   function resetPaymentUi(): void {
@@ -158,6 +235,8 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
     if (guestStep) guestStep.classList.remove('hidden');
     const cardError = document.querySelector('[data-payment-error]') as HTMLElement | null;
     if (cardError) cardError.classList.add('hidden');
+    const result = document.querySelector('[data-payment-result]') as HTMLElement | null;
+    if (result) result.classList.add('hidden');
   }
 
   function loadMercadoPagoSdk(): Promise<void> {
@@ -175,19 +254,97 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
     });
   }
 
-  // ---- Todo 28: redirigir a success sin apilar reintentos ----
-  function redirectToSuccess(cartId: string, accessToken?: string): void {
+  // ---- Todo 28 (2026-08-13): resultado inline en el wizard ----
+  // Ya NO se redirige a /book/success: el estado del pago se muestra aqui
+  // mismo (success/pending/error), con polling automatico + boton manual
+  // "Verificar de nuevo". El token se persiste en sessionStorage para que
+  // el recibo imprimible (/book/success) siga funcionando si el usuario lo
+  // abre desde su historial.
+  let resultPollController: AbortController | null = null;
+
+  function showPaymentResult(cartId: string, accessToken: string): void {
     const lang = (document.documentElement.lang || 'en') as Locale;
-    // Auditoría 2026-08-11: el token se persiste (sessionStorage + URL) para
-    // que la página de éxito pueda mostrar los datos del huésped. Sin él, el
-    // backend ya no expone PII a peticiones sin token.
-    if (accessToken) {
-      try { sessionStorage.setItem(`booking_token_${cartId}`, accessToken); } catch { /* best-effort */ }
+    const t = useTranslations(lang);
+    try { sessionStorage.setItem(`booking_token_${cartId}`, accessToken); } catch { /* best-effort */ }
+
+    const panel = document.querySelector('[data-payment-panel]') as HTMLElement | null;
+    const placeholder = document.querySelector('[data-payment-placeholder]') as HTMLElement | null;
+    const result = document.querySelector('[data-payment-result]') as HTMLElement | null;
+    if (panel) panel.classList.add('hidden');
+    if (placeholder) placeholder.classList.add('hidden');
+    if (result) result.classList.remove('hidden');
+
+    const pendingStatus = document.querySelector('[data-result-pending-status]') as HTMLElement | null;
+    const render = (booking: any) => renderPaymentResult(booking, cartId, t);
+
+    resultPollController?.abort();
+    resultPollController = new AbortController();
+    void (async () => {
+      try {
+        const booking = await pollForPayment(cartId, accessToken, resultPollController!.signal, isPendingStatus);
+        if (!resultPollController!.signal.aborted) render(booking);
+      } catch (err: any) {
+        if (err?.name === 'Aborted' || resultPollController?.signal.aborted) return;
+        console.error('[PaymentStep] poll error:', err);
+        if (pendingStatus) pendingStatus.textContent = t('payment.retryCooldown').replace('{n}', '60');
+      }
+    })();
+
+    const verifyBtn = document.querySelector('[data-result-verify]') as HTMLButtonElement | null;
+    if (verifyBtn && !verifyBtn.dataset.hooked) {
+      verifyBtn.dataset.hooked = 'true';
+      verifyBtn.addEventListener('click', async () => {
+        if (verifyBtn.disabled) return;
+        verifyBtn.disabled = true;
+        try {
+          const booking = await fetchBookingStatus(cartId, accessToken);
+          render(booking);
+        } catch (err) {
+          console.error('[PaymentStep] verify again:', err);
+        } finally {
+          verifyBtn.disabled = false;
+        }
+      });
     }
-    let successUrl = `/book/success?booking=${cartId}`;
-    if (accessToken) successUrl += `&token=${encodeURIComponent(accessToken)}`;
-    if (lang !== 'en') successUrl = `/${lang}${successUrl}`;
-    window.location.href = successUrl;
+
+    const printBtn = document.querySelector('[data-result-print]') as HTMLButtonElement | null;
+    if (printBtn && !printBtn.dataset.hooked) {
+      printBtn.dataset.hooked = 'true';
+      printBtn.addEventListener('click', () => window.print());
+    }
+  }
+
+  function renderPaymentResult(booking: any, cartId: string, t: TFunc): void {
+    const status = booking?.status || '';
+    const ui = mapBookingStatus(status);
+    const successBox = document.querySelector('[data-result-success]') as HTMLElement | null;
+    const pendingBox = document.querySelector('[data-result-pending]') as HTMLElement | null;
+    const errorBox = document.querySelector('[data-result-error]') as HTMLElement | null;
+    const confCode = document.querySelector('[data-result-conf-code]') as HTMLElement | null;
+    const errorTitle = document.querySelector('[data-result-error-title]') as HTMLElement | null;
+    const errorMessage = document.querySelector('[data-result-error-message]') as HTMLElement | null;
+
+    // Orden critico: limpiar los tres antes de mostrar el que aplica
+    // (re-render tras "Verificar de nuevo" desde pending).
+    successBox?.classList.add('hidden');
+    pendingBox?.classList.add('hidden');
+    errorBox?.classList.add('hidden');
+
+    if (ui === 'paid') {
+      if (confCode) confCode.textContent = booking?.cart_id || cartId;
+      successBox?.classList.remove('hidden');
+      return;
+    }
+    if (ui === 'pending') {
+      pendingBox?.classList.remove('hidden');
+      return;
+    }
+    // error: expired/rechazado muestran su estado correcto; el resto no encontrada.
+    if (errorTitle && status === 'expired') errorTitle.textContent = t('success.paymentExpired');
+    if (errorMessage && status === 'expired') errorMessage.textContent = t('success.paymentExpiredMessage');
+    if (errorTitle && (status === 'failed' || status === 'rejected' || status === 'cancelled')) errorTitle.textContent = t('success.paymentRejected');
+    if (errorMessage && (status === 'failed' || status === 'rejected' || status === 'cancelled')) errorMessage.textContent = t('success.paymentRejectedMessage');
+    errorBox?.classList.remove('hidden');
   }
 
   // ---- Todo 29: countdown del hold + extend (una vez) + beforeunload ----
@@ -304,7 +461,7 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
       // 1) Estado local: si ya hay payment_id o pago confirmado -> success.
       const local = await bookingService.getBookingStatus(cartId, accessToken);
       if (local.success && resolvePaymentOutcome(null, local.data) === 'redirect_success') {
-        redirectToSuccess(cartId, accessToken);
+        showPaymentResult(cartId, accessToken);
         return;
       }
       // 2) MP por external_reference (payment-check, todo 31): pago existente
@@ -318,7 +475,7 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
         now: Date.now(),
       });
       if (plan.action === 'redirect_success') {
-        redirectToSuccess(cartId, accessToken);
+        showPaymentResult(cartId, accessToken);
         return;
       }
       if (plan.action === 'manual_review') {
@@ -537,14 +694,14 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
 
                   if (processRes.success) {
                     resolve();
-                    redirectToSuccess(cartId!, accessToken!);
+                    showPaymentResult(cartId!, accessToken!);
                     return;
                   }
 
                   const outcome = resolvePaymentOutcome(processRes.error, null);
                   if (outcome === 'redirect_success') {
                     resolve();
-                    redirectToSuccess(cartId!, accessToken!);
+                    showPaymentResult(cartId!, accessToken!);
                     return;
                   }
 
@@ -634,6 +791,8 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
     if (payReadyTimer !== null) { window.clearTimeout(payReadyTimer); payReadyTimer = null; }
     stopCooldown();
     stopHoldCountdown();
+    resultPollController?.abort();
+    resultPollController = null;
     abortController.abort();
   });
 </script>
