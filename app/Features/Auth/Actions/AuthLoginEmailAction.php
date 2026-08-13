@@ -52,8 +52,8 @@ class AuthLoginEmailAction {
             return;
         }
 
-        if (isset($user['error']) && $user['error'] === 'oauth_only') {
-            $provider = ucfirst($user['provider'] ?? 'Google');
+        if (isset($user['error'])) {
+            $provider = ucfirst($user['provider']);
             $msg = "This account was registered with {$provider}. Please use 'Continue with {$provider}' to sign in.";
             if ($isHtml) {
                 header('Location: /login?error=' . urlencode($msg));

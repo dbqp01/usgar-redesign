@@ -58,6 +58,9 @@ class AuthCallbackAction {
             }
 
             $user = $userModel->findById($userId);
+            if ($user === null) {
+                throw HttpException::internal("No se pudo recuperar la cuenta de usuario.");
+            }
             $jwt = SessionService::createToken($user);
             SessionService::setAuthCookie($jwt);
 

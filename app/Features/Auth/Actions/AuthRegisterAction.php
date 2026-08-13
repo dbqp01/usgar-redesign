@@ -60,6 +60,10 @@ class AuthRegisterAction {
         }
 
         $user = $userModel->findById($userId);
+        if ($user === null) {
+            Response::error('No se pudo recuperar la cuenta de usuario.', 500);
+            return;
+        }
         $jwt = SessionService::createToken($user);
         SessionService::setAuthCookie($jwt);
 

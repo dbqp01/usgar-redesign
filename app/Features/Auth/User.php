@@ -53,14 +53,16 @@ class User {
     /**
      * Busca un usuario por email.
      *
-     * @return array<string, mixed>|null
+     * @return array{id: int, email: string, first_name: ?string, last_name: ?string,
+     *               password_hash: ?string, phone: ?string, photo_url: ?string,
+     *               provider: string, provider_id: ?string}|null
      */
     public function findByEmail(string $email): ?array {
         try {
             $stmt = $this->pdo->prepare('SELECT * FROM users WHERE email = :email LIMIT 1');
             $stmt->execute([':email' => $email]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $result ?: null;
+            return $result ? self::hydrate($result) : null;
         } catch (PDOException $e) {
             Logger::error('User::findByEmail failed: ' . $e->getMessage());
             return null;
@@ -70,18 +72,44 @@ class User {
     /**
      * Busca un usuario por su ID.
      *
-     * @return array<string, mixed>|null
+     * @return array{id: int, email: string, first_name: ?string, last_name: ?string,
+     *               password_hash: ?string, phone: ?string, photo_url: ?string,
+     *               provider: string, provider_id: ?string}|null
      */
     public function findById(int $id): ?array {
         try {
             $stmt = $this->pdo->prepare('SELECT * FROM users WHERE id = :id LIMIT 1');
             $stmt->execute([':id' => $id]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $result ?: null;
+            return $result ? self::hydrate($result) : null;
         } catch (PDOException $e) {
             Logger::error('User::findById failed: ' . $e->getMessage());
             return null;
         }
+    }
+
+    /**
+     * Convierte una fila cruda de la tabla users (PDO devuelve string|int según
+     * la columna) al shape tipado del modelo (P3-4, 2026-08-12). Sin esto,
+     * PHPStan ve array<string,mixed> y no puede verificar createToken().
+     *
+     * @param array<string, mixed> $row
+     * @return array{id: int, email: string, first_name: ?string, last_name: ?string,
+     *               password_hash: ?string, phone: ?string, photo_url: ?string,
+     *               provider: string, provider_id: ?string}
+     */
+    private static function hydrate(array $row): array {
+        return [
+            'id'            => (int)$row['id'],
+            'email'         => (string)$row['email'],
+            'first_name'    => $row['first_name'] !== null ? (string)$row['first_name'] : null,
+            'last_name'     => $row['last_name'] !== null ? (string)$row['last_name'] : null,
+            'password_hash' => $row['password_hash'] !== null ? (string)$row['password_hash'] : null,
+            'phone'         => $row['phone'] !== null ? (string)$row['phone'] : null,
+            'photo_url'     => $row['photo_url'] !== null ? (string)$row['photo_url'] : null,
+            'provider'      => (string)$row['provider'],
+            'provider_id'   => $row['provider_id'] !== null ? (string)$row['provider_id'] : null,
+        ];
     }
 
     /**
@@ -200,7 +228,9 @@ class User {
      * Verifica email + contrasena y retorna el usuario.
      * Retorna un arreglo especial ['error' => 'oauth_only', 'provider' => ...] si la cuenta fue creada via OAuth.
      *
-     * @return array<string, mixed>|null
+     * @return array{error: 'oauth_only', provider: string}|array{id: int, email: string,
+     *               first_name: ?string, last_name: ?string, password_hash: ?string,
+     *               phone: ?string, photo_url: ?string, provider: string, provider_id: ?string}|null
      */
     public function verifyPassword(string $email, string $password): ?array {
         $user = $this->findByEmail($email);
@@ -212,7 +242,7 @@ class User {
         if (empty($user['password_hash'])) {
             return [
                 'error'    => 'oauth_only',
-                'provider' => $user['provider'] ?? 'Google',
+                'provider' => $user['provider'],
             ];
         }
 
