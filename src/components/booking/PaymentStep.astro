@@ -226,6 +226,12 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
   }
 
   function resetPaymentUi(): void {
+    // Root cause (2026-08-14): la visibilidad REAL de los paneles la gobierna
+    // applyState() en book.astro segun wizardStore.step. resetPaymentUi solo
+    // tocaba clases CSS del guest step, pero el wizard seguia en step 3 con el
+    // panel 2 hidden+inert -> pantalla vacia (bug b23dbed 03/08, visto en la
+    // reunion del 13/08). El fix: viajar en el store, no tocar clases.
+    if (wizardStore.getState().step === 3) wizardStore.back();
     const panel = document.querySelector('[data-payment-panel]') as HTMLElement | null;
     const placeholder = document.querySelector('[data-payment-placeholder]') as HTMLElement | null;
     const guestStep = document.querySelector('[data-guest-step]') as HTMLElement | null;
@@ -641,6 +647,17 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
           theme: isDark ? 'dark' : 'default',
         });
 
+        // Timer de seguridad (prometido en el comentario original pero nunca
+        // creado — payReadyTimer solo se limpiaba): si el brick no llega a
+        // onReady (iframes de secure-fields bloqueados por adblocker/red, SDK
+        // lento), el usuario se quedaba sin boton Pay para siempre. Ahora
+        // mostramos un error accionable y el boton Back (ya funcional) permite
+        // reintentar.
+        payReadyTimer = window.setTimeout(() => {
+          payReadyTimer = null;
+          showCardError(t('book.unexpectedError'));
+        }, 15000);
+
         cardFormInstance = await bricksBuilder.create('cardPayment', 'cardPaymentBrick_container', {
           initialization: {
             amount: Number(totalAmount),
@@ -681,6 +698,15 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
             onSubmit: (cardFormData: any) => {
               return new Promise<void>(async (resolve, reject) => {
                 clearCardError();
+                // Cooldown real: startCooldown() deshabilitaba btn-final-pay,
+                // que NO existe en el DOM (el boton lo renderiza el brick) —
+                // el reintento inmediato tras NETWORK_ERROR podia duplicar el
+                // cobro. El guard va en onSubmit, donde el brick SI pasa.
+                if (Date.now() < cooldownEndsAt) {
+                  showCardError(t('payment.retryCooldown').replace('{n}', formatCountdown(Math.ceil((cooldownEndsAt - Date.now()) / 1000))));
+                  reject();
+                  return;
+                }
                 processingPayment = true;
                 errorBanner?.classList.add('hidden');
 
@@ -754,6 +780,7 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
         brickContainer?.addEventListener('input', () => clearCardError(), { capture: true });
       } catch (err: any) {
         console.error(err);
+        if (payReadyTimer !== null) { window.clearTimeout(payReadyTimer); payReadyTimer = null; }
         resetPaymentUi();
         setProcessing(false);
         started = false; // permitir reintento tras error inesperado
