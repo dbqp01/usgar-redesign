@@ -489,7 +489,8 @@
       "bank_error": "Le paiement a été refusé en raison d'une erreur bancaire. Réessayez."
     },
     "acceptTerms": "En continuant, vous acceptez nos",
-    "acceptAnd": "et"
+    "acceptAnd": "et",
+    "chargedInPEN": "Le paiement sera effectue en soles peruviens (PEN), soit environ USD {usd} au taux fixe lors de votre reservation."
   },
   "status": {
     "ready": "Système prêt",

@@ -153,7 +153,7 @@ const t = useTranslations(lang);
       <button
         type="button"
         data-verify-again
-        class="inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold uppercase tracking-wider bg-primary hover:bg-primary-dark text-white transition-[background-color,color,box-shadow] duration-300 hover:shadow-lg hover:shadow-primary/25 cursor-pointer"
+        class="hidden inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold uppercase tracking-wider bg-primary hover:bg-primary-dark text-white transition-[background-color,color,box-shadow] duration-300 hover:shadow-lg hover:shadow-primary/25 cursor-pointer"
       >
         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M5.1 9a7 7 0 0111.9-3M18.9 15a7 7 0 01-11.9 3" />
@@ -393,10 +393,15 @@ const t = useTranslations(lang);
     try {
       pollingAbortController = new AbortController();
       // Poll para la confirmacion del pago (maneja la carrera del webhook).
+      // UX (2026-08-14): el boton manual nace oculto — solo se muestra si el
+      // polling se agota (10 min sin resolucion) o falla. Ninguna plataforma
+      // pide verificar manualmente mientras el sistema ya esta verificando.
       const booking = await pollForPayment(bookingId, token, pollingAbortController.signal, isPendingStatus);
+      if (isPendingStatus(booking.status) && verifyAgainBtn) verifyAgainBtn.classList.remove('hidden');
       await renderBooking(booking);
     } catch (err) {
       console.error('[Success Page Error]', err);
+      verifyAgainBtn?.classList.remove('hidden');
       loadingContainer?.classList.add('hidden');
       errorContainer?.classList.remove('hidden');
     }

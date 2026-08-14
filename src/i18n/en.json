@@ -489,7 +489,8 @@
       "bank_error": "The payment was rejected due to a bank error. Try again."
     },
     "acceptTerms": "By continuing you accept our",
-    "acceptAnd": "&"
+    "acceptAnd": "&",
+    "chargedInPEN": "You will be charged in Peruvian soles (PEN) — approximately USD {usd} at the rate locked for your booking."
   },
   "status": {
     "ready": "System ready",

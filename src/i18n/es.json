@@ -489,7 +489,8 @@
       "bank_error": "El pago fue rechazado por un error con el banco. Intenta de nuevo."
     },
     "acceptTerms": "Al continuar aceptas nuestros",
-    "acceptAnd": "y"
+    "acceptAnd": "y",
+    "chargedInPEN": "Se te cobrara en soles peruanos (PEN), equivalente a aproximadamente USD {usd} al tipo de cambio congelado en tu reserva."
   },
   "status": {
     "ready": "Sistema listo.",

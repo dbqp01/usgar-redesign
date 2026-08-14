@@ -28,6 +28,11 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
     <div id="mp-payment-form-wrap" class="space-y-4">
       <div id="cardPaymentBrick_container"></div>
 
+      <!-- Transparencia de moneda (2026-08-14): el sitio cotiza en USD pero la
+           cuenta MP es peruana -> el cargo real es PEN. El hueped debe ver la
+           equivalencia ANTES de pagar, no en el estado de cuenta del banco. -->
+      <p data-pen-note class="hidden text-[11px] text-text-secondary-light dark:text-text-secondary-dark text-center"></p>
+
       <div data-payment-error class="hidden p-3 rounded-lg border border-rose-400/20 bg-rose-500/5 text-rose-600 dark:text-rose-400 text-sm">
         <p data-payment-error-text></p>
       </div>
@@ -116,7 +121,7 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
         <p data-result-pending-status class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-3">{t('success.verifyingPayment')}...</p>
       </div>
       <div class="flex flex-col sm:flex-row gap-3 justify-center pt-1">
-        <button type="button" data-result-verify class="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold uppercase tracking-wider bg-primary hover:bg-primary-dark text-white cursor-pointer">
+        <button type="button" data-result-verify class="hidden inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold uppercase tracking-wider bg-primary hover:bg-primary-dark text-white cursor-pointer">
           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M5.1 9a7 7 0 0111.9-3M18.9 15a7 7 0 01-11.9 3" />
           </svg>
@@ -285,18 +290,27 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
 
     resultPollController?.abort();
     resultPollController = new AbortController();
+    // UX (2026-08-14): el boton "Verificar de nuevo" nace OCULTO — el polling
+    // automatico es la via principal (15s x 40). Solo se muestra si el polling
+    // se agota (10 min sin resolucion) o falla: ninguna plataforma te pide
+    // verificar manualmente mientras el sistema ya esta verificando.
+    const verifyBtn = document.querySelector('[data-result-verify]') as HTMLButtonElement | null;
     void (async () => {
       try {
         const booking = await pollForPayment(cartId, accessToken, resultPollController!.signal, isPendingStatus);
-        if (!resultPollController!.signal.aborted) render(booking);
+        if (!resultPollController!.signal.aborted) {
+          // Polling agotado y sigue pending: recien ahi el boton manual tiene sentido.
+          if (isPendingStatus(booking.status)) verifyBtn?.classList.remove('hidden');
+          render(booking);
+        }
       } catch (err: any) {
         if (err?.name === 'Aborted' || resultPollController?.signal.aborted) return;
         console.error('[PaymentStep] poll error:', err);
+        verifyBtn?.classList.remove('hidden');
         if (pendingStatus) pendingStatus.textContent = t('payment.retryCooldown').replace('{n}', '60');
       }
     })();
 
-    const verifyBtn = document.querySelector('[data-result-verify]') as HTMLButtonElement | null;
     if (verifyBtn && !verifyBtn.dataset.hooked) {
       verifyBtn.dataset.hooked = 'true';
       verifyBtn.addEventListener('click', async () => {
@@ -613,6 +627,15 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
         const cartId = data.cart_id;
         const accessToken = data.access_token;
         const totalAmount = data.gateway_price || data.price || allocation.total;
+
+        // Transparencia de moneda: cargo real en PEN (cuenta MP peruana),
+        // equivalencia USD del hold (price_snapshot congelado al cotizar).
+        const usdTotal = data.price || allocation.total;
+        const penNote = document.querySelector('[data-pen-note]') as HTMLElement | null;
+        if (penNote) {
+          penNote.textContent = t('payment.chargedInPEN').replace('{usd}', Number(usdTotal).toFixed(2));
+          penNote.classList.remove('hidden');
+        }
 
         if (!mpPublicKey || !cartId || !accessToken) {
           resetPaymentUi();
