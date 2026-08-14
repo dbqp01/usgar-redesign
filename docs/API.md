@@ -84,9 +84,12 @@ Crea el hold (bloqueo 15 min, `BOOKING_HOLD_TTL`), de 1 a 3 habitaciones (multi-
   ],
   "checkIn": "2026-08-01", "checkOut": "2026-08-03",
   "rateType": "standard",                     // standard | non_refundable (whitelist cerrada, GLOBAL por reserva)
-  "guestDetails": { "firstName": "...", "lastName": "...", "email": "...", "phone": "..." }
+  "guestDetails": { "firstName": "...", "lastName": "...", "email": "...", "phone": "...", "specialRequests": "Airport transfer: flight LA-2451 arriving 14:30" }
 }
 ```
+
+**`guestDetails.specialRequests` (opcional, fix 2026-08-14):** texto libre de peticiones del huésped — hoy lo usa el pickup del aeropuerto (`#airport-transfer` + `#flight-time` + `#flight-details` del wizard). Se persiste en `provisional_bookings.guest_data.special_requests`, se devuelve autenticado en `GET /api/booking-status` (campo `special_requests`) y viaja en el evento `booking.paid` hasta el PMS. Antes del fix el campo se descartaba en el backend (pérdida de datos: el hotel nunca se enteraba del traslado).
+
 **Legacy (1 habitación, sin regresión):** `roomSlug` (o `id_room_type`) + `guests` — se normaliza a `rooms[]` internamente.
 
 El backend recalcula el precio por habitación (fuente única QloApps) y lo congela junto con el tipo de cambio — **el cliente nunca envía precios**. Reglas de precio (2026-08-12):

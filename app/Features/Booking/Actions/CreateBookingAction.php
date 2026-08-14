@@ -60,6 +60,14 @@ class CreateBookingAction {
             if (empty($body['guestPhone'])) {
                 $body['guestPhone'] = $gd['phone'] ?? '';
             }
+            // FIX 2026-08-14 (perdida de datos): el pickup del aeropuerto
+            // (airport-transfer + hora de vuelo) se mandaba en
+            // guestDetails.specialRequests pero se DESCARTAba aqui — el hold
+            // persistia solo name/email/phone y el traslado se perdia (ni la
+            // BD ni el PMS se enteraban). Se preserva para guest_data.
+            if (empty($body['specialRequests'])) {
+                $body['specialRequests'] = trim((string)($gd['specialRequests'] ?? ''));
+            }
         }
 
         // Legacy (1 habitacion): roomSlug o id_room_type -> rooms[] (mismo camino).
@@ -254,6 +262,10 @@ class CreateBookingAction {
                     'email'  => $guestEmail,
                     'phone'  => $guestPhone,
                     'guests' => array_sum(array_column($resolved, 'guests')),
+                    // FIX 2026-08-14: pickup del aeropuerto (hora de vuelo) —
+                    // se descartaba antes; ahora persiste y viaja en el evento
+                    // booking.paid hasta el PMS (special_requests).
+                    'special_requests' => trim((string)($body['specialRequests'] ?? '')),
                 ],
                 'room_data'               => $roomDataList,
                 'price_snapshot'          => $totalPrice,

@@ -323,7 +323,8 @@
     "paymentRejectedMessage": "Tu pago fue rechazado por el banco o el emisor de la tarjeta. No se realizó ningún cargo. Inténtalo de nuevo o contáctanos.",
     "manualReviewMessage": "No pudimos confirmar tu pago. Contacta al hotel con tu número de reserva para completarla.",
     "retryCooldownMessage": "Podrás verificar de nuevo en {n}",
-    "pluralRooms": "Habitaciones"
+    "pluralRooms": "Habitaciones",
+    "pickupNote": "Traslado del aeropuerto solicitado — te contactaremos para coordinar."
   },
   "auth": {
     "signIn": "Iniciar Sesión",

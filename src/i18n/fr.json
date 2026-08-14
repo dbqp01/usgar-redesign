@@ -323,7 +323,8 @@
     "paymentRejectedMessage": "Votre paiement a été refusé par la banque ou l'émetteur de la carte. Aucun débit n'a été effectué. Veuillez réessayer ou nous contacter.",
     "manualReviewMessage": "Nous n'avons pas pu confirmer votre paiement. Contactez l'hôtel avec votre numéro de réservation pour la finaliser.",
     "retryCooldownMessage": "Vous pourrez vérifier à nouveau dans {n}",
-    "pluralRooms": "Chambres"
+    "pluralRooms": "Chambres",
+    "pickupNote": "Transfert aeroportuaire demande — nous vous contacterons pour coordonner."
   },
   "auth": {
     "signIn": "Se Connecter",

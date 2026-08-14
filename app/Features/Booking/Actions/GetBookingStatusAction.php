@@ -107,6 +107,10 @@ class GetBookingStatusAction {
             $payload['guest_name']  = $hold['guest_data']['name'] ?? '';
             $payload['guest_email'] = $guestEmail;
             $payload['guest_phone'] = $hold['guest_data']['phone'] ?? '';
+            // FIX 2026-08-14: pickup del aeropuerto persistido — el recibo de
+            // exito inline lo muestra para que el huesped sepa que quedo
+            // registrado (y el hotel lo coordine).
+            $payload['special_requests'] = $hold['guest_data']['special_requests'] ?? '';
         }
 
         Response::json($payload);

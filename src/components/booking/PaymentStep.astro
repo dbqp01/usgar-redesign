@@ -98,6 +98,7 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
         <span class="block text-[10px] uppercase tracking-widest text-text-secondary-light dark:text-text-secondary-dark">{t('success.confirmationCode')}</span>
         <span data-result-conf-code class="font-mono text-lg font-bold text-primary select-all">---</span>
       </div>
+      <p data-result-pickup-note class="hidden text-sm text-text-secondary-light dark:text-text-secondary-dark max-w-md mx-auto"></p>
       <div class="flex flex-col sm:flex-row gap-3 justify-center pt-1">
         <button type="button" data-result-print class="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 border border-black/5 dark:border-white/5 cursor-pointer">
           {t('success.printReceipt')}
@@ -352,6 +353,14 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
 
     if (ui === 'paid') {
       if (confCode) confCode.textContent = booking?.cart_id || cartId;
+      // FIX 2026-08-14: pickup del aeropuerto persistido — el recibo inline
+      // confirma al huesped que su traslado quedo registrado.
+      const pickupNote = document.querySelector('[data-result-pickup-note]') as HTMLElement | null;
+      if (pickupNote) {
+        const hasPickup = typeof booking?.special_requests === 'string' && booking.special_requests.trim() !== '';
+        pickupNote.textContent = hasPickup ? t('success.pickupNote') : '';
+        pickupNote.classList.toggle('hidden', !hasPickup);
+      }
       successBox?.classList.remove('hidden');
       return;
     }
@@ -590,6 +599,7 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
     const guestPhoneInput = document.getElementById('guest-phone') as HTMLInputElement | null;
     const airportTransferCheckbox = document.getElementById('airport-transfer') as HTMLInputElement | null;
     const flightTimeInput = document.getElementById('flight-time') as HTMLInputElement | null;
+    const flightDetailsInput = document.getElementById('flight-details') as HTMLInputElement | null;
 
     if (!guestNameInput?.value || !guestEmailInput?.value || !guestPhoneInput?.value) {
       wizardStore.back();
@@ -607,7 +617,9 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
             lastName: guestNameInput.value.split(' ').slice(1).join(' ') || guestNameInput.value,
             email: guestEmailInput.value,
             phone: guestPhoneInput.value,
-            specialRequests: airportTransferCheckbox?.checked ? `Airport transfer requested at ${flightTimeInput?.value || ''}` : '',
+            specialRequests: airportTransferCheckbox?.checked
+              ? `Airport transfer: flight ${flightDetailsInput?.value?.trim() || 'N/A'} arriving ${flightTimeInput?.value || ''}`
+              : '',
           },
         });
 
