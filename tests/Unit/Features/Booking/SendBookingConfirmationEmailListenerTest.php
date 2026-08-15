@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Test\Unit\Features\Booking;
 
 use PHPUnit\Framework\TestCase;
+use App\Core\Config;
 use App\Features\Booking\Domain\Events\BookingPaidEvent;
 use App\Features\Booking\Domain\Listeners\SendBookingConfirmationEmailListener;
 use App\Features\Shared\Ports\MailerPortInterface;
@@ -41,13 +42,16 @@ final class SendBookingConfirmationEmailListenerTest extends TestCase {
     }
 
     private function setSmtpHost(string $value): void {
-        putenv('SMTP_HOST=' . $value);
-        $_ENV['SMTP_HOST'] = $value;
+        // Config::set es el override oficial de runtime/testing (escribe el
+        // cache del boot). putenv NO sirve: Config::get da prioridad al cache
+        // cargado en boot, y el CI crea .env copiando .env.example (que ya
+        // define SMTP_HOST=smtp.hostinger.com) — el putenv no lo pisaba y el
+        // test fail-soft enviaba igual. Verificado en CI 2026-08-15.
+        Config::set('SMTP_HOST', $value);
     }
 
     protected function tearDown(): void {
-        putenv('SMTP_HOST');
-        unset($_ENV['SMTP_HOST']);
+        Config::set('SMTP_HOST', '');
         $this->sent = [];
     }
 
