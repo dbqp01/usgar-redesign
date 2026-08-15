@@ -93,9 +93,11 @@ class SendBookingConfirmationEmailListener implements ListenerInterface {
         }
         $roomRows = '';
         $nights = 1;
-        foreach ($roomData as $i => $r) {
+        $roomIndex = 0;
+        foreach ($roomData as $r) {
+            $roomIndex++;
             $nights = max($nights, (int)($r['nights'] ?? 1));
-            $name = htmlspecialchars((string)($r['room_name'] ?? "Room " . ($i + 1)), ENT_QUOTES, 'UTF-8');
+            $name = htmlspecialchars((string)($r['room_name'] ?? "Room {$roomIndex}"), ENT_QUOTES, 'UTF-8');
             $guests = (int)($r['guests'] ?? 0);
             $roomRows .= "<tr>"
                 . "<td style=\"padding:8px 0;border-bottom:1px solid #eee;color:#1a1a1a;\">{$name}</td>"

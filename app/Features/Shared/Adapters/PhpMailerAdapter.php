@@ -33,9 +33,9 @@ class PhpMailerAdapter implements MailerPortInterface {
             $mail->SMTPAuth   = true;
             $mail->Username   = (string)Config::get('SMTP_USER', '');
             $mail->Password   = (string)Config::get('SMTP_PASS', '');
-            $mail->Port       = (int)Config::get('SMTP_PORT', 587);
+            $mail->Port       = (int)Config::get('SMTP_PORT', '587');
             $mail->SMTPSecure = (string)Config::get('SMTP_SECURE', PHPMailer::ENCRYPTION_STARTTLS);
-            $mail->Timeout    = (int)Config::get('SMTP_TIMEOUT', 15);
+            $mail->Timeout    = (int)Config::get('SMTP_TIMEOUT', '15');
             $mail->CharSet    = PHPMailer::CHARSET_UTF8;
 
             $mail->setFrom(
