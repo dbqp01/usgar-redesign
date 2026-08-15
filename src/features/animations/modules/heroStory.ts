@@ -1,11 +1,26 @@
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const PRELOADER_FALLBACK_MS = 900;
+gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * Hero "periódico" (efecto del dueño 2026-08-15: "se mantiene estático y el
+ * resto de la página sube como un periódico frente a los ojos"). Pin de
+ * ScrollTrigger con pinSpacing:false — el hero queda fijo y el contenido
+ * siguiente (ReviewMarquee, z-10) se desliza POR ENCIMA. El pin es la vía
+ * compatible con Lenis: el sticky CSS no funciona (Lenis transforma el
+ * scroll, nunca activa el sticky del navegador). El fondo oscuro 3-5%
+ * permanente del hero evita el "blanco detrás" al pasar el contenido.
+ *
+ * 2026-08-15 (fix de raíz): la animación de entrada con SplitText se
+ * ELIMINÓ. Causa: usaba `new SplitText(...)` sin importar el módulo →
+ * `ReferenceError: SplitText is not defined` → el `gsap.set([subtitle,
+ * buttons], {autoAlpha: 0})` previo dejaba subtítulo y botones ocultos
+ * para siempre (el hero se veía "en línea recta", solo el h1). La
+ * estructura del hero (h1 + subtítulo + 2 botones) debe ser visible por
+ * CSS desde el primer momento, sin depender de ninguna animación.
+ */
 export function initHeroStory(): gsap.MatchMedia {
-  // gsap.matchMedia() crea su propio context internamente (docs GSAP) y se lo
-  // pasa al callback: ese context sirve a bootHero para registrar los tweens
-  // async via context.add(), revertibles cuando mm.revert() corra.
   const mm = gsap.matchMedia();
 
   mm.add(
@@ -15,122 +30,23 @@ export function initHeroStory(): gsap.MatchMedia {
       reduceMotion: '(prefers-reduced-motion: reduce)',
     },
     (context) => {
-      const { isDesktop, reduceMotion } = context.conditions!;
+      const { reduceMotion } = context.conditions!;
       if (reduceMotion) return;
 
-      void bootHero(isDesktop!, context);
+      const heroSec = document.getElementById('hero');
+      if (!heroSec) return;
+
+      context.add(() => {
+        ScrollTrigger.create({
+          trigger: heroSec,
+          start: 'top top',
+          end: () => `+=${window.innerHeight}`,
+          pin: true,
+          pinSpacing: false,
+        });
+      });
     }
   );
 
   return mm;
-}
-
-async function bootHero(isDesktop: boolean, parentCtx: gsap.Context): Promise<void> {
-  const heroSec = document.getElementById('hero');
-  const heroMedia = document.getElementById('hero-video') || document.getElementById('hero-slideshow');
-  const heroContent = heroSec?.querySelector('.relative.z-10');
-
-  if (!heroSec || !heroMedia) return;
-
-  const heroTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: heroSec,
-      start: 'top top',
-      end: 'bottom top',
-      scrub: 0.8,
-      invalidateOnRefresh: true,
-    }
-  });
-
-  heroTl.to(heroMedia, {
-    scale: isDesktop ? 0.93 : 0.96,
-    autoAlpha: 0.65,
-    ease: 'none'
-  }, 0);
-
-  if (heroContent) {
-    heroTl.to(heroContent, {
-      y: -100,
-      autoAlpha: 0,
-      ease: 'none'
-    }, 0);
-  }
-
-  const { SplitText } = await import('gsap/SplitText');
-  gsap.registerPlugin(SplitText);
-
-  const title = heroSec.querySelector('h1');
-  const subtitle = heroSec.querySelector('p');
-  const buttons = heroSec.querySelector('.flex-col.sm\\:flex-row');
-
-  if (!title || !subtitle || !buttons) return;
-
-  // La entrada del hero se crea DENTRO del context padre (ctx.add):
-  // los tweens y el timeout quedan revertibles al navegar con View Transitions.
-  parentCtx.add(() => {
-    title.classList.remove('animate-fade-in');
-    subtitle.classList.remove('animate-slide-up');
-    buttons.classList.remove('animate-slide-up');
-    (subtitle as HTMLElement).style.animation = 'none';
-    (buttons as HTMLElement).style.animation = 'none';
-
-    gsap.set([subtitle, buttons], { autoAlpha: 0, y: 30 });
-
-    const splitTitle = new SplitText(title, { type: 'words,chars' });
-    gsap.set(splitTitle.chars, { autoAlpha: 0, y: 40 });
-
-    let heroEntryPlayed = false;
-
-    const playHeroEntry = () => {
-      if (heroEntryPlayed) return;
-      heroEntryPlayed = true;
-
-      gsap.timeline()
-        .to(splitTitle.chars, {
-          duration: 1.2,
-          autoAlpha: 1,
-          y: 0,
-          stagger: 0.04,
-          ease: 'power3.out',
-        }, 0)
-        .to(subtitle, {
-          duration: 1.2,
-          autoAlpha: 0.9,
-          y: 0,
-          ease: 'power3.out'
-        }, '-=0.8')
-        .to(buttons, {
-          duration: 1.2,
-          autoAlpha: 1,
-          y: 0,
-          ease: 'power3.out'
-        }, '-=1');
-
-      deferHeroVideoPlay();
-    };
-
-    if (sessionStorage.getItem('usgar_loaded')) {
-      playHeroEntry();
-      return;
-    }
-
-    window.addEventListener('usgar:preloader-done', playHeroEntry, { once: true });
-    const timeoutId = window.setTimeout(playHeroEntry, PRELOADER_FALLBACK_MS);
-
-    return () => {
-      window.clearTimeout(timeoutId);
-      // {once:true} only self-removes if the event fires — if the context
-      // reverts first (SPA navigation) the listener would leak with a stale
-      // closure over the split chars. Remove it explicitly on revert.
-      window.removeEventListener('usgar:preloader-done', playHeroEntry);
-    };
-  });
-}
-
-function deferHeroVideoPlay(): void {
-  const video = document.getElementById('hero-video') as HTMLVideoElement | null;
-  if (!video) return;
-  requestAnimationFrame(() => {
-    video.play().catch(() => { /* autoplay blocked, acceptable */ });
-  });
 }
