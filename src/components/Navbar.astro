@@ -55,9 +55,11 @@ const navLinks = [
 >
   <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16 lg:h-20">
-      <!-- Logo (SVG vectorial: queda bien en tema claro y oscuro) -->
-      <a href={getRelativeLocaleUrl(lang, '')} class="flex-shrink-0 relative z-10" aria-label="USGAR Hotels Home">
-        <LogoUsgar class="h-10 w-auto block" />
+      <!-- Logo: solo el icono de marca, sin wordmark (el dueño 2026-08-15:
+           "no quiero que tenga letras al lado del logo, queda mal"; el icono
+           ES la marca — se agranda para compensar el texto eliminado) -->
+      <a href={getRelativeLocaleUrl(lang, '')} class="flex-shrink-0 relative z-10 flex items-center" aria-label="USGAR Hotels Home">
+        <LogoUsgar class="h-11 lg:h-14 w-auto block" />
       </a>
 
       <DesktopNav navLinks={navLinks} currentPath={currentPath} />
