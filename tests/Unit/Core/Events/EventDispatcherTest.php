@@ -39,7 +39,6 @@ final class EventDispatcherTest extends TestCase {
     private array $createdIds = [];
 
     protected function setUp(): void {
-        Config::set('APP_ENV', 'testing');
         Config::set('EXCHANGE_RATE_USD_PEN', '3.80');
 
         $this->pdo = Database::getInstance()->getConnection();

@@ -45,7 +45,6 @@ final class ProvisionalBookingConcurrencyTest extends TestCase {
     private string $repoRoot = '';
 
     protected function setUp(): void {
-        Config::set('APP_ENV', 'testing');
         Config::set('EXCHANGE_RATE_USD_PEN', '3.80');
         Config::set('MERCADO_PAGO_CURRENCY', 'PEN');
         Config::set('BOOKING_TOKEN_SECRET', 'w2-race-test-secret');

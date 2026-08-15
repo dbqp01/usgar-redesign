@@ -69,7 +69,6 @@ final class MercadoPagoTimeoutTest extends TestCase {
     private int $hungPort = 0;
 
     protected function setUp(): void {
-        Config::set('APP_ENV', 'testing');
         Config::set('MERCADO_PAGO_ACCESS_TOKEN', 'TEST-123456789');
         Config::set('MP_STATEMENT_DESCRIPTOR', 'USGAR HOTELES CUSCO');
         Config::set('MP_BINARY_MODE', 'true');

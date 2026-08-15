@@ -126,7 +126,7 @@ class ExportAvailabilityAction {
             fputcsv($out, $r);
         }
         fclose($out);
-        if (!defined('PHP_TESTING') && Config::get('APP_ENV') !== 'testing') {
+        if (!defined('PHP_TESTING')) {
             exit(0);
         }
     }
@@ -186,7 +186,7 @@ class ExportAvailabilityAction {
         header('Content-Disposition: attachment; filename="usgar-reservas-' . $month . '.xlsx"');
         $writer->save('php://output');
         $spreadsheet->disconnectWorksheets();
-        if (!defined('PHP_TESTING') && Config::get('APP_ENV') !== 'testing') {
+        if (!defined('PHP_TESTING')) {
             exit(0);
         }
     }

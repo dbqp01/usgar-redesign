@@ -18,7 +18,6 @@ use App\Features\Booking\Domain\Events\BookingPaidEvent;
  */
 final class BookingPaidEventTest extends TestCase {
     protected function setUp(): void {
-        Config::set('APP_ENV', 'testing');
         Config::set('EXCHANGE_RATE_USD_PEN', '3.80');
     }
 

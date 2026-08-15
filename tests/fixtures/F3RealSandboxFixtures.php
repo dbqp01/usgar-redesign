@@ -115,7 +115,6 @@ final class F3RealSandboxFixtures {
         }
         // Los webhooks de prueba con payload oficial + firma real no deben
         // invocar exit() (Response::json) dentro de la suite.
-        Config::set('APP_ENV', 'testing');
     }
 
     /** Conexion PDO a la BD real configurada en .env. */

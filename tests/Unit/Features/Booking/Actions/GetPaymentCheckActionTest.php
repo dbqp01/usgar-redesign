@@ -30,7 +30,6 @@ final class GetPaymentCheckActionTest extends TestCase {
     private array $searchedRefs = [];
 
     protected function setUp(): void {
-        Config::set('APP_ENV', 'testing');
         Config::set('BOOKING_TOKEN_SECRET', 'test-booking-token-secret');
 
         $this->bookingRepo = $this->createMock(ProvisionalBookingRepository::class);

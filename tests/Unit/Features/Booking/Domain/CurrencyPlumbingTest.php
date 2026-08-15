@@ -21,7 +21,6 @@ use MercadoPago\Resources\Payment;
  */
 final class CurrencyPlumbingTest extends TestCase {
     protected function setUp(): void {
-        Config::set('APP_ENV', 'testing');
         Config::set('EXCHANGE_RATE_USD_PEN', '3.80');
         Config::set('MERCADO_PAGO_ACCESS_TOKEN', 'TEST-123456789');
         Config::set('MERCADO_PAGO_CURRENCY', 'PEN');

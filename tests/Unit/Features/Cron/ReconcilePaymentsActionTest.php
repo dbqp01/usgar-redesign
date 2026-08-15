@@ -23,7 +23,6 @@ final class ReconcilePaymentsActionTest extends TestCase {
     private ReconcilePaymentsAction $action;
 
     protected function setUp(): void {
-        Config::set('APP_ENV', 'testing');
 
         $this->pdo = $this->createMock(PDO::class);
         $this->pdo->method('beginTransaction')->willReturn(true);

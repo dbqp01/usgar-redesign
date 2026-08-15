@@ -33,7 +33,6 @@ final class ProcessPaymentActionTest extends TestCase {
     private ?array $capturedPaymentData = null;
 
     protected function setUp(): void {
-        Config::set('APP_ENV', 'testing');
         Config::set('EXCHANGE_RATE_USD_PEN', '3.80');
         // NOTE: MERCADO_PAGO_CURRENCY NO se setea -> QA- del todo 4: default 'PEN'.
         Config::set('BOOKING_TOKEN_SECRET', 'test-booking-token-secret');

@@ -46,7 +46,6 @@ final class RetryManualReviewActionTest extends TestCase {
     private bool $dispatched = false;
 
     protected function setUp(): void {
-        Config::set('APP_ENV', 'testing');
         Config::set('CRON_SECRET', 'w4-test-secret');
         Config::set('EXCHANGE_RATE_USD_PEN', '3.80');
 

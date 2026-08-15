@@ -30,7 +30,6 @@ use App\Test\Fixtures\F3OutboxEventDispatcher;
 // fresco: Config::boot ya los cargo; restoreRealConfig es idempotente) y evita
 // exit() de Response::json dentro del handler.
 F3RealSandboxFixtures::restoreRealConfig();
-Config::set('APP_ENV', 'testing');
 
 $paymentId = (string)($argv[1] ?? '');
 $requestId = (string)($argv[2] ?? '');

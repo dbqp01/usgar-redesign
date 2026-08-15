@@ -6,13 +6,18 @@ namespace App\Scripts;
 use App\Core\Config;
 
 /**
- * Guard de deploy (todo 33, Wave 6): en APP_ENV=production exige que
- * MERCADO_PAGO_ACCESS_TOKEN pertenezca a la ALLOWLIST configurada por
- * HASH (sha256) — NUNCA por prefijo de token: la doc MP vigente confirma
- * que los tokens de PRUEBA tambien empiezan con APP_USR (Checkout Pro y
- * Orders crean la cuenta de prueba automaticamente con prefijo APP_USR) y
- * que el prefijo puede variar segun la solucion; el entorno lo define la
- * app/panel, no el prefijo.
+ * Guard de deploy (todo 33, Wave 6): exige que MERCADO_PAGO_ACCESS_TOKEN
+ * pertenezca a la ALLOWLIST configurada por HASH (sha256) — NUNCA por
+ * prefijo de token: la doc MP vigente confirma que los tokens de PRUEBA
+ * tambien empiezan con APP_USR (Checkout Pro y Orders crean la cuenta de
+ * prueba automaticamente con prefijo APP_USR) y que el prefijo puede variar
+ * segun la solucion; el entorno lo define la app/panel, no el prefijo.
+ *
+ * 2026-08-15: el guard aplica SIEMPRE (fail-closed). Antes se omitia fuera
+ * de APP_ENV=production; APP_ENV se elimino de raiz por decision del dueño
+ * (una variable de entorno menos que pueda causar problemas). Como es un
+ * script manual de pre-deploy, bloquear siempre es el comportamiento
+ * correcto: sin allowlist configurada, no se despliega.
  *
  * La allowlist la provee el USUARIO en `.env.production` (archivo FUERA de
  * git) con la clave:
@@ -28,13 +33,6 @@ final class CheckProdEnv {
     private const ALLOWLIST_KEY = 'MERCADO_PAGO_PROD_TOKEN_SHA256';
 
     public static function run(): int {
-        $appEnv = (string)Config::get('APP_ENV', 'development');
-
-        if ($appEnv !== 'production') {
-            echo "[check-prod-env] APP_ENV={$appEnv}: guard omitido (solo aplica en produccion).\n";
-            return 0;
-        }
-
         $token = (string)Config::get('MERCADO_PAGO_ACCESS_TOKEN', '');
         if ($token === '') {
             fwrite(STDERR, "[check-prod-env] FAIL: MERCADO_PAGO_ACCESS_TOKEN no esta configurado en produccion.\n");

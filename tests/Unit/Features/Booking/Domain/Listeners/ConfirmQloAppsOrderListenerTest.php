@@ -34,7 +34,6 @@ final class ConfirmQloAppsOrderListenerTest extends TestCase {
     private W4PmsPortDouble $pms;
 
     protected function setUp(): void {
-        Config::set('APP_ENV', 'testing');
         Config::set('QLOAPPS_DEFAULT_GUEST_NAME', 'Huesped USGAR');
         Config::set('DEFAULT_GUEST_EMAIL', 'reserva@test.com');
         $this->pms = new W4PmsPortDouble();

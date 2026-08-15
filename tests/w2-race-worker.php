@@ -37,7 +37,6 @@ use App\Test\Fixtures\TestDb;
 
 // Entorno deterministico de test (nunca toca credenciales reales de MP:
 // el FakeGateway no usa el access token).
-Config::set('APP_ENV', 'testing');
 Config::set('EXCHANGE_RATE_USD_PEN', '3.80');
 Config::set('MERCADO_PAGO_CURRENCY', 'PEN');
 Config::set('BOOKING_TOKEN_SECRET', 'w2-race-test-secret');

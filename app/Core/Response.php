@@ -36,7 +36,7 @@ class Response {
             echo '{"success":false,"error":"Internal serialization error"}';
         }
 
-        if (!defined('PHP_TESTING') && Config::get('APP_ENV') !== 'testing') {
+        if (!defined('PHP_TESTING')) {
             exit(0);
         }
     }
@@ -71,7 +71,7 @@ class Response {
         }
 
         // Vaciar todos los búferes de salida
-        if (Config::get('APP_ENV') !== 'testing') {
+        if (!defined('PHP_TESTING')) {
             while (ob_get_level() > 0) {
                 ob_end_flush();
             }

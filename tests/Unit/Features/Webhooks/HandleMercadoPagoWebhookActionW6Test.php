@@ -33,7 +33,6 @@ final class HandleMercadoPagoWebhookActionW6Test extends TestCase {
     private HandleMercadoPagoWebhookAction $action;
 
     protected function setUp(): void {
-        Config::set('APP_ENV', 'testing');
         Config::set('MERCADO_PAGO_WEBHOOK_SECRET', W3WebhookFixtures::TEST_SECRET);
         // Tasa ACTUAL: 3.90 — distinta de la congelada en los holds (3.75).
         Config::set('EXCHANGE_RATE_USD_PEN', '3.90');

@@ -44,7 +44,6 @@ final class ProcessOutboxActionTest extends TestCase {
     private array $dispatched = [];
 
     protected function setUp(): void {
-        Config::set('APP_ENV', 'testing');
         Config::set('EXCHANGE_RATE_USD_PEN', '3.80');
         Config::set('MERCADO_PAGO_CURRENCY', 'PEN');
 

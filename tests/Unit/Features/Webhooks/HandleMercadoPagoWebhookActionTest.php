@@ -35,7 +35,6 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
     private HandleMercadoPagoWebhookAction $action;
 
     protected function setUp(): void {
-        Config::set('APP_ENV', 'testing');
         Config::set('MERCADO_PAGO_WEBHOOK_SECRET', W3WebhookFixtures::TEST_SECRET);
         Config::set('EXCHANGE_RATE_USD_PEN', '3.80');
 

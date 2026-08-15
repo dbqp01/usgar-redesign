@@ -40,7 +40,6 @@ final class MercadoPagoWebhookAckTest extends TestCase {
     private int $hungPort = 0;
 
     protected function setUp(): void {
-        Config::set('APP_ENV', 'testing');
         Config::set('MERCADO_PAGO_ACCESS_TOKEN', 'TEST-123456789');
         Config::set('MERCADO_PAGO_WEBHOOK_SECRET', W3WebhookFixtures::TEST_SECRET);
         Config::set('MP_STATEMENT_DESCRIPTOR', 'USGAR HOTELES CUSCO');

@@ -31,7 +31,7 @@ Panel: https://www.mercadopago.com/developers/panel/app
 
 > Importante (doc MP vigente): el **prefijo del token NO define el entorno** — los Access Tokens de prueba y producción pueden empezar ambos con `APP_USR`. El entorno lo define la app/panel. Por eso el deploy exige un **guard por allowlist de hashes** (no por prefijo).
 
-**Guard de deploy:** antes de desplegar con `APP_ENV=production`, `php scripts/check-prod-env.php` verifica que el token esté en la allowlist. Configúrala en `.env.production` (archivo FUERA de git, solo hashes):
+**Guard de deploy:** antes de desplegar, `php scripts/check-prod-env.php` verifica que el token esté en la allowlist. El guard aplica SIEMPRE (fail-closed; desde 2026-08-15 ya no depende de `APP_ENV`, eliminada de raíz). Configúrala en `.env.production` (archivo FUERA de git, solo hashes):
 
 ```
 MERCADO_PAGO_PROD_TOKEN_SHA256=<sha256 del Access Token de producción>
