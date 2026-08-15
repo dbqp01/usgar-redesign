@@ -1,6 +1,5 @@
 ﻿---
 import Layout from "../layouts/Layout.astro";
-import BookingWidget from "../components/BookingWidget.astro";
 import ServiceGrid from "../components/ServiceGrid.astro";
 import FAQSection from "../components/FAQSection.astro";
 import LocationMap from "../components/LocationMap.astro";
@@ -112,26 +111,21 @@ const schemas = [hotelSchema, faqSchema];
   <Hero lang={lang} />
 
   <!-- ==========================================
-       BOOKING WIDGET
-       ========================================== -->
-  <BookingWidget />
-
-  <!-- ==========================================
        TRUST MARQUEE â€” Positive Reviews Ribbon
        ========================================== -->
   <ReviewMarquee lang={lang} />
 
   <!-- ==========================================
-       ABOUT SECTION
+       HERITAGE SECTION — 01 (cliente: va primero, 2026-08-15)
        ========================================== -->
-  <AboutSection />
+  <HeritageSection />
 
   <TypographicMarquee items={[t('global.marquee1'), t('global.marquee2'), t('global.marquee3'), t('global.marquee4')]} />
 
   <!-- ==========================================
-       HERITAGE SECTION (Image 1 reference: Legado y Espiritualidad)
+       ABOUT SECTION — 02
        ========================================== -->
-  <HeritageSection />
+  <AboutSection />
 
   <!-- ==========================================
        INTERACTIVE ROOMS — Editorial Grid

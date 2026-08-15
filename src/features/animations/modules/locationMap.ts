@@ -23,18 +23,22 @@ export async function initLocationMap(
   const map = L.map(container, {
     center: [lat, lng],
     zoom,
-    dragging: true,
+    // En touch el drag del mapa roba el scroll vertical de la página (queja
+    // del dueño 2026-08-15: "Nearby no permite bajar en celular"). El mapa
+    // queda estático en táctil; la navegación va por los links a Google Maps.
+    dragging: !L.Browser.touch,
     scrollWheelZoom: false,
     doubleClickZoom: true,
-    touchZoom: true,
+    touchZoom: !L.Browser.touch,
     zoomControl: false,
     keyboard: false,
     attributionControl: false,
   });
 
-  // Tile layer: CARTO Dark Matter (obsidian luxury theme).
+  // Tile layer: CARTO Voyager (light editorial style, warm palette that matches
+  // the brand; dark tiles were flagged as a bug by the owner, 2026-08-15).
   // Fallback to OSM Standard if the CARTO CDN is blocked or down (DNS blockers, outages).
-  const cartoTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  const cartoTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     maxZoom: 19,
     subdomains: 'abcd',
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -59,15 +63,15 @@ export async function initLocationMap(
   const zoomControl = L.control.zoom({ position: 'bottomright' });
   zoomControl.addTo(map);
 
-  // Hotel Pin Blanco with Gold Radar Pulse (pin blanco + anillo blanco; el
-  // pulso radar y los POIs usan el dorado secondary) (audit 2026-08-12)
+  // Hotel Pin: anillo blanco concéntrico + punto, con sombra suave para
+  // leerse sobre los tiles claros; el pulso radar y los POIs usan el dorado.
   const mainIcon = L.divIcon({
     className: 'usgar-hotel-marker',
     html: `
       <div class="relative flex items-center justify-center cursor-pointer group">
-        <span class="absolute h-7 w-7 rounded-full border-2 border-white/90 shadow-[0_0_18px_rgba(255,255,255,0.35)]"></span>
-        <span class="absolute h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.9)]"></span>
-        <span class="absolute inline-flex h-10 w-10 animate-ping rounded-full bg-secondary/30 opacity-60"></span>
+        <span class="absolute h-7 w-7 rounded-full border-2 border-white shadow-[0_0_0_2px_rgba(0,0,0,0.15),0_2px_14px_rgba(0,0,0,0.4)]"></span>
+        <span class="absolute h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_0_2px_rgba(0,0,0,0.2),0_0_14px_rgba(0,0,0,0.45)]"></span>
+        <span class="absolute inline-flex h-10 w-10 animate-ping rounded-full bg-secondary/40 opacity-70"></span>
       </div>
     `,
     iconSize: [44, 44],
@@ -78,10 +82,10 @@ export async function initLocationMap(
   const hotelMarker = L.marker([lat, lng], { icon: mainIcon }).addTo(map);
 
   const popupHtml = `
-    <div class="p-2 text-stone-100 font-sans max-w-[200px]">
-      <div class="text-secondary font-mono text-[10px] tracking-widest uppercase font-semibold">Boutique Hotel</div>
-      <h4 class="font-serif text-base font-bold text-white mt-0.5">USGAR Hotels</h4>
-      <p class="text-xs text-stone-300 mt-1 leading-tight">759 Calle Hospital, San Pedro, Cusco</p>
+    <div class="p-2 font-sans max-w-[200px]">
+      <div class="text-secondary-dark font-mono text-[10px] tracking-widest uppercase font-semibold">Boutique Hotel</div>
+      <h4 class="font-serif text-base font-bold text-stone-900 mt-0.5">USGAR Hotels</h4>
+      <p class="text-xs text-stone-600 mt-1 leading-tight">759 Calle Hospital, San Pedro, Cusco</p>
     </div>
   `;
   hotelMarker.bindPopup(popupHtml, {
@@ -89,24 +93,24 @@ export async function initLocationMap(
     closeButton: false,
   });
 
-  // Secondary POI Markers
+  // Secondary POI Markers (numerados 01/02/03, conectados a la lista lateral)
   const poiMarkers = new Map<string, Leaflet.Marker>();
 
-  pois.forEach((poi) => {
+  pois.forEach((poi, i) => {
     const poiIcon = L.divIcon({
       className: 'usgar-poi-marker',
       html: `
         <div class="group relative flex items-center justify-center transition-transform hover:scale-125 cursor-pointer" data-poi-id="${poi.id}">
-          <div class="h-3.5 w-3.5 rounded-full border-2 border-secondary bg-secondary shadow-[0_0_12px_rgba(212,175,55,0.6)] backdrop-blur-sm"></div>
+          <div class="h-5 w-5 rounded-full bg-secondary text-stone-900 text-[10px] font-bold flex items-center justify-center border border-white shadow-[0_1px_6px_rgba(0,0,0,0.35)]">${String(i + 1).padStart(2, '0')}</div>
         </div>
       `,
-      iconSize: [16, 16],
-      iconAnchor: [8, 8],
+      iconSize: [20, 20],
+      iconAnchor: [10, 10],
     });
 
     const marker = L.marker([poi.lat, poi.lng], { icon: poiIcon })
       .addTo(map)
-      .bindTooltip(`<span class="font-sans text-xs font-semibold px-2 py-1 text-white">${poi.name} · ${poi.timeText}</span>`, {
+      .bindTooltip(`<span class="font-sans text-xs font-semibold px-2 py-1 text-stone-900">${poi.name} · ${poi.timeText}</span>`, {
         direction: 'top',
         offset: [0, -8],
         className: 'usgar-leaflet-tooltip',
@@ -129,10 +133,8 @@ export async function initLocationMap(
     el.addEventListener('mouseleave', () => {
       targetMarker.closeTooltip();
     });
-    el.addEventListener('click', () => {
-      map.panTo(targetMarker.getLatLng(), { animate: true, duration: 0.8 });
-      targetMarker.openTooltip();
-    });
+    // Click: el elemento es un <a> a Google Maps del POI (LocationMap.astro) —
+    // la navegación la maneja el navegador, sin panTo propio.
   });
 
   const resizeObserver = typeof ResizeObserver !== 'undefined'
@@ -150,4 +152,3 @@ export async function initLocationMap(
     map.remove();
   };
 }
-

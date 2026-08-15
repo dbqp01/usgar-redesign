@@ -17,7 +17,7 @@ const t = useTranslations(lang);
 >
   <div class="flex items-center justify-between border-b border-black/6 dark:border-white/6 pb-4">
     <div>
-      <h2 class="font-display text-xl sm:text-2xl font-bold text-text-primary-light dark:text-white">
+      <h2 class="font-display text-xl sm:text-2xl text-text-primary-light dark:text-white">
         {t('allocation.title')}
       </h2>
       <p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
@@ -203,7 +203,7 @@ const t = useTranslations(lang);
 
         const photoCount = (L.allocationPhotoCount || '1 / {n}').replace('{n}', String(images.length || 1));
         const totalLabel = (L.allocationTotalLabel || 'Total ({n} n)').replace('{n}', String(opt.nights));
-        const perNight = Math.round(opt.total / opt.nights);
+        const perNight = Math.round((isSelected && selectedRateType === 'non_refundable' ? nonRefundableTotal : opt.total) / opt.nights);
 
         // v4: fila compacta (patron Booking.com/SimpleBooking): foto miniatura,
         // info en una linea, tarifas como pills, precio/noche a la derecha.
@@ -229,7 +229,7 @@ const t = useTranslations(lang);
 
               <div class="flex-1 min-w-0 flex flex-col justify-center gap-1">
                 <div class="flex items-center gap-2 flex-wrap">
-                  <h3 class="font-display text-sm sm:text-base font-bold text-text-primary-light dark:text-white leading-tight">
+                  <h3 class="font-display text-sm sm:text-base text-text-primary-light dark:text-white leading-tight">
                     ${roomName}
                   </h3>
                   ${availBadge}
@@ -284,7 +284,7 @@ const t = useTranslations(lang);
               </div>
 
               <div class="flex flex-col items-end justify-center gap-0.5 flex-shrink-0">
-                <span class="font-display text-lg font-bold text-primary dark:text-primary-soft">${formatMoney(perNight)}</span>
+                <span class="font-display text-lg text-primary dark:text-primary-soft">${formatMoney(perNight)}</span>
                 <span class="text-[10px] text-text-secondary-light dark:text-text-secondary-dark whitespace-nowrap">${L.perNight || '/night'} · ${totalLabel.toLowerCase()}</span>
               </div>
             </div>

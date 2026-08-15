@@ -17,7 +17,7 @@ const stats = [
 
 ---
 
-<section id="heritage-section" class="dark scroll-mt-28 sm:scroll-mt-32 py-12 sm:py-16 px-4 bg-surface-card-dark text-white relative overflow-hidden transition-colors duration-500">
+<section id="heritage-section" class="dark scroll-mt-28 sm:scroll-mt-32 py-12 sm:py-20 px-4 bg-surface-card-dark text-white relative overflow-hidden transition-colors duration-500">
   <!-- Decorative SVG path that draws on scroll -->
   <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-25 z-0" viewBox="0 0 1400 900" fill="none" preserveAspectRatio="none">
     <path id="heritage-svg-path" d="M -100 100 Q 700 0 1500 450 T -100 800" stroke="var(--color-secondary)" stroke-width="3" stroke-linecap="round" />
@@ -45,7 +45,7 @@ const stats = [
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-80 z-0"></div>
         
         <div class="absolute bottom-8 left-8 right-8 z-20">
-           <p class="font-display text-4xl sm:text-5xl text-white tracking-wide font-bold">
+           <p class="font-display text-4xl sm:text-5xl text-white tracking-wide">
              {t('heritage.fusionTitle')}
            </p>
            <p class="text-sm font-light text-white/80 mt-2 font-body max-w-sm">
@@ -59,7 +59,7 @@ const stats = [
         
         <div class="space-y-4">
           <div class="flex items-start gap-5">
-            <span class="section-number text-6xl sm:text-8xl mt-1" aria-hidden="true">02</span>
+            <span class="section-number text-6xl sm:text-8xl mt-1" aria-hidden="true">01</span>
             <div class="space-y-4">
               <span class="tag-dash-title block text-secondary">
                 {t('heritage.sectionLabel')}
@@ -78,7 +78,7 @@ const stats = [
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-10 pt-10 border-t border-white/10">
           {stats.map((stat) => (
             <div class="space-y-1" data-story-parallax="0.08">
-              <span class="font-display text-5xl sm:text-6xl font-bold text-secondary block">{stat.value}</span>
+              <span class="font-display text-5xl sm:text-6xl text-secondary block">{stat.value}</span>
               <span class="text-[10px] font-mono uppercase tracking-widest text-text-secondary-dark font-semibold">
                 {stat.label[lang]}
               </span>

@@ -51,6 +51,7 @@ Verificado en Hostinger vía API (2026-08-14) — esta es la configuración REAL
 | **15 min** | `php /home/<USER>/domains/usgarhoteles.com/public_html/cron/reconcile_payments.php` | Consulta MP por holds pendientes con payment_id cuyo webhook nunca llegó; si está `approved`, completa la reserva y dispara `booking.paid` |
 | 10 min | `php /home/<USER>/domains/usgarhoteles.com/public_html/cron/cleanup.php` | Marca `expired` los holds `pending` vencidos (auditoría 2026-08-11: el endpoint HTTP no tenía operador y la tabla acumulaba basura) |
 | 20 min | `php /home/<USER>/domains/usgarhoteles.com/public_html/index.php /api/cron/manual-review` | Reintenta holds en `manual_review`/`fraud_review` (RetryManualReviewAction) |
+| **1 día** | `/usr/bin/php /home/<USER>/domains/usgarhoteles.com/public_html/index.php /api/cron/refresh-reviews` | Refresca los scores de reseñas (Booking/KAYAK/Expedia) → `app/storage/review-scores.json`; `GET /api/reviews-score` los sirve al ribbon de la home. Fallback por fuente (fetch/parse fallido → valor anterior). **REGISTRADO en hPanel 2026-08-15** (uid `egFzCUjpmW`, `0 3 * * *` = diario 03:00). Verificación manual: `php public/index.php /api/cron/refresh-reviews` → JSON con `scores` |
 
 > Nota: el cron real de reconcile es **15 min** (no 10 como decía esta tabla antes — la doc estaba desincronizada de hPanel). El polling del frontend aguanta 10 min; si el webhook se pierde, el hold se resuelve en ≤15 min por el cron y el usuario puede pulsar "Verificar de nuevo".
 

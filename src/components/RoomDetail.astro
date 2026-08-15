@@ -141,7 +141,7 @@ const roomSchema = {
       <span class="text-sm font-semibold text-primary dark:text-purple-pastel uppercase tracking-widest"
         >{t("rooms.sectionLabel")}</span
       >
-      <h1 class="font-display text-4xl md:text-6xl mt-2 mb-4 leading-tight">
+      <h1 class="font-display text-3xl md:text-5xl mt-2 mb-4 leading-tight">
         {room.name[lang]}
       </h1>
       <div
@@ -170,6 +170,10 @@ const roomSchema = {
             <path d="M6 12h4a2 2 0 0 0 2-2V8H6v4Z" />
           </svg>
           {translatedBeds}
+        </span>
+        <span class="ml-auto flex items-baseline gap-1.5">
+          <span class="font-display text-2xl md:text-3xl text-primary dark:text-primary-soft">{room.pricePerNight}</span>
+          <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark">{t('rooms.perNight')}</span>
         </span>
       </div>
     </div>
@@ -403,22 +407,45 @@ const roomSchema = {
     let activeIndex = 0;
     const totalSlides = slides.length;
 
-    // Actualiza la imagen activa del slider y miniaturas
+    // Actualiza la imagen activa del slider y miniaturas.
+    // Fix 2026-08-15 (queja del dueño: "parpadea en negro, se mantiene la
+    // primera imagen y de golpe cambia"): el swap de src se hacía con un
+    // setTimeout fijo sin esperar a que la imagen nueva CARGA. Ahora se
+    // precarga (new Image) y el fade-in ocurre cuando el frame ya está listo.
     function updateSliderImage(index: number) {
       if (!activeImg) return;
       activeIndex = index;
-      
-      // Aplicar transición suave de fade
-      activeImg.style.opacity = "0.2";
-      setTimeout(() => {
-        if (imageUrls[activeIndex]) {
-          activeImg.removeAttribute("srcset");
-          activeImg.src = imageUrls[activeIndex];
-        }
-        activeImg.style.opacity = "1";
-      }, 150);
+      const src = imageUrls[activeIndex];
+      if (!src || src === activeImg.getAttribute("src")) {
+        updateThumbs();
+        return;
+      }
 
-      // Actualizar estilo visual de miniaturas
+      // Fade-out inmediato (feedback visual) mientras precarga la nueva
+      activeImg.style.transition = "opacity 0.3s ease";
+      activeImg.style.opacity = "0";
+
+      const pre = new Image();
+      pre.onload = () => {
+        activeImg.removeAttribute("srcset");
+        activeImg.src = src;
+        // Doble rAF: el fade-in solo cuando el nuevo frame está pintado
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => {
+            activeImg.style.opacity = "1";
+          }),
+        );
+      };
+      pre.onerror = () => {
+        // Si la precarga falla, restaurar la imagen anterior (no dejar hueco)
+        activeImg.style.opacity = "1";
+      };
+      pre.src = src;
+
+      updateThumbs();
+    }
+
+    function updateThumbs() {
       thumbBtns.forEach((btn, idx) => {
         if (idx === activeIndex) {
           btn.classList.add("border-primary", "scale-105");

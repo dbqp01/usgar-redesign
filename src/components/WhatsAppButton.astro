@@ -38,6 +38,12 @@ const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
     function adjustWhatsappPosition() {
       var btn = document.getElementById('whatsapp-btn');
       if (!btn) return;
+      // En /contact el CTA de WhatsApp ya está en la página: ocultar la burbuja.
+      if (window.location.pathname.includes('/contact')) {
+        btn.style.display = 'none';
+        return;
+      }
+      btn.style.display = '';
       if (window.location.pathname.includes('/book')) {
         btn.classList.remove('bottom-20');
         btn.classList.add('bottom-6');

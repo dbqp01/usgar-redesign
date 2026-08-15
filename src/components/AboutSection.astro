@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import { useTranslations } from "../i18n/utils";
 import { aboutData } from "../data/about";
 import patioImg from '../assets/hotel/hero-slide-patio.jpg';
-import fachadaImg from '../assets/hotel/fallback-room-fachada.jpg';
+import muralImg from '../assets/rooms/matrimonial/02-matr-mural.jpg';
 
 import type { Locale } from '../i18n/utils';
 
@@ -15,7 +15,7 @@ const title = aboutData[`title_${lang}`] || aboutData.title_en || aboutData.titl
 const purpose = aboutData[`purpose_${lang}`] || aboutData.purpose_en || aboutData.purpose_es;
 ---
 
-<section id="about" class="scroll-mt-28 sm:scroll-mt-32 py-12 sm:py-20 lg:py-16 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-500 overflow-hidden relative">
+<section id="about" class="scroll-mt-28 sm:scroll-mt-32 py-12 sm:py-20 lg:py-20 px-4 bg-surface-light dark:bg-surface-dark transition-colors duration-500 overflow-hidden relative">
   <div class="max-w-[1400px] mx-auto relative z-10">
     
     <!-- Editorial Layout: Staggered columns -->
@@ -25,7 +25,7 @@ const purpose = aboutData[`purpose_${lang}`] || aboutData.purpose_en || aboutDat
       <div class="lg:col-span-5 space-y-6 sm:space-y-8 lg:pr-6">
         <div class="space-y-4">
           <div class="flex items-start gap-5">
-            <span class="section-number text-6xl sm:text-7xl mt-1" aria-hidden="true">01</span>
+            <span class="section-number text-6xl sm:text-7xl mt-1" aria-hidden="true">02</span>
             <div class="space-y-4">
               <span class="tag-dash-title block">
                 {t('about.sectionLabel')}
@@ -49,7 +49,7 @@ const purpose = aboutData[`purpose_${lang}`] || aboutData.purpose_en || aboutDat
                return (
                  <div class="flex items-center gap-3 group">
                    <div class="w-6 h-px bg-secondary transition-[width] duration-300 group-hover:w-10"></div>
-                   <h3 class="font-display tracking-widest uppercase text-xs font-bold text-primary dark:text-white">
+                   <h3 class="font-display tracking-widest uppercase text-xs text-primary dark:text-white">
                      {valTitle}
                    </h3>
                  </div>
@@ -80,8 +80,8 @@ const purpose = aboutData[`purpose_${lang}`] || aboutData.purpose_en || aboutDat
         <!-- Offset Smaller Image -->
         <div class="absolute bottom-0 left-0 w-[52%] h-[58%] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl z-20 border-4 border-surface-light dark:border-surface-dark transition-transform duration-500 ease-out" data-tilt-layer="1.2">
           <Image
-            src={fachadaImg}
-            alt={t('about.fachadaAlt')}
+            src={muralImg}
+            alt={t('about.muralAlt')}
             width={500}
             height={500}
             layout="none"

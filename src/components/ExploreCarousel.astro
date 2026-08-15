@@ -93,7 +93,7 @@ const categoryLabels: Record<string, string> = {
               data-preview-meta={`${attraction.distance} / ${attraction.travelTime}`}
               data-preview-category={categoryLabels[attraction.category]}
               data-preview-position={`${String(index + 1).padStart(2, '0')} / ${String(items.length).padStart(2, '0')}`}
-              data-cursor-label="EXPLORAR"
+              data-cursor-label={t('cursor.explore')}
               aria-current={index === 0 ? 'true' : 'false'}
               class:list={[
                 'group flex min-h-[58px] flex-1 items-center gap-3 px-3 py-3 outline-none transition-colors sm:min-h-0 sm:px-4 sm:py-3.5',

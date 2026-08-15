@@ -168,6 +168,17 @@
   --animate-status-slide: status-slide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-led-glow: led-glow 2s ease-in-out infinite;
 
+  /* === ESCALA TIPOGRAFICA (2026-08-15, decisión del dueño: "bajar de 100%
+     a 85-90%, siento muy apretado todo") — títulos grandes a ~87%; el cuerpo
+     de lectura (text-base/lg) y los títulos medianos (text-2xl) NO se tocan. === */
+  --text-3xl: 1.75rem;
+  --text-4xl: 2rem;
+  --text-5xl: 2.625rem;
+  --text-6xl: 3.25rem;
+  --text-7xl: 3.875rem;
+  --text-8xl: 5.125rem;
+  --text-9xl: 6.75rem;
+
   @keyframes pulse-soft {
     0%, 100% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.08); opacity: 0.85; }
@@ -536,7 +547,7 @@ html, body {
 
 /* Fluid Typography Clamp Rules */
 .fluid-h1 {
-  font-size: clamp(3rem, 8vw, 7.5rem);
+  font-size: clamp(2.75rem, 6.75vw, 6.5rem);
   line-height: 0.95;
   letter-spacing: -0.02em;
   font-weight: 700;

@@ -27,7 +27,7 @@ const termsUrl = getRelativeLocaleUrl(lang, "terms");
 >
   <div class="mx-auto flex max-w-3xl flex-col gap-4 rounded-2xl border border-black/10 bg-white/95 p-5 shadow-2xl backdrop-blur-md dark:border-white/10 dark:bg-surface-card-dark/95 sm:flex-row sm:items-center">
     <div class="flex-1">
-      <p class="font-display text-sm font-bold uppercase tracking-wider text-text-primary-light dark:text-white">
+      <p class="font-display text-sm uppercase tracking-wider text-text-primary-light dark:text-white">
         {t("cookie.title")}
       </p>
       <p class="mt-1 text-xs leading-relaxed text-text-secondary-light dark:text-text-secondary-dark">
@@ -99,6 +99,13 @@ const termsUrl = getRelativeLocaleUrl(lang, "terms");
     const banner = document.getElementById("cookie-consent") as HTMLElement | null;
     if (!banner) return;
 
+    // En la home la barra de reserva ocupa el borde inferior del hero: el banner
+    // flota por ENCIMA (lg: sobre el widget; <lg: sobre la barra móvil) para no
+    // tapar el CTA de búsqueda. En el resto de páginas queda anclado abajo.
+    if (/^\/(es|fr|pt)?\/?$/.test(location.pathname)) {
+      banner.style.bottom = window.innerWidth >= 1024 ? "9rem" : "5rem";
+    }
+
     // Estado ya decidido (esta página o una anterior): oculto, sin eventos.
     if (hasStoredChoice()) {
       banner.classList.add("hidden");
@@ -120,5 +127,7 @@ const termsUrl = getRelativeLocaleUrl(lang, "terms");
   document.addEventListener("astro:before-preparation", () => {
     if (timer !== null) window.clearTimeout(timer);
     timer = null;
+    const bannerEl = document.getElementById("cookie-consent");
+    if (bannerEl) bannerEl.style.bottom = "";
   });
 </script>

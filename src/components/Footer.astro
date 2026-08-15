@@ -43,7 +43,7 @@ const newsletterStatusLabels = {
 ---
 
 <footer class="bg-surface-light dark:bg-surface-dark transition-colors duration-500 pt-24 pb-12 overflow-hidden relative" id="contact">
-  <!-- Giant editorial wordmark (background accent) -->
+  <!-- Giant editorial wordmark (background accent) — contemplado por el dueño (2026-08-15) -->
   <div data-footer-wordmark="USGAR" class="pointer-events-none absolute inset-x-0 top-2 flex justify-center overflow-hidden px-4 select-none" aria-hidden="true">
     <span class="block w-full max-w-full text-center font-display text-[clamp(4.5rem,12vw,11rem)] leading-none tracking-[0.02em] text-primary/[0.04] dark:text-white/[0.04]">
       USGAR
@@ -84,7 +84,7 @@ const newsletterStatusLabels = {
     <!-- Logo (SVG vectorial: queda bien en tema claro y oscuro) -->
     <div class="flex justify-center mb-16">
       <a href={getRelativeLocaleUrl(lang, '')} aria-label="USGAR Hotels Home">
-        <LogoUsgar class="h-14 w-auto opacity-80 hover:opacity-100 transition-opacity drop-shadow-sm block" />
+        <LogoUsgar class="h-16 w-auto opacity-80 hover:opacity-100 transition-opacity drop-shadow-sm block" />
       </a>
     </div>
 
@@ -92,7 +92,7 @@ const newsletterStatusLabels = {
     <div class="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-12 mb-16">
       <!-- Contact -->
       <div class="text-center md:text-left">
-        <h3 class="font-display font-bold text-xl mb-6 text-text-primary-light dark:text-white uppercase tracking-wider">{t('footer.contact')}</h3>
+        <h3 class="font-display text-xl mb-6 text-text-primary-light dark:text-white uppercase tracking-wider">{t('footer.contact')}</h3>
         <address class="not-italic space-y-4 text-sm text-text-secondary-light dark:text-text-secondary-dark font-body font-light">
           <p class="flex items-start justify-center md:justify-start gap-3">
             <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -118,7 +118,7 @@ const newsletterStatusLabels = {
 
       <!-- Quick Links -->
       <div class="text-center">
-        <h3 class="font-display font-bold text-xl mb-6 text-text-primary-light dark:text-white uppercase tracking-wider">{t('footer.quickLinks')}</h3>
+        <h3 class="font-display text-xl mb-6 text-text-primary-light dark:text-white uppercase tracking-wider">{t('footer.quickLinks')}</h3>
         <nav class="space-y-3" aria-label={t('footer.quickLinksNav')}>
           {quickLinks.map(link => (
             <a
@@ -133,7 +133,7 @@ const newsletterStatusLabels = {
 
       <!-- Social Media -->
       <div class="text-center md:text-right">
-        <h3 class="font-display font-bold text-xl mb-6 text-text-primary-light dark:text-white uppercase tracking-wider">{t('footer.followUs')}</h3>
+        <h3 class="font-display text-xl mb-6 text-text-primary-light dark:text-white uppercase tracking-wider">{t('footer.followUs')}</h3>
         <div class="flex justify-center md:justify-end gap-4 mb-6">
           {socialLinks.map(social => (
             <a

@@ -211,7 +211,8 @@
   "about": {
     "sectionLabel": "About Us",
     "patioAlt": "Inca colonial patio of USGAR Hotels",
-    "fachadaAlt": "USGAR Hotels colonial facade"
+    "fachadaAlt": "USGAR Hotels colonial facade",
+    "muralAlt": "USGAR Hotels room with hand-painted Andean mural"
   },
   "book": {
     "available": "available",
@@ -516,5 +517,9 @@
     "text": "We use only essential cookies to keep your booking and login secure. We do not use marketing or analytics cookies.",
     "accept": "Accept",
     "decline": "Decline"
+  },
+  "cursor": {
+    "view": "VIEW",
+    "explore": "EXPLORE"
   }
 }

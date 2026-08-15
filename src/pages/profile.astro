@@ -218,7 +218,7 @@ const totalPaidLabel = t('profile.totalPaid');
                     <div class="bg-surface-card-light dark:bg-surface-card-dark p-6 rounded-2xl border border-black/10 dark:border-white/10 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-[border-color] hover:border-primary/30">
                       <div class="space-y-1">
                         <div class="flex items-center gap-3">
-                          <h3 class="font-display font-bold text-lg text-text-primary-light dark:text-text-primary-dark">${escapeHtml(roomName)}</h3>
+                          <h3 class="font-display text-lg text-text-primary-light dark:text-text-primary-dark">${escapeHtml(roomName)}</h3>
                           <span class="text-xs px-2.5 py-1 rounded-full font-semibold uppercase border ${statusClass}">
                             ${escapeHtml(STATUS_LABELS[b.status] || b.status)}
                           </span>

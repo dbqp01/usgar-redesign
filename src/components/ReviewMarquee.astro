@@ -16,9 +16,17 @@ const platforms = [
   { id: 'google', name: 'GOOGLE', text: 'text-google-blue', label: 'VERIFIED GOOGLE LOCAL GUIDE' },
   { id: 'expedia', name: 'EXPEDIA', text: 'text-amber-500', label: 'VERIFIED EXPEDIA TRAVELER' },
 ] as const;
+
+// URLs públicas de reseñas del hotel (scores reales extraídos 2026-08-15).
+// El ribbon y las tarjetas enlazan a las plataformas (target _blank).
+const platformUrls = {
+  booking: 'https://www.booking.com/hotel/pe/chavin-imperio-del-sol.html',
+  kayak: 'https://www.kayak.com/Cusco-Hotels-Hotel-Chavin-Imperio-del-Sol.2938418.ksp',
+  expedia: 'https://www.expedia.com/Cusco-Hotels-Hotel-Chavin-Imperio-Del-Sol.h22328886.Hotel-Information',
+};
 ---
 
-<section id="velocity-marquee-section" class="scroll-mt-28 sm:scroll-mt-32 py-8 sm:py-12 bg-surface-light dark:bg-surface-dark transition-colors duration-500 overflow-hidden relative">
+<section id="velocity-marquee-section" class="scroll-mt-28 sm:scroll-mt-32 py-8 sm:py-12 bg-surface-light dark:bg-surface-dark transition-colors duration-500 overflow-hidden relative z-10">
   <div class="max-w-7xl mx-auto px-4 mb-12 text-center relative z-10">
     <div class="inline-flex items-center gap-3 text-secondary text-xs font-mono tracking-[0.3em] uppercase mb-3">
       <span class="w-8 h-px bg-secondary"></span>
@@ -26,32 +34,33 @@ const platforms = [
       <span class="w-8 h-px bg-secondary"></span>
     </div>
     
-    <h2 class="font-display text-4xl sm:text-6xl text-text-primary-light dark:text-white font-bold tracking-tight">
+    <h2 class="font-display text-4xl sm:text-6xl text-text-primary-light dark:text-white tracking-tight">
       {t('reviews.title')}
     </h2>
     <p class="text-text-secondary-light dark:text-text-secondary-dark max-w-xl mx-auto mt-4 text-base sm:text-lg font-light font-body leading-relaxed">
       {t('reviews.description')}
     </p>
 
-    <!-- Editorial Reputation Metrics Header Bar -->
+    <!-- Editorial Reputation Metrics Header Bar (scores reales extraidos 2026-08-15:
+         Booking.com 8.7/414, KAYAK 8.7/683, Expedia 8.6) -->
     <div class="flex flex-wrap items-center justify-center gap-8 mt-10 pt-8 border-t border-black/10 dark:border-white/10 text-xs font-mono uppercase tracking-widest text-text-secondary-light dark:text-text-secondary-dark">
-      <div class="flex items-center gap-2">
-        <PlatformLogo platform="tripadvisor" class="w-4 h-4 text-emerald-500" />
-        <span class="text-text-primary-light dark:text-white font-bold">5.0 / 5.0</span>
-        <span class="text-slate-400">(240+ REVIEWS)</span>
-      </div>
-      <div class="hidden sm:block text-slate-300 dark:text-slate-700">|</div>
-      <div class="flex items-center gap-2">
+      <a href={platformUrls.booking} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:opacity-75 transition-opacity" aria-label="Ver reviews en Booking.com (nueva pestaña)">
         <PlatformLogo platform="booking" class="w-4 h-4 text-blue-600" />
-        <span class="text-text-primary-light dark:text-white font-bold">9.6 / 10</span>
-        <span class="text-slate-400">(380+ REVIEWS)</span>
-      </div>
+        <span data-score="booking" class="text-text-primary-light dark:text-white font-bold">8.7 / 10</span>
+        <span data-count="booking" class="text-slate-400">(414 REVIEWS)</span>
+      </a>
       <div class="hidden sm:block text-slate-300 dark:text-slate-700">|</div>
-      <div class="flex items-center gap-2">
-        <PlatformLogo platform="google" class="w-4 h-4" />
-        <span class="text-text-primary-light dark:text-white font-bold">4.9 / 5.0</span>
-        <span class="text-slate-400">(190+ REVIEWS)</span>
-      </div>
+      <a href={platformUrls.kayak} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:opacity-75 transition-opacity" aria-label="Ver reviews en KAYAK (nueva pestaña)">
+        <PlatformLogo platform="kayak" class="w-4 h-4 text-rose-500" />
+        <span data-score="kayak" class="text-text-primary-light dark:text-white font-bold">8.7 / 10</span>
+        <span data-count="kayak" class="text-slate-400">(683 REVIEWS)</span>
+      </a>
+      <div class="hidden sm:block text-slate-300 dark:text-slate-700">|</div>
+      <a href={platformUrls.expedia} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:opacity-75 transition-opacity" aria-label="Ver reviews en Expedia (nueva pestaña)">
+        <PlatformLogo platform="expedia" class="w-4 h-4 text-amber-500" />
+        <span data-score="expedia" class="text-text-primary-light dark:text-white font-bold">8.6 / 10</span>
+        <span data-count="expedia" class="text-slate-400">(EXCELLENT)</span>
+      </a>
     </div>
   </div>
 
@@ -64,11 +73,17 @@ const platforms = [
     <!-- GPU CSS Marquee Track -->
     <div id="velocity-marquee-track" class="marquee-css-track gap-8">
       {
-        [...reviews, ...reviews].map((review, idx) => {
-          const platform = platforms[idx % platforms.length];
+        [...reviews, ...reviews].map((review) => {
+          // Todas las reseñas mostradas son de Booking.com (extraidas 2026-08-15)
+          const platform = platforms[1];
 
           return (
-            <div class="flex-shrink-0 w-[300px] sm:w-[380px] bg-white dark:bg-surface-card-dark p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-none dark:border dark:border-white/10 space-y-6 group flex flex-col justify-between">
+            <a
+              href={platformUrls.booking}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex-shrink-0 w-[300px] sm:w-[380px] bg-white dark:bg-surface-card-dark p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-none dark:border dark:border-white/10 space-y-6 group flex flex-col justify-between hover:shadow-[0_12px_40px_rgb(0,0,0,0.1)] transition-shadow"
+            >
               <div>
                 <!-- Top Header: Quote Mark & Platform Logo -->
                 <div class="flex items-start justify-between mb-4">
@@ -83,11 +98,11 @@ const platforms = [
                   </div>
                 </div>
 
-                <!-- Golden Outlined Stars -->
+                <!-- Golden Stars (filled: outline read as broken next to the scores) -->
                 <div class="flex gap-1 text-secondary mb-6" aria-label={`Rating: ${review.rating || 5} out of 5 stars`}>
                   {Array.from({ length: review.rating || 5 }).map(() => (
-                    <svg class="w-4 h-4 fill-transparent stroke-current stroke-[1.5]" aria-hidden="true" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385c.114.481-.433.879-.861.644l-4.66-2.533a.562.562 0 00-.542 0l-4.66 2.533c-.428.235-.975-.163-.861-.644l1.285-5.385a.563.563 0 00-.182-.557l-4.204-3.602a.563.563 0 00.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                    <svg class="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 24 24">
+                      <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385c.114.481-.433.879-.861.644l-4.66-2.533a.562.562 0 00-.542 0l-4.66 2.533c-.428.235-.975-.163-.861-.644l1.285-5.385a.563.563 0 00-.182-.557l-4.204-3.602a.563.563 0 00.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
                     </svg>
                   ))}
                 </div>
@@ -117,10 +132,40 @@ const platforms = [
                   </div>
                 </div>
               </div>
-            </div>
+            </a>
           );
         })
       }
     </div>
   </div>
 </section>
+
+<script>
+  // Ribbon de scores: actualiza los números desde /api/reviews-score (cron
+  // refresh-reviews, ver docs/API.md). Fallback: si el endpoint falla o no
+  // hay datos, se conservan los valores del build.
+  document.addEventListener("astro:page-load", () => {
+    const scoreEls: Record<string, Element | null> = {
+      booking: document.querySelector('[data-score="booking"]'),
+      kayak: document.querySelector('[data-score="kayak"]'),
+      expedia: document.querySelector('[data-score="expedia"]'),
+    };
+    const countEls: Record<string, Element | null> = {
+      booking: document.querySelector('[data-count="booking"]'),
+      kayak: document.querySelector('[data-count="kayak"]'),
+      expedia: document.querySelector('[data-count="expedia"]'),
+    };
+    fetch("/api/reviews-score", { headers: { Accept: "application/json" } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!data || !data.scores) return;
+        (["booking", "kayak", "expedia"] as const).forEach((key) => {
+          const s = data.scores[key];
+          if (!s) return;
+          if (scoreEls[key] && s.score) scoreEls[key]!.textContent = `${s.score} / 10`;
+          if (countEls[key] && s.count) countEls[key]!.textContent = `(${s.count} REVIEWS)`;
+        });
+      })
+      .catch(() => {});
+  });
+</script>

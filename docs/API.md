@@ -40,6 +40,8 @@ Contrato completo del backend PHP. **Fuente de verdad: `public/index.php`** (reg
 | 21 | POST | `/api/user/profile` | `UpdateUserProfileAction` | Cookie JWT |
 | 22 | POST | `/api/newsletter` | `SubscribeNewsletterAction` | — |
 | 23 | POST | `/api/contact` | `SubmitContactAction` | — |
+| 24 | GET | `/api/reviews-score` | `GetReviewScoresAction` | — |
+| 25 | POST | `/api/cron/refresh-reviews` | `RefreshReviewScoresAction` | CLI only |
 
 Notas:
 - Los endpoints CLI (10, 11) se invocan como `php public/index.php /api/cron/cleanup` (el front controller detecta `PHP_SAPI === 'cli'` y usa `$argv[1]` como ruta). Los crons reales viven en `cron/` y usan los mismos actions — ver `docs/DEPLOYMENT.md` §Cron.
@@ -150,6 +152,28 @@ Webhook de MercadoPago (topic `payment`). Registrado en el panel MP (app de prod
 - Flujo: getPaymentDetails (1 solo intento, timeout 8s — el ACK de MP espera ≤22s) → dedup (`isOrderConfirmed`) → confirmación de orden en QloApps + evento outbox → ACK 200.
 - Rechazo (`rejected`/`failed`/`cancelled`): ACK 200 + `markPaymentProcessed('rejected')` + transición del hold `pending → failed` (fix 2026-08-13 — antes el hold quedaba pending hasta el TTL y la página de éxito mostraba "expired" aunque MP había rechazado; el cron `reconcile_payments` hace lo mismo cuando el webhook nunca llegó).
 - Responder 200 rápido: `Response::jsonAsync` cierra la conexión antes del trabajo pesado (fastcgi_finish_request).
+
+## GET /api/reviews-score
+
+Scores de reseñas de Booking/KAYAK/Expedia servidos al ribbon de la home (sección de reviews). Los refresca el cron `refresh-reviews` (POST `/api/cron/refresh-reviews`, CLI) en `app/storage/review-scores.json`.
+
+Respuesta:
+
+```json
+{
+  "scores": {
+    "booking": { "score": 8.7, "count": 414 },
+    "kayak": { "score": 8.7, "count": 683 },
+    "expedia": { "score": 8.6, "count": null }
+  },
+  "updatedAt": "2026-08-15T00:00:00-05:00"
+}
+```
+
+- Sin cron ejecutado aún → `{"scores": [], "updatedAt": null}` (el frontend conserva los valores del build).
+- Fuentes: páginas públicas del hotel (Booking: JSON-LD `aggregateRating` o `Scored 8.7`; KAYAK: score + `based on N reviews`; Expedia: JSON-LD o `8.6 out of 10`). **Fallback por fuente**: si el fetch falla o no parsea (p. ej. Expedia responde 429 rate-limit), se conserva el valor anterior del JSON — nunca degrada.
+- `Cache-Control: public, max-age=3600`.
+- URLs de las fuentes configurables vía env: `REVIEW_BOOKING_URL`, `REVIEW_KAYAK_URL`, `REVIEW_EXPEDIA_URL` (ver `.env.example`).
 
 ## Auth (cookie JWT `usgar_session`, HttpOnly, SameSite=Lax, 30 días)
 

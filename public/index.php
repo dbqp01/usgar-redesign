@@ -52,6 +52,8 @@ use App\Features\Panel\Actions\GetAvailabilityAction;
 use App\Features\Panel\Actions\ExportAvailabilityAction;
 use App\Features\Panel\Actions\ImportAvailabilityAction;
 use App\Features\Auth\Actions\UpdateUserProfileAction;
+use App\Features\Reviews\Actions\GetReviewScoresAction;
+use App\Features\Reviews\Actions\RefreshReviewScoresAction;
 
 // 2. Soporte para ejecuciones desde la linea de comandos (Cron Jobs)
 if (PHP_SAPI === 'cli') {
@@ -88,6 +90,10 @@ $router->post('/api/webhook',         HandleMercadoPagoWebhookAction::class);
 // Endpoint de mantenimiento del sistema (Cron)
 $router->post('/api/cron/cleanup',       CleanExpiredCartsAction::class);
 $router->post('/api/cron/manual-review', RetryManualReviewAction::class);
+$router->post('/api/cron/refresh-reviews', RefreshReviewScoresAction::class);
+
+// Scores de reseñas de plataformas (ver cron refresh-reviews)
+$router->get('/api/reviews-score',       GetReviewScoresAction::class);
 
 // Endpoints de Autenticacion y Panel de Huespedes
 $router->get('/api/auth/providers',    AuthProvidersAction::class);

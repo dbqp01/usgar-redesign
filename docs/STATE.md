@@ -2,6 +2,13 @@
 
 > Documento canónico de estado del backend (antes `docs/refactoring/BACKEND_STATE.md`). Fuente de la auditoría de mejores prácticas 2026-08-11: `docs/ROADMAP.md`.
 
+## Scores de reseñas (2026-08-15, WIP local — sin push)
+
+- El ribbon de reviews de la home mostraba scores inventados (Booking 9.6/380+, TripAdvisor 5.0/240+, Google 4.9/190+). Reemplazados por **datos reales extraídos** (web_extract 2026-08-15): Booking **8.7/414**, KAYAK **8.7/683**, Expedia **8.6**. `src/content/reviews/reviews.json` ahora tiene 8 reseñas reales de Booking (textos reales EN + traducción es/fr/pt; fechas "2026" porque Booking no expone el mes en la extracción). TripAdvisor bloquea scraping (sin score inventado).
+- **Nuevo**: `App\Features\Reviews\Actions\GetReviewScoresAction` (GET `/api/reviews-score`, lee `app/storage/review-scores.json` — creado por el cron; `Cache-Control: public, max-age=3600`) + `RefreshReviewScoresAction` (POST `/api/cron/refresh-reviews`, CLI: fetch curl UA-navegador + parse con regex, **fallback por fuente al valor anterior**). Probado local: KAYAK 8.7/683 parseado ✓; Booking responde challenge Akamai (fallback conserva el valor del build); Expedia 429 rate-limit (fallback).
+- **PENDIENTE EN PROD (RESUELTO 2026-08-15)**: el cron quedó REGISTRADO en hPanel vía API Hostinger (uid `egFzCUjpmW`, `0 3 * * *` diario 03:00, comando `index.php /api/cron/refresh-reviews`). Las URLs de las fuentes usan los defaults del código (se pueden sobreescribir con `REVIEW_*_URL` en el .env de prod si hace falta).
+- Frontend: ribbon enlazado a las plataformas (Booking/KAYAK/Expedia, target _blank), tarjetas de reseñas enlazadas a Booking, y fetch en `astro:page-load` que actualiza los números desde `/api/reviews-score` si hay datos (fallback silencioso).
+
 ## Correo transaccional + recibo completo (2026-08-14, commit 5cd4f1e)
 
 - **No existía NINGÚN email transaccional** en el proyecto (auditado: composer.json sin PHPMailer, `.env` sin claves SMTP, bootstrap.php solo registraba el listener de QloApps). El huésped nunca recibía su voucher tras pagar.
