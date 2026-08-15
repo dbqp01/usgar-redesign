@@ -12,6 +12,12 @@
 
 **Reserva huérfana `USGAR-d5fab1ddb3b0`**: pagada pero SIN evento en outbox → no se recupera sola (reconcile salta `paid` procesados). Recuperación manual si el dueño quiere: insertar el evento `booking.paid` en `event_outbox` (payload `base64(serialize(BookingPaidEvent))`, `allowed_classes` con `BookingPaidEvent`+`DateTimeImmutable`) y dejar que el cron lo entregue, o reembolsar. La próxima venta real tras el deploy YA entrega (fix en prod pendiente de push).
 
+## .env de prod: DOS fuentes y manda el File Manager (2026-08-15, confusión del dueño)
+
+- El dueño reportó: "cambio vars en hPanel → redeploy → las credenciales no cambian; edito el `.env` del File Manager y sí". **Confirmado por diseño**: `Config::loadEnv()` usa el PRIMER candidato que existe — `/home/u941268346/domains/usgarhoteles.com/.env` (File Manager) gana sobre `.builds/config/.env` (hPanel). Mientras exista el físico, hPanel es decorativo. Procedimiento de edición + backup documentado en `docs/DEPLOYMENT.md` §Variables de entorno (sección "DÓNDE se edita de verdad").
+- **El `.env` físico de prod NO tiene `SMTP_*`/`MAIL_*`** (38 líneas, termina en `OTA_DEFAULT_SURNAME`) → el email de confirmación NO saldrá ni con el fix del outbox desplegado (fail-soft: sin `SMTP_HOST` → log + return). PENDIENTE: copiar la sección 6 (SMTP_HOST..MAIL_FROM_NAME) del `.env` local al `.env` del servidor + confirmar que la cuenta `no-reply@usgarhoteles.com` existe en hPanel → Emails. También faltan `ROOMS_CACHE_TTL`, `BOOKING_HOLD_MAX_EXTENSIONS`, `QLOAPPS_DEFAULT_LANG_ID`, `MP_NOTIFICATION_URL` (tienen defaults en código, opcionales).
+- **Credenciales MP del `.env` físico de prod = TEST** (decisión deliberada del dueño: "test reales en campo suelto (producción)" — tarjeta APRO/OTHE contra el sitio real). NO "corregirlas" a PROD sin OK explícito.
+
 ## Scores de reseñas (2026-08-15, WIP local — sin push)
 
 - El ribbon de reviews de la home mostraba scores inventados (Booking 9.6/380+, TripAdvisor 5.0/240+, Google 4.9/190+). Reemplazados por **datos reales extraídos** (web_extract 2026-08-15): Booking **8.7/414**, KAYAK **8.7/683**, Expedia **8.6**. `src/content/reviews/reviews.json` ahora tiene 8 reseñas reales de Booking (textos reales EN + traducción es/fr/pt; fechas "2026" porque Booking no expone el mes en la extracción). TripAdvisor bloquea scraping (sin score inventado).

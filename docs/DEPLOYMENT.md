@@ -21,6 +21,28 @@ Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo m
 - **Nunca** dentro de `public_html` ni de `dist/`. El build borra `dist/.env` y falla si quedara (guard del workflow desactivado, replicado en el postbuild).
 - Lista completa de variables: `.env.example` (canónico) + `docs/API.md` §Variables.
 
+### ⚠️ DÓNDE se edita de verdad (verificado 2026-08-15 — hay DOS fuentes y una gana)
+
+`loadEnv()` (app/Core/Config.php:130) evalúa candidatos **en orden y usa el primero que existe**:
+
+1. `/home/u941268346/domains/usgarhoteles.com/.env` (un nivel arriba de `public_html`) — **el `.env` del File Manager**
+2. `/home/u941268346/domains/usgarhoteles.com/.builds/config/.env` — **las "Variables de entorno" de hPanel**
+3. `dist/.env` (raíz del deploy) — se borra en postbuild
+
+**Si el `.env` del File Manager existe (caso real en prod), TODO cambio en hPanel → Variables de entorno se ignora silenciosamente** — el código nunca llega a leer el candidato 2. Esto confundió al dueño (2026-08-15): "cambio en hPanel, hago redeploy, y las credenciales no cambian; cambio el `.env` del File Manager y sí".
+
+**Cómo editar la configuración en producción (procedimiento para no-técnicos):**
+
+1. hPanel → Archivos → **File Manager** (sitio `usgarhoteles.com`).
+2. Subir a la raíz del dominio: la barra de navegación debe mostrar `domains/usgarhoteles.com/` (el `.env` está **junto a** `public_html`, no dentro).
+3. Click derecho sobre `.env` → **Editar** (o descargar → editar → subir de vuelta).
+4. Guardar. **No requiere redeploy ni push** — el código lo lee en cada request/cron. (Un redeploy no daña nada pero tampoco hace falta.)
+5. `Config::get()` da prioridad al cache del boot, no a `getenv()`: tras editar el archivo, **no hay que reiniciar nada** (PHP-FPM lee el archivo en cada request; el cache se puebla por request).
+
+**Backup del `.env` (imprescindible, no está en git ni en hPanel):** File Manager → click derecho sobre `.env` → **Descargar** → guardar una copia local (`backup-env-prod-<fecha>.env`). Es la ÚNICA copia: si el archivo se borra o se corrompe, el sitio pierde MP/QloApps/OAuth de golpe (hPanel solo tiene 10 de ~38 claves).
+
+**Regla de oro:** elegir UNA fuente y mantenerla. Hoy la fuente efectiva es el `.env` del File Manager; hPanel → Variables de entorno queda como espejo decorativo (no borrarlo, pero no confiar en él para cambios). Si algún día se quiere que hPanel mande: copiar TODAS las claves a hPanel **y borrar el `.env` del File Manager**.
+
 ## Credenciales de Mercado Pago
 
 Panel: https://www.mercadopago.com/developers/panel/app
