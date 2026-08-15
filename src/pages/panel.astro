@@ -122,6 +122,8 @@
     <span class="sub">Timeline por cuarto — color por canal de venta · importa / exporta CSV y Excel</span>
   </header>
 
+  <div id="demoBadge" class="hidden" style="display:inline-block; background:var(--gold-bg); color:var(--gold); border:1px dashed var(--gold); border-radius:6px; padding:5px 12px; font-size:12px; margin-bottom:10px;">Modo demo — datos de ejemplo, sin base de datos</div>
+
   <div class="toolbar">
     <div class="month-nav">
       <button id="prevM" title="Mes anterior">&lsaquo;</button>
@@ -217,6 +219,17 @@ const state: { year: number; month: number; selDay: number; filter: string; data
   year: 0, month: 0, selDay: 0, filter: "all", data: null, today: ""
 };
 const TIP = $("tip");
+
+/* ---------- modo demo: datos de ejemplo generados en el navegador (sin backend ni BD) ---------- */
+const MOCK = new URLSearchParams(location.search).has("mock");
+$("demoBadge").classList.toggle("hidden", !MOCK);
+
+const ENTITIES: Record<string, string> = {
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+};
+function escapeHtml(value: unknown): string {
+  return String(value ?? '').replace(/[&<>"']/g, (c) => ENTITIES[c] ?? c);
+}
 
 function toast(msg: string): void {
   const t = $("toast");
@@ -333,7 +346,7 @@ function render(): void {
     for (let d = start; d < end; d++) {
       const cell = cells[d - 1];
       if (!cell) continue;
-      cell.innerHTML += "<div class='bk " + channelClass(b) + "' data-bk='" + encodeURIComponent(JSON.stringify(b)) + "' style='left:" + ((d - start) / spanV * 100) + "%;right:" + ((end - 1 - d) / spanV * 100) + "%'></div>";
+      cell.innerHTML += "<div class='bk " + channelClass(b) + "' data-bk='" + escapeHtml(encodeURIComponent(JSON.stringify(b))) + "' style='left:" + ((d - start) / spanV * 100) + "%;right:" + ((end - 1 - d) / spanV * 100) + "%'></div>";
     }
   });
 
@@ -402,7 +415,7 @@ function renderDayList(): void {
   el.innerHTML = list.map((b) => {
     const bg = channelColor(b);
     const room = b.room || "Sin cuarto";
-    return "<li><b>" + room + "</b> " + b.guest + "<span class='src' style='background:" + bg + "'>" + channelLabel(b) + "</span><br><span style='color:var(--text-dim)'>" + String(b.checkin).slice(0, 10) + " &rarr; " + String(b.checkout).slice(0, 10) + (b.price ? " · USD " + b.price : "") + "</span></li>";
+    return "<li><b>" + escapeHtml(room) + "</b> " + escapeHtml(b.guest) + "<span class='src' style='background:" + bg + "'>" + escapeHtml(channelLabel(b)) + "</span><br><span style='color:var(--text-dim)'>" + String(b.checkin).slice(0, 10) + " &rarr; " + String(b.checkout).slice(0, 10) + (b.price ? " · USD " + b.price : "") + "</span></li>";
   }).join("");
 }
 
@@ -418,7 +431,7 @@ document.addEventListener("mouseover", (e: Event) => {
   } else {
     const badge = "<span class='src' style='background:" + channelColor(b) + "'>" + channelLabel(b) + "</span>";
     const n = Math.round((new Date(b.checkout).getTime() - new Date(b.checkin).getTime()) / 86400000);
-    TIP.innerHTML = "<div class='t-g'>" + b.guest + badge + "</div>" +
+    TIP.innerHTML = "<div class='t-g'>" + escapeHtml(b.guest) + badge + "</div>" +
       "<div class='t-r'>" + String(b.checkin).slice(0, 10) + " &rarr; " + String(b.checkout).slice(0, 10) + " · " + n + " noche(s)</div>" +
       (b.price ? "<div class='t-r'>Total <b>USD " + b.price + "</b></div>" : "");
   }
@@ -441,11 +454,92 @@ document.addEventListener("click", (e: Event) => {
 });
 
 /* ---------- datos ---------- */
+function localIso(d: Date): string {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function showApp(): void {
+  $("appView").classList.remove("hidden");
+  $("foot").classList.remove("hidden");
+  $("loginView").classList.add("hidden");
+}
+
+// Datos de ejemplo: PRNG determinista por mes (mismo mes = misma ocupacion), sin red ni BD.
+function mockMonthData(key: string): MonthData {
+  let h = 2166136261;
+  for (let i = 0; i < key.length; i++) { h ^= key.charCodeAt(i); h = Math.imul(h, 16777619); }
+  const rnd = (): number => {
+    h ^= h << 13; h ^= h >>> 17; h ^= h << 5;
+    return (h >>> 0) / 4294967296;
+  };
+  const [y, m] = key.split("-").map(Number);
+  const dims = new Date(y, m, 0).getDate();
+  const iso = (dd: number): string => localIso(new Date(y, m - 1, dd));
+
+  const rooms: Room[] = [
+    { room_id: 1, room_num: "101", floor: "1", id_room_type: 1, type: "Matrimonial Superior", price: 90 },
+    { room_id: 2, room_num: "102", floor: "1", id_room_type: 1, type: "Matrimonial Superior", price: 90 },
+    { room_id: 3, room_num: "201", floor: "2", id_room_type: 2, type: "Doble Superior", price: 90 },
+    { room_id: 4, room_num: "202", floor: "2", id_room_type: 2, type: "Doble Superior", price: 90 },
+    { room_id: 5, room_num: "203", floor: "2", id_room_type: 2, type: "Doble Superior", price: 90 },
+    { room_id: 6, room_num: "301", floor: "3", id_room_type: 3, type: "Triple Estándar", price: 120 },
+    { room_id: 7, room_num: "302", floor: "3", id_room_type: 3, type: "Triple Estándar", price: 120 },
+    { room_id: 8, room_num: "401", floor: "4", id_room_type: 4, type: "Familiar Superior", price: 150 },
+  ];
+  const guests = ["María Fernández", "John Smith", "Claire Dubois", "Pedro Quispe", "Ana Torres", "Liam O'Connor", "Sofía Rojas", "Hiro Tanaka", "Camila Vargas", "Lucas Meyer", "Valentina Rossi", "Andrés Mamani", "Emma Wilson", "Isabella Costa"];
+  const pickGuest = (): string => guests[Math.floor(rnd() * guests.length)];
+  const pickChannel = (): string => {
+    const r = rnd();
+    if (r < 0.35) return "web";
+    if (r < 0.60) return "ota";
+    if (r < 0.75) return "phone";
+    if (r < 0.90) return "walkin";
+    return "qlo";
+  };
+
+  const bookings: Booking[] = [];
+  rooms.forEach((r) => {
+    let day = 1 + Math.floor(rnd() * 5);
+    while (day < dims) {
+      if (r.room_id === 3 && day >= 11 && day <= 15) { day = 16; continue; } // no pisar el bloque de mantenimiento
+      if (r.room_id === 5 && day < 5) { day = 5; continue; } // no pisar la reserva que cruza el mes
+      const nights = 1 + Math.floor(rnd() * 3);
+      if (day + nights > dims + 1) break;
+      const channel = pickChannel();
+      bookings.push({
+        room_id: r.room_id, room: r.room_num,
+        checkin: iso(day), checkout: iso(day + nights),
+        guest: pickGuest(), channel,
+        status: channel === "web" && rnd() < 0.35 ? "hold" : "confirmed",
+        price: r.price * nights,
+      });
+      day += nights + 2 + Math.floor(rnd() * 4);
+    }
+  });
+
+  // fuera de servicio 3 dias en la 201
+  bookings.push({ room_id: 3, room: "201", checkin: iso(12), checkout: iso(15), guest: "", channel: "qlo", status: "maint", price: null });
+  // llego el mes pasado y se queda hasta el dia 4 (barra que arranca en el borde izquierdo)
+  bookings.push({ room_id: 5, room: "203", checkin: localIso(new Date(y, m - 2, 27)), checkout: iso(4), guest: pickGuest(), channel: "web", status: "confirmed", price: 270 });
+  // sin cuarto asignado (filas agrupadas por tipo al final de la tabla)
+  bookings.push({ room_id: null, room: "Matrimonial Superior", checkin: iso(8), checkout: iso(10), guest: pickGuest(), channel: "ota", status: "confirmed", price: 180 });
+  bookings.push({ room_id: null, room: "Triple Estándar", checkin: iso(18), checkout: iso(20), guest: pickGuest(), channel: "phone", status: "confirmed", price: 240 });
+
+  return { month: key, today: localIso(new Date()), rooms, bookings };
+}
+
 async function load(): Promise<void> {
   if (state.year === 0) {
     const now = new Date();
     state.year = now.getFullYear();
     state.month = now.getMonth() + 1;
+    state.today = localIso(now);
+    state.selDay = now.getDate();
+  }
+  if (MOCK) {
+    state.data = mockMonthData(monthKey());
+    showApp();
+    render();
+    return;
   }
   try {
     const res = await fetch("/api/panel/availability?month=" + monthKey(), { credentials: "same-origin" });
@@ -453,13 +547,7 @@ async function load(): Promise<void> {
     if (!res.ok) throw { http: res.status };
     const data = await (res.json() as Promise<MonthData>);
     state.data = data;
-    state.today = data.today || "";
-    const now = state.today ? new Date(state.today + "T00:00:00") : new Date();
-    state.year = now.getFullYear(); state.month = now.getMonth() + 1;
-    state.selDay = todayInMonth() || 1;
-    $("appView").classList.remove("hidden");
-    $("foot").classList.remove("hidden");
-    $("loginView").classList.add("hidden");
+    showApp();
     render();
   } catch (err) {
     const e = err as { unauthorized?: boolean; http?: number };
