@@ -46,7 +46,7 @@ class RefreshReviewScoresAction {
         foreach ($sources as $key => $src) {
             $html = self::fetch($src['url']);
             $parsed = $html !== null ? $src['parse']($html) : null;
-            if ($parsed !== null && ($parsed['score'] ?? 0) > 0) {
+            if ($parsed !== null && $parsed['score'] > 0) {
                 $scores[$key] = $parsed;
             } elseif (isset($prevScores[$key])) {
                 $scores[$key] = $prevScores[$key]; // fallback al valor anterior
@@ -85,6 +85,9 @@ class RefreshReviewScoresAction {
         return $body;
     }
 
+    /**
+     * @return array{score: float, count: int|null}|null
+     */
     private static function parseBooking(string $html): ?array {
         // JSON-LD aggregateRating (formato robusto) o texto "Scored 8.7".
         if (preg_match('/"ratingValue"\s*:\s*"?([0-9]+\.[0-9])"?/', $html, $m)) {
@@ -103,6 +106,9 @@ class RefreshReviewScoresAction {
         return ['score' => $score, 'count' => $count];
     }
 
+    /**
+     * @return array{score: float, count: int|null}|null
+     */
     private static function parseKayak(string $html): ?array {
         if (!preg_match('/([0-9]+\.[0-9])[^0-9]{0,60}Very good/i', $html, $m)) {
             return null;
@@ -114,6 +120,9 @@ class RefreshReviewScoresAction {
         return ['score' => (float) $m[1], 'count' => $count];
     }
 
+    /**
+     * @return array{score: float, count: int|null}|null
+     */
     private static function parseExpedia(string $html): ?array {
         if (preg_match('/"ratingValue"\s*:\s*"?([0-9]+\.[0-9])"?/', $html, $m)) {
             $score = (float) $m[1];
