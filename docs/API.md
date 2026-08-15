@@ -202,6 +202,7 @@ Fuente completa: `.env.example` (canónico). Lectura: `App\Core\Config::get()` c
 | `ALLOWED_ORIGINS` / `TRUSTED_PROXIES` / `TIMEZONE` / `SITE_URL` | Core | CORS, proxies confiables, zona, URL base |
 | `RATE_LIMIT_MAX_REQUESTS` / `RATE_LIMIT_WINDOW_SECONDS` | RateLimiter | Límite global por IP (300/600s) |
 | `DEFAULT_HOTEL_ID` / `DEFAULT_GUEST_EMAIL` / `DEFAULT_REPLY_EMAIL` / `DEFAULT_GUEST_NAME` | Booking/PMS | Defaults de negocio |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_SECURE` / `SMTP_USER` / `SMTP_PASS` / `SMTP_TIMEOUT` / `MAIL_FROM` / `MAIL_FROM_NAME` | PhpMailerAdapter (voucher) | SMTP del correo transaccional. `SMTP_HOST` vacío = email desactivado (fail-soft, sin reintentos del outbox) |
 | `OTA_DEFAULT_PHONE` / `OTA_DEFAULT_EMAIL` / `OTA_DEFAULT_NAME` / `OTA_DEFAULT_SURNAME` / `OTA_HOLD_TTL` / `QLOAPPS_DEFAULT_GUEST_NAME` | QloAppAdapter / Listener | Defaults de huéspedes OTA (algunos reservados para la sync del Channel Manager) |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` / `MICROSOFT_*` / `FACEBOOK_*` | AuthService | Credenciales OAuth (solo si existen se activan) |
 

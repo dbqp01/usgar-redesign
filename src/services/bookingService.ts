@@ -20,6 +20,8 @@ export interface GuestDetails {
   phone: string;
   documentType?: string;
   documentNumber?: string;
+  /** Idioma del huésped — se persiste en guest_data para el email de confirmación (voucher, 2026-08-14). */
+  locale?: string;
   specialRequests?: string;
 }
 

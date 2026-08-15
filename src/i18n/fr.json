@@ -305,6 +305,7 @@
     "totalPaid": "Total Paye",
     "returnHome": "Retour a l'Accueil",
     "printReceipt": "Imprimer le Recu",
+    "openReceipt": "Ouvrir le reçu complet",
     "notFound": "Réservation Non Trouvée",
     "notFoundMessage": "Nous n'avons pas pu trouver les détails de la réservation. Si vous avez effectue un paiement, veuillez nous contacter.",
     "paymentPending": "Paiement en Attente",

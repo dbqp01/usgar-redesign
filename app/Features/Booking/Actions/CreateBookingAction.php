@@ -262,6 +262,8 @@ class CreateBookingAction {
                     'email'  => $guestEmail,
                     'phone'  => $guestPhone,
                     'guests' => array_sum(array_column($resolved, 'guests')),
+                    // Idioma del huésped para el email de confirmación (voucher).
+                    'locale' => trim((string)($body['locale'] ?? 'en')) ?: 'en',
                     // FIX 2026-08-14: pickup del aeropuerto (hora de vuelo) —
                     // se descartaba antes; ahora persiste y viaja en el evento
                     // booking.paid hasta el PMS (special_requests).

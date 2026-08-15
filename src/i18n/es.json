@@ -305,6 +305,7 @@
     "totalPaid": "Total Pagado",
     "returnHome": "Volver al Inicio",
     "printReceipt": "Imprimir Comprobante",
+    "openReceipt": "Abrir recibo completo",
     "notFound": "Reserva No Encontrada",
     "notFoundMessage": "No pudimos encontrar los detalles de la reserva. Si completaste un pago, por favor contactanos.",
     "paymentPending": "Pago Pendiente",

@@ -305,6 +305,7 @@
     "totalPaid": "Total Paid",
     "returnHome": "Return to Home",
     "printReceipt": "Print Receipt",
+    "openReceipt": "Open full receipt",
     "notFound": "Booking Not Found",
     "notFoundMessage": "We could not find the booking details. If you completed a payment, please contact us.",
     "paymentPending": "Payment Pending",

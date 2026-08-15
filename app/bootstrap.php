@@ -13,8 +13,11 @@ use App\Core\Container;
 use App\Core\Database;
 use App\Core\Events\EventDispatcher;
 use App\Features\Booking\Domain\Listeners\ConfirmQloAppsOrderListener;
+use App\Features\Booking\Domain\Listeners\SendBookingConfirmationEmailListener;
 use App\Features\Shared\Adapters\MercadoPagoAdapter;
+use App\Features\Shared\Adapters\PhpMailerAdapter;
 use App\Features\Shared\Adapters\QloAppAdapter;
+use App\Features\Shared\Ports\MailerPortInterface;
 use App\Features\Shared\Ports\PaymentGatewayPortInterface;
 use App\Features\Shared\Ports\PmsPortInterface;
 
@@ -51,11 +54,16 @@ if ($dbConnection !== null) {
     $container->bind(PmsPortInterface::class, fn($c) => new QloAppAdapter(null));
 }
 
+// Correo transaccional (2026-08-14): voucher de confirmación al huésped.
+// No requiere BD. Si SMTP_HOST está vacío el listener se omite (fail-soft).
+$container->bind(MailerPortInterface::class, fn($c) => new PhpMailerAdapter());
+
 // Listeners de dominio (webhook -> PMS / Channel Manager) con DIP desde el container
 $eventDispatcher = EventDispatcher::getInstance();
 if ($dbConnection !== null) {
     $eventDispatcher->subscribe('booking.paid', new ConfirmQloAppsOrderListener($container->get(PmsPortInterface::class)));
 }
+$eventDispatcher->subscribe('booking.paid', new SendBookingConfirmationEmailListener($container->get(MailerPortInterface::class)));
 
 /**
  * Acceso global al container.
