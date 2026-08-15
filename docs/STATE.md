@@ -2,6 +2,16 @@
 
 > Documento canónico de estado del backend (antes `docs/refactoring/BACKEND_STATE.md`). Fuente de la auditoría de mejores prácticas 2026-08-11: `docs/ROADMAP.md`.
 
+## BUG CRÍTICO: EventDispatcher sin listeners en actions HTTP (2026-08-15, primera venta real)
+
+**Síntoma del dueño (prueba de pago real 15/08 13:17 UTC-5, hold `USGAR-d5fab1ddb3b0` $3/10.16 PEN, payment_id 1350421801)**: el pago se aprobó (hold `paid` + `processed_payments` approved) pero **no llegó el email de confirmación** y **la reserva no apareció en el CMS QloApps** (calendario Book Now con 0 booked).
+
+**Causa raíz (verificada con probe de wiring, no teoría)**: `Container::get()` por autowiring crea instancias NUEVAS (no cachea las resueltas por reflexión — solo `bind()`/`set()` cachean). bootstrap.php registraba los listeners (`ConfirmQloAppsOrderListener` + `SendBookingConfirmationEmailListener`) en `EventDispatcher::getInstance()` (singleton), pero las actions HTTP (`ProcessPaymentAction`, `HandleMercadoPagoWebhookAction`, `RetryManualReviewAction`) recibían por el Container un `EventDispatcher` **nuevo sin listeners** → `EventDispatcher::dispatch()` hacía `return` temprano (`empty($this->listeners[$eventName])`, EventDispatcher.php:32) → **el INSERT en `event_outbox` NUNCA ocurría** → el cron `process_outbox` (5 min, verificado vivo vía MCP Hostinger: "No events to process") no tenía nada que entregar → `confirmOrder` (QloApps) y el email jamás corrieron. Los tests no lo veían porque inyectan mocks del dispatcher; el cron `reconcile_payments.php` sí usa `EventDispatcher::getInstance()` directo (por eso el patrón correcto existía en un sitio).
+
+**Fix (1 línea, commit pendiente)**: `app/bootstrap.php` → `$container->set(EventDispatcher::class, $eventDispatcher);` (mismo patrón que `set(PDO::class, ...)`). Test de regresión nuevo: `tests/Unit/Core/Events/EventDispatcherWiringTest.php` (RunInSeparateProcess, carga bootstrap real con BD anulada; rojo sin el fix, verde con él). Verificación: phpunit **208/694/12 OK** + PHPStan 0.
+
+**Reserva huérfana `USGAR-d5fab1ddb3b0`**: pagada pero SIN evento en outbox → no se recupera sola (reconcile salta `paid` procesados). Recuperación manual si el dueño quiere: insertar el evento `booking.paid` en `event_outbox` (payload `base64(serialize(BookingPaidEvent))`, `allowed_classes` con `BookingPaidEvent`+`DateTimeImmutable`) y dejar que el cron lo entregue, o reembolsar. La próxima venta real tras el deploy YA entrega (fix en prod pendiente de push).
+
 ## Scores de reseñas (2026-08-15, WIP local — sin push)
 
 - El ribbon de reviews de la home mostraba scores inventados (Booking 9.6/380+, TripAdvisor 5.0/240+, Google 4.9/190+). Reemplazados por **datos reales extraídos** (web_extract 2026-08-15): Booking **8.7/414**, KAYAK **8.7/683**, Expedia **8.6**. `src/content/reviews/reviews.json` ahora tiene 8 reseñas reales de Booking (textos reales EN + traducción es/fr/pt; fechas "2026" porque Booking no expone el mes en la extracción). TripAdvisor bloquea scraping (sin score inventado).

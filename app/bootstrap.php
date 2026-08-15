@@ -60,6 +60,18 @@ $container->bind(MailerPortInterface::class, fn($c) => new PhpMailerAdapter());
 
 // Listeners de dominio (webhook -> PMS / Channel Manager) con DIP desde el container
 $eventDispatcher = EventDispatcher::getInstance();
+
+// FIX 2026-08-15 (bug de wiring, primera venta real): registrar el singleton en
+// el Container. Container::get() por autowiring crea instancias NUEVAS (no
+// cachea las resueltas por reflexion — solo bind()/set() cachean), asi que
+// ProcessPaymentAction/HandleMercadoPagoWebhookAction/RetryManualReviewAction
+// recibian un EventDispatcher vacio SIN los listeners de abajo ->
+// EventDispatcher::dispatch() hacia return temprano (empty(listeners)) y el
+// INSERT en event_outbox NUNCA ocurria: hold paid pero el cron process_outbox
+// no tenia nada que entregar (QloApps sin orden + sin email). Sin este set,
+// el bug solo aparece con un pago real (los unit tests inyectan mocks).
+$container->set(EventDispatcher::class, $eventDispatcher);
+
 if ($dbConnection !== null) {
     $eventDispatcher->subscribe('booking.paid', new ConfirmQloAppsOrderListener($container->get(PmsPortInterface::class)));
 }
