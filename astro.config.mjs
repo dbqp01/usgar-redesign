@@ -1,4 +1,4 @@
-import { defineConfig, fontProviders } from 'astro/config';
+import { defineConfig, fontProviders, svgoOptimizer } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import compress from '@playform/compress';
@@ -7,6 +7,11 @@ import critters from 'astro-critters';
 export default defineConfig({
   site: 'https://usgarhoteles.com',
   output: 'static',
+  experimental: {
+    // Optimizacion nativa de Astro (SVGO en build): el logo SVG importado
+    // como componente (Navbar/Footer) se optimiza en cada build (2026-08-16).
+    svgOptimizer: svgoOptimizer(),
+  },
   redirects: {
     // Ahrefs/GSC piden /sitemap.xml (404 actual); el sitemap real es /sitemap-index.xml
     '/sitemap.xml': '/sitemap-index.xml',

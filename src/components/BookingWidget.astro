@@ -29,7 +29,7 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
             aria-haspopup="dialog"
             aria-expanded="false"
             aria-controls="widget-popover"
-            class="w-full px-4 py-3 rounded-xl bg-white/75 dark:bg-white/10 border border-white/60 dark:border-white/15 backdrop-blur-md text-sm text-stone-900 dark:text-white text-left hover:border-gold-vibrant/70 focus:ring-2 focus:ring-gold-vibrant transition-colors cursor-pointer"
+            class="w-full px-4 py-3 rounded-xl bg-white/85 dark:bg-white/10 border border-white/60 dark:border-white/15 text-sm text-stone-900 dark:text-white text-left hover:border-gold-vibrant/70 focus:ring-2 focus:ring-gold-vibrant transition-colors cursor-pointer"
           >
             <span data-widget-dates-label class="font-medium">-- / --</span>
           </button>
@@ -64,7 +64,7 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
           <select
             id="guests"
             name="guests"
-            class="w-full px-4 py-3 rounded-xl bg-white/75 dark:bg-white/10 border border-white/60 dark:border-white/15 backdrop-blur-md text-sm text-stone-900 dark:text-white focus:ring-2 focus:ring-gold-vibrant focus:border-transparent focus-visible:outline-none transition-[border-color,box-shadow] appearance-none cursor-pointer"
+            class="w-full px-4 py-3 rounded-xl bg-white/85 dark:bg-white/10 border border-white/60 dark:border-white/15 text-sm text-stone-900 dark:text-white focus:ring-2 focus:ring-gold-vibrant focus:border-transparent focus-visible:outline-none transition-[border-color,box-shadow] appearance-none cursor-pointer"
           >
             <option value="1" class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-text-primary-dark">1 {t('booking.guest')}</option>
             <option value="2" selected class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-text-primary-dark">2 {t('booking.guests_plural')}</option>
@@ -84,7 +84,7 @@ const roomTypes = rooms.map(r => ({ value: r.slug, label: r.name[lang] }));
           <select
             id="room-type"
             name="room-type"
-            class="w-full px-4 py-3 rounded-xl bg-white/75 dark:bg-white/10 border border-white/60 dark:border-white/15 backdrop-blur-md text-sm text-stone-900 dark:text-white focus:ring-2 focus:ring-gold-vibrant focus:border-transparent focus-visible:outline-none transition-[border-color,box-shadow] appearance-none cursor-pointer"
+            class="w-full px-4 py-3 rounded-xl bg-white/85 dark:bg-white/10 border border-white/60 dark:border-white/15 text-sm text-stone-900 dark:text-white focus:ring-2 focus:ring-gold-vibrant focus:border-transparent focus-visible:outline-none transition-[border-color,box-shadow] appearance-none cursor-pointer"
           >
             <option value="" class="bg-white dark:bg-surface-card-dark text-text-primary-light dark:text-text-primary-dark">{t('booking.anyRoom')}</option>
             {roomTypes.map(rt => (
