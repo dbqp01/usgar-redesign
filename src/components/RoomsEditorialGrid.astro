@@ -68,10 +68,10 @@ const galleryRooms = rooms.slice(0, 4).map((room) => ({
 
           <div class="absolute inset-x-0 bottom-0 z-10 p-5 sm:p-7">
             <div class="mb-4 h-px w-12 bg-secondary transition-all duration-700 group-hover:w-24"></div>
-            <h3 class="max-w-[18ch] font-display text-3xl leading-[0.95] text-white transition-colors duration-500 group-hover:text-secondary sm:text-5xl">
+            <h3 class="max-w-[18ch] font-display text-2xl leading-[0.95] text-white transition-colors duration-500 group-hover:text-secondary sm:text-5xl">
               {room.name[lang]}
             </h3>
-            <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10px] font-mono uppercase tracking-[0.18em] text-white/75">
+            <div class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10px] font-mono uppercase tracking-[0.18em] text-white/75 sm:mt-5">
               <span>{t('rooms.from')} ${room.pricePerNight} {t('rooms.perNight')}</span>
               <span>{room.amenityLabels[room.amenities[0]]?.[lang] || room.beds}</span>
               <span class="inline-flex items-center gap-2 text-secondary">

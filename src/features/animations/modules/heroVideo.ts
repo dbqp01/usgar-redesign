@@ -16,7 +16,11 @@ function pickParts(video: HTMLVideoElement): string[] {
     mobile: string[];
   };
   const list = window.matchMedia('(max-width: 767px)').matches ? raw.mobile : raw.desktop;
-  const supportsAv1 = video.canPlayType('video/mp4; codecs="av01.0.04M.08"') !== '';
+  // AV1 SOLO desktop (>=768px): en movil se decodifica por software en la
+  // mayoria de dispositivos -> CPU alta/jank (queja del dueno 2026-08-16).
+  // Movil siempre h264 (decode HW universal).
+  const supportsAv1 = video.canPlayType('video/mp4; codecs="av01.0.04M.08"') !== ''
+    && window.innerWidth >= 768;
   return supportsAv1 ? list.map((p) => p.replace(/\.mp4$/, '.av1.mp4')) : list;
 }
 
@@ -214,6 +218,7 @@ export function initHeroVideo(): () => void {
   }
 
   function startSlideshow(): void {
+    slideshowEl.classList.remove('hidden');
     slideshowEl.classList.remove('opacity-0');
     slideshowEl.classList.add('opacity-100');
     toggleBtnEl.classList.add('opacity-0', 'pointer-events-none');

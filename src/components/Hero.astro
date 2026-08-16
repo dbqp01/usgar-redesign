@@ -64,11 +64,14 @@ const slides = [slide1, slide2, slide3, slide4];
   >
   </video>
 
-  <!-- Slideshow Background (Initially hidden) -->
-  <div
-    id="hero-slideshow"
-    class="absolute inset-0 w-full h-full opacity-0 pointer-events-none transition-opacity duration-1000 z-0"
-  >
+  <!-- Slideshow Background (solo fallback del video; hidden inicial para que
+         Chrome NO descargue las imagenes (opacity-0 no basta — se descargaban
+         ~800KB invisibles en cada visita). startSlideshow() lo muestra y
+         forceEager activa las imagenes bajo demanda. -->
+    <div
+      id="hero-slideshow"
+      class="hidden absolute inset-0 w-full h-full opacity-0 pointer-events-none transition-opacity duration-1000 z-0"
+    >
     {slides.map((slide, i) => (
       <div class="absolute inset-0 transition-opacity duration-1000 opacity-0" data-slide={i}>
         <Image

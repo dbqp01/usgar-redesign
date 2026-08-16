@@ -24,8 +24,14 @@ const items = await Promise.all(attractions.map(async (attraction) => {
     width: 1200,
     quality: 'high',
   });
+  const mobileCard = await getImage({
+    src: image,
+    format: 'webp',
+    width: 640,
+    quality: 'medium',
+  });
 
-  return { ...attraction, image, previewSrc: preview.src };
+  return { ...attraction, image, previewSrc: preview.src, mobileSrc: mobileCard.src };
 }));
 
 const categoryLabels: Record<string, string> = {
@@ -45,7 +51,44 @@ const categoryLabels: Record<string, string> = {
       subtitle={t('explore.description')}
     />
 
-    <div id="explore-atlas" data-explore-atlas class="grid gap-5 sm:gap-7 lg:grid-cols-[minmax(0,1.2fr)_minmax(360px,0.8fr)] lg:items-stretch">
+    <!-- Móvil (<768px): carrusel horizontal de destinos (scroll-snap nativo, sin
+       JS) — el atlas completo (imagen gigante + lista apilada) no funcionaba
+       en pantalla angosta: titulo tapando el sujeto, redundancia imagen/lista,
+       sensacion apretada (rediseno movil 2026-08-16). Desktop conserva el atlas. -->
+    <ul
+      class="lg:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 -mx-4 px-4"
+      aria-label={t('explore.title')}
+    >
+      {items.map((item) => (
+        <li class="w-[230px] shrink-0 snap-start">
+          <a
+            href={getRelativeLocaleUrl(lang, `explore/${item.id}`)}
+            data-astro-prefetch="tap"
+            class="block overflow-hidden rounded-2xl border border-black/10 bg-surface-card-light group dark:border-white/10 dark:bg-surface-card-dark"
+          >
+            <img
+              src={item.mobileSrc}
+              alt={item.name[lang]}
+              loading="lazy"
+              decoding="async"
+              width="640"
+              height="400"
+              class="h-[130px] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <span class="block px-4 py-3">
+              <span class="block truncate font-display text-lg leading-none text-text-primary-light dark:text-white">
+                {item.name[lang]}
+              </span>
+              <span class="mt-1 block text-[10px] font-mono uppercase tracking-[0.16em] text-text-secondary-light dark:text-text-secondary-dark">
+                {item.distance} / {item.travelTime}
+              </span>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div id="explore-atlas" data-explore-atlas class="hidden gap-5 sm:gap-7 lg:grid lg:grid-cols-[minmax(0,1.2fr)_minmax(360px,0.8fr)] lg:items-stretch">
       <div data-atlas-preview class="relative isolate min-h-[440px] overflow-hidden rounded-[1.75rem] border border-black/10 bg-surface-card-dark shadow-xl sm:min-h-[620px]">
         <div data-atlas-preview-media class="absolute inset-0 overflow-hidden">
           {items.map((item, index) => (
@@ -135,6 +178,9 @@ const categoryLabels: Record<string, string> = {
   let cleanup: (() => void) | null = null;
 
   function init() {
+    // El atlas es desktop-only (rediseno movil 2026-08-16: en <768px se usa el
+    // carrusel horizontal; el JS del atlas sobre un contenedor hidden es inerte).
+    if (window.matchMedia('(max-width: 767px)').matches) return;
     const root = document.querySelector('[data-explore-atlas]') as HTMLElement | null;
     if (!root) return;
     cleanup?.();
