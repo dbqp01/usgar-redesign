@@ -35,6 +35,19 @@ const slides = [slide1, slide2, slide3, slide4];
   class="relative h-dvh min-h-[500px] sm:min-h-[600px] flex items-center justify-center"
   id="hero"
 >
+  <!-- Poster AVIF como capa de fondo: candidato LCP inmediato (el video
+       arranca retrasado post-preloader; este img garantiza un LCP de imagen
+       128KB en vez del primer frame del MP4) y fallback visual nítido
+       mientras el video bufferiza. El video queda por encima (z-0 tras él). -->
+  <img
+    src={optimizedPoster.src}
+    alt=""
+    aria-hidden="true"
+    width="1280"
+    height="720"
+    fetchpriority="high"
+    class="absolute inset-0 w-full h-full object-cover z-0"
+  />
   <!-- Video Background (3 segmentos encadenados: cada parte arranca al terminar la anterior) -->
   <video
     autoplay

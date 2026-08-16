@@ -120,12 +120,25 @@ export function initHeroVideo(): () => void {
       .set(wipe, { opacity: 0 });
   }
 
-  if (parts.length > 0) {
-    playPart(0);
-    preloadNext(parts[1 % parts.length]);
+  // Arranque retrasado (fix rendimiento 2026-08-16): el video NO se ve hasta
+  // que el preloader termina (1ª visita) o hasta el load del documento
+  // (visitas con sessionStorage) — mientras, el LCP lo resuelve el poster
+  // AVIF (128KB) en lugar del primer frame del MP4 (2.8-4.3MB móvil, LCP
+  // 6.3s en PSI). Cero cambio visual: cuando el preloader se va, el video
+  // ya está en camino y el poster cubre el fondo durante el buffering.
+  const start = () => {
+    if (parts.length > 0) {
+      playPart(0);
+      preloadNext(parts[1 % parts.length]);
+    } else {
+      videoEl.currentTime = 0;
+      videoEl.play().catch(() => {});
+    }
+  };
+  if (window.__preloaderDone || !document.getElementById('cinematic-preloader')) {
+    window.addEventListener('load', start, { once: true });
   } else {
-    videoEl.currentTime = 0;
-    videoEl.play().catch(() => {});
+    window.addEventListener('usgar:preloader-done', start, { once: true });
   }
 
   // Toggle de sonido (asignación directa: no acumula listeners entre re-inits)
