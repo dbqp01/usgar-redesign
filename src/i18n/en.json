@@ -19,7 +19,8 @@
     "cta": "Book Your Stay",
     "ctaSecondary": "Explore Rooms",
     "slideAlt": "USGAR Hotels Cusco -",
-    "toggleAudio": "Toggle video audio"
+    "toggleAudio": "Toggle video audio",
+    "loadingVideo": "Loading video…"
   },
   "booking": {
     "title": "Direct Booking",

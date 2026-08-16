@@ -99,9 +99,28 @@ const slides = [slide1, slide2, slide3, slide4];
     aria-hidden="true"
   ></div>
 
-  <!-- Content (estructura de produccion — revert 2026-08-15: el dueño pidio
-       "que se vea como prod"; prod = centrado + h1 puro, el wrap del titulo en
-       dos lineas lo da el fluid-h1 segun el viewport) -->
+  <!-- Overlay "cargando video" (patrón YouTube, 2026-08-16): visible mientras
+         el MP4 bufferiza antes del primer frame reproducible. En red lenta el
+         usuario ve el poster + "Cargando video…" (sensacion de carga a proposito,
+         no pantalla muerta); desaparece con fade en 'playing'. Timeout 12s de
+         seguridad: si el autoplay esta bloqueado, el poster queda y el texto se va. -->
+    <div
+      id="hero-video-loading"
+      class="absolute inset-0 z-[3] flex items-center justify-center opacity-0 transition-opacity duration-500 pointer-events-none"
+      aria-hidden="true"
+    >
+      <div class="flex flex-col items-center gap-3">
+        <svg class="w-9 h-9 text-gold animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="9" stroke-opacity="0.25" />
+          <path d="M21 12a9 9 0 0 0-9-9" stroke-linecap="round" />
+        </svg>
+        <span class="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/80">{t('hero.loadingVideo')}</span>
+      </div>
+    </div>
+
+    <!-- Content (estructura de produccion -- revert 2026-08-15: el dueño pidio
+         "que se vea como prod"; prod = centrado + h1 puro, el wrap del titulo en
+         dos lineas lo da el fluid-h1 segun el viewport) -->
   <div class="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
     <h1 id="hero-title-reveal" class="font-display fluid-h1 mb-4 sm:mb-6 drop-shadow-lg leading-tight">
       {t("hero.title")}
@@ -117,21 +136,22 @@ const slides = [slide1, slide2, slide3, slide4];
         {t("hero.cta")}
       </a>
       <a
-        href="#rooms"
-        class="border border-white/40 hover:border-white/80 text-white px-8 py-3.5 rounded-full transition-[border-color,background-color,color] duration-300 hover:bg-white/10 text-lg"
-      >
-        {t("hero.ctaSecondary")}
-      </a>
+              href="#rooms"
+              class="border border-white/60 hover:border-white/90 bg-white/5 hover:bg-white/10 text-white px-8 py-3.5 rounded-full transition-[border-color,background-color,color] duration-300 text-lg"
+            >
+              {t("hero.ctaSecondary")}
+            </a>
     </div>
   </div>
 
   <!-- Booking widget integrado al hero (barra inferior, sm+) -->
   <BookingWidget />
 
-  <!-- Video Audio Toggle -->
-  <button
-    id="video-audio-toggle"
-    class="absolute bottom-36 right-6 z-10 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-[background-color] duration-300"
+  <!-- Video Audio Toggle (solo desktop: en movil el video siempre va muted y
+         el boton congestionaba la esquina con WhatsApp + barra sticky) -->
+    <button
+      id="video-audio-toggle"
+      class="hidden sm:flex absolute bottom-36 right-6 z-10 w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm items-center justify-center hover:bg-white/30 transition-[background-color] duration-300"
     aria-label={t('hero.toggleAudio')}
     aria-pressed="false"
   >

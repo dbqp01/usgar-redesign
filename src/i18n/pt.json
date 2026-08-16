@@ -19,7 +19,8 @@
     "cta": "Reserve Sua Estadia",
     "ctaSecondary": "Explorar Quartos",
     "slideAlt": "USGAR Hotels Cusco -",
-    "toggleAudio": "Ativar ou silenciar o áudio do vídeo"
+    "toggleAudio": "Ativar ou silenciar o áudio do vídeo",
+    "loadingVideo": "Carregando vídeo…"
   },
   "booking": {
     "title": "Reserva Direta",

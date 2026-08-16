@@ -35,6 +35,7 @@ export function initHeroVideo(): () => void {
   const unmutedIcon = document.getElementById('unmuted-icon') as HTMLElement | null;
   const slideshow = document.getElementById('hero-slideshow') as HTMLElement | null;
   const wipe = document.getElementById('hero-wipe') as HTMLElement | null;
+  const loading = document.getElementById('hero-video-loading') as HTMLElement | null;
 
   if (!video || !toggleBtn || !mutedIcon || !unmutedIcon || !slideshow) return () => {};
 
@@ -99,7 +100,7 @@ export function initHeroVideo(): () => void {
       swapping = false;
     };
 
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.innerWidth < 768;
     if (!wipe || reduceMotion) {
       swapSource();
       swapping = false;
@@ -129,26 +130,54 @@ export function initHeroVideo(): () => void {
   // AVIF (128KB) en lugar del primer frame del MP4 (2.8-4.3MB móvil, LCP
   // 6.3s en PSI). Cero cambio visual: cuando el preloader se va, el video
   // ya está en camino y el poster cubre el fondo durante el buffering.
-  const start = () => {
-    if (parts.length > 0) {
-      playPart(0);
-      // Preload del 2º segmento al primer 'playing', no al arrancar: ahorra
-      // 2.8-4.3MB (móvil) de banda durante la ventana del LCP.
+  // RACE FIX (2026-08-16): en visitas con sessionStorage el preloader hace
+  // done() (y dispatchea) DENTRO de page-load — podía ocurrir antes de
+  // registrar el listener y el video nunca arrancaba. Ahora startOnce() con
+  // guard cubre readyState-complete + load + preloader-done, idempotente.
+  let started = false;
+  function startOnce(): void {
+    if (started) return;
+    started = true;
+    const start = () => {
+      // Overlay "cargando video" (estilo YouTube): visible mientras el MP4
+      // bufferiza; fade-out en el primer frame reproducible. Timeout de
+      // seguridad 12s: si el autoplay esta bloqueado el poster queda y el
+      // texto desaparece igual (nunca un spinner eterno).
+      let hideTimeout = 0;
+      function hideLoading(): void {
+        window.clearTimeout(hideTimeout);
+        if (!loading) return;
+        loading.classList.remove('opacity-100');
+        loading.classList.add('opacity-0');
+      }
       const onPlaying = () => {
+        hideLoading();
         preloadNext(parts[1 % parts.length]);
         videoEl.removeEventListener('playing', onPlaying);
       };
+      if (loading) loading.classList.add('opacity-100');
       videoEl.addEventListener('playing', onPlaying);
+      videoEl.addEventListener('error', hideLoading, { once: true });
+      hideTimeout = window.setTimeout(hideLoading, 12000);
+      if (parts.length > 0) {
+        playPart(0);
+      } else {
+        videoEl.currentTime = 0;
+        videoEl.play().catch(() => {});
+      }
+    };
+    if (document.readyState === 'complete') {
+      start();
     } else {
-      videoEl.currentTime = 0;
-      videoEl.play().catch(() => {});
+      window.addEventListener('load', start, { once: true });
     }
-  };
-  if (window.__preloaderDone || !document.getElementById('cinematic-preloader')) {
-    window.addEventListener('load', start, { once: true });
-  } else {
-    window.addEventListener('usgar:preloader-done', start, { once: true });
+    if (window.__preloaderDone) {
+      start();
+    } else {
+      window.addEventListener('usgar:preloader-done', start, { once: true });
+    }
   }
+  startOnce();
 
   // Toggle de sonido (asignación directa: no acumula listeners entre re-inits)
   toggleBtnEl.onclick = () => {
