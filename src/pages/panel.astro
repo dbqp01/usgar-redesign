@@ -1,107 +1,331 @@
 ---
-// Panel de disponibilidad del dueno — pagina estatica que consume /api/panel/*
-// (cookie HttpOnly usgar_panel). No usa el Layout publico (sin navbar del sitio).
-// (audit 2026-08-12: rutas /api/panel/* en public/index.php; cookie usgar_panel
-// HttpOnly + JWT HS256 en PanelAuth)
+// Panel del dueño — rediseño 2026-08-15 v3 (Gantt estilo PMS profesional).
+// Superficie: Monitor/Operate. Dark nativo con tokens reales de global.css.
+//
+// LECCIÓN v2: la vista de tarjetas con celdas diminutas era un Excel ilegible.
+// Los PMS reales (Cloudbeds, SiteMinder, Opera) usan un GANTT: fila por
+// habitación física, columna por día, barra por reserva (color = canal,
+// tooltip = huésped). Sticky header de días + sticky columna de habitación.
+//
+// Vista por tipo (grupos) → cada habitación su fila → barra por reserva.
+// Wizard de reserva (POST /api/panel/booking → confirmOrder → CMS) con
+// DETECCIÓN DE HUECOS: si ninguna habitación queda libre TODAS las noches del
+// rango, avisa "cambio de cuarto obligatorio" antes de confirmar.
+// Bloqueos: POST/DELETE /api/panel/block → qlo_htl_room_disable_dates
+// (descuenta la venta web).
 ---
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
-<title>USGAR — Calendario de reservas</title>
-<style>
+<title>USGAR — Panel del dueño</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<!-- is:global: TODO el DOM del panel se genera por innerHTML (celdas, barras,
+     filas) y no lleva data-astro-cid-*; sin esto el scoped CSS de Astro no
+     aplica a los elementos dinámicos (bug v2: barras en position:static). -->
+<style is:global>
   :root {
-    --bg: #F6F5F1; --card: #FFFFFF; --border: #E5E1D7;
-    --text: #211E18; --text-dim: #6E695E; --text-faint: #A09A8C;
-    --gold: #8C6900; --gold-bg: #F6EED8;
-    --web: #157A67; --walkin: #3E7C46; --ota: #2F5578; --phone: #6B4F8C; --qlo: #5A6B7B; --hold: #9E7A23;
-    --maint: #B5B0A5; --maint-bg: #EDEBE5; --today: #8C6900;
+    --bg: #0A0A0A;
+    --card: #141414;
+    --border: #262626;
+    --border-soft: #1C1C1C;
+    --text: #F4F4F4;
+    --text-dim: #A2A2A2;
+    --text-faint: #6E6E6E;
+    --gold: #D4AF37;
+    --gold-bright: #EACA1C;
+    --gold-deep: #9E7A23;
+    --gold-soft: #E8D48B;
+    --teal: #1F9484;
+    --teal-brand: #2DB5A0;
+    --lavender: #A78BBD;
+    --purple-a: #6D4D85;
+    --purple-b: #4B2F66;
+    --danger: #E0705F;
+    --free-cell: rgba(45,181,160,0.07);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Montserrat', system-ui, sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: "Segoe UI", system-ui, sans-serif; font-size: 13px; padding: 26px 30px; }
-  .top { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
-  h1 { font-size: 25px; font-weight: 600; } h1 .g { color: var(--gold); }
-  .sub { color: var(--text-dim); font-size: 12.5px; }
-  .toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 16px 0 8px; }
-  .month-nav { display: flex; align-items: center; gap: 6px; }
-  .month-nav button, .btn { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; font-size: 12.5px; cursor: pointer; color: var(--text); }
-  .month-nav button:hover, .btn:hover { border-color: var(--gold); color: var(--gold); }
-  .month-nav button { width: 28px; height: 28px; padding: 0; font-size: 15px; }
-  #monthLabel { min-width: 158px; text-align: center; font-weight: 700; color: var(--gold); font-size: 14px; }
-  .btn.today-btn { border-color: var(--gold); color: var(--gold); font-weight: 600; }
+  html { color-scheme: dark; }
+  body {
+    background: var(--bg);
+    background-image: radial-gradient(1100px 480px at 88% -10%, rgba(212,175,55,0.05), transparent 60%),
+                      radial-gradient(900px 420px at -8% 108%, rgba(45,181,160,0.045), transparent 60%);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 24px 28px 44px;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: rgba(212,175,55,0.28); }
+  button, input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
+  button { cursor: pointer; }
+  button:active { transform: scale(0.97); transition: transform 0.04s; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  /* ===== Header ===== */
+  .top { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
+  .logo { display: flex; align-items: center; gap: 16px; }
+  .logo-mark {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--purple-a), var(--purple-b));
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold-bright); font-size: 19px; font-weight: 600;
+    font-family: var(--font-display);
+  }
+  .kicker {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 4px;
+  }
+  .kicker::before { content: ''; display: inline-block; width: 22px; height: 1px; background: var(--gold-deep); vertical-align: middle; margin-right: 10px; }
+  h1 { font-family: var(--font-display); font-weight: 400; font-size: 26px; letter-spacing: 0.01em; line-height: 1.1; }
+  h1 .g { color: var(--gold); }
+  .sub { color: var(--text-dim); font-size: 12.5px; margin-top: 4px; }
+
+  .toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .month-nav { display: flex; align-items: center; gap: 4px; }
+  .month-nav button, .btn {
+    background: transparent; border: 1px solid transparent; border-radius: 8px;
+    padding: 8px 14px; font-size: 12.5px; font-weight: 500; color: var(--text-dim);
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  .month-nav button:hover, .btn:hover { border-color: var(--border); color: var(--gold); background: rgba(212,175,55,0.05); }
+  .month-nav button { width: 36px; height: 36px; padding: 0; font-size: 16px; }
+  #monthLabel { min-width: 186px; text-align: center; font-weight: 600; color: var(--text); font-size: 14px; letter-spacing: 0.02em; }
+  .btn.today-btn { color: var(--gold); }
   .spacer { flex: 1; }
-  .btn.primary { background: var(--gold); border-color: var(--gold); color: #fff; font-weight: 600; }
-  .btn.primary:hover { background: #7A5C10; }
-  .btn.logout { color: var(--text-dim); }
-  .legend { display: flex; gap: 16px; flex-wrap: wrap; color: var(--text-dim); font-size: 12px; margin-bottom: 10px; }
-  .legend .bar { display: inline-block; height: 10px; width: 24px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
-  .bar.web { background: var(--web); } .bar.walkin { background: var(--walkin); } .bar.ota { background: var(--ota); }
-  .bar.phone { background: var(--phone); } .bar.qlo { background: var(--qlo); }
-  .bar.hold { background: repeating-linear-gradient(45deg, var(--hold) 0 3px, #B8912F 3px 6px); }
-  .bar.maint { background: var(--maint-bg); border: 1px solid #D6D2C8; }
-  .layout { display: grid; grid-template-columns: 1fr 280px; gap: 16px; align-items: start; }
-  .wrap { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: auto; max-height: calc(100vh - 280px); }
-  table { border-collapse: collapse; width: max-content; min-width: 100%; }
-  th, td { border: 1px solid var(--border); }
-  thead th { position: sticky; top: 0; background: #F1EFE7; z-index: 5; font-weight: 600; font-size: 10.5px; color: var(--text-dim); padding: 3px 0; min-width: 30px; text-align: center; }
-  thead th.dow { color: var(--text-faint); font-size: 9px; border-bottom: none; padding: 2px 0 0; }
-  thead th.dow.we { color: var(--gold); }
-  thead th.num { padding: 0 0 4px; cursor: pointer; }
-  thead th.num.today { color: var(--today); box-shadow: inset 0 -2px 0 var(--today); }
-  thead th.num.sel { background: var(--gold-bg); }
-  tbody td.room { position: sticky; left: 0; background: #F1EFE7; z-index: 4; font-size: 12.5px; padding: 8px 12px; white-space: nowrap; min-width: 185px; border-right: 1px solid var(--border); }
-  tbody td.room .rnum { font-weight: 600; color: var(--gold); }
-  tbody td.room .rtype { color: var(--text-dim); font-size: 11px; margin-left: 7px; }
-  .group td { background: var(--card); color: var(--text-faint); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; padding: 5px 12px; font-weight: 700; }
-  .unassigned td.room { color: var(--text-faint); font-style: italic; }
-  .unassigned td.room .rnum { color: var(--text-faint); font-weight: 400; }
-  tbody td.day { height: 36px; min-width: 30px; padding: 0; background: #FDFCFA; position: relative; }
-  tbody td.day.we { background: #FBF9F2; }
-  tbody td.day.today { background: #FBF5E2; }
-  tbody td.day.off { background: var(--maint-bg); }
-  .bk { position: absolute; top: 5px; bottom: 5px; border-radius: 4px; cursor: pointer; min-width: 3px; box-shadow: 0 1px 2px rgba(40,30,10,0.18); }
-  .bk.web { background: linear-gradient(180deg, #1B8A74, #126756); }
-  .bk.walkin { background: linear-gradient(180deg, #4C9155, #35693C); }
-  .bk.ota { background: linear-gradient(180deg, #37648C, #274A6B); }
-  .bk.phone { background: linear-gradient(180deg, #7E5FA3, #5C4378); }
-  .bk.qlo { background: linear-gradient(180deg, #6C8093, #4C5C6B); }
-  .bk.hold { background: repeating-linear-gradient(45deg, #C9A227 0 6px, #8F6F1B 6px 12px); border: 1px solid #6E5312; }
-  .bk.maint { background: repeating-linear-gradient(45deg, #C9C4B8 0 4px, #B5B0A5 4px 8px); cursor: default; }
-  .bk:hover { filter: brightness(1.1); z-index: 3; }
-  .side { display: flex; flex-direction: column; gap: 12px; }
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
-  .card h2 { font-size: 12px; font-weight: 700; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
-  .big { font-size: 26px; font-weight: 700; color: var(--gold); }
-  .big small { font-size: 12px; color: var(--text-dim); font-weight: 400; }
-  .statline { display: flex; justify-content: space-between; padding: 5px 0; font-size: 12.5px; border-bottom: 1px dashed var(--border); }
-  .statline:last-child { border-bottom: none; }
-  .statline span:first-child { color: var(--text-dim); }
-  .statline b { font-weight: 600; }
-  .channels { display: flex; flex-wrap: wrap; gap: 6px; }
-  .chip { border: 1px solid var(--border); background: var(--card); border-radius: 20px; padding: 4px 11px; font-size: 11.5px; cursor: pointer; color: var(--text-dim); display: inline-flex; align-items: center; gap: 6px; }
-  .chip .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
-  .chip.on { border-color: var(--gold); color: var(--text); background: var(--gold-bg); }
-  .chip .cnt { font-weight: 700; color: var(--text); }
-  .daylist { list-style: none; max-height: 220px; overflow: auto; }
-  .daylist li { padding: 6px 8px; border-radius: 6px; background: var(--bg); margin-bottom: 5px; font-size: 12px; line-height: 1.4; }
-  .daylist li b { color: var(--gold); }
-  .daylist li .src { float: right; font-size: 10px; border-radius: 10px; padding: 1px 8px; color: #fff; }
-  #tip { position: fixed; z-index: 50; pointer-events: none; display: none; background: #fff; border: 1px solid var(--gold); border-radius: 8px; padding: 11px 14px; min-width: 230px; box-shadow: 0 12px 30px rgba(30,25,10,0.2); }
-  #tip .t-g { font-weight: 600; font-size: 13.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
-  #tip .t-g .src { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 12px; color: #fff; }
-  #tip .t-r { color: var(--text-dim); font-size: 11.5px; line-height: 1.6; }
+  .btn.primary {
+    background: transparent; color: var(--gold-soft); font-weight: 600; letter-spacing: 0.04em;
+    border: 1px solid var(--gold-deep);
+  }
+  .btn.primary:hover { border-color: var(--gold); color: var(--gold-bright); background: rgba(212,175,55,0.06); }
+  .btn.ghost { color: var(--text-faint); }
+  .btn.ghost:hover { color: var(--text-dim); }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  .legend { display: flex; gap: 4px; flex-wrap: wrap; color: var(--text-dim); font-size: 11px; margin-bottom: 20px; align-items: center; }
+  .legend .bar { display: inline-block; height: 8px; width: 14px; border-radius: 2px; margin-right: 6px; vertical-align: 0; }
+  .legend button {
+    display: inline-flex; align-items: center;
+    background: transparent; border: 1px solid transparent; border-radius: 6px;
+    padding: 4px 9px; color: var(--text-faint); font-size: 11px; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    cursor: pointer; transition: border-color .15s, color .15s, opacity .15s;
+  }
+  .legend button:hover { border-color: var(--border); color: var(--text-dim); }
+  .legend button.off { opacity: .3; }
+  .legend button.off .bar { filter: grayscale(1); }
+  .bar.web { background: #2F8F7E; }
+  .bar.walkin { background: #7BA88F; }
+  .bar.ota { background: #6E8BA8; }
+  .bar.phone { background: #8E7BA8; }
+  .bar.qlo { background: #5C5C5C; }
+  .bar.hold { background: repeating-linear-gradient(45deg, #A08438 0 3px, #7E6426 3px 6px); }
+  .bar.maint { background: #2E2E2E; border: 1px solid #404040; }
+
+  /* ===== Stats (minimalismo editorial) ===== */
+  .stats-row { display: flex; gap: 0; flex-wrap: wrap; margin-bottom: 26px; border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); }
+  .stat-card { padding: 18px 32px 18px 0; margin-right: 32px; display: flex; flex-direction: column; gap: 4px; border-right: 1px solid var(--border-soft); padding-right: 32px; }
+  .stat-card:last-child { border-right: none; }
+  .stat-card .l { font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.22em; font-weight: 600; }
+  .stat-card .v { font-family: var(--font-display); font-size: 32px; font-weight: 400; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .stat-card .v .g { color: var(--gold-deep); font-size: 20px; }
+
+  /* ===== Gantt (limpio, líneas finas) ===== */
+  .gantt-wrap {
+    background: transparent; border: 1px solid var(--border-soft); border-radius: 12px;
+    overflow: auto; max-height: calc(100vh - 250px); position: relative;
+  }
+  table.gantt { border-collapse: separate; border-spacing: 0; width: 100%; }
+  thead th {
+    position: sticky; top: 0; background: var(--bg); z-index: 6;
+    font-size: 9.5px; font-weight: 600; color: var(--text-faint);
+    padding: 10px 0 6px; min-width: 40px; text-align: center;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  thead th.room-head {
+    position: sticky; left: 0; z-index: 8; text-align: left;
+    padding-left: 18px; background: var(--bg); min-width: 216px;
+    font-family: var(--font-body); font-weight: 600; font-size: 10px;
+    color: var(--text-faint); letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  thead th.dow { font-size: 8.5px; color: var(--text-faint); font-weight: 500; padding: 2px 0 0; border-bottom: none; }
+  thead th.dow.we { color: var(--gold-deep); }
+  thead th.num { padding: 0 0 7px; border-top: none; }
+  thead th.num.today { color: var(--gold); box-shadow: inset 0 -2px 0 var(--gold); }
+
+  tbody td {
+    border-bottom: 1px solid var(--border-soft);
+    height: 42px; padding: 0;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td.room {
+    position: sticky; left: 0; background: var(--bg); z-index: 4;
+    padding: 0 10px 0 18px; white-space: nowrap;
+    border-right: 1px solid var(--border-soft);
+  }
+  tbody td.room .rnum { font-weight: 500; font-size: 13px; color: var(--text); font-variant-numeric: tabular-nums; }
+  tbody td.room .rtype { color: var(--text-faint); font-size: 10px; margin-left: 8px; }
+  .row-block-btn {
+    background: transparent; border: 1px solid transparent; border-radius: 6px;
+    color: var(--text-faint); font-size: 10px; font-weight: 600; padding: 3px 8px;
+    margin-left: 8px; letter-spacing: 0.08em; text-transform: uppercase;
+    transition: border-color .15s, color .15s, opacity .15s;
+    vertical-align: 1px; opacity: 0;
+  }
+  tbody tr:hover .row-block-btn { opacity: 1; }
+  .row-block-btn:hover { border-color: var(--border); color: var(--gold); opacity: 1 !important; }
+  tbody td.day { background: transparent; position: relative; }
+  tbody td.day.we { background: rgba(255,255,255,0.015); }
+  tbody td.day.today { background: rgba(212,175,55,0.04); box-shadow: inset 0 2px 0 var(--gold-deep); }
+  tbody td.day:hover { background: rgba(212,175,55,0.08); }
+
+  /* fila de grupo (tipo de habitación) */
+  tr.group td {
+    background: var(--bg); padding: 12px 18px;
+    font-family: var(--font-body); font-weight: 700; font-size: 10.5px;
+    color: var(--gold); letter-spacing: 0.22em; text-transform: uppercase;
+    border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft);
+    position: sticky; left: 0; z-index: 3;
+  }
+  tr.group td .gcount { color: var(--text-faint); font-family: var(--font-body); font-size: 10px; font-weight: 500; margin-left: 14px; letter-spacing: 0.06em; text-transform: none; }
+
+  /* barra de reserva */
+  .bk {
+    position: absolute; top: 7px; bottom: 7px; border-radius: 5px;
+    cursor: pointer; min-width: 4px; z-index: 3;
+    transition: filter .12s;
+  }
+  .bk:hover { filter: brightness(1.15); z-index: 5; }
+  .bk.web { background: linear-gradient(180deg, #2F8F7E, #236B5F); }
+  .bk.walkin { background: linear-gradient(180deg, #7BA88F, #5F8871); }
+  .bk.ota { background: linear-gradient(180deg, #6E8BA8, #54708C); }
+  .bk.phone { background: linear-gradient(180deg, #8E7BA8, #715D89); }
+  .bk.qlo { background: linear-gradient(180deg, #5C5C5C, #474747); }
+  .bk.hold { background: repeating-linear-gradient(45deg, #A08438 0 5px, #7E6426 5px 10px); }
+  .bk.maint { background: #262626; border: 1px solid #363636; cursor: default; }
+  .bk .bk-label {
+    position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
+    font-size: 10.5px; font-weight: 500; color: rgba(255,255,255,0.92);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: calc(100% - 14px);
+    pointer-events: none; letter-spacing: 0.01em;
+  }
+  .bk.hold .bk-label, .bk.maint .bk-label { color: #E8D48B; }
+
+  /* ===== Tooltip ===== */
+  #tip {
+    position: fixed; z-index: 50; pointer-events: none; display: none;
+    background: #1C1C1C; border: 1px solid var(--gold-deep); border-radius: 12px;
+    padding: 12px 16px; min-width: 240px; max-width: 320px;
+    box-shadow: 0 16px 40px -10px rgba(0,0,0,0.7);
+  }
+  #tip .t-g { font-weight: 600; font-size: 13.5px; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; color: var(--text); }
+  #tip .t-g .src { font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 12px; color: #0A0A0A; }
+  #tip .t-r { color: var(--text-dim); font-size: 12px; line-height: 1.65; }
   #tip .t-r b { color: var(--text); font-weight: 600; }
-  #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #22201A; color: #F5EFDF; border: 1px solid var(--gold); border-radius: 8px; padding: 10px 18px; font-size: 12.5px; display: none; z-index: 60; }
-  footer { margin-top: 16px; color: var(--text-faint); font-size: 11px; }
-  .login-wrap { max-width: 380px; margin: 12vh auto; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 28px 30px; }
-  .login-wrap h2 { font-size: 18px; margin-bottom: 4px; } .login-wrap h2 .g { color: var(--gold); }
-  .login-wrap p { color: var(--text-dim); font-size: 12px; margin-bottom: 16px; }
-  .login-wrap input { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; margin-bottom: 10px; }
-  .login-wrap .err { color: #B23A2C; font-size: 12px; margin-bottom: 8px; display: none; }
+
+  #toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+    background: #1C1A12; color: var(--gold-soft); border: 1px solid var(--gold-deep);
+    border-radius: 12px; padding: 12px 22px; font-size: 13px; display: none; z-index: 200;
+    box-shadow: 0 14px 44px -12px rgba(0,0,0,0.8); font-weight: 500;
+  }
+  footer { margin-top: 18px; color: var(--text-faint); font-size: 11.5px; }
+
+  /* ===== Login ===== */
+  .login-wrap {
+    max-width: 420px; margin: 14vh auto; background: var(--card);
+    border: 1px solid var(--border); border-radius: 18px; padding: 34px 36px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset, 0 24px 60px -20px rgba(0,0,0,0.7);
+  }
+  .login-wrap h2 { font-family: var(--font-display); font-weight: 400; font-size: 24px; margin-bottom: 4px; }
+  .login-wrap h2 .g { color: var(--gold); }
+  .login-wrap p { color: var(--text-dim); font-size: 12.5px; margin-bottom: 20px; }
+  .login-wrap input {
+    width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 11px;
+    font-size: 14px; margin-bottom: 13px; background: #101010; color: var(--text);
+  }
+  .login-wrap input:focus { outline: 2px solid var(--gold-deep); border-color: var(--gold-deep); }
+  .login-wrap .err { color: var(--danger); font-size: 12.5px; margin-bottom: 9px; display: none; }
+
+  /* ===== Modal ===== */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(4,4,4,0.75); backdrop-filter: blur(4px); display: none; align-items: flex-start; justify-content: center; z-index: 100; overflow: auto; padding: 6vh 18px; }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+    max-width: 660px; width: 100%; padding: 26px 30px;
+    box-shadow: 0 32px 90px -20px rgba(0,0,0,0.85), 0 0 50px -32px rgba(212,175,55,0.3);
+    animation: slide-up .35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes slide-up { from { transform: translateY(18px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal h2 { font-family: var(--font-display); font-weight: 400; font-size: 22px; margin-bottom: 3px; }
+  .modal h2 .g { color: var(--gold); }
+  .modal .m-sub { color: var(--text-dim); font-size: 12.5px; margin-bottom: 20px; }
+  .modal .close { float: right; border: none; background: none; font-size: 24px; cursor: pointer; color: var(--text-faint); line-height: 1; margin-top: -4px; }
+  .modal .close:hover { color: var(--text); }
+  .steps { display: flex; gap: 7px; margin-bottom: 22px; }
+  .step {
+    flex: 1; text-align: center; font-size: 11.5px; color: var(--text-faint);
+    padding: 9px 5px; border-radius: 10px; border: 1px solid var(--border); background: #101010;
+  }
+  .step.on { background: rgba(212,175,55,0.1); color: var(--gold); border-color: var(--gold-deep); font-weight: 600; }
+  .step.done { background: rgba(45,181,160,0.1); color: var(--teal-brand); border-color: rgba(45,181,160,0.35); }
+  .field { margin-bottom: 15px; }
+  .field label { display: block; font-size: 11px; font-weight: 600; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 7px; }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 11px;
+    font-size: 14px; background: #101010; color: var(--text);
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid var(--gold-deep); border-color: var(--gold-deep); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .warn-box {
+    background: rgba(224,112,95,0.12); border: 1px solid rgba(224,112,95,0.4); color: #F0B3A8;
+    border-radius: 12px; padding: 14px 16px; font-size: 13px; margin-bottom: 16px; line-height: 1.6;
+  }
+  .warn-box b { display: block; margin-bottom: 2px; color: var(--danger); font-size: 12.5px; letter-spacing: 0.02em; }
+  .info-box {
+    background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.3); color: var(--gold-soft);
+    border-radius: 12px; padding: 14px 16px; font-size: 13px; margin-bottom: 16px; line-height: 1.6;
+  }
+  .room-pick { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 13px; }
+  .room-pick .rp {
+    border: 1px solid var(--border); border-radius: 13px; padding: 12px 18px; cursor: pointer;
+    background: #101010; text-align: center; min-width: 100px;
+    transition: border-color .15s, background .15s;
+  }
+  .room-pick .rp .n { font-weight: 600; font-size: 15px; color: var(--gold); }
+  .room-pick .rp .s { font-size: 10.5px; color: var(--text-faint); margin-top: 3px; }
+  .room-pick .rp.on { border-color: var(--gold); background: rgba(212,175,55,0.1); box-shadow: 0 0 0 1px var(--gold); }
+  .room-pick .rp:disabled { opacity: .32; cursor: not-allowed; }
+  .modal .footer { display: flex; justify-content: space-between; gap: 10px; margin-top: 22px; }
+  .modal .footer .right { display: flex; gap: 10px; }
+  .summary {
+    background: #101010; border: 1px solid var(--border-soft); border-radius: 13px;
+    padding: 16px 19px; font-size: 13.5px; line-height: 1.8; margin-bottom: 16px;
+  }
+  .summary b { color: var(--gold); }
+  .summary .total { font-size: 18px; font-weight: 600; color: var(--gold-bright); margin-top: 6px; font-variant-numeric: tabular-nums; }
+
   .hidden { display: none !important; }
-  .empty-note { padding: 14px; color: var(--text-dim); font-size: 12.5px; }
+  .empty-note {
+    padding: 22px; color: var(--text-dim); font-size: 13px;
+    background: var(--card); border: 1px dashed var(--border); border-radius: 14px;
+  }
+  @media (max-width: 760px) {
+    body { padding: 16px 14px 34px; }
+    .field-row { grid-template-columns: 1fr; }
+    thead th.room-head, tbody td.room { min-width: 150px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .modal { animation: none; }
+  }
 </style>
 </head>
 <body>
@@ -109,20 +333,26 @@
 <!-- LOGIN -->
 <div id="loginView" class="login-wrap hidden">
   <h2>USGAR <span class="g">· Panel</span></h2>
-  <p>Acceso restringido al dueno del hotel.</p>
+  <p>Acceso restringido al dueño del hotel.</p>
   <div class="err" id="loginErr">Password incorrecta.</div>
   <input type="password" id="passInput" placeholder="Password" autocomplete="current-password">
   <button class="btn primary" id="loginBtn" style="width:100%">Entrar</button>
 </div>
 
-<!-- CALENDARIO -->
+<!-- PANEL -->
 <div id="appView" class="hidden">
   <header class="top">
-    <h1>USGAR <span class="g">· Calendario de reservas</span></h1>
-    <span class="sub">Timeline por cuarto — color por canal de venta · importa / exporta CSV y Excel</span>
+    <div class="logo">
+      <div class="logo-mark">U</div>
+      <div>
+        <div class="kicker">Hotel en San Pedro de Cusco</div>
+        <h1>Panel del <span class="g">dueño</span></h1>
+        <div class="sub">Calendario de disponibilidad — los cambios se reflejan al instante en el CMS</div>
+      </div>
+    </div>
   </header>
 
-  <div id="demoBadge" class="hidden" style="display:inline-block; background:var(--gold-bg); color:var(--gold); border:1px dashed var(--gold); border-radius:6px; padding:5px 12px; font-size:12px; margin-bottom:10px;">Modo demo — datos de ejemplo, sin base de datos</div>
+  <div id="demoBadge" class="hidden" style="display:inline-block; background:rgba(212,175,55,0.1); color:var(--gold); border:1px dashed var(--gold-deep); border-radius:8px; padding:6px 14px; font-size:12.5px; margin-bottom:12px;">Modo demo — datos de ejemplo, sin base de datos</div>
 
   <div class="toolbar">
     <div class="month-nav">
@@ -132,43 +362,54 @@
       <button class="today-btn" id="goToday">Hoy</button>
     </div>
     <span class="spacer"></span>
+    <button class="btn primary" id="newBookingBtn">+ Nueva reserva</button>
     <button class="btn" id="expCsv">Exportar CSV</button>
     <button class="btn" id="expXls">Exportar Excel</button>
-    <button class="btn primary" id="impBtn">Importar CSV / Excel</button>
-    <button class="btn logout" id="logoutBtn">Salir</button>
-    <input type="file" id="impFile" accept=".csv,.xlsx,.xls" style="display:none">
+    <button class="btn ghost" id="logoutBtn">Salir</button>
   </div>
 
-  <div class="legend">
-    <span><span class="bar web"></span>Web</span>
-    <span><span class="bar walkin"></span>Walk-in</span>
-    <span><span class="bar ota"></span>OTA</span>
-    <span><span class="bar phone"></span>Telefono</span>
-    <span><span class="bar qlo"></span>PMS</span>
-    <span><span class="bar hold"></span>Hold — pago pendiente</span>
-    <span><span class="bar maint"></span>Fuera de servicio</span>
+  <div class="legend" id="legend">
+    <span style="color:var(--text-faint);font-size:11px;text-transform:uppercase;letter-spacing:0.08em">Filtrar:</span>
+    <button data-f="web"><span class="bar web"></span>Web</button>
+    <button data-f="walkin"><span class="bar walkin"></span>Walk-in</button>
+    <button data-f="ota"><span class="bar ota"></span>OTA</button>
+    <button data-f="phone"><span class="bar phone"></span>Teléfono</button>
+    <button data-f="qlo"><span class="bar qlo"></span>PMS</button>
+    <button data-f="hold"><span class="bar hold"></span>Hold</button>
+    <button data-f="maint"><span class="bar maint"></span>Bloqueada</button>
   </div>
 
-  <div class="layout">
-    <div class="wrap">
-      <table id="cal"></table>
-      <div id="emptyNote" class="empty-note hidden">Sin habitaciones fisicas registradas en el CMS (Catalog → Manage Room Types → agregar habitaciones).</div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="l">Noches vendidas</div><div class="v" id="stNights">0</div></div>
+    <div class="stat-card"><div class="l">Reservas del mes</div><div class="v" id="stBookings">0</div></div>
+    <div class="stat-card"><div class="l">Ingreso estimado</div><div class="v"><span class="g">USD </span><span id="stRevenue">0</span></div></div>
+    <div class="stat-card"><div class="l">Ocupación</div><div class="v" id="stOcc">0%</div></div>
+  </div>
+
+  <div class="gantt-wrap">
+    <table class="gantt" id="cal"></table>
+  </div>
+  <div id="emptyNote" class="empty-note hidden" style="margin-top:14px">Sin habitaciones físicas registradas en el CMS (Catalog → Manage Room Types → agregar habitaciones).</div>
+</div>
+
+<!-- Modal wizard -->
+<div class="modal-backdrop" id="wizardBackdrop">
+  <div class="modal">
+    <button class="close" id="wizardClose">&times;</button>
+    <h2>Nueva reserva</h2>
+    <div class="m-sub">Se confirma al instante y aparece en el CMS.</div>
+    <div class="steps">
+      <div class="step" id="step1">1 · Fechas</div>
+      <div class="step" id="step2">2 · Tipo y habitación</div>
+      <div class="step" id="step3">3 · Huésped</div>
     </div>
-    <div class="side">
-      <div class="card">
-        <h2 id="sideTitle">—</h2>
-        <div style="margin-bottom:8px"><span class="big" id="occPct">0%</span> <small>ocupacion del mes</small></div>
-        <div class="statline"><span>Noches vendidas</span><b id="stNights">0</b></div>
-        <div class="statline"><span>Reservas</span><b id="stBookings">0</b></div>
-        <div class="statline"><span>Ingreso estimado</span><b id="stRevenue">USD 0</b></div>
-      </div>
-      <div class="card">
-        <h2>Por canal</h2>
-        <div class="channels" id="channels"></div>
-      </div>
-      <div class="card">
-        <h2 id="dayTitle">Reservas del dia</h2>
-        <ul class="daylist" id="daylist"><li style="color:var(--text-faint)">Clic en un dia de la cuadricula</li></ul>
+    <div id="wizardBody"></div>
+    <div class="footer">
+      <button class="btn ghost" id="wizardBack" style="display:none">&lsaquo; Atrás</button>
+      <span class="spacer"></span>
+      <div class="right">
+        <button class="btn" id="wizardCancel">Cancelar</button>
+        <button class="btn primary" id="wizardNext">Continuar &rsaquo;</button>
       </div>
     </div>
   </div>
@@ -177,7 +418,7 @@
 <div id="tip"></div>
 <div id="toast"></div>
 
-<footer id="foot" class="hidden">Formato CSV: habitacion, checkin (YYYY-MM-DD), checkout, huesped, canal (web|walkin|ota|phone), estado (confirmed|hold), precio — lo exportado se puede reimportar.</footer>
+<footer id="foot" class="hidden">Los cambios se escriben directamente en la base de datos y se reflejan en el CMS de QloApps.</footer>
 
 <script>
 "use strict";
@@ -187,60 +428,41 @@ function $(id: string): HTMLElement {
   return el;
 }
 
-interface Booking {
-  room_id: number | null;
-  room: string | null;
-  checkin: string;
-  checkout: string;
-  guest: string;
-  channel: string;
-  status: string;
-  price: number | null;
-  source?: string;
-}
-interface Room {
-  room_id: number;
-  room_num: string;
-  floor: string | null;
-  id_room_type: number;
-  type: string;
-  price: number;
-  status?: number;
-}
-interface MonthData {
-  month: string;
-  today: string;
-  rooms: Room[];
-  bookings: Booking[];
-}
+interface Booking { room_id: number | null; room: string | null; checkin: string; checkout: string; guest: string; channel: string; status: string; price: number | null; source?: string; }
+interface Room { room_id: number; room_num: string; floor: string | null; id_room_type: number; type: string; price: number; status?: number; }
+interface MonthData { month: string; today: string; rooms: Room[]; bookings: Booking[]; }
+interface OccBlock { from: string; to: string; guest: string; channel: string; status: string; source: string; }
+interface RoomAvail { room_id: number; room_num: string; floor: string | null; occupied: OccBlock[]; }
+interface TypeAvail { id_room_type: number; name: string; price: number; rooms: RoomAvail[]; type_holds: OccBlock[]; }
+interface RangeAvail { from: string; to: string; types: TypeAvail[]; }
 
 const MONTHS = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
-const state: { year: number; month: number; selDay: number; filter: string; data: MonthData | null; today: string } = {
-  year: 0, month: 0, selDay: 0, filter: "all", data: null, today: ""
-};
-const TIP = $("tip");
-
-/* ---------- modo demo: datos de ejemplo generados en el navegador (sin backend ni BD) ---------- */
-const MOCK = new URLSearchParams(location.search).has("mock");
-$("demoBadge").classList.toggle("hidden", !MOCK);
-
-const ENTITIES: Record<string, string> = {
-  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-};
-function escapeHtml(value: unknown): string {
-  return String(value ?? '').replace(/[&<>"']/g, (c) => ENTITIES[c] ?? c);
-}
-
+const state: { year: number; month: number; data: MonthData | null; today: string } = { year: 0, month: 0, data: null, today: "" };
+const filterState: Record<string, boolean> = {}; // canal → visible (default true)
+const ENTITIES: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+function esc(v: unknown): string { return String(v ?? '').replace(/[&<>"']/g, (c) => ENTITIES[c] ?? c); }
 function toast(msg: string): void {
-  const t = $("toast");
-  t.textContent = msg; t.style.display = "block";
-  clearTimeout((t as any)._h); (t as any)._h = setTimeout(() => { t.style.display = "none"; }, 3200);
+  const t = $("toast"); t.textContent = msg; t.style.display = "block";
+  clearTimeout((t as any)._h); (t as any)._h = setTimeout(() => { t.style.display = "none"; }, 3800);
 }
 function monthKey(): string { return state.year + "-" + String(state.month).padStart(2, "0"); }
 function dimsOf(y: number, m: number): number { return new Date(y, m, 0).getDate(); }
-function todayInMonth(): number {
-  const t = state.today ? new Date(state.today + "T00:00:00") : new Date();
-  return (t.getFullYear() === state.year && t.getMonth() + 1 === state.month) ? t.getDate() : 0;
+function localIso(d: Date): string {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function addDays(iso: string, n: number): string {
+  const d = new Date(iso + "T00:00:00"); d.setDate(d.getDate() + n); return localIso(d);
+}
+function chClass(b: Booking): string {
+  if (b.status === "hold") return "hold";
+  if (b.status === "maint") return "maint";
+  return ["web","walkin","ota","phone","qlo"].indexOf(b.channel) !== -1 ? b.channel : "qlo";
+}
+function chColor(cls: string): string {
+  return { web: "var(--teal)", walkin: "var(--teal-brand)", ota: "#5B8DB8", phone: "var(--lavender)", qlo: "#7A7A7A", hold: "var(--gold-deep)", maint: "#3A3A3A" }[cls] || "var(--teal)";
+}
+function chLabel(cls: string): string {
+  return { web: "Web", walkin: "Walk-in", ota: "OTA", phone: "Teléfono", qlo: "PMS", hold: "HOLD · pago pendiente", maint: "Bloqueada" }[cls] || "PMS";
 }
 function dayInMonth(iso: string): number | null {
   if (!iso) return null;
@@ -248,222 +470,434 @@ function dayInMonth(iso: string): number | null {
   if (isNaN(d.getTime()) || d.getFullYear() !== state.year || d.getMonth() + 1 !== state.month) return null;
   return d.getDate();
 }
-function channelClass(b: Booking): string {
-  if (b.status === "hold") return "hold";
-  if (b.status === "maint") return "maint";
-  return ["web", "walkin", "ota", "phone", "qlo"].indexOf(b.channel) !== -1 ? b.channel : "qlo";
-}
-function channelLabel(b: Booking): string {
-  if (b.status === "hold") return "HOLD · pago pendiente";
-  if (b.status === "maint") return "Fuera de servicio";
-  return { web: "Web", walkin: "Walk-in", ota: "OTA", phone: "Telefono", qlo: "PMS" }[b.channel] || "PMS";
-}
-function channelColor(b: Booking): string {
-  if (b.status === "hold") return "var(--hold)";
-  if (b.status === "maint") return "var(--maint)";
-  return { web: "var(--web)", walkin: "var(--walkin)", ota: "var(--ota)", phone: "var(--phone)", qlo: "var(--qlo)" }[b.channel] || "var(--qlo)";
-}
-function visibleBookings(): Booking[] {
-  if (!state.data) return [];
-  return state.data.bookings.filter((b) => state.filter === "all" || b.channel === state.filter);
-}
 
-/* ---------- render ---------- */
+/* ---------- Gantt ---------- */
 function render(): void {
   const cal = $("cal");
+  const data = state.data;
+  if (!data) { cal.innerHTML = ""; return; }
   const dims = dimsOf(state.year, state.month);
-  const today = todayInMonth();
-  let html = "<thead><tr><th class='dow'></th>";
+  const todayIso = state.today;
+  const today = todayIso ? parseInt(todayIso.slice(8, 10), 10) : 0;
+
+  // Agrupar habitaciones por tipo conservando orden.
+  const types: { id_room_type: number; type: string; rooms: Room[] }[] = [];
+  data.rooms.forEach((r) => {
+    let t = types.find((x) => x.id_room_type === r.id_room_type);
+    if (!t) { t = { id_room_type: r.id_room_type, type: r.type, rooms: [] }; types.push(t); }
+    t.rooms.push(r);
+  });
+
+  const byRoom: Record<string, Booking[]> = {};
+  const byType: Record<string, Booking[]> = {};
+  data.bookings.forEach((b) => {
+    if (b.room_id != null && b.room != null) (byRoom[b.room] = byRoom[b.room] || []).push(b);
+    else (byType[b.room || "Habitación"] = byType[b.room || "Habitación"] || []).push(b);
+  });
+
+  // Barra de reserva para una fila: se pinta en la celda del CHECK-IN con
+  // ancho = span × ancho de celda (Gantt clásico, desborda sobre las celdas
+  // siguientes; las celdas hermanas tienen position:relative y la barra va
+  // con z-index por encima de sus backgrounds).
+  const barCell = (bks: Booking[], dayOffset: number): string => {
+    const b = bks.find((x) => dayInMonth(x.checkin) === dayOffset);
+    if (!b) return "";
+    const ci = dayInMonth(b.checkin), co = dayInMonth(b.checkout);
+    if (ci === null || co === null) return "";
+    const start = ci, end = co === null ? dims + 1 : co;
+    if (start >= end) return "";
+    const cls = chClass(b);
+    if (filterState[cls] === false) return ""; // canal filtrado → ocultar barra
+    const span = end - start;
+    const label = b.status === "maint" ? "Bloqueada" : (b.guest || "Huésped");
+    return "<div class='bk " + cls + "' data-bk='" + esc(encodeURIComponent(JSON.stringify(b))) + "' style='width: calc(100% * " + span + ")'><span class='bk-label'>" + esc(label) + "</span></div>";
+  };
+  const roomRow = (roomNum: string, typeName: string, bks: Booking[]): string => {
+    let row = "<tr><td class='room'><span class='rnum'>" + esc(roomNum) + "</span><span class='rtype'>" + esc(typeName.replace(" Superior", "")) + "</span><button class='row-block-btn' data-block-room='" + esc(roomNum) + "' title='Bloquear esta habitación'>Bloquear</button></td>";
+    for (let d = 1; d <= dims; d++) {
+      const dow = new Date(state.year, state.month - 1, d).getDay();
+      const we = dow === 0 || dow === 6;
+      row += "<td class='day" + (we ? " we" : "") + (d === today ? " today" : "") + "'>" + barCell(bks, d) + "</td>";
+    }
+    return row + "</tr>";
+  };
+
+  let html = "<thead><tr><th class='room-head'></th>";
   for (let d = 1; d <= dims; d++) {
     const dow = new Date(state.year, state.month - 1, d).getDay();
     html += "<th class='dow" + (dow === 0 || dow === 6 ? " we" : "") + "'>" + ["D","L","M","X","J","V","S"][dow] + "</th>";
   }
-  html += "</tr><tr><th></th>";
-  for (let d2 = 1; d2 <= dims; d2++) {
-    html += "<th class='num" + (d2 === today ? " today" : "") + (d2 === state.selDay ? " sel" : "") + "' data-day='" + d2 + "'>" + d2 + "</th>";
+  html += "</tr><tr><th class='room-head'>Habitación</th>";
+  for (let d = 1; d <= dims; d++) {
+    html += "<th class='num" + (d === today ? " today" : "") + "'>" + d + "</th>";
   }
   html += "</tr></thead><tbody>";
 
-  const rooms: Room[] = state.data ? state.data.rooms : [];
-  const bookings = visibleBookings();
-  const roomByNum: Record<string, Room> = {};
-  rooms.forEach((r) => { roomByNum[r.room_num] = r; });
-
-  // reservas sin habitacion fisica, agrupadas por tipo
-  const unassigned: Record<string, Booking[]> = {};
-  bookings.forEach((b) => {
-    if (b.room_id != null) return;
-    const key = b.room || "Habitacion";
-    (unassigned[key] = unassigned[key] || []).push(b);
-  });
-
-  let lastType: string | null = null;
-  const unassignedRow = (typeName: string): string => {
-    return "<tr class='unassigned' data-utype='" + typeName + "'><td class='room'><span class='rnum'>" + typeName + "</span><span class='rtype'>sin cuarto asignado</span></td>"
-      + Array(dims + 1).join("<td class='day'></td>") + "</tr>";
-  };
-  rooms.forEach((r) => {
-    if (r.type !== lastType) {
-      if (lastType !== null && unassigned[lastType] && unassigned[lastType].length) {
-        html += unassignedRow(lastType); // cierre del tipo anterior
+  types.forEach((t) => {
+    html += "<tr class='group'><td colspan='" + (dims + 1) + "'>" + esc(t.type) + "<span class='gcount'>" + t.rooms.length + " habitación" + (t.rooms.length === 1 ? "" : "es") + " · USD " + (t.rooms[0] ? t.rooms[0].price : "—") + "/noche</span></td></tr>";
+    t.rooms.forEach((r) => {
+      const bks = (byRoom[r.room_num] || []).filter((b) => {
+        const ci = dayInMonth(b.checkin), co = dayInMonth(b.checkout);
+        if (ci === null && co === null) return false;
+        const s = ci === null ? 1 : ci, e = co === null ? dims + 1 : co;
+        return s < e;
+      });
+      html += roomRow(r.room_num, r.type, bks);
+    });
+    // reservas del tipo sin cuarto asignado
+    const ua = byType[t.type] || [];
+    if (ua.length) {
+      html += "<tr><td class='room'><span class='rnum' style='color:var(--text-faint);font-weight:500'>s/c</span><span class='rtype'>sin cuarto</span></td>";
+      for (let d = 1; d <= dims; d++) {
+        const dow = new Date(state.year, state.month - 1, d).getDay();
+        const we = dow === 0 || dow === 6;
+        html += "<td class='day" + (we ? " we" : "") + (d === today ? " today" : "") + "'>" + barCell(ua, d) + "</td>";
       }
-      html += "<tr class='group'><td colspan='" + (dims + 1) + "'>" + r.type + "</td></tr>";
-      lastType = r.type;
+      html += "</tr>";
     }
-    html += rowHtml(r, bookings.filter((b) => b.room_id != null && b.room != null && roomByNum[b.room] && roomByNum[b.room].room_num === r.room_num), dims, today);
   });
-  if (lastType !== null && unassigned[lastType] && unassigned[lastType].length) {
-    html += unassignedRow(lastType);
-  }
-  Object.keys(unassigned).forEach((typeName) => {
-    if (!rooms.some((r) => r.type === typeName) && unassigned[typeName].length) {
-      html += "<tr class='group'><td colspan='" + (dims + 1) + "'>" + typeName + "</td></tr>" + unassignedRow(typeName);
-    }
+
+  // tipos con reservas sin cuarto pero sin habitaciones en la lista
+  Object.keys(byType).forEach((typeName) => {
+    if (types.some((x) => x.type === typeName)) return;
+    if (!byType[typeName].length) return;
+    html += "<tr class='group'><td colspan='" + (dims + 1) + "'>" + esc(typeName) + "<span class='gcount'>sin habitaciones físicas</span></td></tr>";
+    html += "<tr><td class='room'><span class='rnum' style='color:var(--text-faint);font-weight:500'>s/c</span></td>";
+    for (let d = 1; d <= dims; d++) html += "<td class='day'></td>";
+    html += "</tr>";
   });
 
   html += "</tbody>";
   cal.innerHTML = html;
-
-  // pintar barras sobre las celdas
-  bookings.forEach((b) => {
-    const ci = dayInMonth(b.checkin);
-    const co = dayInMonth(b.checkout);
-    if (ci === null && co === null) return;
-    const dims2 = dimsOf(state.year, state.month);
-    const start = ci === null ? 1 : ci;
-    const end = co === null ? dims2 + 1 : co;
-    if (start >= end) return;
-
-    let cells: NodeListOf<Element>;
-    if (b.room_id != null && b.room != null && roomByNum[b.room]) {
-      cells = document.querySelectorAll('td.day[data-room="' + b.room + '"]');
-    } else {
-      const typeName = b.room || "Habitacion";
-      cells = document.querySelectorAll('tr.unassigned[data-utype="' + typeName + '"] td.day');
-      if (!cells.length) return;
-    }
-    const spanV = end - start;
-    for (let d = start; d < end; d++) {
-      const cell = cells[d - 1];
-      if (!cell) continue;
-      cell.innerHTML += "<div class='bk " + channelClass(b) + "' data-bk='" + escapeHtml(encodeURIComponent(JSON.stringify(b))) + "' style='left:" + ((d - start) / spanV * 100) + "%;right:" + ((end - 1 - d) / spanV * 100) + "%'></div>";
-    }
-  });
-
   $("monthLabel").textContent = MONTHS[state.month - 1] + " " + state.year;
-  $("emptyNote").classList.toggle("hidden", rooms.length > 0);
-  renderStats(); renderChannels(); renderDayList();
+  $("emptyNote").classList.toggle("hidden", data.rooms.length > 0);
+  renderStats(data, dims);
 }
 
-function rowHtml(r: Room, bks: Booking[], dims: number, today: number): string {
-  let html = "<tr><td class='room'><span class='rnum'>" + r.room_num + "</span><span class='rtype'>" + String(r.type).replace(" Superior", "") + "</span></td>";
-  for (let d = 1; d <= dims; d++) {
-    const dow = new Date(state.year, state.month - 1, d).getDay();
-    const we = dow === 0 || dow === 6;
-    const ci = dayInMonth(bks[0] ? bks[0].checkin : "");
-    const maint = bks.some((b) => b.status === "maint" && d >= (dayInMonth(b.checkin) ?? 0) && d < (dayInMonth(b.checkout) ?? dims + 1));
-    void ci;
-    const cls = "day" + (we ? " we" : "") + (d === today ? " today" : "") + (d === state.selDay ? " sel" : "") + (maint ? " off" : "");
-    html += "<td class='" + cls + "' data-room='" + r.room_num + "' data-day='" + d + "'></td>";
-  }
-  return html + "</tr>";
-}
-
-function renderStats(): void {
-  const bs = visibleBookings();
+function renderStats(data: MonthData, dims: number): void {
   let nights = 0, revenue = 0;
-  bs.forEach((b) => {
+  data.bookings.forEach((b) => {
     if (b.status === "maint") return;
     const n = Math.round((new Date(b.checkout).getTime() - new Date(b.checkin).getTime()) / 86400000);
     if (n > 0) nights += n;
     if (b.price) revenue += parseFloat(String(b.price));
   });
-  const totalRoomNights = (state.data ? state.data.rooms.length : 0) * dimsOf(state.year, state.month);
-  $("occPct").textContent = (totalRoomNights ? Math.round(nights / totalRoomNights * 100) : 0) + "%";
+  const totalRoomNights = data.rooms.length * dims;
   $("stNights").textContent = String(nights);
-  $("stBookings").textContent = String(bs.length);
-  $("stRevenue").textContent = "USD " + revenue.toLocaleString("en-US");
-}
-
-function renderChannels(): void {
-  const counts: Record<string, number> = {};
-  visibleBookings().forEach((b) => {
-    const k = channelClass(b);
-    counts[k] = (counts[k] || 0) + 1;
-  });
-  const order: [string, string][] = [["web", "Web"], ["walkin", "Walk-in"], ["ota", "OTA"], ["phone", "Telefono"], ["qlo", "PMS"], ["hold", "Holds"], ["maint", "Mantenimiento"]];
-  let html = "";
-  order.forEach((pair) => {
-    const k = pair[0], label = pair[1];
-    if (!counts[k]) return;
-    html += "<span class='chip" + (state.filter === "all" || state.filter === k ? " on" : "") + "' data-f='" + k + "'><span class='dot' style='background:" + (k === "hold" ? "var(--hold)" : k === "maint" ? "var(--maint)" : "var(--" + k + ")") + "'></span>" + label + " <span class='cnt'>" + counts[k] + "</span></span>";
-  });
-  $("channels").innerHTML = html;
-}
-
-function renderDayList(): void {
-  const el = $("daylist");
-  $("dayTitle").textContent = "Reservas del dia " + state.selDay;
-  if (!state.data) { el.innerHTML = "<li style='color:var(--text-faint)'>Sin datos</li>"; return; }
-  const list = visibleBookings().filter((b) => {
-    const ci = dayInMonth(b.checkin), co = dayInMonth(b.checkout);
-    if (ci === null && co === null) return false;
-    const start = ci === null ? 1 : ci, end = co === null ? dimsOf(state.year, state.month) + 1 : co;
-    return state.selDay >= start && state.selDay < end;
-  });
-  if (!list.length) { el.innerHTML = "<li style='color:var(--text-faint)'>Sin reservas este dia</li>"; return; }
-  el.innerHTML = list.map((b) => {
-    const bg = channelColor(b);
-    const room = b.room || "Sin cuarto";
-    return "<li><b>" + escapeHtml(room) + "</b> " + escapeHtml(b.guest) + "<span class='src' style='background:" + bg + "'>" + escapeHtml(channelLabel(b)) + "</span><br><span style='color:var(--text-dim)'>" + String(b.checkin).slice(0, 10) + " &rarr; " + String(b.checkout).slice(0, 10) + (b.price ? " · USD " + b.price : "") + "</span></li>";
-  }).join("");
+  $("stBookings").textContent = String(data.bookings.length);
+  $("stRevenue").textContent = revenue.toLocaleString("en-US");
+  $("stOcc").textContent = (totalRoomNights ? Math.round(nights / totalRoomNights * 100) : 0) + "%";
 }
 
 /* ---------- tooltip ---------- */
+const TIP = $("tip");
 document.addEventListener("mouseover", (e: Event) => {
   const target = e.target as Element;
   const bk = target.closest(".bk");
   if (!bk || !(bk as HTMLElement).dataset.bk) return;
   let b: Booking;
-  try { b = JSON.parse(decodeURIComponent((bk as HTMLElement).dataset.bk || "")); } catch (err) { return; }
+  try { b = JSON.parse(decodeURIComponent((bk as HTMLElement).dataset.bk || "")); } catch { return; }
   if (b.status === "maint") {
-    TIP.innerHTML = "<div class='t-g'>Fuera de servicio</div><div class='t-r'>Mantenimiento / no vendible</div>";
+    TIP.innerHTML = "<div class='t-g'>Bloqueada</div><div class='t-r'>Mantenimiento / no vendible</div>";
   } else {
-    const badge = "<span class='src' style='background:" + channelColor(b) + "'>" + channelLabel(b) + "</span>";
+    const badge = "<span class='src' style='background:" + chColor(chClass(b)) + "'>" + chLabel(chClass(b)) + "</span>";
     const n = Math.round((new Date(b.checkout).getTime() - new Date(b.checkin).getTime()) / 86400000);
-    TIP.innerHTML = "<div class='t-g'>" + escapeHtml(b.guest) + badge + "</div>" +
-      "<div class='t-r'>" + String(b.checkin).slice(0, 10) + " &rarr; " + String(b.checkout).slice(0, 10) + " · " + n + " noche(s)</div>" +
-      (b.price ? "<div class='t-r'>Total <b>USD " + b.price + "</b></div>" : "");
+    TIP.innerHTML = "<div class='t-g'>" + esc(b.guest || "Huésped") + badge + "</div>"
+      + "<div class='t-r'>" + String(b.checkin).slice(0, 10) + " → " + String(b.checkout).slice(0, 10) + " · " + n + " noche(s)</div>"
+      + (b.price ? "<div class='t-r'>Total <b>USD " + b.price + "</b></div>" : "");
   }
   TIP.style.display = "block";
   const r = bk.getBoundingClientRect();
-  TIP.style.left = Math.min(r.left + r.width / 2 - 115, window.innerWidth - 250) + "px";
-  TIP.style.top = (r.top - TIP.offsetHeight - 12 > 0 ? r.top - TIP.offsetHeight - 12 : r.bottom + 12) + "px";
+  TIP.style.left = Math.min(r.left + r.width / 2 - 120, window.innerWidth - 260) + "px";
+  TIP.style.top = (r.top - TIP.offsetHeight - 14 > 0 ? r.top - TIP.offsetHeight - 14 : r.bottom + 14) + "px";
 });
 document.addEventListener("mouseout", (e: Event) => {
   if ((e.target as Element).closest(".bk")) TIP.style.display = "none";
 });
-document.addEventListener("click", (e: Event) => {
-  const target = e.target as Element;
-  const th = target.closest("th.num");
-  const td = target.closest("td.day");
-  const chip = target.closest(".chip[data-f]");
-  if (th) { state.selDay = parseInt((th as HTMLElement).dataset.day || "1", 10); render(); }
-  else if (td && (td as HTMLElement).dataset.day) { state.selDay = parseInt((td as HTMLElement).dataset.day || "1", 10); render(); }
-  else if (chip) { state.filter = state.filter === (chip as HTMLElement).dataset.f ? "all" : ((chip as HTMLElement).dataset.f || "all"); render(); }
+
+/* ---------- wizard con detección de huecos ---------- */
+interface WizardState {
+  step: number;
+  checkin: string; checkout: string;
+  range: RangeAvail | null;
+  typeId: number | null; typeName: string;
+  roomId: number | null; roomNum: string | null;
+  guestName: string; guestEmail: string; guestPhone: string; guests: number;
+  priceUsd: number | null;
+}
+const wizard: WizardState = { step: 1, checkin: "", checkout: "", range: null, typeId: null, typeName: "", roomId: null, roomNum: null, guestName: "", guestEmail: "", guestPhone: "", guests: 2, priceUsd: null };
+
+function overlaps(bf: string, bt: string, from: string, to: string): boolean { return bf < to && bt > from; }
+
+/**
+ * Continuidad para un tipo en el rango:
+ * - continuous: habitaciones sin NINGÚN bloque en todo el rango.
+ * - holdsInRange: holds sin cuarto que solapan (consumen inventario del tipo).
+ * - available: continuas - holds. Si <= 0 pero hay libres por noche suelta →
+ *   estadía con cambio de cuarto obligatorio (el problema de los huecos).
+ */
+function continuity(type: TypeAvail, from: string, to: string): { continuous: RoomAvail[]; gaps: RoomAvail[]; holdsInRange: number; available: number; busyNights: number } {
+  const continuous = type.rooms.filter((r) => !r.occupied.some((b) => overlaps(b.from, b.to, from, to)));
+  const gaps = type.rooms.filter((r) => !continuous.includes(r));
+  const holdsInRange = type.type_holds.filter((h) => overlaps(h.from, h.to, from, to)).length;
+  const busyNights = Math.max(0, type.rooms.length - continuous.length + holdsInRange);
+  return { continuous, gaps, holdsInRange, available: Math.max(0, continuous.length - holdsInRange), busyNights };
+}
+
+function wizardBody(): void {
+  const body = $("wizardBody");
+  const s = wizard;
+  (window as any).__wizardAction = wizardNext;
+  if (s.step === 1) {
+    const defFrom = s.checkin || addDays(state.today || localIso(new Date()), 1);
+    const defTo = s.checkout || addDays(defFrom, 2);
+    body.innerHTML = "<div class='field-row'>"
+      + "<div class='field'><label>Check-in</label><input type='date' id='wIn' value='" + defFrom + "'></div>"
+      + "<div class='field'><label>Check-out</label><input type='date' id='wOut' value='" + defTo + "'></div>"
+      + "</div>"
+      + "<div class='field'><label>Huéspedes</label><input type='number' id='wGuests' value='" + s.guests + "' min='1' max='8'></div>";
+    $("wizardBack").style.display = "none";
+  } else if (s.step === 2) {
+    const from = s.checkin, to = s.checkout;
+    if (!s.range) { body.innerHTML = "<div class='info-box'>Cargando disponibilidad…</div>"; return; }
+    const nights = Math.round((new Date(to).getTime() - new Date(from).getTime()) / 86400000);
+    let html = "<div class='info-box'>" + nights + " noche(s) · " + from + " → " + to + "</div>";
+    html += "<div class='field'><label>Tipo de habitación</label><select id='wType'>";
+    let hasAny = false;
+    s.range.types.forEach((t) => {
+      const c = continuity(t, from, to);
+      const label = t.name + " — " + c.available + " libre" + (c.available === 1 ? "" : "s") + " toda la estadía";
+      html += "<option value='" + t.id_room_type + "'" + (s.typeId === t.id_room_type ? " selected" : "") + ">" + esc(label) + "</option>";
+      if (c.available > 0) hasAny = true;
+    });
+    html += "</select></div>";
+    if (!hasAny) {
+      html += "<div class='warn-box'><b>Aviso: cambio de cuarto obligatorio</b>Hay habitaciones libres en noches sueltas, pero ninguna queda libre TODAS las noches de " + from + " a " + to + ". El huésped tendría que cambiarse de cuarto a mitad de la estadía. ¿Continuar de todos modos?</div>";
+    }
+    html += "<div class='field'><label>Habitación física</label><div class='room-pick' id='roomPick'></div></div>";
+    body.innerHTML = html;
+    const typeSel = $("wType") as HTMLSelectElement;
+    typeSel.addEventListener("change", () => { s.typeId = parseInt(typeSel.value, 10); s.roomId = null; s.roomNum = null; renderRoomPick(); });
+    if (s.typeId === null) {
+      const preferred = s.range.types.find((t) => continuity(t, from, to).available > 0) || s.range.types[0];
+      if (preferred) { s.typeId = preferred.id_room_type; typeSel.value = String(preferred.id_room_type); }
+    }
+    renderRoomPick();
+    $("wizardBack").style.display = "inline-block";
+  } else {
+    const t = s.range ? s.range.types.find((x) => x.id_room_type === s.typeId) : null;
+    const nights = Math.round((new Date(s.checkout).getTime() - new Date(s.checkin).getTime()) / 86400000);
+    const price = s.priceUsd != null ? s.priceUsd : (t ? t.price * nights : 0);
+    body.innerHTML = "<div class='summary'>"
+      + "<b>" + esc(s.typeName) + "</b> · Hab. " + esc(s.roomNum || "—") + "<br>"
+      + s.checkin + " → " + s.checkout + " · " + nights + " noche(s) · " + s.guests + " huésped(es)<br>"
+      + "<div class='total'>Total: USD " + price.toFixed(2) + "</div></div>"
+      + "<div class='field-row'>"
+      + "<div class='field'><label>Nombre</label><input id='wName' value='" + esc(s.guestName) + "' placeholder='Nombre del huésped'></div>"
+      + "<div class='field'><label>Email</label><input id='wEmail' type='email' value='" + esc(s.guestEmail) + "' placeholder='email@ejemplo.com'></div>"
+      + "</div>"
+      + "<div class='field-row'>"
+      + "<div class='field'><label>Teléfono</label><input id='wPhone' value='" + esc(s.guestPhone) + "' placeholder='+51…'></div>"
+      + "<div class='field'><label>Precio USD (total)</label><input id='wPrice' type='number' step='0.01' min='1' value='" + price + "'></div>"
+      + "</div>"
+      + "<div class='field'><label>Canal</label><select id='wChannel'><option value='walkin'>Walk-in (mostrador)</option><option value='phone'>Teléfono</option><option value='ota'>OTA</option><option value='owner'>Dueño / interno</option></select></div>";
+    $("wizardBack").style.display = "inline-block";
+  }
+  $("step1").className = "step" + (s.step >= 1 ? (s.step > 1 ? " done" : " on") : "");
+  $("step2").className = "step" + (s.step >= 2 ? (s.step > 2 ? " done" : " on") : "");
+  $("step3").className = "step" + (s.step >= 3 ? (s.step > 2 ? " on" : "") : "");
+  $("wizardNext").textContent = s.step === 3 ? "Confirmar reserva" : "Continuar ›";
+}
+
+function renderRoomPick(): void {
+  const s = wizard;
+  const el = $("roomPick");
+  if (!s.range || s.typeId === null) { el.innerHTML = ""; return; }
+  const t = s.range.types.find((x) => x.id_room_type === s.typeId);
+  if (!t) { el.innerHTML = ""; return; }
+  let html = "";
+  t.rooms.forEach((r) => {
+    const free = !r.occupied.some((b) => overlaps(b.from, b.to, s.checkin, s.checkout));
+    const on = s.roomId === r.room_id;
+    html += "<button class='rp" + (on ? " on" : "") + "' data-rid='" + r.room_id + "' data-rnum='" + esc(r.room_num) + "'" + (free ? "" : " disabled") + ">"
+      + "<div class='n'>" + esc(r.room_num) + "</div>"
+      + "<div class='s'>" + (free ? "libre toda la estadía" : "ocupada") + "</div></button>";
+  });
+  if (!t.rooms.length) html = "<span class='empty'>Este tipo no tiene habitaciones físicas.</span>";
+  el.innerHTML = html;
+  el.querySelectorAll(".rp").forEach((b) => {
+    b.addEventListener("click", () => {
+      s.roomId = parseInt((b as HTMLElement).dataset.rid || "0", 10);
+      s.roomNum = (b as HTMLElement).dataset.rnum || null;
+      el.querySelectorAll(".rp").forEach((x) => x.classList.remove("on"));
+      b.classList.add("on");
+    });
+  });
+}
+
+async function wizardNext(): Promise<void> {
+  const s = wizard;
+  if (s.step === 1) {
+    const inn = ($("wIn") as HTMLInputElement).value;
+    const out = ($("wOut") as HTMLInputElement).value;
+    const guests = parseInt(($("wGuests") as HTMLInputElement).value || "2", 10);
+    if (!inn || !out || out <= inn) { toast("Fechas inválidas: el check-out debe ser posterior al check-in."); return; }
+    s.checkin = inn; s.checkout = out; s.guests = guests;
+    try {
+      const res = await fetch("/api/panel/rooms-availability?from=" + inn + "&to=" + out, { credentials: "same-origin" });
+      if (res.status === 401) throw { unauthorized: true };
+      if (!res.ok) throw { http: res.status };
+      s.range = await (res.json() as Promise<RangeAvail>);
+    } catch (err) {
+      const e = err as { unauthorized?: boolean; http?: number };
+      if (e.unauthorized) { $("appView").classList.add("hidden"); $("foot").classList.add("hidden"); $("loginView").classList.remove("hidden"); return; }
+      toast("Error al consultar disponibilidad (HTTP " + (e.http ?? "red") + ").");
+      return;
+    }
+    s.typeId = null; s.roomId = null; s.roomNum = null;
+    s.step = 2;
+  } else if (s.step === 2) {
+    const typeSel = $("wType") as HTMLSelectElement;
+    s.typeId = parseInt(typeSel.value, 10);
+    const t = s.range ? s.range.types.find((x) => x.id_room_type === s.typeId) : null;
+    s.typeName = t ? t.name : "";
+    if (s.roomId === null) { toast("Elige una habitación física."); return; }
+    s.step = 3;
+  } else {
+    const name = ($("wName") as HTMLInputElement).value.trim();
+    const email = ($("wEmail") as HTMLInputElement).value.trim();
+    const phone = ($("wPhone") as HTMLInputElement).value.trim();
+    const price = parseFloat(($("wPrice") as HTMLInputElement).value || "0");
+    const channel = ($("wChannel") as HTMLSelectElement).value;
+    if (!name || !email) { toast("Nombre y email del huésped son obligatorios."); return; }
+    if (!price || price < 1) { toast("Precio inválido."); return; }
+    s.guestName = name; s.guestEmail = email; s.guestPhone = phone; s.priceUsd = price;
+    try {
+      const res = await fetch("/api/panel/booking", {
+        method: "POST", credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          room_id: s.roomId, room_type_id: s.typeId,
+          checkin: s.checkin, checkout: s.checkout,
+          guest_name: name, guest_email: email, guest_phone: phone, guests: s.guests,
+          price_usd: price, channel,
+        }),
+      });
+      const r = await (res.json() as Promise<{ success?: boolean; order_id?: string; message?: string }>);
+      if (res.ok && r.success) {
+        toast("Reserva confirmada en el CMS (orden " + r.order_id + ").");
+        $("wizardBackdrop").classList.remove("open");
+        s.step = 1; s.range = null; s.typeId = null; s.roomId = null; s.roomNum = null; s.priceUsd = null;
+        await load();
+      } else {
+        toast(r.message || "Error al crear la reserva.");
+      }
+    } catch {
+      toast("Error de red al confirmar la reserva.");
+    }
+    return;
+  }
+  wizardBody();
+}
+
+/* ---------- bloqueo del dueño ---------- */
+function openBlockModal(typeId: number | null, roomId: number | null): void {
+  const data = state.data;
+  if (!data) return;
+  const rooms = roomId != null
+    ? data.rooms.filter((r) => r.room_id === roomId)
+    : data.rooms.filter((r) => r.id_room_type === typeId);
+  const t = rooms[0] ? rooms[0].type : "Habitación";
+  const body = $("wizardBody");
+  const from = addDays(state.today || localIso(new Date()), 1);
+  wizard.typeId = typeId; wizard.roomId = null;
+  body.innerHTML = "<div class='info-box'>Bloquear <b>" + esc(t) + "</b> — la habitación no se venderá en la web ni el CMS en esas fechas. Liberarla no cuesta dinero (no es una cancelación).</div>"
+    + "<div class='field-row'>"
+    + "<div class='field'><label>Desde</label><input type='date' id='bFrom' value='" + from + "'></div>"
+    + "<div class='field'><label>Hasta</label><input type='date' id='bTo' value='" + addDays(from, 2) + "'></div>"
+    + "</div>"
+    + "<div class='field'><label>Habitación</label><select id='bRoom'>"
+    + rooms.map((r) => "<option value='" + r.room_id + "'" + (roomId === r.room_id ? " selected" : "") + ">" + esc(r.room_num) + "</option>").join("")
+    + "</select></div>"
+    + "<div class='field'><label>Motivo (opcional)</label><input id='bReason' placeholder='Ej: mantenimiento, reservado para el dueño'></div>";
+  $("wizardBack").style.display = "none";
+  $("wizardNext").textContent = "Bloquear";
+  (window as any).__wizardAction = doBlock;
+  $("wizardCancel").textContent = "Cancelar";
+  $("wizardBackdrop").classList.add("open");
+}
+
+async function doBlock(): Promise<void> {
+  const from = ($("bFrom") as HTMLInputElement).value;
+  const to = ($("bTo") as HTMLInputElement).value;
+  const roomId = parseInt(($("bRoom") as HTMLSelectElement).value, 10);
+  const reason = ($("bReason") as HTMLInputElement).value.trim();
+  if (!from || !to || to < from) { toast("Rango de fechas inválido."); return; }
+  try {
+    const res = await fetch("/api/panel/block", {
+      method: "POST", credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ room_id: roomId, date_from: from, date_to: to, reason }),
+    });
+    const r = await (res.json() as Promise<{ success?: boolean; message?: string }>);
+    if (res.ok && r.success) { toast("Habitación bloqueada — no se venderá en esas fechas."); $("wizardBackdrop").classList.remove("open"); await load(); }
+    else toast(r.message || "Error al bloquear.");
+  } catch { toast("Error de red al bloquear."); }
+}
+
+/* ---------- eventos ---------- */
+// Leyenda: filtro por canal (toggle visible/oculto).
+$("legend").addEventListener("click", (e: Event) => {
+  const btn = (e.target as Element).closest("button[data-f]");
+  if (!btn) return;
+  const f = (btn as HTMLElement).dataset.f || "";
+  filterState[f] = filterState[f] === false ? true : false;
+  btn.classList.toggle("off", filterState[f] === false);
+  render();
+});
+// click en "Bloquear" de una fila de habitación → modal de bloqueo.
+$("cal").addEventListener("click", (e: Event) => {
+  const btn = (e.target as Element).closest("[data-block-room]");
+  if (!btn) return;
+  const num = (btn as HTMLElement).dataset.blockRoom || "";
+  const room = state.data?.rooms.find((r) => r.room_num === num);
+  if (room) openBlockModal(room.id_room_type, room.room_id);
+});
+// click derecho en una fila de habitación → bloquear (extra).
+$("cal").addEventListener("contextmenu", (e: Event) => {
+  const td = (e.target as Element).closest("td.room");
+  if (!td) return;
+  e.preventDefault();
+  const num = td.querySelector(".rnum")?.textContent || "";
+  const room = state.data?.rooms.find((r) => r.room_num === num);
+  if (room) openBlockModal(room.id_room_type, room.room_id);
+});
+
+// El botón del wizard usa __wizardAction (asignado por wizardBody/openBlockModal).
+$("wizardNext").addEventListener("click", () => {
+  const fn = (window as any).__wizardAction as (() => Promise<void>) | undefined;
+  if (fn) fn();
+});
+$("wizardCancel").addEventListener("click", () => {
+  $("wizardBackdrop").classList.remove("open");
+  wizard.step = 1; wizard.range = null;
+  $("wizardNext").textContent = "Continuar ›"; (window as any).__wizardAction = wizardNext;
+});
+$("wizardClose").addEventListener("click", () => { $("wizardBackdrop").classList.remove("open"); wizard.step = 1; wizard.range = null; (window as any).__wizardAction = wizardNext; });
+$("wizardBack").addEventListener("click", () => { wizard.step = Math.max(1, wizard.step - 1); wizardBody(); });
+$("wizardBackdrop").addEventListener("click", (e: Event) => { if (e.target === $("wizardBackdrop")) { $("wizardBackdrop").classList.remove("open"); wizard.step = 1; wizard.range = null; (window as any).__wizardAction = wizardNext; } });
+$("newBookingBtn").addEventListener("click", () => {
+  wizard.typeId = null; wizard.typeName = ""; wizard.step = 1; wizard.range = null;
+  wizard.roomId = null; wizard.roomNum = null; wizard.priceUsd = null;
+  $("wizardNext").textContent = "Continuar ›";
+  $("wizardCancel").textContent = "Cancelar";
+  $("wizardBackdrop").classList.add("open");
+  wizardBody();
 });
 
 /* ---------- datos ---------- */
-function localIso(d: Date): string {
-  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-}
-function showApp(): void {
-  $("appView").classList.remove("hidden");
-  $("foot").classList.remove("hidden");
-  $("loginView").classList.add("hidden");
-}
+function showApp(): void { $("appView").classList.remove("hidden"); $("foot").classList.remove("hidden"); $("loginView").classList.add("hidden"); }
 
-// Datos de ejemplo: PRNG determinista por mes (mismo mes = misma ocupacion), sin red ni BD.
 function mockMonthData(key: string): MonthData {
   let h = 2166136261;
   for (let i = 0; i < key.length; i++) { h ^= key.charCodeAt(i); h = Math.imul(h, 16777619); }
@@ -478,12 +912,13 @@ function mockMonthData(key: string): MonthData {
   const rooms: Room[] = [
     { room_id: 1, room_num: "101", floor: "1", id_room_type: 1, type: "Matrimonial Superior", price: 90 },
     { room_id: 2, room_num: "102", floor: "1", id_room_type: 1, type: "Matrimonial Superior", price: 90 },
-    { room_id: 3, room_num: "201", floor: "2", id_room_type: 2, type: "Doble Superior", price: 90 },
-    { room_id: 4, room_num: "202", floor: "2", id_room_type: 2, type: "Doble Superior", price: 90 },
-    { room_id: 5, room_num: "203", floor: "2", id_room_type: 2, type: "Doble Superior", price: 90 },
-    { room_id: 6, room_num: "301", floor: "3", id_room_type: 3, type: "Triple Estándar", price: 120 },
-    { room_id: 7, room_num: "302", floor: "3", id_room_type: 3, type: "Triple Estándar", price: 120 },
-    { room_id: 8, room_num: "401", floor: "4", id_room_type: 4, type: "Familiar Superior", price: 150 },
+    { room_id: 3, room_num: "103", floor: "1", id_room_type: 1, type: "Matrimonial Superior", price: 90 },
+    { room_id: 4, room_num: "201", floor: "2", id_room_type: 2, type: "Doble Superior", price: 90 },
+    { room_id: 5, room_num: "202", floor: "2", id_room_type: 2, type: "Doble Superior", price: 90 },
+    { room_id: 6, room_num: "203", floor: "2", id_room_type: 2, type: "Doble Superior", price: 90 },
+    { room_id: 7, room_num: "301", floor: "3", id_room_type: 3, type: "Triple Estándar", price: 120 },
+    { room_id: 8, room_num: "302", floor: "3", id_room_type: 3, type: "Triple Estándar", price: 120 },
+    { room_id: 9, room_num: "401", floor: "4", id_room_type: 4, type: "Familiar Superior", price: 150 },
   ];
   const guests = ["María Fernández", "John Smith", "Claire Dubois", "Pedro Quispe", "Ana Torres", "Liam O'Connor", "Sofía Rojas", "Hiro Tanaka", "Camila Vargas", "Lucas Meyer", "Valentina Rossi", "Andrés Mamani", "Emma Wilson", "Isabella Costa"];
   const pickGuest = (): string => guests[Math.floor(rnd() * guests.length)];
@@ -500,10 +935,16 @@ function mockMonthData(key: string): MonthData {
   rooms.forEach((r) => {
     let day = 1 + Math.floor(rnd() * 5);
     while (day < dims) {
-      if (r.room_id === 3 && day >= 11 && day <= 15) { day = 16; continue; } // no pisar el bloque de mantenimiento
-      if (r.room_id === 5 && day < 5) { day = 5; continue; } // no pisar la reserva que cruza el mes
+      if (r.room_id === 4 && day >= 11 && day <= 15) { day = 16; continue; }
+      if (r.room_id === 6 && day < 5) { day = 5; continue; }
       const nights = 1 + Math.floor(rnd() * 3);
       if (day + nights > dims + 1) break;
+      // nunca generar reservas solapadas en la misma habitación (el render
+      // grafica barras reales; el solape solo pasa si los datos lo traen)
+      const collision = bookings.some((b) =>
+        b.room_id === r.room_id && day < dayInMonth(b.checkout)! && (day + nights) > dayInMonth(b.checkin)!
+      );
+      if (collision) { day += nights; continue; }
       const channel = pickChannel();
       bookings.push({
         room_id: r.room_id, room: r.room_num,
@@ -515,12 +956,14 @@ function mockMonthData(key: string): MonthData {
       day += nights + 2 + Math.floor(rnd() * 4);
     }
   });
-
-  // fuera de servicio 3 dias en la 201
-  bookings.push({ room_id: 3, room: "201", checkin: iso(12), checkout: iso(15), guest: "", channel: "qlo", status: "maint", price: null });
-  // llego el mes pasado y se queda hasta el dia 4 (barra que arranca en el borde izquierdo)
-  bookings.push({ room_id: 5, room: "203", checkin: localIso(new Date(y, m - 2, 27)), checkout: iso(4), guest: pickGuest(), channel: "web", status: "confirmed", price: 270 });
-  // sin cuarto asignado (filas agrupadas por tipo al final de la tabla)
+  // Huecos reales: la 201 ocupada 11-14 y 20-23, la 202 ocupada 5-8 y 16-19,
+  // la 203 libre → el wizard con un rango que cruce dos ocupaciones muestra
+  // el aviso de cambio de cuarto.
+  bookings.push({ room_id: 4, room: "201", checkin: iso(11), checkout: iso(14), guest: pickGuest(), channel: "web", status: "confirmed", price: 270 });
+  bookings.push({ room_id: 4, room: "201", checkin: iso(20), checkout: iso(23), guest: pickGuest(), channel: "ota", status: "confirmed", price: 270 });
+  bookings.push({ room_id: 5, room: "202", checkin: iso(5), checkout: iso(8), guest: pickGuest(), channel: "phone", status: "confirmed", price: 270 });
+  bookings.push({ room_id: 5, room: "202", checkin: iso(16), checkout: iso(19), guest: pickGuest(), channel: "walkin", status: "confirmed", price: 270 });
+  bookings.push({ room_id: 3, room: "103", checkin: iso(12), checkout: iso(15), guest: "", channel: "qlo", status: "maint", price: null });
   bookings.push({ room_id: null, room: "Matrimonial Superior", checkin: iso(8), checkout: iso(10), guest: pickGuest(), channel: "ota", status: "confirmed", price: 180 });
   bookings.push({ room_id: null, room: "Triple Estándar", checkin: iso(18), checkout: iso(20), guest: pickGuest(), channel: "phone", status: "confirmed", price: 240 });
 
@@ -530,11 +973,10 @@ function mockMonthData(key: string): MonthData {
 async function load(): Promise<void> {
   if (state.year === 0) {
     const now = new Date();
-    state.year = now.getFullYear();
-    state.month = now.getMonth() + 1;
-    state.today = localIso(now);
-    state.selDay = now.getDate();
+    state.year = now.getFullYear(); state.month = now.getMonth() + 1; state.today = localIso(now);
   }
+  const MOCK = new URLSearchParams(location.search).has("mock");
+  $("demoBadge").classList.toggle("hidden", !MOCK);
   if (MOCK) {
     state.data = mockMonthData(monthKey());
     showApp();
@@ -545,19 +987,13 @@ async function load(): Promise<void> {
     const res = await fetch("/api/panel/availability?month=" + monthKey(), { credentials: "same-origin" });
     if (res.status === 401) throw { unauthorized: true };
     if (!res.ok) throw { http: res.status };
-    const data = await (res.json() as Promise<MonthData>);
-    state.data = data;
+    state.data = await (res.json() as Promise<MonthData>);
     showApp();
     render();
   } catch (err) {
     const e = err as { unauthorized?: boolean; http?: number };
-    if (e.unauthorized) {
-      $("appView").classList.add("hidden");
-      $("foot").classList.add("hidden");
-      $("loginView").classList.remove("hidden");
-    } else {
-      toast("Error al cargar el calendario (HTTP " + (e.http ?? "red") + ").");
-    }
+    if (e.unauthorized) { $("appView").classList.add("hidden"); $("foot").classList.add("hidden"); $("loginView").classList.remove("hidden"); }
+    else toast("Error al cargar el calendario (HTTP " + (e.http ?? "red") + ").");
   }
 }
 
@@ -565,18 +1001,15 @@ async function load(): Promise<void> {
 $("loginBtn").addEventListener("click", () => {
   const pass = ($("passInput") as HTMLInputElement).value;
   fetch("/api/panel/login", {
-    method: "POST",
-    credentials: "same-origin",
+    method: "POST", credentials: "same-origin",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ password: pass })
+    body: JSON.stringify({ password: pass }),
   }).then((res) => {
     if (res.ok) { $("loginErr").style.display = "none"; load(); }
     else { $("loginErr").style.display = "block"; }
   }).catch(() => { $("loginErr").style.display = "block"; });
 });
-$("passInput").addEventListener("keydown", (e: KeyboardEvent) => {
-  if (e.key === "Enter") $("loginBtn").click();
-});
+$("passInput").addEventListener("keydown", (e: KeyboardEvent) => { if (e.key === "Enter") $("loginBtn").click(); });
 $("logoutBtn").addEventListener("click", () => {
   fetch("/api/panel/logout", { method: "POST", credentials: "same-origin" })
     .then(() => { $("appView").classList.add("hidden"); $("loginView").classList.remove("hidden"); });
@@ -585,10 +1018,7 @@ $("logoutBtn").addEventListener("click", () => {
 /* ---------- export ---------- */
 function downloadBlob(url: string): void {
   fetch(url, { credentials: "same-origin" })
-    .then((res) => {
-      if (!res.ok) throw 0;
-      return res.blob();
-    })
+    .then((res) => { if (!res.ok) throw 0; return res.blob(); })
     .then((blob) => {
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
@@ -602,44 +1032,12 @@ function downloadBlob(url: string): void {
 $("expCsv").addEventListener("click", () => { downloadBlob("/api/panel/export?format=csv&month=" + monthKey()); });
 $("expXls").addEventListener("click", () => { downloadBlob("/api/panel/export?format=xlsx&month=" + monthKey()); });
 
-/* ---------- import ---------- */
-$("impBtn").addEventListener("click", () => { $("impFile").click(); });
-$("impFile").addEventListener("change", (e: Event) => {
-  const input = e.target as HTMLInputElement;
-  const f = input.files && input.files[0];
-  input.value = "";
-  if (!f) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    const dataUrl = String(reader.result || "");
-    const b64 = dataUrl.indexOf(",") !== -1 ? dataUrl.slice(dataUrl.indexOf(",") + 1) : dataUrl;
-    fetch("/api/panel/import", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ filename: f.name, content_base64: b64 })
-    }).then((res) => res.json())
-      .then((r: { success?: boolean; imported?: number; skipped?: number; errors?: string[] }) => {
-        toast(r.success ? ("Importadas " + r.imported + " · omitidas " + r.skipped + (r.errors && r.errors.length ? " · " + r.errors[0] : "")) : "Error al importar.");
-        load();
-      })
-      .catch(() => { toast("Error al importar."); });
-  };
-  reader.readAsDataURL(f);
-});
-
-/* ---------- navegacion ---------- */
-$("prevM").addEventListener("click", () => {
-  state.month--; if (state.month < 1) { state.month = 12; state.year--; }
-  state.selDay = 1; load();
-});
-$("nextM").addEventListener("click", () => {
-  state.month++; if (state.month > 12) { state.month = 1; state.year++; }
-  state.selDay = 1; load();
-});
+/* ---------- navegación de mes ---------- */
+$("prevM").addEventListener("click", () => { state.month--; if (state.month < 1) { state.month = 12; state.year--; } load(); });
+$("nextM").addEventListener("click", () => { state.month++; if (state.month > 12) { state.month = 1; state.year++; } load(); });
 $("goToday").addEventListener("click", () => {
   const now = state.today ? new Date(state.today + "T00:00:00") : new Date();
-  state.year = now.getFullYear(); state.month = now.getMonth() + 1; state.selDay = todayInMonth() || 1; load();
+  state.year = now.getFullYear(); state.month = now.getMonth() + 1; load();
 });
 
 load();

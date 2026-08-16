@@ -427,6 +427,156 @@ class AvailabilityRepository {
         return $ok ? (int)$this->pdo->lastInsertId() : null;
     }
 
+    /**
+     * Disponibilidad por HABITACIÓN FÍSICA en un rango (para el wizard del
+     * panel). Devuelve por tipo: habitaciones con sus bloques ocupados
+     * (reservas confirmadas qlo + holds web + bloqueos manuales + disable
+     * dates). El frontend calcula la continuidad: una habitación es
+     * "disponible continua" si no tiene NINGÚN bloque en TODO el rango — así
+     * el wizard detecta los huecos (habitaciones del tipo libres por días
+     * sueltos pero ninguna libre todas las noches = cambio de cuarto
+     * obligatorio a mitad de estadía).
+     *
+     * @return array{from: string, to: string, types: list<array{id_room_type: int, name: string, price: float, rooms: list<array{room_id: int, room_num: string, floor: string|null, occupied: list<array{from: string, to: string, guest: string, channel: string, status: string, source: string}>}>}>}
+     */
+    public function getRoomAvailability(string $from, string $to, int $hotelId = 1): array {
+        if (!$this->pdo) {
+            return ['from' => $from, 'to' => $to, 'types' => []];
+        }
+        try {
+            $types = $this->fetchRoomTypes($hotelId);
+            $rooms = $this->fetchRooms($hotelId);
+
+            // Bloqueos por habitación física (reservas qlo + manuales + disable).
+            $occupiedByRoom = [];
+            foreach ($this->fetchQloBookings($from, $to, $types) as $b) {
+                $key = $b['room_id'] !== null ? 'id:' . $b['room_id'] : 'type:' . ($b['room'] ?? '');
+                $occupiedByRoom[$key][] = $b;
+            }
+            foreach ($this->fetchManualBlocks($from, $to, $hotelId) as $b) {
+                $key = $b['room_id'] !== null ? 'id:' . $b['room_id'] : 'num:' . ($b['room'] ?? '');
+                $occupiedByRoom[$key][] = $b;
+            }
+            foreach ($this->fetchDisableDates($from, $to) as $b) {
+                $key = $b['room_id'] !== null ? 'id:' . $b['room_id'] : '';
+                $occupiedByRoom[$key][] = $b;
+            }
+            // Holds web: a nivel de tipo (no tienen habitación física asignada).
+            $holdByType = [];
+            foreach ($this->fetchHolds($from, $to, $hotelId, $types) as $b) {
+                $holdByType[$b['room'] ?? ''][] = $b;
+            }
+
+            $typeOut = [];
+            foreach ($types as $t) {
+                $tId = (int)$t['id_room_type'];
+                $roomOut = [];
+                foreach ($rooms as $r) {
+                    if ((int)$r['id_room_type'] !== $tId) {
+                        continue;
+                    }
+                    $occupied = [];
+                    foreach ($occupiedByRoom['id:' . $r['room_id']] ?? [] as $b) {
+                        $occupied[] = [
+                            'from'    => substr((string)$b['checkin'], 0, 10),
+                            'to'      => substr((string)$b['checkout'], 0, 10),
+                            'guest'   => (string)$b['guest'],
+                            'channel' => (string)$b['channel'],
+                            'status'  => (string)$b['status'],
+                            'source'  => (string)($b['source'] ?? ''),
+                        ];
+                    }
+                    $roomOut[] = [
+                        'room_id'  => $r['room_id'],
+                        'room_num' => $r['room_num'],
+                        'floor'    => $r['floor'],
+                        'occupied' => $occupied,
+                    ];
+                }
+                // Holds web del tipo: se exponen aparte (consumen inventario
+                // del tipo, no una habitación concreta).
+                $typeOut[] = [
+                    'id_room_type' => $tId,
+                    'name'         => (string)$t['name'],
+                    'price'        => 0.0, // se rellena abajo desde la primera habitación
+                    'rooms'        => $roomOut,
+                    'type_holds'   => array_map(static fn(array $b): array => [
+                        'from'  => substr((string)$b['checkin'], 0, 10),
+                        'to'    => substr((string)$b['checkout'], 0, 10),
+                        'guest' => (string)$b['guest'],
+                    ], $holdByType[(string)$t['name']] ?? []),
+                ];
+            }
+            // Precio por tipo desde la primera habitación del tipo.
+            $priceByType = [];
+            foreach ($rooms as $r) {
+                $priceByType[(int)$r['id_room_type']] = $r['price'];
+            }
+            foreach ($typeOut as &$t) {
+                $t['price'] = $priceByType[(int)$t['id_room_type']] ?? 0.0;
+            }
+            unset($t);
+
+            return ['from' => $from, 'to' => $to, 'types' => $typeOut];
+        } catch (PDOException $e) {
+            Logger::error('AvailabilityRepository::getRoomAvailability Error: ' . $e->getMessage());
+            return ['from' => $from, 'to' => $to, 'types' => []];
+        }
+    }
+
+    /**
+     * Inserta un bloqueo del dueño / mantenimiento en qlo_htl_room_disable_dates
+     * (tabla NATIVA de QloApps para "no vendible"). Descuenta disponibilidad
+     * web (QloAppAdapter suma disable_dates desde 2026-08-15) y se ve en el
+     * CMS. Devuelve el id o null si la habitación no existe.
+     *
+     * @param array{room_id: int, date_from: string, date_to: string, reason?: string} $data
+     */
+    public function insertDisableDate(array $data): ?int {
+        if (!$this->pdo) {
+            return null;
+        }
+        $roomId = (int)$data['room_id'];
+        if ($roomId < 1) {
+            return null;
+        }
+        $stmt = $this->pdo->prepare(
+            "SELECT ri.id_product, rt.id AS id_room_type
+             FROM qlo_htl_room_information ri
+             INNER JOIN qlo_htl_room_type rt ON rt.id_product = ri.id_product AND rt.id_hotel = ri.id_hotel
+             WHERE ri.id = :id LIMIT 1"
+        );
+        $stmt->execute([':id' => $roomId]);
+        $found = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$found) {
+            return null;
+        }
+        $ins = $this->pdo->prepare("
+            INSERT INTO qlo_htl_room_disable_dates (id_room_type, id_room, date_from, date_to, reason, date_add, date_upd)
+            VALUES (:id_room_type, :id_room, :date_from, :date_to, :reason, NOW(), NOW())
+        ");
+        $ok = $ins->execute([
+            ':id_room_type' => (int)$found['id_room_type'],
+            ':id_room'      => $roomId,
+            ':date_from'    => (string)$data['date_from'],
+            ':date_to'      => (string)$data['date_to'],
+            ':reason'       => substr(trim((string)($data['reason'] ?? '')), 0, 255) ?: null,
+        ]);
+        return $ok ? (int)$this->pdo->lastInsertId() : null;
+    }
+
+    /**
+     * Elimina un bloqueo (disable_date) por id. Devuelve true si borró algo.
+     */
+    public function deleteDisableDate(int $id): bool {
+        if (!$this->pdo) {
+            return false;
+        }
+        $stmt = $this->pdo->prepare("DELETE FROM qlo_htl_room_disable_dates WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        return $stmt->rowCount() > 0;
+    }
+
     private function hasTable(string $table): bool {
         try {
             $stmt = $this->pdo->prepare(

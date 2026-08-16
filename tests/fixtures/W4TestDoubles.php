@@ -103,9 +103,17 @@ final class W4PmsPortDouble implements PmsPortInterface {
         return true;
     }
 
-    public function confirmOrder(string $cartId, float $totalPrice, string $guestName, string $guestEmail): ?string {
+    public function confirmOrder(
+        string $cartId,
+        float $totalPrice,
+        string $guestName,
+        string $guestEmail,
+        ?int $idRoom = 1,
+        string $module = 'mercadopago',
+        string $paymentLabel = 'Mercado Pago (Online)'
+    ): ?string {
         $this->confirmOrderCalls++;
-        $this->confirmArgs[] = [$cartId, $totalPrice, $guestName, $guestEmail];
+        $this->confirmArgs[] = [$cartId, $totalPrice, $guestName, $guestEmail, $idRoom, $module, $paymentLabel];
         return $this->confirmResult;
     }
 

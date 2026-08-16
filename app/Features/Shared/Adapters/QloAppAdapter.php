@@ -82,6 +82,12 @@ class QloAppAdapter implements PmsPortInterface {
                               AND pb.checkin < :check_out_date
                               AND pb.checkout > :check_in_date
                               AND pb.id_hotel = :id_hotel_holds
+                        ), 0) +
+                        COALESCE((
+                            SELECT COUNT(DISTINCT rd.id_room) FROM qlo_htl_room_disable_dates rd
+                            WHERE rd.id_room_type = rt.id
+                              AND rd.date_from < :date_to_disabled
+                              AND rd.date_to > :date_from_disabled
                         ), 0)
                     ) AS booked_count
                 FROM qlo_htl_room_type rt
@@ -98,6 +104,8 @@ class QloAppAdapter implements PmsPortInterface {
                 ':date_to_booked'   => $checkOut . ' ' . self::CHECKOUT_TIME,
                 ':check_in_date'    => $checkIn,
                 ':check_out_date'   => $checkOut,
+                ':date_from_disabled' => $checkIn,
+                ':date_to_disabled'   => $checkOut,
             ]);
 
             $rows = $stmt->fetchAll();
@@ -264,6 +272,21 @@ class QloAppAdapter implements PmsPortInterface {
             ]);
             $holds = $holdsStmt->fetchAll();
 
+            // Bloqueos del dueño / mantenimiento (qlo_htl_room_disable_dates):
+            // descuentan disponibilidad igual que una reserva — nadie compra en
+            // la web una habitación bloqueada (fix panel 2026-08-15).
+            $disabledStmt = $this->pdo->prepare("
+                SELECT rd.id_room_type, rd.id_room, rd.date_from, rd.date_to
+                FROM qlo_htl_room_disable_dates rd
+                WHERE rd.date_from < :range_to_disabled
+                  AND rd.date_to > :range_from_disabled
+            ");
+            $disabledStmt->execute([
+                ':range_from_disabled' => date('Y-m-d', $fromTs),
+                ':range_to_disabled'   => date('Y-m-d', $toTs),
+            ]);
+            $disabled = $disabledStmt->fetchAll();
+
             // Índice de inventario por id_room_type
             $inventory = [];
             foreach ($rooms as $room) {
@@ -292,6 +315,20 @@ class QloAppAdapter implements PmsPortInterface {
                         $idRoomType = (int)$h['id_room_type'];
                         $occupied[$idRoomType] = ($occupied[$idRoomType] ?? 0) + 1;
                     }
+                }
+
+                // Bloqueos: una habitación física bloqueada = 1 unidad del tipo
+                // ocupada (COUNT DISTINCT por id_room para no doblar solapes).
+                $disabledRoomIds = [];
+                foreach ($disabled as $d) {
+                    $dFrom = strtotime((string)$d['date_from']);
+                    $dTo   = strtotime((string)$d['date_to']);
+                    if ($ts < $dTo && $ts >= $dFrom) {
+                        $disabledRoomIds[(int)$d['id_room_type']][(int)$d['id_room']] = true;
+                    }
+                }
+                foreach ($disabledRoomIds as $idRoomType => $roomSet) {
+                    $occupied[$idRoomType] = ($occupied[$idRoomType] ?? 0) + count($roomSet);
                 }
 
                 $dayAvailability = [];
@@ -437,7 +474,15 @@ XML;
         ], $checkIn, $checkOut, $guestName, $guestEmail, $guestPhone, $totalPrice);
     }
 
-    public function confirmOrder(string $cartId, float $totalPrice, string $guestName, string $guestEmail): ?string {
+    public function confirmOrder(
+        string $cartId,
+        float $totalPrice,
+        string $guestName,
+        string $guestEmail,
+        ?int $idRoom = 1,
+        string $module = 'mercadopago',
+        string $paymentLabel = 'Mercado Pago (Online)'
+    ): ?string {
         if (!$this->pdo) {
             Logger::error("QloAppAdapter: PDO database connection offline. Cannot confirm order {$cartId}.");
             return null;
@@ -537,11 +582,11 @@ XML;
                     total_paid_tax_excl, total_products, total_products_wt, conversion_rate, module, valid, source, date_add, date_upd
                 ) VALUES (
                     ?, {$shopGroupId}, {$shopId}, 0, {$langId}, ?, ?, {$penCurrencyId},
-                    0, 0, {$orderStatePaid}, 'Mercado Pago (Online)', ?, ?,
-                    ?, ?, ?, {$penConversionRate}, 'mercadopago', 1, ?, NOW(), NOW()
+                    0, 0, {$orderStatePaid}, ?, ?, ?,
+                    ?, ?, ?, {$penConversionRate}, ?, 1, ?, NOW(), NOW()
                 )
             ");
-            $stmtOrder->execute([$ref, $idCustomer, $idCart, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $fullCartId]);
+            $stmtOrder->execute([$ref, $idCustomer, $idCart, $paymentLabel, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $module, $fullCartId]);
             $idOrder = (int)$this->pdo->lastInsertId();
 
             // 5. Nombre del producto de la habitación
@@ -567,7 +612,7 @@ XML;
                     id_cart, id_guest, id_order, id_customer, id_currency, id_product, id_room, id_hotel,
                     quantity, booking_type, comment, is_back_order, extra_demands, date_from, date_to, adults, children, child_ages, date_add, date_upd
                 ) VALUES (
-                    ?, 0, ?, ?, {$penCurrencyId}, ?, 1, ?,
+                    ?, 0, ?, ?, {$penCurrencyId}, ?, {$idRoom}, ?,
                     1, 1, '', 0, '[]', ?, ?, ?, 0, '[]', NOW(), NOW()
                 )
             ");
@@ -584,7 +629,7 @@ XML;
                     total_price_tax_excl, total_price_tax_incl, total_paid_amount, is_back_order, hotel_name,
                     room_type_name, city, phone, email, adults, children, child_ages, is_refunded, is_cancelled, date_add, date_upd
                 ) VALUES (
-                    ?, ?, 0, ?, 1, ?, ?,
+                    ?, ?, 0, ?, {$idRoom}, ?, ?,
                     1, 1, '', ?, ?, ?, ?, ?,
                     ?, ?, ?, 0, '{$hotelName}',
                     ?, '{$hotelCity}', ?, ?, ?, 0, '[]', 0, 0, NOW(), NOW()

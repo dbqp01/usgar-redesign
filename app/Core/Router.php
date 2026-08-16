@@ -40,6 +40,16 @@ class Router {
     }
 
     /**
+     * Registra una ruta para el metodo DELETE.
+     *
+     * @param string $path Ruta HTTP
+     * @param array{0: class-string, 1: string}|string $handler Array [Clase, Metodo] o Nombre de Clase Invocable
+     */
+    public function delete(string $path, array|string $handler): void {
+        $this->routes['DELETE'][$this->normalizePath($path)] = $handler;
+    }
+
+    /**
      * Procesa la peticion actual: middleware → resolve route → dispatch action/controller.
      */
     public function dispatch(Request $request): void {

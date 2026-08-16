@@ -2,6 +2,14 @@
 
 Guía funcional para agentes: qué es este proyecto, dónde está cada cosa y cómo modificarlo sin romperlo. **Léela completa antes de tocar código.**
 
+## Reglas duras (NO son opcionales)
+
+1. **DOC-first obligatorio**: antes de escribir CUALQUIER código, busca si la solución ya existe. Orden: (a) `docs/` del repo, (b) MCPs disponibles (context7, astro-docs, hostinger), (c) web_search/web_extract. No es una decisión — es un paso del flujo. Si existe herramienta o doc, úsala.
+2. **Sin sobre-ingeniería**: la solución más corta que funciona y respeta las convenciones del repo. No abstracciones especulativas, no config para valores que no cambian. Si el repo ya tiene un patrón (ADR, Ports/Adapters, envelope de errores), reúsalo — no inventes uno paralelo.
+3. **No reinventar**: verifica antes de asumir. El stack está verificado en este documento y en `docs/` — lee, no adivines. Cualquier duda sobre APIs externas (MercadoPago, QloApps) se resuelve consultando la documentación oficial en línea, no inventando el contrato.
+4. **Regla del usuario**: si funciona, funciona. No "mejorar" código que no está roto sin petición explícita. Mantenimiento = tocar solo lo que el ticket pide.
+5. **Fuentes de verdad**: `docs/` centraliza todo. No crees archivos nuevos sin revisar si la fuente ya existe.
+
 ## Qué es
 
 Sitio web transaccional del hotel boutique Usgar (San Pedro, Cusco, Perú): reservas directas en 4 idiomas (en/es/fr/pt, default `en`), pagos en USD (cobro PEN vía MercadoPago), sincronización de inventario con PMS (QloApps).

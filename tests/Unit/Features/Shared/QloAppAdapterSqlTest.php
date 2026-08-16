@@ -50,7 +50,11 @@ final class QloAppAdapterSqlTest extends TestCase {
         // Los valores de las constantes deben aparecer interpolados en el SQL.
         $this->assertStringContainsString('VALUES (1, 1, ?, ?, ?, ?, ?, 1, 1, NOW(), NOW())', $allQueries);
         $this->assertStringContainsString('VALUES (1, 1, 1, 1, ?, 0, 0, NOW(), NOW())', $allQueries);
-        $this->assertStringContainsString('0, 0, 2, \'Mercado Pago (Online)\'', $allQueries);
+        // payment label y module viajan como PARAMETROS (confirmOrder parametrizado
+        // 2026-08-15: el panel del dueno crea reservas walk-in con module propio).
+        $this->assertStringContainsString('0, 0, 2, ?, ?, ?', $allQueries);
+        $this->assertStringContainsString('Mercado Pago (Online)', $allParams);
+        $this->assertStringContainsString('mercadopago', $allParams);
         $this->assertStringContainsString("'USGAR Hotels'", $allQueries);
         $this->assertStringContainsString("'San Pedro'", $allQueries);
 

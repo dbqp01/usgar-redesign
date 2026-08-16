@@ -51,6 +51,10 @@ use App\Features\Panel\Actions\PanelLogoutAction;
 use App\Features\Panel\Actions\GetAvailabilityAction;
 use App\Features\Panel\Actions\ExportAvailabilityAction;
 use App\Features\Panel\Actions\ImportAvailabilityAction;
+use App\Features\Panel\Actions\PanelBookingAction;
+use App\Features\Panel\Actions\PanelBlockAction;
+use App\Features\Panel\Actions\PanelUnblockAction;
+use App\Features\Panel\Actions\PanelRoomsAvailabilityAction;
 use App\Features\Auth\Actions\UpdateUserProfileAction;
 use App\Features\Reviews\Actions\GetReviewScoresAction;
 use App\Features\Reviews\Actions\RefreshReviewScoresAction;
@@ -115,6 +119,11 @@ $router->post('/api/panel/logout',       PanelLogoutAction::class);
 $router->get('/api/panel/availability',  GetAvailabilityAction::class);
 $router->get('/api/panel/export',        ExportAvailabilityAction::class);
 $router->post('/api/panel/import',       ImportAvailabilityAction::class);
+// Rediseno 2026-08-15: wizard de reserva manual + bloqueos del dueno
+$router->get('/api/panel/rooms-availability', PanelRoomsAvailabilityAction::class);
+$router->post('/api/panel/booking',      PanelBookingAction::class);
+$router->post('/api/panel/block',        PanelBlockAction::class);
+$router->delete('/api/panel/block',      PanelUnblockAction::class);
 
 // 6. Despachar la peticion actual
 $router->dispatch($request);

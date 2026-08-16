@@ -32,7 +32,15 @@ interface PmsPortInterface {
      */
     public function createCartMulti(int $idHotel, array $rooms, string $checkIn, string $checkOut, string $guestName = '', string $guestEmail = '', string $guestPhone = '', float $totalPrice = 0): string;
     public function extendCartSession(string $cartId): bool;
-    public function confirmOrder(string $cartId, float $totalPrice, string $guestName, string $guestEmail): ?string;
+    public function confirmOrder(
+        string $cartId,
+        float $totalPrice,
+        string $guestName,
+        string $guestEmail,
+        ?int $idRoom = 1,
+        string $module = 'mercadopago',
+        string $paymentLabel = 'Mercado Pago (Online)'
+    ): ?string;
 
     /**
      * Dedup del consumidor (todo 21): indica si la orden con la referencia
