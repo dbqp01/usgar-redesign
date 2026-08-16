@@ -52,8 +52,11 @@ export function initHeroVideo(): () => void {
   let swapping = false;
 
   // Reset de estados visuales (navegación SPA: el DOM viejo puede llegar sucio)
-  videoEl.classList.remove('opacity-0');
-  videoEl.classList.add('opacity-100');
+  // opacity 0 -> 1 al primer frame reproducible: con opacity 0 el video NO es
+  // candidato LCP (spec) — el <img> poster AVIF debajo (mismo frame, 128KB)
+  // gana el LCP en vez del primer frame del MP4 (fix rendimiento 2026-08-16).
+  videoEl.style.opacity = '0';
+  videoEl.addEventListener('playing', () => { videoEl.style.opacity = ''; }, { once: true });
   slideshowEl.classList.remove('opacity-100');
   slides.forEach((slide) => {
     slide.classList.remove('opacity-100');
@@ -129,7 +132,13 @@ export function initHeroVideo(): () => void {
   const start = () => {
     if (parts.length > 0) {
       playPart(0);
-      preloadNext(parts[1 % parts.length]);
+      // Preload del 2º segmento al primer 'playing', no al arrancar: ahorra
+      // 2.8-4.3MB (móvil) de banda durante la ventana del LCP.
+      const onPlaying = () => {
+        preloadNext(parts[1 % parts.length]);
+        videoEl.removeEventListener('playing', onPlaying);
+      };
+      videoEl.addEventListener('playing', onPlaying);
     } else {
       videoEl.currentTime = 0;
       videoEl.play().catch(() => {});
