@@ -43,16 +43,9 @@ export function formatDate(date: Date | string, locale: string): string {
  * my-bookings.astro:180); locale NO altera la salida hoy.
  */
 export function formatPrice(amount: number, currency: string, locale: string = 'en'): string {
-  const intlLocale = DATE_LOCALES[locale] ?? 'en-US';
-  try {
-    return new Intl.NumberFormat(intlLocale, {
-      style: 'currency',
-      currency: currency || 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(Number(amount));
-  } catch {
-    const symbol = currency === 'PEN' ? 'S/.' : '$';
-    return `${symbol}${Number(amount).toFixed(2)} ${currency}`;
-  }
+  // Contrato pinnado (tests/Unit/format.test.ts): "$" + toFixed(2) + " USD",
+  // sin agrupacion de miles ni Intl — igual que profile.astro:450 /
+  // my-bookings.astro:180; locale NO altera la salida (regresion UX = 0).
+  const symbol = currency === 'PEN' ? 'S/.' : '$';
+  return `${symbol}${Number(amount).toFixed(2)} ${currency}`;
 }

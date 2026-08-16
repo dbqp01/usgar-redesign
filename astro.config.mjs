@@ -16,6 +16,7 @@ export default defineConfig({
       provider: fontProviders.local(),
       name: 'Montserrat',
       cssVariable: '--font-montserrat',
+      display: 'optional',
       options: {
         variants: [
           { weight: '300 700', style: 'normal', src: ['./src/assets/fonts/montserrat-latin.woff2'] },
@@ -27,6 +28,7 @@ export default defineConfig({
       provider: fontProviders.local(),
       name: 'Playfair Display',
       cssVariable: '--font-playfair',
+      display: 'optional',
       options: {
         variants: [
           { weight: '400 700', style: 'normal', src: ['./src/assets/fonts/playfair-latin.woff2'] },
@@ -40,6 +42,7 @@ export default defineConfig({
       provider: fontProviders.local(),
       name: 'A Akhin Tahun',
       cssVariable: '--font-ak',
+      display: 'optional',
       options: {
         variants: [
           { weight: '400', style: 'normal', src: ['./src/assets/fonts/AkhirTahun.woff2'] },

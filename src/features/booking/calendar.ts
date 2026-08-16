@@ -35,7 +35,12 @@ export function clampRange(
   let start = checkIn;
   let end = checkOut;
   if (!start) start = formatISODate(new Date());
-  if (!end || nightsBetween(start, end) < 1) {
+  if (start && end && nightsBetween(start, end) < 1) {
+    // checkOut <= checkIn (o igual): invertir en vez de estirar (contrato
+    // tests/Unit/calendar.test.ts — el wizard pre-normaliza antes, este swap
+    // solo afecta rangos escritos al reves).
+    [start, end] = [end, start];
+  } else if (!end) {
     end = addDays(start, 1);
   }
   if (nightsBetween(start, end) > maxNights) {

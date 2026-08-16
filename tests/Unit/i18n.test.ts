@@ -30,7 +30,7 @@ describe('i18n Translations Parity & Fallbacks (4 Locales: EN, ES, FR, PT)', () 
 
     expect(tEn('nav.bookNow')).toBe('Book Now');
     expect(tEs('nav.bookNow')).toBe('Reservar');
-    expect(tFr('nav.bookNow')).toBe('Reserver');
+    expect(tFr('nav.bookNow')).toBe('Réserver');
     expect(tPt('nav.bookNow')).toBe('Reservar');
   });
 
