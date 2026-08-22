@@ -76,4 +76,4 @@ Para generar el hash: `php -r "echo hash('sha256', getenv('MERCADO_PAGO_ACCESS_T
 
 ## Stack
 
-Astro 7.2.4 · Tailwind CSS 4 · GSAP · Leaflet · Lenis · PHP 8 (PDO/MySQL, sin framework) · MercadoPago · QloApps (PMS; Channel Manager Webkul pendiente de pago) · hybridauth · Playwright · Vitest · PHPStan
+Astro 7.2.4 · Tailwind CSS 4 · GSAP · Leaflet · Lenis · PHP 8 (PDO/MySQL, sin framework) · MercadoPago · QloApps (PMS; Channel Manager Webkul pendiente de pago) · hybridauth · Vitest · PHPStan
