@@ -62,26 +62,44 @@ export function createAutoMotion(
     setX(currentX);
   };
 
+  let decayRunning = false;
+
   const decayBoost = () => {
     if (Math.abs(boost) > 0.1) {
       currentX -= boost * opts.direction;
       boost *= opts.decay;
     } else {
       boost = 0;
+      if (decayRunning) {
+        gsap.ticker.remove(decayBoost);
+        decayRunning = false;
+      }
+    }
+  };
+
+  const triggerBoost = () => {
+    if (!decayRunning && Math.abs(boost) > 0.1 && tickerRunning) {
+      decayRunning = true;
+      gsap.ticker.add(decayBoost);
     }
   };
 
   const start = () => {
     if (tickerRunning) return;
     gsap.ticker.add(update);
-    gsap.ticker.add(decayBoost);
     tickerRunning = true;
+    if (Math.abs(boost) > 0.1) {
+      triggerBoost();
+    }
   };
 
   const stop = () => {
     if (!tickerRunning) return;
     gsap.ticker.remove(update);
-    gsap.ticker.remove(decayBoost);
+    if (decayRunning) {
+      gsap.ticker.remove(decayBoost);
+      decayRunning = false;
+    }
     tickerRunning = false;
   };
 
@@ -130,8 +148,6 @@ export function createAutoMotion(
     container.addEventListener('click', onClickCapture, true);
   }
 
-  start();
-
   let observer: IntersectionObserver | null = null;
   if (typeof IntersectionObserver !== 'undefined') {
     observer = new IntersectionObserver(
@@ -139,6 +155,8 @@ export function createAutoMotion(
       { rootMargin: '200px' }
     );
     observer.observe(container);
+  } else {
+    start();
   }
 
   const st = ScrollTrigger.create({
@@ -149,6 +167,7 @@ export function createAutoMotion(
       const velocity = self.getVelocity();
       if (Math.abs(velocity) > opts.velocityThreshold) {
         boost = velocity * opts.velocityFactor;
+        triggerBoost();
       }
     },
   });

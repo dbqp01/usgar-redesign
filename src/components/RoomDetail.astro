@@ -614,6 +614,13 @@ const roomSchema = {
     playBtn?.addEventListener("click", togglePlay, { signal });
     audioBtn?.addEventListener("click", toggleAudio, { signal });
     video.addEventListener("click", togglePlay, { signal });
+
+    document.addEventListener("astro:before-preparation", () => {
+      if (lightbox && lightbox.parentElement === document.body) {
+        lightbox.remove();
+      }
+      abortController.abort();
+    }, { signal, once: true });
   }
 
   document.addEventListener("astro:page-load", initRoomDetail);

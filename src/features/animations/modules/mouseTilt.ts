@@ -22,11 +22,16 @@ export function initMouseTilt(): gsap.MatchMedia {
         };
       });
 
+      let rect: DOMRect | null = null;
+      const updateRect = () => {
+        rect = (container as HTMLElement).getBoundingClientRect();
+      };
+
       const handleMouseMove = (e: Event) => {
+        if (!rect) updateRect();
         const mouseEvent = e as MouseEvent;
-        const rect = (container as HTMLElement).getBoundingClientRect();
-        const relX = (mouseEvent.clientX - rect.left) / rect.width - 0.5;
-        const relY = (mouseEvent.clientY - rect.top) / rect.height - 0.5;
+        const relX = (mouseEvent.clientX - rect!.left) / rect!.width - 0.5;
+        const relY = (mouseEvent.clientY - rect!.top) / rect!.height - 0.5;
 
         setters.forEach(({ xTo, yTo, factor }) => {
           xTo(relX * 30 * factor);
@@ -35,6 +40,7 @@ export function initMouseTilt(): gsap.MatchMedia {
       };
 
       const handleMouseLeave = () => {
+        rect = null;
         setters.forEach(({ xTo, yTo }) => {
           xTo(0);
           yTo(0);
@@ -45,14 +51,15 @@ export function initMouseTilt(): gsap.MatchMedia {
       };
 
       const handleMouseEnter = () => {
+        updateRect();
         layers.forEach((layer) => {
           (layer as HTMLElement).style.willChange = 'transform';
         });
       };
 
-      container.addEventListener('mousemove', handleMouseMove);
-      container.addEventListener('mouseleave', handleMouseLeave);
-      container.addEventListener('mouseenter', handleMouseEnter);
+      container.addEventListener('mousemove', handleMouseMove, { passive: true });
+      container.addEventListener('mouseleave', handleMouseLeave, { passive: true });
+      container.addEventListener('mouseenter', handleMouseEnter, { passive: true });
 
       // gsap.Context only reverts tweens/ScrollTriggers, not native DOM
       // listeners — remove them on revert or SPA navigations accumulate them.

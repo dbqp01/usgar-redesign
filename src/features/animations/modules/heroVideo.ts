@@ -38,7 +38,6 @@ export function initHeroVideo(): () => void {
   const mutedIcon = document.getElementById('muted-icon') as HTMLElement | null;
   const unmutedIcon = document.getElementById('unmuted-icon') as HTMLElement | null;
   const slideshow = document.getElementById('hero-slideshow') as HTMLElement | null;
-  const wipe = document.getElementById('hero-wipe') as HTMLElement | null;
   const loading = document.getElementById('hero-video-loading') as HTMLElement | null;
 
   if (!video || !toggleBtn || !mutedIcon || !unmutedIcon || !slideshow) return () => {};
@@ -105,7 +104,7 @@ export function initHeroVideo(): () => void {
     };
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.innerWidth < 768;
-    if (!wipe || reduceMotion) {
+    if (reduceMotion) {
       swapSource();
       swapping = false;
       return;
@@ -117,15 +116,17 @@ export function initHeroVideo(): () => void {
           swapping = false;
         },
       })
-      .set(wipe, { opacity: 1 })
-      .fromTo(
-        wipe,
-        { clipPath: 'inset(0 0 100% 0)' },
-        { clipPath: 'inset(0 0 0% 0)', duration: 0.7, ease: 'power2.inOut' },
-      )
-      .call(swapSource, undefined, 0.32)
-      .to(wipe, { clipPath: 'inset(0 0 100% 0)', duration: 0.7, ease: 'power2.inOut' })
-      .set(wipe, { opacity: 0 });
+      .to(videoEl, {
+        opacity: 0,
+        duration: 0.35,
+        ease: 'power2.inOut',
+        onComplete: swapSource,
+      })
+      .to(videoEl, {
+        opacity: 1,
+        duration: 0.45,
+        ease: 'power2.inOut',
+      });
   }
 
   // Arranque retrasado (fix rendimiento 2026-08-16): el video NO se ve hasta

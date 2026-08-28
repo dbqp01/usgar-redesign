@@ -13,24 +13,22 @@ export function initServicesScenes(root: HTMLElement): () => void {
 
     gsap.set(scenes, {
       autoAlpha: 0,
-      y: 42,
-      clipPath: 'inset(0 0 100% 0)',
+      y: 24,
     });
 
     const animateBatch = scope.add('animateBatch', (batch: Element[]) => {
       gsap.to(batch, {
         autoAlpha: 1,
         y: 0,
-        clipPath: 'inset(0 0 0% 0)',
-        duration: 0.95,
-        ease: 'power3.out',
-        stagger: 0.12,
-        overwrite: true,
+        duration: 0.65,
+        ease: 'power2.out',
+        stagger: 0.08,
+        overwrite: 'auto',
       });
     });
 
     ScrollTrigger.batch(scenes, {
-      start: 'top 86%',
+      start: 'top 90%',
       once: true,
       onEnter: (batch) => animateBatch(batch),
     });

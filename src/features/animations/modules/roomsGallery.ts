@@ -13,24 +13,22 @@ export function initRoomsGallery(root: HTMLElement): () => void {
 
     gsap.set(cards, {
       autoAlpha: 0,
-      y: 36,
-      clipPath: 'inset(0 0 100% 0)',
+      y: 24,
     });
 
     const animateBatch = scope.add('animateBatch', (batch: Element[]) => {
       gsap.to(batch, {
         autoAlpha: 1,
         y: 0,
-        clipPath: 'inset(0 0 0% 0)',
-        duration: 0.9,
-        ease: 'power3.out',
-        stagger: 0.1,
-        overwrite: true,
+        duration: 0.65,
+        ease: 'power2.out',
+        stagger: 0.08,
+        overwrite: 'auto',
       });
     });
 
     ScrollTrigger.batch(cards, {
-      start: 'top 86%',
+      start: 'top 90%',
       once: true,
       onEnter: (batch) => animateBatch(batch),
     });

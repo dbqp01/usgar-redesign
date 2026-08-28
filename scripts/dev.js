@@ -41,15 +41,26 @@ for (const { port, name } of DEV_PORTS) {
 
 console.log(' Iniciando entorno de desarrollo completo (Astro + PHP API)...\n');
 
-// 1. Iniciar servidor PHP en puerto 8000
-const phpServer = spawn('php', ['-S', 'localhost:8000', 'public/index.php'], {
-  cwd: rootDir,
-  stdio: 'inherit',
-});
+let phpServer = null;
 
-phpServer.on('error', (err) => {
-  console.error(' Error al iniciar el servidor PHP:', err.message);
-});
+try {
+  phpServer = spawn('php', ['-S', 'localhost:8000', 'public/index.php'], {
+    cwd: rootDir,
+    stdio: 'inherit',
+  });
+
+  phpServer.on('error', (err) => {
+    if (err.code === 'ENOENT') {
+      console.warn('\n⚠️  [dev] PHP no se encontró en el PATH del sistema.');
+      console.warn('ℹ️   El frontend de Astro seguirá corriendo normalmente en http://localhost:4321.');
+      console.warn('ℹ️   (Para usar endpoints de backend PHP en local, instala PHP 8 o usa "npm run dev" solo para frontend).\n');
+    } else {
+      console.error('❌ Error al iniciar el servidor PHP:', err.message);
+    }
+  });
+} catch (err) {
+  console.warn('⚠️  No se pudo iniciar el proceso de PHP:', err.message);
+}
 
 // 2. Iniciar Astro dev server en puerto 4321
 const isWin = process.platform === 'win32';
@@ -60,13 +71,17 @@ const astroServer = spawn(
 );
 
 astroServer.on('error', (err) => {
-  console.error(' Error al iniciar Astro dev server:', err.message);
+  console.error('❌ Error al iniciar Astro dev server:', err.message);
 });
 
 const cleanup = () => {
-  console.log('\n Cerrando servidores de desarrollo...');
-  phpServer.kill();
-  astroServer.kill();
+  console.log('\n🛑 Cerrando servidores de desarrollo...');
+  if (phpServer && phpServer.pid) {
+    try { phpServer.kill(); } catch {}
+  }
+  if (astroServer && astroServer.pid) {
+    try { astroServer.kill(); } catch {}
+  }
   process.exit(0);
 };
 

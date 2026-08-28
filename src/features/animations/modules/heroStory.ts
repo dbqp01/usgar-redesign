@@ -26,23 +26,28 @@ export function initHeroStory(): gsap.MatchMedia {
   mm.add(
     {
       isDesktop: '(min-width: 768px)',
-      isMobile: '(max-width: 767px)',
       reduceMotion: '(prefers-reduced-motion: reduce)',
     },
     (context) => {
-      const { reduceMotion } = context.conditions!;
-      if (reduceMotion) return;
+      const { isDesktop, reduceMotion } = context.conditions!;
+      if (reduceMotion || !isDesktop) return;
 
       const heroSec = document.getElementById('hero');
       if (!heroSec) return;
 
+      const heroContent = heroSec.querySelector('.relative.z-10') as HTMLElement || heroSec;
+
       context.add(() => {
-        ScrollTrigger.create({
-          trigger: heroSec,
-          start: 'top top',
-          end: () => `+=${window.innerHeight}`,
-          pin: true,
-          pinSpacing: false,
+        gsap.to(heroContent, {
+          y: 80,
+          opacity: 0.35,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: heroSec,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 0.4,
+          },
         });
       });
     }

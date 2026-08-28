@@ -165,8 +165,9 @@ const navLinks = [
     const isHome = path === '' || path === '/' || path === '/es' || path === '/fr' || path === '/pt';
 
     let stickyIo: IntersectionObserver | null = null;
+    let sentinel: HTMLElement | null = null;
     if (isHome) {
-      const sentinel = document.createElement('div');
+      sentinel = document.createElement('div');
       sentinel.setAttribute('aria-hidden', 'true');
       sentinel.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:1px;pointer-events:none;';
       document.body.insertBefore(sentinel, document.body.firstChild);
@@ -275,6 +276,8 @@ const navLinks = [
       document.addEventListener('astro:before-preparation', () => {
         forceCloseInstant();
         stickyIo?.disconnect();
+        sentinel?.remove();
+        sentinel = null;
         abortController.abort();
         if (ctx) ctx.revert();
       }, { signal, once: true });

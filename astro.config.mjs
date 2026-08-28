@@ -2,7 +2,6 @@ import { defineConfig, fontProviders, svgoOptimizer } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import compress from '@playform/compress';
-import critters from 'astro-critters';
 
 export default defineConfig({
   site: 'https://usgarhoteles.com',
@@ -56,8 +55,8 @@ export default defineConfig({
     },
   ],
   prefetch: {
-    prefetchAll: true,
-    defaultStrategy: 'viewport',
+    prefetchAll: false,
+    defaultStrategy: 'hover',
   },
   integrations: [
     sitemap({
@@ -74,17 +73,7 @@ export default defineConfig({
       // (xhtml queda activo: el sitemap usa alternates hreflang vía i18n)
       namespaces: { news: false, video: false, image: false },
     }),
-    // Inline del CSS crítico (above-the-fold) + carga diferida del resto:
-    // elimina las 2 peticiones CSS render-blocking del primer paint
-    // allowRules [/\.dark/] — CRITICO: critters filtra TODO selector que no matchee
-    // el DOM estático (sin clase .dark) y purga las utilities `dark:*` de Tailwind
-    // (aunque pruneSource:false) → el toggle dark muere en prod.
-    critters({
-      pruneSource: false,
-      allowRules: [/\.dark/],
-    }),
-    // Compress ULTIMO (mandato README PlayForm/Compress): minifica el CSS
-    // crítico que critters acaba de inlinear
+    // Compress (HTML & JS minification)
     compress({
       CSS: false, // Tailwind 4 ya minifica vía Lightning CSS
       HTML: true,

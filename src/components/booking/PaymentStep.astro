@@ -15,6 +15,54 @@ const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
 const termsUrl = getRelativeLocaleUrl(lang, 'terms');
 const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
+
+const paymentLabels = {
+  noPaymentUrl: t('book.noPaymentUrl'),
+  unexpectedError: t('book.unexpectedError'),
+  chargedInPEN: t('payment.chargedInPEN'),
+  holdCountdown: t('payment.holdCountdown'),
+  manualReview: t('payment.manualReview'),
+  payNow: t('payment.payNow'),
+  retryCooldown: t('payment.retryCooldown'),
+  paymentExpired: t('success.paymentExpired'),
+  paymentExpiredMessage: t('success.paymentExpiredMessage'),
+  paymentRejected: t('success.paymentRejected'),
+  paymentRejectedMessage: t('success.paymentRejectedMessage'),
+  pickupNote: t('success.pickupNote'),
+  singleGuest: t('success.singleGuest'),
+  pluralGuest: t('success.pluralGuest'),
+  singleNight: t('success.singleNight'),
+  pluralNight: t('success.pluralNight'),
+  rejectedGeneric: t('payment.rejectedGeneric'),
+  statusDetails: {
+    pending_challenge: t('payment.statusDetails.pending_challenge'),
+    pending_waiting_transfer: t('payment.statusDetails.pending_waiting_transfer'),
+    cc_rejected_3ds_challenge: t('payment.statusDetails.cc_rejected_3ds_challenge'),
+    cc_rejected_3ds_mandatory: t('payment.statusDetails.cc_rejected_3ds_mandatory'),
+    cc_rejected_bad_filled_card_number: t('payment.statusDetails.cc_rejected_bad_filled_card_number'),
+    cc_rejected_bad_filled_date: t('payment.statusDetails.cc_rejected_bad_filled_date'),
+    cc_rejected_bad_filled_other: t('payment.statusDetails.cc_rejected_bad_filled_other'),
+    cc_rejected_bad_filled_security_code: t('payment.statusDetails.cc_rejected_bad_filled_security_code'),
+    cc_rejected_blacklist: t('payment.statusDetails.cc_rejected_blacklist'),
+    cc_rejected_call_for_authorize: t('payment.statusDetails.cc_rejected_call_for_authorize'),
+    cc_rejected_card_disabled: t('payment.statusDetails.cc_rejected_card_disabled'),
+    cc_rejected_card_error: t('payment.statusDetails.cc_rejected_card_error'),
+    cc_rejected_duplicated_payment: t('payment.statusDetails.cc_rejected_duplicated_payment'),
+    cc_rejected_high_risk: t('payment.statusDetails.cc_rejected_high_risk'),
+    cc_rejected_insufficient_amount: t('payment.statusDetails.cc_rejected_insufficient_amount'),
+    cc_rejected_invalid_installments: t('payment.statusDetails.cc_rejected_invalid_installments'),
+    cc_rejected_max_attempts: t('payment.statusDetails.cc_rejected_max_attempts'),
+    cc_rejected_other_reason: t('payment.statusDetails.cc_rejected_other_reason'),
+    cc_amount_rate_limit_exceeded: t('payment.statusDetails.cc_amount_rate_limit_exceeded'),
+    rejected_insufficient_data: t('payment.statusDetails.rejected_insufficient_data'),
+    rejected_by_bank: t('payment.statusDetails.rejected_by_bank'),
+    rejected_by_regulations: t('payment.statusDetails.rejected_by_regulations'),
+    insufficient_amount: t('payment.statusDetails.insufficient_amount'),
+    cc_rejected_card_type_not_allowed: t('payment.statusDetails.cc_rejected_card_type_not_allowed'),
+    bank_error: t('payment.statusDetails.bank_error'),
+  }
+};
+const serializedPaymentLabels = JSON.stringify(paymentLabels);
 ---
 
 <div data-payment-step class="space-y-5">
@@ -226,17 +274,30 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
   </div>
 </div>
 
+<script is:inline define:vars={{ serializedPaymentLabels }}>
+  window.__PAYMENT_LABELS = JSON.parse(serializedPaymentLabels);
+</script>
+
 <script>
   import { wizardStore } from '../../features/booking/wizardStore';
   import { bookingService } from '../../services/bookingService';
   import { toastApi } from '../../features/ui/toast';
-  import { useTranslations, type Locale } from '@/i18n/utils';
+  import type { Locale } from '@/i18n/utils';
   import { resolvePaymentOutcome, planRetryAfterFailure, mapBookingStatus, isPendingStatus } from '@/utils/paymentStatus';
   import { fetchBookingStatus, pollForPayment } from '../../features/booking/bookingStatus';
   import { formatCountdown, shouldExtendHold } from '@/utils/holdCountdown';
   import { statusDetailKey, paymentErrorFallbackKey } from '@/utils/paymentErrors';
   import { formatDate } from '@/utils/format';
-  import { getRelativeLocaleUrl } from 'astro:i18n';
+
+  function t(key: string): string {
+    const L = (window as any).__PAYMENT_LABELS || {};
+    if (key.startsWith('payment.statusDetails.')) {
+      const detailKey = key.replace('payment.statusDetails.', '');
+      return L.statusDetails?.[detailKey] || L.rejectedGeneric || 'Payment failed.';
+    }
+    const cleanKey = key.split('.').pop() || key;
+    return L[cleanKey] || L[key] || key;
+  }
 
   type TFunc = (key: string) => string;
 
@@ -334,8 +395,6 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
   let resultPollController: AbortController | null = null;
 
   function showPaymentResult(cartId: string, accessToken: string): void {
-    const lang = (document.documentElement.lang || 'en') as Locale;
-    const t = useTranslations(lang);
     try { sessionStorage.setItem(`booking_token_${cartId}`, accessToken); } catch { /* best-effort */ }
 
     const panel = document.querySelector('[data-payment-panel]') as HTMLElement | null;
@@ -457,8 +516,10 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
 
       // Link al recibo completo imprimible / URL compartible.
       if (fullReceiptLink) {
+        const lang = (document.documentElement.lang || 'en') as Locale;
+        const prefix = lang === 'en' ? '' : `/${lang}`;
         const token = (() => { try { return sessionStorage.getItem(`booking_token_${cartId}`) || ''; } catch { return ''; } })();
-        fullReceiptLink.href = `${getRelativeLocaleUrl(lang, 'book/success')}?bookingId=${encodeURIComponent(cartId)}${token ? `&token=${encodeURIComponent(token)}` : ''}`;
+        fullReceiptLink.href = `${prefix}/book/success?bookingId=${encodeURIComponent(cartId)}${token ? `&token=${encodeURIComponent(token)}` : ''}`;
       }
 
       // FIX 2026-08-14: pickup del aeropuerto persistido — el recibo inline
@@ -675,7 +736,6 @@ const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
     showPaymentPlaceholder();
 
     const lang = (document.documentElement.lang || 'en') as Locale;
-    const t = useTranslations(lang);
 
     function showError(msg: string) {
       toastApi.error({ title: msg });
