@@ -49,8 +49,8 @@ const navLinks = [
 <header
   id="main-navbar"
   class:list={[
-    "fixed top-0 left-0 right-0 z-50 pt-[env(safe-area-inset-top)] transition-[background-color,backdrop-filter,box-shadow,border-color] duration-500",
-    { "glass shadow-sm navbar-scrolled": !isHome }
+    "fixed top-0 left-0 right-0 z-50 pt-[env(safe-area-inset-top)] transition-[background-color,box-shadow,border-color] duration-300",
+    { "navbar-home": isHome, "glass shadow-sm navbar-scrolled": !isHome }
   ]}
 >
   <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
