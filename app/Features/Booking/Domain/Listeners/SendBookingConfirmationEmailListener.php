@@ -9,7 +9,10 @@ use App\Core\Events\ListenerInterface;
 use App\Core\Logger;
 use App\Features\Booking\Domain\Events\BookingPaidEvent;
 use App\Features\Shared\Ports\MailerPortInterface;
+use App\Core\Database;
 use DateTimeImmutable;
+use PDO;
+use Throwable;
 
 /**
  * Listener que envía el email de confirmación (voucher) al huésped cuando
@@ -25,12 +28,20 @@ use DateTimeImmutable;
  * el outbox NO debe reintentar un correo sin configuración. Fail-closed si
  * el envío falla con SMTP configurado: la excepción propaga y el outbox
  * reintenta con backoff (mismo patrón que ConfirmQloAppsOrderListener).
+ *
+ * IDEMPOTENCIA PROPIA (independiente del outbox): dedup local por cart_id
+ * en la tabla voucher_sent (PK cart_id). Cubre la ventana crash entre un
+ * envío exitoso y el write COMPLETED del outbox (el reclaim re-entregaría
+ * el evento y el huésped recibiría el voucher dos veces). Con PDO null
+ * (tests herméticos) el dedup se desactiva sin romper el contrato.
  */
 class SendBookingConfirmationEmailListener implements ListenerInterface {
     private MailerPortInterface $mailer;
+    private ?PDO $pdo;
 
-    public function __construct(MailerPortInterface $mailer) {
+    public function __construct(MailerPortInterface $mailer, ?PDO $pdo = null) {
         $this->mailer = $mailer;
+        $this->pdo = $pdo ?? Database::getInstance()->getConnection();
     }
 
     public function handle(EventInterface $event): void {
@@ -57,6 +68,11 @@ class SendBookingConfirmationEmailListener implements ListenerInterface {
         }
         $L = self::strings($locale);
 
+        if ($this->alreadySent($event->getCartId())) {
+            Logger::info("SendBookingConfirmationEmailListener: voucher YA enviado para cart {$event->getCartId()} — dedup-skip.");
+            return;
+        }
+
         $subject = $L['subject'] . ' — ' . $event->getCartId();
         $html = $this->buildVoucherHtml($event, $L);
         $text = $this->buildVoucherText($event, $L);
@@ -64,6 +80,52 @@ class SendBookingConfirmationEmailListener implements ListenerInterface {
         Logger::info("SendBookingConfirmationEmailListener: enviando voucher a {$to} (cart {$event->getCartId()}, payment {$event->getPaymentId()}).");
         // Excepción propaga: outbox reintenta con backoff (fail-closed).
         $this->mailer->send($to, $subject, $html, $text);
+        $this->markSent($event->getCartId());
+    }
+
+    /**
+     * Dedup local: true si el voucher de este cart ya fue enviado. El
+     * INSERT del mark es idempotente (INSERT IGNORE); si la tabla no existe
+     * se auto-crea (patron ensureTablesExist). Cualquier error de BD es
+     * fail-closed (return false): mejor un duplicado remoto que perder el
+     * voucher.
+     */
+    private function alreadySent(string $cartId): bool {
+        if ($this->pdo === null) {
+            return false;
+        }
+        try {
+            $this->ensureVoucherSentTable();
+            $stmt = $this->pdo->prepare('SELECT COUNT(*) FROM voucher_sent WHERE cart_id = :cart_id');
+            $stmt->execute([':cart_id' => $cartId]);
+            return (int)$stmt->fetchColumn() > 0;
+        } catch (Throwable $e) {
+            Logger::error('SendBookingConfirmationEmailListener dedup check error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    private function markSent(string $cartId): void {
+        if ($this->pdo === null) {
+            return;
+        }
+        try {
+            $this->ensureVoucherSentTable();
+            $stmt = $this->pdo->prepare('INSERT IGNORE INTO voucher_sent (cart_id, sent_at) VALUES (:cart_id, NOW())');
+            $stmt->execute([':cart_id' => $cartId]);
+        } catch (Throwable $e) {
+            // No propaga: el voucher YA salió; el dedup es best-effort.
+            Logger::error('SendBookingConfirmationEmailListener markSent error: ' . $e->getMessage());
+        }
+    }
+
+    private function ensureVoucherSentTable(): void {
+        $this->pdo->exec("
+            CREATE TABLE IF NOT EXISTS voucher_sent (
+                cart_id VARCHAR(64) PRIMARY KEY,
+                sent_at DATETIME NOT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        ");
     }
 
     /**

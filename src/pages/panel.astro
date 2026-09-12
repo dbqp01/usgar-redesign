@@ -21,9 +21,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
 <title>USGAR — Panel del dueño</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<!-- Keep the protected panel independent from third-party font requests. -->
 <!-- is:global: TODO el DOM del panel se genera por innerHTML (celdas, barras,
      filas) y no lleva data-astro-cid-*; sin esto el scoped CSS de Astro no
      aplica a los elementos dinámicos (bug v2: barras en position:static). -->
@@ -126,6 +124,7 @@
   .bar.walkin { background: #7BA88F; }
   .bar.ota { background: #6E8BA8; }
   .bar.phone { background: #8E7BA8; }
+  .bar.owner { background: #A8876E; }
   .bar.qlo { background: #5C5C5C; }
   .bar.hold { background: repeating-linear-gradient(45deg, #A08438 0 3px, #7E6426 3px 6px); }
   .bar.maint { background: #2E2E2E; border: 1px solid #404040; }
@@ -208,6 +207,7 @@
   .bk.walkin { background: linear-gradient(180deg, #7BA88F, #5F8871); }
   .bk.ota { background: linear-gradient(180deg, #6E8BA8, #54708C); }
   .bk.phone { background: linear-gradient(180deg, #8E7BA8, #715D89); }
+  .bk.owner { background: linear-gradient(180deg, #A8876E, #86684F); }
   .bk.qlo { background: linear-gradient(180deg, #5C5C5C, #474747); }
   .bk.hold { background: repeating-linear-gradient(45deg, #A08438 0 5px, #7E6426 5px 10px); }
   .bk.maint { background: #262626; border: 1px solid #363636; cursor: default; }
@@ -318,6 +318,14 @@
     padding: 22px; color: var(--text-dim); font-size: 13px;
     background: var(--card); border: 1px dashed var(--border); border-radius: 14px;
   }
+  .calendar-error {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+    padding: 26px 28px; margin-top: 4px;
+    background: var(--card); border: 1px solid rgba(224,112,95,0.4); border-radius: 14px;
+  }
+  .calendar-error h2 { font-family: var(--font-display); font-weight: 400; font-size: 21px; color: var(--text); }
+  .calendar-error p { color: var(--text-dim); font-size: 13px; max-width: 600px; }
+  .calendar-error button { margin-top: 7px; }
   @media (max-width: 760px) {
     body { padding: 16px 14px 34px; }
     .field-row { grid-template-columns: 1fr; }
@@ -374,19 +382,26 @@
     <button data-f="walkin"><span class="bar walkin"></span>Walk-in</button>
     <button data-f="ota"><span class="bar ota"></span>OTA</button>
     <button data-f="phone"><span class="bar phone"></span>Teléfono</button>
+    <button data-f="owner"><span class="bar owner"></span>Dueño</button>
     <button data-f="qlo"><span class="bar qlo"></span>PMS</button>
     <button data-f="hold"><span class="bar hold"></span>Hold</button>
     <button data-f="maint"><span class="bar maint"></span>Bloqueada</button>
   </div>
 
-  <div class="stats-row">
+  <div class="stats-row" id="statsRow">
     <div class="stat-card"><div class="l">Noches vendidas</div><div class="v" id="stNights">0</div></div>
     <div class="stat-card"><div class="l">Reservas del mes</div><div class="v" id="stBookings">0</div></div>
     <div class="stat-card"><div class="l">Ingreso estimado</div><div class="v"><span class="g">USD </span><span id="stRevenue">0</span></div></div>
     <div class="stat-card"><div class="l">Ocupación</div><div class="v" id="stOcc">0%</div></div>
   </div>
 
-  <div class="gantt-wrap">
+  <div class="calendar-error hidden" id="calendarError" role="alert" aria-live="polite">
+    <h2>No pudimos cargar el calendario</h2>
+    <p>El servicio de disponibilidad no respondió. Tus datos no se han modificado. Vuelve a intentarlo en unos segundos.</p>
+    <button class="btn primary" id="calendarRetry" type="button">Reintentar</button>
+  </div>
+
+  <div class="gantt-wrap" id="ganttWrap">
     <table class="gantt" id="cal"></table>
   </div>
   <div id="emptyNote" class="empty-note hidden" style="margin-top:14px">Sin habitaciones físicas registradas en el CMS (Catalog → Manage Room Types → agregar habitaciones).</div>
@@ -431,7 +446,7 @@ function $(id: string): HTMLElement {
 interface Booking { room_id: number | null; room: string | null; checkin: string; checkout: string; guest: string; channel: string; status: string; price: number | null; source?: string; }
 interface Room { room_id: number; room_num: string; floor: string | null; id_room_type: number; type: string; price: number; status?: number; }
 interface MonthData { month: string; today: string; rooms: Room[]; bookings: Booking[]; }
-interface OccBlock { from: string; to: string; guest: string; channel: string; status: string; source: string; }
+interface OccBlock { from: string; to: string; guest: string; channel: string; status: string; source: string; quantity?: number; }
 interface RoomAvail { room_id: number; room_num: string; floor: string | null; occupied: OccBlock[]; }
 interface TypeAvail { id_room_type: number; name: string; price: number; rooms: RoomAvail[]; type_holds: OccBlock[]; }
 interface RangeAvail { from: string; to: string; types: TypeAvail[]; }
@@ -445,6 +460,10 @@ function toast(msg: string): void {
   const t = $("toast"); t.textContent = msg; t.style.display = "block";
   clearTimeout((t as any)._h); (t as any)._h = setTimeout(() => { t.style.display = "none"; }, 3800);
 }
+function getPanelCsrfToken(): string {
+  const match = document.cookie.match(/(?:^|; )usgar_panel_csrf=([^;]*)/);
+  return match ? decodeURIComponent(match[1]) : "";
+}
 function monthKey(): string { return state.year + "-" + String(state.month).padStart(2, "0"); }
 function dimsOf(y: number, m: number): number { return new Date(y, m, 0).getDate(); }
 function localIso(d: Date): string {
@@ -456,13 +475,13 @@ function addDays(iso: string, n: number): string {
 function chClass(b: Booking): string {
   if (b.status === "hold") return "hold";
   if (b.status === "maint") return "maint";
-  return ["web","walkin","ota","phone","qlo"].indexOf(b.channel) !== -1 ? b.channel : "qlo";
+  return ["web","walkin","ota","phone","owner","qlo"].indexOf(b.channel) !== -1 ? b.channel : "qlo";
 }
 function chColor(cls: string): string {
-  return { web: "var(--teal)", walkin: "var(--teal-brand)", ota: "#5B8DB8", phone: "var(--lavender)", qlo: "#7A7A7A", hold: "var(--gold-deep)", maint: "#3A3A3A" }[cls] || "var(--teal)";
+  return { web: "var(--teal)", walkin: "var(--teal-brand)", ota: "#5B8DB8", phone: "var(--lavender)", owner: "#A8876E", qlo: "#7A7A7A", hold: "var(--gold-deep)", maint: "#3A3A3A" }[cls] || "var(--teal)";
 }
 function chLabel(cls: string): string {
-  return { web: "Web", walkin: "Walk-in", ota: "OTA", phone: "Teléfono", qlo: "PMS", hold: "HOLD · pago pendiente", maint: "Bloqueada" }[cls] || "PMS";
+  return { web: "Web", walkin: "Walk-in", ota: "OTA", phone: "Teléfono", owner: "Dueño", qlo: "PMS", hold: "HOLD · pago pendiente", maint: "Bloqueada" }[cls] || "PMS";
 }
 function dayInMonth(iso: string): number | null {
   if (!iso) return null;
@@ -498,13 +517,19 @@ function render(): void {
   // Barra de reserva para una fila: se pinta en la celda del CHECK-IN con
   // ancho = span × ancho de celda (Gantt clásico, desborda sobre las celdas
   // siguientes; las celdas hermanas tienen position:relative y la barra va
-  // con z-index por encima de sus backgrounds).
+  // con z-index por encima de sus backgrounds). Reservas que cruzan el borde
+  // del mes se recortan al mes visible (clip), no se descartan.
+  const monthStartIso = state.year + "-" + String(state.month).padStart(2, "0") + "-01";
+  const monthEndIso = state.month === 12 ? (state.year + 1) + "-01-01" : state.year + "-" + String(state.month + 1).padStart(2, "0") + "-01";
   const barCell = (bks: Booking[], dayOffset: number): string => {
-    const b = bks.find((x) => dayInMonth(x.checkin) === dayOffset);
+    const b = bks.find((x) =>
+      dayInMonth(x.checkin) === dayOffset
+      // check-in del mes anterior (o antes): la barra entra recortada por el día 1
+      || (dayInMonth(x.checkin) === null && dayOffset === 1 && x.checkin < monthEndIso && x.checkout > monthStartIso)
+    );
     if (!b) return "";
-    const ci = dayInMonth(b.checkin), co = dayInMonth(b.checkout);
-    if (ci === null || co === null) return "";
-    const start = ci, end = co === null ? dims + 1 : co;
+    const start = Math.max(1, dayInMonth(b.checkin) ?? 1);
+    const end = dayInMonth(b.checkout) ?? (b.checkout > monthStartIso ? dims + 1 : 0);
     if (start >= end) return "";
     const cls = chClass(b);
     if (filterState[cls] === false) return ""; // canal filtrado → ocultar barra
@@ -639,7 +664,9 @@ function overlaps(bf: string, bt: string, from: string, to: string): boolean { r
 function continuity(type: TypeAvail, from: string, to: string): { continuous: RoomAvail[]; gaps: RoomAvail[]; holdsInRange: number; available: number; busyNights: number } {
   const continuous = type.rooms.filter((r) => !r.occupied.some((b) => overlaps(b.from, b.to, from, to)));
   const gaps = type.rooms.filter((r) => !continuous.includes(r));
-  const holdsInRange = type.type_holds.filter((h) => overlaps(h.from, h.to, from, to)).length;
+  const holdsInRange = type.type_holds
+    .filter((h) => overlaps(h.from, h.to, from, to))
+    .reduce((sum, h) => sum + Math.max(1, Number(h.quantity ?? 1)), 0);
   const busyNights = Math.max(0, type.rooms.length - continuous.length + holdsInRange);
   return { continuous, gaps, holdsInRange, available: Math.max(0, continuous.length - holdsInRange), busyNights };
 }
@@ -716,12 +743,20 @@ function renderRoomPick(): void {
   const t = s.range.types.find((x) => x.id_room_type === s.typeId);
   if (!t) { el.innerHTML = ""; return; }
   let html = "";
+  // Los holds SIN cuarto (type_holds) consumen inventario del tipo entero:
+  // una habitación marcada libre aquí puede estar reservada por cantidad en
+  // el CMS. Se apagan primero (FIFO) tantas habitaciones libres como holds
+  // solapen el rango, para no permitir sobreventa del tipo.
+  const holdsInRange = t.type_holds
+    .filter((h) => overlaps(h.from, h.to, s.checkin, s.checkout))
+    .reduce((sum, h) => sum + Math.max(1, Number(h.quantity ?? 1)), 0);
+  let holdsLeft = holdsInRange;
   t.rooms.forEach((r) => {
-    const free = !r.occupied.some((b) => overlaps(b.from, b.to, s.checkin, s.checkout));
+    const free = !r.occupied.some((b) => overlaps(b.from, b.to, s.checkin, s.checkout)) && !(holdsLeft-- > 0);
     const on = s.roomId === r.room_id;
     html += "<button class='rp" + (on ? " on" : "") + "' data-rid='" + r.room_id + "' data-rnum='" + esc(r.room_num) + "'" + (free ? "" : " disabled") + ">"
       + "<div class='n'>" + esc(r.room_num) + "</div>"
-      + "<div class='s'>" + (free ? "libre toda la estadía" : "ocupada") + "</div></button>";
+      + "<div class='s'>" + (free ? "libre toda la estadía" : (r.occupied.some((b) => overlaps(b.from, b.to, s.checkin, s.checkout)) ? "ocupada" : "hold sin cuarto asignado")) + "</div></button>";
   });
   if (!t.rooms.length) html = "<span class='empty'>Este tipo no tiene habitaciones físicas.</span>";
   el.innerHTML = html;
@@ -775,7 +810,7 @@ async function wizardNext(): Promise<void> {
     try {
       const res = await fetch("/api/panel/booking", {
         method: "POST", credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-CSRF-Token": getPanelCsrfToken() },
         body: JSON.stringify({
           room_id: s.roomId, room_type_id: s.typeId,
           checkin: s.checkin, checkout: s.checkout,
@@ -836,7 +871,7 @@ async function doBlock(): Promise<void> {
   try {
     const res = await fetch("/api/panel/block", {
       method: "POST", credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "X-CSRF-Token": getPanelCsrfToken() },
       body: JSON.stringify({ room_id: roomId, date_from: from, date_to: to, reason }),
     });
     const r = await (res.json() as Promise<{ success?: boolean; message?: string }>);
@@ -897,6 +932,20 @@ $("newBookingBtn").addEventListener("click", () => {
 
 /* ---------- datos ---------- */
 function showApp(): void { $("appView").classList.remove("hidden"); $("foot").classList.remove("hidden"); $("loginView").classList.add("hidden"); }
+function showCalendarError(): void {
+  showApp();
+  $("calendarError").classList.remove("hidden");
+  $("ganttWrap").classList.add("hidden");
+  $("legend").classList.add("hidden");
+  $("statsRow").classList.add("hidden");
+  $("emptyNote").classList.add("hidden");
+}
+function hideCalendarError(): void {
+  $("calendarError").classList.add("hidden");
+  $("ganttWrap").classList.remove("hidden");
+  $("legend").classList.remove("hidden");
+  $("statsRow").classList.remove("hidden");
+}
 
 function mockMonthData(key: string): MonthData {
   let h = 2166136261;
@@ -980,6 +1029,7 @@ async function load(): Promise<void> {
   if (MOCK) {
     state.data = mockMonthData(monthKey());
     showApp();
+    hideCalendarError();
     render();
     return;
   }
@@ -989,13 +1039,15 @@ async function load(): Promise<void> {
     if (!res.ok) throw { http: res.status };
     state.data = await (res.json() as Promise<MonthData>);
     showApp();
+    hideCalendarError();
     render();
   } catch (err) {
     const e = err as { unauthorized?: boolean; http?: number };
     if (e.unauthorized) { $("appView").classList.add("hidden"); $("foot").classList.add("hidden"); $("loginView").classList.remove("hidden"); }
-    else toast("Error al cargar el calendario (HTTP " + (e.http ?? "red") + ").");
+    else showCalendarError();
   }
 }
+$("calendarRetry").addEventListener("click", () => { void load(); });
 
 /* ---------- login / logout ---------- */
 $("loginBtn").addEventListener("click", () => {
@@ -1011,7 +1063,7 @@ $("loginBtn").addEventListener("click", () => {
 });
 $("passInput").addEventListener("keydown", (e: KeyboardEvent) => { if (e.key === "Enter") $("loginBtn").click(); });
 $("logoutBtn").addEventListener("click", () => {
-  fetch("/api/panel/logout", { method: "POST", credentials: "same-origin" })
+  fetch("/api/panel/logout", { method: "POST", credentials: "same-origin", headers: { "X-CSRF-Token": getPanelCsrfToken() } })
     .then(() => { $("appView").classList.add("hidden"); $("loginView").classList.remove("hidden"); });
 });
 

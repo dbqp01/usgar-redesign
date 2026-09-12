@@ -7,6 +7,7 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Database;
 use App\Core\RateLimiter;
+use App\Features\Auth\AuthRedirect;
 use App\Features\Auth\User;
 use App\Features\Auth\SessionService;
 
@@ -21,9 +22,16 @@ class AuthLoginEmailAction {
 
     public function __invoke(Request $request): void {
         $data = $request->getBody() ?? [];
-        $email = trim($data['email'] ?? '');
+        $emailInput = $data['email'] ?? '';
         $password = $data['password'] ?? '';
         $isHtml = $request->isHtml();
+
+        if (!is_string($emailInput) || !is_string($password)) {
+            Response::errorWithHtmlFallback($isHtml, 'Email and password are required.', 400);
+            return;
+        }
+
+        $email = trim($emailInput);
 
         if (empty($email) || empty($password)) {
             Response::errorWithHtmlFallback($isHtml, 'Email and password are required.', 400);
@@ -59,12 +67,7 @@ class AuthLoginEmailAction {
                 header('Location: /login?error=' . urlencode($msg));
                 exit(0);
             }
-            Response::json([
-                'success' => false,
-                'isOAuth' => true,
-                'provider' => $provider,
-                'message' => $msg,
-            ], 400);
+            Response::json(self::oauthAccountPayload($provider, $msg), 400);
             return;
         }
 
@@ -72,10 +75,7 @@ class AuthLoginEmailAction {
         SessionService::setAuthCookie($jwt);
 
         if ($isHtml) {
-            $redirect = trim((string)($data['redirect'] ?? '/my-bookings'));
-            if (!str_starts_with($redirect, '/') || str_starts_with($redirect, '//')) {
-                $redirect = '/my-bookings';
-            }
+            $redirect = AuthRedirect::safePath($data['redirect'] ?? '/my-bookings', '/my-bookings');
             header('Location: ' . $redirect);
             exit(0);
         }
@@ -85,5 +85,20 @@ class AuthLoginEmailAction {
             'message' => 'Signed in successfully.',
             'user'    => SessionService::toPublicUser($user),
         ]);
+    }
+
+    /** @return array<string, mixed> */
+    protected static function oauthAccountPayload(string $provider, string $message): array {
+        return [
+            'success' => false,
+            'error' => [
+                'code' => 'OAUTH_ACCOUNT',
+                'message' => $message,
+            ],
+            // Kept at the top level for existing frontend clients.
+            'isOAuth' => true,
+            'provider' => $provider,
+            'message' => $message,
+        ];
     }
 }

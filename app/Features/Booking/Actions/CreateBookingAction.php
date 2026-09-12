@@ -111,6 +111,11 @@ class CreateBookingAction {
 
         try {
 
+            // Capture the read boundary before querying the PMS. A concurrent
+            // hold committed while this availability read is in flight must be
+            // included by the later locked re-check; capturing after the read
+            // could miss it and allow an overbooking.
+            $readAt = date('Y-m-d H:i:s');
             $availableRooms = $this->pms->getAvailableRooms($checkIn, $checkOut, $hotelId);
             $nights = (int)max(1, round((strtotime($checkOut) - strtotime($checkIn)) / 86400));
 
@@ -193,15 +198,29 @@ class CreateBookingAction {
             }
 
             $totalPrice = round($totalPriceCents / 100, 2);
-            $cartId = $this->pms->createCartMulti($hotelId, $cartRooms, $checkIn, $checkOut, $guestName, $guestEmail, $guestPhone, $totalPrice);
 
+            // Read and freeze the PMS exchange rate before opening the
+            // serialization transaction. The rate lookup is a local QloApps
+            // DB read and does not participate in room availability locking;
+            // keeping it outside shortens the critical section without
+            // changing the price snapshot written with the hold.
+            $exchangeRate = $this->pms->getExchangeRatePEN();
+            $priceSnapshotPen = PriceCalculator::toGatewayPrice($totalPrice, $exchangeRate);
+
+            // Bootstrap the booking schema before opening the serialization
+            // transaction. MySQL implicitly commits DDL, so lockRoom() must
+            // never discover/create room_locks while this transaction is open.
+            if (!$this->bookingRepo->ensureTablesExist()) {
+                throw new Exception('No se pudo preparar el esquema local de reservas.');
+            }
             $this->pdo->beginTransaction();
 
             // Serializacion de holds por HABITACION (todo 10 / W2): lock por room
             // type dentro de la misma transaccion que el re-check y el INSERT.
             // Orden ascendente de room types para evitar deadlocks entre requests
             // concurrentes con combos cruzados (A+B vs B+A).
-            $roomTypeIds = array_unique(array_map(fn(array $r): int => $r['id_room_type'], $resolved));
+            $requestedRoomTypeIds = array_map(fn(array $r): int => $r['id_room_type'], $resolved);
+            $roomTypeIds = array_values(array_unique($requestedRoomTypeIds));
             sort($roomTypeIds);
             foreach ($roomTypeIds as $idRoomType) {
                 if (!$this->bookingRepo->lockRoom($hotelId . ':' . $idRoomType)) {
@@ -214,32 +233,44 @@ class CreateBookingAction {
             // mismo tipo => 2 unidades). El available_qty del adapter YA descontó
             // holds existentes; aqui solo se resta lo creado despues de la
             // lectura inicial (ventana lectura->lock, ~ms).
-            $readAt = date('Y-m-d H:i:s');
-            $neededByType = array_count_values($roomTypeIds);
-            foreach ($resolved as &$r) {
-                $needed = $neededByType[$r['id_room_type']];
-                $newHoldsCount = $this->bookingRepo->getHoldCountForRoomForUpdate($r['id_room_type'], $checkIn, $checkOut, $hotelId, $readAt);
-                $r['available_qty'] -= $newHoldsCount;
-                if ($r['available_qty'] < $needed) {
+            $neededByType = array_count_values($requestedRoomTypeIds);
+            foreach ($roomTypeIds as $idRoomType) {
+                $needed = $neededByType[$idRoomType];
+                $newHoldsCount = $this->bookingRepo->getHoldCountForRoomForUpdate($idRoomType, $checkIn, $checkOut, $hotelId, $readAt);
+                $available = null;
+                foreach ($resolved as $r) {
+                    if ($r['id_room_type'] === $idRoomType) {
+                        $available = (int)$r['available_qty'];
+                        break;
+                    }
+                }
+                if ($available === null || ($available - $newHoldsCount) < $needed) {
                     $this->pdo->rollBack();
                     throw HttpException::badRequest('Una de las habitaciones seleccionadas ya no está disponible para estas fechas.');
                 }
             }
-            unset($r);
+
+            // Create the remote cart only after all local validation and
+            // serialization checks pass. This call intentionally remains
+            // inside the room-lock transaction: QloApps has no idempotency
+            // key or compensating cart-delete operation, so moving it after
+            // commit would let concurrent requests all pass the re-check and
+            // create duplicate PMS carts for the same inventory. If QloApps
+            // fails, the local transaction rolls back and the lock is freed.
+            $cartId = $this->pms->createCartMulti($hotelId, $cartRooms, $checkIn, $checkOut, $guestName, $guestEmail, $guestPhone, $totalPrice);
 
             $expiresAt = date('Y-m-d H:i:s', Config::holdExpirationTimestamp());
             $currentUser = SessionService::getUserFromRequest();
-
-            // Congelar tasa + PEN al cotizar (UNA sola lectura). La tasa sale del
-            // PMS (qlo_currency), no de Config (auditoria 2026-08-11).
-            $exchangeRate = $this->pms->getExchangeRatePEN();
-            $priceSnapshotPen = PriceCalculator::toGatewayPrice($totalPrice, $exchangeRate);
 
             // room_data pasa a LISTA de habitaciones (multi-room); los consumidores
             // legacy leen el primer room (nights identico para todas). La tarifa
             // es global por reserva ($rateType) — misma para todas las habitaciones.
             $roomDataList = array_map(static function (array $r) use ($rateType): array {
                 return [
+                    // Keep the canonical PMS identifiers in the frozen hold.
+                    // The legacy fields below remain for email/UI consumers.
+                    'id_room_type'    => $r['id_room_type'],
+                    'id_product'      => $r['id_product'],
                     'room_name'       => $r['room_name'],
                     'price_per_night' => $r['price_per_night'],
                     'nights'          => $r['nights'],
@@ -257,6 +288,18 @@ class CreateBookingAction {
                 'user_id'                 => $currentUser['sub'] ?? null,
                 'id_hotel'                => $hotelId,
                 'id_room_type'            => $resolved[0]['id_room_type'],
+                // Ledger por tipo: conserva cantidades para A+A y mezcla A+B
+                // sin cambiar la fila legacy (id_room_type sigue siendo el
+                // primer tipo para consumidores antiguos).
+                'room_quantities'         => array_reduce(
+                    $resolved,
+                    static function (array $carry, array $room): array {
+                        $type = (int)$room['id_room_type'];
+                        $carry[$type] = ($carry[$type] ?? 0) + 1;
+                        return $carry;
+                    },
+                    []
+                ),
                 'guest_data'              => [
                     'name'   => $guestName,
                     'email'  => $guestEmail,

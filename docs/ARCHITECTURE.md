@@ -58,10 +58,12 @@ Fuente de verdad de capas, flujos y zonas de riesgo. Verificada contra el códig
 
 2. Hold (bloqueo temporal de 15 min)
    → POST /api/booking → CreateBookingAction
-   → QloAppAdapter.createCart() [webservice XML → booking en QloApps]
-   → lock de serialización (room_locks, FOR UPDATE) + re-check de disponibilidad
+   → lectura de tasa PEN en QloApps y congelado del snapshot de precio
+   → transacción: lock de serialización (room_locks, FOR UPDATE) + re-check
+   → QloAppAdapter.createCart() [webservice XML → booking en QloApps] mientras
+     el lock sigue tomado; QloApps no ofrece idempotency key ni cancelación
    → ProvisionalBookingRepository.create() [persiste hold + snapshots: precio USD,
-     precio PEN, tipo de cambio — congelados al cotizar]
+     precio PEN, tipo de cambio — congelados al cotizar] + commit
    → Respuesta: cart_id + access_token (HMAC cart_id:email) + mp_public_key
 
 3. Pago (Custom Checkout, Checkout API)
@@ -79,15 +81,19 @@ Fuente de verdad de capas, flujos y zonas de riesgo. Verificada contra el códig
       (outbox) — si el proceso muere, el cron process_outbox lo entrega (5 min)
    b) Webhook MP (canónico): POST /api/webhook → HandleMercadoPagoWebhookAction
       → verificación de firma HMAC (secret 300s de tolerancia) → getPaymentDetails
-      → dedup (isOrderConfirmed) → confirma la orden en QloApps vía SQL atómico
+      → lock del hold + dedup por source/external_reference → confirma la orden en QloApps vía SQL atómico
       (qlo_customer/qlo_cart/qlo_orders/qlo_order_detail/qlo_htl_*) + outbox
-   c) Reconciliación: cron reconcile_payments (10 min) consulta MP por holds
+   c) Reconciliación: cron reconcile_payments (15 min) consulta MP por holds
       pending con payment_id — cubre webhooks que nunca llegaron
 
 5. Cron de limpieza
    → /api/cron/cleanup (CLI) → CleanExpiredCartsAction: holds expirados → expired
    → /api/cron/manual-review → RetryManualReviewAction
 ```
+
+La confirmación PMS es reentrante: `QloAppAdapter::confirmOrder()` toma el lock
+del hold local, reutiliza una orden QloApps ya confirmada para la misma referencia
+y compone con una transacción abierta por el caller (panel u outbox).
 
 ## Zonas de riesgo
 

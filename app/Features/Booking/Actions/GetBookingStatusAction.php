@@ -51,9 +51,18 @@ class GetBookingStatusAction {
         $idRoomType = (int)$hold['id_room_type'];
         $slug = RoomTypeRegistry::getSlugById($idRoomType);
 
-        $exchangeRate = (float) Config::get('EXCHANGE_RATE_USD_PEN');
+        // Prefer the rate and PEN amount frozen when the hold was created.
+        // Legacy holds may not have these columns populated, so preserve the
+        // USD x current-config fallback for those rows only.
+        $exchangeRateSnapshot = $hold['exchange_rate_snapshot'] ?? null;
+        $exchangeRate = $exchangeRateSnapshot !== null
+            ? (float)$exchangeRateSnapshot
+            : (float) Config::get('EXCHANGE_RATE_USD_PEN');
         $priceUSD = (float)$hold['price_snapshot'];
-        $gatewayPricePEN = PriceCalculator::toGatewayPrice($priceUSD);
+        $priceSnapshotPen = $hold['price_snapshot_pen'] ?? null;
+        $gatewayPricePEN = $priceSnapshotPen !== null
+            ? (float)$priceSnapshotPen
+            : PriceCalculator::toGatewayPrice($priceUSD, $exchangeRate);
 
         // room_data: LISTA desde 2026-08-12 (multi-room). Los campos legacy
         // (room_name/price_per_night/nights) se resuelven del PRIMER room;

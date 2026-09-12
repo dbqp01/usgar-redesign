@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Tests\Unit\Core;
 
 use App\Core\Container;
+use App\Core\HttpException;
+use App\Core\Middleware;
 use App\Core\Request;
 use App\Core\Router;
 use PHPUnit\Framework\TestCase;
@@ -65,5 +67,30 @@ final class RouterMethodNotAllowedTest extends TestCase {
 
         $this->assertSame(404, http_response_code());
         $this->assertStringContainsString('not found', $output);
+    }
+
+    public function testRejectedOptionsPreservesHttpErrorEnvelope(): void {
+        $router = new Router();
+        $router->setMiddleware(
+            (new Middleware())->add(static function (Request $request): void {
+                throw new HttpException(
+                    'Origin not allowed.',
+                    403,
+                    'FORBIDDEN',
+                    ['origin' => 'https://evil.example']
+                );
+            })
+        );
+
+        ob_start();
+        $router->dispatch(new Request('OPTIONS', '/api/stub'));
+        $output = (string)ob_get_clean();
+        $payload = json_decode($output, true);
+
+        $this->assertSame(403, http_response_code());
+        $this->assertIsArray($payload);
+        $this->assertSame(false, $payload['success']);
+        $this->assertSame('FORBIDDEN', $payload['error']['code']);
+        $this->assertSame(['origin' => 'https://evil.example'], $payload['error']['details']);
     }
 }

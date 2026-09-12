@@ -293,7 +293,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     const L = (window as any).__PAYMENT_LABELS || {};
     if (key.startsWith('payment.statusDetails.')) {
       const detailKey = key.replace('payment.statusDetails.', '');
-      return L.statusDetails?.[detailKey] || L.rejectedGeneric || 'Payment failed.';
+      return L.statusDetails?.[detailKey] || L.rejectedGeneric || '—';
     }
     const cleanKey = key.split('.').pop() || key;
     return L[cleanKey] || L[key] || key;
@@ -308,6 +308,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
   const RETRY_COOLDOWN_MS = 60_000;
 
   let abortController = new AbortController();
+  let flowController = new AbortController();
   let started = false;
   let cardFormInstance: any = null;
   // Timer de seguridad: si onReady no llega (iframes bloqueados por adblocker,
@@ -315,6 +316,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
   let payReadyTimer: number | null = null;
   // Todo 29: countdown del hold + extend (una sola vez).
   let countdownTimer: number | null = null;
+  let holdCountdownController: AbortController | null = null;
   let holdExtendCalled = false;
   // Todo 31: estado del reintento.
   let retryBlockedStreak = 0;
@@ -395,6 +397,13 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
   let resultPollController: AbortController | null = null;
 
   function showPaymentResult(cartId: string, accessToken: string): void {
+    flowController.abort();
+    stopHoldCountdown();
+    stopCooldown();
+    if (cardFormInstance && typeof cardFormInstance.unmount === 'function') {
+      try { cardFormInstance.unmount(); } catch (e) { console.warn('cardForm unmount error:', e); }
+    }
+    cardFormInstance = null;
     try { sessionStorage.setItem(`booking_token_${cartId}`, accessToken); } catch { /* best-effort */ }
 
     const panel = document.querySelector('[data-payment-panel]') as HTMLElement | null;
@@ -408,7 +417,8 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     const render = (booking: any) => renderPaymentResult(booking, cartId, t);
 
     resultPollController?.abort();
-    resultPollController = new AbortController();
+    const pollController = new AbortController();
+    resultPollController = pollController;
     // UX (2026-08-14): el boton "Verificar de nuevo" nace OCULTO — el polling
     // automatico es la via principal (15s x 40). Solo se muestra si el polling
     // se agota (10 min sin resolucion) o falla: ninguna plataforma te pide
@@ -416,34 +426,36 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     const verifyBtn = document.querySelector('[data-result-verify]') as HTMLButtonElement | null;
     void (async () => {
       try {
-        const booking = await pollForPayment(cartId, accessToken, resultPollController!.signal, isPendingStatus);
-        if (!resultPollController!.signal.aborted) {
+        const booking = await pollForPayment(cartId, accessToken, pollController.signal, isPendingStatus);
+        if (!pollController.signal.aborted && resultPollController === pollController) {
           // Polling agotado y sigue pending: recien ahi el boton manual tiene sentido.
           if (isPendingStatus(booking.status)) verifyBtn?.classList.remove('hidden');
           render(booking);
         }
       } catch (err: any) {
-        if (err?.name === 'Aborted' || resultPollController?.signal.aborted) return;
+        if (err?.name === 'Aborted' || pollController.signal.aborted || resultPollController !== pollController) return;
         console.error('[PaymentStep] poll error:', err);
         verifyBtn?.classList.remove('hidden');
         if (pendingStatus) pendingStatus.textContent = t('payment.retryCooldown').replace('{n}', '60');
       }
     })();
 
-    if (verifyBtn && !verifyBtn.dataset.hooked) {
-      verifyBtn.dataset.hooked = 'true';
-      verifyBtn.addEventListener('click', async () => {
+    if (verifyBtn) {
+      verifyBtn.onclick = async () => {
         if (verifyBtn.disabled) return;
         verifyBtn.disabled = true;
+        const activeController = resultPollController;
         try {
-          const booking = await fetchBookingStatus(cartId, accessToken);
+          const booking = await fetchBookingStatus(cartId, accessToken, activeController?.signal);
+          if (activeController?.signal.aborted || resultPollController !== activeController) return;
           render(booking);
         } catch (err) {
+          if (activeController?.signal.aborted || resultPollController !== activeController) return;
           console.error('[PaymentStep] verify again:', err);
         } finally {
           verifyBtn.disabled = false;
         }
-      });
+      };
     }
 
     const printBtn = document.querySelector('[data-result-print]') as HTMLButtonElement | null;
@@ -547,6 +559,8 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
 
   // ---- Todo 29: countdown del hold + extend (una vez) + beforeunload ----
   function stopHoldCountdown(): void {
+    holdCountdownController?.abort();
+    holdCountdownController = null;
     if (countdownTimer !== null) {
       window.clearInterval(countdownTimer);
       countdownTimer = null;
@@ -555,11 +569,15 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
 
   async function startHoldCountdown(cartId: string, accessToken: string, t: TFunc): Promise<void> {
     stopHoldCountdown();
+    holdExtendCalled = false;
+    const controller = new AbortController();
+    holdCountdownController = controller;
+    const signal = controller.signal;
     const el = document.querySelector('[data-hold-countdown]') as HTMLElement | null;
     if (!el) return;
     try {
-      const res = await bookingService.getBookingStatus(cartId, accessToken);
-      if (!res.success) return;
+      const res = await bookingService.getBookingStatus(cartId, accessToken, signal);
+      if (signal.aborted || holdCountdownController !== controller || !res.success) return;
       let timeLeft = Math.max(0, Number(res.data?.time_left_seconds ?? 0));
       if (timeLeft <= 0) return;
 
@@ -569,6 +587,10 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
       };
       render();
       countdownTimer = window.setInterval(() => {
+        if (signal.aborted || holdCountdownController !== controller) {
+          stopHoldCountdown();
+          return;
+        }
         timeLeft -= 1;
         if (timeLeft <= 0) {
           stopHoldCountdown();
@@ -579,7 +601,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
         // Extender UNA vez al llegar a ~60s (endpoint extend-hold del backend).
         if (shouldExtendHold(timeLeft, 60, holdExtendCalled)) {
           holdExtendCalled = true;
-          void extendHoldOnce(cartId, accessToken, t);
+          void extendHoldOnce(cartId, accessToken, t, signal, controller);
         }
       }, 1000);
     } catch {
@@ -587,15 +609,16 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     }
   }
 
-  async function extendHoldOnce(cartId: string, accessToken: string, t: TFunc): Promise<void> {
+  async function extendHoldOnce(cartId: string, accessToken: string, t: TFunc, signal: AbortSignal, controller: AbortController): Promise<void> {
     try {
       const response = await fetch('/api/extend-hold', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cart_id: cartId, access_token: accessToken }),
+        signal,
       });
       const payload = await response.json();
-      if (payload?.success && payload.time_left_seconds) {
+      if (!signal.aborted && holdCountdownController === controller && payload?.success && payload.time_left_seconds) {
         // Reiniciar el countdown con el nuevo tiempo del hold.
         stopHoldCountdown();
         void startHoldCountdown(cartId, accessToken, t);
@@ -647,24 +670,29 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     cartId: string,
     accessToken: string,
     t: TFunc,
-    showError: (msg: string) => void
+    showError: (msg: string) => void,
+    signal: AbortSignal
   ): Promise<void> {
+    if (signal.aborted) return;
     const isNetworkFailure = error.code === 'TIMEOUT_ERROR' || error.code === 'NETWORK_ERROR';
 
     // Mensaje accionable por status_detail (todo 26/30) o generico.
     const detailKey = statusDetailKey(error.statusDetail);
+    if (signal.aborted) return;
     showError(detailKey ? t(detailKey) : t(paymentErrorFallbackKey()));
 
     try {
       // 1) Estado local: si ya hay payment_id o pago confirmado -> success.
-      const local = await bookingService.getBookingStatus(cartId, accessToken);
+      const local = await bookingService.getBookingStatus(cartId, accessToken, signal);
+      if (signal.aborted) return;
       if (local.success && resolvePaymentOutcome(null, local.data) === 'redirect_success') {
         showPaymentResult(cartId, accessToken);
         return;
       }
       // 2) MP por external_reference (payment-check, todo 31): pago existente
       //    -> success; NUNCA crear un segundo pago.
-      const check = await bookingService.checkPayment(cartId, accessToken);
+      const check = await bookingService.checkPayment(cartId, accessToken, signal);
+      if (signal.aborted) return;
       const plan = planRetryAfterFailure({
         localStatus: local.success ? local.data : null,
         paymentCheck: check.success ? check.data : null,
@@ -681,24 +709,29 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
         return; // el botón queda deshabilitado; guiado a revisión manual.
       }
       if (plan.action === 'cooldown') {
+        if (signal.aborted) return;
         startCooldown(plan.cooldownSeconds || 60, t);
         return;
       }
       // retry seguro: marcar bloqueo (solo fallos de red) + cooldown >= 60s.
       if (isNetworkFailure) retryBlockedStreak += 1;
       cooldownEndsAt = Date.now() + RETRY_COOLDOWN_MS;
-      startCooldown(Math.ceil(RETRY_COOLDOWN_MS / 1000), t);
+      if (!signal.aborted) startCooldown(Math.ceil(RETRY_COOLDOWN_MS / 1000), t);
     } catch {
+      if (signal.aborted) return;
       // No verificable (red caída también para las consultas): fail-safe.
       if (isNetworkFailure) retryBlockedStreak += 1;
       cooldownEndsAt = Date.now() + RETRY_COOLDOWN_MS;
-      startCooldown(Math.ceil(RETRY_COOLDOWN_MS / 1000), t);
+      if (!signal.aborted) startCooldown(Math.ceil(RETRY_COOLDOWN_MS / 1000), t);
     }
   }
 
   function initPaymentStep() {
     abortController.abort();
     abortController = new AbortController();
+    flowController.abort();
+    flowController = new AbortController();
+    started = false;
 
     const root = document.querySelector('[data-payment-step]') as HTMLElement | null;
     if (!root) return;
@@ -726,6 +759,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
   }
 
   async function runPaymentFlow(state: any) {
+    const flowSignal = flowController.signal;
     const allocation = state.allocation;
     const errorBanner = document.getElementById('error-banner');
     const errorMessage = document.getElementById('error-message');
@@ -738,6 +772,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     const lang = (document.documentElement.lang || 'en') as Locale;
 
     function showError(msg: string) {
+      if (flowSignal.aborted) return;
       toastApi.error({ title: msg });
       if (errorBanner && errorMessage) {
         errorMessage.textContent = msg;
@@ -790,9 +825,10 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
               ? `Airport transfer: flight ${flightDetailsInput?.value?.trim() || 'N/A'} arriving ${flightTimeInput?.value || ''}`
               : '',
           },
-        });
+        }, flowSignal);
+      if (flowSignal.aborted) return;
 
-        if (!result.success) {
+      if (!result.success) {
           // Orden crítico: setProcessing(false) dispara notify -> start().
           // started debe seguir true DURANTE ese notify para no relanzar el
           // flujo en loop; se resetea después para permitir el reintento manual.
@@ -828,6 +864,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
 
         try {
           await loadMercadoPagoSdk();
+          if (flowSignal.aborted) return;
         } catch {
           resetPaymentUi();
           setProcessing(false);
@@ -920,7 +957,8 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
                     ...cardFormData,
                     device_session_id: deviceSessionId,
                   };
-                  const processRes = await bookingService.processPayment(cartId!, accessToken!, payload);
+                  const processRes = await bookingService.processPayment(cartId!, accessToken!, payload, flowSignal);
+                  if (flowSignal.aborted) { reject(); return; }
 
                   if (processRes.success) {
                     resolve();
@@ -945,7 +983,8 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
                     cartId!,
                     accessToken!,
                     t,
-                    showError
+                    showError,
+                    flowSignal
                   );
                 } catch (err: any) {
                   reject();
@@ -954,7 +993,8 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
                     cartId!,
                     accessToken!,
                     t,
-                    showError
+                    showError,
+                    flowSignal
                   );
                 } finally {
                   processingPayment = false;
@@ -981,7 +1021,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
 
         // Escuchar interacciones para limpiar errores obsoletos tan pronto el usuario intente corregir sus datos
         const brickContainer = document.getElementById('cardPaymentBrick_container');
-        brickContainer?.addEventListener('input', () => clearCardError(), { capture: true });
+        brickContainer?.addEventListener('input', () => clearCardError(), { capture: true, signal: flowSignal });
       } catch (err: any) {
         console.error(err);
         if (payReadyTimer !== null) { window.clearTimeout(payReadyTimer); payReadyTimer = null; }
@@ -993,6 +1033,10 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
   }
 
   function handlePaymentBack(): void {
+    resultPollController?.abort();
+    resultPollController = null;
+    flowController.abort();
+    flowController = new AbortController();
     // Volver al formulario de datos (guest): desmontar el cardForm (doc MP:
     // unmount() limpia los iframes de secure-fields) y restaurar el guest.
     if (payReadyTimer !== null) { window.clearTimeout(payReadyTimer); payReadyTimer = null; }
@@ -1025,5 +1069,6 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     resultPollController?.abort();
     resultPollController = null;
     abortController.abort();
-  });
+    flowController.abort();
+ });
 </script>

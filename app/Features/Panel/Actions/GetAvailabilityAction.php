@@ -30,6 +30,6 @@ class GetAvailabilityAction {
         }
 
         $hotelId = (int)($request->getQuery('hotel', Config::get('DEFAULT_HOTEL_ID', '1')));
-        Response::json($this->repo->getMonth($month, $hotelId));
+        Response::success($this->repo->getMonth($month, $hotelId));
     }
 }

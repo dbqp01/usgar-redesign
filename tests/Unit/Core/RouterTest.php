@@ -24,6 +24,10 @@ final class RouterTest extends TestCase {
         $paid = BookingStatus::Paid;
         $this->assertFalse($paid->isExtendable());
         $this->assertTrue($paid->isTerminal());
+
+        $cancelled = BookingStatus::Cancelled;
+        $this->assertFalse($cancelled->isExtendable());
+        $this->assertTrue($cancelled->isTerminal());
     }
 
     public function testValidatorRequireFieldsSuccess(): void {

@@ -13,6 +13,11 @@ use ReflectionMethod;
  * lo detecta y el cron conserva el valor anterior (fallback por diseño).
  */
 final class RefreshReviewScoresTest extends TestCase {
+    private function isAllowedSourceUrl(string $url): bool {
+        $ref = new ReflectionMethod(RefreshReviewScoresAction::class, 'isAllowedSourceUrl');
+        return $ref->invoke(null, $url);
+    }
+
     /** @return array{score: float, count: int|null}|null */
     private function parse(string $method, string $html): ?array {
         $ref = new ReflectionMethod(RefreshReviewScoresAction::class, $method);
@@ -42,5 +47,21 @@ final class RefreshReviewScoresTest extends TestCase {
     public function testParseReturnsNullOnUnparseableHtml(): void {
         $this->assertNull($this->parse('parseKayak', '<html><body>challenge page, no score</body></html>'));
         $this->assertNull($this->parse('parseBooking', '<html>captcha</html>'));
+    }
+
+    public function testReviewSourceUrlRejectsNonHttpsWithoutDnsLookup(): void {
+        $this->assertFalse($this->isAllowedSourceUrl('http://booking.com/hotel/example'));
+    }
+
+    public function testReviewSourceUrlRejectsHostsOutsideTheAllowlistWithoutDnsLookup(): void {
+        $this->assertFalse($this->isAllowedSourceUrl('https://example.com/hotel/example'));
+    }
+
+    public function testReviewSourceUrlRejectsCredentialsWithoutDnsLookup(): void {
+        $this->assertFalse($this->isAllowedSourceUrl('https://user:password@booking.com/hotel/example'));
+    }
+
+    public function testReviewSourceUrlRejectsNonStandardPortsWithoutDnsLookup(): void {
+        $this->assertFalse($this->isAllowedSourceUrl('https://booking.com:8443/hotel/example'));
     }
 }

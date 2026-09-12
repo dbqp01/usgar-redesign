@@ -8,6 +8,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use App\Core\Request;
 use App\Core\Config;
 use App\Core\BookingHoldToken;
+use App\Core\HttpException;
 use App\Core\Events\EventDispatcher;
 use App\Features\Booking\Actions\ProcessPaymentAction;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
@@ -31,6 +32,7 @@ final class ProcessPaymentActionTest extends TestCase {
 
     /** @var array<string,mixed>|null Ultimo paymentData capturado por el gateway. */
     private ?array $capturedPaymentData = null;
+    private bool $attachResult = true;
 
     protected function setUp(): void {
         Config::set('EXCHANGE_RATE_USD_PEN', '3.80');
@@ -45,6 +47,14 @@ final class ProcessPaymentActionTest extends TestCase {
 
         $this->paymentGateway = $this->createMock(PaymentGatewayPortInterface::class);
         $this->bookingRepo = $this->createMock(ProvisionalBookingRepository::class);
+        $this->bookingRepo->method('getByCartId')->willReturnCallback(
+            fn (string $cartId): array => $this->holdFixture()
+        );
+        $this->bookingRepo->method('setPaymentIdempotencyKey')->willReturn(true);
+        $this->bookingRepo->method('clearPaymentIdempotencyKey')->willReturn(true);
+        $this->bookingRepo->method('attachPaymentId')->willReturnCallback(fn (): bool => $this->attachResult);
+        $this->bookingRepo->method('updateStatus')->willReturn(true);
+        $this->bookingRepo->method('markPaymentProcessed')->willReturn(true);
         $this->eventDispatcher = $this->createMock(EventDispatcher::class);
 
         $this->action = new ProcessPaymentAction(
@@ -335,11 +345,53 @@ final class ProcessPaymentActionTest extends TestCase {
         $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->holdFixture());
         $this->stubApprovedGateway();
         $this->pdo->method('commit')->willThrowException(new \PDOException('connection lost'));
-        $this->bookingRepo->method('attachPaymentId')->willReturn(false);
+        $this->attachResult = false;
 
         $response = $this->captureResponse(fn () => ($this->action)($this->defaultRequest()));
 
         $this->assertSame(500, $response['code']);
         $this->assertStringContainsString('Error interno', $response['body']);
+    }
+
+    public function testCommitFailureTreatsAlreadyAttachedPaymentAsRecovered(): void {
+        // Un ACK ambiguo del commit puede dejar la fila persistida aunque PDO
+        // lance. El recovery debe aceptar solo la coincidencia exacta del
+        // payment_id y evitar un 500/reintento que vuelva a cobrar.
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->holdFixture());
+        $this->stubApprovedGateway();
+        $this->pdo->method('commit')->willThrowException(new \PDOException('connection lost after commit'));
+        $this->bookingRepo->method('attachPaymentId')->willReturn(false);
+        $persisted = $this->holdFixture();
+        $persisted['payment_id'] = '987';
+        $this->bookingRepo->method('getByCartId')->willReturn($persisted);
+
+        $response = $this->captureResponse(fn () => ($this->action)($this->defaultRequest()));
+
+        $this->assertSame(200, $response['code']);
+        $this->assertStringContainsString('"status":"pending"', $response['body']);
+    }
+
+    public function testInvalidTokenCannotReserveIdempotencyKey(): void {
+        $this->bookingRepo->expects($this->never())->method('setPaymentIdempotencyKey');
+        $request = new Request('POST', '/api/process-payment', [], [
+            'cart_id' => 'CART-1',
+            'access_token' => 'wrong-token',
+            'payment_data' => ['token' => 'card'],
+        ]);
+
+        $this->expectException(HttpException::class);
+        $this->expectExceptionCode(401);
+        ($this->action)($request);
+    }
+
+    public function testMalformedPaymentInputIsRejectedBeforeRepositoryAccess(): void {
+        $this->bookingRepo->expects($this->never())->method('getByCartId');
+        $this->expectException(HttpException::class);
+        $this->expectExceptionCode(400);
+        ($this->action)(new Request('POST', '/api/process-payment', [], [
+            'cart_id' => ['CART-1'],
+            'access_token' => 'token',
+            'payment_data' => [],
+        ]));
     }
 }

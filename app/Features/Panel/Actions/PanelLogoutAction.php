@@ -13,6 +13,12 @@ use App\Features\Panel\Domain\PanelAuth;
  */
 class PanelLogoutAction {
     public function __invoke(Request $request): void {
+        PanelAuth::requireAuth();
+        PanelAuth::assertCsrf($request);
+        $revoked = PanelAuth::revokeCurrentToken();
+        if (!$revoked) {
+            throw \App\Core\HttpException::internal('No se pudo invalidar la sesión del panel de forma segura.');
+        }
         PanelAuth::clearCookie();
         Response::json(['success' => true]);
     }

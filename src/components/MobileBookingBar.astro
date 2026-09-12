@@ -13,7 +13,8 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
 <!-- Fixed Mobile Bottom Booking Bar (Option 1: Always Visible on Mobile) -->
 <div
   id="mobile-bottom-bar"
-  class="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-surface-card-light/95 dark:bg-surface-card-dark/95 backdrop-blur-md border-t border-black/10 dark:border-white/10 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] transition-transform duration-300 pb-safe"
+  data-mobile-booking-bar
+  class:list={["fixed bottom-0 left-0 right-0 z-40 lg:hidden isolate bg-surface-card-light/95 dark:bg-surface-card-dark/95 backdrop-blur-md border-t border-black/10 dark:border-white/10 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] transition-transform duration-300 pb-safe", { hidden: Astro.url.pathname.includes('/book') }]}
 >
   <div class="px-4 py-2 flex items-center justify-between gap-3">
     <!-- Left Info / Price indication -->
@@ -51,6 +52,9 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
   class="fixed inset-0 z-50 hidden lg:hidden"
   role="dialog"
   aria-modal="true"
+  aria-hidden="true"
+  hidden
+  inert
   aria-labelledby="mobile-booking-sheet-title"
 >
   <!-- Backdrop -->
@@ -131,6 +135,9 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
           <option value="3">3 {t('booking.guests_plural')}</option>
           <option value="4">4 {t('booking.guests_plural')}</option>
           <option value="5">5 {t('booking.guests_plural')}</option>
+          <option value="6">6 {t('booking.guests_plural')}</option>
+          <option value="7">7 {t('booking.guests_plural')}</option>
+          <option value="8">8 {t('booking.guests_plural')}</option>
         </select>
       </div>
 
@@ -141,7 +148,7 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
         </label>
         <select
           id="mb-room-type"
-          name="room-type"
+          name="roomType"
           class="w-full px-4 py-3 rounded-xl bg-surface-light dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm font-medium text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary outline-none appearance-none"
         >
           <option value="">{t('booking.anyRoom')}</option>
@@ -166,12 +173,18 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
   import gsap from 'gsap';
 
   let ctx: gsap.Context;
+  let initAbortController: AbortController | null = null;
 
   function initMobileBookingBar() {
-    if (ctx) ctx.revert();
-    
-    const abortController = new AbortController();
+    // Astro can emit page-load more than once during a ViewTransition. Abort
+    // the previous lifecycle before wiring the next one so DOM listeners do
+    // not accumulate if a transition is interrupted or replayed.
+    initAbortController?.abort();
+    initAbortController = new AbortController();
+    const abortController = initAbortController;
     const signal = abortController.signal;
+
+    if (ctx) ctx.revert();
 
     const openBtn = document.getElementById('open-mobile-booking-sheet');
     const closeBtn = document.getElementById('close-mobile-booking-sheet');
@@ -181,29 +194,42 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
     const checkin = document.getElementById('mb-checkin') as HTMLInputElement;
     const checkout = document.getElementById('mb-checkout') as HTMLInputElement;
 
+    // Format dates from local calendar values. Using toISOString() here can
+    // shift the displayed date to the previous day in negative UTC offsets.
+    const localDateValue = (date: Date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return year + '-' + month + '-' + day;
+    };
+    const parseLocalDate = (value: string) => {
+      const [year, month, day] = value.split('-').map(Number);
+      return new Date(year, month - 1, day);
+    };
+
     // Set default dates if empty
     if (checkin && !checkin.value) {
       const today = new Date();
       const tomorrow = new Date(today);
       tomorrow.setDate(today.getDate() + 1);
-      checkin.value = tomorrow.toISOString().split('T')[0];
-      checkin.min = today.toISOString().split('T')[0];
+      checkin.value = localDateValue(tomorrow);
+      checkin.min = localDateValue(today);
     }
     if (checkout && !checkout.value && checkin) {
-      const checkinDate = new Date(checkin.value);
+      const checkinDate = parseLocalDate(checkin.value);
       const dayAfter = new Date(checkinDate);
       dayAfter.setDate(checkinDate.getDate() + 1);
-      checkout.value = dayAfter.toISOString().split('T')[0];
-      checkout.min = checkin.value;
+      checkout.value = localDateValue(dayAfter);
+      checkout.min = localDateValue(dayAfter);
     }
 
     if (checkin && checkout) {
       checkin.addEventListener('change', () => {
         if (checkin.value) {
-          const inDate = new Date(checkin.value);
+          const inDate = parseLocalDate(checkin.value);
           const nextDay = new Date(inDate);
           nextDay.setDate(inDate.getDate() + 1);
-          const minCheckoutStr = nextDay.toISOString().split('T')[0];
+          const minCheckoutStr = localDateValue(nextDay);
           checkout.min = minCheckoutStr;
           if (checkout.value < minCheckoutStr) {
             checkout.value = minCheckoutStr;
@@ -217,12 +243,33 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
     const bottomBar = document.getElementById('mobile-bottom-bar');
     if (isBookPage && bottomBar) {
       bottomBar.classList.add('hidden');
+      document.body.classList.remove('mobile-booking-bar-visible');
+    } else if (bottomBar) {
+      bottomBar.classList.remove('hidden');
+      document.body.classList.add('mobile-booking-bar-visible');
     }
 
     ctx = gsap.context(() => {
       let isSheetOpen = false;
       let tl = gsap.timeline({ paused: true });
       const mm = gsap.matchMedia();
+
+      // Keep the visual animation and DOM interaction state in sync. A closed
+      // drawer must be removed from layout and the accessibility tree;
+      // aria-hidden alone does not prevent keyboard focus or pointer input.
+      function setSheetInteractivity(open: boolean) {
+        if (!sheet) return;
+        sheet.hidden = !open;
+        sheet.toggleAttribute('inert', !open);
+        sheet.setAttribute('aria-hidden', String(!open));
+      }
+
+      function hideSheetAfterAnimation() {
+        if (!isSheetOpen && sheet) {
+          setSheetInteractivity(false);
+          gsap.set(sheet, { display: 'none' });
+        }
+      }
 
       if (sheet && backdrop && panel) {
         mm.add("(prefers-reduced-motion: no-preference)", () => {
@@ -240,36 +287,50 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
             .to(backdrop, { autoAlpha: 1, duration: 0.1 })
             .to(panel, { y: '0%', duration: 0.1 }, '<');
         });
+
+        tl.eventCallback('onReverseComplete', hideSheetAfterAnimation);
       }
 
       function openSheet() {
         if (!sheet) return;
         isSheetOpen = true;
         document.body.style.overflow = 'hidden';
+        setSheetInteractivity(true);
         if (openBtn) openBtn.setAttribute('aria-expanded', 'true');
         tl.timeScale(1).play();
+        closeBtn?.focus();
       }
 
       function closeSheet() {
         if (!sheet) return;
         isSheetOpen = false;
         document.body.style.overflow = '';
+        // Hide from assistive technology immediately, then wait for the slide
+        // out to finish before restoring hidden and inert.
+        sheet.setAttribute('aria-hidden', 'true');
+        sheet.toggleAttribute('inert', true);
         if (openBtn) openBtn.setAttribute('aria-expanded', 'false');
         tl.timeScale(2).reverse();
+        openBtn?.focus();
       }
 
       function forceCloseInstant() {
-        if (isSheetOpen) {
-          isSheetOpen = false;
-          document.body.style.overflow = '';
-          if (openBtn) openBtn.setAttribute('aria-expanded', 'false');
-          tl.progress(0).pause();
-        }
+        // Also handle a drawer midway through its closing animation: the
+        // element remains rendered until the reverse tween completes.
+        isSheetOpen = false;
+        document.body.style.overflow = '';
+        setSheetInteractivity(false);
+        if (openBtn) openBtn.setAttribute('aria-expanded', 'false');
+        tl.progress(0).pause();
+        if (sheet) gsap.set(sheet, { display: 'none' });
       }
 
       openBtn?.addEventListener('click', openSheet, { signal });
       closeBtn?.addEventListener('click', closeSheet, { signal });
       backdrop?.addEventListener('click', closeSheet, { signal });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && isSheetOpen) closeSheet();
+      }, { signal });
 
       // Clean up smoothly on Astro ViewTransitions. Registered with the per-init
       // signal: abort() below removes this listener itself, so it never
@@ -277,6 +338,7 @@ const bookUrl = getRelativeLocaleUrl(lang, 'book');
       document.addEventListener('astro:before-preparation', () => {
         forceCloseInstant();
         abortController.abort();
+        document.body.classList.remove('mobile-booking-bar-visible');
         if (ctx) ctx.revert();
       }, { signal, once: true });
     });

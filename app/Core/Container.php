@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Core;
 
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionNamedType;
 use Exception;

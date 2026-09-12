@@ -1,6 +1,11 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { register, isHomePage } from './animationLifecycle';
+import {
+  getLifecycleGeneration,
+  isLifecycleGenerationCurrent,
+  register,
+  isHomePage,
+} from './animationLifecycle';
 import { initGlobalReveals, initGlobalRevealsInstant } from './modules/globalReveals';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -10,17 +15,19 @@ const PREFERS_NO_REDUCE = '(prefers-reduced-motion: no-preference)';
 
 // Módulos exclusivos de la home: se cargan bajo demanda para no inflar el bundle
 // base que comparten todas las páginas (heroStory, SplitText, parallax, tilt...).
-async function loadHomeModules(): Promise<void> {
+async function loadHomeModules(generation: number): Promise<boolean> {
   const [heroStory, heritage, marquee] = await Promise.all([
     import('./modules/heroStory'),
     import('./modules/heritageStory'),
     import('./modules/velocityMarquee'),
   ]);
+  if (!isLifecycleGenerationCurrent(generation)) return false;
   register('marquee', marquee.initVelocityMarquee());
   register('hero', heroStory.initHeroStory());
   register('heritage', heritage.initHeritageStory());
   register('reveals', initGlobalReveals());
   ScrollTrigger.refresh(true);
+  return true;
 }
 
 export function bootHomeAnimations(): void {
@@ -42,12 +49,14 @@ export function bootHomeAnimations(): void {
         return;
       }
 
-      void loadHomeModules().then(() => {
-        if (!isDesktop) return;
+      const generation = getLifecycleGeneration();
+      void loadHomeModules(generation).then((loaded) => {
+        if (!loaded || !isDesktop || !isLifecycleGenerationCurrent(generation)) return;
         void Promise.all([
           import('./modules/parallaxCards'),
           import('./modules/mouseTilt'),
         ]).then(([parallax, tilt]) => {
+          if (!isLifecycleGenerationCurrent(generation)) return;
           register('parallax', parallax.initParallaxCards());
           register('tilt', tilt.initMouseTilt());
           // These ScrollTriggers are created after async imports resolve —

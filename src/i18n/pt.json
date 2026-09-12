@@ -73,7 +73,9 @@
     "photoGallery": "Galeria de fotos",
     "closeGallery": "Fechar galeria de fotos",
     "prevSlide": "Foto anterior",
-    "nextSlide": "Próxima foto"
+    "nextSlide": "Próxima foto",
+    "playPause": "Reproduzir ou pausar",
+    "viewPhoto": "Ver foto {n}"
   },
   "services": {
     "sectionLabel": "Nossos Servicos",
@@ -82,7 +84,10 @@
   "reviews": {
     "sectionLabel": "Avaliacoes dos Hospedes",
     "title": "O Que Dizem Nossos Hospedes",
-    "description": "Veja o depoimento de viajantes que se hospedaram no USGAR Hotels"
+   "description": "Veja o depoimento de viajantes que se hospedaram no USGAR Hotels"
+    ,"viewBooking": "Ver avaliações no Booking.com (nova aba)"
+    ,"viewKayak": "Ver avaliações no KAYAK (nova aba)"
+    ,"viewExpedia": "Ver avaliações no Expedia (nova aba)"
   },
   "explore": {
     "sectionLabel": "Nas Proximidades",
@@ -90,6 +95,7 @@
     "description": "Descubra as maravilhas que esperam por você logo ao sair da porta",
     "viewAll": "Ver todas as atracoes",
     "searchPlaceholder": "Buscar atração...",
+    "searchLabel": "Pesquisar atrações",
     "viewGuide": "Ver Guia",
     "popularDestinations": "Destinos Populares",
     "noResults": "Nenhuma atração encontrada",
@@ -201,7 +207,9 @@
     "heroImageCaption": "O patio, San Pedro",
     "checkinHours": "Check-in a partir das 11:00"
   },
-  "gallery": {
+ "gallery": {
+    "viewPhoto": "Ver foto {n}",
+    "openVideo": "Abrir vídeo do quarto {name}",
     "title": "Galeria de Fotos",
     "subtitle": "Descubra a beleza e os detalhes do USGAR Hotels em San Pedro, Cusco",
     "filterAll": "Todas as Fotos",
@@ -357,12 +365,15 @@
     "statusCompleted": "Concluida",
     "loginError": "E-mail ou senha incorretos.",
     "emailExists": "Ja existe uma conta com este e-mail.",
-    "statusPaid": "Pago"
+    "statusPaid": "Pago",
+    "loading": "Carregando seu perfil e reservas…",
+    "userMenu": "Menu do usuário"
   },
   "global": {
     "close": "Fechar",
     "previous": "Anterior",
     "next": "Próximo",
+    "legal": "Informações legais",
     "skipToContent": "Ir para o conteúdo principal",
     "contactWhatsApp": "Contato via WhatsApp",
     "assistance247": "Atendimento 24/7",
@@ -394,6 +405,7 @@
     "step3Label": "Pagar",
     "step3Sub": "Pagamento Seguro",
     "stepOf": "Passo {n} de 3",
+    "progressLabel": "Progresso da reserva",
     "calendarTitle": "Escolha suas datas",
     "searchAvailability": "Verificar disponibilidade",
     "guestsLabel": "Hospedes",
@@ -500,12 +512,20 @@
     "ready": "Sistema pronto",
     "close": "Fechar notificação"
   },
-  "profile": {
-    "personalDetails": "Dados pessoais",
+ "profile": {
+    "pageTitle": "Perfil",
+   "personalDetails": "Dados pessoais",
     "personalInformation": "Informações pessoais",
     "accountProvider": "Provedor da conta",
     "sanctuaryPerk": "Vantagem Sanctuary",
-    "totalPaid": "Total pago"
+    "totalPaid": "Total pago",
+    "readOnly": "Somente leitura",
+    "savingChanges": "Salvando alterações…",
+    "saveProfileChanges": "Salvar alterações do perfil",
+    "profileUpdated": "Perfil atualizado com sucesso.",
+    "profileUpdateFailed": "Não foi possível atualizar o perfil.",
+    "profileConnectionError": "Erro de conexão ao atualizar o perfil.",
+    "phoneWhatsApp": "Telefone / WhatsApp"
   },
   "legal": {
     "eyebrow": "Legal",

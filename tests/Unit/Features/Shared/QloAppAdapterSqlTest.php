@@ -17,9 +17,8 @@ use PDOStatement;
 final class QloAppAdapterSqlTest extends TestCase {
     public function testConfirmOrderQueriesUseInterpolatedConstants(): void {
         $pdo = new FakePdoForSqlTest();
-        // Cola de resultados: [0] = hold de provisional_bookings,
-        // [1] = moneda (fetch false => fallback PEN 1), [2] = customer
-        // (fetchColumn 0 => insert), [3] = nombre de habitacion (false => default).
+        // Cola de resultados: [0] = hold, [1] = orden existente (false),
+        // [2] = moneda (fetch false => fallback PEN 1), [3] = nombre de habitación.
         $pdo->fetchQueue = [
             [
                 'id_hotel' => '1', 'id_room_type' => '3', 'checkin' => '2026-09-01',
@@ -62,6 +61,54 @@ final class QloAppAdapterSqlTest extends TestCase {
         $this->assertStringContainsString('2026-09-01 12:00:00', $allParams);
         $this->assertStringContainsString('2026-09-03 10:30:00', $allParams);
     }
+
+    public function testPanelChannelIsCarriedByExistingConfirmOrderArguments(): void {
+        $pdo = new FakePdoForSqlTest();
+        $pdo->fetchQueue = [[
+            'id_hotel' => '1', 'id_room_type' => '3', 'checkin' => '2026-09-01',
+            'checkout' => '2026-09-03', 'guest_data' => '{"guests":2}',
+        ], false, false, false];
+        $pdo->fetchColumnQueue = [0, false];
+
+        $adapter = new QloAppAdapter($pdo);
+        self::assertSame('1', $adapter->confirmOrder(
+            'USGAR-panel-phone', 380.0, 'Ana Perez', 'ana@example.com',
+            7, 'panel-phone', 'Panel (phone)'
+        ));
+        $params = implode("\n", array_map(
+            fn($p): string => is_array($p) ? implode('|', array_map('strval', array_values($p))) : '',
+            $pdo->executedParams
+        ));
+        self::assertStringContainsString('panel-phone', $params);
+        self::assertStringContainsString('Panel (phone)', $params);
+    }
+
+    public function testMultiRoomDetailsAllocateExactGatewayCurrencyTotal(): void {
+        $pdo = new FakePdoForSqlTest();
+        $pdo->fetchQueue = [[
+            'id_hotel' => '1', 'id_room_type' => '3', 'checkin' => '2026-09-01',
+            'checkout' => '2026-09-03', 'guest_data' => '{"guests":2}',
+            'room_data' => json_encode([
+                ['id_room_type' => 3, 'id_product' => 30, 'room_name' => 'A', 'guests' => 2, 'room_total' => 1.0],
+                ['id_room_type' => 4, 'id_product' => 40, 'room_name' => 'B', 'guests' => 2, 'room_total' => 3.0],
+            ], JSON_THROW_ON_ERROR),
+        ], false, false, false, false];
+        $pdo->fetchColumnQueue = [0, false, false];
+
+        $adapter = new QloAppAdapter($pdo);
+        self::assertSame('1', $adapter->confirmOrder(
+            'USGAR-multi-currency', 100.0, 'Ana Perez', 'ana@example.com'
+        ));
+
+        $params = array_map(
+            static fn($p): string => is_array($p) ? implode('|', array_map('strval', array_values($p))) : '',
+            $pdo->executedParams
+        );
+        // USD line weights 1:3 allocate exactly 25 and 75 PEN; both detail
+        // tables receive the same amounts and their sum equals the header.
+        self::assertContains('1|30|A|25|25|25|25|25', $params);
+        self::assertContains('1|40|B|75|75|75|75|75', $params);
+    }
 }
 
 /** @phpstan-ignore-next-line */
@@ -76,6 +123,7 @@ final class FakePdoForSqlTest extends PDO {
     public array $fetchColumnQueue = [];
     private int $fetchIndex = 0;
     private int $fetchColumnIndex = 0;
+    private bool $transaction = false;
 
     public function __construct() {
         // No tocar la BD real: constructor vacio (PDO no se inicializa).
@@ -87,15 +135,22 @@ final class FakePdoForSqlTest extends PDO {
     }
 
     public function beginTransaction(): bool {
+        $this->transaction = true;
         return true;
     }
 
     public function commit(): bool {
+        $this->transaction = false;
         return true;
     }
 
     public function rollBack(): bool {
+        $this->transaction = false;
         return true;
+    }
+
+    public function inTransaction(): bool {
+        return $this->transaction;
     }
 
     public function lastInsertId(?string $name = null): string {

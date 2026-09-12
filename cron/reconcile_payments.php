@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * Cron de reconciliacion de pagos pendientes.
  * Consulta MercadoPago por holds cuyo webhook nunca llego y completa el flujo.
- * Uso: php cron/reconcile_payments.php (cada 10 minutos)
+ * Uso: php cron/reconcile_payments.php (cada 15 minutos en Hostinger)
  */
 
 // Solo CLI (cron): nunca ejecucion via web (dist publicado expone cron/).

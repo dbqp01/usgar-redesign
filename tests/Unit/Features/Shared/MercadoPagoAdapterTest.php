@@ -43,6 +43,7 @@ final class MercadoPagoAdapterTest extends TestCase {
                     $this->assertSame('card', $payload['payment_method_id']);
                     $this->assertSame('CART-ABC-123', $payload['external_reference']);
                     $this->assertSame('USGAR HOTELES CUSCO', $payload['statement_descriptor']);
+                    $this->assertTrue($payload['binary_mode']);
                     $this->assertSame('https://usgarhoteles.com/api/webhook', $payload['notification_url']);
                     // Fix F3 (2026-08-06, verificado con MCP search_documentation
                     // "create payment" es/MPE + sandbox real): el create
@@ -154,6 +155,27 @@ final class MercadoPagoAdapterTest extends TestCase {
         $this->assertNotSame($capturedKeys[0], $capturedKeys[1], 'Cada intento debe tener una idempotency key fresca (UUID).');
     }
 
+    public function testProcessPaymentReusesPersistedIdempotencyKeyWhenProvided(): void {
+        $paymentClient = $this->createMock(PaymentClient::class);
+        $paymentClient->expects($this->once())
+            ->method('create')
+            ->with($this->anything(), $this->callback(function (RequestOptions $options): bool {
+                $headers = array_values($options->getCustomHeaders() ?? []);
+                $this->assertContains('X-Idempotency-Key: persisted-key-123', $headers);
+                return true;
+            }))
+            ->willReturn($this->makePayment(333, 'approved', 'accredited', 'CART-1', 50.0));
+
+        $adapter = new MercadoPagoAdapter($paymentClient);
+        $adapter->processPayment([
+            'external_reference' => 'CART-1',
+            'transaction_amount' => 50.0,
+            'payment_method_id' => 'card',
+            'payer' => ['email' => 'x@test.com'],
+            'idempotency_key' => 'persisted-key-123',
+        ]);
+    }
+
     public function testGetPaymentDetailsReturnsNormalizedArray(): void {
         $paymentClient = $this->createMock(PaymentClient::class);
         $paymentClient->expects($this->once())
@@ -234,9 +256,25 @@ final class MercadoPagoAdapterTest extends TestCase {
         $this->assertNull($adapter->findPaymentByExternalReference('USGAR-CART-NONE'));
     }
 
-    public function testGetPaymentDetailsReturnsNullOnSdkFailure(): void {
+    public function testFindPaymentByExternalReferenceRejectsAmbiguousResults(): void {
+        $first = new PaymentSearchResult();
+        $first->id = 101;
+        $first->status = 'approved';
+        $first->external_reference = 'USGAR-CART-DUP';
+        $second = new PaymentSearchResult();
+        $second->id = 102;
+        $second->status = 'pending';
+        $second->external_reference = 'USGAR-CART-DUP';
+        $search = new PaymentSearch();
+        $search->results = [$first, $second];
         $paymentClient = $this->createMock(PaymentClient::class);
-        $paymentClient->expects($this->once())
+        $paymentClient->method('search')->willReturn($search);
+        $this->assertNull((new MercadoPagoAdapter($paymentClient))->findPaymentByExternalReference('USGAR-CART-DUP'));
+    }
+
+   public function testGetPaymentDetailsReturnsNullOnSdkFailure(): void {
+        $paymentClient = $this->createMock(PaymentClient::class);
+       $paymentClient->expects($this->once())
             ->method('get')
             ->willThrowException(new MPApiException(
                 'API error',
@@ -322,6 +360,20 @@ final class MercadoPagoAdapterTest extends TestCase {
 
         $this->assertSame(555666777, $result['id']);
         $this->assertSame('approved', $result['status']);
+    }
+
+    public function testVerifyNotificationFailsClosedWhenSecretIsMissing(): void {
+        Config::set('MERCADO_PAGO_WEBHOOK_SECRET', "");
+        $paymentClient = $this->createMock(PaymentClient::class);
+        $paymentClient->expects($this->never())->method('get');
+
+        $adapter = new MercadoPagoAdapter($paymentClient);
+        $result = $adapter->verifyNotification(
+            ['type' => 'payment', 'data' => ['id' => '555666777']],
+            []
+        );
+
+        $this->assertNull($result);
     }
 
     public function testRefundPaymentFullRefund(): void {

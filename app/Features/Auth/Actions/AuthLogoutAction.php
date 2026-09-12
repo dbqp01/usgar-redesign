@@ -14,6 +14,10 @@ use App\Features\Auth\SessionService;
 class AuthLogoutAction {
     public function __invoke(Request $request): void {
         SessionService::assertCsrf($request);  // P1-8
+        $revoked = SessionService::revokeCurrentToken();
+        if (!$revoked) {
+            throw \App\Core\HttpException::internal('No se pudo invalidar la sesión de forma segura.');
+        }
         SessionService::clearAuthCookie();
 
         $accept = $request->getHeader('accept') ?? '';

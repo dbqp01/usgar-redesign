@@ -2,6 +2,13 @@ DirectoryIndex index.html index.php
 
 RewriteEngine On
 
+# The build copies the PHP runtime and cron entry points into the published
+# directory so Hostinger's CLI jobs can execute them. They are application
+# internals, not public assets: deny direct HTTP access before any rewrite or
+# PHP handler can expose source/configuration details. The CLI cron jobs are
+# unaffected because this rule is evaluated only by Apache/LiteSpeed.
+RewriteRule ^(?:app|vendor|cron|logs|storage|runtime)(?:/|$) - [F,L,NC]
+
 # Canonical domain: redirect www -> apex (301). Survives deploys (lives in repo).
 RewriteCond %{HTTP_HOST} ^www\.usgarhoteles\.com$ [NC]
 RewriteRule ^(.*)$ https://usgarhoteles.com/$1 [L,R=301]
@@ -24,9 +31,11 @@ RewriteRule ^api/(.*)$ index.php [L,QSA]
 </IfModule>
 
 <IfModule mod_headers.c>
-    # Security headers centralizados en app/Core/Middleware.php (fuente unica de verdad)
-    # CSP y X-Frame-Options se setean via PHP para cubrir tambien el dev server.
-    Header set X-Content-Type-Options "nosniff"
+    # PHP expose_php puede permanecer activo en FastCGI/LiteSpeed; retirar la
+    # cabecera en el servidor cubre tambien respuestas estaticas de Astro.
+    Header unset X-Powered-By
+    Header always unset X-Powered-By
+    Header always set X-Content-Type-Options "nosniff"
 </IfModule>
 
 # Security: Block access to hidden files (e.g. .env, .git)
@@ -81,4 +90,27 @@ RewriteRule ^api/(.*)$ index.php [L,QSA]
     Header set Cache-Control "public, max-age=2592000" env=USGAR_VIDEO
     Header set Accept-Ranges "bytes" env=USGAR_VIDEO
     Header set Cache-Control "public, max-age=0, must-revalidate" env=USGAR_HTML
+
+    # /panel/ es un shell estatico que contiene la superficie autenticada del
+    # dueño. Evitar almacenamiento en navegador, proxy o CDN; el estado real
+    # siempre viene de la API protegida.
+    <IfModule mod_setenvif.c>
+        SetEnvIf Request_URI "^/panel(?:/|$)" USGAR_PANEL=1
+    </IfModule>
+    Header unset Cache-Control env=USGAR_PANEL
+    Header always unset Cache-Control env=USGAR_PANEL
+    Header always set Cache-Control "private, no-store, max-age=0, must-revalidate" env=USGAR_PANEL
+</IfModule>
+
+# Static Astro HTML does not execute PHP middleware. Apply the defensive
+# browser headers here as well. CSP remains in Middleware for PHP responses so
+# the payment/map/font allowlist stays in one place and Astro assets continue
+# to load without a second policy drifting from it.
+<IfModule mod_headers.c>
+    <FilesMatch "(?i)\.html$">
+        Header always set X-Frame-Options "DENY"
+        Header always set Referrer-Policy "strict-origin-when-cross-origin"
+        Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+        Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    </FilesMatch>
 </IfModule>

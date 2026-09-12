@@ -14,7 +14,7 @@ const t = useTranslations(lang);
     <div>
       <h2 class="font-display text-2xl">{t('profile.personalInformation')}</h2>
       <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">
-        Update your personal details for faster check-ins and direct contact.
+        {t('profile.personalDetails')}
       </p>
     </div>
 
@@ -22,7 +22,7 @@ const t = useTranslations(lang);
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label for="edit-fullname" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-            Full Name *
+            {t('auth.fullName')} *
           </label>
           <input
             type="text"
@@ -36,7 +36,7 @@ const t = useTranslations(lang);
 
         <div>
           <label for="edit-email" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-            Email Address (Read Only)
+            {t('auth.emailAddress')} ({t('profile.readOnly')})
           </label>
           <input
             type="email"
@@ -49,7 +49,7 @@ const t = useTranslations(lang);
 
       <div>
         <label for="edit-phone" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary-light dark:text-text-secondary-dark mb-2">
-          Phone / WhatsApp Number
+          {t('profile.phoneWhatsApp')}
         </label>
         <input
           type="tel"
@@ -67,7 +67,7 @@ const t = useTranslations(lang);
           id="btn-save-personal"
           class="bg-primary hover:bg-primary-dark text-white font-semibold text-sm px-8 py-3.5 rounded-xl transition-[background-color,color,box-shadow] duration-300 shadow-md hover:shadow-lg cursor-pointer"
         >
-          Save Profile Changes
+          {t('profile.saveProfileChanges')}
         </button>
       </div>
     </form>

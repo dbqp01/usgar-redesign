@@ -77,6 +77,8 @@ final class W4PmsPortDouble implements PmsPortInterface {
     public mixed $confirmResult = null;
     /** @var array<int, array{0:string,1:float,2:string,3:string}> */
     public array $confirmArgs = [];
+    /** @var array<int, array<int|string, mixed>>|null */
+    public ?array $confirmRoomLines = null;
 
     public function getAvailableRooms(string $checkIn, string $checkOut, int $idHotel = 1, ?int $idLang = null): array {
         return [];
@@ -110,10 +112,12 @@ final class W4PmsPortDouble implements PmsPortInterface {
         string $guestEmail,
         ?int $idRoom = 1,
         string $module = 'mercadopago',
-        string $paymentLabel = 'Mercado Pago (Online)'
+        string $paymentLabel = 'Mercado Pago (Online)',
+        ?array $roomLines = null
     ): ?string {
         $this->confirmOrderCalls++;
         $this->confirmArgs[] = [$cartId, $totalPrice, $guestName, $guestEmail, $idRoom, $module, $paymentLabel];
+        $this->confirmRoomLines = $roomLines;
         return $this->confirmResult;
     }
 

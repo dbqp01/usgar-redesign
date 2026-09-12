@@ -24,6 +24,8 @@ final class ProcessOutboxSchemaTest extends TestCase {
     /** @var array<string,int> Cuenta de columnas reportada por information_schema. */
     private array $columnCounts = [];
 
+    private int $claimIndexCount = 0;
+
     private function buildAction(): ProcessOutboxAction {
         $infoSchemaCount = 0;
         $pdo = $this->createMock(PDO::class);
@@ -33,10 +35,16 @@ final class ProcessOutboxSchemaTest extends TestCase {
             $stmt->method('execute')->willReturn(true);
             $stmt->method('rowCount')->willReturn(0);
             if (str_contains($sql, 'information_schema.COLUMNS')) {
-                // Orden fijo del heal: 1a consulta = attempts, 2a = next_attempt_at.
+                // Orden fijo del heal: attempts, next_attempt_at y claim_token.
                 $infoSchemaCount++;
-                $col = $infoSchemaCount === 1 ? 'attempts' : 'next_attempt_at';
+                $col = match ($infoSchemaCount) {
+                    1 => 'attempts',
+                    2 => 'next_attempt_at',
+                    default => 'claim_token',
+                };
                 $stmt->method('fetchColumn')->willReturn($this->columnCounts[$col] ?? 1);
+            } elseif (str_contains($sql, 'information_schema.STATISTICS')) {
+                $stmt->method('fetchColumn')->willReturn($this->claimIndexCount);
             }
             return $stmt;
         });
@@ -61,14 +69,17 @@ final class ProcessOutboxSchemaTest extends TestCase {
         // Tabla legacy (sin columnas): ALTER de attempts, ALTER de
         // next_attempt_at y el BACKFILL INMEDIATAMENTE DESPUES del ALTER
         // (fix MAJOR r7 + MINOR r9: mecanismo unico, sin COALESCE).
-        $this->columnCounts = ['attempts' => 0, 'next_attempt_at' => 0];
+        $this->columnCounts = ['attempts' => 0, 'next_attempt_at' => 0, 'claim_token' => 0];
+        $this->claimIndexCount = 0;
         $action = $this->buildAction();
 
         $action->ensureOutboxSchema();
 
         $this->assertSqlCount(1, 'ALTER TABLE event_outbox ADD COLUMN attempts INT NOT NULL DEFAULT 0');
         $this->assertSqlCount(1, 'ALTER TABLE event_outbox ADD COLUMN next_attempt_at DATETIME NULL');
+        $this->assertSqlCount(1, 'ALTER TABLE event_outbox ADD COLUMN claim_token VARCHAR(64) NULL');
         $this->assertSqlCount(1, 'UPDATE event_outbox SET next_attempt_at = NOW() WHERE next_attempt_at IS NULL');
+        $this->assertSqlCount(1, 'ALTER TABLE event_outbox ADD INDEX idx_event_outbox_claim (status, next_attempt_at, attempts, id)');
 
         // Orden: el backfill va DESPUES de ambos ALTERs.
         $iAlter = array_search('ALTER TABLE event_outbox ADD COLUMN attempts INT NOT NULL DEFAULT 0 AFTER status', $this->sqls, true);
@@ -81,7 +92,8 @@ final class ProcessOutboxSchemaTest extends TestCase {
     public function testExistingColumnsSkipAlterButKeepBackfill(): void {
         // Boot idempotente: columnas presentes -> sin ALTER, backfill corre
         // igual (cubriria cualquier NULL residual).
-        $this->columnCounts = ['attempts' => 1, 'next_attempt_at' => 1];
+        $this->columnCounts = ['attempts' => 1, 'next_attempt_at' => 1, 'claim_token' => 1];
+        $this->claimIndexCount = 1;
         $action = $this->buildAction();
 
         $action->ensureOutboxSchema();

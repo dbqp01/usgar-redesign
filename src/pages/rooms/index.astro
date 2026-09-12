@@ -64,11 +64,17 @@ const lcpPreloadSrc = galleryRooms[0]?.image
 
   <!-- Filter & Editorial Grid -->
   <section class="pb-24 px-4 max-w-[1400px] mx-auto">
-    <div class="mb-12 flex flex-wrap justify-center gap-2.5 max-w-2xl mx-auto px-4">
+    <div
+      class="rooms-filters mb-8 -mx-4 flex max-w-2xl snap-x snap-mandatory flex-nowrap justify-start gap-2.5 overflow-x-auto px-4 pb-1 sm:mx-auto sm:mb-12 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-4"
+      role="group"
+      aria-label={lang === 'es' ? 'Filtrar habitaciones por capacidad' : 'Filter rooms by capacity'}
+    >
       {
         capacities.map((cap) => (
           <button
-            class="px-5 py-2 rounded-full text-sm font-medium transition-[border-color,color,transform,box-shadow] duration-300 cursor-pointer whitespace-nowrap select-none bg-surface-card-light dark:bg-surface-card-dark border border-stone-200 dark:border-stone-800 text-text-secondary-light dark:text-text-secondary-dark hover:border-primary/50 dark:hover:border-primary/50 hover:text-primary lg:hover:scale-[1.02] shadow-sm"
+            type="button"
+            aria-pressed={cap === 'all' ? 'true' : 'false'}
+            class="snap-start shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-[border-color,color,transform,box-shadow] duration-300 cursor-pointer whitespace-nowrap select-none bg-surface-card-light dark:bg-surface-card-dark border border-stone-200 dark:border-stone-800 text-text-secondary-light dark:text-text-secondary-dark hover:border-primary/50 dark:hover:border-primary/50 hover:text-primary lg:hover:scale-[1.02] shadow-sm sm:px-5"
             data-capacity-filter={cap}
           >
             {filterLabels[cap][lang]}
@@ -114,7 +120,7 @@ const lcpPreloadSrc = galleryRooms[0]?.image
                   <span>{room.amenityLabels[room.amenities[0]]?.[lang] || room.beds}</span>
                 </div>
                 <a
-                  href={getRelativeLocaleUrl(lang, `book?roomType=${room.slug}`)}
+                  href={getRelativeLocaleUrl(lang, 'book') + '?roomType=' + encodeURIComponent(room.slug)}
                   data-astro-prefetch="tap"
                   class="mt-6 inline-flex items-center gap-3 rounded-xl px-6 py-3 text-xs font-semibold uppercase tracking-wider btn-primary"
                 >
@@ -209,6 +215,10 @@ const lcpPreloadSrc = galleryRooms[0]?.image
           matches = guests === 3;
         } else if (activeFilter === "4") {
           matches = guests >= 4;
+        } else if (activeFilter === "7") {
+          // The family room has eight beds but a seven-guest base occupancy;
+          // the 7+ filter must keep it discoverable.
+          matches = guests >= 7;
         }
 
         if (matches) {
@@ -236,6 +246,7 @@ const lcpPreloadSrc = galleryRooms[0]?.image
         activeFilter = cap;
 
         filterButtons.forEach((b) => {
+          b.setAttribute("aria-pressed", String(b === btn));
           if (b === btn) {
             b.classList.add("border-primary", "text-primary", "bg-primary/5");
             b.classList.remove(

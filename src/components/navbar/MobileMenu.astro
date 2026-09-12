@@ -26,6 +26,8 @@ const t = useTranslations(lang);
   role="dialog"
   aria-modal="true"
   aria-hidden="true"
+  hidden
+  inert
   aria-labelledby="mobile-menu-title"
 >
   <!-- Backdrop -->
@@ -59,6 +61,7 @@ const t = useTranslations(lang);
           <a
             href={link.href}
             data-astro-prefetch="hover"
+            aria-current={link.href === Astro.url.pathname ? 'page' : undefined}
             class="mobile-nav-link text-base font-semibold py-3.5 px-4 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors duration-200 flex items-center min-h-[48px]"
           >
             {link.label}

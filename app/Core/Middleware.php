@@ -45,27 +45,69 @@ class Middleware {
         return static function (Request $request): void {
             $allowedOrigins = Config::getAllowedOrigins();
             $origin = $request->getHeader('origin') ?? '';
-
-            // Determinar Access-Control-Allow-Origin
-            $allowOrigin = '*';
-            if ($allowedOrigins !== ['*'] && $origin !== '') {
-                $host = parse_url($origin, PHP_URL_HOST);
-                $isLocal = in_array($host, ['localhost', '127.0.0.1'], true);
-                if (!in_array($origin, $allowedOrigins, true) && !$isLocal) {
-                    throw HttpException::forbidden('Origin not allowed.');
-                }
-                $allowOrigin = $origin;
+            // Some form submissions omit Origin but still send Referer.
+            // Validate its origin against the same authoritative allowlist.
+            if ($origin === '' && in_array($request->getMethod(), ['POST', 'PUT', 'PATCH', 'DELETE'], true)) {
+                $origin = self::originFromReferer($request->getHeader('referer') ?? '');
             }
 
-            header("Access-Control-Allow-Origin: {$allowOrigin}");
-            header('Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE, PUT');
-            header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, x-signature, x-request-id');
-
-            if ($allowOrigin !== '*') {
+            // An explicit allowlist is authoritative. A request without an
+            // Origin header is same-origin/non-CORS, so omit ACAO entirely;
+            // never fall back to '*' after production has configured origins.
+            $allowOrigin = self::resolveCorsOrigin($allowedOrigins, $origin);
+            $hasExplicitAllowlist = $allowedOrigins !== ['*'];
+            if ($hasExplicitAllowlist) {
                 header('Vary: Origin');
+            }
+
+            if ($allowOrigin !== null) {
+                header("Access-Control-Allow-Origin: {$allowOrigin}");
+            }
+            header('Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE');
+            header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-CSRF-Token, x-signature, x-request-id');
+
+            if ($allowOrigin !== null && $allowOrigin !== '*') {
                 header('Access-Control-Allow-Credentials: true');
             }
         };
+    }
+
+    /**
+     * Resolves the CORS response origin without touching HTTP state.
+     *
+     * @param list<string> $allowedOrigins
+     * @return string|null '*' for the development wildcard, the requested
+     * origin for an allowlist hit, or null for same-origin/non-CORS requests.
+     * @throws HttpException when an explicit allowlist rejects the origin.
+     */
+    public static function resolveCorsOrigin(array $allowedOrigins, string $origin): ?string {
+        if ($allowedOrigins === ['*']) {
+            return '*';
+        }
+        if ($origin === '') {
+            return null;
+        }
+        if (!in_array($origin, $allowedOrigins, true)) {
+            throw HttpException::forbidden('Origin not allowed.');
+        }
+        return $origin;
+    }
+
+    /** Return the scheme/host/port origin represented by a Referer URL. */
+    private static function originFromReferer(string $referer): string {
+        if ($referer === '') {
+            return '';
+        }
+        $parts = parse_url($referer);
+        if (!is_array($parts) || !isset($parts['scheme'], $parts['host'])
+            || !in_array(strtolower((string)$parts['scheme']), ['http', 'https'], true)) {
+            return '';
+        }
+        $origin = strtolower((string)$parts['scheme']) . '://' . strtolower((string)$parts['host']);
+        if (isset($parts['port'])) {
+            $origin .= ':' . (int)$parts['port'];
+        }
+        return $origin;
     }
 
     /**
@@ -85,11 +127,25 @@ class Middleware {
         $maxRequests = $maxRequests ?? (int)(Config::get('RATE_LIMIT_MAX_REQUESTS', '60') ?? '60');
         $windowSeconds = $windowSeconds ?? (int)(Config::get('RATE_LIMIT_WINDOW_SECONDS', '600') ?? '600');
         return static function (Request $request) use ($maxRequests, $windowSeconds): void {
+            // CORS preflight must remain side-effect free; it does not represent
+            // an application request and must not consume the global budget.
+            if ($request->getMethod() === 'OPTIONS') {
+                return;
+            }
             if (in_array($request->getPath(), self::EXEMPT_RATE_LIMIT_PATHS, true)) {
                 return;
             }
             $ip = $request->getIp();
-            if (!RateLimiter::check($ip, $maxRequests, $windowSeconds)) {
+            try {
+                $allowed = RateLimiter::check($ip, $maxRequests, $windowSeconds);
+            } catch (RateLimitStorageException $e) {
+                // Authentication-specific limiters call RateLimiter::check()
+                // directly and therefore fail closed. The global limiter also
+                // covers static/public traffic; keep those endpoints available
+                // when local file storage is temporarily unavailable.
+                return;
+            }
+            if (!$allowed) {
                 throw HttpException::tooManyRequests(
                     'Demasiadas peticiones. Intenta de nuevo en unos minutos.'
                 );

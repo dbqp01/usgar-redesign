@@ -73,7 +73,9 @@
     "photoGallery": "Galerie de photos",
     "closeGallery": "Fermer la galerie de photos",
     "prevSlide": "Photo précédente",
-    "nextSlide": "Photo suivante"
+    "nextSlide": "Photo suivante",
+    "playPause": "Lire ou mettre en pause",
+    "viewPhoto": "Voir la photo {n}"
   },
   "services": {
     "sectionLabel": "Nos Services",
@@ -82,7 +84,10 @@
   "reviews": {
     "sectionLabel": "Avis des Clients",
     "title": "Ce que disent nos clients",
-    "description": "Decouvrez les temoignages des voyageurs qui ont sejourne a USGAR Hôtels"
+   "description": "Decouvrez les temoignages des voyageurs qui ont sejourne a USGAR Hôtels"
+    ,"viewBooking": "Voir les avis sur Booking.com (nouvel onglet)"
+    ,"viewKayak": "Voir les avis sur KAYAK (nouvel onglet)"
+    ,"viewExpedia": "Voir les avis sur Expedia (nouvel onglet)"
   },
   "explore": {
     "sectionLabel": "A Proximité",
@@ -90,6 +95,7 @@
     "description": "Decouvrez les merveilles qui vous attendent juste au pas de votre porte",
     "viewAll": "Voir toutes les attractions",
     "searchPlaceholder": "Rechercher une attraction...",
+    "searchLabel": "Rechercher des attractions",
     "viewGuide": "Voir le Guide",
     "popularDestinations": "Destinations Populaires",
     "noResults": "Aucune attraction trouvée",
@@ -201,7 +207,9 @@
     "heroImageCaption": "La cour, San Pedro",
     "checkinHours": "Check-in à partir de 11 h 00"
   },
-  "gallery": {
+ "gallery": {
+    "viewPhoto": "Voir la photo {n}",
+    "openVideo": "Ouvrir la visite vidéo de {name}",
     "title": "Galerie Photos",
     "subtitle": "Decouvrez la beaute et les détails de USGAR Hôtels a San Pedro, Cusco",
     "filterAll": "Toutes les Photos",
@@ -357,12 +365,15 @@
     "statusCompleted": "Terminee",
     "loginError": "E-mail ou mot de passe incorrect.",
     "emailExists": "Un compte existe déjà avec cette adresse e-mail.",
-    "statusPaid": "Payé"
+    "statusPaid": "Payé",
+    "loading": "Chargement de votre profil et de vos réservations…",
+    "userMenu": "Menu utilisateur"
   },
   "global": {
     "close": "Fermer",
     "previous": "Précédent",
     "next": "Suivant",
+    "legal": "Mentions légales",
     "skipToContent": "Aller au contenu principal",
     "contactWhatsApp": "Contacter par WhatsApp",
     "assistance247": "Assistance 24/7",
@@ -394,6 +405,7 @@
     "step3Label": "Paiement",
     "step3Sub": "Paiement Sécurisé",
     "stepOf": "Étape {n} sur 3",
+    "progressLabel": "Progression de la réservation",
     "calendarTitle": "Choisissez vos dates",
     "searchAvailability": "Vérifier la disponibilité",
     "guestsLabel": "Voyageurs",
@@ -500,12 +512,20 @@
     "ready": "Système prêt",
     "close": "Fermer la notification"
   },
-  "profile": {
-    "personalDetails": "Détails personnels",
+ "profile": {
+    "pageTitle": "Profil",
+   "personalDetails": "Détails personnels",
     "personalInformation": "Informations personnelles",
     "accountProvider": "Fournisseur du compte",
     "sanctuaryPerk": "Avantage Sanctuary",
-    "totalPaid": "Total payé"
+    "totalPaid": "Total payé",
+    "readOnly": "Lecture seule",
+    "savingChanges": "Enregistrement des modifications…",
+    "saveProfileChanges": "Enregistrer les modifications",
+    "profileUpdated": "Profil mis à jour avec succès.",
+    "profileUpdateFailed": "Impossible de mettre à jour le profil.",
+    "profileConnectionError": "Erreur de connexion lors de la mise à jour du profil.",
+    "phoneWhatsApp": "Téléphone / WhatsApp"
   },
   "legal": {
     "eyebrow": "Juridique",

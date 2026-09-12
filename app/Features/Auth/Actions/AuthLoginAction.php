@@ -9,6 +9,7 @@ use App\Core\Config;
 use App\Core\HttpException;
 use App\Core\Logger;
 use App\Features\Auth\AuthService;
+use App\Features\Auth\AuthRedirect;
 use Throwable;
 
 /**
@@ -21,7 +22,7 @@ class AuthLoginAction {
         Request::startSession($isSecure);
 
         $provider = $request->getQuery('provider', 'Google');
-        $redirect = $request->getQuery('redirect', '/profile');
+        $redirect = AuthRedirect::safePath($request->getQuery('redirect', '/profile'), '/profile');
 
         $_SESSION['usgar_oauth_provider'] = $provider;
 
@@ -59,7 +60,8 @@ class AuthLoginAction {
 
         } catch (Throwable $e) {
             Logger::error("OAuth login failed for provider {$provider}: " . $e->getMessage());
-            Response::error("Error al iniciar sesión con {$provider}: " . $e->getMessage(), 500);
+            // Keep SDK/configuration details in server logs; OAuth endpoints are public.
+            Response::error('No se pudo iniciar sesión. Intenta de nuevo.', 500);
         }
     }
 }

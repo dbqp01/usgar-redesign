@@ -22,6 +22,11 @@ export function initGastronomyShowroom(container: HTMLElement): () => void {
           immediateRender: false,
         });
       });
+      rows.forEach((row, i) => {
+        const active = i === index;
+        row.dataset.active = String(active);
+        row.setAttribute('aria-expanded', String(active));
+      });
     };
 
     rows.forEach((row, i) => {

@@ -1,11 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { useTranslations, type Locale } from "../i18n/utils";
+import { getRelativeLocaleUrl } from "astro:i18n";
 
 export const prerender = true;
 
 const lang = (Astro.currentLocale || "en") as Locale;
 const t = useTranslations(lang);
+const loginUrl = getRelativeLocaleUrl(lang, 'login');
+const bookUrl = getRelativeLocaleUrl(lang, 'book');
+const homeUrl = getRelativeLocaleUrl(lang, '');
 
 const statusLabels = JSON.stringify({
   confirmed: t('auth.statusConfirmed'),
@@ -60,7 +64,7 @@ const statusLabels = JSON.stringify({
       </svg>
       <p class="text-base font-semibold">{t('auth.loginRequired')}</p>
       <a
-        href={`/login?redirect=${encodeURIComponent(Astro.url.pathname)}`}
+        href={`${loginUrl}?redirect=${encodeURIComponent(Astro.url.pathname)}`}
         class="inline-block bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-full text-sm transition-[background-color,color]"
       >
         {t('auth.signIn')}
@@ -74,7 +78,7 @@ const statusLabels = JSON.stringify({
       </svg>
       <p class="text-base font-semibold">{t('auth.noBookingsYet')}</p>
       <a
-        href="/book"
+        href={bookUrl}
         class="inline-block bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-full text-sm transition-[background-color,color] shadow-md"
       >
         {t('auth.startBooking')}
@@ -94,7 +98,7 @@ const statusLabels = JSON.stringify({
     (window as any).__usgarFormatPrice = formatPrice;
   </script>
 
-  <script is:inline define:vars={{ statusLabels }}>
+  <script is:inline define:vars={{ statusLabels, homeUrl }}>
     (function() {
       const STATUS_LABELS = JSON.parse(statusLabels);
       // Escapa valores interpolados en templates HTML (XSS). La API responde
@@ -129,12 +133,19 @@ const statusLabels = JSON.stringify({
             logoutBtn.classList.remove('hidden');
             logoutBtn.addEventListener('click', async () => {
               sessionStorage.removeItem('usgar_auth_user');
+              const csrfMatch = document.cookie.match(/(?:^|; )usgar_csrf=([^;]+)/);
               try {
-                await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+                await fetch('/api/auth/logout', {
+                  method: 'POST',
+                  credentials: 'include',
+                  headers: {
+                    'X-CSRF-Token': csrfMatch ? decodeURIComponent(csrfMatch[1]) : '',
+                  },
+                });
               } catch (e) {
                 console.warn('[Logout Warning]', e);
               }
-              window.location.href = '/';
+              window.location.href = homeUrl;
             });
           }
 
@@ -201,14 +212,14 @@ const statusLabels = JSON.stringify({
         }
       }
 
-      // Evitar ejecucion doble por astro:page-load
-      if (window.__myBookingsInitialized) return;
-      window.__myBookingsInitialized = true;
-      initMyBookings();
-      document.addEventListener('astro:page-load', () => {
-        window.__myBookingsInitialized = false;
+      const run = () => {
+        const loadingEl = document.getElementById('bookings-loading');
+        if (!loadingEl || loadingEl.dataset.myBookingsInit) return;
+        loadingEl.dataset.myBookingsInit = 'true';
         initMyBookings();
-      });
+      };
+      document.addEventListener('astro:page-load', run);
+      run();
     })();
   </script>
 </Layout>

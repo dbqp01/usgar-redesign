@@ -21,16 +21,16 @@ const termsUrl = getRelativeLocaleUrl(lang, "terms");
 
 <div
   id="cookie-consent"
-  class="fixed inset-x-0 bottom-0 z-[1200] hidden px-4 pb-4"
+  class="fixed inset-x-0 bottom-0 z-[1200] hidden px-2 pb-2 sm:px-4 sm:pb-4"
   role="region"
   aria-label={t("cookie.title")}
 >
-  <div class="mx-auto flex max-w-3xl flex-col gap-4 rounded-2xl border border-black/10 bg-white/95 p-5 shadow-2xl dark:border-white/10 dark:bg-surface-card-dark/95 sm:flex-row sm:items-center">
+  <div class="mx-auto flex max-w-3xl flex-col gap-2 rounded-xl border border-black/10 bg-white/95 p-3 shadow-2xl dark:border-white/10 dark:bg-surface-card-dark/95 sm:gap-4 sm:rounded-2xl sm:p-5 sm:flex-row sm:items-center">
     <div class="flex-1">
-      <p class="font-display text-sm uppercase tracking-wider text-text-primary-light dark:text-white">
+      <p class="font-display text-xs uppercase tracking-wider text-text-primary-light dark:text-white sm:text-sm">
         {t("cookie.title")}
       </p>
-      <p class="mt-1 text-xs leading-relaxed text-text-secondary-light dark:text-text-secondary-dark">
+      <p class="text-[11px] leading-snug text-text-secondary-light dark:text-text-secondary-dark sm:mt-1 sm:text-xs sm:leading-relaxed">
         {t("cookie.text")}{" "}
         <a href={privacyUrl} class="underline decoration-secondary underline-offset-2 hover:text-secondary transition-colors">
           {t("footer.privacy")}
@@ -41,18 +41,18 @@ const termsUrl = getRelativeLocaleUrl(lang, "terms");
         </a>
       </p>
     </div>
-    <div class="flex flex-shrink-0 gap-2">
+    <div class="flex flex-shrink-0 justify-end gap-2">
       <button
         type="button"
         data-cookie-choice="declined"
-        class="rounded-full border border-black/10 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-text-secondary-light transition-colors hover:border-secondary hover:text-secondary dark:border-white/15 dark:text-text-secondary-dark"
+        class="rounded-full border border-black/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-text-secondary-light transition-colors hover:border-secondary hover:text-secondary dark:border-white/15 dark:text-text-secondary-dark sm:px-5 sm:py-2 sm:text-xs"
       >
         {t("cookie.decline")}
       </button>
       <button
         type="button"
         data-cookie-choice="accepted"
-        class="btn-primary rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-wider"
+        class="btn-primary rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider sm:px-5 sm:py-2 sm:text-xs"
       >
         {t("cookie.accept")}
       </button>
@@ -99,11 +99,12 @@ const termsUrl = getRelativeLocaleUrl(lang, "terms");
     const banner = document.getElementById("cookie-consent") as HTMLElement | null;
     if (!banner) return;
 
-    // En la home la barra de reserva ocupa el borde inferior del hero: el banner
-    // flota por ENCIMA (lg: sobre el widget; <lg: sobre la barra móvil) para no
-    // tapar el CTA de búsqueda. En el resto de páginas queda anclado abajo.
-    if (/^\/(es|fr|pt)?\/?$/.test(location.pathname)) {
-      banner.style.bottom = window.innerWidth >= 1024 ? "9rem" : "5rem";
+    // Keep the consent banner clear of the fixed booking controls.
+    const mobileBookingBar = document.querySelector('[data-mobile-booking-bar]:not(.hidden)');
+    if (window.innerWidth < 1024 && mobileBookingBar) {
+      banner.style.bottom = "4.5rem";
+    } else if (/^\/(es|fr|pt)?\/?$/.test(location.pathname)) {
+      banner.style.bottom = "9rem";
     }
 
     // Estado ya decidido (esta página o una anterior): oculto, sin eventos.

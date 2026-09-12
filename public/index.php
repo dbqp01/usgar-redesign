@@ -1,6 +1,13 @@
 <?php
 declare(strict_types=1);
 
+// Hide the PHP runtime fingerprint for local PHP servers and any SAPI where
+// Apache/LiteSpeed cannot apply public/.htaccess (production also unsets this
+// header there for static Astro responses).
+if (function_exists('header_remove')) {
+    header_remove('X-Powered-By');
+}
+
 // Permitir ejecucion en segundo plano para webhooks lentos
 if (PHP_SAPI !== 'cli') {
     ob_start();
@@ -15,8 +22,14 @@ if (file_exists($bootstrapFile)) {
     require_once __DIR__ . '/app/bootstrap.php';
 } else {
     http_response_code(500);
-    header('Content-Type: application/json');
-    echo json_encode(['error' => 'Backend app/ folder not found. Please upload app/ directory.']);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+        'success' => false,
+        'error' => [
+            'code' => 'INTERNAL_ERROR',
+            'message' => 'Backend app/ folder not found.',
+        ],
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 }
 
@@ -63,7 +76,21 @@ use App\Features\Reviews\Actions\RefreshReviewScoresAction;
 if (PHP_SAPI === 'cli') {
     global $argv;
     $_SERVER['REQUEST_METHOD'] = 'POST';
-    $_SERVER['REQUEST_URI'] = $argv[1] ?? '/api/cron/cleanup';
+    $cliRequestUri = $argv[1] ?? '/api/cron/cleanup';
+    if (!is_string($cliRequestUri) || trim($cliRequestUri) === '') {
+        $cliRequestUri = '/api/cron/cleanup';
+    }
+    $_SERVER['REQUEST_URI'] = $cliRequestUri;
+
+    // Keep CLI dispatch equivalent to HTTP: Request also parses REQUEST_URI,
+    // but populating $_GET here supports any legacy code that reads it directly.
+    $cliQuery = parse_url($cliRequestUri, PHP_URL_QUERY);
+    if (is_string($cliQuery) && $cliQuery !== '') {
+        parse_str($cliQuery, $cliQueryParams);
+        $_GET = is_array($cliQueryParams) ? $cliQueryParams : [];
+    } else {
+        $_GET = [];
+    }
 }
 
 // 3. Instanciar Request y Router
@@ -107,7 +134,6 @@ $router->post('/api/auth/register',    AuthRegisterAction::class);
 $router->post('/api/auth/login-email', AuthLoginEmailAction::class);
 $router->get('/api/auth/me',           AuthMeAction::class);
 $router->post('/api/auth/logout',      AuthLogoutAction::class);
-$router->get('/api/auth/logout',       AuthLogoutAction::class);
 $router->get('/api/user/bookings',     GetUserBookingsAction::class);
 $router->post('/api/user/profile',     UpdateUserProfileAction::class);
 $router->post('/api/newsletter',       SubscribeNewsletterAction::class);

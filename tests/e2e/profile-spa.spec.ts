@@ -51,6 +51,17 @@ test.describe('USGAR profile single-init', () => {
   });
 
   async function mockAuthenticated(page: import('@playwright/test').Page) {
+    // The profile SPA test uses Astro preview without the PHP API process.
+    // Home's review ribbon treats an empty score payload as its normal build
+    // fallback; stub it here so a missing backend does not become a browser
+    // 502 console error unrelated to the single-init contract.
+    await page.route('**/api/reviews-score', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, scores: {} }),
+      })
+    );
     await page.route('**/api/auth/me', (route) =>
       route.fulfill({
         status: 200,
@@ -84,8 +95,8 @@ test.describe('USGAR profile single-init', () => {
 
     const { me, bookings } = count();
     expect(bookings).toBe(1); // profile init marker: exactly once
-    // me: profile init (1) + Navbar auth check (1, cache cold on first entry)
-    expect(me).toBe(2);
+    // Navbar and profile share the auth-client single-flight/cache request.
+    expect(me).toBe(1);
     expect(consoleErrors).toEqual([]);
   });
 
@@ -98,21 +109,21 @@ test.describe('USGAR profile single-init', () => {
     await page.waitForURL(/\/profile\/?$/);
     await expect(page.locator('#profile-user-name')).toHaveText('QA Guest', { timeout: 15000 });
     await expect(page.locator('#profile-empty-bookings')).toBeVisible({ timeout: 15000 });
-    expect(count()).toEqual({ me: 2, bookings: 1 }); // navbar cache cold
+    expect(count()).toEqual({ me: 1, bookings: 1 }); // shared auth request
 
     // SPA away to home: no new profile fetches (navbar cache now warm)
     await page.locator('a[aria-label="USGAR Hotels Home"]').first().click();
     await page.waitForURL((url) => url.pathname === '/');
-    expect(count()).toEqual({ me: 2, bookings: 1 });
+    expect(count()).toEqual({ me: 1, bookings: 1 });
 
     // Entry 2: SPA back to profile (history traversal, router fires page-load)
     await page.evaluate(() => history.back());
     await page.waitForURL(/\/profile\/?$/);
     await expect(page.locator('#profile-user-name')).toHaveText('QA Guest', { timeout: 15000 });
     await expect(page.locator('#profile-empty-bookings')).toBeVisible({ timeout: 15000 });
-    // bookings: exactly one per entry → 2 total. me: +1 profile init only
-    // (navbar cache warm) → 3 total.
-    expect(count()).toEqual({ me: 3, bookings: 2 });
+    // bookings: exactly one per entry → 2 total. Auth is cached after the
+    // first shared request, so it remains at one network call.
+    expect(count()).toEqual({ me: 1, bookings: 2 });
 
     // Entry 3: SPA away and back again — listeners must not accumulate
     await page.locator('a[aria-label="USGAR Hotels Home"]').first().click();
@@ -121,7 +132,7 @@ test.describe('USGAR profile single-init', () => {
     await page.waitForURL(/\/profile\/?$/);
     await expect(page.locator('#profile-user-name')).toHaveText('QA Guest', { timeout: 15000 });
     await expect(page.locator('#profile-empty-bookings')).toBeVisible({ timeout: 15000 });
-    expect(count()).toEqual({ me: 4, bookings: 3 });
+    expect(count()).toEqual({ me: 1, bookings: 3 });
 
     expect(consoleErrors).toEqual([]);
   });
@@ -135,9 +146,9 @@ test.describe('USGAR profile single-init', () => {
     await expect(page.locator('#profile-unauth')).toBeVisible({ timeout: 15000 });
 
     const { me, bookings } = count();
-    // profile init (1) + navbar auth check (1) → both fail → unauth state;
-    // bookings fetch only fires when authenticated → 0.
-    expect(me).toBe(2);
+    // Profile and navbar share one failed auth request; bookings only fires
+    // after authentication succeeds.
+    expect(me).toBe(1);
     expect(bookings).toBe(0);
   });
 });

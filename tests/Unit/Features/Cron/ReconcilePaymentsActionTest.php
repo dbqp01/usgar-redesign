@@ -31,6 +31,9 @@ final class ReconcilePaymentsActionTest extends TestCase {
 
         $this->paymentGateway = $this->createMock(PaymentGatewayPortInterface::class);
         $this->bookingRepo = $this->createMock(ProvisionalBookingRepository::class);
+        $this->bookingRepo->method('updateStatus')->willReturn(true);
+        $this->bookingRepo->method('markPaymentProcessed')->willReturn(true);
+        $this->bookingRepo->method('recordAlert')->willReturn(true);
         $this->eventDispatcher = $this->createMock(EventDispatcher::class);
 
         $this->action = new ReconcilePaymentsAction(
@@ -103,6 +106,57 @@ final class ReconcilePaymentsActionTest extends TestCase {
         $this->assertSame(0, $result['reconciled']);
     }
 
+    public function testApprovedUnderpaymentMarksFraudReviewAndAlert(): void {
+        $this->bookingRepo->method('getPendingHoldsWithPaymentId')->willReturn([$this->hold()]);
+        $this->bookingRepo->method('isPaymentProcessed')->willReturn(false);
+        $this->paymentGateway->method('getPaymentDetails')->willReturn([
+            'id' => 777888999,
+            'status' => 'approved',
+            'external_reference' => 'CART-REC-1',
+            'transaction_amount' => 100.0,
+        ]);
+
+        $this->bookingRepo->expects($this->once())->method('updateStatus')
+            ->with('CART-REC-1', 'fraud_review');
+        $this->bookingRepo->expects($this->once())->method('markPaymentProcessed')
+            ->with('777888999', 'CART-REC-1', 'fraud_review');
+        $this->bookingRepo->expects($this->once())->method('recordAlert')
+            ->with('CART-REC-1', '777888999', 'fraud_review');
+        $this->eventDispatcher->expects($this->never())->method('dispatch');
+
+        $result = ($this->action)();
+
+        $this->assertSame(1, $result['checked']);
+        $this->assertSame(1, $result['reconciled']);
+        $this->assertSame(0, $result['skipped']);
+    }
+
+    public function testExpiredApprovedUnderpaymentStillMarksExpiredPaid(): void {
+        $this->bookingRepo->method('getPendingHoldsWithPaymentId')->willReturn([
+            $this->hold(['status' => 'expired']),
+        ]);
+        $this->bookingRepo->method('isPaymentProcessed')->willReturn(false);
+        $this->paymentGateway->method('getPaymentDetails')->willReturn([
+            'id' => 777888999,
+            'status' => 'approved',
+            'external_reference' => 'CART-REC-1',
+            'transaction_amount' => 100.0,
+        ]);
+
+        $this->bookingRepo->expects($this->once())->method('updateStatus')
+            ->with('CART-REC-1', 'expired_paid');
+        $this->bookingRepo->expects($this->once())->method('markPaymentProcessed')
+            ->with('777888999', 'CART-REC-1', 'approved');
+        $this->bookingRepo->expects($this->once())->method('recordAlert')
+            ->with('CART-REC-1', '777888999', 'expired_paid');
+        $this->eventDispatcher->expects($this->never())->method('dispatch');
+
+        $result = ($this->action)();
+
+        $this->assertSame(1, $result['checked']);
+        $this->assertSame(1, $result['reconciled']);
+    }
+
     public function testRejectedPaymentInMpMarksHoldFailed(): void {
         // Fix 2026-08-13 (clase rechazo): webhook nunca llegado + pago
         // rejected en MP -> pending -> failed (antes: skip sin transicion y
@@ -127,9 +181,34 @@ final class ReconcilePaymentsActionTest extends TestCase {
         $this->assertSame(1, $result['reconciled']);
     }
 
+    public function testCancelledPaymentInMpMarksHoldFailedAndRecordsAlert(): void {
+        $this->bookingRepo->method('getPendingHoldsWithPaymentId')->willReturn([$this->hold()]);
+        $this->bookingRepo->method('isPaymentProcessed')->willReturn(false);
+        $this->paymentGateway->method('getPaymentDetails')->willReturn([
+            'id' => 777888999,
+            'status' => 'cancelled',
+            'external_reference' => 'CART-REC-1',
+            'transaction_amount' => 285.0,
+        ]);
+
+        $this->bookingRepo->expects($this->once())->method('updateStatus')->with('CART-REC-1', 'failed');
+        $this->bookingRepo->expects($this->once())->method('markPaymentProcessed')
+            ->with('777888999', 'CART-REC-1', 'rejected');
+        $this->bookingRepo->expects($this->once())->method('recordAlert')
+            ->with('CART-REC-1', '777888999', 'cancelled');
+        $this->eventDispatcher->expects($this->never())->method('dispatch');
+
+        $result = ($this->action)();
+
+        $this->assertSame(1, $result['checked']);
+        $this->assertSame(1, $result['reconciled']);
+    }
+
     public function testAlreadyProcessedPaymentIsSkipped(): void {
         $this->bookingRepo->method('getPendingHoldsWithPaymentId')->willReturn([$this->hold()]);
         $this->bookingRepo->method('isPaymentProcessed')->willReturn(true);
+        $this->bookingRepo->expects($this->once())->method('releaseReconcileClaim')
+            ->with('CART-REC-1', '');
         $this->paymentGateway->expects($this->never())->method('getPaymentDetails');
 
         $result = ($this->action)();

@@ -82,6 +82,9 @@ final class GetPaymentCheckActionTest extends TestCase {
     }
 
     public function testMissingCartIdReturns400(): void {
+        // Request captura $_GET al construirse; aislar el global evita que un
+        // test anterior contamine este caso cuando PHPUnit reordena pruebas.
+        $_GET = [];
         $response = $this->captureResponse(fn () => ($this->action)(new Request('GET', '/api/payment-check', [], [])));
         $this->assertSame(400, $response['code']);
     }

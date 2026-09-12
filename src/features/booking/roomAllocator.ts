@@ -27,6 +27,11 @@ export interface AllocationOption {
   bestPrice: boolean;
 }
 
+export interface RoomRatePlan {
+  standard: number;
+  non_refundable: number;
+}
+
 export interface AllocateInput {
   guests: number;
   nights: number;
@@ -106,4 +111,23 @@ export function allocateRooms(input: AllocateInput): AllocationOption[] {
   options.sort((x, y) => x.total - y.total);
   if (options.length > 0) options[0].bestPrice = true;
   return options;
+}
+
+/**
+ * Calculates the non-refundable total using each room type's backend rate plan.
+ * Extra guest charges remain at the standard price, matching CreateBookingAction.
+ */
+export function nonRefundableTotal(
+  option: AllocationOption,
+  ratePlans: Record<string, RoomRatePlan> | null | undefined,
+): number {
+  let baseTotal = 0;
+  for (const entry of option.rooms) {
+    const plan = ratePlans?.[entry.room.slug];
+    const standard = Number(plan?.standard);
+    const discounted = Number(plan?.non_refundable);
+    const basePerNight = standard > 0 && discounted >= 0 ? discounted : entry.room.pricePerNight;
+    baseTotal += basePerNight * option.nights;
+  }
+  return Math.round(baseTotal + option.extrasTotal);
 }

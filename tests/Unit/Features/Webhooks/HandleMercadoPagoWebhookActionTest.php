@@ -46,6 +46,13 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
 
         $this->paymentGateway = $this->createMock(PaymentGatewayPortInterface::class);
         $this->bookingRepo = $this->createMock(ProvisionalBookingRepository::class);
+        // Persistencia exitosa por defecto: los casos que prueban fallo
+        // deben configurar explicitamente false/throws para mantener el
+        // contrato fail-closed del webhook.
+        $this->bookingRepo->method('updateStatus')->willReturn(true);
+        $this->bookingRepo->method('attachPaymentId')->willReturn(true);
+        $this->bookingRepo->method('markPaymentProcessed')->willReturn(true);
+        $this->bookingRepo->method('recordAlert')->willReturn(true);
         $this->eventDispatcher = $this->createMock(EventDispatcher::class);
 
         $this->action = new HandleMercadoPagoWebhookAction(
@@ -152,6 +159,38 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
         $this->assertStringContainsString('No payment ID found', $response['body']);
     }
 
+    public function testQueryAndBodyPaymentIdsMustMatch(): void {
+        $this->paymentGateway->expects($this->never())->method('verifySignature');
+        $this->paymentGateway->expects($this->never())->method('getPaymentDetails');
+        $_GET['data_id'] = '222';
+        try {
+            $request = new Request('POST', '/api/webhook', [], [
+                'type' => 'payment',
+                'data' => ['id' => '111'],
+            ]);
+            $response = $this->captureResponse(fn () => ($this->action)($request));
+            $this->assertSame(400, $response['code']);
+            $this->assertStringContainsString('PAYMENT_ID_MISMATCH', $response['body']);
+        } finally {
+            unset($_GET['data_id']);
+        }
+    }
+
+    public function testRemotePaymentIdMustMatchWebhookId(): void {
+        $this->acceptSignature();
+        $this->paymentGateway->method('getPaymentDetails')->willReturn([
+            'id' => 999,
+            'status' => 'approved',
+            'external_reference' => 'USGAR-CART-42',
+            'transaction_amount' => 285.0,
+        ]);
+        $this->pdo->expects($this->never())->method('beginTransaction');
+
+        $response = $this->captureResponse(fn () => ($this->action)($this->signedRequest('555666777')));
+        $this->assertSame(400, $response['code']);
+        $this->assertStringContainsString('PAYMENT_ID_MISMATCH', $response['body']);
+    }
+
     public function testPaymentIdFromQueryDataIdIsUsed(): void {
         // Todo 13: MP envia ?data.id=XXX (PHP lo convierte a data_id); el id
         // del query SI es fuente valida de payment id.
@@ -189,6 +228,7 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
             'transaction_amount' => 285.0,
         ]);
         $this->bookingRepo->method('isPaymentProcessed')->willReturnOnConsecutiveCalls(false, true);
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->hold('CART-42'));
         $this->bookingRepo->expects($this->once())->method('updateStatus')->with('CART-42', 'failed');
         $this->bookingRepo->expects($this->once())->method('markPaymentProcessed')->with('555666777', 'CART-42', 'rejected');
         $this->eventDispatcher->expects($this->never())->method('dispatch');
@@ -213,6 +253,7 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
             'transaction_amount' => 285.0,
         ]);
         $this->bookingRepo->method('isPaymentProcessed')->willReturn(false);
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->hold('CART-42'));
         $this->bookingRepo->expects($this->once())->method('updateStatus')->with('CART-42', 'failed');
         $this->bookingRepo->expects($this->once())->method('markPaymentProcessed')->with('555666777', 'CART-42', 'rejected');
         $this->eventDispatcher->expects($this->never())->method('dispatch');
@@ -240,6 +281,110 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
         $response = $this->captureResponse(fn () => ($this->action)($request));
 
         $this->assertSame(200, $response['code']);
+    }
+
+    public function testRejectedPaymentWithUnknownExternalReferenceIsAckedAndIdempotent(): void {
+        // A stale/deleted hold must not turn a terminal rejection into a 500
+        // retry storm. Persist the rejection with the resolved cart id anyway.
+        $this->acceptSignature();
+        $this->paymentGateway->method('getPaymentDetails')->willReturn([
+            'id' => 555666777,
+            'status' => 'rejected',
+            'external_reference' => 'USGAR-MISSING-CART',
+            'transaction_amount' => 285.0,
+        ]);
+        $this->bookingRepo->method('isPaymentProcessed')->willReturn(false);
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn(null);
+        $this->bookingRepo->expects($this->once())->method('markPaymentProcessed')
+            ->with('555666777', 'MISSING-CART', 'rejected');
+        $this->bookingRepo->expects($this->never())->method('updateStatus');
+
+        $response = $this->captureResponse(fn () => ($this->action)($this->signedRequest('555666777')));
+
+        $this->assertSame(200, $response['code']);
+        $this->assertStringContainsString('acknowledged', $response['body']);
+    }
+
+    public function testCancelledPaymentWithoutExternalReferenceIsAuditedAndAcked(): void {
+        // A terminal cancellation may arrive without external_reference. It
+        // still needs an idempotency row and alert; otherwise every delivery
+        // is treated as new and the cancellation is not auditable.
+        $this->acceptSignature();
+        $this->paymentGateway->method('getPaymentDetails')->willReturn([
+            'id' => 555666777,
+            'status' => 'cancelled',
+            'external_reference' => null,
+            'transaction_amount' => 285.0,
+        ]);
+        $this->bookingRepo->method('isPaymentProcessed')->willReturn(false);
+        $this->bookingRepo->expects($this->once())->method('markPaymentProcessed')
+            ->with('555666777', '', 'rejected');
+        $this->bookingRepo->expects($this->once())->method('recordAlert')
+            ->with('', '555666777', 'cancelled');
+        $this->bookingRepo->expects($this->never())->method('getByCartIdForUpdate');
+        $this->bookingRepo->expects($this->never())->method('updateStatus');
+
+        $response = $this->captureResponse(fn () => ($this->action)($this->signedRequest('555666777')));
+
+        $this->assertSame(200, $response['code']);
+        $this->assertStringContainsString('manual resolution', $response['body']);
+    }
+
+    public function testCancelledPaymentWithUnknownExternalReferenceIsAuditedAndAcked(): void {
+        $this->acceptSignature();
+        $this->paymentGateway->method('getPaymentDetails')->willReturn([
+            'id' => 555666777,
+            'status' => 'cancelled',
+            'external_reference' => 'USGAR-MISSING-CART',
+            'transaction_amount' => 285.0,
+        ]);
+        $this->bookingRepo->method('isPaymentProcessed')->willReturn(false);
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn(null);
+        $this->bookingRepo->expects($this->never())->method('updateStatus');
+        $this->bookingRepo->expects($this->once())->method('markPaymentProcessed')
+            ->with('555666777', 'MISSING-CART', 'rejected');
+        $this->bookingRepo->expects($this->once())->method('recordAlert')
+            ->with('MISSING-CART', '555666777', 'cancelled');
+
+        $response = $this->captureResponse(fn () => ($this->action)($this->signedRequest('555666777')));
+
+        $this->assertSame(200, $response['code']);
+    }
+
+    public function testCancelledPaymentOnExpiredHoldTransitionsToFailed(): void {
+        // RF-22: cancellation is terminal even when the hold expired before
+        // Mercado Pago delivered the notification.
+        $this->acceptSignature();
+        $this->paymentGateway->method('getPaymentDetails')->willReturn([
+            'id' => 555666777,
+            'status' => 'cancelled',
+            'external_reference' => 'USGAR-CART-42',
+            'transaction_amount' => 285.0,
+        ]);
+        $this->bookingRepo->method('isPaymentProcessed')->willReturn(false);
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->hold('CART-42', 'expired'));
+        $this->bookingRepo->expects($this->once())->method('updateStatus')->with('CART-42', 'failed');
+        $this->bookingRepo->expects($this->once())->method('markPaymentProcessed')
+            ->with('555666777', 'CART-42', 'rejected');
+        $this->bookingRepo->expects($this->once())->method('recordAlert')
+            ->with('CART-42', '555666777', 'cancelled');
+
+        $response = $this->captureResponse(fn () => ($this->action)($this->signedRequest('555666777')));
+
+        $this->assertSame(200, $response['code']);
+        $this->assertStringContainsString('cancelled', $response['body']);
+    }
+
+    public function testMissingRequestIdReturns401BeforeSignatureVerification(): void {
+        $this->paymentGateway->expects($this->never())->method('verifySignature');
+        $this->paymentGateway->expects($this->never())->method('getPaymentDetails');
+        $request = new Request('POST', '/api/webhook', [
+            'x-signature' => 'ts=1,v1=irrelevant',
+        ], ['type' => 'payment', 'data' => ['id' => '555666777']]);
+
+        $response = $this->captureResponse(fn () => ($this->action)($request));
+
+        $this->assertSame(401, $response['code']);
     }
 
     // ---------------------------------------------------------------- todo 14
@@ -323,44 +468,38 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
         $this->assertStringContainsString('fraud_review', $r1['body']);
     }
 
-    public function testFraudReviewHoldReachesPaidOnCorrectRedispatch(): void {
-        // Todo 16 (NOTA r2): tras re-despacho con el monto correcto, la
-        // transicion fraud_review -> paid ES legal (guard del todo 9) y debe
-        // ejecutarse — el cron del todo 24 no queda atrapado en fraud_review.
+    public function testApprovedWebhookDoesNotBypassFraudReview(): void {
+        // An approved webhook after fraud_review cannot bypass the explicit
+        // RetryManualReviewAction operator flow.
         $this->acceptSignature();
-        $holdStatus = 'provisional';
-        $this->paymentGateway->method('getPaymentDetails')->willReturnCallback(function (string $pid) use (&$holdStatus): array {
-            // 1a entrega: monto menor (50 vs 285 esperados). 2a entrega
-            // (re-despacho): monto correcto.
-            static $delivery = 0;
-            $delivery++;
-            return [
-                'id' => 555666777,
-                'status' => 'approved',
-                'external_reference' => 'USGAR-CART-42',
-                'transaction_amount' => $delivery === 1 ? 50.0 : 285.0,
-            ];
-        });
-        $this->bookingRepo->method('getByCartIdForUpdate')->willReturnCallback(function () use (&$holdStatus): array {
-            return $this->hold('CART-42', $holdStatus);
-        });
+        $this->paymentGateway->method('getPaymentDetails')->willReturn($this->approvedPayment('USGAR-CART-42', 285.0));
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->hold('CART-42', 'fraud_review'));
         $this->bookingRepo->method('isPaymentProcessed')->willReturn(false);
-        $this->bookingRepo->method('updateStatus')->willReturnCallback(function (string $cartId, string $status) use (&$holdStatus): bool {
-            $holdStatus = $status;
-            return true;
-        });
-        $this->bookingRepo->method('markPaymentProcessed')->willReturn(true);
+        $this->bookingRepo->expects($this->once())->method('markPaymentProcessed')->with('555666777', 'CART-42', 'approved_after_review');
+        $this->bookingRepo->expects($this->once())->method('recordAlert')->with('CART-42', '555666777', 'approved_after_review');
+        $this->bookingRepo->expects($this->never())->method('updateStatus');
+        $this->eventDispatcher->expects($this->never())->method('dispatch');
 
-        $request = $this->signedRequest('555666777');
-        $r1 = $this->captureResponse(fn () => ($this->action)($request));
+        $response = $this->captureResponse(fn () => ($this->action)($this->signedRequest('555666777')));
 
-        $this->assertSame(200, $r1['code']);
-        $this->assertSame('fraud_review', $holdStatus, 'La reserva NO queda paid tras el monto menor.');
+        $this->assertSame(200, $response['code']);
+        $this->assertStringContainsString('manual review', $response['body']);
+    }
 
-        $r2 = $this->captureResponse(fn () => ($this->action)($request));
+    public function testApprovedWebhookDoesNotBypassManualReview(): void {
+        $this->acceptSignature();
+        $this->paymentGateway->method('getPaymentDetails')->willReturn($this->approvedPayment('USGAR-CART-MANUAL', 285.0));
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->hold('CART-MANUAL', 'manual_review'));
+        $this->bookingRepo->method('isPaymentProcessed')->willReturn(false);
+        $this->bookingRepo->expects($this->once())->method('markPaymentProcessed')->with('555666777', 'CART-MANUAL', 'approved_after_review');
+        $this->bookingRepo->expects($this->once())->method('recordAlert')->with('CART-MANUAL', '555666777', 'approved_after_review');
+        $this->bookingRepo->expects($this->never())->method('updateStatus');
+        $this->eventDispatcher->expects($this->never())->method('dispatch');
 
-        $this->assertSame(200, $r2['code']);
-        $this->assertSame('paid', $holdStatus, 'Re-despacho con monto correcto: fraud_review -> paid (guard todo 9 lo permite).');
+        $response = $this->captureResponse(fn () => ($this->action)($this->signedRequest('555666777')));
+
+        $this->assertSame(200, $response['code']);
+        $this->assertStringContainsString('manual_review', $response['body']);
     }
 
     // ------------------------------------------------ coordinacion USGAR- prefix
@@ -495,6 +634,7 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
         $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->hold('CART-42'));
 
         $this->bookingRepo->expects($this->once())->method('updateStatus')->with('CART-42', 'paid');
+        $this->bookingRepo->expects($this->once())->method('attachPaymentId')->with('CART-42', '555666777');
         $this->bookingRepo->expects($this->once())->method('markPaymentProcessed')->with('555666777', 'CART-42', 'approved');
         $this->eventDispatcher->expects($this->once())->method('dispatch');
 
@@ -503,6 +643,32 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
 
         $this->assertSame(200, $response['code']);
         $this->assertStringContainsString('Payment processed locally', $response['body']);
+    }
+
+    public function testApprovedWebhookPersistsPaymentIdBeforePaidTransition(): void {
+        $this->acceptSignature();
+        $this->paymentGateway->method('getPaymentDetails')->willReturn($this->approvedPayment('USGAR-CART-42'));
+        $this->bookingRepo->method('isPaymentProcessed')->willReturn(false);
+        $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->hold('CART-42'));
+        $order = [];
+        $this->bookingRepo->method('attachPaymentId')->willReturnCallback(function () use (&$order): bool {
+            $order[] = 'attachPaymentId';
+            return true;
+        });
+        $this->bookingRepo->method('updateStatus')->willReturnCallback(function () use (&$order): bool {
+            $order[] = 'updateStatus';
+            return true;
+        });
+        $this->bookingRepo->method('markPaymentProcessed')->willReturnCallback(function () use (&$order): bool {
+            $order[] = 'markPaymentProcessed';
+            return true;
+        });
+        $this->eventDispatcher->expects($this->once())->method('dispatch');
+
+        $response = $this->captureResponse(fn () => ($this->action)($this->signedRequest('555666777')));
+
+        $this->assertSame(200, $response['code']);
+        $this->assertSame(['attachPaymentId', 'updateStatus', 'markPaymentProcessed'], $order);
     }
 
     // ------------------------------------------------------------ todo 23
@@ -529,6 +695,10 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
         $repo = $this->createMock(ProvisionalBookingRepository::class);
         $repo->method('isPaymentProcessed')->willReturn(false);
         $repo->method('getByCartIdForUpdate')->willReturn($this->hold('CART-42'));
+        $repo->method('attachPaymentId')->willReturnCallback(function () use (&$order): bool {
+            $order[] = 'attachPaymentId';
+            return true;
+        });
         $repo->method('updateStatus')->willReturnCallback(function () use (&$order): bool {
             $order[] = 'updateStatus';
             return true;
@@ -553,7 +723,7 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
         $this->assertSame(200, $response['code']);
         $this->assertStringContainsString('Payment processed locally', $response['body']);
         $this->assertSame(
-            ['begin', 'updateStatus', 'markProcessed', 'dispatch', 'commit'],
+            ['begin', 'attachPaymentId', 'updateStatus', 'markProcessed', 'dispatch', 'commit'],
             $order,
             'INSERT outbox (dispatch) ANTES del commit; ACK despues; sin trabajo pesado tras el commit.'
         );

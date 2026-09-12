@@ -40,6 +40,7 @@ const {
 
 const siteBase = Astro.site;
 const canonicalURL = new URL(Astro.url.pathname, siteBase);
+canonicalURL.search = Astro.url.search;
 
 // Hreflang alternate URLs for all 4 supported locales via the native astro:i18n
 // helper (getRelativeLocaleUrl). Only the locale prefix is stripped by hand —
@@ -51,6 +52,7 @@ const enURL = new URL(getRelativeLocaleUrl('en', pathWithoutLocale), siteBase);
 const esURL = new URL(getRelativeLocaleUrl('es', pathWithoutLocale), siteBase);
 const frURL = new URL(getRelativeLocaleUrl('fr', pathWithoutLocale), siteBase);
 const ptURL = new URL(getRelativeLocaleUrl('pt', pathWithoutLocale), siteBase);
+[enURL, esURL, frURL, ptURL].forEach((url) => { url.search = Astro.url.search; });
 
 const localeMap: Record<Locale, string> = {
   en: 'en_US',
@@ -58,10 +60,13 @@ const localeMap: Record<Locale, string> = {
   fr: 'fr_FR',
   pt: 'pt_PT'
 };
+
+const pathname = Astro.url.pathname;
+const isLightweightRoute = /^\/(?:book(?:\/|$)|profile(?:\/|$)|my-bookings(?:\/|$)|login(?:\/|$)|panel(?:\/|$)|(?:es|fr|pt)\/(?:book|profile|my-bookings|login|panel)(?:\/|$))/.test(pathname);
 ---
 
 <!doctype html>
-<html lang={lang} class="bg-surface-light dark:bg-surface-dark transition-colors duration-300" data-cursor={siteSettings.customCursor ? 'true' : 'false'}>
+<html lang={lang} class="bg-surface-light dark:bg-surface-dark transition-colors duration-300" data-cursor={siteSettings.customCursor ? 'true' : 'false'} data-toast-dismiss={t('status.close')}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -250,9 +255,9 @@ const localeMap: Record<Locale, string> = {
     </a>
 
     <!-- Cinematic & Aesthetic Components -->
-    <Preloader />
-    <NoiseOverlay />
-    <CustomCursor />
+    {isLightweightRoute ? null : <Preloader />}
+    {isLightweightRoute ? null : <NoiseOverlay />}
+    {isLightweightRoute ? null : <CustomCursor />}
 
     <Navbar />
 
@@ -266,7 +271,7 @@ const localeMap: Record<Locale, string> = {
     <WhatsAppButton />
     <MobileBookingBar />
     <StatusBanner />
-    <SmoothScroll />
+    {isLightweightRoute ? null : <SmoothScroll />}
 
     <!-- Slot para scripts de terceros que la doc manda cargar antes de </body> (ej. SDK MercadoPago.js) -->
     <slot name="end-body" />

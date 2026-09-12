@@ -9,6 +9,7 @@ use App\Core\Logger;
 use App\Core\Config;
 use App\Core\BookingStatus;
 use App\Core\PriceCalculator;
+use App\Core\RateLimiter;
 use App\Core\Events\EventDispatcher;
 use App\Features\Booking\Domain\Events\BookingPaidEvent;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
@@ -52,6 +53,13 @@ class HandleMercadoPagoWebhookAction {
         // etc. — doc MP webhooks, tabla de topics). Cualquier otro type se
         // reconoce con 200 sin procesar ni validar firma.
         if ($type !== 'payment') {
+            $nonPaymentMax = (int)Config::get('WEBHOOK_NON_PAYMENT_MAX_REQUESTS', '30');
+            $nonPaymentWindow = (int)Config::get('WEBHOOK_NON_PAYMENT_WINDOW_SECONDS', '60');
+            if (!RateLimiter::check($request->getIp(), $nonPaymentMax, $nonPaymentWindow)) {
+                Logger::error('HandleMercadoPagoWebhookAction: non-payment webhook abuse limit exceeded.');
+                Response::error('Too many webhook notifications.', 429, 'RATE_LIMITED');
+                return;
+            }
             Logger::info("HandleMercadoPagoWebhookAction: Evento no-payment ignorado. Type: " . ($type ?? 'null') . ", Topic: " . ($topic ?? 'null'));
             Response::json(['success' => true, 'message' => 'Non-payment event acknowledged.']);
             return;
@@ -61,10 +69,16 @@ class HandleMercadoPagoWebhookAction {
         // data.id/data_id del query (MP envia ?data.id=XXX, PHP lo convierte
         // a data_id). body['id'] es el ID de la NOTIFICACION, NO el del pago
         // (doc MP) — nunca se usa como payment id.
-        $dataId = $request->getQuery('data_id')
-            ?? $request->getQuery('data.id')
-            ?? $body['data']['id'] ?? null;
-        $paymentIdStr = $dataId ? (string)$dataId : '';
+        $queryDataId = $request->getQuery('data_id') ?? $request->getQuery('data.id');
+        $bodyDataId = $body['data']['id'] ?? null;
+        if ($queryDataId !== null && $bodyDataId !== null
+            && (string)$queryDataId !== (string)$bodyDataId) {
+            Logger::error('HandleMercadoPagoWebhookAction: query/body payment IDs mismatch.');
+            Response::error('Mismatched payment identifiers.', 400, 'PAYMENT_ID_MISMATCH');
+            return;
+        }
+        $dataId = $queryDataId ?? $bodyDataId;
+        $paymentIdStr = $dataId !== null ? (string)$dataId : '';
 
         // Log de entrada conciso por evento (sin headers ni datos sensibles)
         Logger::info('HandleMercadoPagoWebhookAction: Webhook recibido', ['type' => $type, 'payment_id' => $paymentIdStr]);
@@ -86,6 +100,16 @@ class HandleMercadoPagoWebhookAction {
         $signatureHeader = $request->getHeader('x-signature') ?? '';
         $requestId = $request->getHeader('x-request-id') ?? '';
 
+        // Mercado Pago signs the manifest with x-request-id. Reject a
+        // missing request id before invoking the verifier so malformed
+        // requests cannot reach signature validation with an ambiguous
+        // manifest (RF-18 / SDK contract).
+        if (trim($requestId) === '') {
+            Logger::error("HandleMercadoPagoWebhookAction: Falta el header x-request-id.");
+            Response::unauthorized('Falta el header x-request-id.');
+            return;
+        }
+
         // 2.2 Validar firma (usa SDK oficial WebhookSignatureValidator internamente)
         if (empty($signatureHeader) || !$this->paymentGateway->verifySignature($signatureHeader, $requestId, $paymentIdStr)) {
             Logger::error("HandleMercadoPagoWebhookAction: Firma de webhook ausente o invalida. DataID: {$paymentIdStr}, SignatureHeader: " . substr($signatureHeader, 0, 20) . '...');
@@ -94,22 +118,27 @@ class HandleMercadoPagoWebhookAction {
         }
 
         try {
+            // Fetch MP details before opening the local transaction. Network
+            // latency must not hold database locks.
+            $paymentDetails = $this->paymentGateway->getPaymentDetails($paymentIdStr);
+            if (!$paymentDetails) {
+                Logger::error("HandleMercadoPagoWebhookAction Error: No se pudieron obtener detalles para Pago ID {$paymentIdStr}");
+                Response::error('No se pudieron obtener los detalles del pago de Mercado Pago.', 500);
+                return;
+            }
+            $remotePaymentId = isset($paymentDetails['id']) ? (string)$paymentDetails['id'] : '';
+            if ($remotePaymentId !== '' && $remotePaymentId !== $paymentIdStr) {
+                Logger::error("HandleMercadoPagoWebhookAction: API payment ID mismatch for {$paymentIdStr}.");
+                Response::error('Mismatched payment identifiers.', 400, 'PAYMENT_ID_MISMATCH');
+                return;
+            }
+
             // 3. TODO 11: la transaccion inicia ANTES del chequeo de
             // idempotencia (SELECT ... FOR UPDATE sobre processed_payments)
             // para que el lock no se suelte en autocommit. El chequeo es
             // FAIL-CLOSED: si el SELECT falla -> excepcion -> 500 (MP
             // reintenta; nunca reprocesa un duplicado).
             $this->pdo->beginTransaction();
-
-            // 4. Obtener detalles del pago desde la API de Mercado Pago
-            // (UN solo intento, timeout total 8s — todo 17 en W3).
-            $paymentDetails = $this->paymentGateway->getPaymentDetails($paymentIdStr);
-            if (!$paymentDetails) {
-                $this->pdo->rollBack();
-                Logger::error("HandleMercadoPagoWebhookAction Error: No se pudieron obtener detalles para Pago ID {$paymentIdStr}");
-                Response::error('No se pudieron obtener los detalles del pago de Mercado Pago.', 500);
-                return;
-            }
 
             $status = $paymentDetails['status'] ?? 'pending';
             // Coordinacion W3: el create (todo 3) envia external_reference
@@ -143,9 +172,19 @@ class HandleMercadoPagoWebhookAction {
             // de updateStatus (solo desde pending) la hace segura.
             if (in_array($status, ['rejected', 'failed'], true)) {
                 if ($cartId !== null && $cartId !== '') {
-                    $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::Failed->value);
+                    // A rejected/failed payment can reference a deleted or
+                    // otherwise unknown hold. ACK and persist idempotency even
+                    // when no local row exists; calling updateStatus blindly
+                    // would return false and create an MP retry storm.
+                    $rejectedHold = $this->bookingRepo->getByCartIdForUpdate((string)$cartId);
+                    if ($rejectedHold !== null
+                        && !$this->bookingRepo->updateStatus((string)$cartId, BookingStatus::Failed->value)) {
+                        throw new \RuntimeException('No se pudo marcar el pago rechazado.');
+                    }
                 }
-                $this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)($cartId ?? ''), 'rejected');
+                if (!$this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)($cartId ?? ''), 'rejected')) {
+                    throw new \RuntimeException('No se pudo registrar la idempotencia del rechazo.');
+                }
                 $this->pdo->commit();
                 Logger::info("HandleMercadoPagoWebhookAction: Pago ID {$paymentIdStr} marcado como rechazado ({$status}). Reconocido para cortar reintentos.");
                 Response::json(['success' => true, 'status' => $status, 'message' => 'Payment rejected/failed, acknowledged.']);
@@ -153,7 +192,7 @@ class HandleMercadoPagoWebhookAction {
             }
 
             if ($status !== 'approved') {
-                if (in_array($status, ['refunded', 'charged_back', 'cancelled'], true) && $cartId) {
+                if (in_array($status, ['refunded', 'charged_back', 'cancelled'], true)) {
                     // Rama refund/chargeback/cancel (fix 2026-08-07): el dinero
                     // salio y el hold/PMS quedan 'paid' — la reconciliacion con
                     // QloApps (cancelar la orden) sigue siendo el refactor W3
@@ -167,11 +206,29 @@ class HandleMercadoPagoWebhookAction {
                     // FIX 2026-08-13: 'cancelled' SI es terminal sin dinero
                     // capturado -> pending -> failed (mismo guard); un pago
                     // cancelado no debe dejar el hold pending hasta el TTL.
-                    if ($status === 'cancelled') {
-                        $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::Failed->value);
+                    if ($status === 'cancelled' && $cartId) {
+                        // A stale/unknown external_reference must not turn a
+                        // terminal cancellation into a retry storm. Only
+                        // transition an existing hold; the idempotency row and
+                        // alert below still acknowledge the event otherwise.
+                        $cancelledHold = $this->bookingRepo->getByCartIdForUpdate((string)$cartId);
+                        if ($cancelledHold !== null
+                            && in_array((string)($cancelledHold['status'] ?? ''), [
+                                BookingStatus::Pending->value,
+                                BookingStatus::Expired->value,
+                            ], true)
+                            && !$this->bookingRepo->updateStatus((string)$cartId, BookingStatus::Failed->value)) {
+                            throw new \RuntimeException('No se pudo marcar el pago cancelado.');
+                        }
                     }
-                    $this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, $eventType);
-                    $this->bookingRepo->recordAlert((string)$cartId, $paymentIdStr, $status);
+                    // A refund/cancel without external_reference is still a
+                    // terminal payment event. Persist it with an empty cart id
+                    // so duplicate deliveries are idempotent and auditable.
+                    $alertCartId = (string)($cartId ?? '');
+                    if (!$this->bookingRepo->markPaymentProcessed($paymentIdStr, $alertCartId, $eventType)
+                        || !$this->bookingRepo->recordAlert($alertCartId, $paymentIdStr, $status)) {
+                        throw new \RuntimeException('No se pudo registrar la idempotencia de la alerta.');
+                    }
                     $this->pdo->commit();
                     Logger::error("HandleMercadoPagoWebhookAction ALERTA: Pago {$paymentIdStr} llego como '{$status}' para Cart ID {$cartId} — registrado para resolucion manual (cancelacion de orden en PMS pendiente, W3).");
                     Response::json(['success' => true, 'status' => $status, 'message' => 'Refund/chargeback acknowledged; manual resolution required.']);
@@ -205,6 +262,15 @@ class HandleMercadoPagoWebhookAction {
                 return;
             }
 
+            // El webhook puede ser el unico camino despues de que el cobro
+            // sincrono haya fallado. Vincular primero el pago evita perder
+            // payment_id y permite que polling/reconciliacion/refunds sigan
+            // encontrando el pago. La operacion es idempotente para el mismo
+            // ID y fail-closed si el hold ya pertenece a otro pago.
+            if (!$this->bookingRepo->attachPaymentId((string)$cartId, $paymentIdStr)) {
+                throw new \RuntimeException('No se pudo vincular el payment_id al hold.');
+            }
+
             $holdStatus = BookingStatus::tryFrom($hold['status']);
 
             // 5.1 TODO 9: pago approved sobre hold EXPIRADO -> expired_paid +
@@ -212,9 +278,11 @@ class HandleMercadoPagoWebhookAction {
             // re-venderse mientras el pago tardaba. No se revive la reserva.
             if ($holdStatus === BookingStatus::Expired) {
                 Logger::error("HandleMercadoPagoWebhookAction ALERTA: Pago approved {$paymentIdStr} llego sobre hold expirado {$cartId} (posible reventa). Marcado expired_paid.");
-                $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::ExpiredPaid->value);
-                $this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, 'approved');
-                $this->bookingRepo->recordAlert((string)$cartId, $paymentIdStr, 'expired_paid');
+                if (!$this->bookingRepo->updateStatus((string)$cartId, BookingStatus::ExpiredPaid->value)
+                    || !$this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, 'approved')
+                    || !$this->bookingRepo->recordAlert((string)$cartId, $paymentIdStr, 'expired_paid')) {
+                    throw new \RuntimeException('No se pudo persistir el pago tardío.');
+                }
                 $this->pdo->commit();
                 Response::json([
                     'success' => true,
@@ -225,9 +293,34 @@ class HandleMercadoPagoWebhookAction {
             }
 
             if ($holdStatus === BookingStatus::Paid) {
-                $this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, 'approved');
+                if (!$this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, 'approved')) {
+                    throw new \RuntimeException('No se pudo registrar la idempotencia del pago tardío.');
+                }
                 $this->pdo->commit();
                 Response::json(['success' => true, 'message' => 'Booking already marked as paid.']);
+                return;
+            }
+
+            // Approved notifications cannot bypass an operator-controlled
+            // fraud/manual-review flow. RetryManualReviewAction is the only
+            // path allowed to resolve these states to paid.
+            if ($holdStatus === BookingStatus::FraudReview
+                || $holdStatus === BookingStatus::ManualReview) {
+                if ($this->bookingRepo->isPaymentProcessed($paymentIdStr, 'approved_after_review')) {
+                    $this->pdo->rollBack();
+                    Response::json(['success' => true, 'message' => 'Payment already acknowledged for manual review.']);
+                    return;
+                }
+                if (!$this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, 'approved_after_review')
+                    || !$this->bookingRepo->recordAlert((string)$cartId, $paymentIdStr, 'approved_after_review')) {
+                    throw new \RuntimeException('No se pudo auditar el pago aprobado en revisión.');
+                }
+                $this->pdo->commit();
+                Response::json([
+                    'success' => true,
+                    'status' => $holdStatus->value,
+                    'message' => 'Payment acknowledged; manual review is still required.',
+                ]);
                 return;
             }
 
@@ -253,9 +346,11 @@ class HandleMercadoPagoWebhookAction {
                 // 24 re-despacha con el monto correcto (guard del todo 9).
                 Logger::error("HandleMercadoPagoWebhookAction ALERTA FRAUDE: Monto cobrado ({$chargedPenCents} centavos) es menor al esperado ({$expectedPenCents} centavos) para Cart ID {$cartId}");
                 if (!$this->bookingRepo->isPaymentProcessed($paymentIdStr, 'fraud_review')) {
-                    $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::FraudReview->value);
-                    $this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, 'fraud_review');
-                    $this->bookingRepo->recordAlert((string)$cartId, $paymentIdStr, 'fraud_review');
+                    if (!$this->bookingRepo->updateStatus((string)$cartId, BookingStatus::FraudReview->value)
+                        || !$this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, 'fraud_review')
+                        || !$this->bookingRepo->recordAlert((string)$cartId, $paymentIdStr, 'fraud_review')) {
+                        throw new \RuntimeException('No se pudo persistir la revisión antifraude.');
+                    }
                 }
                 $this->pdo->commit();
                 Response::json([
@@ -267,8 +362,10 @@ class HandleMercadoPagoWebhookAction {
             }
 
             // Marcar reserva como pagada en MySQL local y registrar idempotencia
-            $this->bookingRepo->updateStatus((string)$cartId, BookingStatus::Paid->value);
-            $this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, 'approved');
+            if (!$this->bookingRepo->updateStatus((string)$cartId, BookingStatus::Paid->value)
+                || !$this->bookingRepo->markPaymentProcessed($paymentIdStr, (string)$cartId, 'approved')) {
+                throw new \RuntimeException('No se pudo persistir el pago aprobado.');
+            }
 
             // TODO 18/23 (Wave 4): el INSERT del evento en event_outbox corre
             // DENTRO de la transaccion (dispatch -> outbox) ANTES del commit —
@@ -346,7 +443,9 @@ class HandleMercadoPagoWebhookAction {
      */
     private function markOrphan(string $paymentIdStr): void {
         if (!$this->bookingRepo->isPaymentProcessed($paymentIdStr, 'orphan')) {
-            $this->bookingRepo->markPaymentProcessed($paymentIdStr, '', 'orphan');
+            if (!$this->bookingRepo->markPaymentProcessed($paymentIdStr, '', 'orphan')) {
+                throw new \RuntimeException('No se pudo registrar el pago huérfano.');
+            }
         }
         $this->pdo->commit();
         Logger::info("HandleMercadoPagoWebhookAction: Pago {$paymentIdStr} sin hold marcado como orphan (idempotencia registrada).");

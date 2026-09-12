@@ -4,6 +4,14 @@ declare(strict_types=1);
 namespace App\Core;
 
 /**
+ * Raised when the rate-limit storage cannot be opened or updated.
+ *
+ * Callers that protect authentication should let this bubble up (fail closed).
+ * The availability-oriented global middleware may explicitly catch it.
+ */
+final class RateLimitStorageException extends \RuntimeException {}
+
+/**
  * Limitador de Tasa de Peticiones basado en almacenamiento en archivos.
  * Fix: SHA-256 en vez de MD5 para resistencia a colisiones.
  * Fix: LOCK_EX en file_put_contents para atomicidad en escritura.
@@ -68,49 +76,58 @@ class RateLimiter {
 
         $fp = @fopen($limitFile, 'c+');
         if (!$fp) {
-            // Si el archivo no se puede abrir, permitir la peticion como fallback
-            return true;
+            throw new RateLimitStorageException('Rate-limit storage is unavailable.');
         }
 
         // Bloqueo exclusivo que cubre lectura + filtrado + escritura
         if (!flock($fp, LOCK_EX)) {
             fclose($fp);
-            return true;
+            throw new RateLimitStorageException('Rate-limit storage lock is unavailable.');
         }
 
-        $requests = [];
-        $fileSize = filesize($limitFile);
-        if ($fileSize > 0) {
-            $content = fread($fp, $fileSize);
-            if ($content !== false) {
+        try {
+            $requests = [];
+            $fileSize = filesize($limitFile);
+            if ($fileSize === false) {
+                throw new RateLimitStorageException('Rate-limit storage metadata is unavailable.');
+            }
+            if ($fileSize > 0) {
+                rewind($fp);
+                $content = fread($fp, $fileSize);
+                if ($content === false) {
+                    throw new RateLimitStorageException('Rate-limit storage cannot be read.');
+                }
                 $data = json_decode($content, true);
                 if (is_array($data)) {
                     $requests = $data;
                 }
             }
-        }
 
-        // Filtrar peticiones fuera de la ventana de tiempo
-        $cutoff = $now - $timeWindowSeconds;
-        $requests = array_values(array_filter($requests, fn(int $timestamp) => $timestamp > $cutoff));
+            // Filtrar peticiones fuera de la ventana de tiempo
+            $cutoff = $now - $timeWindowSeconds;
+            $requests = array_values(array_filter($requests, fn(int $timestamp) => $timestamp > $cutoff));
 
-        if (count($requests) >= $maxRequests) {
+            if (count($requests) >= $maxRequests) {
+                return false;
+            }
+
+            // Agregar peticion actual
+            $requests[] = $now;
+
+            // Truncar y escribir estado actualizado de forma atomica
+            if (!ftruncate($fp, 0)) {
+                throw new RateLimitStorageException('Rate-limit storage cannot be truncated.');
+            }
+            rewind($fp);
+            $encoded = json_encode($requests);
+            if ($encoded === false || fwrite($fp, $encoded) !== strlen($encoded) || !fflush($fp)) {
+                throw new RateLimitStorageException('Rate-limit storage cannot be written.');
+            }
+            return true;
+        } finally {
             flock($fp, LOCK_UN);
             fclose($fp);
-            return false;
         }
 
-        // Agregar peticion actual
-        $requests[] = $now;
-
-        // Truncar y escribir estado actualizado de forma atomica
-        ftruncate($fp, 0);
-        rewind($fp);
-        fwrite($fp, json_encode($requests) ?: '[]');
-        fflush($fp);
-        flock($fp, LOCK_UN);
-        fclose($fp);
-
-        return true;
     }
 }

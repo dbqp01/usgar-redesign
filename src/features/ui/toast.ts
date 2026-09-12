@@ -12,6 +12,7 @@ export interface ToastOptions {
   description?: string;
   duration?: number;
   action?: { label: string; onClick: () => void };
+  dismissLabel?: string;
 }
 
 const ICONS: Record<ToastType, string> = {
@@ -94,7 +95,7 @@ function toast(type: ToastType, options: ToastOptions): void {
         ${actionHtml}
       </div>
     </div>
-    <button type="button" data-toast-close aria-label="Dismiss notification" class="absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer">
+    <button type="button" data-toast-close aria-label="${escapeHtml(options.dismissLabel || document.documentElement.dataset.toastDismiss || 'Dismiss notification')}" class="absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer">
       <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
   `;

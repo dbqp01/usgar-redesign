@@ -7,6 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 type ContextEntry = { name: string; ctx: gsap.Context | gsap.MatchMedia };
 
 const registry: Map<string, ContextEntry> = new Map();
+let lifecycleGeneration = 0;
 
 export function register(name: string, ctx: gsap.Context | gsap.MatchMedia): void {
   if (registry.has(name)) {
@@ -21,6 +22,19 @@ export function cleanupAll(): void {
   });
   registry.clear();
   ScrollTrigger.clearScrollMemory();
+}
+
+/**
+ * Returns the navigation generation currently associated with the document.
+ * Async animation-module imports capture this value and must discard their
+ * result when a ViewTransition starts a newer generation.
+ */
+export function getLifecycleGeneration(): number {
+  return lifecycleGeneration;
+}
+
+export function isLifecycleGenerationCurrent(generation: number): boolean {
+  return generation === lifecycleGeneration;
 }
 
 function isPage(path: string, pattern: string): boolean {
@@ -49,6 +63,7 @@ export function initLifecycle(): void {
   window.__usgarLifecycleInit = true;
 
   document.addEventListener('astro:before-preparation', () => {
+    lifecycleGeneration += 1;
     cleanupAll();
   });
 

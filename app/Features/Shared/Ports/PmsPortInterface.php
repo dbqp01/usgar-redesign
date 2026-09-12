@@ -32,6 +32,7 @@ interface PmsPortInterface {
      */
     public function createCartMulti(int $idHotel, array $rooms, string $checkIn, string $checkOut, string $guestName = '', string $guestEmail = '', string $guestPhone = '', float $totalPrice = 0): string;
     public function extendCartSession(string $cartId): bool;
+    /** @param array<int|string,mixed>|null $roomLines */
     public function confirmOrder(
         string $cartId,
         float $totalPrice,
@@ -39,7 +40,8 @@ interface PmsPortInterface {
         string $guestEmail,
         ?int $idRoom = 1,
         string $module = 'mercadopago',
-        string $paymentLabel = 'Mercado Pago (Online)'
+        string $paymentLabel = 'Mercado Pago (Online)',
+        ?array $roomLines = null
     ): ?string;
 
     /**

@@ -24,7 +24,9 @@ function checkHtmlFile(filePath) {
   const html = fs.readFileSync(filePath, 'utf8');
   totalPagesChecked++;
 
-  const schemaRegex = /<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi;
+  // Astro minifies static HTML and may remove attribute quotes. Accept quoted
+  // and unquoted type values so the audit checks the built artifact itself.
+  const schemaRegex = /<script[^>]*\btype\s*=\s*["']?application\/ld\+json["']?[^>]*>([\s\S]*?)<\/script>/gi;
   const matches = [...html.matchAll(schemaRegex)];
 
   if (matches.length > 0) {

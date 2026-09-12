@@ -49,7 +49,7 @@ const navLinks = [
 <header
   id="main-navbar"
   class:list={[
-    "fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter,box-shadow,border-color] duration-500",
+    "fixed top-0 left-0 right-0 z-50 pt-[env(safe-area-inset-top)] transition-[background-color,backdrop-filter,box-shadow,border-color] duration-500",
     { "glass shadow-sm navbar-scrolled": !isHome }
   ]}
 >
@@ -102,6 +102,9 @@ const navLinks = [
 
     try {
       const user = await getUser(false);
+      // Astro can start a new page before the auth request resolves. Avoid
+      // mutating nodes that belong to the previous page after that navigation.
+      if (signal.aborted) return;
       
       if (user) {
         if (loginBtn) loginBtn.classList.add('hidden');
@@ -156,6 +159,9 @@ const navLinks = [
     const hamburgerIcon = document.getElementById('hamburger-icon');
     const closeIcon = document.getElementById('close-icon');
     const mobileMenuCloseBtn = document.getElementById('mobile-menu-close-btn');
+    const languageWrapper = document.getElementById('lang-switcher-desktop-btn')?.parentElement;
+    const languageBtn = document.getElementById('lang-switcher-desktop-btn');
+    const languageDropdown = document.getElementById('lang-dropdown-desktop');
 
     if (!navbar) return;
 
@@ -167,17 +173,22 @@ const navLinks = [
     let stickyIo: IntersectionObserver | null = null;
     let sentinel: HTMLElement | null = null;
     if (isHome) {
+      const setScrolled = (scrolled: boolean) => {
+        navbar.classList.toggle('glass', scrolled);
+        navbar.classList.toggle('shadow-sm', scrolled);
+        navbar.classList.toggle('navbar-scrolled', scrolled);
+      };
       sentinel = document.createElement('div');
       sentinel.setAttribute('aria-hidden', 'true');
       sentinel.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:1px;pointer-events:none;';
       document.body.insertBefore(sentinel, document.body.firstChild);
-      stickyIo = new IntersectionObserver(([entry]) => {
-        const scrolled = !entry.isIntersecting;
-        navbar.classList.toggle('glass', scrolled);
-        navbar.classList.toggle('shadow-sm', scrolled);
-        navbar.classList.toggle('navbar-scrolled', scrolled);
-      }, { rootMargin: '-40px 0px 0px 0px' });
+      stickyIo = new IntersectionObserver(() => {
+        // Scroll position is authoritative because a fixed preloader can make
+        // an absolute 1px sentinel report non-intersecting on first paint.
+        setScrolled(window.scrollY > 24);
+      }, { rootMargin: '0px' });
       stickyIo.observe(sentinel);
+      setScrolled(window.scrollY > 24);
     }
 
     // --- 2. Mobile Menu GSAP Logic ---
@@ -188,8 +199,22 @@ const navLinks = [
     let isMenuOpen = false;
     let tl = gsap.timeline({ paused: true });
 
+    function setMenuInteractivity(open: boolean, hide = true) {
+      if (!mobileMenu) return;
+      if (hide) mobileMenu.hidden = !open;
+      mobileMenu.toggleAttribute('inert', !open);
+      mobileMenu.setAttribute('aria-hidden', String(!open));
+    }
+
+    function hideMenuAfterAnimation() {
+      if (!isMenuOpen && mobileMenu) {
+        setMenuInteractivity(false);
+        gsap.set(mobileMenu, { display: 'none' });
+      }
+    }
+
     // Coreografía Quiet Luxury
-    if (mobileMenu && mobileBackdrop && mobilePanel) {
+      if (mobileMenu && mobileBackdrop && mobilePanel) {
       ctx.add("(prefers-reduced-motion: no-preference)", () => {
           tl.clear();
           tl.set(mobileMenu, { display: 'block' })
@@ -214,6 +239,7 @@ const navLinks = [
             .to(mobilePanel, { x: '0%', duration: 0.1 }, '<')
             .set('.mobile-nav-link, .mobile-lang-link, .mobile-auth-item, .mobile-cta-btn', { autoAlpha: 1, x: 0, y: 0 });
         });
+        tl.eventCallback('onReverseComplete', hideMenuAfterAnimation);
       }
 
       function openMenu() {
@@ -221,7 +247,7 @@ const navLinks = [
         isMenuOpen = true;
         document.body.style.overflow = 'hidden';
         document.body.classList.add('mobile-menu-open');
-        mobileMenu.setAttribute('aria-hidden', 'false');
+        setMenuInteractivity(true);
         hamburgerIcon?.classList.add('hidden');
         closeIcon?.classList.remove('hidden');
         mobileMenuBtn?.setAttribute('aria-expanded', 'true');
@@ -237,7 +263,9 @@ const navLinks = [
         isMenuOpen = false;
         document.body.style.overflow = '';
         document.body.classList.remove('mobile-menu-open');
-        mobileMenu.setAttribute('aria-hidden', 'true');
+        // Keep the panel rendered while GSAP slides it out, but remove it from
+        // the accessibility tree and keyboard navigation immediately.
+        setMenuInteractivity(false, false);
         hamburgerIcon?.classList.remove('hidden');
         closeIcon?.classList.add('hidden');
         mobileMenuBtn?.setAttribute('aria-expanded', 'false');
@@ -247,17 +275,20 @@ const navLinks = [
       }
 
       function forceCloseInstant() {
-        if (isMenuOpen) {
-          isMenuOpen = false;
-          document.body.style.overflow = '';
-          document.body.classList.remove('mobile-menu-open');
-          mobileMenu?.setAttribute('aria-hidden', 'true');
+        isMenuOpen = false;
+        document.body.style.overflow = '';
+        document.body.classList.remove('mobile-menu-open');
+        if (mobileMenu) {
+          setMenuInteractivity(false);
+          gsap.set(mobileMenu, { display: 'none' });
+        }
+        if (mobileMenuBtn) {
           hamburgerIcon?.classList.remove('hidden');
           closeIcon?.classList.add('hidden');
           mobileMenuBtn?.setAttribute('aria-expanded', 'false');
           mobileMenuBtn?.setAttribute('aria-label', mobileMenuBtn.dataset.closedLabel || '');
-          tl.progress(0).pause();
         }
+        tl.progress(0).pause();
       }
 
       mobileMenuBtn?.addEventListener('click', () => isMenuOpen ? closeMenu() : openMenu(), { signal });
@@ -267,6 +298,28 @@ const navLinks = [
       mobileMenu?.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', closeMenu, { signal });
       });
+
+      function setLanguageOpen(open: boolean) {
+        languageBtn?.setAttribute('aria-expanded', String(open));
+        languageDropdown?.setAttribute('aria-hidden', String(!open));
+      }
+
+      languageWrapper?.addEventListener('pointerenter', () => setLanguageOpen(true), { signal });
+      languageWrapper?.addEventListener('pointerleave', () => setLanguageOpen(false), { signal });
+      languageWrapper?.addEventListener('focusin', () => setLanguageOpen(true), { signal });
+      languageWrapper?.addEventListener('focusout', (event) => {
+        const next = event.relatedTarget as Node | null;
+        if (!next || !languageWrapper?.contains(next)) setLanguageOpen(false);
+      }, { signal });
+      languageWrapper?.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          languageBtn?.focus();
+          // focusin on the trigger opens the disclosure for keyboard users;
+          // apply the closed state after focus returns so Escape remains a
+          // reliable close action and aria-expanded stays synchronized.
+          setLanguageOpen(false);
+        }
+      }, { signal });
 
       // ¡El gancho salvador de Astro! 
       // Cuando Astro empieza a enrutar, matamos la animación instantáneamente y liberamos el scroll.

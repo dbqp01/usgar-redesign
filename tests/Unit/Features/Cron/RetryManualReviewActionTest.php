@@ -44,6 +44,7 @@ final class RetryManualReviewActionTest extends TestCase {
     private array $statusCalls = [];
 
     private bool $dispatched = false;
+    private bool $recordAlertSucceeds = true;
 
     protected function setUp(): void {
         Config::set('CRON_SECRET', 'w4-test-secret');
@@ -54,6 +55,7 @@ final class RetryManualReviewActionTest extends TestCase {
         $this->rowCounts = [];
         $this->statusCalls = [];
         $this->dispatched = false;
+        $this->recordAlertSucceeds = true;
 
         $this->pdo = $this->createMock(PDO::class);
         $this->pdo->method('beginTransaction')->willReturn(true);
@@ -89,7 +91,7 @@ final class RetryManualReviewActionTest extends TestCase {
         $this->bookingRepo = $this->createMock(ProvisionalBookingRepository::class);
         $this->bookingRepo->method('recordAlert')->willReturnCallback(function (string $cartId, string $paymentId, string $type): bool {
             $this->recorded[] = "alert:{$type}";
-            return true;
+            return $this->recordAlertSucceeds;
         });
         $this->bookingRepo->method('updateStatus')->willReturnCallback(function (string $cartId, string $status): bool {
             $this->statusCalls[] = $status;
@@ -203,6 +205,23 @@ final class RetryManualReviewActionTest extends TestCase {
         $this->assertContains('alert:redispatch', $this->recorded, 'Auditoria del re-despacho sin exito.');
     }
 
+    public function testRedispatchFailsClosedWhenAuditCannotBePersisted(): void {
+        $this->bookingRepo->method('getByCartId')->willReturn($this->reviewHold('CART-FR'));
+        $this->recordAlertSucceeds = false;
+        $this->paymentGateway->method('getPaymentDetails')->willReturn([
+            'id' => 777888999,
+            'status' => 'approved',
+            'transaction_amount' => 50.0,
+        ]);
+
+        $r = $this->invoke(['action' => 'redispatch', 'cart_id' => 'CART-FR']);
+
+        $this->assertSame(500, $r['code']);
+        $this->assertStringContainsString('auditoría', $r['body']);
+        $this->assertSame([], $this->statusCalls);
+        $this->assertFalse($this->dispatched);
+    }
+
     public function testRedispatchRequiresPaymentId(): void {
         $this->bookingRepo->method('getByCartId')->willReturn($this->reviewHold('CART-MR', 'manual_review', null));
         $this->paymentGateway->expects($this->never())->method('getPaymentDetails');
@@ -211,6 +230,18 @@ final class RetryManualReviewActionTest extends TestCase {
 
         $this->assertSame(400, $r['code']);
         $this->assertStringContainsString('payment', $r['body']);
+    }
+
+    public function testRedispatchRejectsPendingHoldOutsideReviewWorkflow(): void {
+        $this->bookingRepo->method('getByCartId')->willReturn($this->reviewHold('CART-PENDING', 'pending', '777888999'));
+        $this->paymentGateway->expects($this->never())->method('getPaymentDetails');
+        $this->eventDispatcher->expects($this->never())->method('dispatch');
+
+        $r = $this->invoke(['action' => 'redispatch', 'cart_id' => 'CART-PENDING']);
+
+        $this->assertSame(409, $r['code']);
+        $this->assertStringContainsString('revision manual', $r['body']);
+        $this->assertSame([], $this->statusCalls);
     }
 
     // --------------------------------------------------------------- expire
@@ -235,5 +266,16 @@ final class RetryManualReviewActionTest extends TestCase {
         $r = $this->invoke(['action' => 'expire', 'cart_id' => 'CART-NADA']);
 
         $this->assertSame(404, $r['code']);
+    }
+
+    public function testExpireFailsClosedWhenAuditCannotBePersisted(): void {
+        $this->rowCounts['SET status = \'expired\''] = 1;
+        $this->bookingRepo->method('getByCartId')->willReturn($this->reviewHold('CART-FR'));
+        $this->recordAlertSucceeds = false;
+
+        $r = $this->invoke(['action' => 'expire', 'cart_id' => 'CART-FR']);
+
+        $this->assertSame(500, $r['code']);
+        $this->assertStringContainsString('auditoría', $r['body']);
     }
 }

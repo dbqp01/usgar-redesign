@@ -29,7 +29,21 @@ class Request {
         ?array $body = null
     ) {
         $this->method = strtoupper($method ?? ($_SERVER['REQUEST_METHOD'] ?? 'GET'));
-        $this->queryParams = $_GET;
+
+        // PHP fills $_GET for HTTP requests, but CLI cron dispatch only sets
+        // REQUEST_URI from argv. Parse that URI as a defensive fallback so
+        // query parameters such as action/cart_id are not silently dropped.
+        $requestUri = $path ?? ($_SERVER['REQUEST_URI'] ?? '/');
+        $uriParts = explode('?', $requestUri, 2);
+        $queryParams = $_GET;
+        if (isset($uriParts[1]) && $uriParts[1] !== '') {
+            $uriQuery = [];
+            parse_str($uriParts[1], $uriQuery);
+            // URI values are authoritative for the URI being dispatched,
+            // while preserving explicitly injected $_GET keys in tests.
+            $queryParams = array_replace($queryParams, $uriQuery);
+        }
+        $this->queryParams = $queryParams;
 
         $rawHeaders = $this->extractHeaders();
         if (is_array($headers)) {
@@ -40,11 +54,11 @@ class Request {
         $this->headers = $rawHeaders;
 
         if ($path !== null) {
-            $this->path = '/' . trim($path, '/');
+            // Explicit paths used by CLI/tests may still contain a query
+            // string; keep routing on the path component only.
+            $this->path = '/' . trim($uriParts[0], '/');
         } else {
-            $uri = $_SERVER['REQUEST_URI'] ?? '/';
-            $parts = explode('?', $uri, 2);
-            $this->path = '/' . trim($parts[0], '/');
+            $this->path = '/' . trim($uriParts[0], '/');
         }
 
         $this->body = $body ?? $this->parseBody();
@@ -77,9 +91,23 @@ class Request {
      */
     public function getRequestId(): string {
         if ($this->requestId === null) {
-            $this->requestId = $this->getHeader('x-request-id') ?? bin2hex(random_bytes(16));
+            $incoming = $this->getHeader('x-request-id');
+            // Keep the value safe to reflect as an HTTP header and bounded for logs.
+            // Invalid client values are replaced with a fresh correlation ID.
+            $this->requestId = self::isValidRequestId($incoming)
+                ? $incoming
+                : bin2hex(random_bytes(16));
         }
         return $this->requestId;
+    }
+
+    private static function isValidRequestId(?string $requestId): bool {
+        if ($requestId === null || strlen($requestId) > 128) {
+            return false;
+        }
+
+        // RFC 7230-safe opaque token: excludes CR/LF and all other controls.
+        return preg_match('/\A[A-Za-z0-9][A-Za-z0-9._~:+\/=-]{0,127}\z/D', $requestId) === 1;
     }
 
     /** @return array<string, mixed>|null */
@@ -113,9 +141,23 @@ class Request {
 
     /**
      * Determina si la peticion llega por HTTPS.
+     *
+     * X-Forwarded-Proto solo es confiable cuando la conexion directa procede
+     * de un proxy configurado explicitamente. Los clientes pueden enviar este
+     * header por su cuenta, por lo que nunca se acepta fuera de TRUSTED_PROXIES.
      */
     public static function isHttps(): bool {
-        return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? 80) == 443;
+        if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || (int)($_SERVER['SERVER_PORT'] ?? 80) === 443) {
+            return true;
+        }
+
+        $remoteAddr = (string)($_SERVER['REMOTE_ADDR'] ?? '');
+        if ($remoteAddr === '' || !in_array($remoteAddr, Config::getTrustedProxies(), true)) {
+            return false;
+        }
+
+        return strtolower(trim((string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''))) === 'https';
     }
 
     /**

@@ -6,6 +6,8 @@ namespace App\Features\Reviews\Actions;
 use App\Core\Request;
 use App\Core\Response;
 use App\Core\Config;
+use App\Core\HttpException;
+use App\Core\Logger;
 
 /**
  * Accion ADR: POST /api/cron/refresh-reviews (cron diario, vía
@@ -19,7 +21,25 @@ use App\Core\Config;
  * en ese caso se conserva el valor previo.
  */
 class RefreshReviewScoresAction {
+    /** @var array<string, true> */
+    private const ALLOWED_SOURCE_HOSTS = [
+        'booking.com' => true,
+        'kayak.com' => true,
+        'expedia.com' => true,
+    ];
     public function __invoke(Request $request): void {
+        if (PHP_SAPI !== 'cli') {
+            $secret = Config::get('CRON_SECRET');
+            $provided = (string)($request->getHeader('x-cron-secret') ?? '');
+            if ($secret === null || $secret === '') {
+                Response::error('Cron secret non-configured.', 500);
+                return;
+            }
+            if ($provided === '' || !hash_equals($secret, $provided)) {
+                Response::unauthorized('Invalid cron secret token.');
+                return;
+            }
+        }
         $file = GetReviewScoresAction::scoresFile();
         $prev = [];
         if (file_exists($file)) {
@@ -54,24 +74,33 @@ class RefreshReviewScoresAction {
         }
 
         $dir = dirname($file);
-        if (!is_dir($dir)) {
-            mkdir($dir, 0775, true);
+        $payload = json_encode(['scores' => $scores, 'updatedAt' => date('c')], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+        if (!is_dir($dir) && !mkdir($dir, 0775, true) && !is_dir($dir)) {
+            throw HttpException::internal('No se pudo crear el almacenamiento de reseñas.');
         }
-        file_put_contents(
-            $file,
-            json_encode(['scores' => $scores, 'updatedAt' => date('c')], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
-        );
+        $tmp = $file . '.tmp.' . bin2hex(random_bytes(8));
+        if (file_put_contents($tmp, $payload, LOCK_EX) !== strlen($payload) || !rename($tmp, $file)) {
+            @unlink($tmp);
+            throw HttpException::internal('No se pudo guardar el score de reseñas.');
+        }
 
         Response::json(['success' => true, 'scores' => $scores, 'updatedAt' => date('c')]);
     }
 
     /** Fetch con User-Agent de navegador; null si falla o no hay body. */
     private static function fetch(string $url): ?string {
+        if (!self::isAllowedSourceUrl($url)) {
+            Logger::warning('RefreshReviewScoresAction: source URL rejected by allowlist: ' . $url);
+            return null;
+        }
         $ch = curl_init($url);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_PROTOCOLS => CURLPROTO_HTTPS,
+            CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTPS,
             CURLOPT_TIMEOUT => 15,
+            CURLOPT_CONNECTTIMEOUT => 5,
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36',
             CURLOPT_HTTPHEADER => ['Accept-Language: en-US,en;q=0.9', 'Accept: text/html'],
@@ -83,6 +112,36 @@ class RefreshReviewScoresAction {
             return null;
         }
         return $body;
+    }
+
+    /** Validate configured review URLs before any network request. */
+    private static function isAllowedSourceUrl(string $url): bool {
+        $parts = parse_url($url);
+        if (!is_array($parts) || ($parts['scheme'] ?? '') !== 'https' || !empty($parts['user']) || !empty($parts['pass'])) {
+            return false;
+        }
+        if (isset($parts['port']) && (int)$parts['port'] !== 443) {
+            return false;
+        }
+        $host = strtolower(rtrim((string)($parts['host'] ?? ''), '.'));
+        if ($host === '') return false;
+        $allowedHost = false;
+        foreach (array_keys(self::ALLOWED_SOURCE_HOSTS) as $allowed) {
+            if ($host === $allowed || str_ends_with($host, '.' . $allowed)) {
+                $allowedHost = true;
+                break;
+            }
+        }
+        if (!$allowedHost) return false;
+        $records = @dns_get_record($host, DNS_A | DNS_AAAA);
+        if (!is_array($records) || $records === []) return false;
+        foreach ($records as $record) {
+            $ip = (string)($record['ip'] ?? $record['ipv6'] ?? '');
+            if ($ip === '' || filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

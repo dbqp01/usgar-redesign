@@ -27,14 +27,11 @@ class AuthService {
      * @return array{callback: string, providers: array<string, array<string, mixed>>}
      */
     public static function getConfig(): array {
-        $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https' : 'http';
-        $host = $_SERVER['HTTP_HOST'] ?? null;
-
-        if ($host) {
-            $siteUrl = "{$scheme}://{$host}";
-        } else {
-            $siteUrl = Config::get('SITE_URL', 'https://usgarhoteles.com');
-        }
+        // OAuth redirect URIs must come from the configured canonical origin.
+        // HTTP_HOST/X-Forwarded-Proto are request-controlled unless a trusted
+        // proxy boundary is enforced, so never derive the callback from them.
+        $siteUrl = Config::get('SITE_URL', 'https://usgarhoteles.com')
+            ?? 'https://usgarhoteles.com';
 
         $config = [
             'callback' => rtrim($siteUrl, '/') . '/api/auth/callback',
@@ -56,7 +53,10 @@ class AuthService {
         // Microsoft (MicrosoftGraph en HybridAuth 3.x)
         $msId = Config::get('MICROSOFT_CLIENT_ID');
         $msSecret = Config::get('MICROSOFT_CLIENT_SECRET');
-        if ($msId && $msSecret) {
+        // HybridAuth's MicrosoftGraph adapter does not expose a standardized
+        // emailVerified field. Keep it hidden until the operator explicitly
+        // accepts the tenant's email trust model.
+        if ($msId && $msSecret && self::isTruthy(Config::get('MICROSOFT_TRUST_EMAIL', 'false'))) {
             $config['providers']['MicrosoftGraph'] = [
                 'enabled' => true,
                 'keys' => ['id' => $msId, 'secret' => $msSecret],
@@ -93,11 +93,24 @@ class AuthService {
      *
      * @param \Hybridauth\User\Profile $profile Perfil de HybridAuth
      * @param string $provider Nombre del proveedor (Google, MicrosoftGraph, Facebook)
-     * @return array{email: string, first_name: ?string, last_name: ?string, photo_url: ?string, phone: ?string, provider: string, provider_id: string}
+     * @return array{email: string, email_verified: bool, first_name: ?string, last_name: ?string, photo_url: ?string, phone: ?string, provider: string, provider_id: string}
      */
     public static function normalizeProfile(object $profile, string $provider): array {
+        $email = is_string($profile->email ?? null) ? trim($profile->email) : '';
+        $verifiedField = $profile->emailVerified ?? null;
+        $emailVerified = is_string($verifiedField)
+            && $verifiedField !== ''
+            && strcasecmp(trim($verifiedField), $email) === 0;
+
+        if ($provider === 'MicrosoftGraph'
+            && self::isTruthy(Config::get('MICROSOFT_TRUST_EMAIL', 'false'))
+            && $email !== '') {
+            $emailVerified = true;
+        }
+
         return [
-            'email'       => $profile->email ?? '',
+            'email'       => $email,
+            'email_verified' => $emailVerified,
             'first_name'  => $profile->firstName ?? null,
             'last_name'   => $profile->lastName ?? null,
             'photo_url'   => $profile->photoURL ?? null,
@@ -105,6 +118,11 @@ class AuthService {
             'provider'    => $provider,
             'provider_id' => (string)($profile->identifier ?? ''),
         ];
+    }
+
+    private static function isTruthy(?string $value): bool
+    {
+        return in_array(strtolower(trim((string)$value)), ['1', 'true', 'yes', 'on'], true);
     }
 
     /**
@@ -126,4 +144,3 @@ class AuthService {
         return class_exists(\Hybridauth\Hybridauth::class);
     }
 }
-

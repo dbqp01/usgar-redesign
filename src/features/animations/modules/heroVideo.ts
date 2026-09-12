@@ -8,8 +8,6 @@ import { gsap } from 'gsap';
 // El hero es sticky (efecto "periódico" del dueño): el wipe solo se usa en la
 // rotación de segmentos; la entrada del título la anima heroStory.ts.
 
-const preloaded = new Set<string>();
-
 function pickParts(video: HTMLVideoElement): string[] {
   const raw = JSON.parse(video.dataset.videoParts || '{"desktop":[],"mobile":[]}') as {
     desktop: string[];
@@ -21,16 +19,14 @@ function pickParts(video: HTMLVideoElement): string[] {
   // Movil siempre h264 (decode HW universal).
   const supportsAv1 = video.canPlayType('video/mp4; codecs="av01.0.04M.08"') !== ''
     && window.innerWidth >= 768;
-  return supportsAv1 ? list.map((p) => p.replace(/\.mp4$/, '.av1.mp4')) : list;
+  // Load only the first clip on initial paint. The previous three-part loop
+  // made the browser download roughly 15 MB and repeated requests whenever
+  // the source changed. A later navigation can initialize the clip again
+  // without paying for the full loop up front.
+  const first = list[0] ? [list[0]] : [];
+  return supportsAv1 ? first.map((p) => p.replace(/\.mp4$/, '.av1.mp4')) : first;
 }
 
-function preloadNext(src: string): void {
-  if (preloaded.has(src)) return;
-  preloaded.add(src);
-  fetch(src, { mode: 'cors' }).catch(() => {
-    /* precarga best-effort: si falla, el swap espera al buffering normal */
-  });
-}
 
 export function initHeroVideo(): () => void {
   const video = document.getElementById('hero-video') as HTMLVideoElement | null;
@@ -49,18 +45,25 @@ export function initHeroVideo(): () => void {
   const slideshowEl = slideshow;
 
   let activeSlideshowInterval: ReturnType<typeof setInterval> | null = null;
+  let activeTimeline: gsap.core.Timeline | null = null;
+  let disposed = false;
 
   const slides = slideshowEl.querySelectorAll('[data-slide]');
   const parts = pickParts(videoEl);
-  let partIndex = 0;
+  const isMobile = window.matchMedia('(max-width: 767px)').matches;
+  // Mobile stays on the poster/slideshow unless an explicit opt-in is added.
+  // The video has no src in the HTML, so skipping startOnce() prevents any
+  // mobile MP4 request during initial load.
+  const allowVideo = !isMobile || videoEl.dataset.enableMobileVideo === 'true';
   let swapping = false;
 
   // Reset de estados visuales (navegación SPA: el DOM viejo puede llegar sucio)
   // opacity 0 -> 1 al primer frame reproducible: con opacity 0 el video NO es
   // candidato LCP (spec) — el <img> poster AVIF debajo (mismo frame, 128KB)
   // gana el LCP en vez del primer frame del MP4 (fix rendimiento 2026-08-16).
+  const revealVideo = () => { videoEl.style.opacity = ''; };
   videoEl.style.opacity = '0';
-  videoEl.addEventListener('playing', () => { videoEl.style.opacity = ''; }, { once: true });
+  videoEl.addEventListener('playing', revealVideo, { once: true });
   slideshowEl.classList.remove('opacity-100');
   slides.forEach((slide) => {
     slide.classList.remove('opacity-100');
@@ -82,13 +85,12 @@ export function initHeroVideo(): () => void {
     swapping = true;
 
     const swapSource = () => {
+      if (disposed) return;
       videoEl.src = src;
       videoEl.load();
       videoEl.play().catch(() => {
         /* autoplay bloqueado: aceptable */
       });
-      const next = parts[(index + 1) % parts.length];
-      if (next) preloadNext(next);
     };
 
     // Si el codec elegido (AV1) falla al decodificar en este navegador, saltar
@@ -110,9 +112,10 @@ export function initHeroVideo(): () => void {
       return;
     }
 
-    gsap
+    activeTimeline = gsap
       .timeline({
         onComplete: () => {
+          activeTimeline = null;
           swapping = false;
         },
       })
@@ -140,30 +143,47 @@ export function initHeroVideo(): () => void {
   // registrar el listener y el video nunca arrancaba. Ahora startOnce() con
   // guard cubre readyState-complete + load + preloader-done, idempotente.
   let started = false;
+  let startLoadHandler: (() => void) | null = null;
+  let startPreloaderHandler: (() => void) | null = null;
+  let loadingTimeout: number | null = null;
+  let loadingPlayingHandler: (() => void) | null = null;
+  let loadingErrorHandler: (() => void) | null = null;
   function startOnce(): void {
-    if (started) return;
-    started = true;
     const start = () => {
+      if (started || disposed) return;
+      started = true;
+      if (startLoadHandler) {
+        window.removeEventListener('load', startLoadHandler);
+        startLoadHandler = null;
+      }
+      if (startPreloaderHandler) {
+        window.removeEventListener('usgar:preloader-done', startPreloaderHandler);
+        startPreloaderHandler = null;
+      }
       // Overlay "cargando video" (estilo YouTube): visible mientras el MP4
       // bufferiza; fade-out en el primer frame reproducible. Timeout de
       // seguridad 12s: si el autoplay esta bloqueado el poster queda y el
       // texto desaparece igual (nunca un spinner eterno).
-      let hideTimeout = 0;
       function hideLoading(): void {
-        window.clearTimeout(hideTimeout);
+        if (loadingTimeout !== null) {
+          window.clearTimeout(loadingTimeout);
+          loadingTimeout = null;
+        }
         if (!loading) return;
         loading.classList.remove('opacity-100');
         loading.classList.add('opacity-0');
       }
       const onPlaying = () => {
         hideLoading();
-        preloadNext(parts[1 % parts.length]);
         videoEl.removeEventListener('playing', onPlaying);
+        loadingPlayingHandler = null;
       };
+      loadingPlayingHandler = onPlaying;
+      loadingErrorHandler = hideLoading;
       if (loading) loading.classList.add('opacity-100');
       videoEl.addEventListener('playing', onPlaying);
       videoEl.addEventListener('error', hideLoading, { once: true });
-      hideTimeout = window.setTimeout(hideLoading, 12000);
+      loadingTimeout = window.setTimeout(hideLoading, 12000);
       if (parts.length > 0) {
         playPart(0);
       } else {
@@ -171,18 +191,25 @@ export function initHeroVideo(): () => void {
         videoEl.play().catch(() => {});
       }
     };
-    if (document.readyState === 'complete') {
+    if (document.readyState === 'complete' || window.__preloaderDone) {
       start();
-    } else {
-      window.addEventListener('load', start, { once: true });
     }
-    if (window.__preloaderDone) {
-      start();
-    } else {
-      window.addEventListener('usgar:preloader-done', start, { once: true });
+    if (!started) {
+      if (document.readyState !== 'complete') {
+        startLoadHandler = start;
+        window.addEventListener('load', start, { once: true });
+      }
+      if (!window.__preloaderDone) {
+        startPreloaderHandler = start;
+        window.addEventListener('usgar:preloader-done', start, { once: true });
+      }
     }
   }
-  startOnce();
+  if (!allowVideo) {
+    startSlideshow();
+  } else {
+    startOnce();
+  }
 
   // Toggle de sonido (asignación directa: no acumula listeners entre re-inits)
   toggleBtnEl.onclick = () => {
@@ -194,14 +221,12 @@ export function initHeroVideo(): () => void {
 
   // Fin de segmento: siguiente clip (loop infinito). Sin segmentos → slideshow.
   videoEl.onended = () => {
-    if (parts.length > 0) {
-      partIndex = (partIndex + 1) % parts.length;
-      playPart(partIndex);
-    } else {
-      videoEl.classList.remove('opacity-100');
-      videoEl.classList.add('opacity-0');
-      startSlideshow();
-    }
+    // Do not rotate a multi-video loop on the critical path. The first clip
+    // is a visual enhancement; when it ends, keep the poster/slideshow rather
+    // than triggering another multi-megabyte request.
+    videoEl.classList.remove('opacity-100');
+    videoEl.classList.add('opacity-0');
+    startSlideshow();
   };
 
   function forceEager(slide: Element): void {
@@ -244,6 +269,10 @@ export function initHeroVideo(): () => void {
           slides[currentSlide].classList.remove('opacity-0');
           slides[currentSlide].classList.add('opacity-100');
         }
+      } else if (!allowVideo) {
+        // Keep mobile on the image slideshow; never assign a video source
+        // after the final slide.
+        currentSlide = -1;
       } else {
         if (activeSlideshowInterval) clearInterval(activeSlideshowInterval);
         activeSlideshowInterval = null;
@@ -263,6 +292,30 @@ export function initHeroVideo(): () => void {
   }
 
   return () => {
+    disposed = true;
+    if (startLoadHandler) window.removeEventListener('load', startLoadHandler);
+    if (startPreloaderHandler) window.removeEventListener('usgar:preloader-done', startPreloaderHandler);
+    startLoadHandler = null;
+    startPreloaderHandler = null;
+    if (loadingTimeout !== null) {
+      window.clearTimeout(loadingTimeout);
+      loadingTimeout = null;
+    }
+    if (loadingPlayingHandler) {
+      videoEl.removeEventListener('playing', loadingPlayingHandler);
+      loadingPlayingHandler = null;
+    }
+    if (loadingErrorHandler) {
+      videoEl.removeEventListener('error', loadingErrorHandler);
+      loadingErrorHandler = null;
+    }
+    videoEl.removeEventListener('playing', revealVideo);
+    toggleBtnEl.onclick = null;
+    videoEl.onended = null;
+    videoEl.onerror = null;
+    activeTimeline?.kill();
+    activeTimeline = null;
+    videoEl.pause();
     if (activeSlideshowInterval) {
       clearInterval(activeSlideshowInterval);
       activeSlideshowInterval = null;

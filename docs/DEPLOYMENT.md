@@ -8,6 +8,7 @@ Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo m
 
 1. `git push origin main` → GitHub envía webhook → Hostinger hace pull, `npm install` (auto-detecta npm por lockfile), `npm run build`, y sirve el output. Un solo deploy a la vez; pushes extra se encolan.
 2. El `postbuild` (package.json) copia `app/`, `vendor/` y `cron/` a `dist/` (Composer no existe en prod) y **elimina cualquier `dist/.env`**. Astro vuelca `public/*` en la raíz de `dist/`, así que el entry PHP queda en `dist/index.php` + `dist/.htaccess`.
+   El `.htaccess` bloquea por HTTP el acceso directo a `app/`, `vendor/`, `cron/`, `logs/`, `storage/` y `runtime/`; esos directorios solo se conservan en el webroot para que los trabajos CLI puedan ejecutarse. Las revocaciones JWT se escriben en `runtime/revoked-tokens` junto al `.env` efectivo, fuera de `public_html` cuando esa raíz existe, y sobreviven al reemplazo de `dist`.
 3. Config vigente en hPanel: branch `main` · build script `build` · output directory `dist` · Node **22** (fijado también en `engines` de package.json) · package manager npm.
 4. Historial/logs de cada build: hPanel → Deployments (branch, commit, autor, estado, log completo).
 5. Si el build falla durante `npm install`: primera causa = versión de Node vs `engines` (npm reintenta con `--legacy-peer-deps` antes de fallar).
@@ -18,7 +19,7 @@ Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo m
 
 - Fuente efectiva: hPanel → **Environment variables** (la integración las escribe en `/home/<usuario>/domains/usgarhoteles.com/.builds/config/.env`; se inyectan en build y runtime y persisten entre deploys).
 - Fallback soportado por `app/Core/Config.php::loadEnv`: un `.env` **un nivel arriba de `public_html`**; si existe, tiene prioridad sobre las vars de hPanel.
-- **Nunca** dentro de `public_html` ni de `dist/`. El build borra `dist/.env` y falla si quedara (guard del workflow desactivado, replicado en el postbuild).
+- **Nunca** dentro de `public_html` ni de `dist/`. El build borra `dist/.env` y falla si quedara (guard del workflow desactivado, replicado en el postbuild). El directorio `runtime/` junto al `.env` efectivo debe ser escribible por PHP/cron; si no puede crearse o leerse, la autenticación falla cerrada hasta corregir permisos.
 - Lista completa de variables: `.env.example` (canónico) + `docs/API.md` §Variables.
 
 ### ⚠️ DÓNDE se edita de verdad (verificado 2026-08-15 — hay DOS fuentes y una gana)
@@ -30,6 +31,7 @@ Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo m
 3. `dist/.env` (raíz del deploy) — se borra en postbuild
 
 **Si el `.env` del File Manager existe (caso real en prod), TODO cambio en hPanel → Variables de entorno se ignora silenciosamente** — el código nunca llega a leer el candidato 2. Esto confundió al dueño (2026-08-15): "cambio en hPanel, hago redeploy, y las credenciales no cambian; cambio el `.env` del File Manager y sí".
+Los procesos CLI de cron aplican la misma precedencia externa aunque no reciban `DOCUMENT_ROOT`: si el código corre dentro del árbol `public_html`, buscan primero el `.env` junto a `public_html` y luego `.builds/config/.env`; el `.env` del checkout solo queda como fallback local.
 
 **Cómo editar la configuración en producción (procedimiento para no-técnicos):**
 
@@ -72,18 +74,20 @@ Verificado en Hostinger vía API (2026-08-14) — esta es la configuración REAL
 | 5 min | `php /home/<USER>/domains/usgarhoteles.com/public_html/cron/process_outbox.php` | Procesa `event_outbox`: eventos de dominio (booking.paid) que no se entregaron en la petición HTTP. Máquina de estados con reclaim/backoff/lease (ver cabecera de `ProcessOutboxAction`). **Desde 2026-08-14 también envía el email de confirmación (voucher) al huésped** vía `SendBookingConfirmationEmailListener` (PHPMailer + SMTP; si `SMTP_HOST` está vacío se omite sin reintentar) |
 | **15 min** | `php /home/<USER>/domains/usgarhoteles.com/public_html/cron/reconcile_payments.php` | Consulta MP por holds pendientes con payment_id cuyo webhook nunca llegó; si está `approved`, completa la reserva y dispara `booking.paid` |
 | 10 min | `php /home/<USER>/domains/usgarhoteles.com/public_html/cron/cleanup.php` | Marca `expired` los holds `pending` vencidos (auditoría 2026-08-11: el endpoint HTTP no tenía operador y la tabla acumulaba basura) |
-| 20 min | `php /home/<USER>/domains/usgarhoteles.com/public_html/index.php /api/cron/manual-review` | Reintenta holds en `manual_review`/`fraud_review` (RetryManualReviewAction) |
+| 20 min | `php /home/<USER>/domains/usgarhoteles.com/public_html/index.php /api/cron/manual-review` | Lista holds en `manual_review`/`fraud_review` para revisión operativa (la acción CLI por defecto es `list`; no redispatcha pagos automáticamente) |
 | **1 día** | `/usr/bin/php /home/<USER>/domains/usgarhoteles.com/public_html/index.php /api/cron/refresh-reviews` | Refresca los scores de reseñas (Booking/KAYAK/Expedia) → `app/storage/review-scores.json`; `GET /api/reviews-score` los sirve al ribbon de la home. Fallback por fuente (fetch/parse fallido → valor anterior). **REGISTRADO en hPanel 2026-08-15** (uid `egFzCUjpmW`, `0 3 * * *` = diario 03:00). Verificación manual: `php public/index.php /api/cron/refresh-reviews` → JSON con `scores` |
 
 > Nota: el cron real de reconcile es **15 min** (no 10 como decía esta tabla antes — la doc estaba desincronizada de hPanel). El polling del frontend aguanta 10 min; si el webhook se pierde, el hold se resuelve en ≤15 min por el cron y el usuario puede pulsar "Verificar de nuevo".
 
-Requisito de BD (ya aplicado en prod): columna `payment_id` en `provisional_bookings` (el código la auto-crea vía `ensureTablesExist` en entornos nuevos).
+Requisito de BD (ya aplicado en prod): columnas `payment_id` y `payment_idempotency_key` en `provisional_bookings`. El código auto-crea/migra ambas vía `ensureTablesExist` o en el primer intento de pago de instalaciones antiguas; la DDL se ejecuta fuera de la transacción del cobro.
 
 Verificación manual:
 ```bash
 php cron/process_outbox.php        # Esperado: "No events to process." o lista de procesados
 php cron/reconcile_payments.php    # Esperado: "Reconciliacion completada: checked=0, ..."
 ```
+
+El cron de `manual-review` solo genera el listado anterior. Para re-chequear y redispatchar un pago se requiere una invocación explícita con `action=redispatch` y `cart_id`, protegida por `CRON_SECRET` cuando se usa HTTP; no se automatiza esa transición porque puede confirmar un pago y disparar la sincronización con el PMS.
 
 ## Hooks de git
 

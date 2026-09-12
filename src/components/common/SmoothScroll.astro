@@ -18,13 +18,21 @@
   let lenisInstance: Lenis | null = null;
   let rafCallback: ((time: number) => void) | null = null;
   let lenisCtx: gsap.Context | null = null;
+  // RAF pendientes del scroll al hash inicial: se cancelan antes de que la
+  // siguiente página cargue, para que la cadena anidada no dispare
+  // smoothScrollTo sobre el DOM nuevo (stale callback entre navegaciones).
+  let pendingHashRafs: number[] = [];
 
   function initLenis() {
     if (typeof window === 'undefined') return;
 
     const isMobileTouch = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 1024;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (!isMobileTouch && !lenisInstance) {
+    // Lenis keeps running even when it respects reduced motion. Skip creating
+    // the ticker entirely so wheel/touch scrolling remains native and no
+    // animation work is scheduled for users who requested less motion.
+    if (!isMobileTouch && !reduceMotion && !lenisInstance) {
       lenisCtx = gsap.context(() => {
         lenisInstance = new Lenis({
           duration: 0.9,
@@ -93,7 +101,8 @@
     if (lenisInstance) {
       lenisInstance.scrollTo(target);
     } else {
-      target.scrollIntoView({ behavior: 'smooth' });
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
     }
   }
 
@@ -102,8 +111,23 @@
     if (!hash || hash === '#') return;
     const target = resolveHashTarget(hash);
     if (!target) return;
+    cancelPendingHashRafs();
     // Two frames: let Lenis compute dimensions and the layout settle first.
-    requestAnimationFrame(() => requestAnimationFrame(() => smoothScrollTo(target)));
+    // Ambos frames quedan registrados para poder cancelarlos si la navegación
+    // cambia de página antes de que la cadena termine.
+    const outer = requestAnimationFrame(() => {
+      const inner = requestAnimationFrame(() => {
+        pendingHashRafs = [];
+        smoothScrollTo(target);
+      });
+      pendingHashRafs = [inner];
+    });
+    pendingHashRafs = [outer];
+  }
+
+  function cancelPendingHashRafs(): void {
+    pendingHashRafs.forEach((id) => cancelAnimationFrame(id));
+    pendingHashRafs = [];
   }
 
   document.addEventListener(
@@ -135,6 +159,7 @@
   );
 
   function initPage() {
+    cancelPendingHashRafs();
     initLenis();
     bootAnimations();
     scrollToInitialHash();
@@ -143,6 +168,7 @@
   initLifecycle();
 
   document.addEventListener('astro:before-preparation', () => {
+    cancelPendingHashRafs();
     destroyLenis();
   });
 

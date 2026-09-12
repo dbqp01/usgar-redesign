@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Features\Shared\Adapters;
 
 use App\Features\Shared\Ports\PmsPortInterface;
+use App\Features\Shared\PmsUnavailableException;
 use App\Features\Shared\DiscountResolver;
 use App\Core\Config;
 use App\Core\Logger;
@@ -35,6 +36,7 @@ class QloAppAdapter implements PmsPortInterface {
     private ?PDO $pdo;
     private readonly ?string $apiUrl;
     private readonly ?string $apiKey;
+    private bool $roomLedgerChecked = false;
 
     public function __construct(?PDO $pdo = null) {
         $db = Database::getInstance();
@@ -50,9 +52,10 @@ class QloAppAdapter implements PmsPortInterface {
     public function getAvailableRooms(string $checkIn, string $checkOut, int $idHotel = 1, ?int $idLang = null): array {
         if (!$this->pdo) {
             Logger::error('QloAppAdapter: DB Connection is offline. Cannot get availability.');
-            return [];
+            throw new PmsUnavailableException('PMS database is offline.');
         }
         $idLang = $idLang ?? (int)Config::get('QLOAPPS_DEFAULT_LANG_ID', '1');
+        $this->ensureRoomLedgerTable();
 
         try {
             $stmt = $this->pdo->prepare("
@@ -64,28 +67,40 @@ class QloAppAdapter implements PmsPortInterface {
                     rt.max_guests,
                     (
                         SELECT COUNT(*) FROM qlo_htl_room_information ri
-                        WHERE ri.id_product = rt.id_product
+                        WHERE ri.id_product = rt.id_product AND ri.id_hotel = rt.id_hotel
                     ) AS total_rooms,
                     (
                         COALESCE((
                             SELECT COUNT(*) FROM qlo_htl_booking_detail bd
                             WHERE bd.id_product = rt.id_product
+                              AND bd.id_hotel = :id_hotel_booked
                               AND bd.is_cancelled = 0
                               AND bd.is_refunded = 0
                               AND bd.date_from < :date_to_booked
                               AND bd.date_to > :date_from_booked
                         ), 0) +
                         COALESCE((
-                            SELECT COUNT(*) FROM provisional_bookings pb
-                            WHERE pb.id_room_type = rt.id
+                            SELECT COALESCE(SUM(CASE WHEN pbr.quantity IS NULL THEN 1 ELSE pbr.quantity END), 0)
+                            FROM provisional_bookings pb
+                            LEFT JOIN provisional_booking_rooms pbr
+                              ON pbr.cart_id = pb.cart_id AND pbr.id_room_type = rt.id
+                            WHERE (pbr.id_room_type IS NOT NULL OR pb.id_room_type = rt.id)
                               AND (pb.status = 'paid' OR (pb.status = 'pending' AND pb.expires_at > NOW()))
                               AND pb.checkin < :check_out_date
                               AND pb.checkout > :check_in_date
                               AND pb.id_hotel = :id_hotel_holds
+                              AND NOT EXISTS (
+                                  SELECT 1 FROM qlo_orders qo
+                                  WHERE qo.current_state = 2
+                                    AND (qo.source = pb.cart_id OR qo.source = CONCAT('USGAR-', pb.cart_id))
+                              )
                         ), 0) +
                         COALESCE((
-                            SELECT COUNT(DISTINCT rd.id_room) FROM qlo_htl_room_disable_dates rd
+                            SELECT COUNT(DISTINCT rd.id_room)
+                            FROM qlo_htl_room_disable_dates rd
+                            INNER JOIN qlo_htl_room_information ri_disable ON ri_disable.id = rd.id_room
                             WHERE rd.id_room_type = rt.id
+                              AND ri_disable.id_hotel = :id_hotel_disabled
                               AND rd.date_from < :date_to_disabled
                               AND rd.date_to > :date_from_disabled
                         ), 0)
@@ -99,6 +114,8 @@ class QloAppAdapter implements PmsPortInterface {
             $stmt->execute([
                 ':id_hotel'         => $idHotel,
                 ':id_hotel_holds'   => $idHotel,
+                ':id_hotel_booked'  => $idHotel,
+                ':id_hotel_disabled' => $idHotel,
                 ':id_lang'          => $idLang,
                 ':date_from_booked' => $checkIn . ' ' . self::CHECKIN_TIME,
                 ':date_to_booked'   => $checkOut . ' ' . self::CHECKOUT_TIME,
@@ -145,7 +162,7 @@ class QloAppAdapter implements PmsPortInterface {
 
         } catch (PDOException $e) {
             Logger::error('QloAppAdapter: Error en consulta SQL: ' . $e->getMessage());
-            return [];
+            throw new PmsUnavailableException('PMS availability query failed.', 0, $e);
         }
     }
 
@@ -199,11 +216,12 @@ class QloAppAdapter implements PmsPortInterface {
     public function getAvailabilityCalendar(string $from, string $to, int $idHotel = 1): array {
         if (!$this->pdo) {
             Logger::error('QloAppAdapter: DB Connection is offline. Cannot get calendar availability.');
-            return [];
+            throw new PmsUnavailableException('PMS database is offline.');
         }
 
         // Mismo default que getAvailableRooms() (P2-3: id_lang ya no hardcodeado)
         $idLang = (int)Config::get('QLOAPPS_DEFAULT_LANG_ID', '1');
+        $this->ensureRoomLedgerTable();
 
         $fromTs = strtotime($from . ' 00:00:00');
         $toTs   = strtotime($to . ' 00:00:00');
@@ -224,7 +242,7 @@ class QloAppAdapter implements PmsPortInterface {
                     pl.name AS room_name,
                     (
                         SELECT COUNT(*) FROM qlo_htl_room_information ri
-                        WHERE ri.id_product = rt.id_product
+                        WHERE ri.id_product = rt.id_product AND ri.id_hotel = rt.id_hotel
                     ) AS total_rooms
                 FROM qlo_htl_room_type rt
                 INNER JOIN qlo_product p ON p.id_product = rt.id_product
@@ -240,30 +258,40 @@ class QloAppAdapter implements PmsPortInterface {
 
             // Todas las reservas activas (no canceladas/refundadas) en QloApps que tocan el rango.
             $bookingsStmt = $this->pdo->prepare("
-                SELECT bd.id_product, bd.date_from, bd.date_to
+                SELECT bd.id_product, rt.id AS room_type_id, bd.date_from, bd.date_to
                 FROM qlo_htl_booking_detail bd
                 INNER JOIN qlo_htl_room_type rt ON rt.id_product = bd.id_product
                 WHERE bd.is_cancelled = 0
                   AND bd.is_refunded = 0
                   AND bd.date_from < :range_to
                   AND bd.date_to > :range_from
+                  AND bd.id_hotel = :id_hotel_booking
                   AND rt.id_hotel = :id_hotel
             ");
             $bookingsStmt->execute([
                 ':range_from' => date('Y-m-d 00:00:00', $fromTs),
                 ':range_to'   => date('Y-m-d 23:59:59', $toTs),
                 ':id_hotel'   => $idHotel,
+                ':id_hotel_booking' => $idHotel,
             ]);
             $bookings = $bookingsStmt->fetchAll();
 
             // Todos los holds provisionales activos (paid o pending unexpired) en provisional_bookings
             $holdsStmt = $this->pdo->prepare("
-                SELECT pb.id_room_type, pb.checkin, pb.checkout
+                SELECT COALESCE(pbr.id_room_type, pb.id_room_type) AS id_room_type,
+                       COALESCE(pbr.quantity, 1) AS quantity,
+                       pb.checkin, pb.checkout
                 FROM provisional_bookings pb
+                LEFT JOIN provisional_booking_rooms pbr ON pbr.cart_id = pb.cart_id
                 WHERE (pb.status = 'paid' OR (pb.status = 'pending' AND pb.expires_at > NOW()))
                   AND pb.checkin < :range_to_date
                   AND pb.checkout > :range_from_date
                   AND pb.id_hotel = :id_hotel
+                  AND NOT EXISTS (
+                      SELECT 1 FROM qlo_orders qo
+                      WHERE qo.current_state = 2
+                        AND (qo.source = pb.cart_id OR qo.source = CONCAT('USGAR-', pb.cart_id))
+                  )
             ");
             $holdsStmt->execute([
                 ':range_from_date' => date('Y-m-d', $fromTs),
@@ -278,12 +306,15 @@ class QloAppAdapter implements PmsPortInterface {
             $disabledStmt = $this->pdo->prepare("
                 SELECT rd.id_room_type, rd.id_room, rd.date_from, rd.date_to
                 FROM qlo_htl_room_disable_dates rd
+                INNER JOIN qlo_htl_room_information ri_disable ON ri_disable.id = rd.id_room
                 WHERE rd.date_from < :range_to_disabled
                   AND rd.date_to > :range_from_disabled
+                  AND ri_disable.id_hotel = :id_hotel_disabled
             ");
             $disabledStmt->execute([
                 ':range_from_disabled' => date('Y-m-d', $fromTs),
                 ':range_to_disabled'   => date('Y-m-d', $toTs),
+                ':id_hotel_disabled'   => $idHotel,
             ]);
             $disabled = $disabledStmt->fetchAll();
 
@@ -300,20 +331,30 @@ class QloAppAdapter implements PmsPortInterface {
                 $occupied = [];
 
                 foreach ($bookings as $b) {
-                    $bFrom = strtotime((string)$b['date_from']);
-                    $bTo   = strtotime((string)$b['date_to']);
-                    if ($ts < $bTo && $ts >= $bFrom) {
-                        $idRoomType = (int)$b['id_product'];
+                    // QloApps stores booking timestamps at check-in (12:00)
+                    // and check-out (10:30). Calendar availability is a
+                    // night/date contract, so comparing midnight timestamps
+                    // shifts a 12:00 -> 10:30 booking onto the checkout day.
+                    // Compare date-only values with an inclusive check-in and
+                    // exclusive check-out boundary instead.
+                    $bFrom = substr((string)$b['date_from'], 0, 10);
+                    $bTo   = substr((string)$b['date_to'], 0, 10);
+                    if ($dateKey >= $bFrom && $dateKey < $bTo) {
+                        // Booking detail stores the product id; availability
+                        // inventory is keyed by qlo room type id. Keep the
+                        // explicit join alias as the source of truth, with a
+                        // legacy fallback for test/older adapters.
+                        $idRoomType = (int)($b['room_type_id'] ?? $b['id_room_type'] ?? $b['id_product'] ?? 0);
                         $occupied[$idRoomType] = ($occupied[$idRoomType] ?? 0) + 1;
                     }
                 }
 
                 foreach ($holds as $h) {
-                    $hFrom = strtotime((string)$h['checkin'] . ' 00:00:00');
-                    $hTo   = strtotime((string)$h['checkout'] . ' 00:00:00');
-                    if ($ts < $hTo && $ts >= $hFrom) {
+                    $hFrom = substr((string)$h['checkin'], 0, 10);
+                    $hTo   = substr((string)$h['checkout'], 0, 10);
+                    if ($dateKey >= $hFrom && $dateKey < $hTo) {
                         $idRoomType = (int)$h['id_room_type'];
-                        $occupied[$idRoomType] = ($occupied[$idRoomType] ?? 0) + 1;
+                        $occupied[$idRoomType] = ($occupied[$idRoomType] ?? 0) + (int)($h['quantity'] ?? 1);
                     }
                 }
 
@@ -321,9 +362,9 @@ class QloAppAdapter implements PmsPortInterface {
                 // ocupada (COUNT DISTINCT por id_room para no doblar solapes).
                 $disabledRoomIds = [];
                 foreach ($disabled as $d) {
-                    $dFrom = strtotime((string)$d['date_from']);
-                    $dTo   = strtotime((string)$d['date_to']);
-                    if ($ts < $dTo && $ts >= $dFrom) {
+                    $dFrom = substr((string)$d['date_from'], 0, 10);
+                    $dTo   = substr((string)$d['date_to'], 0, 10);
+                    if ($dateKey >= $dFrom && $dateKey < $dTo) {
                         $disabledRoomIds[(int)$d['id_room_type']][(int)$d['id_room']] = true;
                     }
                 }
@@ -342,7 +383,26 @@ class QloAppAdapter implements PmsPortInterface {
 
         } catch (PDOException $e) {
             Logger::error('QloAppAdapter: Error en consulta de calendario: ' . $e->getMessage());
-            return [];
+            throw new PmsUnavailableException('PMS calendar query failed.', 0, $e);
+        }
+    }
+
+    /** Bootstrap the additive ledger once per adapter instance, never per read. */
+    private function ensureRoomLedgerTable(): void {
+        if ($this->roomLedgerChecked || !$this->pdo) {
+            return;
+        }
+        $this->roomLedgerChecked = true;
+        try {
+            $this->pdo->exec("CREATE TABLE IF NOT EXISTS provisional_booking_rooms (
+                cart_id VARCHAR(64) NOT NULL,
+                id_room_type INT NOT NULL,
+                quantity INT NOT NULL DEFAULT 1,
+                PRIMARY KEY (cart_id, id_room_type),
+                INDEX idx_room_type (id_room_type)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+        } catch (Throwable $e) {
+            Logger::warning('QloAppAdapter: ledger migration deferred: ' . $e->getMessage());
         }
     }
 
@@ -474,45 +534,113 @@ XML;
         ], $checkIn, $checkOut, $guestName, $guestEmail, $guestPhone, $totalPrice);
     }
 
+    /** @param array<int|string,mixed>|null $roomLines */
     public function confirmOrder(
         string $cartId,
         float $totalPrice,
         string $guestName,
         string $guestEmail,
-        ?int $idRoom = 1,
+        ?int $idRoom = null,
         string $module = 'mercadopago',
-        string $paymentLabel = 'Mercado Pago (Online)'
+        string $paymentLabel = 'Mercado Pago (Online)',
+        ?array $roomLines = null
     ): ?string {
         if (!$this->pdo) {
             Logger::error("QloAppAdapter: PDO database connection offline. Cannot confirm order {$cartId}.");
             return null;
         }
 
-        // Si cartId inicia con USGAR- o es un cart_id local
-        $stmt = $this->pdo->prepare("SELECT * FROM provisional_bookings WHERE cart_id = ? OR cart_id = ?");
         $fullCartId = str_starts_with($cartId, self::QLOAPPS_LOCAL_PREFIX) ? $cartId : self::QLOAPPS_LOCAL_PREFIX . $cartId;
-        $stmt->execute([$cartId, $fullCartId]);
-        $hold = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$hold) {
-            Logger::error("QloAppAdapter: No se encontró la reserva provisional local para {$cartId}");
-            return null;
-        }
-
-        $idHotel = (int)($hold['id_hotel'] ?? Config::get('DEFAULT_HOTEL_ID', '1'));
-        $idRoomType = (int)$hold['id_room_type'];
-        $checkIn = (string)$hold['checkin'];
-        $checkOut = (string)$hold['checkout'];
-
-        $guestData = json_decode((string)($hold['guest_data'] ?? '{}'), true) ?? [];
-        $guests = (int)($guestData['guests'] ?? 1);
-        $phone = (string)($guestData['phone'] ?? Config::get('OTA_DEFAULT_PHONE', '000000000'));
-
-        $nameParts = explode(' ', trim($guestName), 2);
-        $firstName = $nameParts[0] ?: 'Guest';
-        $lastName = $nameParts[1] ?? 'Guest';
-
         try {
+            // Lock the local hold before looking for an existing PMS order.
+            // This closes the race where two outbox deliveries both pass the
+            // external-reference pre-check and insert duplicate orders.
+            // Compose with a caller-owned transaction (panel/manual booking)
+            // without attempting a nested PDO transaction. Direct outbox
+            // delivery still owns and commits its short transaction here.
+            $startedTransaction = false;
+            if (!$this->pdo->inTransaction()) {
+                $this->pdo->beginTransaction();
+                $startedTransaction = true;
+            }
+            $stmt = $this->pdo->prepare("SELECT * FROM provisional_bookings WHERE cart_id = ? OR cart_id = ? FOR UPDATE");
+            $stmt->execute([$cartId, $fullCartId]);
+            $hold = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$hold) {
+                if ($startedTransaction) {
+                    $this->pdo->rollBack();
+                }
+                Logger::error("QloAppAdapter: No se encontró la reserva provisional local para {$cartId}");
+                return null;
+            }
+
+            $existing = $this->pdo->prepare(
+                'SELECT id_order, current_state FROM qlo_orders WHERE source = ? OR source = ? ORDER BY id_order DESC LIMIT 1'
+            );
+            $existing->execute([$fullCartId, $cartId]);
+            $existingOrder = $existing->fetch(PDO::FETCH_ASSOC);
+            if ($existingOrder && (int)($existingOrder['current_state'] ?? 0) === self::ORDER_STATE_PAID) {
+                if ($startedTransaction) {
+                    $this->pdo->commit();
+                }
+                return (string)$existingOrder['id_order'];
+            }
+
+            $idHotel = (int)($hold['id_hotel'] ?? Config::get('DEFAULT_HOTEL_ID', '1'));
+            $idRoomType = (int)$hold['id_room_type'];
+            $checkIn = (string)$hold['checkin'];
+            $checkOut = (string)$hold['checkout'];
+
+            $guestData = json_decode((string)($hold['guest_data'] ?? '{}'), true) ?? [];
+            $guests = (int)($guestData['guests'] ?? 1);
+            $phone = (string)($guestData['phone'] ?? Config::get('OTA_DEFAULT_PHONE', '000000000'));
+
+            $nameParts = explode(' ', trim($guestName), 2);
+            $firstName = $nameParts[0] ?: 'Guest';
+            $lastName = $nameParts[1] ?? 'Guest';
+
+            // Canonical room lines are frozen in the hold. Expand quantity into
+            // physical PMS rows so availability cannot undercount an A+A booking.
+            $storedRoomLines = json_decode((string)($hold['room_data'] ?? '[]'), true);
+            $sourceLines = is_array($roomLines) && $roomLines !== []
+                ? $roomLines
+                : (is_array($storedRoomLines) ? $storedRoomLines : []);
+            if (isset($sourceLines['room_name'])) {
+                $sourceLines = [$sourceLines];
+            }
+            if ($sourceLines === []) {
+                $sourceLines = [[
+                    'id_room_type' => $idRoomType,
+                    'id_product' => $idRoomType,
+                    'room_name' => 'Habitación USGAR',
+                    'guests' => $guests,
+                    'room_total' => $totalPrice,
+                    'quantity' => 1,
+                ]];
+            }
+            $canonicalLines = [];
+            foreach ($sourceLines as $line) {
+                if (!is_array($line)) continue;
+                $quantity = max(1, (int)($line['quantity'] ?? 1));
+                for ($unit = 0; $unit < $quantity; $unit++) {
+                    $canonicalLines[] = [
+                        'id_product' => max(1, (int)($line['id_product'] ?? $line['id_room_type'] ?? $idRoomType)),
+                        'id_room_type' => max(1, (int)($line['id_room_type'] ?? $idRoomType)),
+                        'room_name' => (string)($line['room_name'] ?? 'Habitación USGAR'),
+                        'guests' => max(1, (int)($line['guests'] ?? $guests)),
+                        'room_total' => (float)($line['room_total'] ?? 0),
+                        'id_room' => isset($line['id_room']) ? (int)$line['id_room'] : null,
+                    ];
+                }
+            }
+            if ($canonicalLines === []) {
+                if ($startedTransaction) {
+                    $this->pdo->rollBack();
+                }
+                return null;
+            }
+
             // Moneda de la orden: la pasarela cobra PEN (MERCADO_PAGO_CURRENCY).
             // La tienda QloApps opera en USD (PS_CURRENCY_DEFAULT=2) y el codigo
             // antiguo fijaba id_currency=2 creyendo que era PEN — las ordenes
@@ -540,8 +668,6 @@ XML;
                 $penCurrencyId = (int)$penCur['id_currency'];
                 $penConversionRate = (float)$penCur['conversion_rate'];
             }
-
-            $this->pdo->beginTransaction();
 
             // 1. Cliente: buscar por email o insertar
             $stmtCust = $this->pdo->prepare("SELECT id_customer FROM qlo_customer WHERE email = ?");
@@ -589,10 +715,44 @@ XML;
             $stmtOrder->execute([$ref, $idCustomer, $idCart, $paymentLabel, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $module, $fullCartId]);
             $idOrder = (int)$this->pdo->lastInsertId();
 
+            // 5-8. Persist one PMS line per requested unit. The order total is
+            // expressed in the gateway currency (PEN), while room_data keeps
+            // frozen line totals in the hotel currency (USD). Allocate the
+            // total in integer cents so detail rows and the order header use
+            // one currency and always add up exactly.
+            $lineCount = count($canonicalLines);
+            $totalCents = max(0, (int)round($totalPrice * 100));
+            $lineWeights = array_map(
+                static fn(array $line): int => max(0, (int)round((float)$line['room_total'] * 100)),
+                $canonicalLines
+            );
+            $weightSum = array_sum($lineWeights);
+            $allocatedCents = 0;
+            foreach ($canonicalLines as $lineIndex => $line) {
+                $lineProduct = (int)$line['id_product'];
+                $lineRoom = (int)($line['id_room'] ?? 0);
+                $lineGuests = (int)$line['guests'];
+                $isLastLine = $lineIndex === $lineCount - 1;
+                if ($isLastLine) {
+                    // Residual centavo(s) absorb proportional rounding so
+                    // SUM(detail totals) === qlo_orders.total_paid exactly.
+                    $lineCents = $totalCents - $allocatedCents;
+                } elseif ($weightSum > 0) {
+                    $lineCents = intdiv($totalCents * $lineWeights[$lineIndex], $weightSum);
+                } else {
+                    $lineCents = intdiv($totalCents, $lineCount);
+                }
+                $lineCents = max(0, $lineCents);
+                $allocatedCents += $lineCents;
+                $linePrice = $lineCents / 100;
+
             // 5. Nombre del producto de la habitación
             $stmtRoomName = $this->pdo->prepare("SELECT pl.name FROM qlo_product_lang pl WHERE pl.id_product = ? AND pl.id_lang = {$langId} LIMIT 1");
-            $stmtRoomName->execute([$idRoomType]);
-            $roomName = (string)($stmtRoomName->fetchColumn() ?: 'Habitación USGAR');
+            $stmtRoomName->execute([$lineProduct]);
+            $roomName = (string)$line['room_name'];
+            if ($roomName === '') {
+                $roomName = (string)($stmtRoomName->fetchColumn() ?: 'Habitación USGAR');
+            }
 
             // 6. Detalle de orden
             $stmtDetail = $this->pdo->prepare("
@@ -604,7 +764,8 @@ XML;
                     ?, ?, ?, ?, 1
                 )
             ");
-            $stmtDetail->execute([$idOrder, $idRoomType, $roomName, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $totalPrice]);
+            $stmtDetail->execute([$idOrder, $lineProduct, $roomName, $linePrice, $linePrice, $linePrice, $linePrice, $linePrice]);
+            $idOrderDetail = (int)$this->pdo->lastInsertId();
 
             // 7. Detalle de reserva en carrito (qlo_htl_cart_booking_data)
             $stmtBookingData = $this->pdo->prepare("
@@ -612,13 +773,13 @@ XML;
                     id_cart, id_guest, id_order, id_customer, id_currency, id_product, id_room, id_hotel,
                     quantity, booking_type, comment, is_back_order, extra_demands, date_from, date_to, adults, children, child_ages, date_add, date_upd
                 ) VALUES (
-                    ?, 0, ?, ?, {$penCurrencyId}, ?, {$idRoom}, ?,
+                    ?, 0, ?, ?, {$penCurrencyId}, ?, {$lineRoom}, ?,
                     1, 1, '', 0, '[]', ?, ?, ?, 0, '[]', NOW(), NOW()
                 )
             ");
             $stmtBookingData->execute([
-                $idCart, $idOrder, $idCustomer, $idRoomType, $idHotel,
-                $checkIn . ' 00:00:00', $checkOut . ' 00:00:00', $guests
+                $idCart, $idOrder, $idCustomer, $lineProduct, $idHotel,
+                $checkIn . ' 00:00:00', $checkOut . ' 00:00:00', $lineGuests
             ]);
 
             // 8. Detalle en qlo_htl_booking_detail para descuento inmediato de disponibilidad
@@ -629,17 +790,18 @@ XML;
                     total_price_tax_excl, total_price_tax_incl, total_paid_amount, is_back_order, hotel_name,
                     room_type_name, city, phone, email, adults, children, child_ages, is_refunded, is_cancelled, date_add, date_upd
                 ) VALUES (
-                    ?, ?, 0, ?, {$idRoom}, ?, ?,
+                    ?, ?, {$idOrderDetail}, ?, {$lineRoom}, ?, ?,
                     1, 1, '', ?, ?, ?, ?, ?,
                     ?, ?, ?, 0, '{$hotelName}',
                     ?, '{$hotelCity}', ?, ?, ?, 0, '[]', 0, 0, NOW(), NOW()
                 )
             ");
             $stmtHtlDetail->execute([
-                $idRoomType, $idOrder, $idCart, $idHotel, $idCustomer,
+                $lineProduct, $idOrder, $idCart, $idHotel, $idCustomer,
                 $checkIn . ' ' . $checkinTime, $checkOut . ' ' . $checkoutTime, $checkOut . ' ' . $checkoutTime, $checkIn . ' ' . $checkinTime, $checkOut . ' ' . $checkoutTime,
-                $totalPrice, $totalPrice, $totalPrice, $roomName, $phone, $guestEmail, $guests
+                $linePrice, $linePrice, $linePrice, $roomName, $phone, $guestEmail, $lineGuests
             ]);
+            }
 
             // 9. Historial de estado de orden (Estado 2 = Pago completo recibido)
             $stmtHistory = $this->pdo->prepare("
@@ -648,12 +810,14 @@ XML;
             ");
             $stmtHistory->execute([$idOrder]);
 
-            $this->pdo->commit();
+            if ($startedTransaction) {
+                $this->pdo->commit();
+            }
             Logger::info("QloAppAdapter: Orden #{$idOrder} (Ref: {$ref}) creada exitosamente en QloApps via PDO atómico para Cart {$cartId}");
             return (string)$idOrder;
 
         } catch (Throwable $e) {
-            if ($this->pdo->inTransaction()) {
+            if ($startedTransaction && $this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
             Logger::error("QloAppAdapter: Excepción al crear orden QloApps via PDO para Cart {$cartId}: " . $e->getMessage());
@@ -689,24 +853,19 @@ XML;
     public function isOrderConfirmed(string $externalReference): bool {
         $cartId = $externalReference;
         $fullCartId = str_starts_with($cartId, self::QLOAPPS_LOCAL_PREFIX) ? $cartId : self::QLOAPPS_LOCAL_PREFIX . $cartId;
-        $rawCartId = str_starts_with($cartId, self::QLOAPPS_LOCAL_PREFIX) ? substr($cartId, strlen(self::QLOAPPS_LOCAL_PREFIX)) : $cartId;
 
         if ($this->pdo) {
             try {
                 $stmt = $this->pdo->prepare("
-                    SELECT current_state
-                    FROM qlo_orders
-                    WHERE source = ? OR source = ? OR source = ? OR id_order = ?
-                    LIMIT 1
+                    SELECT EXISTS(
+                        SELECT 1
+                        FROM qlo_orders
+                        WHERE current_state = 2
+                          AND (source = ? OR source = ?)
+                    )
                 ");
-                $numericId = ctype_digit($rawCartId) ? (int)$rawCartId : 0;
-                $stmt->execute([$externalReference, $fullCartId, $rawCartId, $numericId]);
-                $state = $stmt->fetchColumn();
-
-                if ($state !== false && (int)$state === 2) {
-                    return true;
-                }
-                return false;
+                $stmt->execute([$externalReference, $fullCartId]);
+                return (int)$stmt->fetchColumn() === 1;
 
             } catch (Throwable $e) {
                 Logger::error("QloAppAdapter: Error en DB isOrderConfirmed ({$externalReference}): " . $e->getMessage());

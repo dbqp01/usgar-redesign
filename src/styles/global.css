@@ -233,6 +233,21 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* The mobile booking bar is fixed to the viewport. Reserve its visual height
+   in the document flow so the final content and footer remain reachable. */
+@media (max-width: 1023px) {
+  body:has([data-mobile-booking-bar]:not(.hidden)) main,
+  body.mobile-booking-bar-visible main {
+    padding-bottom: 5.5rem;
+  }
+
+  /* The consent panel sits above the booking bar. Lift WhatsApp only while
+     consent is visible so the three fixed actions never cover one another. */
+  body:has(#cookie-consent:not(.hidden)) #whatsapp-btn {
+    bottom: 11rem;
+  }
+}
+
 /* Keep the floating contact action out of the mobile drawer's focus area. */
 body.mobile-menu-open #whatsapp-btn {
   opacity: 0;

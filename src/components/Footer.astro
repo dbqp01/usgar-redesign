@@ -185,7 +185,7 @@ const newsletterStatusLabels = {
         <p>
           &copy; {currentYear} USGAR Hotels. {t('footer.rights')}
         </p>
-        <nav class="flex items-center gap-6" aria-label="Legal">
+        <nav class="flex items-center gap-6" aria-label={t('global.legal')}>
           <a href={getRelativeLocaleUrl(lang, 'privacy')} class="hover:text-secondary transition-colors">{t('footer.privacy')}</a>
           <a href={getRelativeLocaleUrl(lang, 'terms')} class="hover:text-secondary transition-colors">{t('footer.terms')}</a>
         </nav>
@@ -198,46 +198,61 @@ const newsletterStatusLabels = {
 </footer>
 
 <script>
-  const labels = JSON.parse(
-    document.getElementById('newsletter-form')?.dataset.labels || '{}'
-  );
-  const form = document.getElementById('newsletter-form') as HTMLFormElement | null;
-  const status = document.getElementById('newsletter-status') as HTMLElement | null;
-  const input = document.getElementById('newsletter-email') as HTMLInputElement | null;
+  let newsletterAbort = new AbortController();
 
-  function showStatus(message: string, ok: boolean) {
-    if (!status) return;
-    status.textContent = message;
-    status.className = `mt-3 text-xs font-semibold ${ok ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`;
-  }
+  function initNewsletter() {
+    newsletterAbort.abort();
+    newsletterAbort = new AbortController();
 
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!input) return;
+    const form = document.getElementById('newsletter-form') as HTMLFormElement | null;
+    const status = document.getElementById('newsletter-status') as HTMLElement | null;
+    const input = document.getElementById('newsletter-email') as HTMLInputElement | null;
+    if (!form || !status || !input) return;
 
-    if (!input.validity.valid || input.value.trim() === '') {
-      showStatus(labels.invalid || 'Invalid email', false);
-      return;
+    const labels = JSON.parse(form.dataset.labels || '{}') as Record<string, string>;
+    const formEl = form;
+    const statusEl = status;
+    const inputEl = input;
+    const signal = newsletterAbort.signal;
+
+    function showStatus(message: string, ok: boolean) {
+      statusEl.textContent = message;
+      statusEl.className = `mt-3 text-xs font-semibold ${ok ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`;
     }
 
-    try {
-      const res = await fetch('/api/newsletter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: input.value.trim(),
-          locale: document.documentElement.lang || 'en',
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        input.value = '';
-        showStatus(labels.success || 'Subscribed', true);
-      } else {
+    formEl.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!inputEl.validity.valid || inputEl.value.trim() === '') {
+        showStatus(labels.invalid || 'Invalid email', false);
+        return;
+      }
+
+      const request = new AbortController();
+      signal.addEventListener('abort', () => request.abort(), { once: true });
+
+      try {
+        const res = await fetch('/api/newsletter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: inputEl.value.trim(),
+            locale: document.documentElement.lang || 'en',
+          }),
+          signal: request.signal,
+        });
+        const data = await res.json();
+        if (data.success) {
+          inputEl.value = '';
+          showStatus(labels.success || 'Subscribed', true);
+        } else {
+          showStatus(labels.error || 'Something went wrong', false);
+        }
+      } catch (error) {
+        if ((error as DOMException).name === 'AbortError') return;
         showStatus(labels.error || 'Something went wrong', false);
       }
-    } catch {
-      showStatus(labels.error || 'Something went wrong', false);
-    }
-  });
+    }, { signal });
+  }
+
+  document.addEventListener('astro:page-load', initNewsletter);
 </script>

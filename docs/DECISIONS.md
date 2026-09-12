@@ -13,7 +13,7 @@ Registro de decisiones de arquitectura vivas (las que siguen gobernando el códi
 - **El cliente nunca envía precios**: el backend recalcula con fuente única (QloApps) y congela precio + tipo de cambio en el hold (snapshot PEN).
 - **Guard de entorno por allowlist de hashes** (no por prefijo de token): el prefijo `APP_USR`/`TEST-` no define entorno en MercadoPago.
 - **Modelo de entrada**: validar input (Validator), escapar output (frontend). Nunca re-escapar la entrada (fix 2026-08-01 que eliminó el doble-escape que corrompía contraseñas).
-- **JWT propio HMAC-SHA256** en cookie HttpOnly (sin dependencia de librería; algoritmo fijado, `hash_equals`, exp). Aceptado mientras no se necesite revocación server-side (ver `docs/ROADMAP.md` P1-7).
+- **JWT HMAC-SHA256** en cookie HttpOnly mediante `firebase/php-jwt`; algoritmo fijado, validación de firma/expiración, claims `iss`/`aud`/`jti` y revocación server-side por `jti` mediante `TokenRevocationStore`.
 
 ## Frontend (2026-08-01)
 - **Astro 7 estático + i18n routing oficial** (default `en`, fallback de páginas fr→en, pt→es; fallback de claves en `src/i18n/utils.ts`). Sin SSR — el contenido dinámico vive en la API PHP.
@@ -27,5 +27,14 @@ Registro de decisiones de arquitectura vivas (las que siguen gobernando el códi
 
 ## Operación
 - **Deploy**: solo rama `main` con integración Node.js de Hostinger (build en servidor). Prohibido FTP/File Manager/rama build (histórico DEPLOY-B2 desactivado).
-- **Cron**: `cron/process_outbox.php` (5 min) + `cron/reconcile_payments.php` (10 min) — nunca mover su lógica a la petición HTTP.
+- **Cron**: `cron/process_outbox.php` (5 min) + `cron/reconcile_payments.php` (15 min) — nunca mover su lógica a la petición HTTP.
 - **Hooks git**: `core.hooksPath=.githooks`; pre-commit comprime media y nunca bloquea. Commits por tema con prefijo `feat:`/`fix:`/`chore:`/`docs:`.
+
+## Contratos HTTP y ciclo de vida (2026-09-09)
+- `Response::fromHttpException()` es el punto único para convertir excepciones HTTP en el envelope estándar; el `Router` lo usa junto con los helpers `Response::*` para conservar códigos y detalles de forma uniforme.
+- Las peticiones frontend que dependen de la página (disponibilidad, estado de pago, payment-check, hold y proceso de pago) reciben un `AbortSignal` combinado con timeout. Los módulos que reparentan DOM (lightbox) eliminan sus nodos y listeners en `astro:before-preparation`.
+- El hero no precarga clips completos mediante `fetch`; cada vídeo comienza cuando el elemento lo necesita, evitando descargas de varios MB durante navegación o en móvil.
+
+## Seguridad operativa (2026-09-07)
+- Las mutaciones del panel usan la cookie usgar_panel_csrf y el header X-CSRF-Token coincidente.
+- event_outbox usa claim_token para fencing: un lease obsoleto no puede completar ni fallar el claim de otro worker.

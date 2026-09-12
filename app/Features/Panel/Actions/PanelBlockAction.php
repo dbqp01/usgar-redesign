@@ -5,6 +5,7 @@ namespace App\Features\Panel\Actions;
 
 use App\Core\Request;
 use App\Core\Response;
+use App\Core\Config;
 use App\Features\Panel\Domain\AvailabilityRepository;
 use App\Features\Panel\Domain\PanelAuth;
 
@@ -26,12 +27,14 @@ class PanelBlockAction {
 
     public function __invoke(Request $request): void {
         PanelAuth::requireAuth();
+        PanelAuth::assertCsrf($request);
 
         $body = $request->getBody() ?? [];
         $roomId = (int)($body['room_id'] ?? 0);
         $dateFrom = (string)($body['date_from'] ?? '');
         $dateTo = (string)($body['date_to'] ?? '');
         $reason = (string)($body['reason'] ?? '');
+        $hotelId = (int)Config::get('DEFAULT_HOTEL_ID', '1');
 
         if ($roomId < 1) {
             Response::badRequest('Habitación requerida.');
@@ -45,6 +48,7 @@ class PanelBlockAction {
 
         $id = $this->repo->insertDisableDate([
             'room_id'   => $roomId,
+            'id_hotel'  => $hotelId,
             'date_from' => $dateFrom,
             'date_to'   => $dateTo,
             'reason'    => $reason,

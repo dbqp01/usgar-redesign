@@ -24,12 +24,14 @@ class CleanExpiredCartsAction {
         // En entorno HTTP, exigir validacion de token de cron (excepto CLI)
         if (PHP_SAPI !== 'cli') {
             $cronSecret = Config::get('CRON_SECRET');
-            // Cast (string) + return tras cada error: paridad con
-            // RetryManualReviewAction. Sin cast, un ?secret[]=array daba
-            // TypeError en hash_equals; sin return, en modo testing
-            // (Response::json no hace exit) el cron corria igual tras
-            // responder el error — el guard era inefectivo fuera de prod.
-            $providedSecret = (string)($request->getHeader('x-cron-secret') ?? $request->getQuery('secret', ''));
+           // Cast (string) + return tras cada error: paridad con
+           // RetryManualReviewAction. Sin cast, un ?secret[]=array daba
+           // TypeError en hash_equals; sin return, en modo testing
+           // (Response::json no hace exit) el cron corria igual tras
+           // responder el error — el guard era inefectivo fuera de prod.
+            // Cron secrets stay in a header so web-server/proxy access logs,
+            // browser history and Referer headers cannot capture them.
+            $providedSecret = (string)($request->getHeader('x-cron-secret') ?? '');
 
             if (empty($cronSecret)) {
                 Logger::error("CleanExpiredCartsAction: CRON_SECRET no está configurado en servidor.");

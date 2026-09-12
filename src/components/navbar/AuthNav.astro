@@ -28,11 +28,11 @@ const t = useTranslations(lang);
       <div id="auth-user-dropdown" class="hidden relative group">
         <button
           type="button"
-          aria-label="User menu"
+          aria-label={t('auth.userMenu')}
           class="nav-link nav-link-text flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary drop-shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-full px-2 py-1"
         >
           <div class="w-8 h-8 rounded-full overflow-hidden bg-primary/20 border border-primary/50 flex-shrink-0 flex items-center justify-center">
-            <img id="auth-user-photo" src="" alt="User" class="w-full h-full object-cover hidden" />
+            <img id="auth-user-photo" src="" alt="" class="w-full h-full object-cover hidden" />
             <span id="auth-user-initial" class="text-xs text-primary font-bold">U</span>
           </div>
           <span id="auth-user-name" class="max-w-[100px] truncate">User</span>
@@ -75,7 +75,7 @@ const t = useTranslations(lang);
       <div id="mobile-auth-user" class="hidden flex flex-col gap-2">
         <div class="flex items-center gap-3 px-4 py-3 bg-primary/10 rounded-xl">
           <div class="w-10 h-10 rounded-full overflow-hidden bg-primary/20 border border-primary/50 flex items-center justify-center flex-shrink-0">
-            <img id="mobile-auth-user-photo" src="" alt="User" class="w-full h-full object-cover hidden" />
+            <img id="mobile-auth-user-photo" src="" alt="" class="w-full h-full object-cover hidden" />
             <span id="mobile-auth-user-initial" class="text-sm text-primary font-bold">U</span>
           </div>
           <span id="mobile-auth-user-name" class="font-medium text-text-primary-light dark:text-text-primary-dark truncate">User</span>

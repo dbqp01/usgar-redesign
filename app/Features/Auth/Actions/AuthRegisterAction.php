@@ -6,6 +6,7 @@ namespace App\Features\Auth\Actions;
 use App\Core\Request;
 use App\Core\Response;
 use App\Core\Database;
+use App\Features\Auth\AuthRedirect;
 use App\Features\Auth\User;
 use App\Features\Auth\SessionService;
 
@@ -16,20 +17,30 @@ use App\Features\Auth\SessionService;
 class AuthRegisterAction {
     public function __invoke(Request $request): void {
         $data = $request->getBody() ?? [];
-        $email = trim($data['email'] ?? '');
+        $emailInput = $data['email'] ?? '';
         $password = $data['password'] ?? '';
+        $rawNameInput = $data['first_name'] ?? $data['fullName'] ?? '';
+        $lastNameInput = $data['last_name'] ?? '';
+        $isHtml = $request->isHtml();
+
+        if (!is_string($emailInput) || !is_string($password)
+            || !is_string($rawNameInput) || !is_string($lastNameInput)
+        ) {
+            Response::errorWithHtmlFallback($isHtml, 'Invalid registration data.', 400);
+            return;
+        }
+
+        $email = trim($emailInput);
 
         // Split fullName into first_name + last_name if provided as single field
-        $rawName = trim($data['first_name'] ?? $data['fullName'] ?? '');
-        $lastName = trim($data['last_name'] ?? '');
+        $rawName = trim($rawNameInput);
+        $lastName = trim($lastNameInput);
         if (!empty($rawName) && empty($lastName)) {
             $nameParts = explode(' ', $rawName, 2);
             $rawName = $nameParts[0];
             $lastName = $nameParts[1] ?? '';
         }
         $firstName = $rawName;
-        $isHtml = $request->isHtml();
-
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             Response::errorWithHtmlFallback($isHtml, 'Invalid email address.', 400);
             return;
@@ -68,10 +79,7 @@ class AuthRegisterAction {
         SessionService::setAuthCookie($jwt);
 
         if ($isHtml) {
-            $redirect = trim((string)($data['redirect'] ?? '/profile'));
-            if (!str_starts_with($redirect, '/') || str_starts_with($redirect, '//')) {
-                $redirect = '/profile';
-            }
+            $redirect = AuthRedirect::safePath($data['redirect'] ?? '/profile', '/profile');
             header('Location: ' . $redirect);
             exit(0);
         }

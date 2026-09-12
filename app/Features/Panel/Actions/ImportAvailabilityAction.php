@@ -20,6 +20,10 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
  *       { "csv": "room,checkin,checkout,..." }
  */
 class ImportAvailabilityAction {
+    private const MAX_RAW_BYTES = 8 * 1024 * 1024;
+    private const MAX_CSV_BYTES = 5 * 1024 * 1024;
+    private const MAX_ROWS = 1000;
+    private const MAX_XLSX_UNCOMPRESSED_BYTES = 32 * 1024 * 1024;
     private AvailabilityRepository $repo;
 
     public function __construct(AvailabilityRepository $repo) {
@@ -28,6 +32,7 @@ class ImportAvailabilityAction {
 
     public function __invoke(Request $request): void {
         PanelAuth::requireAuth();
+        PanelAuth::assertCsrf($request);
 
         $body = $request->getBody() ?? [];
         $filename = (string)($body['filename'] ?? '');
@@ -36,21 +41,40 @@ class ImportAvailabilityAction {
 
         if ($csvRaw === '' && $contentB64 === '') {
             Response::badRequest('Archivo o CSV requerido.');
+            return;
         }
 
         if ($contentB64 !== '') {
+            if (strlen($contentB64) > (int)ceil(self::MAX_RAW_BYTES * 4 / 3) + 16) {
+                Response::badRequest('Archivo demasiado grande.');
+                return;
+            }
             $raw = base64_decode($contentB64, true);
             if ($raw === false) {
                 Response::badRequest('Contenido base64 invalido.');
                 return;
             }
+            if (strlen($raw) > self::MAX_RAW_BYTES) {
+                Response::badRequest('Archivo demasiado grande.');
+                return;
+            }
             $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-            if (in_array($ext, ['xlsx', 'xls'], true)) {
+            // PhpSpreadsheet's Xlsx reader cannot parse legacy binary XLS.
+            // Reject it explicitly because the public contract is CSV/XLSX.
+            if ($ext === 'xls') {
+                Response::badRequest('Formato XLS no soportado. Guarda el archivo como XLSX o CSV.');
+                return;
+            }
+            if ($ext === 'xlsx') {
                 $rows = $this->parseXlsx($raw);
             } else {
                 $rows = $this->parseCsv($raw);
             }
         } else {
+            if (strlen($csvRaw) > self::MAX_CSV_BYTES) {
+                Response::badRequest('CSV demasiado grande.');
+                return;
+            }
             $rows = $this->parseCsv($csvRaw);
         }
 
@@ -97,6 +121,10 @@ class ImportAvailabilityAction {
             if (trim($lines[$i]) === '') {
                 continue;
             }
+            if (count($out) >= self::MAX_ROWS) {
+                Response::badRequest('El archivo supera el máximo de 1000 filas.');
+                return [];
+            }
             $c = str_getcsv($lines[$i]);
             if (count($c) < 3) {
                 continue;
@@ -113,17 +141,45 @@ class ImportAvailabilityAction {
      * @return list<array<string,mixed>>
      */
     private function parseXlsx(string $raw): array {
+        if (!class_exists('ZipArchive')) {
+            Response::error('No se puede leer XLSX en este servidor.', 500);
+            return [];
+        }
         $tmp = tempnam(sys_get_temp_dir(), 'usgimp');
         if ($tmp === false) {
             Response::error('No se pudo crear archivo temporal.', 500);
             return [];
         }
-        file_put_contents($tmp, $raw);
+        if (file_put_contents($tmp, $raw, LOCK_EX) !== strlen($raw)) {
+            @unlink($tmp);
+            Response::error('No se pudo guardar el archivo temporal.', 500);
+            return [];
+        }
 
         try {
+            $zip = new \ZipArchive();
+            if ($zip->open($tmp) !== true) {
+                Response::badRequest('Archivo XLSX inválido.');
+                return [];
+            }
+            $uncompressed = 0;
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $stat = $zip->statIndex($i);
+                $uncompressed += (int)($stat['size'] ?? 0);
+                if ($uncompressed > self::MAX_XLSX_UNCOMPRESSED_BYTES) {
+                    $zip->close();
+                    Response::badRequest('XLSX descomprimido demasiado grande.');
+                    return [];
+                }
+            }
+            $zip->close();
             $reader = new Xlsx();
             $sheet = $reader->load($tmp)->getActiveSheet();
             $all = $sheet->toArray(null, true, false, false) ?: [];
+            if (count($all) > self::MAX_ROWS + 1) {
+                Response::badRequest('El archivo supera el máximo de 1000 filas.');
+                return [];
+            }
         } finally {
             @unlink($tmp);
         }

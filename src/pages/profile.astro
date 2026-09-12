@@ -7,6 +7,7 @@ import ProfileUnauthenticated from '../components/profile/ProfileUnauthenticated
 import BookingsList from '../components/profile/BookingsList.astro';
 import ProfileDetailsCard from '../components/profile/ProfileDetailsCard.astro';
 import AccountProviderSection from '../components/profile/AccountProviderSection.astro';
+import { getRelativeLocaleUrl } from 'astro:i18n';
 
 export const prerender = true;
 
@@ -22,9 +23,15 @@ const statusLabels = JSON.stringify({
   completed: t('auth.statusCompleted'),
 });
 const totalPaidLabel = t('profile.totalPaid');
+const savingChangesLabel = t('profile.savingChanges');
+const saveProfileChangesLabel = t('profile.saveProfileChanges');
+const profileUpdatedLabel = t('profile.profileUpdated');
+const profileUpdateFailedLabel = t('profile.profileUpdateFailed');
+const profileConnectionErrorLabel = t('profile.profileConnectionError');
+const homeUrl = getRelativeLocaleUrl(lang, '');
 ---
 
-<Layout title={`Profile & Sanctuary Management - USGAR Hotels`} lang={lang}>
+<Layout title={`${t('profile.pageTitle')} - USGAR Hotels`} lang={lang}>
   <div class="py-24 px-4 max-w-5xl mx-auto flex-1 animate-fade-in space-y-8">
 
     <ProfileHeader />
@@ -40,7 +47,7 @@ const totalPaidLabel = t('profile.totalPaid');
     <div id="profile-loading" class="text-center py-16">
       <div class="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
       <p class="mt-4 text-sm text-text-secondary-light dark:text-text-secondary-dark font-medium">
-        Fetching profile & sanctuary records...
+        {t('auth.loading')}
       </p>
     </div>
 
@@ -57,10 +64,12 @@ const totalPaidLabel = t('profile.totalPaid');
     // los modulos bundlados se ejecutan antes de que cualquier fetch del
     // is:inline resuelva, asi que __usgarFormatPrice siempre esta definido al renderizar.
     import { formatPrice } from '../utils/format';
+    import { getUser } from '../utils/auth-client';
     (window as any).__usgarFormatPrice = formatPrice;
+    (window as any).__usgarGetUser = getUser;
   </script>
 
-  <script is:inline define:vars={{ statusLabels, totalPaidLabel }}>
+  <script is:inline define:vars={{ statusLabels, totalPaidLabel, savingChangesLabel, saveProfileChangesLabel, profileUpdatedLabel, profileUpdateFailedLabel, profileConnectionErrorLabel, homeUrl }}>
     (function() {
       const STATUS_LABELS = JSON.parse(statusLabels);
       let currentUser = null;
@@ -155,21 +164,13 @@ const totalPaidLabel = t('profile.totalPaid');
 
         async function loadProfile() {
           try {
-            const userRes = await fetch('/api/auth/me', { credentials: 'include' });
-            if (!userRes.ok) {
+            const userRes = await window.__usgarGetUser?.(false);
+            if (!userRes) {
               if (loadingEl) loadingEl.classList.add('hidden');
               if (unauthEl) unauthEl.classList.remove('hidden');
               return;
             }
-
-            const userData = await userRes.json();
-            if (!userData.success || !userData.user) {
-              if (loadingEl) loadingEl.classList.add('hidden');
-              if (unauthEl) unauthEl.classList.remove('hidden');
-              return;
-            }
-
-            currentUser = userData.user;
+            currentUser = userRes;
             sessionStorage.setItem('usgar_auth_user', JSON.stringify(currentUser));
 
             // Populate Header Data
@@ -212,7 +213,8 @@ const totalPaidLabel = t('profile.totalPaid');
                     ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
                     : 'bg-stone-500/10 text-stone-600 dark:text-stone-400 border-stone-500/20';
 
-                  const roomName = b.room_data?.name?.en || b.room_data?.name || 'Sanctuary Suite';
+                  const roomData = Array.isArray(b.room_data) ? b.room_data : [b.room_data];
+                  const roomName = roomData.map((room) => room?.room_name || room?.name?.en || room?.name).filter(Boolean).join(' + ') || b.id_room_type || 'Hotel Room';
 
                   return `
                     <div class="bg-surface-card-light dark:bg-surface-card-dark p-6 rounded-2xl border border-black/10 dark:border-white/10 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-[border-color] hover:border-primary/30">
@@ -224,7 +226,7 @@ const totalPaidLabel = t('profile.totalPaid');
                           </span>
                         </div>
                         <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">
-                          "... ${escapeHtml(b.checkin)} - ${escapeHtml(b.checkout)}
+                          ${escapeHtml(b.checkin)} - ${escapeHtml(b.checkout)}
                         </p>
                         <p class="text-xs font-mono text-stone-400">
                           Cart ID: ${escapeHtml(b.cart_id)} ${b.qlo_order_id ? '| Order: ' + escapeHtml(b.qlo_order_id) : ''}
@@ -253,7 +255,7 @@ const totalPaidLabel = t('profile.totalPaid');
           e.preventDefault();
           if (btnSavePersonal) {
             btnSavePersonal.disabled = true;
-            btnSavePersonal.textContent = 'Saving Changes...';
+            btnSavePersonal.textContent = savingChangesLabel;
           }
 
           const fullName = editFullName?.value || '';
@@ -273,21 +275,21 @@ const totalPaidLabel = t('profile.totalPaid');
 
             const data = await res.json();
             if (res.ok && data.success) {
-              showAlert('Profile updated successfully!', true);
+              showAlert(profileUpdatedLabel, true);
               if (data.user) {
                 currentUser = data.user;
                 sessionStorage.setItem('usgar_auth_user', JSON.stringify(currentUser));
                 if (nameEl) nameEl.textContent = currentUser.name || currentUser.email;
               }
             } else {
-              showAlert(data.message || 'Failed to update profile.', false);
+              showAlert(data.message || profileUpdateFailedLabel, false);
             }
           } catch {
-            showAlert('Connection error while updating profile.', false);
+            showAlert(profileConnectionErrorLabel, false);
           } finally {
             if (btnSavePersonal) {
               btnSavePersonal.disabled = false;
-              btnSavePersonal.textContent = 'Save Profile Changes';
+              btnSavePersonal.textContent = saveProfileChangesLabel;
             }
           }
         });
@@ -295,10 +297,17 @@ const totalPaidLabel = t('profile.totalPaid');
         // Logout Event
         logoutBtn?.addEventListener('click', async () => {
           sessionStorage.removeItem('usgar_auth_user');
+          const csrfMatch = document.cookie.match(/(?:^|; )usgar_csrf=([^;]+)/);
           try {
-            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+            await fetch('/api/auth/logout', {
+              method: 'POST',
+              credentials: 'include',
+              headers: {
+                'X-CSRF-Token': csrfMatch ? decodeURIComponent(csrfMatch[1]) : '',
+              },
+            });
           } catch {}
-          window.location.href = '/';
+          window.location.href = homeUrl;
         });
 
         loadProfile();

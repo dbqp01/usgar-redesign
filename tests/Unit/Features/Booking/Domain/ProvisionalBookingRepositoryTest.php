@@ -36,10 +36,13 @@ final class ProvisionalBookingRepositoryTest extends TestCase {
             $stmt = $this->createMock(\PDOStatement::class);
             $stmt->method('execute')->willReturn(true);
             $stmt->method('rowCount')->willReturn(1);
-            if (str_contains($sql, 'information_schema.COLUMNS')) {
-                $default = 1;
-                if (str_contains($sql, "COLUMN_NAME = 'event_type'")) {
-                    $default = (int)($this->columnCounts['event_type'] ?? 1);
+                if (str_contains($sql, 'information_schema.COLUMNS')) {
+                    $default = 1;
+                foreach (['event_type', 'payment_id', 'payment_idempotency_key'] as $column) {
+                    if (str_contains($sql, "COLUMN_NAME = '{$column}'")) {
+                        $default = (int)($this->columnCounts[$column] ?? 1);
+                        break;
+                    }
                 }
                 $stmt->method('fetchColumn')->willReturn($default);
             }
@@ -187,6 +190,18 @@ final class ProvisionalBookingRepositoryTest extends TestCase {
         $repo->isPaymentProcessed('555', 'approved');
     }
 
+    public function testGetByCartIdPropagatesDbFailureInsteadOfReturningMissingHold(): void {
+        $pdo = $this->createMock(PDO::class);
+        $pdo->method('prepare')->willThrowException(new PDOException('connection lost'));
+        $repo = new ProvisionalBookingRepository($pdo);
+
+        // A failed SELECT must not become null: callers use null for a real
+        // missing cart, while a PDOException must reach the router/webhook as
+        // a 500 so Mercado Pago retries the notification.
+        $this->expectException(PDOException::class);
+        $repo->getByCartId('CART-DB-DOWN');
+    }
+
     // =====================================================================
     // Todo 12 — processed_payments: event_type + indice unico compuesto.
     // =====================================================================
@@ -274,5 +289,56 @@ final class ProvisionalBookingRepositoryTest extends TestCase {
         $repo->ensureTablesExist();
 
         $this->assertSqlCount(3, 'ADD UNIQUE KEY uk_payment_event (payment_id, event_type)');
+    }
+
+    public function testSetPaymentIdempotencyKeyAutoHealsLegacyColumnOutsideTransaction(): void {
+        $this->columnCounts['payment_id'] = 1;
+        $this->columnCounts['payment_idempotency_key'] = 0;
+        $repo = $this->buildRepo();
+
+        $this->assertTrue($repo->setPaymentIdempotencyKey('CART-1', 'key-123'));
+
+        $this->assertSqlCount(
+            1,
+            'ALTER TABLE provisional_bookings ADD COLUMN payment_idempotency_key VARCHAR(64) NULL AFTER payment_id'
+        );
+        $this->assertSqlCount(1, 'SET payment_idempotency_key = :key');
+        $this->assertSqlCount(1, "status = 'pending'");
+        $this->assertSqlCount(1, "(payment_id IS NULL OR payment_id = '')");
+    }
+
+    public function testSetPaymentIdempotencyKeyFailsClosedInsideTransaction(): void {
+        $pdo = $this->createMock(PDO::class);
+        $pdo->method('inTransaction')->willReturn(true);
+        $repo = new ProvisionalBookingRepository($pdo);
+
+        $this->assertFalse($repo->setPaymentIdempotencyKey('CART-1', 'key-123'));
+    }
+
+    public function testEnsureTablesExistFailsClosedInsideTransactionWithoutDdl(): void {
+        $pdo = $this->createMock(PDO::class);
+        $pdo->method('inTransaction')->willReturn(true);
+        $pdo->expects($this->never())->method('exec');
+        $repo = new ProvisionalBookingRepository($pdo);
+
+        $this->assertFalse($repo->ensureTablesExist());
+    }
+
+    public function testGetHoldCountFailsClosedOnDbFailure(): void {
+        $pdo = $this->createMock(PDO::class);
+        $pdo->method('prepare')->willThrowException(new PDOException('connection lost'));
+        $repo = new ProvisionalBookingRepository($pdo);
+
+        $this->expectException(PDOException::class);
+        $repo->getHoldCountForRoomForUpdate(3, '2028-01-01', '2028-01-03', 1);
+    }
+
+    public function testGetHoldCountFailsClosedWithoutDatabaseConnection(): void {
+        $repo = $this->buildRepo();
+        $property = (new \ReflectionClass($repo))->getProperty('pdo');
+        $property->setValue($repo, null);
+
+        $this->expectException(PDOException::class);
+        $repo->getHoldCountForRoomForUpdate(3, '2028-01-01', '2028-01-03', 1);
     }
 }

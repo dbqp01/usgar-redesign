@@ -21,6 +21,8 @@ export interface WizardState {
    * en esta instalación). null = API caída. (audit 2026-08-12)
    */
   ratePlans: Record<string, { standard: number; non_refundable: number }> | null;
+  /** Daily calendar availability has completed for the active date range. */
+  calendarAvailabilityReady: boolean;
   selecting: boolean;
   processing: boolean;
   error: string | null;
@@ -29,6 +31,7 @@ export interface WizardState {
 export interface WizardStore {
   getState(): WizardState;
   setState(patch: Partial<WizardState>): void;
+  reset(): void;
   subscribe(fn: (s: WizardState) => void): () => void;
   next(): void;
   back(): void;
@@ -45,6 +48,7 @@ const DEFAULT_STATE: WizardState = {
   availabilityMap: null,
   rateType: 'standard',
   ratePlans: null,
+  calendarAvailabilityReady: false,
   selecting: false,
   processing: false,
   error: null,
@@ -62,6 +66,10 @@ export function createWizardStore(initial?: Partial<WizardState>): WizardStore {
     getState: () => state,
     setState: (patch) => {
       state = { ...state, ...patch };
+      notify();
+    },
+    reset: () => {
+      state = { ...DEFAULT_STATE };
       notify();
     },
     subscribe: (fn) => {

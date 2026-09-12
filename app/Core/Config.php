@@ -97,11 +97,19 @@ class Config {
      * @return list<string>
      */
     public static function getAllowedOrigins(): array {
-        $origins = self::get('ALLOWED_ORIGINS', '*');
+        $configured = getenv('ALLOWED_ORIGINS');
+        if ($configured === false || trim($configured) === '') {
+            // Keep local development usable without an env file, but fail
+            // closed for deployed hosts when the authoritative allowlist is missing.
+            $siteUrl = self::get('SITE_URL', '') ?? '';
+            $host = strtolower((string)(parse_url($siteUrl, PHP_URL_HOST) ?: ''));
+            return in_array($host, ['localhost', '127.0.0.1', '::1'], true) ? ['*'] : [];
+        }
+        $origins = trim($configured);
         if ($origins === '*') {
             return ['*'];
         }
-        return array_map('trim', explode(',', $origins));
+        return array_values(array_filter(array_map('trim', explode(',', $origins)), static fn(string $origin): bool => $origin !== ''));
     }
 
     /**
@@ -136,26 +144,36 @@ class Config {
         // 3. Raiz del proyecto (dev/CLI)
         $candidates = [];
 
+        $deploymentBase = null;
         if (str_contains($docRoot, 'public_html')) {
             $above = dirname($docRoot);
             while (str_contains($above, 'public_html') && dirname($above) !== $above) {
                 $above = dirname($above);
             }
-            $candidates[] = $above . DIRECTORY_SEPARATOR . '.env';
-            // Hostinger: .builds/config/.env vive al mismo nivel que public_html
-            $candidates[] = $above . DIRECTORY_SEPARATOR . '.builds'
+            $deploymentBase = $above;
+        } elseif (PHP_SAPI === 'cli') {
+            // Cron no recibe DOCUMENT_ROOT. Detectar public_html en el árbol
+            // real del código para mantener la misma precedencia que HTTP.
+            $probe = __DIR__;
+            while ($probe !== dirname($probe)) {
+                if (strcasecmp(basename($probe), 'public_html') === 0) {
+                    $deploymentBase = dirname($probe);
+                    break;
+                }
+                $probe = dirname($probe);
+            }
+        }
+
+        if ($deploymentBase !== null) {
+            // Hostinger: la configuración canónica vive fuera de public_html;
+            // nunca permitir que un .env residual del deploy gane prioridad.
+            $candidates[] = $deploymentBase . DIRECTORY_SEPARATOR . '.env';
+            $candidates[] = $deploymentBase . DIRECTORY_SEPARATOR . '.builds'
                 . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . '.env';
         }
 
-        // Dev/CLI fallback: raiz del proyecto
+        // Dev/CLI fallback: raíz del proyecto (en local suele ser el único .env).
         $candidates[] = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . '.env';
-
-        // CLI cron en servidor: las env vars del web runtime NO se heredan
-        // a shells de cron (sin DOCUMENT_ROOT). .env y .builds/config/.env viven
-        // un nivel arriba del directorio publicado (ej. parent de dist/ o public_html).
-        $upOne = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR;
-        $candidates[] = $upOne . '.env';
-        $candidates[] = $upOne . '.builds' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . '.env';
 
         $envPath = null;
         foreach ($candidates as $candidate) {

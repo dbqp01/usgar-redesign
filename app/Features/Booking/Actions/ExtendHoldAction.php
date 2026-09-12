@@ -56,7 +56,13 @@ class ExtendHoldAction {
         $newExpiration = date('Y-m-d H:i:s', Config::holdExpirationTimestamp());
 
         if ($this->bookingRepo->extend($cartId, $newExpiration)) {
-            $this->pms->extendCartSession($cartId);
+            if (!$this->pms->extendCartSession($cartId)) {
+                // Keep the local hold truthful: a successful local write is
+                // not enough when the PMS cart remains expired. The caller
+                // can retry, and the inventory is never presented as safely
+                // extended when QloApps rejected the update.
+                throw new HttpException('No se pudo extender el bloqueo en el PMS.', 502, 'BAD_GATEWAY');
+            }
 
             $timeLeftSeconds = max(0, strtotime($newExpiration) - time());
 

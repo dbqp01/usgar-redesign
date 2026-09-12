@@ -99,7 +99,7 @@ const roomSchema = {
   preloadImage={lcpPreloadSrc}
 >
   <!-- Main Container -->
-  <main class="py-24 px-4 max-w-7xl mx-auto flex-1 animate-fade-in">
+  <div class="py-24 px-4 max-w-7xl mx-auto flex-1 animate-fade-in">
     <!-- Breadcrumbs & Back link -->
     <div class="mb-8 flex items-center justify-between">
       <nav
@@ -244,7 +244,7 @@ const roomSchema = {
           </video>
 
           <!-- Initial Poster and Play Overlay -->
-          <div
+          <button type="button" aria-label={t('room.videoTourTitle')}
             id="video-overlay"
             class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 group-hover/video:bg-black/50 transition-[background-color] duration-300 cursor-pointer"
           >
@@ -277,7 +277,7 @@ const roomSchema = {
             >
               {t('room.startVideoTour')}
             </span>
-          </div>
+          </button>
 
           <!-- Custom Controls Overlay (Hidden when not playing) -->
           <div
@@ -289,7 +289,7 @@ const roomSchema = {
               <button
                 id="video-play-btn"
                 class="text-white hover:text-secondary transition-colors duration-200 cursor-pointer"
-                aria-label="Play or pause"
+                aria-label={t('room.playPause')}
               >
                 <!-- Pause icon -->
                 <svg
@@ -317,7 +317,7 @@ const roomSchema = {
               <button
                 id="video-audio-btn"
                 class="flex items-center gap-1.5 bg-black/40 hover:bg-black/60 px-3 py-1.5 rounded-full border border-white/10 text-white text-xs transition-[background-color] duration-200 cursor-pointer"
-                aria-label="Toggle audio"
+                aria-label={t('hero.toggleAudio')}
               >
                 <!-- Muted icon -->
                 <svg
@@ -362,7 +362,7 @@ const roomSchema = {
         </div>
       </section>
     )}
-  </main>
+  </div>
 </Layout>
 
 <script>

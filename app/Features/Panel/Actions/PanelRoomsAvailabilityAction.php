@@ -35,6 +35,6 @@ class PanelRoomsAvailabilityAction {
         }
 
         $hotelId = (int)($request->getQuery('hotel', Config::get('DEFAULT_HOTEL_ID', '1')));
-        Response::json($this->repo->getRoomAvailability($from, $to, $hotelId));
+        Response::success($this->repo->getRoomAvailability($from, $to, $hotelId));
     }
 }

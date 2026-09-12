@@ -1,5 +1,40 @@
 # STATE — Backend USGAR (handoff de sesión)
 
+## Verificación backend vigente — 2026-09-11
+
+### Auditoría de seguimiento — 2026-09-11
+
+- Verificación repetida: `composer analyse` → PHPStan nivel 7 sin errores; PHPUnit → **310 tests, 1029 assertions, 12 skipped, 2 deprecations, 0 failures**; `npm run check` → 177 archivos sin errores/warnings/hints; `npm run build` → **113 páginas**.
+- E2E Chromium de home, booking y panel: **7/7 passed**. El selector `.usgar-marker` se conserva como alias compatible del marcador `.usgar-hotel-marker`.
+- `event_outbox` auto-crea/verifica el índice compuesto `(status, next_attempt_at, attempts, id)` para el claim; `GET /api/user/bookings` devuelve 503 ante fallos reales de BD y conserva lista vacía solo para tabla aún no creada.
+- El perfil acepta `room_data` legacy y multi-room, elimina el prefijo literal de fechas y usa traducciones para los textos del formulario y sus mensajes.
+- `TokenRevocationStore` falla cerrado si el directorio de revocación desaparece tras un health-check previo; la regresión está cubierta.
+- Riesgos operativos abiertos: el voucher SMTP conserva semántica at-least-once entre `send()` y `markSent()`; la cancelación PMS de refund/chargeback sigue manual; el warning `/fr` vs `/fr/` requiere una política única de rutas.
+
+- Verificación final local: `npm run check` con 177 archivos y 0 errores/warnings/hints; `composer analyse` con PHPStan nivel 7 y 0 errores; PHPUnit completo con **299 tests, 982 assertions, 12 skipped, 2 deprecations, OK**; `npm run build` con **113 páginas**; SEO con **121 páginas, 84 JSON-LD, 0 errores**; auditoría de seguridad estática con salida 0; E2E del panel ante 5xx: **1 passed** contra preview local.
+- Graphify se consultó sobre el flujo reserva → pago → webhook → outbox → QloApps → disponibilidad usando el grafo existente (**25.268 nodos**); cada hallazgo se contrastó con el código actual porque el grafo persistido precede a parte de los cambios locales.
+- Verificación frontend ampliada: Vitest **4.1.11, 11 archivos y 75 tests OK**; `npm audit` y `npm audit --omit=dev`: **0 vulnerabilidades**. Se actualizaron Astro 7.3.2, sharp 0.35.4, svgo 4.1.0, deepmerge-ts 8.0.2 y fast-uri 3.1.7; los workflows de GitHub Actions usan SHA completos. Semgrep OSS 1.172.0 dejó únicamente advertencias conservadoras sobre usos internos ya acotados de `unserialize()`/`unlink()`.
+- Auth/panel: revocación server-side de `jti` para cookies de huésped y panel, y rate limit dedicado de **5 intentos/15 min por IP** para `POST /api/panel/login`; OAuth exige email verificado y rechaza linking implícito. Pruebas focalizadas: **16 tests, 46 assertions OK**; PHPUnit completo: **309 tests, 1024 assertions, 12 skipped, 2 deprecations, OK**; PHPStan 0 errores.
+- Pagos fuera de orden: un webhook `approved` sobre `fraud_review`/`manual_review` conserva la revisión, registra `approved_after_review` + alerta y no crea outbox; solo `RetryManualReviewAction` puede resolverlo tras revalidar el monto. Webhook/review focalizado: **39 tests, 224 assertions OK**.
+
+- Auditoría integral local completada sobre frontend, backend y flujos de pago. `npm run check`: 177 archivos, 0 errores/warnings/hints; `composer analyse`: PHPStan nivel 7 sin errores; PHPUnit completo: **269 tests, 891 assertions, 12 skipped, OK**; `npm run build`: **113 páginas** generadas; SEO: 121 páginas, 84 JSON-LD, 0 errores; seguridad estática: salida 0; E2E del panel ante 502: **1 passed**.
+- Corregido takeover de cuentas OAuth: el registro público ya no modifica ningún email existente (`User::createFromEmail()` devuelve conflicto); regresión en `tests/Unit/Features/Auth/UserTest.php`.
+- Endurecida la frontera de auth: inputs JSON no-string responden 400 sin tocar DB; redirects internos comparten `AuthRedirect::safePath()` y rechazan externos, `//`, backslashes y controles; pruebas en `AuthInputValidationTest.php`.
+- Mercado Pago: `findPaymentByExternalReference()` conserva coincidencia exacta/ventana reciente y ahora usa la forma compatible con el DTO del SDK; PHPStan y 19 tests del adapter pasan.
+- UX: `/panel` muestra estado seguro con reintento ante 5xx sin filtrar HTTP/detalles internos; `/book` no muestra `$0` antes de tener una selección.
+- Limitación conocida: Astro sigue emitiendo un warning no fatal por conflicto `/fr` y `/fr/`; requiere decidir una sola estrategia de rutas localizadas.
+- Health queda definido como liveness: HTTP 200 con `status: degraded` cuando la base de datos no responde, evitando confundir proceso vivo con readiness de reservas.
+- Pendientes de seguridad: retirar DDL/probes de tablas del hot path tras validar el flujo de deploy; revisar el warning de rutas i18n. El rate limit del panel, la revocación server-side por `jti` y la política de email verificado/OAuth ya están implementados y verificados.
+
+## Verificación backend vigente — 2026-09-07
+
+- Se revisó el diff actual de reconciliación, webhooks y transactional outbox; no se revirtieron cambios previos.
+- Suites dirigidas: reconciliación **8 tests / 54 assertions OK**; webhooks W3+W6 **24 tests / 146 assertions OK**; `EventDispatcherTest` + wiring **5 tests / 11 assertions OK**.
+- Se corrigió en `ProcessOutboxAction::claimBatch()` la selección de `claim_token` después del claim; sin ese campo `processOne()` descartaba la fila por fencing. Los casos de backfill, retry y fencing pasan aislados.
+- La suite completa `ProcessOutboxActionTest` mantiene dos casos sensibles al entorno: `testRunWithSlowListenersCompletesAllEvents` (también falla aislado con 2/3) y `testConcurrentRunsProcessEachEventExactlyOnce` (workers `proc_open` sobre Windows + BD compartida). Tratar como limitación operativa/flaky hasta repetir en un runner Linux/MySQL dedicado; no hay evidencia de una regresión determinista del fencing.
+- Los tests webhook usan persistencia exitosa (`updateStatus`, `markPaymentProcessed`, `recordAlert` devuelven `true`) por defecto; los escenarios de error conservan excepciones/retornos fallidos explícitos. Resultado agrupado: **24/24 OK**.
+- Pendiente documental operativo: mantener sincronizadas las secciones históricas de webhook/credenciales de MP con la identidad actual de la app; varias entradas antiguas están marcadas como superseded y pueden inducir a error.
+
 > Documento canónico de estado del backend (antes `docs/refactoring/BACKEND_STATE.md`). Fuente de la auditoría de mejores prácticas 2026-08-11: `docs/ROADMAP.md`.
 
 ## BUG CRÍTICO: EventDispatcher sin listeners en actions HTTP (2026-08-15, primera venta real)

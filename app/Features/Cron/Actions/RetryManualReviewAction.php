@@ -31,8 +31,8 @@ use Throwable;
  *   manual_review/fraud_review, mismo guard que cleanExpiredCarts) para
  *   resolucion manual tras N re-despachos sin coincidencia (reembolso/manual).
  *
- * Protegido por CRON_SECRET en HTTP (header x-cron-secret o ?secret=), mismo
- * patron que CleanExpiredCartsAction; en CLI (cron real) se omite.
+ * Protegido por CRON_SECRET en HTTP mediante el header x-cron-secret; en CLI
+ * (cron real) se omite.
  */
 class RetryManualReviewAction {
     private PDO $pdo;
@@ -56,14 +56,15 @@ class RetryManualReviewAction {
         // En entorno HTTP, exigir validacion de token de cron (excepto CLI).
         if (PHP_SAPI !== 'cli') {
             $cronSecret = Config::get('CRON_SECRET');
-            $providedSecret = $request->getHeader('x-cron-secret') ?? $request->getQuery('secret', '');
+            // Keep the secret out of query strings and their access logs.
+            $providedSecret = (string)($request->getHeader('x-cron-secret') ?? '');
 
             if (empty($cronSecret)) {
                 Logger::error('RetryManualReviewAction: CRON_SECRET no configurado en servidor.');
                 Response::error('Cron secret non-configured.', 500);
                 return;
             }
-            if (!hash_equals($cronSecret, (string)$providedSecret)) {
+            if (!hash_equals($cronSecret, $providedSecret)) {
                 Logger::error('RetryManualReviewAction: Peticion no autorizada al endpoint de cron.');
                 Response::unauthorized('Invalid cron secret token.');
                 return;
@@ -116,6 +117,19 @@ class RetryManualReviewAction {
             return;
         }
 
+        // Redispatch is an operator recovery path for holds already routed
+        // to manual/fraud review. Do not allow a valid pending cart to bypass
+        // ProcessPaymentAction's authorization and idempotency gates merely
+        // because the caller knows the cron secret.
+        $holdStatus = (string)($hold['status'] ?? '');
+        if (!in_array($holdStatus, [
+            BookingStatus::ManualReview->value,
+            BookingStatus::FraudReview->value,
+        ], true)) {
+            Response::error('El hold no esta en revision manual.', 409);
+            return;
+        }
+
         $paymentId = (string)($hold['payment_id'] ?? '');
         if ($paymentId === '') {
             Response::error('El hold no tiene payment_id para re-despachar.', 400);
@@ -136,7 +150,11 @@ class RetryManualReviewAction {
 
         $status = (string)($paymentDetails['status'] ?? 'unknown');
         if ($paymentDetails === null || $status !== 'approved') {
-            $this->bookingRepo->recordAlert($cartId, $paymentId, 'redispatch');
+            if (!$this->bookingRepo->recordAlert($cartId, $paymentId, 'redispatch')) {
+                Logger::error("RetryManualReviewAction: no se pudo persistir la alerta de re-despacho para {$cartId}.");
+                Response::error('No se pudo persistir la auditoría del re-despacho.', 500);
+                return;
+            }
             Logger::info("RetryManualReviewAction: payment {$paymentId} estado '{$status}' — sin accion.");
             Response::json(['success' => true, 'status' => 'still_pending', 'reason' => 'payment_not_approved']);
             return;
@@ -151,7 +169,11 @@ class RetryManualReviewAction {
         $chargedPenCents = (int)round((float)($paymentDetails['transaction_amount'] ?? 0.0) * 100);
         $matches = $chargedPenCents >= $expectedPenCents;
 
-        $this->bookingRepo->recordAlert($cartId, $paymentId, 'redispatch');
+        if (!$this->bookingRepo->recordAlert($cartId, $paymentId, 'redispatch')) {
+            Logger::error("RetryManualReviewAction: no se pudo persistir la alerta de re-despacho para {$cartId}.");
+            Response::error('No se pudo persistir la auditoría del re-despacho.', 500);
+            return;
+        }
 
         if (!$matches) {
             Logger::info("RetryManualReviewAction: cart {$cartId} — monto ({$chargedPenCents} centavos) < esperado ({$expectedPenCents} centavos): permanece en revision.");
@@ -166,8 +188,10 @@ class RetryManualReviewAction {
         // sin reintento posible.
         try {
             $this->pdo->beginTransaction();
-            $this->bookingRepo->updateStatus($cartId, BookingStatus::Paid->value);
-            $this->bookingRepo->markPaymentProcessed($paymentId, $cartId, 'approved');
+            if (!$this->bookingRepo->updateStatus($cartId, BookingStatus::Paid->value)
+                || !$this->bookingRepo->markPaymentProcessed($paymentId, $cartId, 'approved')) {
+                throw new \RuntimeException('No se pudo persistir la resolución manual.');
+            }
             $this->eventDispatcher->dispatch(BookingPaidEvent::fromHold($cartId, $paymentId, $hold));
             $this->pdo->commit();
         } catch (Throwable $e) {
@@ -193,21 +217,35 @@ class RetryManualReviewAction {
             return;
         }
 
-        $stmt = $this->pdo->prepare(
-            "UPDATE provisional_bookings SET status = '" . BookingStatus::Expired->value . "'
-             WHERE cart_id = :cart
-               AND status IN ('" . BookingStatus::ManualReview->value . "','" . BookingStatus::FraudReview->value . "')"
-        );
-        $stmt->execute([':cart' => $cartId]);
+        try {
+            $this->pdo->beginTransaction();
+            $stmt = $this->pdo->prepare(
+                "UPDATE provisional_bookings SET status = '" . BookingStatus::Expired->value . "'
+                 WHERE cart_id = :cart
+                   AND status IN ('" . BookingStatus::ManualReview->value . "','" . BookingStatus::FraudReview->value . "')"
+            );
+            $stmt->execute([':cart' => $cartId]);
 
-        if ($stmt->rowCount() === 0) {
-            Response::error('No hay hold en manual/fraud review para liberar.', 404);
+            if ($stmt->rowCount() === 0) {
+                $this->pdo->rollBack();
+                Response::error('No hay hold en manual/fraud review para liberar.', 404);
+                return;
+            }
+
+            $hold = $this->bookingRepo->getByCartId($cartId);
+            $paymentId = (string)($hold['payment_id'] ?? '');
+            if (!$this->bookingRepo->recordAlert($cartId, $paymentId, 'expired_manual')) {
+                throw new \RuntimeException('No se pudo persistir la auditoría de expiración.');
+            }
+            $this->pdo->commit();
+        } catch (Throwable $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            Logger::error("RetryManualReviewAction: error al expirar {$cartId}: " . $e->getMessage());
+            Response::error('No se pudo persistir la auditoría de expiración.', 500);
             return;
         }
-
-        $hold = $this->bookingRepo->getByCartId($cartId);
-        $paymentId = (string)($hold['payment_id'] ?? '');
-        $this->bookingRepo->recordAlert($cartId, $paymentId, 'expired_manual');
         Logger::info("RetryManualReviewAction: hold {$cartId} expirado para resolucion manual (reembolso/manual).");
 
         Response::json(['success' => true, 'status' => 'expired', 'message' => 'Hold released for manual resolution.']);

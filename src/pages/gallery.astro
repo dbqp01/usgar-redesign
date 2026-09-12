@@ -89,21 +89,27 @@ const lightboxMedia: GalleryMedia[] = [
     </section>
 
     <!-- Category Filters -->
-    <section class="pb-24 px-4 max-w-[1400px] mx-auto">
-      <div class="flex flex-wrap justify-center gap-3 mb-10 border-b border-black/5 dark:border-white/5 pb-6">
+    <section class="pb-12 px-4 max-w-[1400px] mx-auto sm:pb-16">
+      <div class="flex flex-wrap justify-center gap-3 mb-6 border-b border-black/5 dark:border-white/5 pb-5 sm:mb-8 sm:pb-6">
         <button
+          type="button"
+          aria-pressed="true"
           class="filter-btn active px-6 py-2.5 rounded-full text-sm font-semibold border-2 border-primary bg-primary text-white transition-[border-color,background-color,color,transform,box-shadow] cursor-pointer shadow-sm lg:hover:scale-105"
           data-filter="all"
         >
           {t("gallery.filterAll")}
         </button>
         <button
+          type="button"
+          aria-pressed="false"
           class="filter-btn px-6 py-2.5 rounded-full text-sm font-semibold border-2 border-transparent text-text-secondary-light dark:text-text-secondary-dark hover:border-black/10 dark:hover:border-white/10 hover:text-primary dark:hover:text-secondary transition-[border-color,background-color,color,transform,box-shadow] cursor-pointer lg:hover:scale-105"
           data-filter="hotel"
         >
           {t("gallery.filterHotel")}
         </button>
         <button
+          type="button"
+          aria-pressed="false"
           class="filter-btn px-6 py-2.5 rounded-full text-sm font-semibold border-2 border-transparent text-text-secondary-light dark:text-text-secondary-dark hover:border-black/10 dark:hover:border-white/10 hover:text-primary dark:hover:text-secondary transition-[border-color,background-color,color,transform,box-shadow] cursor-pointer lg:hover:scale-105"
           data-filter="rooms"
         >
@@ -124,6 +130,9 @@ const lightboxMedia: GalleryMedia[] = [
             class="gallery-item group relative aspect-[4/3] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-[transform,opacity,box-shadow,border-color] duration-500 cursor-pointer border border-black/5 dark:border-white/5"
             data-category={photo.category}
             data-index={index}
+            role="button"
+            tabindex="0"
+            aria-label={t('gallery.viewPhoto').replace('{n}', String(index + 1))}
           >
             <Picture
               src={photo.metadata}
@@ -152,6 +161,9 @@ const lightboxMedia: GalleryMedia[] = [
             class="gallery-item group relative aspect-[4/3] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-[transform,opacity,box-shadow,border-color] duration-500 cursor-pointer border border-black/5 dark:border-white/5 bg-black"
             data-category="rooms"
             data-index={allPhotos.length + videoIndex}
+            role="button"
+            tabindex="0"
+            aria-label={t('gallery.openVideo').replace('{name}', video.slug)}
           >
             {video.poster && (
               <Picture
@@ -186,6 +198,7 @@ const lightboxMedia: GalleryMedia[] = [
       id="gallery-lightbox"
       role="dialog"
       aria-modal="true"
+      aria-hidden="true"
       aria-label={t('room.photoGallery')}
       class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/95 backdrop-blur-md transition-[opacity,visibility,background-color] duration-300"
     >
@@ -225,15 +238,16 @@ const lightboxMedia: GalleryMedia[] = [
         <img
           id="lightbox-img"
           src=""
-          alt="Lightbox active"
+          alt={t('room.photoGallery')}
           class="max-w-full max-h-[80vh] rounded-xl object-contain shadow-2xl transition-[transform,opacity] duration-300 border border-white/5"
         />
         <video
           id="lightbox-video"
           src=""
           controls
-          autoplay
-          playsinline
+         autoplay
+          muted
+         playsinline
           class="hidden max-w-full max-h-[80vh] rounded-xl shadow-2xl border border-white/5 bg-black"
         ></video>
         <!-- Counter overlay -->
@@ -253,9 +267,29 @@ const lightboxMedia: GalleryMedia[] = [
   let activeFilteredIndexes: number[] = [];
   let mediaList: { type: "image" | "video"; src: string; poster?: string }[] = [];
   let abortController = new AbortController();
+  let lightboxTrigger: HTMLElement | null = null;
+  let activeLightbox: HTMLElement | null = null;
+
+  function cleanupGallery(): void {
+    abortController.abort();
+    if (activeLightbox) {
+      const video = activeLightbox.querySelector<HTMLVideoElement>("#lightbox-video");
+      video?.pause();
+      if (video) {
+        video.removeAttribute("src");
+        video.load();
+      }
+      if (activeLightbox.parentElement === document.body && activeLightbox.dataset.galleryReparented === "true") {
+        activeLightbox.remove();
+      }
+    }
+    activeLightbox = null;
+    lightboxTrigger = null;
+    document.body.style.overflow = "";
+  }
 
   function initGallery() {
-    abortController.abort();
+    cleanupGallery();
     abortController = new AbortController();
     const signal = abortController.signal;
 
@@ -263,7 +297,8 @@ const lightboxMedia: GalleryMedia[] = [
     const items = document.querySelectorAll(".gallery-item");
     const filters = document.querySelectorAll(".filter-btn");
 
-    const lightbox = document.getElementById("gallery-lightbox");
+    const pageRoot = grid?.closest("main") ?? document;
+    const lightbox = pageRoot.querySelector<HTMLElement>("#gallery-lightbox");
     const lightboxImg = document.getElementById("lightbox-img") as HTMLImageElement | null;
     const lightboxVideo = document.getElementById("lightbox-video") as HTMLVideoElement | null;
     const closeBtn = document.getElementById("lightbox-close-btn");
@@ -272,6 +307,7 @@ const lightboxMedia: GalleryMedia[] = [
     const counter = document.getElementById("lightbox-counter");
 
     if (!grid || !lightbox || !lightboxImg) return;
+    activeLightbox = lightbox;
 
     // Bug D2: re-parent the lightbox to <body> at init. Inside <main> (GSAP/astro
     // transition transforms make it a stacking context) the lightbox z-[100] is
@@ -280,7 +316,8 @@ const lightboxMedia: GalleryMedia[] = [
     // context docs). appendChild MOVES the node; fixed positioning is unaffected.
     if (lightbox.parentElement !== document.body) {
       document.body.appendChild(lightbox);
-    }
+   }
+    lightbox.dataset.galleryReparented = "true";
 
     mediaList = JSON.parse(grid.getAttribute("data-media") || "[]");
 
@@ -316,6 +353,7 @@ const lightboxMedia: GalleryMedia[] = [
     filters.forEach((btn) => {
       btn.addEventListener("click", () => {
         filters.forEach((b) => {
+          b.setAttribute("aria-pressed", String(b === btn));
           b.classList.remove("active", "bg-primary", "text-white", "border-primary");
           b.classList.add("border-transparent", "text-text-secondary-light", "dark:text-text-secondary-dark");
         });
@@ -348,6 +386,8 @@ const lightboxMedia: GalleryMedia[] = [
         }
         lightboxImg.classList.remove("hidden");
         lightboxImg.src = media.src;
+        const sourceImage = items[originalIdx]?.querySelector('img') as HTMLImageElement | null;
+        lightboxImg.alt = sourceImage?.alt || ('Gallery photo ' + String(originalIdx + 1));
       }
       if (counter) {
         counter.textContent = `${activeIndex + 1} / ${activeFilteredIndexes.length}`;
@@ -360,7 +400,10 @@ const lightboxMedia: GalleryMedia[] = [
       updateLightbox();
       lightbox.classList.remove("hidden");
       lightbox.classList.add("flex");
+      lightbox.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
+      lightboxTrigger = items[activeFilteredIndexes[idx]] as HTMLElement;
+      closeBtn?.focus();
     }
 
     function closeLightbox() {
@@ -373,7 +416,10 @@ const lightboxMedia: GalleryMedia[] = [
       if (lightboxImg) lightboxImg.classList.remove("hidden");
       lightbox.classList.add("hidden");
       lightbox.classList.remove("flex");
+      lightbox.setAttribute("aria-hidden", "true");
       document.body.style.overflow = "";
+      lightboxTrigger?.focus();
+      lightboxTrigger = null;
     }
 
     function nextSlide() {
@@ -390,11 +436,17 @@ const lightboxMedia: GalleryMedia[] = [
 
     // Clicks on Grid Items
     items.forEach((item) => {
-      item.addEventListener("click", () => {
+      const openFromItem = () => {
         const filteredIdxStr = item.getAttribute("data-filtered-index");
         if (filteredIdxStr) {
           openLightbox(parseInt(filteredIdxStr, 10));
         }
+      };
+      item.addEventListener("click", openFromItem, { signal });
+      (item as HTMLElement).addEventListener("keydown", (event: KeyboardEvent) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        openFromItem();
       }, { signal });
     });
 
@@ -402,14 +454,25 @@ const lightboxMedia: GalleryMedia[] = [
     nextBtn?.addEventListener("click", nextSlide, { signal });
     prevBtn?.addEventListener("click", prevSlide, { signal });
 
+    lightbox.setAttribute("aria-hidden", "true");
+
     // Keyboard Events
     document.addEventListener("keydown", (e: KeyboardEvent) => {
       if (!lightbox || lightbox.classList.contains("hidden")) return;
       if (e.key === "Escape") closeLightbox();
       else if (e.key === "ArrowRight") nextSlide();
       else if (e.key === "ArrowLeft") prevSlide();
+      else if (e.key === "Tab") {
+        const focusables = Array.from(lightbox.querySelectorAll<HTMLElement>("button:not([disabled]), [href], [tabindex]:not([tabindex=\"-1\"])") );
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
     }, { signal });
   }
 
   document.addEventListener("astro:page-load", initGallery);
+  document.addEventListener("astro:before-preparation", cleanupGallery);
 </script>

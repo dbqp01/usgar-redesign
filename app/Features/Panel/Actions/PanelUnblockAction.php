@@ -5,6 +5,7 @@ namespace App\Features\Panel\Actions;
 
 use App\Core\Request;
 use App\Core\Response;
+use App\Core\Config;
 use App\Features\Panel\Domain\AvailabilityRepository;
 use App\Features\Panel\Domain\PanelAuth;
 
@@ -24,13 +25,15 @@ class PanelUnblockAction {
 
     public function __invoke(Request $request): void {
         PanelAuth::requireAuth();
+        PanelAuth::assertCsrf($request);
 
         $id = (int)$request->getQuery('id', '0');
         if ($id < 1) {
             Response::badRequest('id de bloqueo requerido.');
         }
 
-        $ok = $this->repo->deleteDisableDate($id);
+        $hotelId = (int)Config::get('DEFAULT_HOTEL_ID', '1');
+        $ok = $this->repo->deleteDisableDate($id, $hotelId);
         if (!$ok) {
             Response::error('Bloqueo no encontrado o ya liberado.', 404, 'BLOCK_NOT_FOUND');
         }

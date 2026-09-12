@@ -378,10 +378,13 @@ const t = useTranslations(lang);
         if (verifyAgainBtn.disabled) return;
         verifyAgainBtn.disabled = true;
         if (pendingStatus) pendingStatus.textContent = L.verifyingPaymentMsg || (L.pendingStatusMsg || '') + '...';
+        const activeController = pollingAbortController;
         try {
-          const booking = await fetchBookingStatus(bookingId, token);
+          const booking = await fetchBookingStatus(bookingId, token, activeController?.signal);
+          if (activeController?.signal.aborted || pollingAbortController !== activeController) return;
           await renderBooking(booking);
         } catch (err) {
+          if (activeController?.signal.aborted || pollingAbortController !== activeController) return;
           console.error('[Success Page Verify Again]', err);
           if (pendingStatus) pendingStatus.textContent = L.verifyingPaymentMsg || (L.pendingStatusMsg || '') + '...';
         } finally {

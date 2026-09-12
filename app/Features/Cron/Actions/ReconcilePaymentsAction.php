@@ -53,6 +53,7 @@ class ReconcilePaymentsAction {
         foreach ($holds as $hold) {
             $cartId = (string)($hold['cart_id'] ?? '');
             $paymentId = (string)($hold['payment_id'] ?? '');
+            $claimToken = (string)($hold['reconcile_claim_token'] ?? '');
 
             if ($cartId === '' || $paymentId === '') {
                 $skipped++;
@@ -60,14 +61,40 @@ class ReconcilePaymentsAction {
             }
 
             $checked++;
+            $updateStatus = function (string $status) use ($cartId, $claimToken): bool {
+                return $claimToken !== ''
+                    ? $this->bookingRepo->updateStatusWithReconcileClaim($cartId, $status, $claimToken)
+                    : $this->bookingRepo->updateStatus($cartId, $status);
+            };
 
-            if ($this->bookingRepo->isPaymentProcessed($paymentId)) {
+            try {
+                if ($this->bookingRepo->isPaymentProcessed($paymentId)) {
+                    // The payment is terminal/idempotent; do not retain the
+                    // ten-minute lease and unnecessarily delay the next scan.
+                    $this->bookingRepo->releaseReconcileClaim($cartId, $claimToken);
+                    $skipped++;
+                    Logger::info("ReconcilePaymentsAction: Payment {$paymentId} ya procesado. Skip.");
+                    continue;
+                }
+            } catch (Throwable $e) {
+                if ($this->pdo->inTransaction()) {
+                    $this->pdo->rollBack();
+                }
                 $skipped++;
-                Logger::info("ReconcilePaymentsAction: Payment {$paymentId} ya procesado. Skip.");
+                Logger::error("ReconcilePaymentsAction: no se pudo consultar idempotencia para payment {$paymentId}: " . $e->getMessage());
                 continue;
             }
 
-            $paymentDetails = $this->paymentGateway->getPaymentDetails($paymentId);
+            try {
+                $paymentDetails = $this->paymentGateway->getPaymentDetails($paymentId);
+            } catch (Throwable $e) {
+                if ($this->pdo->inTransaction()) {
+                    $this->pdo->rollBack();
+                }
+                $skipped++;
+                Logger::error("ReconcilePaymentsAction: no se pudo consultar payment {$paymentId}: " . $e->getMessage());
+                continue;
+            }
             if (!$paymentDetails) {
                 $skipped++;
                 Logger::info("ReconcilePaymentsAction: Payment {$paymentId} no verificable. Sin accion.");
@@ -83,8 +110,12 @@ class ReconcilePaymentsAction {
             if (in_array($mpStatus, ['rejected', 'failed', 'cancelled'], true)) {
                 try {
                     $this->pdo->beginTransaction();
-                    $this->bookingRepo->updateStatus($cartId, BookingStatus::Failed->value);
-                    $this->bookingRepo->markPaymentProcessed($paymentId, $cartId, 'rejected');
+                    if (!$updateStatus(BookingStatus::Failed->value)
+                        || !$this->bookingRepo->markPaymentProcessed($paymentId, $cartId, 'rejected')
+                        || ($mpStatus === 'cancelled'
+                            && !$this->bookingRepo->recordAlert($cartId, $paymentId, 'cancelled'))) {
+                        throw new \RuntimeException('No se pudo persistir la reconciliación del rechazo.');
+                    }
                     $this->pdo->commit();
                     $reconciled++;
                 } catch (Throwable $e) {
@@ -104,6 +135,11 @@ class ReconcilePaymentsAction {
                 continue;
             }
 
+            // Hold expirado + pago approved se resuelve antes de validar el
+            // monto, igual que el webhook: no se revive ni se convierte en
+            // fraud_review una reserva que ya pudo ser revendida.
+            $holdStatus = BookingStatus::tryFrom((string)($hold['status'] ?? ''));
+
             // Validacion de monto: misma logica que el webhook (centavos
             // enteros, price_snapshot_pen congelado al cotizar — todo 32).
             $priceSnapshotPen = $hold['price_snapshot_pen'] ?? null;
@@ -111,9 +147,28 @@ class ReconcilePaymentsAction {
                 ? (int)round((float)$priceSnapshotPen * 100)
                 : (int)round(PriceCalculator::toGatewayPrice((float)($hold['price_snapshot'] ?? 0.0)) * 100);
             $chargedPenCents = (int)round((float)($paymentDetails['transaction_amount'] ?? 0.0) * 100);
-            if ($chargedPenCents < $expectedPenCents) {
+            if ($holdStatus !== BookingStatus::Expired && $chargedPenCents < $expectedPenCents) {
                 Logger::error("ReconcilePaymentsAction ALERTA: monto insuficiente para cart {$cartId} (cobrado={$chargedPenCents} centavos < esperado={$expectedPenCents} centavos)");
-                $skipped++;
+                try {
+                    $this->pdo->beginTransaction();
+                    if ($this->bookingRepo->isPaymentProcessed($paymentId, 'fraud_review')) {
+                        $this->pdo->commit();
+                        $skipped++;
+                        continue;
+                    }
+                    if (!$updateStatus(BookingStatus::FraudReview->value)
+                        || !$this->bookingRepo->markPaymentProcessed($paymentId, $cartId, 'fraud_review')
+                        || !$this->bookingRepo->recordAlert($cartId, $paymentId, 'fraud_review')) {
+                        throw new \RuntimeException('No se pudo persistir la revisión antifraude.');
+                    }
+                    $this->pdo->commit();
+                    $reconciled++;
+                } catch (Throwable $e) {
+                    if ($this->pdo->inTransaction()) {
+                        $this->pdo->rollBack();
+                    }
+                    Logger::error("ReconcilePaymentsAction Error fraud_review para cart {$cartId}: " . $e->getMessage());
+                }
                 continue;
             }
 
@@ -122,13 +177,14 @@ class ReconcilePaymentsAction {
             // webhook (rama expired_paid): alerta para resolución manual, NO
             // se revive la reserva (la habitación pudo re-venderse) y NO se
             // despacha el evento (no confirmar el PMS en ese caso).
-            $holdStatus = BookingStatus::tryFrom((string)($hold['status'] ?? ''));
             if ($holdStatus === BookingStatus::Expired) {
                 try {
                     $this->pdo->beginTransaction();
-                    $this->bookingRepo->updateStatus($cartId, BookingStatus::ExpiredPaid->value);
-                    $this->bookingRepo->markPaymentProcessed($paymentId, $cartId, 'approved');
-                    $this->bookingRepo->recordAlert($cartId, $paymentId, 'expired_paid');
+                    if (!$updateStatus(BookingStatus::ExpiredPaid->value)
+                        || !$this->bookingRepo->markPaymentProcessed($paymentId, $cartId, 'approved')
+                        || !$this->bookingRepo->recordAlert($cartId, $paymentId, 'expired_paid')) {
+                        throw new \RuntimeException('No se pudo persistir la reconciliación del pago tardío.');
+                    }
                     $this->pdo->commit();
                     $reconciled++;
                 } catch (Throwable $e) {
@@ -144,8 +200,10 @@ class ReconcilePaymentsAction {
 
             try {
                 $this->pdo->beginTransaction();
-                $this->bookingRepo->updateStatus($cartId, BookingStatus::Paid->value);
-                $this->bookingRepo->markPaymentProcessed($paymentId, $cartId, 'approved');
+                if (!$updateStatus(BookingStatus::Paid->value)
+                    || !$this->bookingRepo->markPaymentProcessed($paymentId, $cartId, 'approved')) {
+                    throw new \RuntimeException('No se pudo persistir la reconciliación del pago aprobado.');
+                }
                 // FIX 2026-08-11: transactional-outbox — el evento se persiste
                 // en la MISMA txn (patrón del webhook). Antes: dispatch
                 // post-commit con catch silencioso = si el INSERT del outbox

@@ -282,6 +282,55 @@ final class ProcessOutboxActionTest extends TestCase {
         $this->assertSame('COMPLETED', $this->getRow($id)['status']);
     }
 
+    public function testExpiredWorkerCannotFenceOverNewerClaimOnSuccess(): void {
+        $id = $this->insertReclaimable($this->prefix . '-FENCE-SUCCESS');
+        $newerToken = str_repeat('newer', 8);
+
+        // A second worker wins the claim while the original dispatcher is
+        // still running. The original token must no longer authorize the
+        // terminal transition.
+        $dispatch = function () use ($id, $newerToken): void {
+            $stmt = $this->pdo->prepare(
+                "UPDATE event_outbox
+                 SET status = 'IN_PROGRESS', claim_token = :token,
+                     next_attempt_at = NOW() + INTERVAL 30 MINUTE
+                 WHERE id = :id"
+            );
+            $stmt->execute([':id' => $id, ':token' => $newerToken]);
+        };
+
+        $stats = $this->action($dispatch)->run();
+        $row = $this->getRow($id);
+
+        $this->assertSame('IN_PROGRESS', $row['status'], 'El worker obsoleto no puede marcar COMPLETED.');
+        $this->assertSame($newerToken, $row['claim_token'], 'El token del claim posterior queda intacto.');
+        $this->assertSame(0, $stats['completed'], 'Un claim obsoleto no incrementa completed.');
+    }
+
+    public function testExpiredWorkerCannotFenceOverNewerClaimOnFailure(): void {
+        $id = $this->insertReclaimable($this->prefix . '-FENCE-FAIL');
+        $newerToken = str_repeat('later', 8);
+
+        $dispatch = function () use ($id, $newerToken): void {
+            $stmt = $this->pdo->prepare(
+                "UPDATE event_outbox
+                 SET status = 'IN_PROGRESS', claim_token = :token,
+                     next_attempt_at = NOW() + INTERVAL 30 MINUTE
+                 WHERE id = :id"
+            );
+            $stmt->execute([':id' => $id, ':token' => $newerToken]);
+            throw new \RuntimeException('fallo del worker obsoleto');
+        };
+
+        $stats = $this->action($dispatch)->run();
+        $row = $this->getRow($id);
+
+        $this->assertSame('IN_PROGRESS', $row['status'], 'El worker obsoleto no puede marcar FAILED.');
+        $this->assertSame($newerToken, $row['claim_token'], 'El token posterior queda intacto tras un fallo obsoleto.');
+        $this->assertSame(0, (int)$row['attempts'], 'Un claim obsoleto no incrementa attempts.');
+        $this->assertSame(0, $stats['failed'], 'Un claim obsoleto no incrementa failed.');
+    }
+
     public function testRunWithSlowListenersCompletesAllEvents(): void {
         // set_time_limit(0): un run con listeners lentos (3 x 0.25s) completa
         // sin que PHP mate el proceso; todos los eventos quedan COMPLETED.

@@ -14,16 +14,16 @@ const { number, eyebrow, title, subtitle, align = 'center' } = Astro.props;
 
 <div
   class:list={[
-    'max-w-3xl mx-auto mb-10 space-y-2',
+    'max-w-3xl mx-auto mb-10 space-y-3',
     align === 'center' ? 'text-center' : 'text-left',
   ]}
 >
   <span class:list={['tag-dash-title block', align === 'center' ? '' : 'justify-start']}>
     {eyebrow}
   </span>
-  <div class:list={['flex items-center gap-4', align === 'center' ? 'justify-center' : '']}>
-    <span class="section-number text-6xl sm:text-7xl" aria-hidden="true">{number}</span>
-    <h2 class="font-display text-4xl sm:text-5xl lg:text-5xl text-text-primary-light dark:text-white leading-tight">
+  <div class:list={['flex items-start gap-3 sm:gap-4', align === 'center' ? 'justify-center' : '']}>
+    <span class="section-number shrink-0 text-4xl leading-[0.9] sm:text-7xl" aria-hidden="true">{number}</span>
+    <h2 class="min-w-0 max-w-[18ch] font-display text-3xl leading-[0.98] text-text-primary-light dark:text-white text-balance sm:text-5xl sm:leading-[1.05] lg:text-5xl">
       {title}
     </h2>
   </div>

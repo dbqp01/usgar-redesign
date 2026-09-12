@@ -90,7 +90,10 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             // moneda de cobro sigue siendo Config::get('MERCADO_PAGO_CURRENCY')
             // para el evento/PMS (todo 34); el create simplemente no la envia.
             'statement_descriptor'=> $statementDescriptor,
-            'binary_mode'         => false,
+            'binary_mode'         => filter_var(
+                Config::get('MP_BINARY_MODE', 'false'),
+                FILTER_VALIDATE_BOOLEAN
+            ),
             'notification_url'    => Config::get('MP_NOTIFICATION_URL', 'https://usgarhoteles.com/api/webhook'),
         ];
 
@@ -126,7 +129,8 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             // El SDK documenta setCustomHeaders como lista de strings "Name:
             // value" (la forma asociativa se pierde en CURLOPT_HTTPHEADER:
             // curl descarta headers sin ':'). Validado E2E en entorno TEST (live_mode:false, 2026-08-03); pendiente validación LIVE.
-            $customHeaders = ['X-Idempotency-Key: ' . $this->generateUuidV4()];
+            $idempotencyKey = trim((string)($paymentData['idempotency_key'] ?? ''));
+            $customHeaders = ['X-Idempotency-Key: ' . ($idempotencyKey !== '' ? $idempotencyKey : $this->generateUuidV4())];
             if (!empty($paymentData['device_session_id'])) {
                 $customHeaders[] = 'X-meli-session-id: ' . trim((string)$paymentData['device_session_id']);
             }
@@ -169,12 +173,12 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             return null;
         }
 
-        // Validar firma HMAC si webhookSecret esta configurado
-        if (!empty($this->webhookSecret)) {
-            if (!$this->verifySignature($signatureHeader, $requestId, (string)$dataId)) {
-                Logger::error('MercadoPagoAdapter: Firma de webhook invalida.');
-                return null;
-            }
+        // Webhook signatures are mandatory; never fetch payment details when
+        // the application has no configured secret.
+        if (empty($this->webhookSecret)
+            || !$this->verifySignature($signatureHeader, $requestId, (string)$dataId)) {
+            Logger::error('MercadoPagoAdapter: Firma de webhook invalida o secret no configurado.');
+            return null;
         }
 
         if ($type === 'payment' || isset($payload['data']['id'])) {
@@ -267,7 +271,8 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
     /**
      * Busca un pago por external_reference (GET /v1/payments/search).
      * Consumido por el todo 31 (W5) para evitar segundos cobros tras commit-falla.
-     * Devuelve el primer resultado normalizado, o null si no existe.
+     * Devuelve un resultado inequívoco reciente, o null si no existe o hay
+     * más de una coincidencia (la ambigüedad debe ir a reconciliación).
      */
     public function findPaymentByExternalReference(string $externalRef): ?array {
         try {
@@ -276,7 +281,10 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             $requestOptions->setConnectionTimeout((int) Config::get('MERCADO_PAGO_TIMEOUT_GET_MS', '8000')); // 8s total
 
             $search = $this->paymentClient->search(
-                new MPSearchRequest(1, 0, ['external_reference' => $externalRef]),
+                new MPSearchRequest(10, 0, [
+                    'external_reference' => $externalRef,
+                    'date_created.from' => gmdate('Y-m-d\TH:i:s.v\Z', time() - 172800),
+                ]),
                 $requestOptions
             );
 
@@ -285,14 +293,29 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
                 return null;
             }
 
-            /** @var \MercadoPago\Resources\Payment\PaymentSearchResult $first */
-            $first = $results[0];
+            /** @var list<array<string, mixed>> $matches */
+            $matches = [];
+            foreach ($results as $result) {
+                $fields = get_object_vars((object) $result);
+                if ((string)($fields['external_reference'] ?? '') === $externalRef) {
+                    $matches[] = $fields;
+                }
+            }
+            if (count($matches) !== 1) {
+                Logger::warning('MercadoPagoAdapter: external_reference ambigua o no exacta; se omite asociacion.', [
+                    'external_reference' => $externalRef,
+                    'matches' => count($matches),
+                ]);
+                return null;
+            }
+
+            $first = $matches[0];
             return [
-                'id' => (int) ($first->id ?? 0),
-                'status' => (string) ($first->status ?? ''),
-                'status_detail' => (string) ($first->status_detail ?? ''),
-                'external_reference' => (string) ($first->external_reference ?? $externalRef),
-                'transaction_amount' => (float) ($first->transaction_amount ?? 0.0),
+                'id' => (int) ($first['id'] ?? 0),
+                'status' => (string) ($first['status'] ?? ''),
+                'status_detail' => (string) ($first['status_detail'] ?? ''),
+                'external_reference' => (string) ($first['external_reference'] ?? $externalRef),
+                'transaction_amount' => (float) ($first['transaction_amount'] ?? 0.0),
             ];
 
         } catch (MPApiException $e) {

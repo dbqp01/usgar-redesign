@@ -75,7 +75,7 @@ $container->set(EventDispatcher::class, $eventDispatcher);
 if ($dbConnection !== null) {
     $eventDispatcher->subscribe('booking.paid', new ConfirmQloAppsOrderListener($container->get(PmsPortInterface::class)));
 }
-$eventDispatcher->subscribe('booking.paid', new SendBookingConfirmationEmailListener($container->get(MailerPortInterface::class)));
+$eventDispatcher->subscribe('booking.paid', new SendBookingConfirmationEmailListener($container->get(MailerPortInterface::class), $dbConnection));
 
 /**
  * Acceso global al container.

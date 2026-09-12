@@ -4,9 +4,11 @@
 // authenticated: lock icon, "login required" copy and a sign-in link that
 // returns to this page after auth.
 import { useTranslations, type Locale } from '../../i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
 
 const lang = (Astro.currentLocale || "en") as Locale;
 const t = useTranslations(lang);
+const loginUrl = getRelativeLocaleUrl(lang, 'login');
 ---
 
 <!-- Unauthenticated State -->
@@ -16,7 +18,7 @@ const t = useTranslations(lang);
   </svg>
   <p class="text-base font-semibold">{t('auth.loginRequired')}</p>
   <a
-    href={`/login?redirect=${encodeURIComponent(Astro.url.pathname)}`}
+    href={`${loginUrl}?redirect=${encodeURIComponent(Astro.url.pathname)}`}
     class="inline-block bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-full text-sm transition-[background-color,color] shadow-md"
   >
     {t('auth.signIn')}

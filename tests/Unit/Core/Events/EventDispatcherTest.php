@@ -154,4 +154,34 @@ final class EventDispatcherTest extends TestCase {
 
         $this->assertNull($this->findEventRow($cartId), 'Rollback del llamador descarta el evento (outbox transaccional).');
     }
+
+    public function testDispatchWithoutListenersStillPersistsEventInOutbox(): void {
+        // Regresión del bug de durabilidad: dispatch() hacía return temprano
+        // cuando NO había listeners registrados para el evento, saltándose el
+        // INSERT en event_outbox. La ventana real: bootstrap registrando
+        // listeners ANTES de que un listener dependiente de BD haga throw
+        // (o un wiring incompleto del Container) dejaba el pago `paid` sin
+        // evento durable — el cron del outbox nunca lo entregaba. El outbox
+        // transaccional debe persistir el evento por sí solo: los listeners
+        // son consumidores, no la condición de durabilidad.
+        $eventName = 'w4.durability.' . random_int(1000, 9999);
+
+        $rp = new \ReflectionProperty(EventDispatcher::class, 'listeners');
+        $rp->setAccessible(true);
+        $before = $rp->getValue(EventDispatcher::getInstance());
+        $this->assertEmpty($before[$eventName] ?? [], 'Precondición: cero listeners para el evento de prueba.');
+
+        $cartId = $this->prefix . '-NOLIST';
+        EventDispatcher::getInstance()->dispatch(new W4TestEvent($cartId, $eventName));
+
+        $stmt = $this->pdo->prepare(
+            'SELECT * FROM event_outbox WHERE id > :before AND event_name = :name ORDER BY id DESC LIMIT 5'
+        );
+        $stmt->execute([':before' => $this->beforeId, ':name' => $eventName]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->assertNotFalse($row, 'Sin listeners: el evento AÚN se persiste en event_outbox (durabilidad no depende de listeners).');
+        $this->createdIds[] = (int)$row['id'];
+        $this->assertSame('PENDING', $row['status']);
+        $this->assertNotNull($row['next_attempt_at'], 'Evento fresco fija next_attempt_at = NOW() incluso sin listeners.');
+    }
 }

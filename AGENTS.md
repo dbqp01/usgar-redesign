@@ -37,6 +37,7 @@ Toda la documentación vive en `docs/` — no crees archivos nuevos sin revisar 
 | `docs/ROADMAP.md` | Estado de migraciones + backlog priorizado de mejoras (P1-P3) | Al cerrar un ítem |
 | `docs/STATE.md` | Handoff/estado del backend (auditorías, evidencia) | Al cerrar un trabajo de backend |
 | `docs/DECISIONS.md` | Decisiones de arquitectura vivas | Al tomar una decisión |
+| `docs/specs/` | **Specs SDD**: requisitos EARS por feature (fuente de verdad del comportamiento). `docs/specs/README.md` = plantilla + reglas + índice | **ANTES de codear** una feature nueva; en el mismo commit si cambia un comportamiento |
 
 ## Estructura
 

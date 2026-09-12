@@ -116,23 +116,34 @@ class User {
      * Crea un usuario desde un perfil OAuth.
      * Si ya existe un usuario con el mismo email, actualiza el proveedor.
      *
-     * @param array{email: string, first_name: ?string, last_name: ?string, photo_url: ?string, phone: ?string, provider: string, provider_id: string} $profile
+     * @param array{email: string, email_verified: bool, first_name: ?string, last_name: ?string, photo_url: ?string, phone: ?string, provider: string, provider_id: string} $profile
      * @return int|null ID del usuario creado/actualizado, o null en caso de error
      */
     public function createFromOAuth(array $profile): ?int {
+        if ($profile['email'] === '' || $profile['email_verified'] !== true) {
+            Logger::warning('User::createFromOAuth rejected an unverified email.');
+            return null;
+        }
+
         try {
             // Primero verificar si ya existe por email
             $existing = $this->findByEmail($profile['email']);
 
             if ($existing !== null) {
-                // Si el usuario ya tiene un provider asignado y no coincide con el actual, no sobrescribir a ciegas
-                $newProvider = $existing['provider'] === 'email' ? $profile['provider'] : $existing['provider'];
-                $newProviderId = $existing['provider'] === 'email' ? $profile['provider_id'] : $existing['provider_id'];
+                // Linking by email is explicit work that this callback does
+                // not perform. Re-login is allowed only for the same provider
+                // identity; this prevents cross-provider account takeover.
+                if ($existing['provider'] !== $profile['provider']
+                    || $existing['provider_id'] !== $profile['provider_id']) {
+                    Logger::warning('User::createFromOAuth rejected implicit account linking.', [
+                        'email' => $profile['email'],
+                        'provider' => $profile['provider'],
+                    ]);
+                    return null;
+                }
 
                 $stmt = $this->pdo->prepare('
                     UPDATE users SET
-                        provider = :provider,
-                        provider_id = :provider_id,
                         photo_url = COALESCE(:photo_url, photo_url),
                         first_name = COALESCE(:first_name, first_name),
                         last_name = COALESCE(:last_name, last_name),
@@ -140,8 +151,6 @@ class User {
                     WHERE id = :id
                 ');
                 $stmt->execute([
-                    ':provider'    => $newProvider,
-                    ':provider_id' => $newProviderId,
                     ':photo_url'   => $profile['photo_url'] ?? null,
                     ':first_name'  => $profile['first_name'] ?? null,
                     ':last_name'   => $profile['last_name'] ?? null,
@@ -174,35 +183,19 @@ class User {
 
     /**
      * Crea un usuario con email y contrasena.
-     * Si ya existe una cuenta de Google OAuth sin contrasena, le vincula la contrasena.
      *
-     * @return int|null ID del usuario creado o actualizado, o null si el email ya existe con contrasena o por error
+     * Un email existente siempre es un conflicto. Las cuentas OAuth no pueden
+     * convertirse en cuentas password mediante el registro publico: el vinculo
+     * requiere una sesion ya autenticada o el flujo OAuth del proveedor.
+     *
+     * @return int|null ID del usuario creado, o null si el email ya existe o hay un error
      */
     public function createFromEmail(string $email, string $password, string $firstName, string $lastName = ''): ?int {
         try {
             $existing = $this->findByEmail($email);
 
             if ($existing !== null) {
-                // Si la cuenta existe pero NO tiene contrasena (fue creada via OAuth), se la vinculamos
-                if (empty($existing['password_hash'])) {
-                    $stmt = $this->pdo->prepare('
-                        UPDATE users SET
-                            password_hash = :password_hash,
-                            first_name = COALESCE(first_name, :first_name),
-                            last_name = COALESCE(last_name, :last_name),
-                            updated_at = NOW()
-                        WHERE id = :id
-                    ');
-                    $stmt->execute([
-                        ':password_hash' => password_hash($password, PASSWORD_DEFAULT),
-                        ':first_name'    => !empty($firstName) ? $firstName : null,
-                        ':last_name'     => !empty($lastName) ? $lastName : null,
-                        ':id'            => $existing['id'],
-                    ]);
-                    return (int) $existing['id'];
-                }
-
-                return null; // Ya existe con contraseña
+                return null; // El registro publico nunca modifica una cuenta existente.
             }
 
             $stmt = $this->pdo->prepare('
@@ -287,7 +280,19 @@ class User {
             return array_map(fn(array $row): array => $this->hydrateBookingRow($row), $results);
         } catch (PDOException $e) {
             Logger::error('User::getBookings failed: ' . $e->getMessage());
-            return [];
+            // A fresh installation may not have created provisional_bookings
+            // yet; that is an empty history. Other database failures must
+            // reach the action so the API can return a service error instead
+            // of silently presenting an empty account.
+            $driverCode = is_array($e->errorInfo ?? null)
+                ? (int)($e->errorInfo[1] ?? 0)
+                : (int)$e->getCode();
+            $missingTable = $driverCode === 1146
+                || str_contains(strtolower($e->getMessage()), "doesn't exist");
+            if ($missingTable) {
+                return [];
+            }
+            throw $e;
         }
     }
 

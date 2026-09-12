@@ -3,9 +3,11 @@
 // Step 2: Guest Details & Mandatory Flight Details for Airport Transfer.
 // Preserves: #checkout-form, #guest-name, #guest-email, #guest-phone, #airport-transfer, #flight-time, #flight-details, #transfer-details, #transfer-calculation, #estimated-arrival-time, #auth-prefill-banner, data-guest-step, data-guest-next, data-guest-back
 import { useTranslations, type Locale } from '../../i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
 
 const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
+const loginUrl = getRelativeLocaleUrl(lang, 'login');
 ---
 
 <div data-guest-step class="space-y-6">
@@ -25,7 +27,7 @@ const t = useTranslations(lang);
         {t('auth.loginToBookFaster')}
       </p>
       <a
-        href={`/login?redirect=${encodeURIComponent('/book')}`}
+        href={`${loginUrl}?redirect=${encodeURIComponent(getRelativeLocaleUrl(lang, 'book'))}`}
         class="flex-shrink-0 bg-primary hover:bg-primary-dark text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors"
       >
         {t('auth.signIn')}
@@ -181,6 +183,7 @@ const t = useTranslations(lang);
 <script>
   import { wizardStore } from '../../features/booking/wizardStore';
   import { toastApi } from '../../features/ui/toast';
+  import { getUser } from '../../utils/auth-client';
 
   let abortController = new AbortController();
 
@@ -299,13 +302,8 @@ const t = useTranslations(lang);
         try { applyUserData(JSON.parse(cached)); } catch {}
       }
       try {
-        const res = await fetch('/api/auth/me', { credentials: 'include' });
-        if (!res.ok) return;
-        const data = await res.json();
-        if (data.success && data.user) {
-          sessionStorage.setItem('usgar_auth_user', JSON.stringify(data.user));
-          applyUserData(data.user);
-        }
+        const user = await getUser(false);
+        if (!signal.aborted && user) applyUserData(user);
       } catch {}
     }
 

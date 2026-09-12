@@ -5,6 +5,7 @@ namespace App\Features\Booking\Domain;
 
 use PDO;
 use PDOException;
+use Throwable;
 use App\Core\Logger;
 use App\Core\Database;
 use App\Core\Config;
@@ -48,6 +49,12 @@ class ProvisionalBookingRepository {
      * @param array<string, mixed> $data
      */
     private function doInsert(array $data): bool {
+        $startedTransaction = false;
+        if (!$this->pdo->inTransaction()) {
+            $this->pdo->beginTransaction();
+            $startedTransaction = true;
+        }
+        try {
         $stmt = $this->pdo->prepare("
             INSERT INTO provisional_bookings (
                 cart_id, user_id, id_hotel, id_room_type, guest_data, room_data,
@@ -60,7 +67,7 @@ class ProvisionalBookingRepository {
             )
         ");
 
-        return $stmt->execute([
+        $ok = $stmt->execute([
             ':cart_id'                => $data['cart_id'],
             ':user_id'                => $data['user_id'] ?? null,
             ':id_hotel'               => $data['id_hotel'] ?? Config::get('DEFAULT_HOTEL_ID', '1'),
@@ -75,10 +82,62 @@ class ProvisionalBookingRepository {
             ':status'                 => $data['status'] ?? BookingStatus::Pending->value,
             ':expires_at'             => $data['expires_at'],
         ]);
+        if (!$ok) {
+            throw new PDOException('No se pudo insertar provisional_booking');
+        }
+
+        // Ledger normalizado por tipo de habitación. Los consumidores pueden
+        // representar reservas mixtas (A+B) y cantidades (A+A) sin romper
+        // filas legacy, que no tienen entradas en este ledger.
+        $quantities = $data['room_quantities'] ?? [];
+        if (is_array($quantities) && $quantities !== []) {
+            $ledger = $this->pdo->prepare(
+                'INSERT INTO provisional_booking_rooms (cart_id, id_room_type, quantity) VALUES (:cart_id, :id_room_type, :quantity)'
+            );
+            foreach ($quantities as $roomType => $quantity) {
+                $quantity = (int)$quantity;
+                if ($quantity < 1) {
+                    continue;
+                }
+                $ledger->execute([
+                    ':cart_id' => $data['cart_id'],
+                    ':id_room_type' => (int)$roomType,
+                    ':quantity' => $quantity,
+                ]);
+            }
+        }
+        if ($startedTransaction) {
+            $this->pdo->commit();
+        }
+        return true;
+        } catch (Throwable $e) {
+            if ($startedTransaction && $this->isTransactionActive()) {
+                $this->pdo->rollBack();
+            }
+            throw $e;
+        }
     }
 
-    public function ensureTablesExist(): void {
-        if (!$this->pdo) return;
+    /**
+     * PDO transaction state is mutable outside this method (for example after
+     * a driver error), so callers must not let PHPStan memoize its result.
+     *
+     * @phpstan-impure
+     */
+    private function isTransactionActive(): bool
+    {
+        return $this->pdo->inTransaction();
+    }
+
+    public function ensureTablesExist(): bool {
+        if (!$this->pdo) return false;
+        // MySQL ejecuta DDL con COMMIT implícito. Nunca auto-migrar mientras
+        // el caller mantiene locks de una unidad de negocio; devolver false
+        // fuerza al caller a abortar/reintentar fuera de la transacción.
+        if ($this->pdo->inTransaction()) {
+            Logger::error('ProvisionalBookingRepository::ensureTablesExist: migracion diferida porque hay una transaccion activa.');
+            return false;
+        }
         try {
             $this->pdo->exec("
                 CREATE TABLE IF NOT EXISTS provisional_bookings (
@@ -96,8 +155,18 @@ class ProvisionalBookingRepository {
                     checkout DATE NOT NULL,
                     status VARCHAR(32) DEFAULT 'pending',
                     expires_at DATETIME NOT NULL,
+                    reconcile_claimed_until DATETIME NULL,
+                    reconcile_claim_token VARCHAR(64) NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     INDEX idx_hotel_room_status_dates (id_hotel, id_room_type, status, checkin, checkout)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+                CREATE TABLE IF NOT EXISTS provisional_booking_rooms (
+                    cart_id VARCHAR(64) NOT NULL,
+                    id_room_type INT NOT NULL,
+                    quantity INT NOT NULL DEFAULT 1,
+                    PRIMARY KEY (cart_id, id_room_type),
+                    INDEX idx_room_type (id_room_type)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
                 CREATE TABLE IF NOT EXISTS processed_payments (
@@ -132,6 +201,10 @@ class ProvisionalBookingRepository {
                 $this->pdo->exec("ALTER TABLE provisional_bookings ADD COLUMN payment_id VARCHAR(64) NULL AFTER status");
                 Logger::info('ProvisionalBookingRepository: Columna payment_id creada automaticamente en provisional_bookings.');
             }
+            if (!$this->columnExists('provisional_bookings', 'payment_idempotency_key')) {
+                $this->pdo->exec("ALTER TABLE provisional_bookings ADD COLUMN payment_idempotency_key VARCHAR(64) NULL AFTER payment_id");
+                Logger::info('ProvisionalBookingRepository: Columna payment_idempotency_key creada automaticamente en provisional_bookings.');
+            }
 
             // Auto-heal (todo 25, Wave 4): PEN y tasa CONGELADOS al cotizar.
             // El WRITE lo hace CreateBookingAction; el todo 32 (W6) solo lo
@@ -159,14 +232,26 @@ class ProvisionalBookingRepository {
                 $this->pdo->exec("ALTER TABLE provisional_bookings ADD COLUMN extend_count INT NOT NULL DEFAULT 0 AFTER expires_at");
                 Logger::info('ProvisionalBookingRepository: Columna extend_count creada automaticamente en provisional_bookings.');
             }
+            if (!$this->columnExists('provisional_bookings', 'reconcile_claimed_until')) {
+                $this->pdo->exec("ALTER TABLE provisional_bookings ADD COLUMN reconcile_claimed_until DATETIME NULL AFTER extend_count");
+            }
+            if (!$this->columnExists('provisional_bookings', 'reconcile_claim_token')) {
+                $this->pdo->exec("ALTER TABLE provisional_bookings ADD COLUMN reconcile_claim_token VARCHAR(64) NULL AFTER reconcile_claimed_until");
+            }
+            return true;
         } catch (PDOException $e) {
             Logger::error('ProvisionalBookingRepository::ensureTablesExist Error: ' . $e->getMessage());
+            return false;
         }
     }
 
     /**
      * Verifica si una columna existe en una tabla (informacion_schema).
      * Los literales de tabla/columna son constantes internas (sin input de usuario).
+     * Metadata changes after ALTER TABLE and can also be performed by another
+     * worker, therefore this lookup is intentionally impure.
+     *
+     * @phpstan-impure
      */
     private function columnExists(string $table, string $column): bool {
         $stmt = $this->pdo->prepare(
@@ -290,6 +375,9 @@ class ProvisionalBookingRepository {
 
     /**
      * @return array<string, mixed>|null
+     * @throws PDOException When the database query fails. A database outage
+     *   must remain distinguishable from a missing hold so webhook callers
+     *   can return 500 and Mercado Pago can retry the notification.
      */
     public function getByCartId(string $cartId, bool $forUpdate = false): ?array {
         try {
@@ -301,7 +389,7 @@ class ProvisionalBookingRepository {
             return $row ? $this->hydrateRow($row) : null;
         } catch (PDOException $e) {
             Logger::error('ProvisionalBookingRepository::getByCartId Error: ' . $e->getMessage());
-            return null;
+            throw $e;
         }
     }
 
@@ -393,6 +481,7 @@ class ProvisionalBookingRepository {
         $guards = [
             BookingStatus::Paid->value        => "status IN ({$transient})",
             BookingStatus::FraudReview->value => "status IN ({$transient})",
+            BookingStatus::ManualReview->value => "status IN ({$transient})",
             BookingStatus::ExpiredPaid->value => "status IN ('" . BookingStatus::Expired->value . "')",
             // Pago final-rechazado/cancelado (fix 2026-08-13): desde pending
             // (caso normal) y desde expired (el pago tardo mas que el TTL del
@@ -412,7 +501,8 @@ class ProvisionalBookingRepository {
             $stmt = $this->pdo->prepare(
                 "UPDATE provisional_bookings SET status = :status WHERE cart_id = :cartId AND " . $guards[$status]
             );
-            return $stmt->execute([':status' => $status, ':cartId' => $cartId]);
+            return $stmt->execute([':status' => $status, ':cartId' => $cartId])
+                && $stmt->rowCount() === 1;
         } catch (PDOException $e) {
             Logger::error('ProvisionalBookingRepository::updateStatus Error: ' . $e->getMessage());
             return false;
@@ -442,6 +532,72 @@ class ProvisionalBookingRepository {
         }
     }
 
+    /**
+     * Applies a reconciliation transition only while this worker still owns
+     * the lease. The token condition fences a worker whose external lookup
+     * outlived its lease and was reclaimed by another worker.
+     */
+    public function updateStatusWithReconcileClaim(string $cartId, string $status, string $claimToken): bool {
+        $transient = "'" . implode("','", [
+            BookingStatus::Pending->value,
+            BookingStatus::ManualReview->value,
+            BookingStatus::FraudReview->value,
+        ]) . "'";
+        $guards = [
+            BookingStatus::Paid->value        => "status IN ({$transient})",
+            BookingStatus::FraudReview->value => "status IN ({$transient})",
+            BookingStatus::ManualReview->value => "status IN ({$transient})",
+            BookingStatus::ExpiredPaid->value => "status IN ('" . BookingStatus::Expired->value . "')",
+            BookingStatus::Failed->value      => "status IN ('" . BookingStatus::Pending->value . "','" . BookingStatus::Expired->value . "')",
+        ];
+        if ($claimToken === '' || !isset($guards[$status])) {
+            return false;
+        }
+        try {
+            $stmt = $this->pdo->prepare(
+                "UPDATE provisional_bookings
+                 SET status = :status, reconcile_claimed_until = NULL, reconcile_claim_token = NULL
+                 WHERE cart_id = :cartId
+                   AND reconcile_claim_token = :claimToken
+                   AND reconcile_claimed_until > NOW()
+                   AND {$guards[$status]}"
+            );
+            return $stmt->execute([
+                ':status' => $status,
+                ':cartId' => $cartId,
+                ':claimToken' => $claimToken,
+            ]) && $stmt->rowCount() === 1;
+        } catch (PDOException $e) {
+            Logger::error('ProvisionalBookingRepository::updateStatusWithReconcileClaim Error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Releases a reconciliation lease after a terminal/idempotent skip.
+     * The worker may safely return the row to the queue when the payment was
+     * already recorded; retaining the ten-minute lease only delays cleanup.
+     */
+    public function releaseReconcileClaim(string $cartId, string $claimToken): bool {
+        if ($cartId === '' || $claimToken === '') {
+            return false;
+        }
+        try {
+            $stmt = $this->pdo->prepare(
+                'UPDATE provisional_bookings
+                 SET reconcile_claimed_until = NULL, reconcile_claim_token = NULL
+                 WHERE cart_id = :cartId AND reconcile_claim_token = :claimToken'
+            );
+            return $stmt->execute([
+                ':cartId' => $cartId,
+                ':claimToken' => $claimToken,
+            ]) && $stmt->rowCount() === 1;
+        } catch (PDOException $e) {
+            Logger::error('ProvisionalBookingRepository::releaseReconcileClaim Error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
     public function extend(string $cartId, string $newExpiration): bool {
         try {
             // Tope por CONTEO de extensiones (auditoria 2026-08-11): sin
@@ -456,6 +612,7 @@ class ProvisionalBookingRepository {
                 UPDATE provisional_bookings 
                 SET expires_at = :newExp, extend_count = extend_count + 1
                 WHERE cart_id = :cartId AND status = '".BookingStatus::Pending->value."'
+                  AND expires_at > NOW()
                   AND extend_count < {$maxExtensions}
             ");
             // rowCount > 0: sin esto, un UPDATE que matchea 0 filas (limite
@@ -542,19 +699,28 @@ class ProvisionalBookingRepository {
      * rango de fechas no bloquearia nada si el rango esta vacio.
      */
     public function getHoldCountForRoomForUpdate(int $idRoomType, string $checkIn, string $checkOut, int $idHotel, ?string $createdAfter = null): int {
-        if (!$this->pdo) return 0;
+        if (!$this->pdo) {
+            // Fail-closed: an unavailable database must never look like zero
+            // holds, otherwise CreateBookingAction could accept a booking with
+            // unknown inventory and overbook the room type.
+            throw new PDOException('No hay conexion de base de datos para verificar disponibilidad.');
+        }
         try {
             $sql = "
-                SELECT COUNT(*) FROM provisional_bookings
-                WHERE id_hotel = :idHotel
-                  AND id_room_type = :idRoomType
-                  AND (status = '".BookingStatus::Paid->value."' OR (status = '".BookingStatus::Pending->value."' AND expires_at > NOW()))
-                  AND checkin < :checkout
-                  AND checkout > :checkin
+                SELECT COALESCE(SUM(CASE WHEN pbr.quantity IS NULL THEN 1 ELSE pbr.quantity END), 0)
+                FROM provisional_bookings pb
+                LEFT JOIN provisional_booking_rooms pbr
+                  ON pbr.cart_id = pb.cart_id AND pbr.id_room_type = :idRoomTypeJoin
+                WHERE pb.id_hotel = :idHotel
+                  AND ((pbr.id_room_type IS NOT NULL) OR (pbr.id_room_type IS NULL AND pb.id_room_type = :idRoomType))
+                  AND (pb.status = '".BookingStatus::Paid->value."' OR (pb.status = '".BookingStatus::Pending->value."' AND pb.expires_at > NOW()))
+                  AND pb.checkin < :checkout
+                  AND pb.checkout > :checkin
             ";
             $params = [
                 ':idHotel'    => $idHotel,
                 ':idRoomType' => $idRoomType,
+                ':idRoomTypeJoin' => $idRoomType,
                 ':checkin'    => $checkIn,
                 ':checkout'   => $checkOut,
             ];
@@ -567,11 +733,21 @@ class ProvisionalBookingRepository {
                 $params[':createdAfter'] = $createdAfter;
             }
             $stmt = $this->pdo->prepare($sql);
+            if ($stmt === false) {
+                throw new PDOException('No se pudo preparar el recuento de disponibilidad.');
+            }
             $stmt->execute($params);
-            return (int)$stmt->fetchColumn();
+            $count = $stmt->fetchColumn();
+            if ($count === false) {
+                throw new PDOException('No se pudo leer el recuento de disponibilidad.');
+            }
+            return (int)$count;
         } catch (PDOException $e) {
             Logger::error('ProvisionalBookingRepository::getHoldCountForRoomForUpdate Error: ' . $e->getMessage());
-            return 0;
+            // Fail-closed: un recuento desconocido no puede tratarse como
+            // cero dentro de la transaccion de serializacion, porque permitiria
+            // crear un hold aunque exista inventario ya reservado.
+            throw $e;
         }
     }
 
@@ -583,7 +759,21 @@ class ProvisionalBookingRepository {
      */
     public function getPendingHoldsWithPaymentId(): array {
         if (!$this->pdo) return [];
+        // Reconciliation is the first worker path that reads the claim columns
+        // on older installations. Ensure the auto-migration has run before the
+        // SELECT; a failed migration must be visible in logs rather than look
+        // like an empty queue.
+        if (!$this->ensureTablesExist()) {
+            Logger::error('ProvisionalBookingRepository: claim schema unavailable; reconciliation deferred.');
+            return [];
+        }
+        $startedTransaction = false;
+        $claimToken = bin2hex(random_bytes(16));
         try {
+            if (!$this->pdo->inTransaction()) {
+                $this->pdo->beginTransaction();
+                $startedTransaction = true;
+            }
             // FIX 2026-08-11 (auditoría webhooks): incluye 'expired' y elimina
             // el filtro de expiración — un hold expirado con pago approved y
             // webhook perdido quedaba huérfano para siempre (nadie lo
@@ -594,15 +784,37 @@ class ProvisionalBookingRepository {
                 WHERE status IN ('".BookingStatus::Pending->value."','".BookingStatus::Expired->value."')
                   AND payment_id IS NOT NULL
                   AND payment_id <> ''
+                  AND (reconcile_claimed_until IS NULL OR reconcile_claimed_until < NOW())
+                ORDER BY created_at ASC, id ASC
                 LIMIT 50
+                FOR UPDATE SKIP LOCKED
             ");
             $stmt->execute();
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($rows === []) {
+                if ($startedTransaction) {
+                    $this->pdo->commit();
+                }
+                return [];
+            }
+            $ids = array_map(static fn(array $row): int => (int)$row['id'], $rows);
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+            $claim = $this->pdo->prepare("UPDATE provisional_bookings SET reconcile_claimed_until = DATE_ADD(NOW(), INTERVAL 10 MINUTE), reconcile_claim_token = ? WHERE id IN ({$placeholders})");
+            $claim->execute(array_merge([$claimToken], $ids));
+            $claimed = $this->pdo->prepare("SELECT * FROM provisional_bookings WHERE reconcile_claim_token = ? ORDER BY created_at ASC, id ASC");
+            $claimed->execute([$claimToken]);
+            $rows = $claimed->fetchAll(PDO::FETCH_ASSOC) ?: [];
             foreach ($rows as &$row) {
                 $row = $this->hydrateRow($row);
             }
+            if ($startedTransaction) {
+                $this->pdo->commit();
+            }
             return $rows;
         } catch (PDOException $e) {
+            if ($startedTransaction && $this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
             Logger::error('ProvisionalBookingRepository::getPendingHoldsWithPaymentId Error: ' . $e->getMessage());
             return [];
         }
@@ -610,14 +822,124 @@ class ProvisionalBookingRepository {
 
     /**
      * Registra el payment_id de MercadoPago sobre un hold pendiente.
-     * Requiere la columna payment_id en provisional_bookings (migracion manual en produccion).
+     * La columna se auto-migra durante el bootstrap de reservas o antes del
+     * primer intento de pago en instalaciones antiguas.
      */
     public function attachPaymentId(string $cartId, string $paymentId): bool {
+        if ($cartId === '' || $paymentId === '') {
+            Logger::error('ProvisionalBookingRepository::attachPaymentId: cart_id y payment_id son obligatorios.');
+            return false;
+        }
+
         try {
-            $stmt = $this->pdo->prepare("UPDATE provisional_bookings SET payment_id = :payment_id WHERE cart_id = :cartId");
-            return $stmt->execute([':payment_id' => $paymentId, ':cartId' => $cartId]);
+            $stmt = $this->pdo->prepare("UPDATE provisional_bookings
+                SET payment_id = :payment_id_set
+                WHERE cart_id = :cartId
+                  AND (payment_id IS NULL OR payment_id = '' OR payment_id = :payment_id_existing)");
+            if (!$stmt->execute([
+                ':payment_id_set' => $paymentId,
+                ':payment_id_existing' => $paymentId,
+                ':cartId' => $cartId,
+            ])) {
+                return false;
+            }
+
+            // MySQL puede devolver rowCount() = 0 cuando el valor ya era el
+            // mismo. Es un resultado idempotente, no un fallo: confirmar la
+            // misma notificacion no debe provocar un recovery falso.
+            if ($stmt->rowCount() === 1) {
+                return true;
+            }
+
+            $verify = $this->pdo->prepare(
+                'SELECT payment_id FROM provisional_bookings WHERE cart_id = :cartId LIMIT 1'
+            );
+            if (!$verify->execute([':cartId' => $cartId])) {
+                return false;
+            }
+            $current = $verify->fetchColumn();
+            return $current !== false && hash_equals($paymentId, trim((string)$current));
         } catch (PDOException $e) {
             Logger::error('ProvisionalBookingRepository::attachPaymentId Error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Persiste la clave de idempotencia del intento antes de llamar a la
+     * pasarela. La fila debe estar bloqueada por el caller; la clave queda
+     * durable aunque la transaccion del cobro posterior haga rollback.
+     */
+    public function setPaymentIdempotencyKey(string $cartId, string $key): bool {
+        try {
+            // ProcessPaymentAction invokes this method before opening its
+            // payment transaction. Auto-heal only here so legacy installs get
+            // the column on their first payment attempt, while never running
+            // DDL inside an active transaction (MySQL implicitly commits DDL).
+            if (!$this->ensurePaymentIdempotencyKeyColumn()) {
+                return false;
+            }
+            $stmt = $this->pdo->prepare("UPDATE provisional_bookings
+                SET payment_idempotency_key = :key
+                WHERE cart_id = :cartId
+                  AND status = 'pending'
+                  AND (payment_id IS NULL OR payment_id = '')
+                  AND (payment_idempotency_key IS NULL OR payment_idempotency_key = '')");
+            return $stmt->execute([':key' => $key, ':cartId' => $cartId])
+                && $stmt->rowCount() === 1;
+        } catch (PDOException $e) {
+            Logger::error('ProvisionalBookingRepository::setPaymentIdempotencyKey Error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Ensures the durable payment idempotency column exists before a payment
+     * attempt. This is intentionally narrower than ensureTablesExist() for
+     * the hot path; if the legacy payment_id column is also missing, the full
+     * schema healer adds it first and then the idempotency column.
+     */
+    private function ensurePaymentIdempotencyKeyColumn(): bool
+    {
+        if ($this->pdo->inTransaction()) {
+            Logger::error('ProvisionalBookingRepository: no se puede ejecutar DDL de idempotencia dentro de una transaccion.');
+            return false;
+        }
+
+        if ($this->columnExists('provisional_bookings', 'payment_idempotency_key')) {
+            return true;
+        }
+
+        if (!$this->columnExists('provisional_bookings', 'payment_id')) {
+            return $this->ensureTablesExist()
+                && $this->columnExists('provisional_bookings', 'payment_idempotency_key');
+        }
+
+        try {
+            $this->pdo->exec(
+                "ALTER TABLE provisional_bookings ADD COLUMN payment_idempotency_key VARCHAR(64) NULL AFTER payment_id"
+            );
+            Logger::info('ProvisionalBookingRepository: Columna payment_idempotency_key creada automaticamente en provisional_bookings.');
+            return true;
+        } catch (PDOException $e) {
+            // A concurrent worker may have added it after our metadata check.
+            if ($this->columnExists('provisional_bookings', 'payment_idempotency_key')) {
+                return true;
+            }
+            Logger::error('ProvisionalBookingRepository::ensurePaymentIdempotencyKeyColumn Error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /** Limpia la clave solo tras un rechazo inequívoco de Mercado Pago. */
+    public function clearPaymentIdempotencyKey(string $cartId): bool {
+        try {
+            $stmt = $this->pdo->prepare("UPDATE provisional_bookings
+                SET payment_idempotency_key = NULL
+                WHERE cart_id = :cartId AND (payment_id IS NULL OR payment_id = '')");
+            return $stmt->execute([':cartId' => $cartId]);
+        } catch (PDOException $e) {
+            Logger::error('ProvisionalBookingRepository::clearPaymentIdempotencyKey Error: ' . $e->getMessage());
             return false;
         }
     }

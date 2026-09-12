@@ -61,7 +61,36 @@ class ConfirmQloAppsOrderListener implements ListenerInterface {
         }
 
         // 1 intento + throw (el retry lo gestiona el outbox, todo 19).
-        $orderResult = $this->pmsAdapter->confirmOrder($cartId, $amountPen, $guestName, $guestEmail);
+        // room_data is the frozen canonical line payload. Passing it through
+        // the port prevents a multi-room payment from collapsing into one PMS
+        // booking line; legacy adapters may ignore the optional argument.
+        $roomLines = $event->getRoomData();
+        if (isset($roomLines['room_name'])) {
+            $roomLines = [$roomLines];
+        }
+        // Holds freeze room totals in USD while the gateway/PMS order total
+        // is PEN. Convert every canonical line with the event's frozen rate
+        // before handing it to QloApps; using the current Config rate here
+        // would recreate the quote drift this event is designed to prevent.
+        $exchangeRate = $event->getExchangeRate();
+        if ($exchangeRate > 0) {
+            foreach ($roomLines as $index => $line) {
+                if (is_array($line) && array_key_exists('room_total', $line)) {
+                    $roomLines[$index]['room_total'] = round((float)$line['room_total'] * $exchangeRate, 2);
+                }
+            }
+        }
+
+        $orderResult = $this->pmsAdapter->confirmOrder(
+            $cartId,
+            $amountPen,
+            $guestName,
+            $guestEmail,
+            null,
+            'mercadopago',
+            'Mercado Pago (Online)',
+            $roomLines
+        );
 
         if ($orderResult === null) {
             Logger::error("ConfirmQloAppsOrderListener Error: confirmOrder devolvio resultado vacio para Cart ID {$cartId} (payment {$paymentId})");

@@ -14,7 +14,8 @@ import { useTranslations, type Locale } from '../../i18n/utils';
 const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
 
-const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
+// QloApps catalog includes a family room with max_guests=8 (see docs/STATE.md).
+const guestOptions = Array.from({ length: 8 }, (_, i) => i + 1);
 ---
 
 <div
@@ -150,6 +151,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
   let stopPolling: (() => void) | null = null;
   let firstCompute = true;
   let userPicked = false;
+  let calendarAvailabilityRequestId = 0;
 
   let calendarAvailability: Record<string, Record<string, number>> = {};
 
@@ -185,9 +187,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
   function roomAvailableEveryDay(slug: string, checkIn: string, checkOut: string): boolean {
     for (const d of rangeDays(checkIn, checkOut)) {
       const day = calendarAvailability[d];
-      if (day && day[slug] !== undefined) {
-        if ((day[slug] ?? 0) < 1) return false;
-      }
+      if (!day || (day[slug] ?? 0) < 1) return false;
     }
     return true;
   }
@@ -200,17 +200,20 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
     return slugs.every((slug) => (day[slug] ?? 0) <= 0);
   }
 
-  async function loadCalendarAvailability(): Promise<void> {
+  async function loadCalendarAvailability(signal?: AbortSignal): Promise<void> {
+    const requestId = ++calendarAvailabilityRequestId;
     const today = new Date();
     const from = formatISODate(today);
     const end = new Date(today); end.setMonth(end.getMonth() + 3);
     const to = formatISODate(end);
     try {
-      const res = await bookingService.getAvailabilityCalendar(from, to);
+      const res = await bookingService.getAvailabilityCalendar(from, to, signal);
+      if (signal?.aborted || requestId !== calendarAvailabilityRequestId) return;
       if (res.success && res.data) {
         calendarAvailability = res.data;
       }
     } catch {
+      if (signal?.aborted || requestId !== calendarAvailabilityRequestId) return;
       calendarAvailability = {};
     }
   }
@@ -289,6 +292,7 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
     abortController.abort();
     abortController = new AbortController();
     const signal = abortController.signal;
+    let allocationRequestId = 0;
 
     const root = document.querySelector('[data-booking-calendar]') as HTMLElement | null;
     if (!root) return;
@@ -324,6 +328,9 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
     const guests = Number(params.get('guests')) || 2;
     const roomTypeParam = params.get('roomType') || params.get('room_type') || null;
     if (guestsSelect) guestsSel.value = String(guests);
+    // ClientRouter preserves this module singleton across body swaps; every
+    // fresh /book entry starts a new booking session.
+    wizardStore.reset();
     wizardStore.setState({ roomType: roomTypeParam, guests });
 
     const seedDates = () => {
@@ -419,7 +426,9 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
     let isSelectingRange = false;
 
     function onPick(date: string) {
-      if (isPast(date)) return;
+      // Sold-out days are rendered non-interactive, but keep the guard here
+      // as the single source of truth for programmatic/assistive activation.
+      if (isPast(date) || isDaySoldOut(date)) return;
       if (!isSelectingRange) {
         checkIn = date;
         checkOut = '';
@@ -466,8 +475,10 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
     async function computeAllocation(silent = false) {
       const prevAllocation = silent ? wizardStore.getState().allocation : null;
       if (!checkIn || !checkOut) return;
+      if (!wizardStore.getState().calendarAvailabilityReady) return;
       const nights = nightsBetween(checkIn, checkOut);
       if (nights < 1) return;
+      const requestId = ++allocationRequestId;
 
       if (!silent) {
         checkingEl.classList.remove('hidden');
@@ -499,10 +510,15 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
 
       let res: { success: boolean; data?: any[] | null };
       try {
-        res = await bookingService.getAvailableRooms(checkIn, checkOut, lang);
+        res = await bookingService.getAvailableRooms(checkIn, checkOut, lang, signal);
       } catch {
         res = { success: false, data: null };
       }
+
+      // A newer date/guest selection may have started while this request was
+      // in flight. Ignore the stale response so it cannot overwrite the
+      // wizard with availability or prices for an older selection.
+      if (signal.aborted || requestId !== allocationRequestId) return;
 
       if (res.success && Array.isArray(res.data)) {
         for (const item of res.data) {
@@ -621,8 +637,10 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
     startPolling();
 
     render();
-    if (checkIn && checkOut) void computeAllocation();
-    void loadCalendarAvailability().then(() => {
+    void loadCalendarAvailability(signal).then(() => {
+      if (signal.aborted) return;
+      const ready = Object.keys(calendarAvailability).length > 0;
+      wizardStore.setState({ calendarAvailabilityReady: ready });
       render();
       if (checkIn && checkOut) {
         const r = clampRange(checkIn, checkOut);
@@ -630,9 +648,11 @@ const guestOptions = Array.from({ length: 7 }, (_, i) => i + 1);
         checkOut = r.checkOut;
         refreshSelection(checkIn, checkOut);
       }
-      if (!calendarAvailability || Object.keys(calendarAvailability).length === 0) {
+      if (!ready) {
         bannerEl.textContent = L.availabilityDegraded || '';
         bannerEl.classList.remove('hidden');
+      } else if (checkIn && checkOut) {
+        void computeAllocation();
       }
     });
   }

@@ -8,7 +8,9 @@ use App\Core\Response;
 use App\Core\Validator;
 use App\Core\Logger;
 use App\Core\Config;
+use App\Core\HttpException;
 use App\Features\Shared\Ports\PmsPortInterface;
+use App\Features\Shared\PmsUnavailableException;
 use App\Features\Shared\RoomTypeRegistry;
 use Exception;
 
@@ -30,7 +32,13 @@ class GetRoomsCalendarAction {
     public function __invoke(Request $request): void {
         $from = $request->getQuery('from');
         $to   = $request->getQuery('to');
-        $hotelId = (int)($request->getQuery('id_hotel') ?? Config::get('DEFAULT_HOTEL_ID', '1'));
+        // Do not cast arbitrary query input: `(int)'abc'` and `(int)-1`
+        // previously reached the PMS and produced an empty successful result.
+        $rawHotelId = $request->getQuery('id_hotel');
+        $hotelId = Validator::positiveInt(
+            $rawHotelId === null ? Config::get('DEFAULT_HOTEL_ID', '1') : $rawHotelId,
+            'id_hotel'
+        );
 
         // Default: hoy + 60 días si no se especifica
         if (!$from || !$to) {
@@ -40,6 +48,10 @@ class GetRoomsCalendarAction {
 
         try {
             Validator::dateRange($from, $to);
+            $rangeDays = (int)round((strtotime($to) - strtotime($from)) / 86400);
+            if ($rangeDays > 120) {
+                throw HttpException::badRequest('El rango del calendario no puede superar 120 días.');
+            }
 
             $rawDays = $this->pms->getAvailabilityCalendar($from, $to, $hotelId);
 
@@ -63,12 +75,13 @@ class GetRoomsCalendarAction {
                 'days'    => $days,
             ]);
 
+        } catch (HttpException $e) {
+            throw $e;
+        } catch (PmsUnavailableException $e) {
+            Logger::error('GetRoomsCalendarAction PMS unavailable: ' . $e->getMessage());
+            throw new HttpException('No se pudo consultar el servicio de habitaciones en este momento.', 503, 'SERVICE_UNAVAILABLE');
         } catch (Exception $e) {
             Logger::error('GetRoomsCalendarAction Exception: ' . $e->getMessage());
-
-            if (str_contains($e->getMessage(), 'offline') || str_contains($e->getMessage(), 'SQLSTATE')) {
-                throw \App\Core\HttpException::internal('No se pudo consultar el servicio de habitaciones en este momento.');
-            }
 
             Response::error('Error al consultar disponibilidad por día.', 500);
         }

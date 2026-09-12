@@ -45,6 +45,13 @@ final class HandleMercadoPagoWebhookActionW6Test extends TestCase {
 
         $this->paymentGateway = $this->createMock(PaymentGatewayPortInterface::class);
         $this->bookingRepo = $this->createMock(ProvisionalBookingRepository::class);
+        // Persistencia exitosa por defecto: los casos que prueban fallo
+        // deben configurar explicitamente false/throws para mantener el
+        // contrato fail-closed del webhook.
+        $this->bookingRepo->method('attachPaymentId')->willReturn(true);
+        $this->bookingRepo->method('updateStatus')->willReturn(true);
+        $this->bookingRepo->method('markPaymentProcessed')->willReturn(true);
+        $this->bookingRepo->method('recordAlert')->willReturn(true);
         $this->eventDispatcher = $this->createMock(EventDispatcher::class);
 
         $this->action = new HandleMercadoPagoWebhookAction(

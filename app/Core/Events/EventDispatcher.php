@@ -29,10 +29,6 @@ class EventDispatcher {
 
     public function dispatch(EventInterface $event): void {
         $eventName = $event->getName();
-        if (empty($this->listeners[$eventName])) {
-            return;
-        }
-
         $pdo = \App\Core\Database::getInstance()->getConnection();
         if ($pdo !== null) {
             $payload = base64_encode(serialize($event));
@@ -72,6 +68,15 @@ class EventDispatcher {
                     return;
                 } catch (Throwable $e2) {
                     Logger::error("EventDispatcher Error inserting into outbox (legacy): " . $e2->getMessage());
+                    // Dentro de una transaccion de negocio no se puede
+                    // continuar con dispatchNow(): confirmaria la reserva sin
+                    // dejar el evento durable en el outbox. El caller debe
+                    // recibir la excepcion para hacer rollback y permitir un
+                    // reintento idempotente. Fuera de una transaccion se
+                    // conserva el fallback historico de ejecucion directa.
+                    if ($pdo->inTransaction()) {
+                        throw $e2;
+                    }
                 }
             }
         }

@@ -48,7 +48,7 @@ final class QloAppAdapterDisableDatesTest extends TestCase {
         $allQueries = implode("\n", $pdo->preparedQueries);
         $this->assertStringContainsString('qlo_htl_room_disable_dates', $allQueries);
 
-        // 3 habitaciones - 1 booking (día 1-3) - 1 disable (día 2-4, pero el
+        // 3 habitaciones - 1 booking (check-in día 1, checkout día 4) - 1 disable (día 2-4, pero el
         // día 4 es la salida del bloqueo → se libera, misma semántica que las
         // reservas: el día de checkout no cuenta como ocupado).
         // día 1: 2 libres · día 2: 1 · día 3: 1 · día 4: 3 · día 5: 3.
@@ -126,7 +126,9 @@ final class DisableDatesFakeStmt extends \PDOStatement {
             $this->rows = [[
                 'id_product' => 1,
                 'date_from'  => '2026-09-01 00:00:00',
-                'date_to'    => '2026-09-03 23:59:59',
+                // QloApps real timestamps: check-in 12:00, checkout 10:30.
+                // Date-only calendar semantics count nights 1,2,3.
+                'date_to'    => '2026-09-04 10:30:00',
             ]];
         } elseif (str_contains($q, 'rd.id_room_type, rd.id_room')) {
             // Un bloqueo del día 2 al 4.

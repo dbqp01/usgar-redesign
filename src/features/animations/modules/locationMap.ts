@@ -66,7 +66,10 @@ export async function initLocationMap(
   // Hotel Pin: anillo blanco concéntrico + punto, con sombra suave para
   // leerse sobre los tiles claros; el pulso radar y los POIs usan el dorado.
   const mainIcon = L.divIcon({
-    className: 'usgar-hotel-marker',
+    // Keep the original public selector as a compatibility alias for existing
+    // E2E/integration consumers while retaining the more specific class for
+    // current styling hooks.
+    className: 'usgar-marker usgar-hotel-marker',
     html: `
       <div class="relative flex items-center justify-center cursor-pointer group">
         <span class="absolute h-7 w-7 rounded-full border-2 border-white shadow-[0_0_0_2px_rgba(0,0,0,0.15),0_2px_14px_rgba(0,0,0,0.4)]"></span>

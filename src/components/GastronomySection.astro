@@ -101,8 +101,10 @@ const culinaryOffers = [
         {culinaryOffers.map((offer, i) => (
           <button
             type="button"
-            class="showroom-row group text-left border-b border-black/10 dark:border-white/10 py-7 first:border-t cursor-pointer transition-colors"
+            class="showroom-row group text-left border-b border-black/10 dark:border-white/10 py-7 first:border-t cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-inset"
             data-row={i}
+            data-active={i === 0 ? 'true' : 'false'}
+            aria-expanded={i === 0 ? 'true' : 'false'}
             aria-label={offer.title[lang]}
           >
             <div class="flex items-baseline gap-4">
@@ -114,7 +116,7 @@ const culinaryOffers = [
                 {offer.schedule}
               </span>
             </div>
-            <p class="showroom-desc mt-3 text-sm text-text-secondary-light dark:text-text-secondary-dark font-light max-w-lg opacity-0 max-h-0 overflow-hidden transition-all duration-500 group-hover:opacity-100 group-hover:max-h-40 group-hover:mt-3">
+            <p class="showroom-desc mt-3 max-h-40 max-w-lg overflow-hidden text-sm font-light text-text-secondary-light transition-all duration-500 dark:text-text-secondary-dark">
               {offer.desc[lang]}
             </p>
           </button>
@@ -142,5 +144,50 @@ const culinaryOffers = [
   document.addEventListener('astro:before-preparation', () => {
     cleanup?.();
     cleanup = null;
-  }, { once: true });
+  });
 </script>
+
+<style>
+  .showroom-row {
+    color: var(--color-text-primary-light);
+  }
+
+  .dark .showroom-row {
+    color: var(--color-text-primary-dark);
+  }
+
+  .showroom-row .showroom-desc {
+    opacity: 0;
+    max-height: 0;
+    margin-top: 0;
+  }
+
+  .showroom-row[data-active='true'] {
+    color: var(--color-primary-light);
+  }
+
+  .dark .showroom-row[data-active='true'] {
+    color: var(--color-secondary);
+  }
+
+  .showroom-row[data-active='true'] .showroom-desc,
+  .showroom-row:focus-visible .showroom-desc {
+    opacity: 1;
+    max-height: 10rem;
+    margin-top: 0.75rem;
+  }
+
+  @media (hover: hover) {
+    .showroom-row:hover .showroom-desc {
+      opacity: 1;
+      max-height: 10rem;
+      margin-top: 0.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .showroom-row .showroom-desc {
+      transition: none;
+    }
+  }
+</style>

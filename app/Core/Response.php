@@ -33,7 +33,7 @@ class Response {
             if (!headers_sent()) {
                 http_response_code(500);
             }
-            echo '{"success":false,"error":"Internal serialization error"}';
+            echo '{"success":false,"error":{"code":"SERIALIZATION_ERROR","message":"Internal serialization error"}}';
         }
 
         if (!defined('PHP_TESTING')) {
@@ -67,7 +67,10 @@ class Response {
             echo $json;
         } catch (\JsonException $e) {
             Logger::error('[Response] JSON encode error async: ' . $e->getMessage());
-            echo '{"success":false}';
+            if (!headers_sent()) {
+                http_response_code(500);
+            }
+            echo '{"success":false,"error":{"code":"SERIALIZATION_ERROR","message":"Internal serialization error"}}';
         }
 
         // Vaciar todos los búferes de salida
@@ -89,7 +92,8 @@ class Response {
      *
      * @param array<string, mixed> $details
      */
-    public static function error(string $message, int $statusCode = 500, string $code = 'ERROR', array $details = []): void {
+    public static function error(string $message, int $statusCode = 500, ?string $code = null, array $details = []): void {
+        $code ??= self::codeForStatus($statusCode);
         $payload = [
             'success' => false,
             'error'   => [
@@ -105,18 +109,71 @@ class Response {
         self::json($payload, $statusCode);
     }
 
+    /**
+     * Respuesta exitosa con el mismo envelope transversal que usa toda la API.
+     * El indicador se fija aqui para evitar respuestas 2xx sin success=true.
+     *
+     * @param array<string, mixed> $data
+     */
+    public static function success(array $data = [], int $statusCode = 200): void {
+        self::json(['success' => true] + $data, $statusCode);
+    }
+
+    private static function codeForStatus(int $statusCode): string {
+        return match ($statusCode) {
+            400 => 'BAD_REQUEST',
+            401 => 'UNAUTHORIZED',
+            403 => 'FORBIDDEN',
+            404 => 'NOT_FOUND',
+            405 => 'METHOD_NOT_ALLOWED',
+            409 => 'CONFLICT',
+            422 => 'VALIDATION_ERROR',
+            429 => 'TOO_MANY_REQUESTS',
+            502 => 'BAD_GATEWAY',
+            503 => 'SERVICE_UNAVAILABLE',
+            default => $statusCode >= 500 ? 'INTERNAL_ERROR' : 'ERROR',
+        };
+    }
+
+    public static function fromHttpException(HttpException $exception): void {
+        self::error(
+            $exception->getMessage(),
+            $exception->getStatusCode(),
+            $exception->getErrorCode(),
+            $exception->getDetails()
+        );
+    }
+
     // --- Respuestas comunes estandarizadas ---
 
-    public static function badRequest(string $message = 'Bad Request'): void {
-        self::error($message, 400);
+    /** @param array<string, mixed> $details */
+    public static function badRequest(string $message = 'Bad Request', array $details = []): void {
+        self::error($message, 400, 'BAD_REQUEST', $details);
     }
 
-    public static function unauthorized(string $message = 'Unauthorized'): void {
-        self::error($message, 401);
+    /** @param array<string, mixed> $details */
+    public static function unauthorized(string $message = 'Unauthorized', array $details = []): void {
+        self::error($message, 401, 'UNAUTHORIZED', $details);
     }
 
-    public static function notFound(string $message = 'Not Found'): void {
-        self::error($message, 404);
+    /** @param array<string, mixed> $details */
+    public static function forbidden(string $message = 'Forbidden', array $details = []): void {
+        self::error($message, 403, 'FORBIDDEN', $details);
+    }
+
+    /** @param array<string, mixed> $details */
+    public static function notFound(string $message = 'Not Found', array $details = []): void {
+        self::error($message, 404, 'NOT_FOUND', $details);
+    }
+
+    /** @param array<string, mixed> $details */
+    public static function tooManyRequests(string $message = 'Too Many Requests', array $details = []): void {
+        self::error($message, 429, 'TOO_MANY_REQUESTS', $details);
+    }
+
+    /** @param array<string, mixed> $details */
+    public static function internal(string $message = 'Internal Server Error', array $details = []): void {
+        self::error($message, 500, 'INTERNAL_ERROR', $details);
     }
 
     /**
@@ -124,7 +181,7 @@ class Response {
      * redirige a /login?error=<mensaje>; en caso contrario responde JSON.
      * Usado por las acciones de auth de formulario clasico.
      */
-    public static function errorWithHtmlFallback(bool $isHtml, string $message, int $statusCode = 500, string $code = 'ERROR'): void {
+    public static function errorWithHtmlFallback(bool $isHtml, string $message, int $statusCode = 500, ?string $code = null): void {
         if ($isHtml) {
             header('Location: /login?error=' . urlencode($message));
             exit(0);

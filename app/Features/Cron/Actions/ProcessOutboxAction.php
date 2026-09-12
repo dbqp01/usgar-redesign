@@ -6,6 +6,7 @@ namespace App\Features\Cron\Actions;
 use App\Core\Events\EventInterface;
 use App\Core\Logger;
 use PDO;
+use PDOException;
 use Throwable;
 
 /**
@@ -88,7 +89,9 @@ class ProcessOutboxAction {
                 processed_at DATETIME NULL DEFAULT NULL,
                 status VARCHAR(50) NOT NULL DEFAULT 'PENDING',
                 attempts INT NOT NULL DEFAULT 0,
-                next_attempt_at DATETIME NULL
+                next_attempt_at DATETIME NULL,
+                claim_token VARCHAR(64) NULL,
+                INDEX idx_event_outbox_claim (status, next_attempt_at, attempts, id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         ");
 
@@ -101,8 +104,31 @@ class ProcessOutboxAction {
             $this->pdo->exec("ALTER TABLE event_outbox ADD COLUMN next_attempt_at DATETIME NULL AFTER attempts");
             $altered = true;
         }
+        if (!$this->columnExists('event_outbox', 'claim_token')) {
+            $this->pdo->exec("ALTER TABLE event_outbox ADD COLUMN claim_token VARCHAR(64) NULL AFTER next_attempt_at");
+            $altered = true;
+        }
         if ($altered) {
-            Logger::info('ProcessOutboxAction: columnas attempts/next_attempt_at garantizadas en event_outbox.');
+            Logger::info('ProcessOutboxAction: columnas attempts/next_attempt_at/claim_token garantizadas en event_outbox.');
+        }
+
+        // The claim predicate is hot once the outbox grows.  Existing
+        // installations may predate the index, so add it lazily and keep the
+        // worker usable if a concurrent deploy wins the metadata lock first.
+        if (!$this->indexExists('event_outbox', 'idx_event_outbox_claim')) {
+            try {
+                $this->pdo->exec(
+                    'ALTER TABLE event_outbox ADD INDEX idx_event_outbox_claim '
+                    . '(status, next_attempt_at, attempts, id)'
+                );
+            } catch (PDOException $e) {
+                $driverCode = is_array($e->errorInfo ?? null)
+                    ? (int)($e->errorInfo[1] ?? 0)
+                    : (int)$e->getCode();
+                if ($driverCode !== 1061 && !str_contains(strtolower($e->getMessage()), 'duplicate')) {
+                    Logger::warning('ProcessOutboxAction: no se pudo crear el indice de claims: ' . $e->getMessage());
+                }
+            }
         }
 
         // BACKFILL DE MIGRACION — mecanismo UNICO para filas legacy con
@@ -120,6 +146,18 @@ class ProcessOutboxAction {
              WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :t AND COLUMN_NAME = :c"
         );
         $stmt->execute([':t' => $table, ':c' => $column]);
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    /** Verifica un indice por nombre; los literales son internos. */
+    private function indexExists(string $table, string $index): bool {
+        $stmt = $this->pdo->prepare(
+            "SELECT COUNT(*) FROM information_schema.STATISTICS
+             WHERE TABLE_SCHEMA = DATABASE()
+               AND TABLE_NAME = :t
+               AND INDEX_NAME = :i"
+        );
+        $stmt->execute([':t' => $table, ':i' => $index]);
         return (int)$stmt->fetchColumn() > 0;
     }
 
@@ -162,7 +200,8 @@ class ProcessOutboxAction {
         //    reclaim sobre attempts=MAX-1 dejaria PENDING@MAX excluido para
         //    siempre).
         $upd = $this->pdo->prepare(
-            "UPDATE event_outbox SET status = 'PENDING', attempts = attempts + 1
+            "UPDATE event_outbox SET status = 'PENDING', attempts = attempts + 1,
+                    claim_token = NULL
              WHERE status = 'IN_PROGRESS' AND next_attempt_at <= NOW()
                AND attempts + 1 < " . self::MAX_ATTEMPTS
         );
@@ -179,14 +218,20 @@ class ProcessOutboxAction {
         );
         if (!empty($terminal)) {
             $in = implode(',', array_map('intval', $terminal));
-            $this->pdo->exec(
+            $upd = $this->pdo->prepare(
                 "UPDATE event_outbox SET status = 'FAILED', attempts = " . self::MAX_ATTEMPTS
-                . ", next_attempt_at = NOW() WHERE id IN ({$in})"
+                . ", next_attempt_at = NOW(), claim_token = NULL
+                   WHERE id IN ({$in})
+                     AND status = 'IN_PROGRESS'
+                     AND next_attempt_at <= NOW()
+                     AND attempts + 1 >= " . self::MAX_ATTEMPTS
             );
-            $stats['terminal'] += count($terminal);
-            foreach ($terminal as $tid) {
+            $upd->execute();
+            $terminalUpdated = $upd->rowCount();
+            $stats['terminal'] += $terminalUpdated;
+            if ($terminalUpdated > 0) {
                 Logger::error(
-                    "ALERTA OUTBOX: evento {$tid} IN_PROGRESS con lease vencido alcanzo MAX ("
+                    "ALERTA OUTBOX: {$terminalUpdated} evento(s) IN_PROGRESS con lease vencido alcanzaron MAX ("
                     . self::MAX_ATTEMPTS . ") — FAILED terminal."
                 );
             }
@@ -197,14 +242,17 @@ class ProcessOutboxAction {
         $residual = $this->staleIds("status = 'PENDING' AND attempts >= " . self::MAX_ATTEMPTS);
         if (!empty($residual)) {
             $in = implode(',', array_map('intval', $residual));
-            $this->pdo->exec(
-                "UPDATE event_outbox SET status = 'FAILED', next_attempt_at = NOW() WHERE id IN ({$in})"
+            $upd = $this->pdo->prepare(
+                "UPDATE event_outbox SET status = 'FAILED', next_attempt_at = NOW(), claim_token = NULL
+                 WHERE id IN ({$in}) AND status = 'PENDING' AND attempts >= " . self::MAX_ATTEMPTS
             );
-            $stats['terminal'] += count($residual);
-            foreach ($residual as $rid) {
+            $upd->execute();
+            $residualUpdated = $upd->rowCount();
+            $stats['terminal'] += $residualUpdated;
+            if ($residualUpdated > 0) {
                 Logger::error(
-                    "ALERTA OUTBOX: evento {$rid} PENDING en MAX (" . self::MAX_ATTEMPTS
-                    . ") sin reclamar — FAILED terminal."
+                    "ALERTA OUTBOX: {$residualUpdated} evento(s) PENDING en MAX ("
+                    . self::MAX_ATTEMPTS . ") sin reclamar — FAILED terminal."
                 );
             }
         }
@@ -239,7 +287,7 @@ class ProcessOutboxAction {
         try {
             $this->pdo->beginTransaction();
             $stmt = $this->pdo->prepare(
-                "SELECT id, event_name, payload, attempts FROM event_outbox
+                "SELECT id, event_name, payload, attempts, claim_token FROM event_outbox
                  WHERE status IN ('PENDING','FAILED')
                    AND attempts < " . self::MAX_ATTEMPTS . "
                    AND next_attempt_at <= NOW()
@@ -250,13 +298,16 @@ class ProcessOutboxAction {
             $stmt->execute();
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
-            foreach ($rows as $row) {
+            foreach ($rows as $index => $row) {
+                $claimToken = bin2hex(random_bytes(16));
                 $upd = $this->pdo->prepare(
                     "UPDATE event_outbox SET status = 'IN_PROGRESS',
-                            next_attempt_at = NOW() + INTERVAL " . self::GRACE_MINUTES . " MINUTE
+                            next_attempt_at = NOW() + INTERVAL " . self::GRACE_MINUTES . " MINUTE,
+                            claim_token = :claim_token
                      WHERE id = :id"
                 );
-                $upd->execute([':id' => (int)$row['id']]);
+                $upd->execute([':id' => (int)$row['id'], ':claim_token' => $claimToken]);
+                $rows[$index]['claim_token'] = $claimToken;
             }
             $this->pdo->commit();
             return $rows;
@@ -279,6 +330,11 @@ class ProcessOutboxAction {
     private function processOne(array $row, array &$stats): void {
         $id = (int)$row['id'];
         $preAttempts = (int)($row['attempts'] ?? 0);
+        $claimToken = (string)($row['claim_token'] ?? '');
+        if ($claimToken === '') {
+            Logger::error('ProcessOutboxAction: claim sin token para evento ' . $id . '; se descarta por fencing.');
+            return;
+        }
 
         try {
             // Auditoría 2026-08-11 (semgrep): unserialize sin restricciones
@@ -302,9 +358,14 @@ class ProcessOutboxAction {
 
             ($this->dispatch)($eventObj);
 
-            $upd = $this->pdo->prepare("UPDATE event_outbox SET status = 'COMPLETED', processed_at = NOW() WHERE id = :id");
-            $upd->execute([':id' => $id]);
-            $stats['completed']++;
+            $upd = $this->pdo->prepare("UPDATE event_outbox SET status = 'COMPLETED', processed_at = NOW(), claim_token = NULL
+                 WHERE id = :id AND status = 'IN_PROGRESS' AND claim_token = :claim_token");
+            $upd->execute([':id' => $id, ':claim_token' => $claimToken]);
+            if ($upd->rowCount() === 1) {
+                $stats['completed']++;
+            } else {
+                Logger::info('ProcessOutboxAction: claim obsoleto; no se marca COMPLETED para evento ' . $id . '.');
+            }
         } catch (Throwable $e) {
             Logger::error('ProcessOutboxAction error procesando evento ' . $id . ': ' . $e->getMessage());
 
@@ -316,12 +377,18 @@ class ProcessOutboxAction {
 
             // FAILED incrementa attempts ANTES de fijar el backoff, y
             // SOBRESCRIBE el lease INCONDICIONALMENTE (fix MAJOR r6).
+            // processed_at NO se toca: significa "entregado COMPLETED"
+            // (idempotencia por listener); FAILED conserva su valor NULL.
             $upd = $this->pdo->prepare(
                 "UPDATE event_outbox SET status = 'FAILED', attempts = :att,
-                        next_attempt_at = NOW() + INTERVAL {$backoff} MINUTE, processed_at = NOW()
-                 WHERE id = :id"
+                        next_attempt_at = NOW() + INTERVAL {$backoff} MINUTE, claim_token = NULL
+                 WHERE id = :id AND status = 'IN_PROGRESS' AND claim_token = :claim_token"
             );
-            $upd->execute([':id' => $id, ':att' => $newAttempts]);
+            $upd->execute([':id' => $id, ':att' => $newAttempts, ':claim_token' => $claimToken]);
+            if ($upd->rowCount() !== 1) {
+                Logger::info('ProcessOutboxAction: claim obsoleto; no se marca FAILED para evento ' . $id . '.');
+                return;
+            }
             $stats['failed']++;
 
             if ($isTerminal) {

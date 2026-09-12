@@ -29,9 +29,13 @@ class HealthCheckAction {
             $dbStatus = 'error';
         }
 
+        // This endpoint is a liveness probe: PHP/router are alive even when
+        // the optional database dependency is unavailable. Keep HTTP 200 so
+        // Hostinger monitors do not restart a live process, but expose the
+        // dependency state accurately for operators/readiness checks.
         $payload = [
             'success'   => true,
-            'status'    => 'healthy',
+            'status'    => $dbStatus === 'online' ? 'healthy' : 'degraded',
             'database'  => $dbStatus,
             'timestamp' => date('c'),
         ];
@@ -39,4 +43,3 @@ class HealthCheckAction {
         Response::json($payload);
     }
 }
-

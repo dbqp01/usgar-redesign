@@ -149,7 +149,8 @@ final class TestDb {
     }
 
     /**
-     * Crea las tablas nuevas que la wave introduce (room_locks, payment_alerts)
+     * Crea las tablas nuevas que la wave introduce (room_locks,
+     * provisional_booking_rooms, payment_alerts)
      * SI no existen. Son tablas vacias nuevas — el deploy las crea igual via
      * ensureTablesExist; aqui se crean antes para que los workers NUNCA
      * disparen ensureTablesExist contra la BD real (que migraria
@@ -159,6 +160,13 @@ final class TestDb {
         $pdo->exec("CREATE TABLE IF NOT EXISTS room_locks (
             room_id VARCHAR(64) PRIMARY KEY,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+        $pdo->exec("CREATE TABLE IF NOT EXISTS provisional_booking_rooms (
+            cart_id VARCHAR(64) NOT NULL,
+            id_room_type INT NOT NULL,
+            quantity INT NOT NULL DEFAULT 1,
+            PRIMARY KEY (cart_id, id_room_type),
+            INDEX idx_room_type (id_room_type)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
         $pdo->exec("CREATE TABLE IF NOT EXISTS payment_alerts (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -172,6 +180,9 @@ final class TestDb {
 
     /** Limpia TODAS las filas de prueba W2RACE-* dejadas por tests. */
     public static function cleanup(PDO $pdo): void {
+        // El ledger no tiene FK/CASCADE para conservar compatibilidad legacy;
+        // eliminarlo explícitamente evita filas huérfanas entre carreras.
+        $pdo->exec("DELETE FROM provisional_booking_rooms WHERE cart_id LIKE 'W2RACE-%'");
         $pdo->exec("DELETE FROM provisional_bookings WHERE cart_id LIKE 'W2RACE-%'");
         $pdo->exec("DELETE FROM processed_payments WHERE payment_id LIKE 'W2RACE-%'");
         $pdo->exec("DELETE FROM room_locks WHERE room_id LIKE '999999:%'");

@@ -62,7 +62,7 @@ const t = useTranslations(lang);
 
 <script>
   import { wizardStore } from '../../features/booking/wizardStore';
-  import type { AllocationOption } from '../../features/booking/roomAllocator';
+  import { nonRefundableTotal, type AllocationOption } from '../../features/booking/roomAllocator';
 
   let abortController = new AbortController();
 
@@ -105,14 +105,6 @@ const t = useTranslations(lang);
     // por el backend (rate_plans resueltos desde los Feature Price Plans de
     // QloApps). Sin datos (API caída) => ratio 1: ambas tarifas al mismo
     // precio (honesto). (audit 2026-08-12)
-    function rateRatio(opt: AllocationOption): number {
-      const plans = wizardStore.getState().ratePlans;
-      const slug = opt.rooms[0]?.room?.slug;
-      const rp = slug && plans ? plans[slug] : null;
-      if (!rp || !rp.standard || rp.non_refundable >= rp.standard) return 1;
-      return rp.non_refundable / rp.standard;
-    }
-
     function render() {
       const state = wizardStore.getState();
       const options = state.options;
@@ -165,11 +157,15 @@ const t = useTranslations(lang);
           })
           .join('');
         const availQty = (!multi && availabilityMap && mainSlug) ? (availabilityMap[mainSlug] ?? null) : null;
-        const outOfStock = availQty !== null && availQty <= 0;
+        const payable = availabilityMap !== null
+          ? opt.rooms.every((entry, _index, entries) => {
+              const needed = entries.filter((candidate) => candidate.room.slug === entry.room.slug).length;
+              return (availabilityMap?.[entry.room.slug] ?? 0) >= needed;
+            })
+          : false;
+        const outOfStock = !payable;
         // Multi-room reservable desde 2026-08-12 (pipeline rooms[] completo);
         // solo se bloquea si la habitacion principal no tiene unidades.
-        const payable = !outOfStock;
-
         const roomName = opt.rooms.map((e) => escapeHtml(e.room.displayName)).join(' + ');
 
         // Precios de tarifas: standard = total de la opción; no reembolsable =
@@ -177,9 +173,9 @@ const t = useTranslations(lang);
         // por huesped adicional va a precio completo (decision del negocio,
         // paridad con CreateBookingAction). Ratio del backend (rate_plans).
         const standardTotal = opt.total;
-        const ratio = rateRatio(opt);
-        const nonRefundableTotal = Math.round(opt.roomTotal * ratio + opt.extrasTotal);
-        const pct = Math.round((1 - ratio) * 100);
+        const nonRefundablePrice = nonRefundableTotal(opt, wizardStore.getState().ratePlans);
+        const standardBase = Math.max(0, opt.roomTotal);
+        const pct = standardBase > 0 ? Math.round((1 - nonRefundablePrice / (standardBase + opt.extrasTotal)) * 100) : 0;
         const offerBadge = pct > 0 ? (L.allocationOfferBadge || 'Web Deal -{pct}%').replace('{pct}', String(pct)) : '';
 
         // Availability Pill — v3: las unidades disponibles se ven de un
@@ -203,7 +199,7 @@ const t = useTranslations(lang);
 
         const photoCount = (L.allocationPhotoCount || '1 / {n}').replace('{n}', String(images.length || 1));
         const totalLabel = (L.allocationTotalLabel || 'Total ({n} n)').replace('{n}', String(opt.nights));
-        const perNight = Math.round((isSelected && selectedRateType === 'non_refundable' ? nonRefundableTotal : opt.total) / opt.nights);
+        const perNight = Math.round((isSelected && selectedRateType === 'non_refundable' ? nonRefundablePrice : opt.total) / opt.nights);
 
         // v4: fila compacta (patron Booking.com/SimpleBooking): foto miniatura,
         // info en una linea, tarifas como pills, precio/noche a la derecha.
@@ -277,7 +273,7 @@ const t = useTranslations(lang);
                       ${offerBadge ? `<span class="px-1 py-0.5 rounded bg-secondary/15 text-[9px] font-bold uppercase tracking-wider">${offerBadge}</span>` : ''}
                     </span>
                     <span class="text-secondary-dark dark:text-secondary">
-                      ${nonRefundableTotal !== standardTotal ? `<span class="line-through opacity-50 mr-0.5">${formatMoney(standardTotal)}</span>` : ''}${formatMoney(nonRefundableTotal)}
+                      ${nonRefundablePrice !== standardTotal ? `<span class="line-through opacity-50 mr-0.5">${formatMoney(standardTotal)}</span>` : ''}${formatMoney(nonRefundablePrice)}
                     </span>
                   </button>
                 </div>
@@ -341,7 +337,8 @@ const t = useTranslations(lang);
         : options.find((o) => o.rooms.length === 1);
       if (pre) {
         selected = pre;
-        wizardStore.setState({ allocation: pre });
+        selectedRateType = 'standard';
+        wizardStore.setState({ allocation: pre, rateType: 'standard' });
         next.disabled = false;
       }
     }

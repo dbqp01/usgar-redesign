@@ -59,6 +59,12 @@ export type ApiResult<T> =
 
 export type CalendarAvailability = Record<string, Record<string, number>>;
 
+function requestSignal(signal?: AbortSignal | null): AbortSignal {
+  const timeout = AbortSignal.timeout(10000);
+  if (!signal) return timeout;
+  return AbortSignal.any([signal, timeout]);
+}
+
 async function request(url: string, init: RequestInit = {}): Promise<{ ok: boolean; status: number; data: any }> {
   try {
     const res = await fetch(url, {
@@ -68,7 +74,7 @@ async function request(url: string, init: RequestInit = {}): Promise<{ ok: boole
         ...(init.body ? { 'Content-Type': 'application/json' } : {}),
         ...init.headers,
       },
-      signal: init.signal ?? AbortSignal.timeout(10000),
+      signal: requestSignal(init.signal),
     });
 
     let data: any;
@@ -87,14 +93,17 @@ async function request(url: string, init: RequestInit = {}): Promise<{ ok: boole
     return { ok: res.ok, status: res.status, data };
   } catch (error: any) {
     const isAbort = error?.name === 'AbortError' || error?.name === 'TimeoutError';
+    const callerAborted = init.signal?.aborted === true;
     return {
       ok: false,
       status: isAbort ? 408 : 503,
       data: {
         success: false,
         error: {
-          code: isAbort ? 'TIMEOUT_ERROR' : 'NETWORK_ERROR',
-          message: isAbort
+          code: callerAborted ? 'ABORTED' : isAbort ? 'TIMEOUT_ERROR' : 'NETWORK_ERROR',
+          message: callerAborted
+            ? 'La peticion fue cancelada.'
+            : isAbort
             ? 'La peticion excedio el tiempo limite de espera (timeout).'
             : (error?.message || 'Error de conexion de red al servidor.'),
         },
@@ -109,14 +118,14 @@ async function request(url: string, init: RequestInit = {}): Promise<{ ok: boole
  * (audit 2026-08-12)
  */
 export const bookingService = {
-  async getAvailableRooms(checkIn?: string, checkOut?: string, lang?: string): Promise<ApiResult<RoomAvailability[]>> {
+  async getAvailableRooms(checkIn?: string, checkOut?: string, lang?: string, signal?: AbortSignal): Promise<ApiResult<RoomAvailability[]>> {
     const query = new URLSearchParams();
     if (checkIn) query.append('checkIn', checkIn);
     if (checkOut) query.append('checkOut', checkOut);
     if (lang) query.append('lang', lang);
 
     const url = `/api/rooms${query.toString() ? '?' + query.toString() : ''}`;
-    const response = await request(url, { method: 'GET' });
+    const response = await request(url, { method: 'GET', signal });
 
     if (!response.ok || !response.data?.success) {
       const err = response.data?.error || {};
@@ -141,13 +150,13 @@ export const bookingService = {
     };
   },
 
-  async getAvailabilityCalendar(from?: string, to?: string): Promise<ApiResult<CalendarAvailability>> {
+  async getAvailabilityCalendar(from?: string, to?: string, signal?: AbortSignal): Promise<ApiResult<CalendarAvailability>> {
     const query = new URLSearchParams();
     if (from) query.append('from', from);
     if (to) query.append('to', to);
 
     const url = `/api/rooms/calendar${query.toString() ? '?' + query.toString() : ''}`;
-    const response = await request(url, { method: 'GET' });
+    const response = await request(url, { method: 'GET', signal });
 
     if (!response.ok || !response.data?.success) {
       const err = response.data?.error || {};
@@ -167,11 +176,12 @@ export const bookingService = {
     };
   },
 
-  async createHold(payload: BookingPayload): Promise<ApiResult<BookingResponseData>> {
+  async createHold(payload: BookingPayload, signal?: AbortSignal): Promise<ApiResult<BookingResponseData>> {
     const url = `/api/booking`;
     const response = await request(url, {
       method: 'POST',
       body: JSON.stringify(payload),
+      signal,
     });
 
     if (!response.ok || !response.data?.success) {
@@ -197,7 +207,7 @@ export const bookingService = {
     };
   },
 
-  async processPayment(cartId: string, accessToken: string, paymentData: any): Promise<ApiResult<any>> {
+  async processPayment(cartId: string, accessToken: string, paymentData: any, signal?: AbortSignal): Promise<ApiResult<any>> {
     const url = `/api/process-payment`;
     const response = await request(url, {
       method: 'POST',
@@ -206,6 +216,7 @@ export const bookingService = {
         access_token: accessToken,
         payment_data: paymentData,
       }),
+      signal,
     });
 
     if (!response.ok || !response.data?.success) {
@@ -232,10 +243,10 @@ export const bookingService = {
     };
   },
 
-  async getBookingStatus(cartId: string, accessToken: string): Promise<ApiResult<any>> {
+  async getBookingStatus(cartId: string, accessToken: string, signal?: AbortSignal): Promise<ApiResult<any>> {
     const query = new URLSearchParams({ cart_id: cartId });
     if (accessToken) query.append('token', accessToken);
-    const response = await request(`/api/booking-status?${query.toString()}`, { method: 'GET' });
+    const response = await request(`/api/booking-status?${query.toString()}`, { method: 'GET', signal });
 
     if (!response.ok || !response.data?.success) {
       return {
@@ -250,10 +261,10 @@ export const bookingService = {
     return { success: true, data: response.data };
   },
 
-  async checkPayment(cartId: string, accessToken: string): Promise<ApiResult<any>> {
+  async checkPayment(cartId: string, accessToken: string, signal?: AbortSignal): Promise<ApiResult<any>> {
     const query = new URLSearchParams({ cart_id: cartId });
     if (accessToken) query.append('token', accessToken);
-    const response = await request(`/api/payment-check?${query.toString()}`, { method: 'GET' });
+    const response = await request(`/api/payment-check?${query.toString()}`, { method: 'GET', signal });
 
     if (!response.ok || !response.data?.success) {
       return {

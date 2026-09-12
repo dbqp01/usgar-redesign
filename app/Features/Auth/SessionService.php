@@ -5,6 +5,7 @@ namespace App\Features\Auth;
 
 use App\Core\Config;
 use App\Core\Request;
+use App\Core\TokenRevocationStore;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Throwable;
@@ -83,6 +84,10 @@ class SessionService {
             if (($decoded->iss ?? null) !== $expectedIss || ($decoded->aud ?? null) !== self::AUDIENCE) {
                 return null;
             }
+            $jti = $decoded->jti ?? null;
+            if (!is_string($jti) || $jti === '' || TokenRevocationStore::isRevoked($jti, 'session')) {
+                return null;
+            }
             return (array) $decoded;
         } catch (Throwable $e) {
             return null;
@@ -100,8 +105,7 @@ class SessionService {
      * devolver en el header X-CSRF-Token.
      */
     public static function setAuthCookie(string $jwt): void {
-        $isSecure = Request::isHttps() || 
-                    (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+        $isSecure = Request::isHttps();
         setcookie(self::COOKIE_NAME, $jwt, [
             'expires'  => time() + (self::COOKIE_TTL_DAYS * 86400),
             'path'     => '/',
@@ -127,15 +131,12 @@ class SessionService {
 
     /**
      * Valida el patron de doble cookie CSRF (P1-8): el header X-CSRF-Token
-     * debe coincidir con la cookie usgar_csrf. Los formularios HTML clasicos
-     * quedan exentos (SameSite=Lax ya los protege del CSRF cross-site).
+    * debe coincidir con la cookie usgar_csrf. Los formularios HTML clasicos
+     * tambien deben enviarlo; SameSite=Lax es una capa adicional, no un sustituto.
      *
      * @throws \App\Core\HttpException
      */
     public static function assertCsrf(Request $request): void {
-        if ($request->isHtml()) {
-            return;
-        }
         $cookie = $_COOKIE[self::CSRF_COOKIE] ?? '';
         $header = $request->getHeader('x-csrf-token') ?? '';
         if ($cookie === '' || !hash_equals($cookie, $header)) {
@@ -147,8 +148,7 @@ class SessionService {
      * Elimina la cookie de sesion.
      */
     public static function clearAuthCookie(): void {
-        $isSecure = Request::isHttps() || 
-                    (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+        $isSecure = Request::isHttps();
         setcookie(self::COOKIE_NAME, '', [
             'expires'  => time() - 3600,
             'path'     => '/',
@@ -156,6 +156,36 @@ class SessionService {
             'httponly'  => true,
             'samesite' => 'Lax',
         ]);
+        // The CSRF nonce belongs to the session; expire it with the same scope.
+        setcookie(self::CSRF_COOKIE, '', [
+            'expires'  => time() - 3600,
+            'path'     => '/',
+            'secure'   => $isSecure,
+            'httponly' => false,
+            'samesite' => 'Lax',
+        ]);
+    }
+
+    /** Revoke the current token before expiring the browser cookies. */
+    public static function revokeCurrentToken(): bool
+    {
+        $jwt = $_COOKIE[self::COOKIE_NAME] ?? '';
+        if (!is_string($jwt) || $jwt === '') {
+            return true;
+        }
+
+        try {
+            $decoded = JWT::decode($jwt, new Key(self::getSecret(), self::ALG));
+            $jti = $decoded->jti ?? null;
+            $exp = $decoded->exp ?? null;
+            if (is_string($jti) && is_numeric($exp)) {
+                return TokenRevocationStore::revoke($jti, (int)$exp, 'session');
+            }
+            return false;
+        } catch (Throwable) {
+            // Invalid/expired tokens are already unusable; logout is idempotent.
+            return true;
+        }
     }
 
     /**

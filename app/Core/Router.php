@@ -56,15 +56,33 @@ class Router {
         $method = $request->getMethod();
         $path = $this->normalizePath($request->getPath());
 
+        // Emit correlation before middleware so rejected CORS/rate-limit
+        // requests still satisfy the API contract and can be traced in logs.
+        if (!headers_sent()) {
+            header('X-Request-ID: ' . $request->getRequestId());
+        }
+
         if ($method === 'OPTIONS') {
             try {
                 $this->middleware?->run($request);
             } catch (HttpException $e) {
-                Response::error($e->getMessage(), $e->getStatusCode());
+                // A rejected preflight must keep the same error envelope and
+                // code as every other route.  Do not continue into the 204
+                // branch after responding (Response::error only exits in
+                // production; tests intentionally keep executing).
+                $this->respondToHttpException($e);
+                return;
+            } catch (\Throwable $e) {
+                $this->logUnhandled($e, $request);
+                Response::error('Internal Server Error', 500, 'UNHANDLED_EXCEPTION');
+                return;
             }
             http_response_code(204);
             header('Content-Length: 0');
-            exit(0);
+            if (!defined('PHP_TESTING')) {
+                exit(0);
+            }
+            return;
         }
 
         try {
@@ -128,15 +146,23 @@ class Router {
             Response::notFound("Endpoint {$method} {$path} not found on this server.");
 
         } catch (HttpException $e) {
-            Response::error($e->getMessage(), $e->getStatusCode(), $e->getErrorCode(), $e->getDetails());
+            $this->respondToHttpException($e);
         } catch (\Throwable $e) {
-            Logger::error('Unhandled exception in Router: ' . $e->getMessage(), [
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'request_id' => $request->getRequestId(),
-            ]);
+            $this->logUnhandled($e, $request);
             Response::error('Internal Server Error', 500, 'UNHANDLED_EXCEPTION');
         }
+    }
+
+    private function respondToHttpException(HttpException $exception): void {
+        Response::fromHttpException($exception);
+    }
+
+    private function logUnhandled(\Throwable $exception, Request $request): void {
+        Logger::error('Unhandled exception in Router: ' . $exception->getMessage(), [
+            'file' => $exception->getFile(),
+            'line' => $exception->getLine(),
+            'request_id' => $request->getRequestId(),
+        ]);
     }
 
     /**
@@ -167,6 +193,9 @@ class Router {
      * Normaliza la ruta eliminando barras inclinadas duplicadas y finales.
      */
     private function normalizePath(string $path): string {
-        return '/' . trim($path, '/');
+        // Treat repeated separators as the same route. Request already strips
+        // the query string, so only the path component is normalized here.
+        $collapsed = preg_replace('#/{2,}#', '/', $path) ?? $path;
+        return '/' . trim($collapsed, '/');
     }
 }

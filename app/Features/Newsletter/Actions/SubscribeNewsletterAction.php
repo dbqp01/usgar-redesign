@@ -21,13 +21,13 @@ class SubscribeNewsletterAction {
         $email = trim((string)($body['email'] ?? ''));
 
         if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            Response::json(['success' => false, 'error' => 'invalid_email'], 422);
+            Response::error('Invalid email.', 422, 'INVALID_EMAIL');
             return;
         }
 
         $pdo = Database::getInstance()->getConnection();
         if (!$pdo) {
-            Response::json(['success' => false, 'error' => 'service_unavailable'], 503);
+            Response::error('Newsletter service unavailable.', 503, 'SERVICE_UNAVAILABLE');
             return;
         }
 
@@ -62,7 +62,7 @@ class SubscribeNewsletterAction {
             Response::json(['success' => true, 'message' => 'subscribed']);
         } catch (Throwable $e) {
             Logger::error('[Newsletter] subscribe failed: ' . $e->getMessage());
-            Response::json(['success' => false, 'error' => 'server_error'], 500);
+            Response::error('Internal newsletter error.', 500, 'NEWSLETTER_ERROR');
         }
     }
 }

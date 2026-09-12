@@ -30,7 +30,7 @@ enum BookingStatus: string {
      */
     public function isTerminal(): bool {
         return match ($this) {
-            self::Paid, self::Expired, self::Failed, self::FraudReview, self::ExpiredPaid => true,
+            self::Paid, self::Expired, self::Failed, self::Cancelled, self::FraudReview, self::ExpiredPaid => true,
             default => false,
         };
     }

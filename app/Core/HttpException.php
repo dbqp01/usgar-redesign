@@ -11,15 +11,23 @@ use Exception;
  * facilitando testing y manejo uniforme de errores en el Router/Middleware.
  */
 class HttpException extends Exception {
+    private readonly int $statusCode;
+    private readonly string $errorCode;
+    /** @var array<string, mixed> */
+    private readonly array $details;
+
     /**
      * @param array<string, mixed> $details
      */
     public function __construct(
         string $message,
-        private readonly int $statusCode = 500,
-        private readonly string $errorCode = 'INTERNAL_ERROR',
-        private readonly array $details = []
+        int $statusCode = 500,
+        ?string $errorCode = null,
+        array $details = []
     ) {
+        $this->statusCode = $statusCode;
+        $this->errorCode = $errorCode ?? self::codeForStatus($statusCode);
+        $this->details = $details;
         parent::__construct($message, $statusCode);
     }
 
@@ -43,27 +51,49 @@ class HttpException extends Exception {
         return new self($message, 400, 'BAD_REQUEST', $details);
     }
 
-    public static function missingCredentials(string $message = 'Faltan credenciales de API requeridas en el servidor.'): self {
-        return new self($message, 500, 'MISSING_CREDENTIALS');
+    /** @param array<string, mixed> $details */
+    public static function missingCredentials(string $message = 'Faltan credenciales de API requeridas en el servidor.', array $details = []): self {
+        return new self($message, 503, 'MISSING_CREDENTIALS', $details);
     }
 
-    public static function unauthorized(string $message = 'Unauthorized'): self {
-        return new self($message, 401, 'UNAUTHORIZED');
+    /** @param array<string, mixed> $details */
+    public static function unauthorized(string $message = 'Unauthorized', array $details = []): self {
+        return new self($message, 401, 'UNAUTHORIZED', $details);
     }
 
-    public static function forbidden(string $message = 'Forbidden'): self {
-        return new self($message, 403, 'FORBIDDEN');
+    /** @param array<string, mixed> $details */
+    public static function forbidden(string $message = 'Forbidden', array $details = []): self {
+        return new self($message, 403, 'FORBIDDEN', $details);
     }
 
-    public static function notFound(string $message = 'Not Found'): self {
-        return new self($message, 404, 'NOT_FOUND');
+    /** @param array<string, mixed> $details */
+    public static function notFound(string $message = 'Not Found', array $details = []): self {
+        return new self($message, 404, 'NOT_FOUND', $details);
     }
 
-    public static function tooManyRequests(string $message = 'Too Many Requests'): self {
-        return new self($message, 429, 'TOO_MANY_REQUESTS');
+    /** @param array<string, mixed> $details */
+    public static function tooManyRequests(string $message = 'Too Many Requests', array $details = []): self {
+        return new self($message, 429, 'TOO_MANY_REQUESTS', $details);
     }
 
-    public static function internal(string $message = 'Internal Server Error'): self {
-        return new self($message, 500, 'INTERNAL_ERROR');
+    /** @param array<string, mixed> $details */
+    public static function internal(string $message = 'Internal Server Error', array $details = []): self {
+        return new self($message, 500, 'INTERNAL_ERROR', $details);
+    }
+
+    private static function codeForStatus(int $statusCode): string {
+        return match ($statusCode) {
+            400 => 'BAD_REQUEST',
+            401 => 'UNAUTHORIZED',
+            403 => 'FORBIDDEN',
+            404 => 'NOT_FOUND',
+            405 => 'METHOD_NOT_ALLOWED',
+            409 => 'CONFLICT',
+            422 => 'VALIDATION_ERROR',
+            429 => 'TOO_MANY_REQUESTS',
+            502 => 'BAD_GATEWAY',
+            503 => 'SERVICE_UNAVAILABLE',
+            default => $statusCode >= 500 ? 'INTERNAL_ERROR' : 'ERROR',
+        };
     }
 }

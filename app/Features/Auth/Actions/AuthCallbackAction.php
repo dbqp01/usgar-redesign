@@ -9,6 +9,7 @@ use App\Core\HttpException;
 use App\Core\Logger;
 use App\Features\Auth\User;
 use App\Features\Auth\AuthService;
+use App\Features\Auth\AuthRedirect;
 use App\Features\Auth\SessionService;
 use Throwable;
 
@@ -51,6 +52,9 @@ class AuthCallbackAction {
 
             $userModel = new User($pdo);
             $normalized = AuthService::normalizeProfile($profile, $provider);
+            if (!$normalized['email_verified']) {
+                throw HttpException::forbidden('El proveedor no verificó el correo electrónico.');
+            }
             $userId = $userModel->createFromOAuth($normalized);
 
             if ($userId === null) {
@@ -64,12 +68,8 @@ class AuthCallbackAction {
             $jwt = SessionService::createToken($user);
             SessionService::setAuthCookie($jwt);
 
-            $redirect = $_COOKIE['usgar_auth_redirect'] ?? '/profile';
+            $redirect = AuthRedirect::safePath($_COOKIE['usgar_auth_redirect'] ?? '/profile', '/profile');
             setcookie('usgar_auth_redirect', '', time() - 3600, '/');
-
-            if (!str_starts_with($redirect, '/') || str_starts_with($redirect, '//') || $redirect === '/') {
-                $redirect = '/profile';
-            }
 
             header('Location: ' . $redirect);
             exit(0);

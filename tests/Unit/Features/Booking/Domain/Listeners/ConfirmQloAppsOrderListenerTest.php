@@ -122,4 +122,26 @@ final class ConfirmQloAppsOrderListenerTest extends TestCase {
         $this->assertSame('Ana Test', $this->pms->confirmArgs[0][2]);
         $this->assertSame('ana@test.com', $this->pms->confirmArgs[0][3]);
     }
+
+    public function testListenerConvertsFrozenUsdRoomLinesToPen(): void {
+        $event = new BookingPaidEvent(
+            'CART-Q',
+            '555666777',
+            100.0,
+            '2026-09-01',
+            '2026-09-03',
+            2,
+            ['name' => 'Ana Test', 'email' => 'ana@test.com'],
+            [['id_room_type' => 2, 'room_total' => 100.0]],
+            38000,
+            'PEN',
+            3.80
+        );
+        $this->pms->dedupResult = false;
+        $this->pms->confirmResult = 'OK-ORDER-1';
+
+        (new ConfirmQloAppsOrderListener($this->pms))->handle($event);
+
+        self::assertSame(380.0, $this->pms->confirmRoomLines[0]['room_total']);
+    }
 }

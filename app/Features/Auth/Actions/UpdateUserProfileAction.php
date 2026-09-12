@@ -25,9 +25,16 @@ class UpdateUserProfileAction {
         }
 
         $data = $request->getBody() ?? [];
-        $rawName = trim($data['fullName'] ?? $data['first_name'] ?? '');
-        $lastName = trim($data['last_name'] ?? '');
-        $phone = trim($data['phone'] ?? '');
+        $rawNameInput = $data['fullName'] ?? $data['first_name'] ?? '';
+        $lastNameInput = $data['last_name'] ?? '';
+        $phoneInput = $data['phone'] ?? '';
+        if (!is_string($rawNameInput) || !is_string($lastNameInput) || !is_string($phoneInput)) {
+            Response::badRequest('Profile fields must be strings.');
+            return;
+        }
+        $rawName = trim($rawNameInput);
+        $lastName = trim($lastNameInput);
+        $phone = trim($phoneInput);
 
         if (!empty($rawName) && empty($lastName)) {
             $nameParts = explode(' ', $rawName, 2);

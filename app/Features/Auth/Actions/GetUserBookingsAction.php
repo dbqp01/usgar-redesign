@@ -8,6 +8,7 @@ use App\Core\Response;
 use App\Core\Database;
 use App\Features\Auth\User;
 use App\Features\Auth\SessionService;
+use PDOException;
 
 /**
  * Accion ADR: GET /api/user/bookings
@@ -29,7 +30,12 @@ class GetUserBookingsAction {
         }
 
         $userModel = new User($pdo);
-        $bookings = $userModel->getBookings((int)$user['sub']);
+        try {
+            $bookings = $userModel->getBookings((int)$user['sub']);
+        } catch (PDOException $e) {
+            Response::error('Error de base de datos.', 503, 'SERVICE_UNAVAILABLE');
+            return;
+        }
 
         Response::json([
             'success'  => true,

@@ -48,16 +48,41 @@ class ProcessPaymentAction {
         $accessToken = $body['access_token'] ?? '';
         $paymentData = $body['payment_data'] ?? [];
 
-        if (empty($cartId) || empty($accessToken) || empty($paymentData)) {
+        if (!is_string($cartId) || !is_string($accessToken) || !is_array($paymentData)
+            || trim($cartId) === '' || trim($accessToken) === '' || $paymentData === []) {
             throw HttpException::badRequest('Faltan parametros obligatorios para procesar el pago.');
         }
 
         try {
+            // Authenticate ownership before reserving durable idempotency. A
+            // caller who only knows a cart id must not consume the legitimate
+            // attempt slot and force a payment into a retry path.
+            $preflightHold = $this->bookingRepo->getByCartId($cartId);
+            if ($preflightHold === null) {
+                throw HttpException::notFound("No se encontro una reserva para el carrito especificado.");
+            }
+            $preflightGuestData = is_array($preflightHold['guest_data'] ?? null)
+                ? $preflightHold['guest_data']
+                : [];
+            $preflightEmail = (string)($preflightGuestData['email'] ?? '');
+            $expectedPreflightToken = BookingHoldToken::derive($cartId, $preflightEmail);
+            if (!hash_equals($expectedPreflightToken, $accessToken)) {
+                throw HttpException::unauthorized('Access token invalido.');
+            }
+
+            // Reserve the idempotency key while PDO is in autocommit mode.
+            // This write must survive the payment transaction rollback.
+            $reservedIdempotencyKey = $this->generateUuidV4();
+            $reserved = $this->bookingRepo->setPaymentIdempotencyKey((string)$cartId, $reservedIdempotencyKey);
+
             $this->pdo->beginTransaction();
 
             $hold = $this->bookingRepo->getByCartIdForUpdate($cartId);
             if (!$hold) {
                 $this->pdo->rollBack();
+                if ($reserved) {
+                    $this->clearPaymentIdempotencyKeyForRetry((string)$cartId);
+                }
                 throw HttpException::notFound("No se encontro una reserva para el carrito especificado.");
             }
 
@@ -68,11 +93,17 @@ class ProcessPaymentAction {
 
             if (!hash_equals($expectedToken, $accessToken)) {
                 $this->pdo->rollBack();
+                if ($reserved) {
+                    $this->clearPaymentIdempotencyKeyForRetry((string)$cartId);
+                }
                 throw HttpException::unauthorized("Access token invalido.");
             }
 
             if ($hold['status'] !== BookingStatus::Pending->value) {
                 $this->pdo->rollBack();
+                if ($reserved) {
+                    $this->clearPaymentIdempotencyKeyForRetry((string)$cartId);
+                }
                 Response::json([
                     'success' => false,
                     'message' => 'Esta reserva ya fue procesada o expiro.',
@@ -89,6 +120,9 @@ class ProcessPaymentAction {
             // Gate 1: hold expirado -> no cobrar (el cron lo marcara expired).
             if (strtotime((string)($hold['expires_at'] ?? '')) <= time()) {
                 $this->pdo->rollBack();
+                if ($reserved) {
+                    $this->clearPaymentIdempotencyKeyForRetry((string)$cartId);
+                }
                 Response::json([
                     'success' => false,
                     'message' => 'Esta reserva ya fue procesada o expiro.',
@@ -111,6 +145,18 @@ class ProcessPaymentAction {
                     'message' => 'Ya existe un pago en curso para esta reserva; se confirmara automaticamente.'
                 ]);
                 return;
+            }
+
+            // Reserve the key in a committed, short transaction before the
+            // external call. If MP accepts the payment and the HTTP request
+            // times out, the next attempt reuses this key instead of creating
+            // a second charge. Existing keys are deliberately retained.
+            $paymentIdempotencyKey = trim((string)($hold['payment_idempotency_key'] ?? ''));
+            if ($paymentIdempotencyKey === '') {
+                if (!$reserved) {
+                    throw new Exception('No se pudo reservar la idempotencia del pago.');
+                }
+                $paymentIdempotencyKey = $reservedIdempotencyKey;
             }
 
             // --- Todo 3/4 (W1): densidad antifraude desde el HOLD persistido ---
@@ -179,6 +225,7 @@ class ProcessPaymentAction {
             }
 
             $paymentData['external_reference'] = 'USGAR-' . $cartId; // formato compartido con todo 22 (dedup PMS)
+            $paymentData['idempotency_key'] = $paymentIdempotencyKey;
             $paymentData['transaction_amount'] = $gatewayPrice;
             // Descripcion del producto visible para el comprador (email de
             // confirmacion/rechazo de MP: sin 'description' el correo muestra
@@ -230,17 +277,22 @@ class ProcessPaymentAction {
                 // Todo 8 (fix MINOR r4): persistir payment_id + status paid
                 // DENTRO de la txn (polling todo 27 y refunds todo 12
                 // dependen de payment_id persistido).
-                $this->bookingRepo->attachPaymentId($cartId, $paymentIdStr);
-                $this->bookingRepo->updateStatus($cartId, BookingStatus::Paid->value);
-                $this->bookingRepo->markPaymentProcessed($paymentIdStr, $cartId, 'approved');
+                if (!$this->bookingRepo->attachPaymentId($cartId, $paymentIdStr)
+                    || !$this->bookingRepo->updateStatus($cartId, BookingStatus::Paid->value)
+                    || !$this->bookingRepo->markPaymentProcessed($paymentIdStr, $cartId, 'approved')) {
+                    throw new Exception('No se pudo persistir el resultado aprobado del pago.');
+                }
             } elseif (in_array($status, ['pending', 'in_process'], true)) {
                 // QA+2: attach DENTRO de la txn + commit; success:false(status
                 // pending) — no se pierde el payment_id para reconciliacion.
-                $this->bookingRepo->attachPaymentId($cartId, $paymentIdStr);
+                if (!$this->bookingRepo->attachPaymentId($cartId, $paymentIdStr)) {
+                    throw new Exception('No se pudo registrar el pago pendiente.');
+                }
             } else {
                 // QA-1: la gateway devolvio un pago rechazado SIN excepcion ->
                 // rollback, nada persistido (ni payment_id ni status).
                 $this->pdo->rollBack();
+                $this->clearPaymentIdempotencyKeyForRetry((string)$cartId);
                 Response::json([
                     'success' => false,
                     'status' => $status,
@@ -278,7 +330,9 @@ class ProcessPaymentAction {
                         // la conexion pudo morir; seguir con el attach best-effort
                     }
                 }
-                $attached = $this->bookingRepo->attachPaymentId($cartId, $paymentIdStr);
+                // Use a separate recovery call so the runtime result is checked
+                // independently from the successful pre-commit attachment.
+                $attached = $this->attachPaymentIdForRecovery($cartId, $paymentIdStr);
                 if (!$attached) {
                     Logger::error('ProcessPaymentAction: attach best-effort fallo para cart ' . $cartId . ' (payment_id=' . $paymentIdStr . ').');
                     throw new Exception(
@@ -333,6 +387,9 @@ class ProcessPaymentAction {
             // devuelve array: el ternario/is_array previo era codigo muerto.
             $apiBody = $e->getApiResponse()->getContent();
             $statusDetail = (string)($apiBody['status_detail'] ?? '');
+            if (in_array($statusCode, [400, 422], true)) {
+                $this->clearPaymentIdempotencyKeyForRetry((string)$cartId);
+            }
             Logger::error('ProcessPaymentAction MPApiException status=' . $statusCode . ' detail=' . ($statusDetail !== '' ? $statusDetail : 'n/a'));
             Response::error(
                 'El pago fue rechazado por la pasarela.',
@@ -347,5 +404,48 @@ class ProcessPaymentAction {
             Logger::error('ProcessPaymentAction Exception: ' . $e->getMessage());
             Response::error('Error interno al procesar el pago.', 500);
         }
+    }
+
+    private function attachPaymentIdForRecovery(string $cartId, string $paymentId): bool
+    {
+        if ($this->bookingRepo->attachPaymentId($cartId, $paymentId)) {
+            return true;
+        }
+
+        // commit() puede haber confirmado la escritura antes de propagar una
+        // excepción (p. ej. conexión perdida al recibir el ACK). En ese caso
+        // attachPaymentId() devuelve false porque el mismo payment_id ya está
+        // presente; tratarlo como fallo provocaría un 500 aunque el pago quedó
+        // enlazado. Solo aceptamos una coincidencia exacta; un payment_id
+        // distinto sigue siendo un conflicto y debe escalarse.
+        $hold = $this->bookingRepo->getByCartId($cartId);
+        return $hold !== null
+            && trim((string)($hold['payment_id'] ?? '')) === $paymentId;
+    }
+
+    private function clearPaymentIdempotencyKeyForRetry(string $cartId): void
+    {
+        try {
+            if (!$this->pdo->inTransaction()) {
+                $this->pdo->beginTransaction();
+            }
+            $this->bookingRepo->clearPaymentIdempotencyKey($cartId);
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->commit();
+            }
+        } catch (Exception $e) {
+            if ($this->pdo->inTransaction()) {
+                try { $this->pdo->rollBack(); } catch (Exception $ignore) {}
+            }
+            Logger::error('ProcessPaymentAction: no se pudo limpiar idempotency key tras rechazo: ' . $e->getMessage());
+        }
+    }
+
+    private function generateUuidV4(): string
+    {
+        $data = random_bytes(16);
+        $data[6] = chr((ord($data[6]) & 0x0f) | 0x40);
+        $data[8] = chr((ord($data[8]) & 0x3f) | 0x80);
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 }

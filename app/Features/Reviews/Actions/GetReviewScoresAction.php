@@ -24,7 +24,7 @@ class GetReviewScoresAction {
             }
         }
         header('Cache-Control: public, max-age=3600');
-        Response::json($payload);
+        Response::success($payload);
     }
 
     public static function scoresFile(): string {

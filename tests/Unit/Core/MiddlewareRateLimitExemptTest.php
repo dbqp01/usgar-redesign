@@ -32,4 +32,23 @@ final class MiddlewareRateLimitExemptTest extends TestCase {
         $this->expectException(HttpException::class);
         $mw(new Request('GET', '/api/rooms'));
     }
+
+    public function testOptionsDoesNotConsumeGlobalBudget(): void {
+        $ip = '198.51.100.' . random_int(1, 254);
+        $previousIp = $_SERVER['REMOTE_ADDR'] ?? null;
+        $_SERVER['REMOTE_ADDR'] = $ip;
+        try {
+            $mw = Middleware::rateLimit(1, 600);
+            $mw(new Request('OPTIONS', '/api/rooms'));
+            $mw(new Request('GET', '/api/rooms'));
+            $this->expectException(HttpException::class);
+            $mw(new Request('GET', '/api/rooms'));
+        } finally {
+            if ($previousIp === null) {
+                unset($_SERVER['REMOTE_ADDR']);
+            } else {
+                $_SERVER['REMOTE_ADDR'] = $previousIp;
+            }
+        }
+    }
 }
