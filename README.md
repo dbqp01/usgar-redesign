@@ -6,10 +6,10 @@ Sitio transaccional del hotel boutique Usgar (San Pedro, Cusco, Perú): reservas
 
 ## Quickstart
 
-Requisitos: Node ≥ 22, PHP ≥ 8.2 (con pdo_mysql, xml, mbstring), Composer (solo para vendor), MySQL.
+Requisitos: Node 22 (según `engines` y Hostinger), PHP ≥ 8.2 (con pdo_mysql, xml, mbstring), Composer (solo para vendor), MySQL.
 
 ```bash
-npm install
+npm ci
 composer install          # vendor/ (en prod Hostinger no existe: el build lo copia)
 cp .env.example .env      # credenciales reales (BD, MP, QloApps)
 npm run dev:all           # Astro en :4321 + PHP API en :8000 (proxy /api)
@@ -22,13 +22,18 @@ npm run dev:all           # Astro en :4321 + PHP API en :8000 (proxy /api)
 | `npm run dev:all` | Entorno completo (Astro + PHP API + proxy `/api`) | Desarrollo diario |
 | `npm run dev` / `dev:php` | Solo frontend / solo API | Ajustes puntuales |
 | `npm run check` | astro check + TypeScript | Antes de cada commit frontend |
+| `npm run test:unit` | Vitest: lógica TypeScript aislada, sin PHP ni servicios externos | Cambios en helpers/estado/contratos frontend |
 | `npm run test:php` | Suite exhaustiva integración + unit (`scripts/run-exhaustive-tests.php`) | Tras tocar backend |
 | `php tests/api-harness.php` | Contrato del flujo de reserva vía curl (`POST /api/booking`) | Tras tocar booking |
-| `npm run test` | check + test:php | Pre-merge |
+| `npm test` | check + test:unit + test:php | Pre-merge, con entorno de integración preparado |
 | `npm run audit:security` | Auditoría seguridad PHP | Tras tocar endpoints |
 | `npm run audit:seo` | Auditoría SEO/schema | Tras tocar páginas públicas |
-| `npx playwright test` | E2E (book, login) | Cambios en flujos de usuario |
+| `npm run test:e2e` | Playwright en `tests/e2e`, con Astro local en :4321 | Cambios en flujos de usuario |
 | `npm run build` | Build estático + copia `app/` y `vendor/` a `dist/` (el `.env` NO va en `dist/`) | Deploy |
+
+Para una revisión superficial de frontend, usa `npm run test:unit` y `npm run check`; añade build si cambias componentes o configuración de compilación. `composer test` y los harness PHP pueden incluir BD o sandbox externos: revisa sus fixtures y valida el destino antes de ejecutarlos. Que un archivo esté en `tests/Unit` o un token empiece por `TEST-` no garantiza aislamiento. Nunca uses credenciales de producción para estas verificaciones locales.
+
+Para E2E, instala Chromium una vez con `npx playwright install chromium`. `npm run test:e2e -- --list` lista solo E2E, sin cargar Vitest; `npm run test:e2e -- panel-flow.spec.ts` ejecuta el caso local con API mockeada. Playwright inicia y detiene Astro automáticamente y falla si :4321 ya está ocupado. Los casos que necesitan API PHP requieren además un backend local de pruebas; no apuntes el proxy a producción.
 
 ## Deploy (Hostinger — automático desde GitHub)
 

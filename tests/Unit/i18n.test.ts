@@ -34,7 +34,27 @@ describe('i18n Translations Parity & Fallbacks (4 Locales: EN, ES, FR, PT)', () 
     expect(tPt('nav.bookNow')).toBe('Reservar');
   });
 
-  it('should fallback gracefully to English for French when key is missing', () => {
+  it('should fall back from French to English when the local key is missing', () => {
+    const original = fr.nav.home;
+    try {
+      delete (fr.nav as Partial<typeof fr.nav>).home;
+      expect(useTranslations('fr')('nav.home')).toBe(en.nav.home);
+    } finally {
+      fr.nav.home = original;
+    }
+  });
+
+  it('should fall back from Portuguese to Spanish before English when the local key is missing', () => {
+    const original = pt.nav.home;
+    try {
+      delete (pt.nav as Partial<typeof pt.nav>).home;
+      expect(useTranslations('pt')('nav.home')).toBe(es.nav.home);
+    } finally {
+      pt.nav.home = original;
+    }
+  });
+
+  it('should return the key when no locale has a translation', () => {
     const tFr = useTranslations('fr');
     expect(tFr('nav.nonExistentKey')).toBe('nav.nonExistentKey');
   });

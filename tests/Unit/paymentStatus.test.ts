@@ -45,13 +45,13 @@ describe('mapBookingStatus (todo 27: estados del flujo -> UI)', () => {
 });
 
 describe('resolvePaymentOutcome (todo 28: pending -> redirect a success, no apilar)', () => {
-  it('processPayment con status pending/in_process -> redirect a success', () => {
-    expect(outcomeFor({ paymentStatus: 'pending', paymentId: '987' }, null)).toBe('redirect_success');
+  it('processPayment con status pending/in_process sin payment_id -> redirect a success', () => {
+    expect(outcomeFor({ paymentStatus: 'pending' }, null)).toBe('redirect_success');
     expect(outcomeFor({ paymentStatus: 'in_process' }, null)).toBe('redirect_success');
   });
 
-  it('processPayment con payment_id (commit-falla) -> redirect a success', () => {
-    expect(outcomeFor({ paymentStatus: 'pending', paymentId: '987' }, null)).toBe('redirect_success');
+  it('processPayment con payment_id sin status (commit-falla) -> redirect a success', () => {
+    expect(outcomeFor({ paymentId: '987' }, null)).toBe('redirect_success');
   });
 
   it('reintento bloqueado: booking-status con payment_id -> redirect a success', () => {

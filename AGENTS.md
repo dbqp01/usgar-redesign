@@ -96,12 +96,23 @@ docs/                         Documentación centralizada (ver tabla de fuentes)
 
 ## Tests y verificación (antes de declarar "listo")
 
-1. `npm run check` — types + astro.
-2. `npm run test:php` (= `php scripts/run-exhaustive-tests.php`) — suite exhaustiva de integración + unit del backend.
-3. `php tests/api-harness.php` — contrato del flujo de reserva vía curl (`POST /api/booking`, casos de validación).
-4. `npm run audit:security` + `npm run audit:seo` si tocas endpoints/SEO.
-5. E2E: `npx playwright test` si el cambio toca flujos de usuario (book, login).
-6. PHPStan: `composer analyse` (nivel 6, baseline en `phpstan-baseline.neon`).
+Elige checks según los archivos y contratos afectados. Una revisión superficial no exige auditar toda la aplicación ni contactar servicios externos.
+
+| Cambio | Verificación |
+|---|---|
+| Helpers/estado/i18n TypeScript o sus tests | `npm run test:unit` (Vitest sin watch) + `npm run check` |
+| Componentes, estilos o configuración Astro | `npm run check` + `npm run build`; E2E focalizado si cambia comportamiento de usuario |
+| Backend PHP | PHPUnit focalizado + `composer analyse`; contratos HTTP cuando cambie una ruta/action |
+| Endpoints/SEO | Auditoría existente correspondiente, acotada al cambio |
+| Solo documentación | Verificar comandos/rutas contra manifiestos y código, sin instalar ni ejecutar toda la suite |
+
+`npm test` conserva el chequeo Astro y la integración PHP, y añade Vitest. CI ejecuta los tres controles; no omitas una suite para ocultar un fallo ni elimines aserciones para obtener verde.
+
+**Aislamiento primero:** `composer test` descubre todo `tests/Unit`, incluidos casos que cargan `.env`, consultan pagos sandbox y escriben en BD. Los harness (`test:php`, `api-harness`, `user-flow`, workers y stress tests) requieren revisar fixtures/destino y un entorno dedicado. El nombre Unit, `PHP_TESTING` o un token `TEST-` no acreditan aislamiento. Para una tarea local usa casos sin servicios externos; pruebas que mutan BD/PMS/pagos requieren autorización específica y destino de pruebas verificado. Nunca cargues credenciales de producción para pasarlas.
+
+Reporta los comandos ejecutados, resultados y lo que quedó sin verificar. Un build, un grafo estático o mocks no prueban el flujo real de pagos.
+
+Playwright usa la configuración versionada y `npm run test:e2e -- <spec>` para casos focalizados; `--list` no debe descubrir Vitest. Su servidor es Astro local en :4321; los specs con API sin mocks necesitan PHP local de pruebas además del frontend.
 
 ## Deploy (Hostinger) — SOLO rama main, build automático
 
@@ -118,7 +129,7 @@ docs/                         Documentación centralizada (ver tabla de fuentes)
 - **Zero hardcoding**: credenciales/URLs/precios → `.env` o BD. Jamás literales en código.
 - **No tocar generados**: `graphify-out/`, `dist/`, `node_modules/`, `vendor/` (a mano), `*.map`. Si algo es regenerable, no se edita ni se commitea.
 - **Commits**: pequeños, por tema, prefijo `feat:` / `fix:` / `chore:` / `docs:`. No mega-commits. NO push a main sin OK explícito del usuario.
-- **MCPs OBLIGATORIOS en todos los agentes** (regla del usuario, incluye subagentes): todo agente que ejecute tareas DEBE usar los MCPs (context7 para docs de librerías, chrome-devtools para verificación visual/rendimiento, mysql para datos, mercadopago-mcp para el flujo MP, astro-docs, tavily) y DEBE reportar en su reporte qué MCPs usó y qué verificó con ellos. Si un MCP esencial no está disponible → BLOCKED, nunca trabajar sin verificación real.
+- **Herramientas según el alcance** (incluye subagentes): consulta Context7 o docs oficiales para APIs de librerías; navegador para cambios visuales; herramientas de BD/pagos solo al verificar esos recorridos autorizados. Usa las capacidades disponibles, sin instalar duplicados ni llamar todos los MCPs por rutina. Si falta una herramienta realmente necesaria, continúa el trabajo independiente y reporta exactamente qué no pudiste verificar; no declares bloqueada una tarea local por un MCP ajeno a su alcance.
 - **Duda → preguntar**: si el pedido del usuario choca con el plan de migración o la arquitectura (ver `docs/ROADMAP.md`), pregunta antes de codear.
 
 ## Principios de ingeniería (reglas de senior dev)

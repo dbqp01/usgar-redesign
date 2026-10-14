@@ -23,7 +23,6 @@ opencode.json
 playwright-report/
 test-results/
 .playwright-mcp/
-playwright.config.ts
 preview.log
 *.log
 .hermes/

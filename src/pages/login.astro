@@ -234,7 +234,7 @@ const DEFAULT_REDIRECT = '/my-bookings';
       // Two mechanisms cooperate to re-run it:
       //   1. data-astro-rerun (plan Todo 5) — forces the router to re-execute
       //      this inline script on every transition. NOTE: with define:vars
-      //      present, Astro strips data-astro-rerun from the served <script>
+      //      present, Astro strips data-astro-rerun from the served script
       //      tag (verified on Astro 7.1.1 dev, see swap-functions.js), so the
       //      reliable mechanism is #2.
       //   2. A persistent `astro:page-load` listener registered EXACTLY ONCE.
