@@ -30,6 +30,9 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      - name: Pruebas unitarias TypeScript
+        run: npm run test:unit
+
       - name: Configurar PHP 8.3
         uses: shivammathur/setup-php@b604ade2a87db23f8871b7182e69ec5e75effb45 # v2
         with:
@@ -50,17 +53,17 @@ jobs:
       - name: Crear .env para pruebas (sin BD real)
         run: cp .env.example .env
 
-      - name: Suite unitaria PHPUnit (160 tests, 578 aserciones)
+      - name: Suite PHPUnit
         run: composer test
 
       - name: Ejecutar pruebas de integracion HTTP
         run: php scripts/run-exhaustive-tests.php
 
-      - name: PHPStan (nivel 6, baseline commiteado)
+      - name: PHPStan (nivel 7)
         run: composer analyse
 
       - name: Verificación de tipos TypeScript y Astro
-        run: npx astro check
+        run: npm run check
 
       - name: Auditoría de seguridad de código PHP
         run: php scripts/audit-security.php

@@ -1,5 +1,14 @@
 # STATE — Backend USGAR (handoff de sesión)
 
+## Verificación acotada de calidad — 2026-10-14
+
+- Vitest se integra en `npm test` y CI: **77 tests OK**. Los casos de fallback `fr→en` / `pt→es` y de `paymentId` sin estado ahora detectan sus regresiones; tres mutaciones en copia aislada dieron el fallo esperado.
+- Playwright tiene configuración versionada, descubre **29 E2E** sin cargar Vitest y mantiene Astro en foreground mediante `ASTRO_DEV_BACKGROUND=0`. Verificados en Chromium **2 E2E OK**: contenido sin JavaScript y error seguro del panel con API mockeada. Dos comentarios con etiquetas script literales se corrigieron para evitar errores del escáner de dependencias.
+- El harness HTTP valida el rechazo de `id_hotel=0` antes de consultar PMS; el éxito de `/api/rooms` con fechas por defecto queda cubierto en PHPUnit con PMS mockeado, sin exigir inventario externo al runner CI. No se acepta una alternativa permisiva 200/503 ni se cambia código de negocio.
+- PHPUnit focalizado `GetRoomsActionTest`: **8 tests, 26 aserciones OK** (2 deprecaciones PHPUnit reportadas); PHP lint sin errores en el harness y el test.
+- `npm run check`: **177 archivos, 0 errores/warnings/hints**; PHPStan nivel **7**, sin errores. Reglas y README precisan checks por impacto y distinguen pruebas aisladas de las que pueden usar BD/PMS/pagos.
+- Alcance superficial: no se acredita el flujo externo de pagos, concurrencia MySQL ni una auditoría completa. Las suites con servicios externos requieren destino de pruebas verificado; mocks y skips no sustituyen esa evidencia.
+
 ## Verificación backend vigente — 2026-09-11
 
 ### Auditoría de seguimiento — 2026-09-11
