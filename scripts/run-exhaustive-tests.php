@@ -191,12 +191,14 @@ $healthRes = httpGet("http://$host:$port/api/health");
 assertTest("Endpoint GET /api/health retorna HTTP 200", $healthRes['status'] === 200);
 assertTest("Endpoint GET /api/health retorna JSON válido con success=true", str_contains($healthRes['body'], '"success":true'));
 
-// Test /api/rooms sin parametros: GetRoomsAction usa hoy/tomorrow por defecto
-// (el frontend hace polling de /api/rooms sin params en subscribeToRoomAvailability),
-// por lo que debe responder 200 con success=true, no 400.
-$roomsDefaultRes = httpGet("http://$host:$port/api/rooms");
-assertTest("Endpoint GET /api/rooms sin parámetros responde HTTP 200 (defaults hoy/mañana)", $roomsDefaultRes['status'] === 200);
-assertTest("Endpoint GET /api/rooms sin parámetros reporta success=true", str_contains($roomsDefaultRes['body'], '"success":true'));
+// La validación de entrada no depende de inventario ni disponibilidad del PMS.
+$roomsHotelInvalidRes = httpGet("http://$host:$port/api/rooms?id_hotel=0");
+$roomsHotelInvalidPayload = json_decode($roomsHotelInvalidRes['body'], true);
+assertTest("Endpoint GET /api/rooms con id_hotel=0 retorna HTTP 400", $roomsHotelInvalidRes['status'] === 400, $roomsHotelInvalidRes);
+assertTest("Endpoint GET /api/rooms con id_hotel=0 reporta success=false y BAD_REQUEST",
+    ($roomsHotelInvalidPayload['success'] ?? null) === false
+        && ($roomsHotelInvalidPayload['error']['code'] ?? null) === 'BAD_REQUEST',
+    $roomsHotelInvalidPayload);
 
 // Test /api/rooms con rango invalido
 $roomsRangeInvalidRes = httpGet("http://$host:$port/api/rooms?checkIn={$validCheckOut}&checkOut={$validCheckIn}");

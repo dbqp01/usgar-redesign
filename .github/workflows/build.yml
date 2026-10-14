@@ -59,7 +59,7 @@ jobs:
       - name: Ejecutar pruebas de integracion HTTP
         run: php scripts/run-exhaustive-tests.php
 
-      - name: PHPStan (nivel 6, baseline commiteado)
+      - name: PHPStan (nivel 7)
         run: composer analyse
 
       - name: Verificación de tipos TypeScript y Astro
