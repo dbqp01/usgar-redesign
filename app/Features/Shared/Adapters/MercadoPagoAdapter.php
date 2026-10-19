@@ -258,6 +258,15 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             ];
 
         } catch (MPApiException $e) {
+            // 404 = el pago no existe en esta cuenta de MP (pago de prueba de
+            // otra epoca, otra cuenta o cancelado): es una respuesta
+            // definitiva, no un fallo de la API. Antes se logueaba como ERROR
+            // y el cron de reconciliacion lo reintentaba cada 15 min para
+            // siempre, tapando los errores reales del log.
+            if ($e->getStatusCode() === 404) {
+                Logger::info("MercadoPagoAdapter: el pago {$paymentId} no existe en MercadoPago (404).", ['payment_id' => $paymentId]);
+                return null;
+            }
             $this->logApiError($e, 'MercadoPagoAdapter API Error en getPaymentDetails', ['payment_id' => $paymentId]);
             return null;
         } catch (Exception $e) {

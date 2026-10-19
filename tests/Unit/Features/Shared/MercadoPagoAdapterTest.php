@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use App\Features\Shared\Adapters\MercadoPagoAdapter;
 use App\Test\Fixtures\W3WebhookFixtures;
 use App\Core\Config;
+use App\Core\Logger;
 use MercadoPago\Client\Payment\PaymentClient;
 use MercadoPago\Client\Payment\PaymentRefundClient;
 use MercadoPago\Client\Common\RequestOptions;
@@ -283,6 +284,38 @@ final class MercadoPagoAdapterTest extends TestCase {
 
         $adapter = new MercadoPagoAdapter($paymentClient);
         $this->assertNull($adapter->getPaymentDetails('42424242'));
+    }
+
+    public function testGetPaymentDetailsLogsNotFoundAsInfoNotError(): void {
+        // Un 404 de MP (el pago no existe en esta cuenta) es una respuesta
+        // definitiva, no un fallo de la API: loguearlo como ERROR hacia que el
+        // cron de reconciliacion lo reintentara cada 15 min para siempre y
+        // tapara los errores reales del log (fix 2026-10-19).
+        $paymentClient = $this->createMock(PaymentClient::class);
+        $paymentClient->expects($this->once())
+            ->method('get')
+            ->willThrowException(new MPApiException(
+                'Payment not found',
+                new MPResponse(404, ['error' => 'not_found'])
+            ));
+
+        $directory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'usgar-mp-adapter-tests';
+        Logger::setDirectoryForTesting($directory);
+        @unlink($directory . DIRECTORY_SEPARATOR . 'app.log');
+
+        try {
+            $adapter = new MercadoPagoAdapter($paymentClient);
+            $this->assertNull($adapter->getPaymentDetails('42424242'));
+            $content = (string) @file_get_contents($directory . DIRECTORY_SEPARATOR . 'app.log');
+        } finally {
+            Logger::setDirectoryForTesting(null);
+            @unlink($directory . DIRECTORY_SEPARATOR . 'app.log');
+            @unlink($directory . DIRECTORY_SEPARATOR . '.htaccess');
+            @rmdir($directory);
+        }
+
+        $this->assertStringContainsString('"level":"INFO"', $content);
+        $this->assertStringNotContainsString('"level":"ERROR"', $content);
     }
 
     public function testVerifySignatureAcceptsValidHmac(): void {
