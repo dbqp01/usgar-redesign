@@ -533,6 +533,16 @@
     "termsTitle": "Termos e Condicoes",
     "updatedLabel": "Ultima atualização"
   },
+  "meta": {
+    "rooms": "Quatro tipos de quartos em San Pedro, Cusco: murais andinos pintados à mão, tecidos artesanais e luz acolhedora. Reserve direto e economize.",
+    "explore": "Machu Picchu, o Vale Sagrado, as salinas de Maras e mais: um guia de viagem aos melhores lugares perto de San Pedro, Cusco.",
+    "gallery": "Fotos e vídeo tour do USGAR Hotels: quartos com murais andinos, o pátio inca, a gastronomia e as ruas de San Pedro, Cusco.",
+    "contact": "Fale com a equipa do USGAR Hotels em San Pedro, Cusco: reservas diretas, transfer privado do aeroporto, dicas de altitude e receção 24/7.",
+    "book": "Reserve a sua estadia no USGAR Hotels, Cusco: consulte a disponibilidade real, escolha o quarto e pague em segurança com Mercado Pago. Pequeno-almoço incluído.",
+    "success": "A sua reserva no USGAR Hotels está confirmada. Check-in a partir das {checkin} e check-out até às {checkout} em San Pedro, Cusco. O recibo vai para o seu email.",
+    "privacy": "Como o USGAR Hotels trata os seus dados: o que recolhemos na reserva, quanto tempo guardamos e que direitos tem sobre a sua informação pessoal.",
+    "terms": "As condições que se aplicam a reservas, cancelamentos, pagamentos e estadias no USGAR Hotels, San Pedro, Cusco. Leia antes de reservar."
+  },
   "notFound": {
     "title": "Página não encontrada",
     "message": "A página que você procura não existe ou foi movida.",

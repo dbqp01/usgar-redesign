@@ -6,6 +6,7 @@ import ContactChannels from "../components/contact/ContactChannels.astro";
 import ContactTravelGuide from "../components/contact/ContactTravelGuide.astro";
 import { Image } from "astro:assets";
 import patioImg from "../assets/hotel/hero-slide-patio.jpg";
+import { socialImage } from "../utils/ogImage";
 import { useTranslations, type Locale } from "../i18n/utils";
 import { siteSettings } from "../data/settings";
 
@@ -38,6 +39,8 @@ const contactSchema = {
 <Layout
   title={`${t("contact.title")} - USGAR Hotels`}
   lang={lang}
+  description={t("meta.contact")}
+  ogImage={await socialImage(patioImg)}
   schema={contactSchema}
 >
   <!-- Hero editorial: titulo display + CTAs directos + fotografia del patio -->

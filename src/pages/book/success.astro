@@ -10,9 +10,14 @@ export const prerender = true;
 
 const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
+// Los horarios vienen de settings.json (misma fuente que el PMS), no del i18n:
+// el placeholder {checkin}/{checkout} se rellena con el valor real.
+const successDescription = t('meta.success')
+  .replace('{checkin}', siteSettings.checkinTime)
+  .replace('{checkout}', siteSettings.checkoutTime);
 ---
 
-<Layout title={`${t('success.title')} - USGAR Hotels`} lang={lang}>
+<Layout title={`${t('success.title')} - USGAR Hotels`} lang={lang} description={successDescription}>
   <div class="py-24 px-4 max-w-3xl mx-auto flex-1 print:py-10">
     
     <!-- 1. Loading State Spinner -->
@@ -141,9 +146,9 @@ const t = useTranslations(lang);
         </svg>
       </div>
       <div>
-        <h1 class="font-display text-3xl mb-2">
+        <h2 class="font-display text-3xl mb-2">
           {t('success.paymentPending')}
-        </h1>
+        </h2>
         <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm max-w-md mx-auto">
           {t('success.verifyingPaymentMessage')}
         </p>
@@ -177,9 +182,9 @@ const t = useTranslations(lang);
         </svg>
       </div>
       <div>
-        <h1 id="error-title" class="font-display text-3xl mb-2">
+        <h2 id="error-title" class="font-display text-3xl mb-2">
           {t('success.notFound')}
-        </h1>
+        </h2>
         <p id="error-message-text" class="text-text-secondary-light dark:text-text-secondary-dark text-sm max-w-md mx-auto">
           {t('success.notFoundMessage')}
         </p>

@@ -4,9 +4,11 @@ import Layout from "../layouts/Layout.astro";
 import LegalDoc from "../components/LegalDoc.astro";
 import { termsSections, type LegalSection } from "../data/legal";
 import type { Locale } from "../i18n/utils";
+import { useTranslations } from "../i18n/utils";
 import { siteSettings } from "../data/settings";
 
 const lang = (Astro.currentLocale || "en") as Locale;
+const t = useTranslations(lang);
 const sections = (termsSections as Record<string, LegalSection[] | undefined>)[lang] ?? termsSections.en;
 // Títulos con tilde en ES (documento legal); el i18n JSON del sitio es ASCII.
 const title = lang === "es" ? "Términos y Condiciones" : "Terms of Service";
@@ -21,7 +23,7 @@ const schema = {
 };
 ---
 
-<Layout title={`${title} | ${siteSettings.hotelName}`} lang={lang} schema={schema}>
+<Layout title={`${title} | ${siteSettings.hotelName}`} lang={lang} description={t('meta.terms')} schema={schema}>
   <LegalDoc
     lang={lang}
     title={title}

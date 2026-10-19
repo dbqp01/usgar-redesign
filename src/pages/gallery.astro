@@ -6,6 +6,8 @@ import { Picture, getImage } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import SectionHeader from "../components/ui/SectionHeader.astro";
 import { rooms } from "../data/rooms";
+import recepcionImg from "../assets/hotel/hero-slide-recepcion.jpg";
+import { socialImage } from "../utils/ogImage";
 
 const lang = (Astro.currentLocale || "en") as Locale;
 const t = useTranslations(lang);
@@ -74,6 +76,8 @@ const lightboxMedia: GalleryMedia[] = [
 <Layout
   title={`${t("gallery.title")} - USGAR Hotels`}
   lang={lang}
+  description={t("meta.gallery")}
+  ogImage={await socialImage(recepcionImg)}
 >
   <div class="flex-1 px-4 animate-fade-in">
     <!-- Editorial Header -->
@@ -84,6 +88,7 @@ const lightboxMedia: GalleryMedia[] = [
           eyebrow={lang === "es" ? "Instalaciones y Habitaciones" : "Facilities & Accommodations"}
           title={t("gallery.title")}
           subtitle={t("gallery.subtitle")}
+          level="h1"
         />
       </div>
     </section>

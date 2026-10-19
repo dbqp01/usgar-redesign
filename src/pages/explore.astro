@@ -8,6 +8,8 @@ import { attractions } from '../data/attractions';
 import { useTranslations, type Locale } from '../i18n/utils';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import fallbackImg from '../assets/hotel/hero-slide-cusco.jpg';
+import machuPicchu from '../assets/explore/machu-picchu.jpg';
+import { socialImage } from '../utils/ogImage';
 
 const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
@@ -63,7 +65,7 @@ const attractionsSchema = {
 };
 ---
 
-<Layout title={`${t('explore.title')} - USGAR Hotels`} lang={lang} schema={attractionsSchema}>
+<Layout title={`${t('explore.title')} - USGAR Hotels`} lang={lang} description={t('meta.explore')} ogImage={await socialImage(machuPicchu)} schema={attractionsSchema}>
   <!-- Editorial Header -->
   <section class="relative overflow-hidden bg-surface-light px-4 pb-8 pt-32 transition-colors duration-500 dark:bg-surface-dark sm:pt-36">
     <div class="mx-auto max-w-[1400px]">
@@ -72,6 +74,7 @@ const attractionsSchema = {
         eyebrow={t('explore.sectionLabel')}
         title={t('explore.title')}
         subtitle={t('explore.description')}
+        level="h1"
       />
     </div>
   </section>

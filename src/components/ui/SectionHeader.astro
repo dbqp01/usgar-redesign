@@ -7,9 +7,16 @@ interface Props {
   title: string;
   subtitle?: string;
   align?: 'center' | 'left';
+  /**
+   * Nivel del encabezado. Por defecto 'h2' (es un encabezado de seccion).
+   * Poner 'h1' solo en la pagina donde este titulo ES el titulo de la pagina:
+   * cada pagina debe tener exactamente un <h1>.
+   */
+  level?: 'h1' | 'h2';
 }
 
-const { number, eyebrow, title, subtitle, align = 'center' } = Astro.props;
+const { number, eyebrow, title, subtitle, align = 'center', level = 'h2' } = Astro.props;
+const Heading = level;
 ---
 
 <div
@@ -23,9 +30,9 @@ const { number, eyebrow, title, subtitle, align = 'center' } = Astro.props;
   </span>
   <div class:list={['flex items-start gap-3 sm:gap-4', align === 'center' ? 'justify-center' : '']}>
     <span class="section-number shrink-0 text-4xl leading-[0.9] sm:text-7xl" aria-hidden="true">{number}</span>
-    <h2 class="min-w-0 max-w-[18ch] font-display text-3xl leading-[0.98] text-text-primary-light dark:text-white text-balance sm:text-5xl sm:leading-[1.05] lg:text-5xl">
+    <Heading class="min-w-0 max-w-[18ch] font-display text-3xl leading-[0.98] text-text-primary-light dark:text-white text-balance sm:text-5xl sm:leading-[1.05] lg:text-5xl">
       {title}
-    </h2>
+    </Heading>
   </div>
   {subtitle && (
     <p class="mt-2 text-base sm:text-lg text-text-secondary-light dark:text-text-secondary-dark font-body font-light">

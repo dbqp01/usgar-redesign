@@ -105,7 +105,8 @@ for (const file of htmlFiles) {
 // El prefijo de locale es opcional: /login/ y /es/login/ son la misma pagina.
 const utilityPages = /^\/(?:[a-z]{2}\/)?(?:panel|login|profile|my-bookings)(?:\/|$)/;
 // La home puede usar la descripcion global del sitio: es lo correcto.
-const isHome = (rel) => /^\/(es|pt)?\/?$/.test(rel);
+// (las 4 homes: /, /es/, /fr/, /pt/ — cada una con la descripcion de su locale)
+const isHome = (rel) => /^\/(es|fr|pt)?\/?$/.test(rel);
 // Una pagina noindex (404, login, panel...) no compite en busquedas: no
 // necesita meta description propia.
 const isIndexable = (p) => !p.robots || !/noindex/i.test(p.robots);

@@ -1,5 +1,18 @@
 # STATE — Backend USGAR (handoff de sesión)
 
+## SEO por página: descripción, og:image y un solo H1 — 2026-10-19
+
+Cierre de los tres work items que dejó la auditoría de contenido (F-8, F-9, F-10 en `docs/ROADMAP.md`). `npm run audit:content` baja de **3 errores a 0**.
+
+- **`meta description` propia por plantilla (F-8)**: sección `meta` nueva en los 4 i18n (`rooms`, `explore`, `gallery`, `contact`, `book`, `success`, `privacy`, `terms`) y `description=` en cada plantilla. Las páginas dinámicas reusan el texto que ya traían (`room.description[lang]`, `attraction.description[lang]`: 98-170 caracteres). Los horarios de `meta.success` NO están escritos en el i18n: son los placeholders `{checkin}`/`{checkout}`, rellenados con `siteSettings.checkinTime`/`checkoutTime` (misma fuente que el PMS). La home conserva la descripción global del sitio — es lo correcto.
+- **`og:image` propia por plantilla (F-9)**: `src/utils/ogImage.ts` (`socialImage()`) recorta una foto del sitio a **1200×630 JPEG** (no AVIF/WebP: los scrapers de redes no los leen) y devuelve la URL absoluta. Cada plantilla pasa la foto que el visitante ve. 21 imágenes sociales nuevas (~2,2 MB en `dist/_astro/`, caché 1 año por el hash). Las fotos de `src/assets/explore/*.jpg` son cuadradas de 1024 px, así que su recorte sale a 1024×630 (por encima del mínimo de 600×315 que aceptan los scrapers); verificado visualmente.
+- **Un solo `<h1>` por página (F-10)**: `SectionHeader.astro` acepta `level?: 'h1' | 'h2'` (por defecto `h2`); `/rooms/`, `/gallery/` y `/explore/` pasan `level="h1"`. En `book/success` los estados *pendiente* y *error* bajaron a `<h2>`: los tres estados conviven en el DOM (solo el de éxito es visible y es el título de la página).
+- **Falso positivo del propio audit**: `isHome` no incluía `/fr/`, así que la home francesa pedía su propia descripción. Corregido.
+
+**Verificación**: `npm run check` → 180 archivos, 0 errores/warnings/hints · `npm run test:unit` → 77 OK · `npm run build` → 121 páginas · `npm run audit:seo` → 123 páginas, 84 JSON-LD, 0 errores · `npm run audit:content` → **0 errores, 2 avisos** (sitemap sin `lastmod`, CSP: decisión del owner).
+
+**E2E**: `npx playwright test --workers=1` → **11 failed / 18 passed**, con el **mismo conjunto de fallos que `main`** (selectores desfasados: `picture img`, overlay `[data-room-card]`, `#contact-form`, y 3 tests del wizard que necesitan un PMS vivo). `main` daba 12 fallos con la config original: el cambio **no** introduce regresiones y desbloquea un test. Causa raíz de los timeouts: el dev server de Astro tarda 20-34 s en la primera respuesta y Playwright corta a los 30 s → `timeout: 60_000` + `webServer.timeout: 120_000` en `playwright.config.ts`.
+
 ## Auditoría de contenido y SEO — 2026-10-19
 
 Auditoría del sitio público con verificación **RED→GREEN sobre el artefacto construido**. Nuevo arnés: `npm run audit:content` (`scripts/audit-seo-content.js`), que comprueba 404 propia, `description`/`og:image` por plantilla, un H1 por página, `numberOfRooms` contra el inventario real, sitemap sin páginas de utilidad, `noindex` en las de utilidad, una sola fuente de verdad para check-in/check-out, CSP/MIME `.avif`/`ErrorDocument` en `.htaccess` y una sola coordenada de "cómo llegar". Estado: **13 errores → 3 errores** (los 3 restantes son work items en `docs/ROADMAP.md` F-8/F-9/F-10).
