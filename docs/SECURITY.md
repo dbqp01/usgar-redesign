@@ -6,7 +6,7 @@ Modelo de seguridad verificado contra el código (2026-09-11). Los pendientes pr
 
 ### Transporte y headers
 - Todo HTTPS (HSTS `max-age=31536000; includeSubDomains; preload` en Middleware).
-- CSP única en `app/Core/Middleware.php::securityHeaders` (con `'unsafe-inline' 'unsafe-eval'` para el SDK de MercadoPago; dominios MP/ML/fonts/maps allowlisteados). Sin CSP duplicada en `.htaccess`.
+- Una sola allowlist de CSP para todo el sitio, aplicada en **dos puntos**: `public/.htaccess` (bloque `<FilesMatch "\.html$">`) para el HTML estático y `app/Core/Middleware.php::securityHeaders` para las respuestas PHP. La allowlist es idéntica en ambos y `npm run audit:content` falla (error `CSP-DRIFT`) si divergen; `npm run audit:csp` la carga en Chromium sobre el build y falla si el navegador rechaza algún recurso. Con `'unsafe-inline' 'unsafe-eval'` para el SDK de MercadoPago; dominios MP/ML/fonts/maps allowlisteados. La CSP estática va en `<FilesMatch>` a propósito: declarada a nivel global, `index.php` recibiría una segunda cabecera CSP y el navegador aplicaría la intersección de ambas.
 - `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy` (sin cámara/micrófono/geolocalización).
 - Los directorios de runtime copiados al webroot (`app/`, `vendor/`, `cron/`, `logs/`, `storage/`) están denegados por `.htaccess`; los scripts de cron siguen disponibles únicamente mediante CLI.
 

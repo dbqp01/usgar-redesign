@@ -29,6 +29,7 @@ npm run dev:all           # Astro en :4321 + PHP API en :8000 (proxy /api)
 | `npm run audit:security` | Auditoría seguridad PHP | Tras tocar endpoints |
 | `npm run audit:seo` | Auditoría SEO/schema | Tras tocar páginas públicas |
 | `npm run audit:content` | Auditoría de contenido sobre `dist/` (404, H1, description/og:image, sitemap, horarios, `.htaccess`) | Tras tocar contenido, `.htaccess` o el sitemap — **requiere `npm run build` antes** |
+| `npm run audit:csp` | Carga cada página del build en Chromium con la CSP real del `.htaccess` y falla si el navegador rechaza un recurso | Tras tocar la CSP, el `.htaccess` o los recursos externos — **requiere `npm run build` antes** |
 | `npm run test:e2e` | Playwright en `tests/e2e`, con Astro local en :4321 | Cambios en flujos de usuario |
 | `npm run build` | Build estático + copia `app/` y `vendor/` a `dist/` (el `.env` NO va en `dist/`) | Deploy |
 

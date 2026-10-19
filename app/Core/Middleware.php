@@ -162,7 +162,13 @@ class Middleware {
             header('X-Content-Type-Options: nosniff');
             header('X-Frame-Options: DENY');
             header('Referrer-Policy: strict-origin-when-cross-origin');
-            header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://sdk.mercadopago.com https://*.mercadopago.com https://http2.mlstatic.com https://*.mlstatic.com https://unpkg.com https://www.mercadolibre.com https://*.mercadolibre.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com https://http2.mlstatic.com https://*.mlstatic.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob: *.tile.openstreetmap.org https://*.mlstatic.com https://*.mercadopago.com https://*.mercadolibre.com; connect-src 'self' https://api.mercadopago.com https://*.mercadopago.com https://events.mercadopago.com https://*.mercadolibre.com https://*.mlstatic.com https://cms.usgarhoteles.com; frame-src 'self' https://www.mercadopago.com https://*.mercadopago.com https://*.mercadolibre.com https://*.mercadolibre.com.pe https://*.mercadopago.com.pe;");
+            // Allowlist de la CSP: es la MISMA que sirve el .htaccess para las
+            // paginas estaticas (public/.htaccess, bloque <FilesMatch "\.html$">).
+            // Las dos copias se comparan en `npm run audit:content` (error
+            // CSP-DRIFT) para que no se separen sin que nadie lo note. La
+            // allowlist se dedujo de lo que el sitio carga de verdad (MercadoPago
+            // en /book/, tiles de Carto en el mapa, fuentes self-hosted).
+            header("Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://sdk.mercadopago.com https://*.mercadopago.com https://http2.mlstatic.com https://*.mlstatic.com https://unpkg.com https://www.mercadolibre.com https://*.mercadolibre.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com https://http2.mlstatic.com https://*.mlstatic.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://*.basemaps.cartocdn.com https://*.tile.openstreetmap.org https://*.mlstatic.com https://*.mercadopago.com https://*.mercadolibre.com https://*.mercadolivre.com; connect-src 'self' https://api.mercadopago.com https://*.mercadopago.com https://events.mercadopago.com https://*.mercadolibre.com https://*.mlstatic.com https://cms.usgarhoteles.com; frame-src 'self' https://www.mercadopago.com https://*.mercadopago.com https://*.mercadolibre.com https://*.mercadolibre.com.pe https://*.mercadopago.com.pe;");
             header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
             header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
         };

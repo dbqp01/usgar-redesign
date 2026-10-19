@@ -19,6 +19,7 @@
     "audit:security": "php scripts/audit-security.php",
     "audit:seo": "node scripts/audit-seo-schema.js",
     "audit:content": "node scripts/audit-seo-content.js",
+    "audit:csp": "node scripts/audit-csp.mjs",
     "audit:all": "npm run check && npm run test:php && npm run audit:security && npm run audit:seo && npm run audit:content",
     "prepare": "git config core.hooksPath .githooks || true"
   },

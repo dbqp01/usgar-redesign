@@ -222,12 +222,43 @@ timeReport('check-out', settings.checkoutTime, checkoutFound);
 
 // ----------------------------------------------------- .htaccess: CSP, MIME, 404
 const htaccess = fs.existsSync(path.join(root, 'public/.htaccess')) ? fs.readFileSync(path.join(root, 'public/.htaccess'), 'utf8') : '';
-if (!/Content-Security-Policy/i.test(htaccess)) {
-  // Aviso, no error: el .htaccess documenta que la CSP vive solo en el
-  // Middleware PHP para que la allowlist (pagos/mapa/fuentes) no se duplique.
-  // Anadirla aqui es una DECISION, no un bug: hay que replicar la allowlist
-  // exacta o se rompen MercadoPago, Google Maps y las fuentes.
-  warn('CSP', 'las paginas estaticas no llevan Content-Security-Policy (solo las respuestas PHP via Middleware). Decision pendiente: replicar la allowlist sin romper pagos/mapa/fuentes.');
+const middlewarePath = path.join(root, 'app/Core/Middleware.php');
+const middlewareSrc = fs.existsSync(middlewarePath) ? fs.readFileSync(middlewarePath, 'utf8') : '';
+
+// Extrae el valor de una cabecera CSP de un fichero .htaccess o .php.
+// Las dos formas en uso: Header always set Content-Security-Policy "..."
+// (Apache) y header("Content-Security-Policy: ...", ...) (PHP). Se ancla en
+// la cabecera real, no en cualquier mention del nombre (los comentarios
+// tambien lo nombran).
+const extractCsp = (text) => {
+  const apache = text.match(/Header always set Content-Security-Policy\s+"([^"]+)"/i);
+  if (apache) return apache[1].replace(/\s+/g, ' ').trim();
+  const php = text.match(/Content-Security-Policy:\s*([^"]+)"/);
+  return php ? php[1].replace(/\s+/g, ' ').trim() : null;
+};
+
+const staticCsp = extractCsp(htaccess);
+const phpCsp = extractCsp(middlewareSrc);
+if (!staticCsp) {
+  err('CSP', 'public/.htaccess no fija Content-Security-Policy: las paginas estaticas (la mayor superficie del sitio) quedan sin politica.');
+} else if (!phpCsp) {
+  err('CSP', 'app/Core/Middleware.php no fija Content-Security-Policy en las respuestas PHP.');
+} else if (staticCsp !== phpCsp) {
+  // La allowlist esta copiada en dos sitios (estatico y PHP). Si divergen, una
+  // mitad del site permite menos de lo que la otra: fallo de pagos, mapa o
+  // fuentes en produccion sin que nadie lo note.
+  err('CSP-DRIFT', 'la CSP de public/.htaccess y la de app/Core/Middleware.php no son la misma allowlist.');
+}
+// La CSP estatica debe ir dentro de <FilesMatch ... .html ...>: si se
+// declarase a nivel global, las respuestas de index.php llevarian DOS
+// cabeceras CSP y el navegador aplicaria la interseccion de ambas.
+const cspIdx = htaccess.indexOf('Header always set Content-Security-Policy');
+const fmStart = htaccess.lastIndexOf('<FilesMatch', cspIdx);
+const fmEnd = htaccess.indexOf('</FilesMatch>', cspIdx);
+if (cspIdx !== -1 && (fmStart === -1 || fmEnd === -1 || fmStart > cspIdx || fmEnd < cspIdx)) {
+  err('CSP-SCOPE', 'la CSP de public/.htaccess no esta dentro de un bloque <FilesMatch>: index.php recibiria una segunda cabecera CSP.');
+} else if (cspIdx !== -1 && !/\\\.html\$/i.test(htaccess.slice(fmStart, fmStart + 120))) {
+  err('CSP-SCOPE', 'el <FilesMatch> que lleva la CSP no limita a .html: la cabecera llegaria tambien a las respuestas PHP.');
 }
 if (!/AddType\s+image\/avif/i.test(htaccess)) {
   err('MIME-AVIF', 'public/.htaccess no mapea .avif a image/avif: el servidor lo sirve como text/plain.');

@@ -1,5 +1,18 @@
 # STATE — Backend USGAR (handoff de sesión)
 
+## CSP en las páginas estáticas y `lastmod` en el sitemap — 2026-10-19
+
+Cierra F-11 y el último aviso del audit de contenido. `npm run audit:content` → **0 errores, 0 avisos**.
+
+- **CSP en el HTML estático (F-11)**: la allowlist se dedujo de lo que el sitio carga **de verdad**, con un Chromium real sobre el build: `sdk.mercadopago.com` + `api.mercadopago.com` + `www.mercadolibre.com` (SDK y pagos, en `/book/`), `*.basemaps.cartocdn.com` (los tiles del mapa de Leaflet — **no** `tile.openstreetmap.org`, que era lo que listaba la allowlist del Middleware) y fuentes self-hosted. La misma cadena va ahora en `public/.htaccess` (dentro de `<FilesMatch "\.html$">`: a nivel global `index.php` recibiría una segunda cabecera CSP y el navegador aplicaría la intersección) y en `app/Core/Middleware.php::securityHeaders`.
+- **Dos guardas para que no se separen**: `npm run audit:content` falla con `CSP-DRIFT` si las dos allowlists dejan de ser iguales (probado: al divergir una, el audit lo detecta; restaurada, vuelve a 0). Y `npm run audit:csp` (nuevo, `scripts/audit-csp.mjs`) extrae la cabecera del `.htaccess`, sirve `dist/` con ella y carga cada página en Chromium: **114 páginas, 0 violaciones**.
+- **`lastmod` en el sitemap**: `astro.config.mjs` → `sitemap({ lastmod: new Date() })`. Los precios y la disponibilidad vienen del PMS en tiempo de ejecución, así que la fecha del build es la única señal fiable de "esto pudo cambiar"; sin ella Google no tiene motivo para volver a rastrear las páginas de habitaciones.
+- **Producción ya devuelve una CSP del host**: `curl -I https://usgarhoteles.com/` → `Content-Security-Policy: upgrade-insecure-requests` (la pone hPanel, no el repo) junto a `X-Frame-Options`, `HSTS`, `Referrer-Policy` y `Permissions-Policy` (sí del `.htaccess`, o sea que `mod_headers` funciona ahí). Con varias cabeceras CSP el navegador aplica la **intersección**: la de hPanel solo fuerza https en subrecursos, así que la que manda es la del repo. Y como `index.php` ya convive hoy con la CSP de hPanel, el patrón de dos cabeceras no es nuevo ni rompe nada.
+
+**Verificación**: `npm run check` → 180 archivos, 0/0/0 · `npm run test:unit` → 77 OK · `php vendor/bin/phpunit` → 324 tests, 958 assertions, 38 skipped, 0 fallos · `php vendor/bin/phpstan analyse --level=7` → ok · `npm run build` → 121 páginas · `npm run audit:seo` → 0 errores · `npm run audit:content` → 0/0 · `npm run audit:csp` → 114 páginas, 0 violaciones.
+
+**No verificado**: que la cabecera llegue igual en producción (LiteSpeed + `mod_headers` + `FilesMatch`); hace falta un `curl -I https://usgarhoteles.com/ | grep -i content-security` tras el push. Y el flujo real de pago con la CSP puesta (el SDK y la llamada a `api.mercadopago.com` sí se verificaron en local).
+
 ## SEO por página: descripción, og:image y un solo H1 — 2026-10-19
 
 Cierre de los tres work items que dejó la auditoría de contenido (F-8, F-9, F-10 en `docs/ROADMAP.md`). `npm run audit:content` baja de **3 errores a 0**.
