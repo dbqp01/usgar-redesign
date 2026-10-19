@@ -72,6 +72,10 @@ export default defineConfig({
       // Sin noticias/videos/imágenes en el sitio: excluir esos namespaces
       // (xhtml queda activo: el sitemap usa alternates hreflang vía i18n)
       namespaces: { news: false, video: false, image: false },
+      // Las paginas de utilidad no son contenido publico: son superficies
+      // autenticadas (login, panel, perfil, mis reservas). Indexarlas no aporta
+      // nada y expone una superficie del sitio.
+      filter: (page) => !/^\/(?:[a-z]{2}\/)?(?:panel|login|profile|my-bookings)(?:\/|$)/.test(new URL(page).pathname),
     }),
     // Compress (HTML & JS minification)
     compress({

@@ -25,6 +25,8 @@ interface Props {
   ogImage?: string;
   schema?: Record<string, any> | Record<string, any>[];
   preloadImage?: string;
+  /** Meta robots explicito (ej. "noindex,nofollow"). Si no se pasa, la pagina es indexable. */
+  robots?: string;
 }
 
 const currentLang = (Astro.currentLocale || 'en') as Locale;
@@ -35,7 +37,8 @@ const {
   lang = currentLang,
   ogImage = new URL('/og-image.jpg', Astro.site).href,
   schema,
-  preloadImage
+  preloadImage,
+  robots
 } = Astro.props;
 
 const siteBase = Astro.site;
@@ -72,6 +75,7 @@ const isLightweightRoute = /^\/(?:book(?:\/|$)|profile(?:\/|$)|my-bookings(?:\/|
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+    {robots && <meta name="robots" content={robots} />}
 
     <!-- SEO -->
     <title>{title}</title>
