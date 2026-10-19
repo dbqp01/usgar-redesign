@@ -118,9 +118,9 @@ const ogImage = galleryRooms[0]?.image ? await socialImage(galleryRooms[0].image
 
               <div class="absolute inset-x-0 bottom-0 z-10 p-5 sm:p-7">
                 <div class="mb-4 h-px w-12 bg-secondary transition-all duration-700 group-hover:w-24"></div>
-                <h3 class="max-w-[18ch] font-display text-3xl leading-[0.95] text-white transition-colors duration-500 group-hover:text-secondary sm:text-5xl">
+                <h2 class="max-w-[18ch] font-display text-3xl leading-[0.95] text-white transition-colors duration-500 group-hover:text-secondary sm:text-5xl">
                   {room.name[lang]}
-                </h3>
+                </h2>
                 <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10px] font-mono uppercase tracking-[0.18em] text-white/75">
                   <span>{t("rooms.from")} ${room.pricePerNight} {t("rooms.perNight")}</span>
                   <span>{room.amenityLabels[room.amenities[0]]?.[lang] || room.beds}</span>
@@ -157,9 +157,9 @@ const ogImage = galleryRooms[0]?.image ? await socialImage(galleryRooms[0].image
       class="hidden text-center py-20 bg-surface-card-light dark:bg-surface-card-dark border border-black/5 dark:border-white/5 p-8 rounded-3xl mt-6"
     >
       <span class="text-5xl block mb-4"></span>
-      <h3 class="font-display text-2xl mb-2 text-text-primary-light dark:text-text-primary-dark">
+      <h2 class="font-display text-2xl mb-2 text-text-primary-light dark:text-text-primary-dark">
         {lang === "es" ? "No se encontraron habitaciones" : "No rooms found"}
-      </h3>
+      </h2>
       <p class="text-text-secondary-light dark:text-text-secondary-dark font-body max-w-sm mx-auto">
         {
           lang === "es"

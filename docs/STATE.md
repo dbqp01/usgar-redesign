@@ -1,5 +1,15 @@
 # STATE — Backend USGAR (handoff de sesión)
 
+## Jerarquía de encabezados y paridad E2E contra `main` — 2026-10-19
+
+Cierra el F-10 (la jerarquía que dejó el `<h1>` de página) y **prueba**, en vez de suponer, que el lote "infraestructura + SEO" no introduce regresiones.
+
+- **`<h1>` de página → `<h2>` de contenido**: al promover el título de `/rooms/` y `/explore/` a `<h1>`, sus tarjetas seguían en `<h3>` (salto h1→h3). Ahora los títulos de habitación (`src/pages/rooms/index.astro`) y de atracción (`src/pages/explore.astro`) son `<h2>`. Tailwind Preflight neutraliza la diferencia de tag (ambos llevan clases explícitas de tamaño), así que **no hay cambio visual**. Outline verificado sobre el build: `/rooms/` → `h1 h2 h2 h2 h2 h2` · `/explore/` → `h1 h2 ×14` · `/gallery/` → `h1`.
+- **El E2E roto lo rompió el propio cambio**: `booking-flow.spec.ts:22` buscaba `main h2` en `/rooms` — justo el heading que se promovió a `<h1>`. El locator pasó a `main h1` (sigue acotado a `<main>` porque el toolbar de Astro inyecta headings en su shadow root, que es hermano de `main`). **No se borró ninguna aserción**: la comprobación sigue exigiendo un encabezado visible en la página de habitaciones.
+- **Paridad probada contra el commit base, no supuesta**: checkout de `2a824b3` con la **misma** `playwright.config.ts` (timeout 60 s) → **11 failed / 18 passed**. Con el fix → **11 failed / 18 passed**, y el `diff` de los nombres de fallo sale **vacío**: son los mismos 11 (selectores desfasados en `internals`/`login-spa`/`transitions` + 4 del wizard que necesitan un PMS vivo). **Cero regresiones del lote.**
+
+**Verificación**: `npm run build` → 121 páginas · `npm run audit:content` → **0 errores, 0 avisos** · `npx playwright test --workers=1` → 11 failed / 18 passed, conjunto idéntico al de `2a824b3`.
+
 ## CSP en las páginas estáticas y `lastmod` en el sitemap — 2026-10-19
 
 Cierra F-11 y el último aviso del audit de contenido. `npm run audit:content` → **0 errores, 0 avisos**.
