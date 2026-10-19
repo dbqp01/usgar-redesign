@@ -12,10 +12,9 @@ import TypographicMarquee from "../components/TypographicMarquee.astro";
 import Hero from "../components/Hero.astro";
 import ExploreCarousel from "../components/ExploreCarousel.astro";
 import InstagramSection from "../components/InstagramSection.astro";
-import { rooms } from "../data/rooms";
 import { useTranslations } from "../i18n/utils";
 import { faqData } from "../data/faq";
-import { siteSettings } from "../data/settings";
+import { siteSettings, getRoomInventory } from "../data/settings";
 
 import type { Locale } from "../i18n/utils";
 
@@ -50,7 +49,9 @@ const hotelSchema = {
     ratingValue: String(siteSettings.starRating),
   },
   priceRange: siteSettings.priceRange,
-  numberOfRooms: rooms.length,
+  // rooms.length contaba TIPOS de habitacion (4), no habitaciones (17).
+  // El schema.org numberOfRooms es el numero de habitaciones del hotel.
+  numberOfRooms: Object.values(getRoomInventory()).reduce((total, n) => total + n, 0),
   checkinTime: siteSettings.checkinTime,
   checkoutTime: siteSettings.checkoutTime,
   amenityFeature: [
