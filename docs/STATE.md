@@ -1,5 +1,29 @@
 # STATE — Backend USGAR (handoff de sesión)
 
+## Auditoría de contenido y SEO — 2026-10-19
+
+Auditoría del sitio público con verificación **RED→GREEN sobre el artefacto construido**. Nuevo arnés: `npm run audit:content` (`scripts/audit-seo-content.js`), que comprueba 404 propia, `description`/`og:image` por plantilla, un H1 por página, `numberOfRooms` contra el inventario real, sitemap sin páginas de utilidad, `noindex` en las de utilidad, una sola fuente de verdad para check-in/check-out, CSP/MIME `.avif`/`ErrorDocument` en `.htaccess` y una sola coordenada de "cómo llegar". Estado: **13 errores → 3 errores** (los 3 restantes son work items en `docs/ROADMAP.md` F-8/F-9/F-10).
+
+### Correcciones aplicadas
+
+- **`numberOfRooms` del schema.org**: `src/pages/index.astro:53` usaba `rooms.length` (4 **tipos** de habitación) → ahora `Object.values(getRoomInventory()).reduce(...)` = **17** habitaciones reales (`settings.json.roomInventory`: 8+3+3+3). Verificado en `dist/index.html`: `"numberOfRooms":17`.
+- **Horarios de check-in/check-out**: la web decía 11:00 (`src/i18n/{en,es,fr,pt}.json` → `contact.checkinHours`) y 10:00 (`src/pages/book/success.astro`), mientras el PMS y `settings.json` dicen 12:00 / 10:30 (`app/Features/Shared/Adapters/QloAppAdapter.php:31-32`). Ahora `contact.checkinHours` es la etiqueta con placeholder `{time}` y el horario sale de `siteSettings.checkinTime`/`checkoutTime` (mismo patrón que `src/data/legal.ts:126`). Verificado en `dist/`: "Check-in from 12:00", "Check-in desde las 12:00", "Desde/From 12:00", "Hasta/To 10:30". **Decisión del owner: 12:00** (se alinea el sitio al PMS).
+- **Página 404 propia**: `src/pages/404.astro` (nuevo) + `ErrorDocument 404 /404.html` en `public/.htaccess`. Antes el servidor (hPanel) servía su 404 por defecto: perdía el diseño, cargaba gtag/analytics.js/doubleclick **fuera del CMP de cookies** y exponía `/htdocs_error/page_not_found.svg`.
+- **MIME `.avif`**: `AddType image/avif .avif` en `public/.htaccess`. Verificado en producción: se servía como `text/plain` (el resto de formatos ya eran correctos) y el propio `.htaccess` ya declaraba `ExpiresByType image/avif`, o sea la intención estaba.
+- **Páginas de utilidad**: `noindex,nofollow` en `/login/`, `/profile/`, `/my-bookings/` (`src/layouts/Layout.astro` acepta prop `robots`); `astro.config.mjs` excluye `/panel|login|profile|my-bookings` y sus variantes de locale del sitemap (`/panel/` ya era `noindex`).
+
+### Hallazgos descartados con evidencia (falsos positivos)
+
+- **El sitemap NO estaba roto**: `/sitemap.xml` → 301 → `/sitemap.xml/` → meta-refresh → `/sitemap-index.xml` → `sitemap-0.xml` (200 `application/xml`, 51 KB). Es deliberado (`astro.config.mjs:14-17`).
+- **El MIME `.avif` NO rompía la carga de imágenes**: Chromium real contra producción → 67 imágenes, 48 renderizan; las 19 restantes tienen `displayW=0` (2 `display:none`, 17 lazy dentro de contenedores ocultos). `text/plain` + `nosniff` no bloquea AVIF same-origin. El problema era la corrección del Content-Type, no la rotura de imágenes.
+- **Las 4 coordenadas de mapa no son un error**: `src/components/LocationMap.astro:16-38` declara 3 POIs del entorno (mercado, plaza, estación de tren) además del hotel. La auditoría ahora solo valida el CTA "cómo llegar" (`maps/dir/?destination=`).
+
+### Verificación ejecutada
+
+`npm run check` → 179 archivos, 0 errores/warnings/hints · `npm run test:unit` → 77 OK · `npm run build` → 114 páginas · `npm run audit:seo` → 123 páginas, 84 JSON-LD, 0 errores · `npm run audit:content` → 13 → 3 errores · `php vendor/bin/phpunit` → 324 tests, 958 assertions, 38 skipped, 0 fallos.
+
+**No verificado**: E2E completos (requieren un PMS/BD vivo; solo 2 de 29 están acreditados como verdes en la sección de 2026-10-14), el comportamiento en producción de `ErrorDocument`/`AddType` (requiere `curl -I` tras el push) y el impacto real en Google (requiere GSC).
+
 ## Verificación acotada de calidad — 2026-10-14
 
 - Vitest se integra en `npm test` y CI: **77 tests OK**. Los casos de fallback `fr→en` / `pt→es` y de `paymentId` sin estado ahora detectan sus regresiones; tres mutaciones en copia aislada dieron el fallo esperado.
