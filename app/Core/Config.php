@@ -11,6 +11,7 @@ namespace App\Core;
 class Config {
     private static ?Config $instance = null;
     private static ?string $loadedEnvPath = null;
+    private static ?string $deploymentBase = null;
     /** @var array<string, string> */
     private array $cache = [];
 
@@ -57,10 +58,22 @@ class Config {
 
     /**
      * Ruta del .env efectivamente cargado (null si ninguno).
-     * Diagnostico de deploy: /api/health lo expone.
+     * Diagnostico de deploy: no se expone por HTTP (el bloque env_diag se
+     * elimino de /api/health el 2026-08-15); solo uso interno/servidor.
      */
     public static function loadedEnvPath(): ?string {
         return self::$loadedEnvPath;
+    }
+
+    /**
+     * Raiz del despliegue: el directorio un nivel arriba de public_html
+     * (la raiz del dominio en Hostinger). null en dev/CLI sin public_html.
+     * Vive fuera del arbol que el deploy reemplaza: ahi pueden escribir los
+     * logs sin que un push los borre.
+     */
+    public static function deploymentBase(): ?string {
+        self::boot();
+        return self::$deploymentBase;
     }
 
     /**
@@ -167,6 +180,7 @@ class Config {
         if ($deploymentBase !== null) {
             // Hostinger: la configuración canónica vive fuera de public_html;
             // nunca permitir que un .env residual del deploy gane prioridad.
+            self::$deploymentBase = $deploymentBase;
             $candidates[] = $deploymentBase . DIRECTORY_SEPARATOR . '.env';
             $candidates[] = $deploymentBase . DIRECTORY_SEPARATOR . '.builds'
                 . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . '.env';

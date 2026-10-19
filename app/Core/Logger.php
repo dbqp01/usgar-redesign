@@ -11,30 +11,62 @@ namespace App\Core;
 class Logger {
     private static string $logDir = '';
     private static bool $dirReady = false;
+    private static ?string $overrideDir = null;
     private const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
+    /**
+     * Directorios candidatos, en orden de preferencia. En produccion el
+     * primero esta FUERA del arbol de deploy: el build reemplaza
+     * public_html entero, asi que un log dentro se perdia en cada push
+     * (verificado: el app.log de prod empieza en la fecha del ultimo build).
+     * Si no es escribible se cae al arbol de deploy y, en ultimo caso,
+     * a error_log().
+     *
+     * @internal Expuesto para tests.
+     * @return list<string>
+     */
+    public static function candidateDirs(?string $deploymentBase): array {
+        if (self::$overrideDir !== null) {
+            return [self::$overrideDir];
+        }
+        $dirs = [];
+        if ($deploymentBase !== null) {
+            $dirs[] = $deploymentBase . DIRECTORY_SEPARATOR . 'logs';
+        }
+        $dirs[] = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'logs';
+        return $dirs;
+    }
+
+    /** @internal Only tests should override the log directory. */
+    public static function setDirectoryForTesting(?string $directory): void {
+        self::$overrideDir = $directory;
+        self::$logDir = '';
+        self::$dirReady = false;
+    }
+
     private static function init(): void {
-        if (self::$logDir === '') {
-            self::$logDir = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'logs';
+        if (self::$dirReady) {
+            return;
         }
 
-        if (!self::$dirReady) {
-            if (!is_dir(self::$logDir)) {
-                // Intentar crear el directorio; @mkdir suprime warnings si falla
-                $created = @mkdir(self::$logDir, 0755, true);
-                if ($created) {
-                    // Crear .htaccess para proteger logs de acceso web
-                    $htaccess = self::$logDir . DIRECTORY_SEPARATOR . '.htaccess';
-                    if (!file_exists($htaccess)) {
-                        @file_put_contents($htaccess, "Deny from all\n");
-                    }
-                    self::$dirReady = true;
-                }
-                // Si no se pudo crear, $dirReady queda false -> usara error_log()
-            } else {
-                self::$dirReady = true;
+        foreach (self::candidateDirs(Config::deploymentBase()) as $dir) {
+            // Intentar crear el directorio; @mkdir suprime warnings si falla.
+            if (!is_dir($dir) && !@mkdir($dir, 0755, true)) {
+                continue;
             }
+            if (!is_dir($dir) || !is_writable($dir)) {
+                continue;
+            }
+            // Crear .htaccess para proteger logs de acceso web
+            $htaccess = $dir . DIRECTORY_SEPARATOR . '.htaccess';
+            if (!file_exists($htaccess)) {
+                @file_put_contents($htaccess, "Deny from all\n");
+            }
+            self::$logDir = $dir;
+            self::$dirReady = true;
+            return;
         }
+        // Ningun directorio escribible -> $dirReady queda false -> usara error_log()
     }
 
     /**
