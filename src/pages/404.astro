@@ -1,0 +1,53 @@
+---
+// src/pages/404.astro — pagina 404 propia del sitio.
+//
+// Sin ella el servidor (hPanel) sirve su 404 por defecto: pierde el diseno,
+// carga trackers de terceros fuera del CMP de cookies y filtra rutas internas
+// del host. public/.htaccess la publica con `ErrorDocument 404 /404.html`.
+import Layout from '../layouts/Layout.astro';
+import { useTranslations, type Locale } from '../i18n/utils';
+import { siteSettings } from '../data/settings';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const lang = (Astro.currentLocale || 'en') as Locale;
+const t = useTranslations(lang);
+const homeUrl = getRelativeLocaleUrl(lang, '');
+const contactUrl = getRelativeLocaleUrl(lang, 'contact');
+---
+
+<Layout title={`${t('notFound.title')} - ${siteSettings.hotelName}`} lang={lang} robots="noindex,nofollow">
+  <section class="relative overflow-hidden py-28 md:py-36 px-4 flex items-center justify-center min-h-[70vh]">
+    <div class="max-w-2xl text-center space-y-8 animate-fade-in">
+      <span class="tag-dash-title block" aria-hidden="true">404</span>
+
+      <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl text-text-primary-light dark:text-white text-balance">
+        {t('notFound.title')}
+      </h1>
+
+      <p class="text-base sm:text-lg text-text-secondary-light dark:text-text-secondary-dark max-w-xl mx-auto">
+        {t('notFound.message')}
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href={homeUrl}
+          class="inline-flex items-center gap-2.5 rounded-xl px-8 py-3.5 text-xs font-bold uppercase tracking-wider btn-primary transition-all"
+        >
+          {t('notFound.backHome')}
+        </a>
+        <a
+          href={contactUrl}
+          class="inline-flex items-center gap-2.5 rounded-xl px-8 py-3.5 text-xs font-bold uppercase tracking-wider border border-black/10 dark:border-white/20 hover:border-secondary transition-all"
+        >
+          {t('notFound.contactUs')}
+        </a>
+      </div>
+
+      <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">
+        <a href={`tel:${siteSettings.phoneRaw}`} class="hover:text-secondary transition-colors">
+          {siteSettings.phone}
+        </a>
+      </p>
+    </div>
+  </section>
+</Layout>

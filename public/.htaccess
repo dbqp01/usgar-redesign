@@ -1,6 +1,19 @@
 DirectoryIndex index.html index.php
 
+# 404 propia: sin esta linea el servidor sirve su pagina de error por defecto
+# (hPanel), que pierde el diseno, carga trackers de terceros fuera del CMP de
+# cookies y filtra rutas internas del host. La pagina la genera
+# src/pages/404.astro en el build.
+ErrorDocument 404 /404.html
+
 RewriteEngine On
+
+# MIME de .avif: LiteSpeed/Apache no lo reconocen por defecto y lo sirven como
+# text/plain (verificado en produccion). El bloque ExpiresByType de mas abajo
+# ya asume image/avif, asi que el Content-Type correcto es el que se fija aqui.
+<IfModule mod_mime.c>
+    AddType image/avif .avif
+</IfModule>
 
 # The build copies the PHP runtime and cron entry points into the published
 # directory so Hostinger's CLI jobs can execute them. They are application
