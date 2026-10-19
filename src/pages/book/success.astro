@@ -2,6 +2,7 @@
 // debt: oversized module (453 LOC @2026-08-12) — split into concept-named components when touched; ceiling 250 pure LOC
 import Layout from '../../layouts/Layout.astro';
 import { rooms } from '../../data/rooms';
+import { siteSettings } from '../../data/settings';
 import { useTranslations, type Locale } from '../../i18n/utils';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 
@@ -87,13 +88,13 @@ const t = useTranslations(lang);
           <div class="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-black/5 dark:border-white/5">
             <span class="block text-[10px] uppercase font-semibold text-text-secondary-light dark:text-text-secondary-dark tracking-widest mb-1">{t('success.checkinDate')}</span>
             <p id="success-checkin" class="font-semibold text-sm">---</p>
-            <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5 block">Desde/From 11:00 AM</span>
+            <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5 block">Desde/From {siteSettings.checkinTime}</span>
           </div>
 
           <div class="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-black/5 dark:border-white/5">
             <span class="block text-[10px] uppercase font-semibold text-text-secondary-light dark:text-text-secondary-dark tracking-widest mb-1">{t('success.checkoutDate')}</span>
             <p id="success-checkout" class="font-semibold text-sm">---</p>
-            <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5 block">Hasta/To 10:00 AM</span>
+            <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5 block">Hasta/To {siteSettings.checkoutTime}</span>
           </div>
         </div>
 

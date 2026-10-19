@@ -205,7 +205,7 @@
     "otaLabel": "Retrouvez-nous sur",
     "heroImageAlt": "La cour intérieure d'USGAR Hôtels a San Pedro, Cusco",
     "heroImageCaption": "La cour, San Pedro",
-    "checkinHours": "Check-in à partir de 11 h 00"
+    "checkinHours": "Check-in à partir de {time}"
   },
  "gallery": {
     "viewPhoto": "Voir la photo {n}",
@@ -532,6 +532,12 @@
     "privacyTitle": "Politique de Confidentialité",
     "termsTitle": "Conditions Generales",
     "updatedLabel": "Derniere mise a jour"
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "message": "La page que vous cherchez n'existe pas ou a été déplacée.",
+    "backHome": "Retour à l'accueil",
+    "contactUs": "Nous contacter"
   },
   "cookie": {
     "title": "Cookies",

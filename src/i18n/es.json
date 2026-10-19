@@ -205,7 +205,7 @@
     "otaLabel": "Encuentranos en",
     "heroImageAlt": "El patio de USGAR Hotels en San Pedro, Cusco",
     "heroImageCaption": "El patio, San Pedro",
-    "checkinHours": "Check-in desde las 11:00 AM"
+    "checkinHours": "Check-in desde las {time}"
   },
  "gallery": {
     "viewPhoto": "Ver foto {n}",
@@ -532,6 +532,12 @@
     "privacyTitle": "Política de Privacidad",
     "termsTitle": "Términos y Condiciones",
     "updatedLabel": "Última actualización"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "message": "La página que buscas no existe o fue movida.",
+    "backHome": "Volver al inicio",
+    "contactUs": "Contáctanos"
   },
   "cookie": {
     "title": "Cookies",

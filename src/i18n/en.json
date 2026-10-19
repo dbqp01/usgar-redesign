@@ -205,7 +205,7 @@
     "otaLabel": "Find us on",
     "heroImageAlt": "The courtyard of USGAR Hotels in San Pedro, Cusco",
     "heroImageCaption": "The courtyard, San Pedro",
-    "checkinHours": "Check-in from 11:00 AM"
+    "checkinHours": "Check-in from {time}"
   },
  "gallery": {
     "viewPhoto": "View photo {n}",
@@ -532,6 +532,12 @@
     "privacyTitle": "Privacy Policy",
     "termsTitle": "Terms of Service",
     "updatedLabel": "Last updated"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "message": "The page you are looking for does not exist or has moved.",
+    "backHome": "Back to home",
+    "contactUs": "Contact us"
   },
   "cookie": {
     "title": "Cookies",
