@@ -59,17 +59,33 @@ const defaultDescriptions = new Set(
     .map(([, v]) => v)
 );
 
+// Parsea los <meta> de un HTML. El minificador de Astro deja los atributos
+// SIN comillas (content=noindex,nofollow), asi que un regex que exija comillas
+// se pierde metadatos reales.
+function metaMap(html) {
+  const map = {};
+  for (const m of html.matchAll(/<meta\b([^>]*)>/gi)) {
+    const attrs = m[1];
+    const get = (key) => {
+      const r = attrs.match(new RegExp(`\\b${key}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, 'i'));
+      return r ? (r[1] ?? r[2] ?? r[3]) : undefined;
+    };
+    const key = get('name') || get('property');
+    const content = get('content');
+    if (key && content !== undefined) map[key.toLowerCase()] = content;
+  }
+  return map;
+}
+
 const pages = [];
 for (const file of htmlFiles) {
   const html = fs.readFileSync(file, 'utf8');
   const rel = '/' + path.relative(distDir, file).replace(/\\/g, '/').replace(/index\.html$/, '');
-  const desc = (html.match(/<meta[^>]*name=["']?description["']?[^>]*content=["']([^"']*)["']/i) || [])[1]
-    || (html.match(/<meta[^>]*content=["']([^"']*)["'][^>]*name=["']?description["']?/i) || [])[1];
-  const ogImage = (html.match(/<meta[^>]*property=["']?og:image["']?[^>]*content=["']([^"']*)["']/i) || [])[1]
-    || (html.match(/<meta[^>]*content=["']([^"']*)["'][^>]*property=["']?og:image["']?/i) || [])[1];
+  const meta = metaMap(html);
+  const desc = meta.description;
+  const ogImage = meta['og:image'];
   const h1s = (html.match(/<h1[\s>]/gi) || []).length;
-  const robots = (html.match(/<meta[^>]*name=["']?robots["']?[^>]*content=["']([^"']*)["']/i) || [])[1]
-    || (html.match(/<meta[^>]*content=["']([^"']*)["'][^>]*name=["']?robots["']?/i) || [])[1];
+  const robots = meta.robots;
   const canonical = (html.match(/<link[^>]*rel=["']?canonical["']?[^>]*href=["']([^"']*)["']/i) || [])[1]
     || (html.match(/<link[^>]*href=["']([^"']*)["'][^>]*rel=["']?canonical["']?/i) || [])[1];
   // Los stubs de redirect de Astro (fallback fr->en / pt->es) no son paginas de
@@ -86,12 +102,16 @@ for (const file of htmlFiles) {
 }
 
 // Paginas publicas (las de utilidad no se indexan, pero se comprueba igual el H1)
-const utilityPages = /^\/(panel|login|profile|my-bookings)(\/|$)/;
+// El prefijo de locale es opcional: /login/ y /es/login/ son la misma pagina.
+const utilityPages = /^\/(?:[a-z]{2}\/)?(?:panel|login|profile|my-bookings)(?:\/|$)/;
 // La home puede usar la descripcion global del sitio: es lo correcto.
 const isHome = (rel) => /^\/(es|pt)?\/?$/.test(rel);
+// Una pagina noindex (404, login, panel...) no compite en busquedas: no
+// necesita meta description propia.
+const isIndexable = (p) => !p.robots || !/noindex/i.test(p.robots);
 
 // ---------------------------------------------------- descripcion por pagina
-const usingDefault = pages.filter((p) => p.desc && defaultDescriptions.has(p.desc) && !isHome(p.rel));
+const usingDefault = pages.filter((p) => p.desc && defaultDescriptions.has(p.desc) && !isHome(p.rel) && isIndexable(p));
 if (usingDefault.length) {
   const byLocale = {};
   for (const p of usingDefault) {
@@ -117,11 +137,11 @@ if (utilityNoRobots.length) {
 // ------------------------------------------------------- og:image por pagina
 const ogImages = new Map();
 for (const p of pages) {
-  if (!p.ogImage) continue;
+  if (!p.ogImage || !isIndexable(p)) continue;
   ogImages.set(p.ogImage, (ogImages.get(p.ogImage) || 0) + 1);
 }
-if (ogImages.size === 1 && ogImages.has('https://usgarhoteles.com/og-image.jpg')) {
-  err('OG-IMAGE', `las ${pages.length} paginas comparten la misma og:image (${[...ogImages.keys()][0]}). Cada plantilla deberia tener la suya.`);
+if (ogImages.size === 1) {
+  err('OG-IMAGE', `las ${[...ogImages.values()][0]} paginas indexables comparten la misma og:image (${[...ogImages.keys()][0]}). Cada plantilla deberia tener la suya.`);
 }
 
 // ------------------------------------------------------------- un solo H1
@@ -157,29 +177,47 @@ if (fs.existsSync(sitemapFile)) {
   }
 }
 
-// --------------------------------------------- check-in: una sola fuente de verdad
-const checkinTimes = new Map();
-const addCheckin = (source, value) => {
-  if (!value) return;
-  if (!checkinTimes.has(value)) checkinTimes.set(value, []);
-  checkinTimes.get(value).push(source);
+// --------------------------- check-in / check-out: una sola fuente de verdad
+// El horario real vive en content/settings/settings.json (y lo usa el PMS:
+// QloAppAdapter::CHECKIN_TIME / CHECKOUT_TIME). Ni el i18n ni el HTML
+// renderizado pueden llevar otro horario.
+const timeReport = (label, expected, found) => {
+  const values = new Map();
+  for (const [source, value] of found) {
+    if (!values.has(value)) values.set(value, []);
+    values.get(value).push(source);
+  }
+  const wrong = [...values.entries()].filter(([v]) => v !== expected);
+  if (wrong.length) {
+    err('HORARIO', `${label}: el valor real es ${expected} pero se encontraron ${wrong.map(([v, s]) => `${v} en ${s.length} sitios (${s.slice(0, 3).join(', ')})`).join(' | ')}`);
+  }
 };
-addCheckin('content/settings/settings.json', settings.checkinTime);
+
+// i18n: contact.checkinHours debe usar el placeholder {time}, no un literal.
 for (const loc of ['en', 'es', 'fr', 'pt']) {
   const f = path.join(root, `src/i18n/${loc}.json`);
   if (!fs.existsSync(f)) continue;
   const raw = fs.readFileSync(f, 'utf8');
   const m = raw.match(/"checkinHours"\s*:\s*"([^"]*)"/);
-  const hh = m && m[1].match(/(\d{1,2}):(\d{2})/);
-  if (hh) addCheckin(`src/i18n/${loc}.json (contact.checkinHours)`, `${hh[1].padStart(2, '0')}:${hh[2]}`);
+  if (!m) continue;
+  if (!m[1].includes('{time}') && /\d{1,2}:\d{2}/.test(m[1])) {
+    err('HORARIO', `src/i18n/${loc}.json: contact.checkinHours lleva un horario literal ("${m[1]}") en vez de {time}.`);
+  }
 }
+
+// Texto renderizado: check-in y check-out deben coincidir con settings.json.
+const checkinFound = [];
+const checkoutFound = [];
 for (const p of pages) {
-  const m = p.html.match(/[Cc]heck-?in (?:from |desde |a partir de |à partir de )?(\d{1,2}:\d{2})/);
-  if (m) addCheckin(`${p.rel} (texto renderizado)`, m[1]);
+  for (const m of p.html.matchAll(/check-?in[^0-9]{0,25}(\d{1,2}:\d{2})/gi)) checkinFound.push([`${p.rel} (check-in)`, m[1]]);
+  for (const m of p.html.matchAll(/check-?out[^0-9]{0,25}(\d{1,2}:\d{2})/gi)) checkoutFound.push([`${p.rel} (check-out)`, m[1]]);
+  // Etiquetas bilingues de la confirmacion de reserva.
+  for (const m of p.html.matchAll(/Desde\/From[^0-9]{0,10}(\d{1,2}:\d{2})/gi)) checkinFound.push([`${p.rel} (Desde/From)`, m[1]]);
+  for (const m of p.html.matchAll(/Hasta\/To[^0-9]{0,10}(\d{1,2}:\d{2})/gi)) checkoutFound.push([`${p.rel} (Hasta/To)`, m[1]]);
 }
-if (checkinTimes.size > 1) {
-  err('CHECKIN', `hay ${checkinTimes.size} horarios de check-in distintos: ${[...checkinTimes.entries()].map(([v, s]) => `${v} (${s.length} fuentes: ${s.slice(0, 3).join(', ')})`).join(' | ')}`);
-}
+timeReport('check-in', settings.checkinTime, checkinFound);
+timeReport('check-out', settings.checkoutTime, checkoutFound);
+
 
 // ----------------------------------------------------- .htaccess: CSP, MIME, 404
 const htaccess = fs.existsSync(path.join(root, 'public/.htaccess')) ? fs.readFileSync(path.join(root, 'public/.htaccess'), 'utf8') : '';
