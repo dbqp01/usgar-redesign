@@ -41,9 +41,37 @@ Los procesos CLI de cron aplican la misma precedencia externa aunque no reciban 
 4. Guardar. **No requiere redeploy ni push** — el código lo lee en cada request/cron. (Un redeploy no daña nada pero tampoco hace falta.)
 5. `Config::get()` da prioridad al cache del boot, no a `getenv()`: tras editar el archivo, **no hay que reiniciar nada** (PHP-FPM lee el archivo en cada request; el cache se puebla por request).
 
-**Backup del `.env` (imprescindible, no está en git ni en hPanel):** File Manager → click derecho sobre `.env` → **Descargar** → guardar una copia local (`backup-env-prod-<fecha>.env`). Es la ÚNICA copia: si el archivo se borra o se corrompe, el sitio pierde MP/QloApps/OAuth de golpe (hPanel solo tiene 10 de ~38 claves).
+**Backup del `.env` (imprescindible, no está en git ni en hPanel):** File Manager → click derecho sobre `.env` → **Descargar** → guardar una copia local (`backup-env-prod-<fecha>.env`). Es la ÚNICA copia: si el archivo se borra o se corrompe, el sitio pierde MP/QloApps/OAuth de golpe (hPanel tiene 39 claves y **enmascara los valores**: no se pueden recuperar por API).
 
 **Regla de oro:** elegir UNA fuente y mantenerla. Hoy la fuente efectiva es el `.env` del File Manager; hPanel → Variables de entorno queda como espejo decorativo (no borrarlo, pero no confiar en él para cambios). Si algún día se quiere que hPanel mande: copiar TODAS las claves a hPanel **y borrar el `.env` del File Manager**.
+
+### Migración a hPanel como fuente única (decidida 2026-10-19, pendiente de ejecutar)
+
+Auditoría del entorno de Hostinger (2026-10-19) — estado real de las tres fuentes:
+
+| Fuente | Claves | Estado |
+|---|---|---|
+| hPanel → Environment variables | 39 | Vigente pero **inerte**: el `.env` del File Manager gana siempre |
+| `.env` del File Manager (un nivel arriba de `public_html`) | 38 | **Fuente efectiva real** |
+| `.env.example` (canónico del repo) | 60 + 1 comentada | Documenta el contrato; le faltan 4 claves que el código lee |
+
+Las 38 claves del `.env` del servidor son exactamente las canónicas que hPanel tiene; hPanel añade `MP_BINARY_MODE`, que el `.env` del servidor **no** tiene. Las dos fuentes ya difieren en una clave: al unificar, el valor efectivo de `MP_BINARY_MODE` puede pasar de `false` (default del código) al que tenga hPanel — hay que revisarlo antes de borrar nada.
+
+**Procedimiento (lo ejecuta el dueño desde hPanel; sin push ni redeploy):**
+
+1. **Descargar** el `.env` del File Manager → `backup-env-prod-2026-10-19.env` (única copia).
+2. **Comparar clave por clave y valor por valor** el `.env` con hPanel → Environment variables. Secretos a cotejar: `DB_PASS`, `MERCADO_PAGO_ACCESS_TOKEN`, `PUBLIC_MERCADO_PAGO_PUBLIC_KEY`, `MERCADO_PAGO_WEBHOOK_SECRET`, `QLOAPP_API_KEY`, `CRON_SECRET`, `BOOKING_TOKEN_SECRET`, `AUTH_JWT_SECRET`, `PANEL_PASSWORD`, `GOOGLE_CLIENT_SECRET`.
+3. **Completar** en hPanel las claves que falten hasta igualar el conjunto. `.env.example` es el checklist canónico.
+4. **Preparar `runtime/`**: `TokenRevocationStore` lo crea **junto al `.env` efectivo**, así que al cambiar de fuente se mueve a `.builds/config/runtime/`. Crear esa carpeta escribible por PHP y **mover** el contenido actual si existe (si no puede crearse, la autenticación falla cerrada — ver §Deploy punto 2).
+5. **Borrar** `/home/u941268346/domains/usgarhoteles.com/.env`. No requiere push ni redeploy: `loadEnv()` cae al candidato 2 en la siguiente request.
+6. **Verificar**: `https://usgarhoteles.com/api/health` → healthy, y el cron `process_outbox` (cada 5 min) sigue entregando sin error. Si el cron falla con `No .env file found`, revertir restaurando el backup.
+7. **Opcional (código, solo después de verificar)**: quitar el candidato 1 de `loadEnv()` para que el `.env` del File Manager no vuelva a ganar por sorpresa.
+
+**Lo que NO cambia con la migración (verificado 2026-10-19):**
+
+- El enlace de afiliado de Booking.com (`aid=311839`) está hardcodeado en `src/content/settings/settings.json` y `src/components/contact/ContactChannels.astro`, no en el `.env`.
+- `REVIEW_BOOKING_URL` solo alimenta el scraping de puntajes (cron `refresh-reviews`); su default en código apunta al mismo hotel.
+- Los emails transaccionales **ya están desactivados** en prod: no hay `SMTP_*` en ninguna de las dos fuentes (fail-soft documentado en `docs/STATE.md`).
 
 ## Credenciales de Mercado Pago
 
