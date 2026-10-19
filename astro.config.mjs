@@ -60,6 +60,11 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
+      // lastmod = fecha del build. Los precios y la disponibilidad vienen del
+      // PMS en tiempo de ejecucion, asi que la fecha del build es la unica
+      // senal fiable de "esto puede haber cambiado": sin ella Google no tiene
+      // motivo para volver a rastrear las paginas de habitaciones.
+      lastmod: new Date(),
       i18n: {
         defaultLocale: 'en',
         locales: {
