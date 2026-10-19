@@ -65,7 +65,10 @@ const localeMap: Record<Locale, string> = {
 };
 
 const pathname = Astro.url.pathname;
-const isLightweightRoute = /^\/(?:book(?:\/|$)|profile(?:\/|$)|my-bookings(?:\/|$)|login(?:\/|$)|panel(?:\/|$)|(?:es|fr|pt)\/(?:book|profile|my-bookings|login|panel)(?:\/|$))/.test(pathname);
+// 404 incluida: es una pagina de error, no le hace falta el preloader, el
+// cursor custom ni el overlay de ruido. Ojo: en build Astro sirve la ruta
+// 404 con barra final ("/404/"), no "/404.html".
+const isLightweightRoute = /^\/(?:book(?:\/|$)|profile(?:\/|$)|my-bookings(?:\/|$)|login(?:\/|$)|panel(?:\/|$)|404(?:\.html)?(?:\/|$)|(?:es|fr|pt)\/(?:book|profile|my-bookings|login|panel)(?:\/|$))/.test(pathname);
 ---
 
 <!doctype html>
