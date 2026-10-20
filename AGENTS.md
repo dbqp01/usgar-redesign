@@ -30,14 +30,21 @@ Toda la documentación vive en `docs/` — no crees archivos nuevos sin revisar 
 | Archivo | Contenido | Cuándo actualizar |
 |---|---|---|
 | `docs/ARCHITECTURE.md` | Capas, zonas de riesgo, flujo de reserva completo, multi-hotel | Al cambiar la estructura o el flujo |
-| `docs/API.md` | Contrato completo de la API (23 endpoints), envelope de errores, env vars | Al tocar `public/index.php` o un Action |
+| `docs/API.md` | Contrato completo de la API (33 endpoints), envelope de errores, env vars | Al tocar `public/index.php` o un Action |
 | `docs/DEPLOYMENT.md` | Deploy Hostinger, cron jobs, hooks git, secretos | Al cambiar build/deploy/crons |
 | `docs/PMS.md` | Operación QloApps: tutorial del dueño, inventario (BLOQUEANTE), tarifa no reembolsable, webservice, channel manager, Postman | Al tocar la integración PMS |
 | `docs/SECURITY.md` | Modelo de seguridad verificado + pendientes | Al cambiar auth/webhooks/headers |
-| `docs/ROADMAP.md` | Estado de migraciones + backlog priorizado de mejoras (P1-P3) | Al cerrar un ítem |
-| `docs/STATE.md` | Handoff/estado del backend (auditorías, evidencia) | Al cerrar un trabajo de backend |
+| `docs/ROADMAP.md` | **Solo lo que sigue abierto**: pendientes del dueño, deuda técnica, activación del channel manager | Al cerrar un ítem (bórralo de aquí) |
+| `docs/STATE.md` | **Estado actual del backend**: qué está desplegado y verificado, decisiones vigentes, pendiente real | Al cerrar un trabajo de backend |
 | `docs/DECISIONS.md` | Decisiones de arquitectura vivas | Al tomar una decisión |
+| `docs/README.md` | Índice de la documentación: qué leer para qué + fechas de verificación | Al crear/mover un doc |
+| `docs/archive/` | **Histórico**: bitácora de sesiones y diagnósticos ya resueltos. No describe el sistema actual | Al cerrar un diagnóstico largo |
 | `docs/specs/` | **Specs SDD**: requisitos EARS por feature (fuente de verdad del comportamiento). `docs/specs/README.md` = plantilla + reglas + índice | **ANTES de codear** una feature nueva; en el mismo commit si cambia un comportamiento |
+
+**Regla de la documentación:** los docs vigentes describen **el estado actual**, no
+la historia. Lo que se intentó, falló o se diagnosticó con fecha va a
+`docs/archive/`, no a `STATE.md`/`PMS.md`. Si un doc contradice al código,
+**manda el código** y se corrige el doc en el mismo commit.
 
 ## Estructura
 

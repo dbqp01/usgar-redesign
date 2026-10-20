@@ -1,6 +1,6 @@
 # Spec: Flujo de reserva (wizard, holds, precio, confirmación QloApps)
 
-**Estado:** en desarrollo
+**Estado:** estable
 **Código:** `src/components/booking/`, `src/features/booking/`, `app/Features/Booking/Actions/`, `app/Features/Booking/Domain/`, `app/Core/PriceCalculator.php`, `app/Core/BookingStatus.php`, `app/Core/BookingHoldToken.php`
 **Docs relacionadas:** [API.md](../API.md) · [ARCHITECTURE.md](../ARCHITECTURE.md) · [PMS.md](../PMS.md) · [SECURITY.md](../SECURITY.md)
 
@@ -48,6 +48,7 @@ Permitir al huésped reservar 1–3 habitaciones en 3 pasos (fechas → asignaci
 - RF-26: CUANDO se dispara `BookingPaidEvent`, EL SISTEMA DEBE verificar por `external_reference = USGAR-{cartId}` que la orden ya no esté confirmada (dedup-skip) antes de llamar `confirmOrder` con el monto PEN congelado.
 - RF-27: SIEMPRE el listener ejecuta 1 intento y lanza excepción ante fallo o resultado null — el reintento es responsabilidad del outbox (`cron/process_outbox.php`), no hay retry loop interno.
 - RF-28: CUANDO corre la limpieza (cron), EL SISTEMA DEBE liberar en el PMS los holds del webservice cuyas reservas locales ya no estan activas (`expired`/`cancelled`/`failed`) — `is_refunded=1`, `is_cancelled=1` y la orden del hold a "Cancelado" (`releaseStaleWebserviceHolds`) — y NUNCA liberar los `paid`/`expired_paid` (dinero capturado → revision manual).
+- RF-29: SIEMPRE el nombre del huésped se normaliza con la regla del PMS antes de enviarse a QloApps (`QloAppAdapter::pmsGuestNames()`): sin dígitos ni `!<>,;?=+()@#"°{}_$%` y máximo 32 caracteres (`Validate::isName()`), con `DEFAULT_GUEST_NAME` si queda vacío — tanto en el XML del webservice (`createCartMulti`) como en el INSERT de `qlo_customer` (`confirmOrder`). Sin esto, PrestaShop rechaza el cliente (`PrestaShopException: Property Customer->lastname is not valid`) y el webservice responde 500 sin cuerpo.
 
 ## Requisitos no funcionales
 - **Seguridad**: token HMAC-SHA256 por hold (compara con `hash_equals`); PII protegida; whitelist de tarifas fail-safe; errores sin stack traces en producción.
@@ -65,7 +66,7 @@ Permitir al huésped reservar 1–3 habitaciones en 3 pasos (fechas → asignaci
 
 ## Verificación
 - TS (vitest): `npx vitest run` — `tests/Unit/wizardStore.test.ts`, `roomAllocator.test.ts`, `allocator-display.test.ts`, `calendar.test.ts`, `holdCountdown.test.ts`.
-- PHP (phpunit): `npm run test:php` (=`php scripts/run-exhaustive-tests.php`) o `composer test` — `tests/Unit/Core/PriceCalculatorTest.php`, `tests/Unit/Core/ConfigHoldTtlTest.php`, `tests/Unit/Features/Booking/Domain/ProvisionalBookingRepositoryTest.php`, `ProvisionalBookingConcurrencyTest.php`, `CurrencyPlumbingTest.php`, `tests/Unit/Features/Booking/Domain/Listeners/ConfirmQloAppsOrderListenerTest.php`, `tests/Unit/Features/Cron/ProcessOutboxActionTest.php`.
+- PHP (phpunit): `npm run test:php` (=`php scripts/run-exhaustive-tests.php`) o `composer test` — `tests/Unit/Core/PriceCalculatorTest.php`, `tests/Unit/Core/ConfigHoldTtlTest.php`, `tests/Unit/Features/Booking/Domain/ProvisionalBookingRepositoryTest.php`, `ProvisionalBookingConcurrencyTest.php`, `CurrencyPlumbingTest.php`, `tests/Unit/Features/Booking/Domain/Listeners/ConfirmQloAppsOrderListenerTest.php`, `tests/Unit/Features/Shared/Adapters/QloAppAdapterPmsNameTest.php`, `tests/Unit/Features/Cron/ProcessOutboxActionTest.php`.
 - Contrato end-to-end: `php tests/api-harness.php`; E2E usuario: `npx playwright test`.
 
 ## Desviaciones conocidas

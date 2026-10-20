@@ -1,6 +1,6 @@
 # API — USGAR Hotels
 
-Contrato completo del backend PHP. **Fuente de verdad: `public/index.php`** (registro de rutas) — verificada 2026-08-11. Si un endpoint no está aquí o aquí dice algo que el código no hace, el código manda y este doc se corrige.
+Contrato completo del backend PHP. **Fuente de verdad: `public/index.php`** (registro de rutas) — verificada 2026-10-20 (33 endpoints, 0 rutas fantasma). Si un endpoint no está aquí o aquí dice algo que el código no hace, el código manda y este doc se corrige.
 
 **Base URL:** `/api` (en dev, el Vite proxy redirige `localhost:4321/api` → `localhost:8000/api`).
 

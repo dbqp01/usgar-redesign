@@ -1,6 +1,6 @@
 # Spec: Autenticación (Acceso) — Auth pública y Panel admin
 
-**Estado:** en desarrollo
+**Estado:** estable
 **Código:** `app/Features/Auth/`, `app/Features/Panel/`
 **Docs relacionadas:** [API.md](../API.md), [SECURITY.md](../SECURITY.md), [ARCHITECTURE.md](../ARCHITECTURE.md), [PMS.md](../PMS.md)
 
@@ -73,4 +73,4 @@ Endpoints completos (in/out) → [API.md](../API.md). Resumen:
 - `PanelAuth` emite y valida `iss`, `aud` y `jti` igual que `SessionService`; `TokenRevocationStore` rechaza tokens revocados después del logout.
 - Dos mecanismos de bloqueo conviven: `POST /api/panel/block` escribe en `qlo_htl_room_disable_dates` (nativo QloApps), mientras `POST /api/panel/import` escribe en `manual_blocks` (propio). No unificar sin revisar `docs/PMS.md`.
 
-Nota de consistencia (auditoría 2026-09-08): la reserva manual usa un hold transitorio pending, toma el lock de `room_locks` y solo lo marca paid después de confirmar QloApps; ante fallo se marca failed o manual_review para evitar inventario fantasma.
+Nota de consistencia: la reserva manual usa un hold transitorio pending, toma el lock de `room_locks` y solo lo marca paid después de confirmar QloApps; ante fallo se marca failed o manual_review para evitar inventario fantasma.

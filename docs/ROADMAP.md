@@ -1,81 +1,57 @@
 # Roadmap — USGAR Hotels
 
-Estado de migraciones y backlog de mejoras priorizado. Cada ítem se marca `[x]` solo cuando está hecho y verificado (tests pasando). Actualizado: 2026-08-11.
+Backlog **abierto**, priorizado. Solo viven aquí los ítems que siguen sin
+hecer: lo cerrado está en [`docs/STATE.md`](STATE.md) (estado actual) o en
+[`docs/archive/`](archive/) (bitácora). Actualizado: 2026-10-20.
 
-## Migraciones en curso (decisiones cerradas)
+## P1 — Pendientes del dueño (bloquean la operación real)
 
-| Tema | Decisión | Estado |
+| # | Qué | Por qué |
 |---|---|---|
-| Pagos | **MercadoPago se mantiene** como pasarela única. Stripe/LLC descartados definitivamente (2026-08-05) | Cerrado |
-| CMS/PMS | **QloApps se mantiene**; migración a Filament cancelada (2026-08-04) y panel eliminado del repo (2026-08-05; `admin.usgarhoteles.com` ya no existe) | Cerrado |
-| Channel manager | **QloApps Channel Manager (Webkul)**: sin código en el repo (módulo del lado PMS, sync vía webservice `cm_api`); **pendiente hasta la entrega final** (activación paga, $30/propiedad/mes). Runbook: `docs/PMS.md` §D | Pendiente hasta entrega final |
-| Refactor backend | Cerrado (F2, 2026-08-03); auditoría de limpieza en curso | En curso |
+| P1-D1 | **Reembolsar en el back-office de QloApps** las órdenes de prueba 266, 268, 287, 289 y 293 | 289 y 293 tienen S/. 660.67 capturados. Solo desde el back-office: la regla 1 de `docs/PMS.md` §F prohíbe tocar `qlo_*` por SQL |
+| P1-D2 | **Rotar `PANEL_PASSWORD`** | Hoy tiene el mismo valor que `DB_PASS` |
+| P1-D3 | **Pasar Mercado Pago a credenciales reales** | Producción usa hoy el par sandbox. Procedimiento en `docs/DEPLOYMENT.md` |
+| P1-D4 | **Configurar SMTP (`SMTP_*`)** | Sin SMTP no sale el email de confirmación (fail-soft por diseño) |
+| P1-D5 | **Activar QloApps Channel Manager (Webkul)** | Activación de pago; runbook en `docs/PMS.md` §D |
 
-### Channel manager — pasos pendientes (detalle en `docs/PMS.md` §D)
-- [ ] Confirmar con Webkul antes de pagar: conectividad Booking/Expedia incluida, compatibilidad de versión, límite de canales.
-- [ ] Activar suscripción en channels.qloapps.com (trial 15 días NO sincroniza precios/inventario).
-- [ ] Habilitar webservice QloApps con permisos `cm_api` + módulo conector.
-- [ ] Configurar canales (Booking/Expedia con "Channex" como proveedor, Airbnb authorize) + mapeo room types.
-- [ ] Monitoreo: reconciliación periódica inventario/tarifas OTA vs QloApps (el CM no tiene status page pública).
+## P2 — Deuda estructural (backend)
+
+- [ ] **P2-7** `Response::json()` hace `exit()` dentro de la clase → mover el
+  exit al front controller. **Diferido**: ~40 call sites asumen que la
+  respuesta termina el script; tocarlo sin refactorizar las acciones a la vez
+  es una regresión garantizada. Revisar junto a un refactor mayor de acciones.
+- [ ] **Compensación del carrito de QloApps** si el INSERT local falla después
+  de crear el carrito remoto (auditoría 2026-09-07): el contrato de cancelación
+  del webservice aún no está verificado.
+- [ ] **Política de rutas i18n `/fr` vs `/fr/`**: Astro emite un warning no
+  fatal; falta decidir una única estrategia.
+- [ ] **Cancelaciones por refund/chargeback**: hoy son manuales.
+
+## P3 — Operación
+
+- [ ] **P3-6** `run-exhaustive-tests.php` sigue golpeando servicios reales
+  (Mercado Pago, BD remota) si se amplían los tests de integración → mockear
+  los adapters antes de añadir esos tests. La suite unitaria sí es hermética.
+
+## Channel manager — pasos de activación
+
+- [ ] Confirmar con Webkul antes de pagar: conectividad Booking/Expedia
+  incluida, compatibilidad de versión, límite de canales.
+- [ ] Activar suscripción en channels.qloapps.com (el trial de 15 días **no**
+  sincroniza precios ni inventario).
+- [ ] Habilitar el webservice QloApps con permisos `cm_api` + módulo conector.
+- [ ] Configurar canales (Booking/Expedia con «Channex» como proveedor, Airbnb
+  con authorize) + mapeo de room types.
+- [ ] Monitoreo: reconciliación periódica de inventario/tarifas OTA vs QloApps
+  (el CM no tiene status page pública).
 - [ ] Pruebas con OTAs reales y verificación de overbooking.
-
-## Backlog priorizado de mejoras del backend
-
-Auditoría de mejores prácticas PHP realizada el 2026-08-11 (evidencia en `docs/STATE.md`). Orden: P1 seguridad/dinero → P2 deuda estructural → P3 rendimiento/ops.
-
-### P1 — Seguridad y dinero (diffs pequeños, alto valor)
-- [x] **P1-1** `ProcessOutboxAction.php:280`: `unserialize` sin `allowed_classes` → restringir a `[BookingPaidEvent::class]` (object injection si la BD se compromete). **FIX 2026-08-12**: `allowed_classes` con `BookingPaidEvent` + `DateTimeImmutable` ya presente en `ProcessOutboxAction.php:288-294` (comentario de auditoría incluido); el roadmap estaba desactualizado.
-- [x] **P1-2** `Config.php:164`: el parseo de `.env` corta valores que contienen `" #"` (bug real con contraseñas) → no soportar comentarios inline o respetar comillas. **FIX 2026-08-12**: `Config::parseLine()` público; comentario inline solo se recorta si el valor NO está entre comillas (`DB_PASS="ab #cd"` ya no se trunca). Tests: `tests/Unit/Core/ConfigParseTest.php`.
-- [x] **P1-3** `HealthCheckAction.php:37-44`: `/api/health` expone document_root, ruta del `.env` y prefijos de tokens → diagnosticar solo fuera de `APP_ENV=production`. **FIX 2026-08-12**: `env_diag` solo fuera de producción (default seguro: `APP_ENV` ausente = producción). **SUPERSEDIDO 2026-08-15**: `APP_ENV` eliminada de raíz (decisión del dueño); el bloque `env_diag` completo se eliminó — el default seguro es NO exponer info de entorno por HTTP público.
-- [x] **P1-4** `User.php:165,184`: `password_hash(PASSWORD_BCRYPT)` sin `password_needs_rehash()` → usar `PASSWORD_DEFAULT` + rehash en login exitoso. **FIX 2026-08-12**: ambos hash a `PASSWORD_DEFAULT`; rehash automático en `verifyPassword` tras login válido.
-- [x] **P1-5** Login sin límite por cuenta (`POST /api/auth/login-email`): el global 300/600s no frena fuerza bruta dirigida → límite estricto por email+IP (ej. 5/15 min). **FIX 2026-08-12**: `RateLimiter::check(email|ip, 5, 900)` en `AuthLoginEmailAction` → 429.
-- [x] **P1-6** Dinero en `float` (`PriceCalculator.php:15-18`, `CreateBookingAction.php:112`) → `bcmath` o céntimos enteros para la conversión USD→PEN. **FIX 2026-08-12**: acumulación en **céntimos enteros** (`PriceCalculator::roomTotalCents()`, `$totalPriceCents` en `CreateBookingAction`); float solo en la frontera JSON. Sin bcmath (no garantizado en Hostinger).
-- [x] **P1-7** JWT con `iss`/`aud`/`jti` y revocación server-side. **CERRADO 2026-09-10**: `SessionService` y `PanelAuth` consultan `TokenRevocationStore`; logout revoca el token vigente y las pruebas cubren sesión/panel.
-- [x] **P1-8** Endpoints POST autenticados (logout, profile) sin token CSRF (solo SameSite=Lax) → token de doble cookie para mutaciones con auth por cookie. **FIX 2026-08-12**: cookie `usgar_csrf` (legible por JS, regenerada en cada login) + header `X-CSRF-Token` exigido por `SessionService::assertCsrf()` en todas las mutaciones autenticadas, incluidos formularios HTML; frontend: `auth-client.ts::csrfToken()` + `profile.astro`. El panel (`usgar_panel`) usa su propia cookie y header CSRF.
-- [x] **P1-9** Registro público podía escribir `password_hash` sobre una cuenta OAuth existente sin contraseña → takeover por email conocido. **FIX 2026-09-09**: `User::createFromEmail()` devuelve conflicto para cualquier email existente y nunca actualiza una cuenta desde el flujo público. Test: `tests/Unit/Features/Auth/UserTest.php`.
-- [x] **P1-10** Linking OAuth por email. **CERRADO 2026-09-10**: `emailVerified` de HybridAuth es obligatorio; solo se permite reingreso con el mismo proveedor/`provider_id`; Microsoft Graph requiere `MICROSOFT_TRUST_EMAIL=true`.
-
-### P2 — Deuda estructural (refactor acotado; borrar antes que construir)
-- [x] **P2-1** Autoloader único de Composer: declarar `"autoload": {"psr-4": {"App\\": "app/"}}` en composer.json; eliminar `app/Core/Autoloader.php`, la búsqueda manual de vendor en `bootstrap.php:21-29` y el escáner de `AuthService::ensureHybridauthLoaded()` (vendor ya viaja a dist/). **HECHO 2026-08-10** (autoload PSR-4 + `Autoloader.php` eliminado, verificado: el archivo no existe y `tests/bootstrap.php` carga `vendor/autoload.php`). Cierre 2026-08-12: el guard en `bootstrap.php:24-29` y `ensureHybridauthLoaded()` se **mantienen deliberadamente** como red de seguridad para entradas sin bootstrap (cron/tests) — dead code inofensivo, prioridad máxima a no romper el boot.
-- [x] **P2-2** `Request::sanitize()` (`Request.php:209-218`) es no-op recursivo → eliminar (modelo: validar input, escapar output). **FIX 2026-08-12**: método y sus 2 llamadas eliminados (`Request.php`); sin usos en `app/` ni `tests/` (verificado con grep).
-- [x] **P2-3** Hardcodes QloApps en `QloAppAdapter::confirmOrder()` (`:395-485`): `id_shop_group=1`, `id_shop=1`, `id_lang=1`, `id_currency=2`, `'USGAR Hotels'`, `'San Pedro'`, horarios 12:00/10:30 duplicados en 3 consultas → constantes del adapter o Config. **FIX 2026-08-12**: constantes `SHOP_GROUP_ID/SHOP_ID/LANG_ID/ORDER_STATE_PAID/CHECKIN_TIME/CHECKOUT_TIME/HOTEL_NAME/HOTEL_CITY` + variables interpolables en los SQL (los strings de doble comilla no expanden `self::CONST`). Bonus: `getAvailabilityCalendar()` respetaba `id_lang` hardcodeado 1 ignorando el parámetro/`QLOAPPS_DEFAULT_LANG_ID` — corregido. La moneda ya era dinámica (PEN, auditoría 2026-08-11). Test de regresión de interpolación: `tests/Unit/Features/Shared/QloAppAdapterSqlTest.php`. Queda anotado: XML del webservice (`createCartMulti:380`) conserva horarios literales — camino degradado (webservice da 500), se migra si se restaura.
-- [x] **P2-4** `md5(rand())` como passwd de `qlo_customer` (`QloAppAdapter.php:396`): documentar por qué es inofensivo (cuenta guest) o generar hash válido de PrestaShop. **HECHO 2026-08-10** (`bin2hex(random_bytes(16))` para passwd/secure_key, comentario CWE-338 en `QloAppAdapter.php:486-491`). Cierre 2026-08-12 con docs en línea: PrestaShop 1.7 usa bcrypt para logins reales; los guests (`is_guest=1`) nunca se autentican → valor aleatorio CSPRNG es seguro y el formato 32-hex cabe en el schema.
-- [x] **P2-5** `Router.php:125-127`: método no permitido responde 404 → `405 Method Not Allowed` + header `Allow`. **FIX 2026-08-12** (RFC 9110 §9.6.2, verificado con MDN/http.dev): `allowedMethods()` + respuesta 405 con `Allow` en `Router::dispatch`. Evidencia real: `php -S` + curl → `HTTP/1.1 405 Method Not Allowed` + `Allow: GET` (POST a ruta GET); GET health 200; ruta inexistente 404. Tests: `tests/Unit/Core/RouterMethodNotAllowedTest.php` (contrato observable; header no es testeable en CLI porque el banner de phpunit ya envió output — `headers_sent()`).
-- [x] **P2-6** `request_id`: `x-request-id` ya está en CORS Allow-Headers pero nadie lo genera → middleware que lo genere + header de respuesta + contexto en cada log. **FIX 2026-08-12**: patrón generate-if-missing (http.dev/x-request-id): `Request::getRequestId()` (respeta header entrante o `bin2hex(random_bytes(16))`), `Middleware::requestId()` registrado en el pipeline, y `request_id` en el contexto de los logs de error del Router. Tests: `tests/Unit/Core/RequestIdTest.php`.
-- [ ] **P2-7** `Response::json` hace `exit()` dentro de la clase (`Response.php:37-39`) → mover el exit al front controller. **DIFERIDO 2026-08-12 (deuda documentada, riesgo alto)**: ~40 call sites de `Response::json` asumen que la respuesta termina el script; mover el exit sin tocar todas las acciones es regresión garantizada. El guard `PHP_TESTING`/`APP_ENV=testing` ya hace la clase testeable. Revisar junto a un refactor mayor de acciones.
-- [x] **P2-8** Documentar el contrato de escritura directa al schema `qlo_*` (riesgo de upgrades del PMS) en `docs/PMS.md`; evaluar webservice como alternativa (estratégico, no urgente). **HECHO 2026-08-12**: Sección F de `docs/PMS.md` (7 tablas, columnas, valores fijos, reglas antes de actualizar QloApps).
-- [x] **P2-9** `use` sueltos a mitad de `public/index.php:85` → mover imports al inicio (estilo). **FIX 2026-08-12**: `UpdateUserProfileAction` movido al bloque de imports.
-
-### P3 — Rendimiento y operación en Hostinger compartido
-- [x] **P3-1** Cache de display 30-60s (archivo en `data/`) para `GET /api/rooms` SOLO en el endpoint de display — nunca en `CreateBookingAction` (ya re-verifica con FOR UPDATE). + `Cache-Control`. **FIX 2026-08-12**: `App\Core\FileCache` (data/cache/, mtime-TTL, escritura atómica tmp+rename, patrón RateLimiter) + `GetRoomsAction` con TTL de `ROOMS_CACHE_TTL` (default 30) y `Cache-Control: public, max-age=N` explícito (sin header, los caches aplican heurística implícita — RFC 9111 vía http.dev/cache-control). Tests: `tests/Unit/Core/FileCacheTest.php`. Justificación en línea verificada 2026-08-12: http.dev/cache-control (max-age, heurística sin header).
-- [x] **P3-2** `Database.php:39-43`: sin `PDO::ATTR_TIMEOUT` → con la BD caída, 3 hosts × timeout TCP cuelgan requests → **FIX 2026-08-11 (commit `7472967`)**: `PDO::ATTR_TIMEOUT=3`. Efecto: la suite exhaustiva pasó de colgar >7 min a completar en <1 min.
-- [x] **P3-3** Rate limiter: archivos `limit_*.json` nunca se limpian → purgar >2 ventanas en `init()`; límites por endpoint (auth estricto, webhook/health exentos o altos). **FIX 2026-08-12**: `RateLimiter::purgeOldFiles()` (público y con dir por parámetro = testeable) purga en cada check con umbral 2×ventana (cubre auth 900s < 2×600s); `Middleware::rateLimit` exime `/api/webhook` (retries legítimos de MP; la ruta cara solo corre con firma HMAC válida) y `/api/health` (probe de monitoreo). Justificación OWASP API4:2023 "Unrestricted Resource Consumption" (límites ausentes o mal calibrados = vulnerable). Tests: `RateLimiterPurgeTest` + `MiddlewareRateLimitExemptTest`.
-- [x] **P3-4** PHPStan nivel 6 → 7 (`phpstan.neon:2`). **FIX 2026-08-12 (3 commits `83d0b4c`/`5bc9d98`/`97b2d34` + este)**: subir a nivel 7 reportaba **24 errores en 13 archivos** (nivel 6 = 0). El plan original ("consumiendo el baseline progresivamente") quedó **obsoleto** antes de empezar: (a) el baseline fue eliminado el 2026-08-12 (cero deuda técnica, decisión del usuario); (b) PHPStan 2.2.7 imprime guía explícita contra baseline/ignores en cada corrida ("Do not add `@phpstan-ignore` comments... or baseline entries to suppress the error... Fix the underlying cause") y la doc oficial del baseline lo llama "necessary evil" (solo para "a few dozen to a few hundred errors" que no se pueden arreglar ya — los 24 SÍ se podían). Nivel 7 = "report partially wrong union types" + situaciones "possibly incorrect" (doc rule-levels; mantenedor #6805: niveles 7-9 prueban *correctitud* más que *incorrectitud*). **Fix directo de los 24, sin baseline**, 5 patrones:
-  - **A. File IO sin manejo de fallo (11)**: `RateLimiter.php:109` (`json_encode` → `false` en `fwrite`), `ExportAvailabilityAction` (`fopen('php://output')` → `resource|false` en fwrite/fputcsv/fclose), `ImportAvailabilityAction` (guards `Response::badRequest`/`Response::error` SIN `return;` → PHPStan no estrecha `$raw`/`$tmp`; el `return;` explícito es el patrón del repo, ver AuthLoginEmailAction), `QloAppAdapter.php:733` (`curl_exec` → `string|bool`, guard `!$response` deja `string|true` → fix `!is_string($response)` preserva el `''`).
-  - **B. `strtotime()` → `int|false` pasado a `date()` (5)**: `CreateBookingAction` + `ExtendHoldAction` — **BUG REAL**: `BOOKING_HOLD_TTL` mal escrito en .env → `strtotime` → false → `date()` → 1970-01-01 → el hold expiraba al instante. Fix: helper compartido `Config::holdExpirationTimestamp()` (fallback conservador a +15 min + log, `$ttl` inyectable para testeo hermético) + tests `ConfigHoldTtlTest`. Los otros 3 (`ExportAvailabilityAction:169`, `AvailabilityRepository:75,76`) tienen inputs regex-validados, fallback inalcanzable.
-  - **C. `SessionService::createToken($user)` con `array<string,mixed>|null` (4)**: causa raíz: `User::findByEmail/findById/verifyPassword` declaraban `array<string,mixed>` cuando la tabla users se auto-crea con schema conocido → `User::hydrate()` con casts al shape real + PHPDoc de unión en `verifyPassword` (shape|oauth_error). De paso, guards null que faltaban en `AuthCallbackAction`/`AuthRegisterAction` (`createToken(null)` era crash silencioso si PDO fallaba) y el tipado reveló dead code en `AuthLoginEmailAction` (el `?? 'Google'` y la comparación redundante, ahora garantizados por el shape).
-  - **D. `return.type` (2)**: `AuthService::normalizeProfile` (`$profile->identifier` es `int|string` en el stub de HybridAuth → cast `(string)` legítimo), `AvailabilityRepository::fetchRoomTypes` (`fetchAll` no garantiza lista → `array_values()`).
-  - **E. `method.nonObject` (2)**: `ProvisionalBookingRepository::resolveProcessedPaymentIndexes`, `ProcessOutboxAction::staleIds` (`PDO::query()` → `PDOStatement|false`; con `ERRMODE_EXCEPTION` verificado en Database.php:40 el false es inalcanzable en runtime, pero el tipo lo exige → stmt separado + guard; fail-closed en el repo: nunca dropear índice sin verificar).
-  Verificación: `composer analyse` (nivel 7) → **No errors** · `php vendor/bin/phpunit` → **196 tests / 655 assertions, 12 skipped, OK**. Justificación en línea verificada 2026-08-12: phpstan.org/user-guide/rule-levels · /baseline · /ignoring-errors · /error-identifiers/{argument.type,return.type,method.nonObject} · github.com/phpstan/phpstan/discussions/6805 (estrategia de niveles del mantenedor).
-- [x] **P3-5** composer.json sin `"php": ">=8.2"` ni `config.platform` → declararlos para reproducibilidad del lock. **FIX 2026-08-12**: `"php": ">=8.2"` + `config.platform.php: 8.4.0`. **Prod subido de PHP 8.3.30 a 8.4.19** (hPanel vía MCP Hostinger, verificado `X-Powered-By: PHP/8.4.19` + health/rooms 200 + webservice QloApps 401-alive). Decisión del usuario: **8.4 = máximo soportado por QloApps 1.7.0** (changelog oficial #1464: PHP 8.1→8.4; 8.5 NO está en el rango testado del PMS y `cms.usgarhoteles.com` comparte la versión del sitio). Justificación Composer docs §platform (definir target platform; `check-platform-reqs` en deploy).
-- [ ] **P3-6** Suite `run-exhaustive-tests.php`: ya no cuelga (fix P3-2); sigue golpeando servicios reales si los tests de integración se extienden — si se añaden tests que toquen MP/QloApps, mockear los adapters (los unit ya son hermeticos: phpunit 196 tests/655 assertions sin red).
-- [x] **P3-7** `ProcessOutboxActionTest::testConcurrentRunsProcessEachEventExactlyOnce` flaky en Windows (workers proc_open + timing 40s) → **FIX 2026-08-11 (commit `7472967`)**: timeout del worker 120s. Verificado: suite completa verde (160/578).
-
-### F — Frontend y contenido
-- [x] **F-6** Duplicación `src/content/*.json` vs `src/data/*.ts` (rooms, services, faq, reviews, settings, about) → elegir una fuente por dominio y migrar consumidores. **CERRADO 2026-08-12 como NO-duplicación (corroborado con astro-docs, Astro 7.1.1)**: es la arquitectura oficial de content collections — `src/content/*.json` = datos (copia única por dominio), `src/content.config.ts` = loaders `file()` con `parser` + schema zod (validación en build), `src/data/*.ts` = wrappers tipados con `getCollection()` + fallbackChain i18n (re-anidan `name_en`→`{en,es,fr,pt}` y quitan `order`). Verificado: 6 wrappers con `getCollection` (rooms/faq/reviews/explore/services/about), **0 imports directos de `content/` fuera de `data/`** (no hay consumidores que migrar), 3 archivos inline son fuentes ÚNICAS deliberadas (`hotelServices.ts` = lista oficial del cliente, `legal.ts` = páginas legales, `settings.ts` = defaults sobre la colección). Fusionar content+data destruiría la validación zod y la capa i18n sin beneficio.
-- [x] **F-7** Pendientes TS de `astro check` (hints pre-existentes) → **CERRADO 2026-08-12**: los hints viejos (Hero/RoomCard/TypographicMarquee/Layout/profile) ya no existían; los 2 warnings reales `ts(80006)` eran `src/pages/panel.astro:444` (`load()` → async/await + catch tipado `{unauthorized?, http?}`) y `scripts/dev.js:19` (`isPortBusy` → async). Resultado: `astro check` → **0 errors / 0 warnings / 0 hints**.
-- [x] **F-8** `meta description` propia por plantilla → **FIX 2026-10-19**: sección `meta` en los 4 i18n (`rooms`, `explore`, `gallery`, `contact`, `book`, `success`, `privacy`, `terms`) + `description=` en cada plantilla. Las páginas dinámicas reusan el texto que ya tenían (`room.description[lang]`, `attraction.description[lang]`: 98-170 caracteres, dentro del rango útil de snippet). La home sigue con la descripción global del sitio (es lo correcto) — el audit tenía un falso positivo: `isHome` no incluía `/fr/`. `npm run audit:content` → error `META-DESC` **0** (antes 97 páginas).
-- [x] **F-9** `og:image` propia por plantilla → **FIX 2026-10-19**: `src/utils/ogImage.ts` (`socialImage()`) recorta una foto del sitio a 1200×630 **JPEG** (los scrapers de redes no leen AVIF/WebP) y devuelve la URL absoluta. Cada plantilla pasa su foto: `rooms` → primera foto de habitación, `room` → la de esa habitación, `explore` → Machu Picchu, `attraction` → la de esa atracción, `gallery` → recepción, `contact` → patio, `book` → vista de Cusco. Home/legal/404 conservan la imagen de marca `/og-image.jpg`. 20 imágenes sociales nuevas (~2 MB en `dist/_astro/`). `npm run audit:content` → error `OG-IMAGE` **0** (antes 100 páginas).
-- [x] **F-10** Un único `<h1>` por página → **FIX 2026-10-19**: `SectionHeader.astro` acepta `level?: 'h1' | 'h2'` (por defecto `h2`); `/rooms/`, `/gallery/` y `/explore/` pasan `level="h1"`. En `book/success` los estados *pendiente* y *error* bajaron de `<h1>` a `<h2>` (los tres estados conviven en el DOM: solo el de éxito es el título de la página). Con el título de página en `<h1>`, las tarjetas de `/rooms/` y `/explore/` pasaron a `<h2>` para no saltar niveles (h1→h3) — sin cambio visual, Tailwind Preflight neutraliza el tag. `npm run audit:content` → error `H1` **0** (antes 16 páginas).
-- [x] **F-11** CSP en las páginas estáticas → **FIX 2026-10-19**: la allowlist se dedujo de lo que el sitio carga de verdad (MercadoPago en `/book/`, tiles de Carto `*.basemaps.cartocdn.com` en el mapa de Leaflet, fuentes self-hosted), **no** de copiar la del Middleware a ojo. Ahora la misma cadena está en `public/.htaccess` (dentro de `<FilesMatch "\.html$">`, para que `index.php` no reciba una segunda cabecera) y en `app/Core/Middleware.php::securityHeaders`. Dos guardas: `npm run audit:content` falla con `CSP-DRIFT` si las dos allowlists divergen, y `npm run audit:csp` (nuevo, `scripts/audit-csp.mjs`) carga cada página del build en Chromium con la cabecera real y falla si el navegador rechaza un recurso. Verificado: **114 páginas, 0 violaciones**.
-
 
 ## Reglas del roadmap
 
-- Marcar `[x]` solo cuando esté hecho y verificado (tests pasando).
+- Un ítem entra aquí solo si **no** está hecho y verificado; al cerrarlo se
+  borra de esta lista y su evidencia va a `docs/STATE.md` (file:line + comando
+  de verificación).
+- Marcar `[x]` solo cuando está hecho **y** verificado (tests pasando).
 - Una mejora = un commit `fix:`/`refactor:`/`perf:` por tema, con su test.
-- Al cerrar un ítem: actualizar `docs/STATE.md` con la evidencia (file:line + comando de verificación).
-
-### Auditoría integral 2026-09-07
-- [x] CSRF del panel, límites de importación, x-cron-secret para refresh-reviews, CORS autoritativo y fencing claim_token del outbox documentados y verificados en los tests dirigidos.
-- [ ] Compensación de carrito QloApps si falla el INSERT local después de crear el carrito remoto (contrato de cancelación aún no verificado).
+- Lo que es Bitácora (qué se intentó, qué falló y por qué) **no** va aquí: va a
+  `docs/archive/`.
