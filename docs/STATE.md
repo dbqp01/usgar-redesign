@@ -8,7 +8,23 @@ Auditoría del entorno de Hostinger hecha **con el panel abierto en el navegador
 - **Precedencia corregida**: `Config::envCandidates()` pone ahora `hbuilds/config/.env` **antes** que el `.env` suelto de la raíz del dominio (que hasta ahora ganaba siempre y era la fuente efectiva real).
 - **Los valores coinciden**: comparadas en memoria del navegador (sin sacarlos de él) las 38 claves del `.env` físico contra las 39 de hPanel → **38 idénticas, 0 diferencias**; hPanel añade solo `PANEL_PASSWORD`. Se conserva intacto el token de MP (**el de test**, decisión del dueño) y la ausencia de `SMTP_*` (emails siguen apagados por diseño).
 - **Efectos colaterales revisados**: `PANEL_PASSWORD` pasa a estar configurado → `/panel` (disponibilidad del dueño) deja de estar fail-closed; `MP_BINARY_MODE=true` ya era el valor efectivo (está en las dos fuentes) → el payload de MP no cambia; `TokenRevocationStore` pasa a usar la raíz del despliegue (no la carpeta del `.env`), así que la lista de revocaciones no se invalida ni se mueve al cambiar de fuente.
-- **Se elimina el `.env` de la raíz del dominio** (File Manager): queda hPanel como fuente única. Copia local de seguridad en `backup-env-prod-2026-10-19.env` (**fuera de git**).
+- **El `.env` de la raíz del dominio queda RENOMBRADO** a `.env.pre-hpanel-2026-10-19` (no se borra: es el rollback). Con ese nombre ya no compite por precedencia — la app no lo lee. Copia local de seguridad en `.backups/prod-env-2026-10-19.env` (**gitignored**).
+- **Puente para el código todavía sin desplegar**: el código en producción (`2a824b3`) solo conoce `raíz/.env` → `raíz/.builds/config/.env` → `raíz del proyecto/.env`. Con el `.env` de la raíz fuera, se creó el symlink `raíz/.builds/config/.env → hbuilds/config/.env` (cron vigilante `yr3HD0iHWR`, `*/5`, que lo recrea si un deploy lo borra). Se elimina al desplegar el commit `5361623`.
+
+### El mecanismo real de hPanel (verificado 2026-10-19, no deducido)
+
+- **El archivo solo se materializa con «Guardar»** en hPanel → **Despliegues → Ajustes y reimplementación → Variables de entorno** (o «Guardar y reimplementar», que además reconstruye). Esa acción reescribe `hbuilds/config/.env` (mtime observed) y **el efecto es inmediato, sin redeploy ni push**: `TIMEZONE` pasó de `America/Lima` a `America/New_York` y `/api/health` cambió de `-05:00` a `-04:00` en segundos; revertido a `America/Lima` → `-05:00` otra vez.
+- **La página «Sitios web → Variables de entorno» es otra superficie**: ahí el valor se guarda en el panel (la tabla lo muestra al instante) pero **el archivo NO se reescribe** (mtime intacto tras guardar). Editar ahí y esperar el efecto no funciona: hay que usar la página de ajustes de despliegue.
+- **Un build no reescribe el `.env`**: un redeploy del mismo commit (2026-10-20, uuid `01a156d7-2074-73d8-aaf4-a82dbf572072`, completado) regeneró `hbuilds/config/package.json` y `package-lock.json` pero dejó `hbuilds/config/.env` con su mtime anterior. El build solo lee ese archivo («Environment: variables loaded from .env»).
+- **Pendiente de seguridad**: `PANEL_PASSWORD` tiene **el mismo valor** que `DB_PASS`. Rotarlo por un valor propio.
+
+**Estado final del entorno (2026-10-20):** raíz del dominio = `hbuilds/` · `public_html/` · `runtime/` · `.builds/` (symlink) · `.env.pre-hpanel-2026-10-19` (rollback) · `DO_NOT_UPLOAD_HERE`. `hbuilds/config/.env` = 39 claves, valores entre comillas simples, **0 diferencias** contra el `.env` viejo en las 38 claves comunes.
+
+**Limpieza en prod (mismo día, sin deploy):** los 3 holds `expired` con `payment_id` (1349906085 / 1327783824 / 171954453246, del 3-4 de agosto) se pasaron a `failed` en `provisional_bookings` → el cron `reconcile_payments` ya no los reintenta. Verificado: `Reconciliacion completada: checked=0, reconciled=0, skipped=0` (antes `checked=3, skipped=3`).
+
+**Por qué era ruido y no ruido:** el `app.log` de prod tenía **1640 entradas ERROR de las cuales 1638 eran los 404 de MercadoPago** de esos 3 pagos (MercadoPago ya no los tiene: se purgaron de la cuenta de pruebas). El 99,9 % del log lo ocupaba un problema ya resuelto a mano; el resto de errores reales quedaban enterrados. La causa en código (un 404 no es un fallo de API, es una respuesta definitiva) ya está corregida en `MercadoPagoAdapter`, pendiente de deploy.
+
+**Pendiente de push (20 commits locales, `main` sigue en `2a824b3`):** el fix de la ruta del `.env` (`hbuilds/config/.env`), el fix de las revocaciones, el log en la raíz del dominio, el 404 como INFO y el bump de dependencias que cierra 10 de las 12 vulnerabilidades que reporta hPanel. El `.env` de la raíz ya no estorba (renombrado) y el symlink cubre al código desplegado; **al desplegar `5361623` hay que borrar el symlink, la carpeta `.builds/` y el cron vigilante `yr3HD0iHWR`**.
 
 ## Jerarquía de encabezados y paridad E2E contra `main` — 2026-10-19
 

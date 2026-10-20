@@ -18,8 +18,8 @@ Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo m
 
 ## Variables de entorno en producción
 
-- Fuente efectiva: hPanel → **Environment variables** (la integración las escribe en `/home/<usuario>/domains/usgarhoteles.com/hbuilds/config/.env`; se inyectan en build y runtime y persisten entre deploys).
-- Fallback soportado por `app/Core/Config.php::loadEnv`: un `.env` **un nivel arriba de `public_html`**, que solo se usa si hPanel no tiene archivo.
+- Archivo efectivo: **`/home/u941268346/domains/usgarhoteles.com/hbuilds/config/.env`** (39 claves, todas con valores entre comillas simples). Lo escribe hPanel; lo lee `app/Core/Config.php::loadEnv` en cada request/cron.
+- Fallback soportado por `loadEnv`: un `.env` **un nivel arriba de `public_html`**, que solo se usa si hPanel no tiene archivo.
 - **Nunca** dentro de `public_html` ni de `dist/`. El build borra `dist/.env` y falla si quedara (guard del workflow desactivado, replicado en el postbuild). El directorio `runtime/` junto al `.env` efectivo debe ser escribible por PHP/cron; si no puede crearse o leerse, la autenticación falla cerrada hasta corregir permisos.
 - Lista completa de variables: `.env.example` (canónico) + `docs/API.md` §Variables.
 
@@ -27,8 +27,8 @@ Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo m
 
 `loadEnv()` (app/Core/Config.php) evalúa candidatos **en orden y usa el primero que existe**:
 
-1. `/home/u941268346/domains/usgarhoteles.com/hbuilds/config/.env` — **las "Variables de entorno" de hPanel**
-2. `/home/u941268346/domains/usgarhoteles.com/.env` — el `.env` del File Manager (fallback; **eliminado el 2026-10-19**)
+1. `/home/u941268346/domains/usgarhoteles.com/hbuilds/config/.env` — **las "Variables de entorno" de hPanel** (ya en el código desplegado, commit `5361623`)
+2. `/home/u941268346/domains/usgarhoteles.com/.env` — el `.env` del File Manager (fallback)
 3. `dist/.env` (raíz del deploy) — se borra en postbuild
 
 > **Corrección 2026-10-19:** hasta ese día el candidato 1 era el `.env` de la raíz del dominio, que gana siempre, y la ruta del archivo de hPanel estaba mal documentada (`.builds/config/.env` — **esa carpeta no existe**). Verificado en el File Manager: la ruta real es `hbuilds/config/.env`. Por eso "cambio en hPanel, hago redeploy, y las credenciales no cambian" (queja del dueño del 2026-08-15).
@@ -37,15 +37,29 @@ Los procesos CLI de cron aplican la misma precedencia aunque no reciban `DOCUMEN
 
 **Cómo editar la configuración en producción (procedimiento para no-técnicos):**
 
-1. hPanel → **Sitios web** → usgarhoteles.com → **Variables de entorno**.
-2. Editar o añadir la clave y guardar.
-3. **No requiere redeploy ni push** — el código lo lee en cada request/cron (`Config::get()` da prioridad al cache del boot, no a `getenv()`; el cache se puebla por request).
+1. hPanel → **Despliegues** → **Ajustes y reimplementación** → sección **Variables de entorno** (la tabla con 40 filas: 39 claves + una vacía para añadir).
+2. Editar el valor en la columna **Valor** y pulsar **«Guardar»** (o «Guardar y reimplementar», que además reconstruye).
+3. **No requiere redeploy ni push**: «Guardar» reescribe `hbuilds/config/.env` y la app lo lee en el siguiente request. Verificado 2026-10-19 con `TIMEZONE`: `America/Lima → America/New_York` cambió el offset de `/api/health` de `-05:00` a `-04:00` en segundos, sin desplegar nada; se revirtió a `America/Lima` y volvió a `-05:00`.
 
-**Los valores sí se pueden ver en la UI:** la tabla los enmascara, pero cada fila tiene un botón **«Mostrar»** que los revela en claro (la API de hPanel sí los devuelve enmascarados, `********`).
+> ⚠️ **Ojo, son dos superficies distintas** (comprobado el 2026-10-19): la página **Sitios web → Variables de entorno** (la tabla con «Mostrar»/«Actualizar»/«Eliminar») guarda el valor en el panel pero **NO reescribe el archivo**; el archivo solo se materializa con «Guardar» en la página de ajustes de despliegue. Editar en la primera y esperar el efecto no funciona: hay que usar la segunda.
 
-**Backup del `.env`:** con hPanel como fuente única, el respaldo de los valores es la propia tabla de hPanel (con «Mostrar»). Aun así, antes de tocar la configuración conviene descargar el `.env` del File Manager → guardar una copia local (`backup-env-prod-<fecha>.env`, **fuera de git**).
+**Los valores sí se pueden ver en la UI:** la tabla del sitio los enmascara, pero cada fila tiene un botón **«Mostrar»** que los revela en claro (la API de hPanel sí los devuelve enmascarados, `********`). El editor de la página de ajustes los muestra en claro directamente.
+
+**Backup del `.env`:** con hPanel como fuente única, el respaldo de los valores es la propia tabla de hPanel (con «Mostrar») y el archivo del File Manager. Aun así, antes de tocar la configuración conviene descargar el `.env` del File Manager → guardar una copia local en `.backups/prod-env-<fecha>.env` (carpeta **gitignored**; nunca versionar secretos).
 
 **Regla de oro:** hPanel → Variables de entorno es la fuente única. No volver a subir un `.env` a la raíz del dominio: volvería a ganar por precedencia y los cambios del panel dejarían de aplicarse.
+
+### Puente entre el código desplegado y el archivo de hPanel (2026-10-19)
+
+El código **desplegado** (commit `2a824b3`) todavía no conoce la ruta `hbuilds/config/.env`: su lista de candidatos es `raíz/.env` → `raíz/.builds/config/.env` → `raíz del proyecto/.env`. Como la raíz ya no tiene `.env`, hace falta el segundo:
+
+- `<raíz del dominio>/.builds/config/.env` → **symlink** a `hbuilds/config/.env`.
+- Cron vigilante (`yr3HD0iHWR`, `*/5`): `ln -sfn <raíz>/hbuilds/config/.env <raíz>/.builds/config/.env` — lo recrea si un deploy lo borra.
+- El `.env` viejo de la raíz del dominio quedó renombrado a `.env.pre-hpanel-2026-10-19` (copia de rollback; **no** lo lee la app porque no es un candidato).
+
+**Se elimina al desplegar el commit `5361623`** (que ya pone `hbuilds/config/.env` como candidato 1): borrar el symlink, la carpeta `.builds/` y el cron vigilante.
+
+**Pendiente de seguridad:** `PANEL_PASSWORD` tiene hoy **el mismo valor** que `DB_PASS` (verificado en la tabla de hPanel). Rotar `PANEL_PASSWORD` por un valor propio y distinto.
 
 ### Migración a hPanel como fuente única (ejecutada 2026-10-19)
 
@@ -53,8 +67,8 @@ Auditoría del entorno de Hostinger (2026-10-19) — estado real de las tres fue
 
 | Fuente | Claves | Estado |
 |---|---|---|
-| hPanel → Environment variables (`hbuilds/config/.env`) | 39 | **Fuente única** |
-| `.env` del File Manager (raíz del dominio) | 38 | Fallback; **eliminado el 2026-10-19** |
+| hPanel → Variables de entorno (`hbuilds/config/.env`) | 39 | **Fuente única** |
+| `.env` del File Manager (raíz del dominio) | 38 | Renombrado a `.env.pre-hpanel-2026-10-19` (rollback); ya no compite por precedencia |
 | `.env.example` (canónico del repo) | 60 + 1 comentada | Documenta el contrato; le faltan 4 claves que el código lee |
 
 **Comparación (2026-10-19, con el navegador: File Manager + tabla de variables de hPanel, valores comparados en memoria del navegador sin sacarlos de ahí):** las **38 claves del `.env` tienen valor idéntico** en hPanel — **0 diferencias**. hPanel añade una clave: `PANEL_PASSWORD`, que el `.env` no tenía.
@@ -72,7 +86,7 @@ Auditoría del entorno de Hostinger (2026-10-19) — estado real de las tres fue
 - `REVIEW_BOOKING_URL` solo alimenta el scraping de puntajes (cron `refresh-reviews`); su default en código apunta al mismo hotel.
 - Los emails transaccionales **ya están desactivados** en prod: no hay `SMTP_*` en ninguna de las dos fuentes (fail-soft documentado en `docs/STATE.md`).
 
-**Si hay que repetirla (hacia atrás):** descargar el `.env` del File Manager, copiar sus claves a hPanel → Variables de entorno, borrar el `.env` de la raíz del dominio y reiniciar el cron.
+**Si hay que repetirla (hacia atrás):** renombrar `.env.pre-hpanel-2026-10-19` de vuelta a `.env` en la raíz del dominio (eso vuelve a ganar por precedencia) y borrar el symlink.
 
 ## Credenciales de Mercado Pago
 
@@ -105,6 +119,7 @@ Verificado en Hostinger vía API (2026-08-14) — esta es la configuración REAL
 | 10 min | `php /home/<USER>/domains/usgarhoteles.com/public_html/cron/cleanup.php` | Marca `expired` los holds `pending` vencidos (auditoría 2026-08-11: el endpoint HTTP no tenía operador y la tabla acumulaba basura) |
 | 20 min | `php /home/<USER>/domains/usgarhoteles.com/public_html/index.php /api/cron/manual-review` | Lista holds en `manual_review`/`fraud_review` para revisión operativa (la acción CLI por defecto es `list`; no redispatcha pagos automáticamente) |
 | **1 día** | `/usr/bin/php /home/<USER>/domains/usgarhoteles.com/public_html/index.php /api/cron/refresh-reviews` | Refresca los scores de reseñas (Booking/KAYAK/Expedia) → `app/storage/review-scores.json`; `GET /api/reviews-score` los sirve al ribbon de la home. Fallback por fuente (fetch/parse fallido → valor anterior). **REGISTRADO en hPanel 2026-08-15** (uid `egFzCUjpmW`, `0 3 * * *` = diario 03:00). Verificación manual: `php public/index.php /api/cron/refresh-reviews` → JSON con `scores` |
+| 5 min *(temporal)* | `/usr/bin/ln -sfn /home/<USER>/domains/usgarhoteles.com/hbuilds/config/.env /home/<USER>/domains/usgarhoteles.com/.builds/config/.env` | **Vigilante del symlink del `.env`** (uid `yr3HD0iHWR`, creado 2026-10-19): mantiene el enlace que el código desplegado (`2a824b3`) necesita para leer el archivo de hPanel. **Borrar al desplegar el commit `5361623`** (ver §Puente entre el código desplegado y el archivo de hPanel) |
 
 > Nota: el cron real de reconcile es **15 min** (no 10 como decía esta tabla antes — la doc estaba desincronizada de hPanel). El polling del frontend aguanta 10 min; si el webhook se pierde, el hold se resuelve en ≤15 min por el cron y el usuario puede pulsar "Verificar de nuevo".
 
