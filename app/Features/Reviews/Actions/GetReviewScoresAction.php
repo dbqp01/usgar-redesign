@@ -28,7 +28,13 @@ class GetReviewScoresAction {
     }
 
     public static function scoresFile(): string {
-        $base = Config::get('STORAGE_PATH', dirname(__DIR__, 3) . '/storage');
-        return rtrim((string) $base, '/') . '/review-scores.json';
+        $base = Config::get('STORAGE_PATH');
+        if ($base === null || trim($base) === '') {
+            // Fuera del arbol que el deploy reemplaza (igual que los logs): si el
+            // fichero vive dentro de public_html cada build lo borra y el cron
+            // refresh-reviews no sirve de nada.
+            $base = (Config::deploymentBase() ?? dirname(__DIR__, 3)) . '/storage';
+        }
+        return rtrim($base, '/') . '/review-scores.json';
     }
 }
