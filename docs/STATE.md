@@ -1,5 +1,70 @@
 # STATE — Backend USGAR (handoff de sesión)
 
+## E2E completo en producción: reserva pagada de punta a punta — 2026-10-20 (11:30)
+
+- **El 500 que quedaba del `POST /api/bookings` era el nombre del huésped**, no el
+  schema: `PrestaShopException: Property Customer->lastname is not valid`. El
+  `dispatcher` solo captura `WebserviceException` (`webservice/WebserviceRequest.php:563-565`),
+  así que la excepción escapa del `fetch()` y el PHP responde **500 con cuerpo
+  vacío**. Traza real del log del CMS (`~/.logs/error_log_cms_usgarhoteles_com`):
+  `Customer.php(288) → ObjectModel.php(451) → WebserviceSpecificManagementBookings.php(1403/843/324/564) → WebserviceRequest.php(564) → dispatcher.php(87)`.
+  PrestaShop valida `firstname`/`lastname` con `Validate::isName()`
+  (`classes/Validate.php:157-160`), que **rechaza los dígitos**; un cliente ya
+  guardado con un nombre inválido hace que *toda* actualización posterior del
+  cliente salte la excepción ⇒ el 500 era permanente. Detalle en `docs/PMS.md` §F.
+- **Fix (web)**: `QloAppAdapter::pmsGuestNames()` normaliza el nombre con la
+  misma regla del CMS (quita dígitos y símbolos prohibidos, recorta a 32
+  caracteres, `DEFAULT_GUEST_NAME` si queda vacío) **antes** de mandarlo al PMS,
+  tanto en el XML del webservice (`createCartMulti()`) como en el INSERT de
+  `qlo_customer` (`confirmOrder()`). El POST **repara** al cliente ya guardado
+  (el webservice reasigna el `lastname` cuando el valor entrante es válido).
+  Commit `90a109a` (ya en `main`, build `01a15a12-4de0-708f-b288-137adb335404`),
+  test de regresión `tests/Unit/Features/Shared/Adapters/QloAppAdapterPmsNameTest.php`.
+- **E2E verificado en producción** (todo desde el servidor, con las credenciales
+  de prod; el token de tarjeta se creó con el access token de prod porque el
+  `MERCADO_PAGO_ACCESS_TOKEN` de la copia local pertenece a otra cuenta de MP →
+  *"Card Token not found" (2006)*):
+  1. `POST /api/booking` → **HTTP 200**, `cart_id` **292**, USD 195 / PEN 660.67
+     (hold local `provisional_bookings` + orden 292 del webservice, booking 233
+     con `id_room=6`).
+  2. `POST /api/process-payment` → `{"success":true,"status":"approved","payment_id":"1328489214"}`.
+  3. Webhook firmado de MP → `processed_payments` (payment_id 1328489214, cart
+     292, `approved`) → outbox `booking.paid` id **4280** → **COMPLETED**,
+     `attempts 0` → `confirmOrder()`.
+  4. **En el PMS**: `qlo_orders` id **293** (`reference` A8E3AF7E3, `module`
+     mercadopago, `source` `USGAR-292`, `current_state` **2** "Pago completo
+     recibido", `total_paid` **660.67**, `total_paid_real` **660.67**),
+     `qlo_order_payment` id **3** (`order_reference` A8E3AF7E3, 660.67, "Mercado
+     Pago (Online)", `conversion_rate` 3.388050) y `qlo_htl_booking_detail` id
+     **234** con `id_room` **6** (hereda la habitación física del hold),
+     `is_refunded=0`, `is_cancelled=0`, 25→28 nov. Cliente 32 = "Prueba" /
+     "Automatica" (nombres válidos ⇒ `Validate::isName()` pasa).
+  5. **El hold se liberó** (booking 233, `id_order` 292 → `is_refunded=1`,
+     `is_cancelled=1`) y la orden del hold quedó en "Cancelado" (estado 4) ✔.
+     Los holds abandonados 290 y 291 también quedaron liberados (bookings 231/232).
+- **Checklist de `docs/STATE.md` (todo cerrado)**:
+  - `GET /api/rooms?checkIn=2026-11-20&checkOut=2026-11-22` → **8/8** en Doble
+    Superior ✔ (los holds 284/285/288 están liberados: bookings 225/226/229 con
+    `is_refunded=1`).
+  - `GET /api/rooms?checkIn=2026-11-25&checkOut=2026-11-28` → **6/8**: hay
+    **dos** reservas pagadas en ese rango (la orden 289 del intento de las 09:20
+    y la 293 de este E2E), no una ⇒ cada una bloquea una habitación.
+  - Cron de reseñas lanzado a mano en el servidor →
+    `{"success":true,"scores":{"kayak":{"score":8.6,"count":701}},"updatedAt":"2026-10-20T11:54:04-05:00"}`
+    y `GET /api/reviews-score` devuelve lo mismo ✔ (ya no vacío).
+  - Outbox y holds: `event_outbox` sin pendientes (`booking.paid` COMPLETED) y
+    `provisional_bookings` 292 = `paid`.
+- **Servidor limpio**: solo quedan los **5 crons de proyecto**
+  (`process_outbox` */5, `reconcile_payments` */15, `cleanup` */10,
+  `manual-review` */20, `refresh-reviews` 03:00). Se borraron los ~20 crons de
+  diagnóstico (incluido `EnkTkBgRmO`, que **la API no listaba** — solo aparecía
+  en `~/.logs/cronjob_<uid>`; la lista de crons de la API no es completa), los
+  ficheros de `/tmp` (chunks `.b64`, `e2e_hold`, `e2e_pay`, scripts) y los
+  ficheros del docroot del CMS (`_diag.php`, `_v*.txt`, `_rv.txt`, `.user.ini`).
+  El PHP del CMS vuelve a los **defaults**: 8.4.26, `display_errors=Off`,
+  `log_errors=Off`, `error_reporting=E_ALL & ~E_DEPRECATED & ~E_STRICT`.
+- **Limpieza en el back-office de QloApps (solo el dueño, regla 1 de `docs/PMS.md` §F)**: reembolsar las órdenes de prueba **266, 268, 287, 289 y 293** (las pagadas: 289 y 293 tienen S/. 660.67 capturados; 287 quedó con `total_paid_real` 0 y sin fila en `qlo_order_payment`). Las órdenes 290/291/292 son holds ya liberados: no requieren nada.
+
 ## Las correcciones del PMS están en `main` pero Hostinger no está construyendo — 2026-10-20 (04:05)
 
 - **Push hecho**: `78ca8b2..7c42a2b` — `d210070` (la orden pagada inserta la transacción de pago y hereda la habitación del hold), `df7bfa3` (`releaseStaleWebserviceHolds()`) y sus docs. CI verde (`39389064189`, 6m31s).
