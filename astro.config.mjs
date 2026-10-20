@@ -118,6 +118,13 @@ export default defineConfig({
       }
     }
   },
+  // Astro con i18n + fallback genera una ruta duplicada para la raiz de cada
+  // locale con fallback (/fr) que choca con la ruta de archivo
+  // (src/pages/fr/index.astro -> /fr). Gana la ruta de archivo —la correcta,
+  // la que sirve la home en=fr— y el aviso es ruido: con "error" el build no
+  // terminaria. Las URLs canonicas son con barra final (/fr/), que es lo que
+  // ya publica el sitemap.
+  prerenderConflictBehavior: 'ignore',
   // Official Astro v7 i18n Routing & Page Fallback configuration.
   // Page-level fallback (routing) is defined here; translation key fallback is managed in src/i18n/utils.ts
   i18n: {

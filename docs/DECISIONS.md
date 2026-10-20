@@ -25,6 +25,7 @@ Registro de decisiones de arquitectura vivas (las que siguen gobernando el códi
 - **Calendario custom** (mismo motor `calendar.ts`): build una vez + refresh in-place, sin re-render por clic.
 - **Inventario de display**: `roomInventory` en `settings.json` con fallback en `src/data/settings.ts` (el stock real lo da la BD QloApps).
 - **Un solo catálogo de servicios**: `src/content/services/services.json` es el dato (35 ítems, cada uno con `group: "hotel" | "room"`); `src/data/services.ts` lo expone tipado y de ahí se derivan las dos listas de la web (servicios del hotel / en la habitación) y las tarjetas destacadas. Antes el mismo catálogo estaba duplicado en `src/data/hotelServices.ts` con otros nombres y una línea repetida ("24-hour reception" dos veces).
+- **Estrategia de rutas i18n**: las URLs canónicas llevan barra final (`/fr/`, `/es/`, `/pt/`), que es lo que publica el sitemap y lo que responde 200; `/fr` responde 301 a `/fr/`. Las páginas que faltan en un locale caen al idioma de fallback (fr→en, pt→es) con una página de redirección (`noindex`). El aviso de Astro al prerenderizar la raíz de un locale con fallback es benigno —gana la ruta de archivo, que es la correcta— y se silencia con `prerenderConflictBehavior: 'ignore'` en `astro.config.mjs`.
 
 ## Operación
 - **Deploy**: solo rama `main` con integración Node.js de Hostinger (build en servidor). Prohibido FTP/File Manager/rama build (histórico DEPLOY-B2 desactivado).

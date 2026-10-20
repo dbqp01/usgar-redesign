@@ -23,8 +23,6 @@ hecer: lo cerrado está en [`docs/STATE.md`](STATE.md) (estado actual) o en
 - [ ] **Compensación del carrito de QloApps** si el INSERT local falla después
   de crear el carrito remoto (auditoría 2026-09-07): el contrato de cancelación
   del webservice aún no está verificado.
-- [ ] **Política de rutas i18n `/fr` vs `/fr/`**: Astro emite un warning no
-  fatal; falta decidir una única estrategia.
 - [ ] **Cancelaciones por refund/chargeback**: hoy son manuales.
 
 ## Channel manager — pasos de activación
