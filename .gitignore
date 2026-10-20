@@ -50,3 +50,19 @@ runtime/
 # (el repo no los necesita para construir ni para desplegar).
 .agents/
 composer.phar
+
+# vendor/ se versiona, pero solo con las dependencias de produccion
+# (composer.lock -> "packages"). Las de desarrollo (phpstan, phpunit,
+# sebastian, ...) se reinstalan con `composer install` y no se commitean:
+# son 58 MB que en prod no se usan. Para actualizar vendor/: composer install
+# y stagear solo lo que cambie dentro de las 11 dependencias de produccion.
+vendor/dg/
+vendor/myclabs/
+vendor/nikic/
+vendor/phar-io/
+vendor/phpstan/
+vendor/phpunit/
+vendor/sebastian/
+vendor/staabm/
+vendor/theseer/
+vendor/cweagans/

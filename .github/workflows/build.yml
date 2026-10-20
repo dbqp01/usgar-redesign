@@ -39,6 +39,9 @@ jobs:
           php-version: '8.3'
           coverage: none
 
+      - name: Verificar vendor/ de produccion (antes de instalar dev)
+        run: php scripts/check-vendor-prod.php
+
       - name: Instalar dependencias PHP (Composer)
         run: composer install --no-interaction --prefer-dist --no-progress
 
