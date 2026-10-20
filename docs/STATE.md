@@ -4,6 +4,7 @@
 
 - **Push hecho**: `78ca8b2..7c42a2b` — `d210070` (la orden pagada inserta la transacción de pago y hereda la habitación del hold), `df7bfa3` (`releaseStaleWebserviceHolds()`) y sus docs. CI verde (`39389064189`, 6m31s).
 - **El build de Hostinger NO se ejecutó**: su API responde `HTTP 500 [Hosting:9999]` en **todos** los endpoints (crons, builds, git, webs) desde ~06:30 UTC, y el hPanel pinta las páginas de datos vacías (su SPA recibe 401/503/504 de sus propios endpoints). Última build conocida: `27ac631` (22:42 del 19-10).
+- **Causa externa, confirmada en su status page** (`statuspage.hostinger.com`, 20-10 09:16 UTC): incidencia activa *"Hostinger Dashboard Service API Issue"* por una **falla de energía en un centro de datos que Google está reparando**; afecta al dashboard, a la **API de servicios**, al Website Builder y al checkout, mientras que **las webs alojadas siguen online** (por eso el sitio, phpMyAdmin y el webservice de QloApps responden). **Sin ETA de recuperación.** En el mismo tramo, "Degraded Server web1765 Performance" (resuelto, en observación) explica que las webs de `web1765` (nuestro `srv909`) se pueden ver lentas o inaccesibles un rato.
 - **Evidencia de que el código nuevo no está en producción**:
   1. El cron `cleanup` **sí corre** (el cart 288 pasó a `expired` a las 03:17) pero **no libera** holds: las órdenes 284, 285 y 288 siguen con `is_refunded = 0` e `is_cancelled = 0`.
   2. `GET /api/rooms` para 2026-11-20→22 devuelve `available_qty` **6 de 8** en Doble Superior (siguen bloqueadas las habitaciones 3 y 5).
