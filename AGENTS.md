@@ -119,7 +119,7 @@ Playwright usa la configuración versionada y `npm run test:e2e -- <spec>` para 
 - **Hostinger mira ÚNICAMENTE la rama `main`** (integración Node.js GitHub; docs oficiales: `docs.hostinger.com/node.js/github`). Cada `git push origin main` → Hostinger hace pull + `npm install` + `npm run build` y sirve `dist/` (config hPanel: branch `main` · build `build` · output `dist` · Node 22).
 - El workflow `.github/workflows/deploy-build-branch.yml` está **DISABLED** (plan DEPLOY-B2 nunca activado) — ignorarlo. La rama remota `origin/build` existe con contenido viejo pero **Hostinger no la usa**.
 - Nunca sugerir subir `dist/` por FTP/File Manager ni hablar de la rama `build`. Único flujo: commit → `git push origin main` → esperar el build de Hostinger → https://usgarhoteles.com refleja el cambio.
-- Env vars de prod: hPanel → Environment variables (escribe `.builds/config/.env`); fallback `.env` un nivel arriba de `public_html` (`app/Core/Config.php::loadEnv`). El `.env` **no** va en `dist/` (el postbuild lo elimina).
+- Env vars de prod: hPanel → Environment variables (escribe `hbuilds/config/.env` en la raíz del dominio); fallback `.env` un nivel arriba de `public_html` (`app/Core/Config.php::loadEnv`). El `.env` **no** va en `dist/` (el postbuild lo elimina).
 - El hook `pre-commit` comprime `.mp4`/imágenes staged (requiere ffmpeg + `scripts/compress-images.js`; ver `docs/DEPLOYMENT.md` §Hooks).
 
 ## Reglas imperativas

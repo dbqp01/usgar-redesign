@@ -8,7 +8,7 @@ Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo m
 
 1. `git push origin main` → GitHub envía webhook → Hostinger hace pull, `npm install` (auto-detecta npm por lockfile), `npm run build`, y sirve el output. Un solo deploy a la vez; pushes extra se encolan.
 2. El `postbuild` (package.json) copia `app/`, `vendor/` y `cron/` a `dist/` (Composer no existe en prod) y **elimina cualquier `dist/.env`**. Astro vuelca `public/*` en la raíz de `dist/`, así que el entry PHP queda en `dist/index.php` + `dist/.htaccess`.
-   El `.htaccess` bloquea por HTTP el acceso directo a `app/`, `vendor/`, `cron/`, `logs/`, `storage/` y `runtime/`; esos directorios solo se conservan en el webroot para que los trabajos CLI puedan ejecutarse. Las revocaciones JWT se escriben en `runtime/revoked-tokens` junto al `.env` efectivo, fuera de `public_html` cuando esa raíz existe, y sobreviven al reemplazo de `dist`.
+   El `.htaccess` bloquea por HTTP el acceso directo a `app/`, `vendor/`, `cron/`, `logs/`, `storage/` y `runtime/`; esos directorios solo se conservan en el webroot para que los trabajos CLI puedan ejecutarse. Las revocaciones JWT se escriben en `runtime/revoked-tokens` en la **raíz del dominio** (junto a `public_html`), fuera del árbol que el deploy reemplaza, y no se mueven al cambiar de fuente de `.env`.
    El log de la app (`app.log`) se escribe en **`/home/<usuario>/domains/usgarhoteles.com/logs/`** (raíz del dominio, fuera de `public_html`): el build reemplaza `public_html` entero, así que un log dentro se reiniciaba en cada push (verificado: el `app.log` de prod empezaba en la fecha del último build). Si esa carpeta no fuese escribible, `Logger` cae al `logs/` del árbol de deploy y, en último caso, a `error_log()`.
 3. Config vigente en hPanel: branch `main` · build script `build` · output directory `dist` · Node **22** (fijado también en `engines` de package.json) · package manager npm.
 4. Historial/logs de cada build: hPanel → Deployments (branch, commit, autor, estado, log completo).
@@ -18,61 +18,61 @@ Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo m
 
 ## Variables de entorno en producción
 
-- Fuente efectiva: hPanel → **Environment variables** (la integración las escribe en `/home/<usuario>/domains/usgarhoteles.com/.builds/config/.env`; se inyectan en build y runtime y persisten entre deploys).
-- Fallback soportado por `app/Core/Config.php::loadEnv`: un `.env` **un nivel arriba de `public_html`**; si existe, tiene prioridad sobre las vars de hPanel.
+- Fuente efectiva: hPanel → **Environment variables** (la integración las escribe en `/home/<usuario>/domains/usgarhoteles.com/hbuilds/config/.env`; se inyectan en build y runtime y persisten entre deploys).
+- Fallback soportado por `app/Core/Config.php::loadEnv`: un `.env` **un nivel arriba de `public_html`**, que solo se usa si hPanel no tiene archivo.
 - **Nunca** dentro de `public_html` ni de `dist/`. El build borra `dist/.env` y falla si quedara (guard del workflow desactivado, replicado en el postbuild). El directorio `runtime/` junto al `.env` efectivo debe ser escribible por PHP/cron; si no puede crearse o leerse, la autenticación falla cerrada hasta corregir permisos.
 - Lista completa de variables: `.env.example` (canónico) + `docs/API.md` §Variables.
 
-### ⚠️ DÓNDE se edita de verdad (verificado 2026-08-15 — hay DOS fuentes y una gana)
+### ⚠️ DÓNDE se edita de verdad (verificado 2026-10-19 — hPanel es la fuente única)
 
-`loadEnv()` (app/Core/Config.php:130) evalúa candidatos **en orden y usa el primero que existe**:
+`loadEnv()` (app/Core/Config.php) evalúa candidatos **en orden y usa el primero que existe**:
 
-1. `/home/u941268346/domains/usgarhoteles.com/.env` (un nivel arriba de `public_html`) — **el `.env` del File Manager**
-2. `/home/u941268346/domains/usgarhoteles.com/.builds/config/.env` — **las "Variables de entorno" de hPanel**
+1. `/home/u941268346/domains/usgarhoteles.com/hbuilds/config/.env` — **las "Variables de entorno" de hPanel**
+2. `/home/u941268346/domains/usgarhoteles.com/.env` — el `.env` del File Manager (fallback; **eliminado el 2026-10-19**)
 3. `dist/.env` (raíz del deploy) — se borra en postbuild
 
-**Si el `.env` del File Manager existe (caso real en prod), TODO cambio en hPanel → Variables de entorno se ignora silenciosamente** — el código nunca llega a leer el candidato 2. Esto confundió al dueño (2026-08-15): "cambio en hPanel, hago redeploy, y las credenciales no cambian; cambio el `.env` del File Manager y sí".
-Los procesos CLI de cron aplican la misma precedencia externa aunque no reciban `DOCUMENT_ROOT`: si el código corre dentro del árbol `public_html`, buscan primero el `.env` junto a `public_html` y luego `.builds/config/.env`; el `.env` del checkout solo queda como fallback local.
+> **Corrección 2026-10-19:** hasta ese día el candidato 1 era el `.env` de la raíz del dominio, que gana siempre, y la ruta del archivo de hPanel estaba mal documentada (`.builds/config/.env` — **esa carpeta no existe**). Verificado en el File Manager: la ruta real es `hbuilds/config/.env`. Por eso "cambio en hPanel, hago redeploy, y las credenciales no cambian" (queja del dueño del 2026-08-15).
+
+Los procesos CLI de cron aplican la misma precedencia aunque no reciban `DOCUMENT_ROOT`: si el código corre dentro del árbol `public_html`, la raíz del despliegue se detecta subiendo desde el propio archivo y el resultado es idéntico.
 
 **Cómo editar la configuración en producción (procedimiento para no-técnicos):**
 
-1. hPanel → Archivos → **File Manager** (sitio `usgarhoteles.com`).
-2. Subir a la raíz del dominio: la barra de navegación debe mostrar `domains/usgarhoteles.com/` (el `.env` está **junto a** `public_html`, no dentro).
-3. Click derecho sobre `.env` → **Editar** (o descargar → editar → subir de vuelta).
-4. Guardar. **No requiere redeploy ni push** — el código lo lee en cada request/cron. (Un redeploy no daña nada pero tampoco hace falta.)
-5. `Config::get()` da prioridad al cache del boot, no a `getenv()`: tras editar el archivo, **no hay que reiniciar nada** (PHP-FPM lee el archivo en cada request; el cache se puebla por request).
+1. hPanel → **Sitios web** → usgarhoteles.com → **Variables de entorno**.
+2. Editar o añadir la clave y guardar.
+3. **No requiere redeploy ni push** — el código lo lee en cada request/cron (`Config::get()` da prioridad al cache del boot, no a `getenv()`; el cache se puebla por request).
 
-**Backup del `.env` (imprescindible, no está en git ni en hPanel):** File Manager → click derecho sobre `.env` → **Descargar** → guardar una copia local (`backup-env-prod-<fecha>.env`). Es la ÚNICA copia: si el archivo se borra o se corrompe, el sitio pierde MP/QloApps/OAuth de golpe (hPanel tiene 39 claves y **enmascara los valores**: no se pueden recuperar por API).
+**Los valores sí se pueden ver en la UI:** la tabla los enmascara, pero cada fila tiene un botón **«Mostrar»** que los revela en claro (la API de hPanel sí los devuelve enmascarados, `********`).
 
-**Regla de oro:** elegir UNA fuente y mantenerla. Hoy la fuente efectiva es el `.env` del File Manager; hPanel → Variables de entorno queda como espejo decorativo (no borrarlo, pero no confiar en él para cambios). Si algún día se quiere que hPanel mande: copiar TODAS las claves a hPanel **y borrar el `.env` del File Manager**.
+**Backup del `.env`:** con hPanel como fuente única, el respaldo de los valores es la propia tabla de hPanel (con «Mostrar»). Aun así, antes de tocar la configuración conviene descargar el `.env` del File Manager → guardar una copia local (`backup-env-prod-<fecha>.env`, **fuera de git**).
 
-### Migración a hPanel como fuente única (decidida 2026-10-19, pendiente de ejecutar)
+**Regla de oro:** hPanel → Variables de entorno es la fuente única. No volver a subir un `.env` a la raíz del dominio: volvería a ganar por precedencia y los cambios del panel dejarían de aplicarse.
+
+### Migración a hPanel como fuente única (ejecutada 2026-10-19)
 
 Auditoría del entorno de Hostinger (2026-10-19) — estado real de las tres fuentes:
 
 | Fuente | Claves | Estado |
 |---|---|---|
-| hPanel → Environment variables | 39 | Vigente pero **inerte**: el `.env` del File Manager gana siempre |
-| `.env` del File Manager (un nivel arriba de `public_html`) | 38 | **Fuente efectiva real** |
+| hPanel → Environment variables (`hbuilds/config/.env`) | 39 | **Fuente única** |
+| `.env` del File Manager (raíz del dominio) | 38 | Fallback; **eliminado el 2026-10-19** |
 | `.env.example` (canónico del repo) | 60 + 1 comentada | Documenta el contrato; le faltan 4 claves que el código lee |
 
-Las 38 claves del `.env` del servidor son exactamente las canónicas que hPanel tiene; hPanel añade `MP_BINARY_MODE`, que el `.env` del servidor **no** tiene. Las dos fuentes ya difieren en una clave: al unificar, el valor efectivo de `MP_BINARY_MODE` puede pasar de `false` (default del código) al que tenga hPanel — hay que revisarlo antes de borrar nada.
+**Comparación (2026-10-19, con el navegador: File Manager + tabla de variables de hPanel, valores comparados en memoria del navegador sin sacarlos de ahí):** las **38 claves del `.env` tienen valor idéntico** en hPanel — **0 diferencias**. hPanel añade una clave: `PANEL_PASSWORD`, que el `.env` no tenía.
 
-**Procedimiento (lo ejecuta el dueño desde hPanel; sin push ni redeploy):**
+**Qué cambió al unificar:**
 
-1. **Descargar** el `.env` del File Manager → `backup-env-prod-2026-10-19.env` (única copia).
-2. **Comparar clave por clave y valor por valor** el `.env` con hPanel → Environment variables. Secretos a cotejar: `DB_PASS`, `MERCADO_PAGO_ACCESS_TOKEN`, `PUBLIC_MERCADO_PAGO_PUBLIC_KEY`, `MERCADO_PAGO_WEBHOOK_SECRET`, `QLOAPP_API_KEY`, `CRON_SECRET`, `BOOKING_TOKEN_SECRET`, `AUTH_JWT_SECRET`, `PANEL_PASSWORD`, `GOOGLE_CLIENT_SECRET`.
-3. **Completar** en hPanel las claves que falten hasta igualar el conjunto. `.env.example` es el checklist canónico.
-4. **Preparar `runtime/`**: `TokenRevocationStore` lo crea **junto al `.env` efectivo**, así que al cambiar de fuente se mueve a `.builds/config/runtime/`. Crear esa carpeta escribible por PHP y **mover** el contenido actual si existe (si no puede crearse, la autenticación falla cerrada — ver §Deploy punto 2).
-5. **Borrar** `/home/u941268346/domains/usgarhoteles.com/.env`. No requiere push ni redeploy: `loadEnv()` cae al candidato 2 en la siguiente request.
-6. **Verificar**: `https://usgarhoteles.com/api/health` → healthy, y el cron `process_outbox` (cada 5 min) sigue entregando sin error. Si el cron falla con `No .env file found`, revertir restaurando el backup.
-7. **Opcional (código, solo después de verificar)**: quitar el candidato 1 de `loadEnv()` para que el `.env` del File Manager no vuelva a ganar por sorpresa.
+- `PANEL_PASSWORD` pasa a estar configurado → `/panel` (disponibilidad del dueño) deja de estar bloqueado por el fail-closed.
+- `MP_BINARY_MODE=true` **ya era** el valor efectivo (está en las dos fuentes) → el payload de MercadoPago no cambia.
+- Las revocaciones JWT se quedan en `<raíz del dominio>/runtime/revoked-tokens`: `TokenRevocationStore` usa la raíz del despliegue, no la carpeta del `.env`, así que la lista existente no se invalida al cambiar de fuente.
+- El código (`Config::envCandidates`) pone `hbuilds/config/.env` **antes** que el `.env` de la raíz: si alguien vuelve a subir un `.env` suelto, hPanel sigue mandando.
 
 **Lo que NO cambia con la migración (verificado 2026-10-19):**
 
 - El enlace de afiliado de Booking.com (`aid=311839`) está hardcodeado en `src/content/settings/settings.json` y `src/components/contact/ContactChannels.astro`, no en el `.env`.
 - `REVIEW_BOOKING_URL` solo alimenta el scraping de puntajes (cron `refresh-reviews`); su default en código apunta al mismo hotel.
 - Los emails transaccionales **ya están desactivados** en prod: no hay `SMTP_*` en ninguna de las dos fuentes (fail-soft documentado en `docs/STATE.md`).
+
+**Si hay que repetirla (hacia atrás):** descargar el `.env` del File Manager, copiar sus claves a hPanel → Variables de entorno, borrar el `.env` de la raíz del dominio y reiniciar el cron.
 
 ## Credenciales de Mercado Pago
 

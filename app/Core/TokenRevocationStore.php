@@ -104,26 +104,10 @@ final class TokenRevocationStore
             return self::$directory;
         }
 
-        $envPath = Config::loadedEnvPath();
-        $runtimeRoot = $envPath !== null ? dirname($envPath) : self::deploymentRoot();
+        // La lista de revocaciones vive en la raiz del despliegue (fuera de
+        // public_html): sobrevive a los deploys y no se mueve cuando cambia la
+        // fuente del .env (hPanel -> hbuilds/config/.env).
+        $runtimeRoot = Config::deploymentBase() ?? dirname(__DIR__, 2);
         return $runtimeRoot . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR . 'revoked-tokens';
-    }
-
-    private static function deploymentRoot(): string
-    {
-        $probe = (string)($_SERVER['DOCUMENT_ROOT'] ?? '');
-        if ($probe === '') {
-            $probe = dirname(__DIR__, 2);
-        }
-
-        $probe = realpath($probe) ?: $probe;
-        while ($probe !== dirname($probe)) {
-            if (strcasecmp(basename($probe), 'public_html') === 0) {
-                return dirname($probe);
-            }
-            $probe = dirname($probe);
-        }
-
-        return dirname(__DIR__, 2);
     }
 }

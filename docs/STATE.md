@@ -1,5 +1,15 @@
 # STATE — Backend USGAR (handoff de sesión)
 
+## `.env` de prod: hPanel queda como fuente única — 2026-10-19
+
+Auditoría del entorno de Hostinger hecha **con el panel abierto en el navegador** (no solo con la API, que enmascara los valores) y cierre de la confusión que arrastraba el sitio desde el 2026-08-15.
+
+- **La ruta del archivo de hPanel estaba mal documentada**: la integración escribe `hbuilds/config/.env` en la raíz del dominio. **`.builds/` no existe** (verificado en el File Manager). El código apuntaba a `.builds/config/.env` → nunca lo habría leído.
+- **Precedencia corregida**: `Config::envCandidates()` pone ahora `hbuilds/config/.env` **antes** que el `.env` suelto de la raíz del dominio (que hasta ahora ganaba siempre y era la fuente efectiva real).
+- **Los valores coinciden**: comparadas en memoria del navegador (sin sacarlos de él) las 38 claves del `.env` físico contra las 39 de hPanel → **38 idénticas, 0 diferencias**; hPanel añade solo `PANEL_PASSWORD`. Se conserva intacto el token de MP (**el de test**, decisión del dueño) y la ausencia de `SMTP_*` (emails siguen apagados por diseño).
+- **Efectos colaterales revisados**: `PANEL_PASSWORD` pasa a estar configurado → `/panel` (disponibilidad del dueño) deja de estar fail-closed; `MP_BINARY_MODE=true` ya era el valor efectivo (está en las dos fuentes) → el payload de MP no cambia; `TokenRevocationStore` pasa a usar la raíz del despliegue (no la carpeta del `.env`), así que la lista de revocaciones no se invalida ni se mueve al cambiar de fuente.
+- **Se elimina el `.env` de la raíz del dominio** (File Manager): queda hPanel como fuente única. Copia local de seguridad en `backup-env-prod-2026-10-19.env` (**fuera de git**).
+
 ## Jerarquía de encabezados y paridad E2E contra `main` — 2026-10-19
 
 Cierra el F-10 (la jerarquía que dejó el `<h1>` de página) y **prueba**, en vez de suponer, que el lote "infraestructura + SEO" no introduce regresiones.
@@ -8,7 +18,7 @@ Cierra el F-10 (la jerarquía que dejó el `<h1>` de página) y **prueba**, en v
 - **El E2E roto lo rompió el propio cambio**: `booking-flow.spec.ts:22` buscaba `main h2` en `/rooms` — justo el heading que se promovió a `<h1>`. El locator pasó a `main h1` (sigue acotado a `<main>` porque el toolbar de Astro inyecta headings en su shadow root, que es hermano de `main`). **No se borró ninguna aserción**: la comprobación sigue exigiendo un encabezado visible en la página de habitaciones.
 - **Paridad probada contra el commit base, no supuesta**: checkout de `2a824b3` con la **misma** `playwright.config.ts` (timeout 60 s) → **11 failed / 18 passed**. Con el fix → **11 failed / 18 passed**, y el `diff` de los nombres de fallo sale **vacío**: son los mismos 11 (selectores desfasados en `internals`/`login-spa`/`transitions` + 4 del wizard que necesitan un PMS vivo). **Cero regresiones del lote.**
 
-**Verificación**: `npm run build` → 121 páginas · `npm run audit:content` → **0 errores, 0 avisos** · `npx playwright test --workers=1` → 11 failed / 18 passed, conjunto idéntico al de `2a824b3`.
+**Verificación**: `npm run build` → 114 páginas · `npm run audit:content` → **0 errores, 0 avisos** · `npx playwright test --workers=1` → 11 failed / 18 passed, conjunto idéntico al de `2a824b3`.
 
 ## CSP en las páginas estáticas y `lastmod` en el sitemap — 2026-10-19
 
@@ -19,7 +29,7 @@ Cierra F-11 y el último aviso del audit de contenido. `npm run audit:content` �
 - **`lastmod` en el sitemap**: `astro.config.mjs` → `sitemap({ lastmod: new Date() })`. Los precios y la disponibilidad vienen del PMS en tiempo de ejecución, así que la fecha del build es la única señal fiable de "esto pudo cambiar"; sin ella Google no tiene motivo para volver a rastrear las páginas de habitaciones.
 - **Producción ya devuelve una CSP del host**: `curl -I https://usgarhoteles.com/` → `Content-Security-Policy: upgrade-insecure-requests` (la pone hPanel, no el repo) junto a `X-Frame-Options`, `HSTS`, `Referrer-Policy` y `Permissions-Policy` (sí del `.htaccess`, o sea que `mod_headers` funciona ahí). Con varias cabeceras CSP el navegador aplica la **intersección**: la de hPanel solo fuerza https en subrecursos, así que la que manda es la del repo. Y como `index.php` ya convive hoy con la CSP de hPanel, el patrón de dos cabeceras no es nuevo ni rompe nada.
 
-**Verificación**: `npm run check` → 180 archivos, 0/0/0 · `npm run test:unit` → 77 OK · `php vendor/bin/phpunit` → 324 tests, 958 assertions, 38 skipped, 0 fallos · `php vendor/bin/phpstan analyse --level=7` → ok · `npm run build` → 121 páginas · `npm run audit:seo` → 0 errores · `npm run audit:content` → 0/0 · `npm run audit:csp` → 114 páginas, 0 violaciones.
+**Verificación**: `npm run check` → 180 archivos, 0/0/0 · `npm run test:unit` → 77 OK · `php vendor/bin/phpunit` → 324 tests, 958 assertions, 38 skipped, 0 fallos · `php vendor/bin/phpstan analyse --level=7` → ok · `npm run build` → 114 páginas · `npm run audit:seo` → 0 errores · `npm run audit:content` → 0/0 · `npm run audit:csp` → 114 páginas, 0 violaciones.
 
 **No verificado**: que la cabecera llegue igual en producción (LiteSpeed + `mod_headers` + `FilesMatch`); hace falta un `curl -I https://usgarhoteles.com/ | grep -i content-security` tras el push. Y el flujo real de pago con la CSP puesta (el SDK y la llamada a `api.mercadopago.com` sí se verificaron en local).
 
@@ -32,7 +42,7 @@ Cierre de los tres work items que dejó la auditoría de contenido (F-8, F-9, F-
 - **Un solo `<h1>` por página (F-10)**: `SectionHeader.astro` acepta `level?: 'h1' | 'h2'` (por defecto `h2`); `/rooms/`, `/gallery/` y `/explore/` pasan `level="h1"`. En `book/success` los estados *pendiente* y *error* bajaron a `<h2>`: los tres estados conviven en el DOM (solo el de éxito es visible y es el título de la página).
 - **Falso positivo del propio audit**: `isHome` no incluía `/fr/`, así que la home francesa pedía su propia descripción. Corregido.
 
-**Verificación**: `npm run check` → 180 archivos, 0 errores/warnings/hints · `npm run test:unit` → 77 OK · `npm run build` → 121 páginas · `npm run audit:seo` → 123 páginas, 84 JSON-LD, 0 errores · `npm run audit:content` → **0 errores, 2 avisos** (sitemap sin `lastmod`, CSP: decisión del owner).
+**Verificación**: `npm run check` → 180 archivos, 0 errores/warnings/hints · `npm run test:unit` → 77 OK · `npm run build` → 114 páginas · `npm run audit:seo` → 123 páginas, 84 JSON-LD, 0 errores · `npm run audit:content` → **0 errores, 2 avisos** (sitemap sin `lastmod`, CSP: decisión del owner).
 
 **E2E**: `npx playwright test --workers=1` → **11 failed / 18 passed**, con el **mismo conjunto de fallos que `main`** (selectores desfasados: `picture img`, overlay `[data-room-card]`, `#contact-form`, y 3 tests del wizard que necesitan un PMS vivo). `main` daba 12 fallos con la config original: el cambio **no** introduce regresiones y desbloquea un test. Causa raíz de los timeouts: el dev server de Astro tarda 20-34 s en la primera respuesta y Playwright corta a los 30 s → `timeout: 60_000` + `webServer.timeout: 120_000` en `playwright.config.ts`.
 
@@ -116,9 +126,9 @@ Auditoría del sitio público con verificación **RED→GREEN sobre el artefacto
 
 **Reserva huérfana `USGAR-d5fab1ddb3b0` — RECUPERADA 2026-08-15 14:05 UTC-5**: pago aprobado (13:18) pero el evento `booking.paid` jamás llegó al outbox (bug de wiring). Recuperación: `scripts/recover-orphan-booking.php USGAR-d5fab1ddb3b0` (reconstruye `BookingPaidEvent::fromHold` con los datos congelados del hold + roundtrip check + INSERT con el formato exacto del dispatcher; idempotente por dedup de payload y del listener). El cron process_outbox la entregó en el siguiente ciclo: evento outbox id 1759 **COMPLETED** → orden QloApps **#251** (`module=mercadopago`, `source=USGAR-d5fab1ddb3b0`, `current_state=2`, `payment="Mercado Pago (Online)"`) → `qlo_htl_booking_detail` id 221 (16→19/08, 10.16 PEN, `is_cancelled=0`). **El calendario del CMS ya descuenta la habitación** (verificado en BD prod). El email NO salió por falta de `SMTP_*` en el `.env` físico (fail-soft por diseño) — pendiente del bloque SMTP. **El fix `dcb2c5c` fue PUSHEADO y el build de Hostinger completado (19:07Z) — la próxima venta real encola sola.**
 
-## .env de prod: DOS fuentes y manda el File Manager (2026-08-15, confusión del dueño)
+## .env de prod: DOS fuentes y manda el File Manager (2026-08-15) — **RESUELTO el 2026-10-19**
 
-- El dueño reportó: "cambio vars en hPanel → redeploy → las credenciales no cambian; edito el `.env` del File Manager y sí". **Confirmado por diseño**: `Config::loadEnv()` usa el PRIMER candidato que existe — `/home/u941268346/domains/usgarhoteles.com/.env` (File Manager) gana sobre `.builds/config/.env` (hPanel). Mientras exista el físico, hPanel es decorativo. Procedimiento de edición + backup documentado en `docs/DEPLOYMENT.md` §Variables de entorno (sección "DÓNDE se edita de verdad").
+- El dueño reportó: "cambio vars en hPanel → redeploy → las credenciales no cambian; edito el `.env` del File Manager y sí". **Confirmado por diseño**: `Config::loadEnv()` usa el PRIMER candidato que existe — `/home/u941268346/domains/usgarhoteles.com/.env` (File Manager) gana sobre el archivo de hPanel. **Resuelto el 2026-10-19**: hPanel es ahora la fuente única (ver la sección de este mismo archivo, arriba). Procedimiento de edición + backup documentado en `docs/DEPLOYMENT.md` §Variables de entorno (sección "DÓNDE se edita de verdad").
 - **El `.env` físico de prod NO tiene `SMTP_*`/`MAIL_*`** (38 líneas, termina en `OTA_DEFAULT_SURNAME`) → el email de confirmación NO saldrá ni con el fix del outbox desplegado (fail-soft: sin `SMTP_HOST` → log + return). PENDIENTE: copiar la sección 6 (SMTP_HOST..MAIL_FROM_NAME) del `.env` local al `.env` del servidor + confirmar que la cuenta `no-reply@usgarhoteles.com` existe en hPanel → Emails. También faltan `ROOMS_CACHE_TTL`, `BOOKING_HOLD_MAX_EXTENSIONS`, `QLOAPPS_DEFAULT_LANG_ID`, `MP_NOTIFICATION_URL` (tienen defaults en código, opcionales).
 - **Credenciales MP del `.env` físico de prod = TEST** (decisión deliberada del dueño: "test reales en campo suelto (producción)" — tarjeta APRO/OTHE contra el sitio real). NO "corregirlas" a PROD sin OK explícito.
 

@@ -10,7 +10,6 @@ namespace App\Core;
  */
 class Config {
     private static ?Config $instance = null;
-    private static ?string $loadedEnvPath = null;
     private static ?string $deploymentBase = null;
     /** @var array<string, string> */
     private array $cache = [];
@@ -54,15 +53,6 @@ class Config {
         $fallback = $default ?? (self::DEFAULTS[$key] ?? null);
         $envVal = getenv($key);
         return $instance->cache[$key] ?? ($envVal !== false && $envVal !== '' ? $envVal : $fallback);
-    }
-
-    /**
-     * Ruta del .env efectivamente cargado (null si ninguno).
-     * Diagnostico de deploy: no se expone por HTTP (el bloque env_diag se
-     * elimino de /api/health el 2026-08-15); solo uso interno/servidor.
-     */
-    public static function loadedEnvPath(): ?string {
-        return self::$loadedEnvPath;
     }
 
     /**
@@ -139,6 +129,30 @@ class Config {
     }
 
     /**
+     * Rutas candidatas del .env, en orden de prioridad.
+     *
+     * En Hostinger la fuente unica es hPanel -> Environment variables, que
+     * escribe `hbuilds/config/.env` en la raiz del dominio (verificado en el
+     * File Manager el 2026-10-19: existe hbuilds/config/.env y NO existe
+     * .builds/). El .env suelto en la raiz del dominio queda como fallback.
+     *
+     * @return list<string>
+     */
+    public static function envCandidates(?string $deploymentBase): array {
+        $candidates = [];
+        if ($deploymentBase !== null) {
+            $candidates[] = $deploymentBase . DIRECTORY_SEPARATOR . 'hbuilds'
+                . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . '.env';
+            $candidates[] = $deploymentBase . DIRECTORY_SEPARATOR . '.env';
+        }
+
+        // Dev/CLI fallback: raiz del proyecto (en local suele ser el unico .env).
+        $candidates[] = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . '.env';
+
+        return $candidates;
+    }
+
+    /**
      * Parsea el archivo .env de forma segura.
      *
      * UNA sola ruta canónica (best practice: el .env nunca dentro del web root
@@ -150,12 +164,6 @@ class Config {
      */
     private function loadEnv(): void {
         $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
-
-        // Candidatos en orden de prioridad:
-        // 1. Arriba de public_html (best practice: fuera del web root)
-        // 2. Hostinger .builds/config/.env (donde hPanel guarda las env vars)
-        // 3. Raiz del proyecto (dev/CLI)
-        $candidates = [];
 
         $deploymentBase = null;
         if (str_contains($docRoot, 'public_html')) {
@@ -181,13 +189,9 @@ class Config {
             // Hostinger: la configuración canónica vive fuera de public_html;
             // nunca permitir que un .env residual del deploy gane prioridad.
             self::$deploymentBase = $deploymentBase;
-            $candidates[] = $deploymentBase . DIRECTORY_SEPARATOR . '.env';
-            $candidates[] = $deploymentBase . DIRECTORY_SEPARATOR . '.builds'
-                . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . '.env';
         }
 
-        // Dev/CLI fallback: raíz del proyecto (en local suele ser el único .env).
-        $candidates[] = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . '.env';
+        $candidates = self::envCandidates($deploymentBase);
 
         $envPath = null;
         foreach ($candidates as $candidate) {
@@ -202,8 +206,6 @@ class Config {
                 . implode(', ', $candidates));
             return;
         }
-
-        self::$loadedEnvPath = $envPath;
 
         $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if ($lines === false) {

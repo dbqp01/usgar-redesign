@@ -47,7 +47,7 @@ Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo m
 
 **Variables de entorno en producción** — nunca dentro de `public_html` ni de `dist/`:
 
-- Fuente efectiva hoy: hPanel → **Environment variables** (la integración las escribe en `/home/<usuario>/domains/usgarhoteles.com/.builds/config/.env`).
+- Fuente efectiva hoy: hPanel → **Environment variables** (la integración las escribe en `/home/<usuario>/domains/usgarhoteles.com/hbuilds/config/.env`).
 - Fallback soportado por `app/Core/Config.php::loadEnv`: un `.env` **un nivel arriba de `public_html`**; si existe, tiene prioridad sobre las vars de hPanel.
 
 ## Credenciales de Mercado Pago

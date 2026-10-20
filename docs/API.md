@@ -255,7 +255,7 @@ Las respuestas JSON del panel incluyen `success: true`; las descargas de exporta
 
 ## Variables de entorno
 
-Fuente completa: `.env.example` (canónico). Lectura: `App\Core\Config::get()` con defaults en `app/Core/Config.php::DEFAULTS`. Ubicación del `.env` en prod: un nivel arriba de `public_html` o `.builds/config/.env` (hPanel); el build NO lo copia a `dist/`.
+Fuente completa: `.env.example` (canónico). Lectura: `App\Core\Config::get()` con defaults en `app\Core\Config.php::DEFAULTS`. Ubicación del `.env` en prod: `hbuilds/config/.env` (hPanel → Environment variables) o, como fallback, un nivel arriba de `public_html`; el build NO lo copia a `dist/`.
 
 | Variable | Usado por | Descripción |
 |---|---|---|
