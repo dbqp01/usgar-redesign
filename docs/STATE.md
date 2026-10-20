@@ -1,5 +1,14 @@
 # STATE — Backend USGAR (handoff de sesión)
 
+## Mercado Pago: credenciales de prueba en prod + firma del webhook corregida — 2026-10-19/20
+
+- **Las credenciales "de prueba" del MCP no eran de prueba** (app `8501374849722569`): el card token devuelve `live_mode:true` y un pago con tarjeta de prueba responde 401 `Unauthorized use of live credentials`. El par sandbox real está en la app `3258714866708434` (token `TEST-…`, public key `TEST-…`): `live_mode:false`, `/v1/payments/search` vacío y pago de prueba aprobado (1353921601). Ese par quedó en hPanel (Variables de entorno → «Guardar») y el webhook se registró y rotó **en esa misma app** (callback `https://usgarhoteles.com/api/webhook`, evento "Pagos").
+- **Bug de la firma (root cause)**: el `x-signature` real de MP trae el `ts` en **segundos** (`ts=1792467232`, 2026-10-19 22:33:52) aunque su documentación dice milisegundos. El `WebhookSignatureValidator` del SDK compara `ts` contra `now()` en ms → su chequeo de skew rechazaba **todas** las notificaciones (401 `TimestampOutOfTolerance`) y el webhook nunca se procesaba. Fix `27ac631`: el cálculo del drift (ventana anti-replay de 300 s) pasa al adaptador (`MercadoPagoAdapter::extractSignatureTimestamp()`, normaliza ms o s) y el SDK se invoca sin tolerancia, solo para el HMAC.
+- **Verificado en producción** (simulador del panel MP): pago 1353921601 → `Webhook recibido` → `Firma de webhook validada correctamente` → ALERTA ORPHAN (ese pago de prueba no tiene hold) → idempotencia registrada; pago 1353921761 (el que procesó el sitio) → `ya consta como procesado (approved)`. El panel responde «¡Excelente! Enviamos una notificación Webhook con éxito — 200 - OK» (antes: «La prueba de esta URL falló»).
+- **Flujo completo del sitio ya verificado con este par**: brick → card token sandbox → `POST /api/process-payment` → `approved` → hold `paid` → outbox → orden en QloApps (#266 / #268) → email omitido (SMTP_HOST vacío, por diseño). El `QloAppAdapter: API Error 500` al crear el carrito es un fallo **ajeno** a MP: el listener cae al checkout local de USGAR.
+- **Limpieza**: borrado el cron de sondeo `tTTWr5wPm8` (minutero, ejecutaba `mpiso.php`); `mpiso.php`, `mpiso2.php` y `mpiso.json` ya no están en el webroot (el deploy reemplaza `public_html`); scripts de sondeo y el token de producción locales borrados de `%TEMP%\claude`.
+- **Pendiente del dueño**: cambiar a las credenciales reales (procedimiento paso a paso en `docs/DEPLOYMENT.md` § «Credenciales de Mercado Pago») y rotar `PANEL_PASSWORD` (mismo valor que `DB_PASS`).
+
 ## `.env` de prod: hPanel queda como fuente única — 2026-10-19
 
 Auditoría del entorno de Hostinger hecha **con el panel abierto en el navegador** (no solo con la API, que enmascara los valores) y cierre de la confusión que arrastraba el sitio desde el 2026-08-15.

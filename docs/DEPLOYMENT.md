@@ -115,6 +115,31 @@ Generar el hash: `php -r "echo hash('sha256', getenv('MERCADO_PAGO_ACCESS_TOKEN'
 
 **Webhook MP:** registrar en el panel el callback `https://usgarhoteles.com/api/webhook`, topic `payment`. `MERCADO_PAGO_WEBHOOK_SECRET` debe ser EXACTO al secreto del panel, o la firma HMAC rechaza todos los webhooks (401).
 
+### Credenciales de Mercado Pago: app, token, public key y secreto van en pareja (verificado 2026-10-19/20)
+
+En la cuenta hay **dos aplicaciones** y cada una tiene su propio par token/public key **y su propio secreto de webhook**:
+
+| App | Credenciales | Comportamiento verificado | Uso |
+|---|---|---|---|
+| `8501374849722569` (la que expone el MCP de Mercado Pago) | "Test (Sandbox)" | **Son live para esta cuenta**: el card token devuelve `live_mode:true` y un pago con tarjeta de prueba responde 401 `Unauthorized use of live credentials`. `/v1/payments/search` ve los pagos reales. | Solo producción/credenciales reales |
+| `3258714866708434` | token `TEST-…` + public key `TEST-…` | **Sandbox real**: `live_mode:false`, `/v1/payments/search` vacío, pago de prueba aprobado (1353921601) | Pruebas |
+
+Reglas que se sacan de esa verificación:
+
+1. **El webhook es por aplicación.** Registra el callback y rota el secreto **en la misma app** cuyas credenciales van en el `.env`; si el `MERCADO_PAGO_WEBHOOK_SECRET` es de otra app, la firma nunca valida (401).
+2. **El secreto solo se rota desde el panel**: Webhooks → *Configurar notificación* → «Restablecer firma secreta». No hay API: `POST/GET /v1/webhooks` responde 404 y `save_webhook` del MCP solo acepta apps del usuario propietario ("The application is not from the user").
+3. **`get_credentials` del MCP devuelve los secretos enmascarados** (`********`). No se puede copiar ese valor a una petición de reemplazo: hay que revelarlo en el panel o en el editor de hPanel («Mostrar»).
+4. **Simulador del panel**: «Simular notificación» → «Nueva prueba» → **Tipo de evento = "Pagos"** + Data ID → «Enviar prueba». Si el tipo de evento no es "Pagos", no se envía nada. Resultado correcto: *«¡Excelente! Enviamos una notificación Webhook con éxito — 200 - OK»*.
+5. El `ts` del header `x-signature` llega en **segundos** aunque la doc diga milisegundos → el adaptador normaliza las dos unidades (ver `docs/SECURITY.md`).
+
+**Cambio a las credenciales reales (cuenta principal del dueño):**
+
+1. En la app definitiva: copiar Access Token y Public Key.
+2. Registrar/verificar el webhook `https://usgarhoteles.com/api/webhook` (topic "Pagos") **en esa app** y rotar su secreto.
+3. hPanel → Despliegues → Ajustes y reimplementación → Variables de entorno → poner `MERCADO_PAGO_ACCESS_TOKEN`, `PUBLIC_MERCADO_PAGO_PUBLIC_KEY` y `MERCADO_PAGO_WEBHOOK_SECRET` → **«Guardar»** (sin redeploy; la app lo lee en el siguiente request).
+4. Regenerar el hash del guard: `php -r "echo hash('sha256', getenv('MERCADO_PAGO_ACCESS_TOKEN'));"` → `MERCADO_PAGO_PROD_TOKEN_SHA256` en `.env.production` (fuera de git).
+5. Ojo al entorno: con credenciales **live**, una tarjeta de prueba de MP da 401 (`Unauthorized use of live credentials`). Para la comprobación final hace falta una tarjeta real y un cobro real de importe mínimo; para las regresiones se sigue usando el par sandbox de la app `3258714866708434` (con su propio webhook y su propio secreto).
+
 ## Cron jobs (Hostinger: Avanzado → Trabajos programados)
 
 Verificado en Hostinger vía API (2026-08-14) — esta es la configuración REAL, no la teórica:
