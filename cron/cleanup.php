@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 /**
- * Cron de limpieza de holds expirados (auditoría 2026-08-11: el endpoint
- * HTTP /api/cron/cleanup no tenía operador en producción — la tabla acumulaba
- * holds 'pending' vencidos sin marcar).
+ * Cron de limpieza de holds expirados. El endpoint HTTP /api/cron/cleanup
+ * no tenía operador en producción: la tabla acumulaba holds 'pending'
+ * vencidos sin marcar.
  * Uso: php cron/cleanup.php (cada 10 minutos)
  */
 

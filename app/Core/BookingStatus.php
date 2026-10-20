@@ -16,7 +16,7 @@ enum BookingStatus: string {
     case Cancelled    = 'cancelled';
     case FraudReview  = 'fraud_review';
     case ManualReview = 'manual_review';
-    case ExpiredPaid  = 'expired_paid'; // todo 9: pago approved que llego sobre un hold expirado (alerta manual)
+    case ExpiredPaid  = 'expired_paid'; // pago approved que llego sobre un hold expirado (alerta manual)
 
     /**
      * Verifica si el estado permite extension de hold.

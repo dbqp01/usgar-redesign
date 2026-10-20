@@ -1,15 +1,14 @@
 <?php
 declare(strict_types=1);
 
-// Recuperación de la reserva huérfana USGAR-d5fab1ddb3b0 (2026-08-15).
-// El pago se aprobó (hold paid) pero el evento booking.paid NUNCA llegó al
-// outbox (bug de wiring del EventDispatcher, fix dcb2c5c). Este script
-// reconstruye el evento con los datos REALES del hold y lo inserta en
-// event_outbox con el MISMO formato que EventDispatcher::dispatch — el cron
-// process_outbox (5 min) lo entregará a QloApps (confirmOrder) y al email.
+// Recuperacion manual de una reserva paid cuyo evento booking.paid no llego
+// al outbox (pago cobrado, sin orden en QloApps ni email). Reconstruye el
+// evento con los datos REALES del hold y lo inserta en event_outbox con el
+// MISMO formato que EventDispatcher::dispatch — el cron process_outbox (5 min)
+// lo entregara a QloApps (confirmOrder) y al email.
 //
 // Uso: php scripts/recover-orphan-booking.php <cart_id>
-// Idempotente: no inserta si el evento ya está en el outbox (por cart_id
+// Idempotente: no inserta si el evento ya esta en el outbox (por cart_id
 // deserializado) ni si la orden ya existe en QloApps (dedup del listener).
 
 require __DIR__ . '/../app/bootstrap.php';

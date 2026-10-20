@@ -24,7 +24,7 @@ use Exception;
  * Crea un bloqueo temporal en QloApps (1 o varias habitaciones) y devuelve los
  * datos para el pago con Custom Checkout (Checkout API) desde el cliente.
  *
- * Contrato (2026-08-12, multi-room): body con `rooms[]` (list de
+ * Contrato (multi-room): body con `rooms[]` (list de
  * {slug|id_room_type, guests}) o `roomSlug` legacy (1 habitacion). Precios
  * SIEMPRE resueltos server-side (nunca del cliente). Tarifa (rateType) global
  * por reserva; cargo por huesped adicional a precio completo (decision del
@@ -60,11 +60,11 @@ class CreateBookingAction {
             if (empty($body['guestPhone'])) {
                 $body['guestPhone'] = $gd['phone'] ?? '';
             }
-            // FIX 2026-08-14 (perdida de datos): el pickup del aeropuerto
-            // (airport-transfer + hora de vuelo) se mandaba en
-            // guestDetails.specialRequests pero se DESCARTAba aqui — el hold
-            // persistia solo name/email/phone y el traslado se perdia (ni la
-            // BD ni el PMS se enteraban). Se preserva para guest_data.
+            // El pickup del aeropuerto (airport-transfer + hora de vuelo) se
+            // manda en guestDetails.specialRequests y antes se descartaba
+            // aqui: el hold persistia solo name/email/phone y el traslado se
+            // perdia (ni la BD ni el PMS se enteraban). Se preserva para
+            // guest_data.
             if (empty($body['specialRequests'])) {
                 $body['specialRequests'] = trim((string)($gd['specialRequests'] ?? ''));
             }
@@ -215,7 +215,7 @@ class CreateBookingAction {
             }
             $this->pdo->beginTransaction();
 
-            // Serializacion de holds por HABITACION (todo 10 / W2): lock por room
+            // Serializacion de holds por HABITACION: lock por room
             // type dentro de la misma transaccion que el re-check y el INSERT.
             // Orden ascendente de room types para evitar deadlocks entre requests
             // concurrentes con combos cruzados (A+B vs B+A).
@@ -307,9 +307,9 @@ class CreateBookingAction {
                     'guests' => array_sum(array_column($resolved, 'guests')),
                     // Idioma del huésped para el email de confirmación (voucher).
                     'locale' => trim((string)($body['locale'] ?? 'en')) ?: 'en',
-                    // FIX 2026-08-14: pickup del aeropuerto (hora de vuelo) —
-                    // se descartaba antes; ahora persiste y viaja en el evento
-                    // booking.paid hasta el PMS (special_requests).
+                    // Pickup del aeropuerto (hora de vuelo): persiste y viaja
+                    // en el evento booking.paid hasta el PMS
+                    // (special_requests).
                     'special_requests' => trim((string)($body['specialRequests'] ?? '')),
                 ],
                 'room_data'               => $roomDataList,
@@ -333,7 +333,7 @@ class CreateBookingAction {
 
             $timeLeftSeconds = max(0, strtotime($expiresAt) - time());
 
-            // Reutiliza la tasa/PEN congelados (una sola lectura, todo 25).
+            // Reutiliza la tasa/PEN congelados (una sola lectura).
             $gatewayPricePEN = $priceSnapshotPen;
 
             $roomSummaries = array_map(static function (array $r): array {

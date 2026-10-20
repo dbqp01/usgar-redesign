@@ -19,7 +19,7 @@ class PriceCalculator {
     }
 
     /**
-     * Cargo por huesped adicional (regla del negocio, 2026-08-12): toda
+     * Cargo por huesped adicional (regla del negocio): toda
      * habitacion admite +1 persona sobre su ocupancia base (base = maxGuests - 1)
      * pagando un cargo por noche a PRECIO COMPLETO (no se descuenta con la
      * tarifa no reembolsable — decision del negocio: -10% solo sobre el base).
@@ -32,7 +32,7 @@ class PriceCalculator {
     }
 
     /**
-     * Total de una habitacion en CENTIMOS enteros (fix P1-6 2026-08-12):
+     * Total de una habitacion en CENTIMOS enteros:
      * las sumas de dinero se acumulan en int, nunca en float. El float solo
      * aparece en la frontera (JSON/display) via / 100. Precio por noche de
      * QloApps (2 decimales) -> centimos exactos; el cargo extra (float

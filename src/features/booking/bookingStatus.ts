@@ -1,8 +1,8 @@
 // src/features/booking/bookingStatus.ts
 // Util compartido de consulta de estado de reserva (polling del pago).
-// Extraido de success.astro (2026-08-13) para que PaymentStep (wizard) y
+// Extraido de success.astro para que PaymentStep (wizard) y
 // success.astro usen la MISMA maquinaria: fetch + polling.
-// 2026-09-07: intervalo fijo -> backoff exponencial con jitter, pausa mientras
+// Intervalo fijo -> backoff exponencial con jitter, pausa mientras
 // la pestana esta oculta (visibilitychange) y respeto de Retry-After (429/503).
 // El render del resultado es responsabilidad de cada pagina (DOM distinto);
 // aqui solo vive la consulta.

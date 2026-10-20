@@ -24,7 +24,7 @@ export async function initLocationMap(
     center: [lat, lng],
     zoom,
     // En touch el drag del mapa roba el scroll vertical de la página (queja
-    // del dueño 2026-08-15: "Nearby no permite bajar en celular"). El mapa
+    // del dueño: "Nearby no permite bajar en celular"). El mapa
     // queda estático en táctil; la navegación va por los links a Google Maps.
     dragging: !L.Browser.touch,
     scrollWheelZoom: false,
@@ -36,7 +36,7 @@ export async function initLocationMap(
   });
 
   // Tile layer: CARTO Voyager (light editorial style, warm palette that matches
-  // the brand; dark tiles were flagged as a bug by the owner, 2026-08-15).
+  // the brand; dark tiles were flagged as a bug by the owner).
   // Fallback to OSM Standard if the CARTO CDN is blocked or down (DNS blockers, outages).
   const cartoTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     maxZoom: 19,

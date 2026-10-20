@@ -175,7 +175,7 @@ class Middleware {
     }
 
     /**
-     * Middleware de correlacion de peticiones (P2-6, 2026-08-12): refleja en
+     * Middleware de correlacion de peticiones: refleja en
      * la respuesta el header x-request-id entrante o uno generado (patron
      * generate-if-missing, http.dev/x-request-id). El valor queda disponible
      * via Request::getRequestId() para logs y errores.

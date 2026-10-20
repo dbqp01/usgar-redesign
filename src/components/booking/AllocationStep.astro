@@ -3,7 +3,7 @@
 // Seleccion de habitacion + tarifas (Estándar / No Reembolsable).
 // Los precios de ambas tarifas vienen del backend (GET /api/rooms rate_plans,
 // resueltos desde los Feature Price Plans de QloApps, ver DiscountResolver) —
-// NUNCA hardcodear precios aqui. (audit 2026-08-12)
+// NUNCA hardcodear precios aqui.
 // Preserves: data-allocation-step, data-allocation-options, data-allocation-next, data-allocation-empty
 import { useTranslations, type Locale } from '../../i18n/utils';
 
@@ -104,7 +104,7 @@ const t = useTranslations(lang);
     // Ratio no reembolsable de la habitación principal de la opción, servido
     // por el backend (rate_plans resueltos desde los Feature Price Plans de
     // QloApps). Sin datos (API caída) => ratio 1: ambas tarifas al mismo
-    // precio (honesto). (audit 2026-08-12)
+    // precio (honesto).
     function render() {
       const state = wizardStore.getState();
       const options = state.options;
@@ -164,7 +164,7 @@ const t = useTranslations(lang);
             })
           : false;
         const outOfStock = !payable;
-        // Multi-room reservable desde 2026-08-12 (pipeline rooms[] completo);
+        // Multi-room reservable (pipeline rooms[] completo);
         // solo se bloquea si la habitacion principal no tiene unidades.
         const roomName = opt.rooms.map((e) => escapeHtml(e.room.displayName)).join(' + ');
 

@@ -17,7 +17,7 @@ const platforms = [
   { id: 'expedia', name: 'EXPEDIA', text: 'text-amber-500', label: 'VERIFIED EXPEDIA TRAVELER' },
 ] as const;
 
-// URLs públicas de reseñas del hotel (scores reales extraídos 2026-08-15).
+// URLs públicas de reseñas del hotel (scores reales extraídos).
 // El ribbon y las tarjetas enlazan a las plataformas (target _blank).
 const platformUrls = {
   booking: 'https://www.booking.com/hotel/pe/chavin-imperio-del-sol.html',
@@ -41,7 +41,7 @@ const platformUrls = {
       {t('reviews.description')}
     </p>
 
-    <!-- Editorial Reputation Metrics Header Bar (scores reales extraidos 2026-08-15:
+    <!-- Editorial Reputation Metrics Header Bar (scores reales extraidos:
          Booking.com 8.7/414, KAYAK 8.7/683, Expedia 8.6) -->
     <div class="flex flex-wrap items-center justify-center gap-8 mt-10 pt-8 border-t border-black/10 dark:border-white/10 text-xs font-mono uppercase tracking-widest text-text-secondary-light dark:text-text-secondary-dark">
       <a href={platformUrls.booking} target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:opacity-75 transition-opacity" aria-label={t('reviews.viewBooking')}>
@@ -74,7 +74,7 @@ const platformUrls = {
     <div id="velocity-marquee-track" class="marquee-css-track gap-8">
       {
         [...reviews, ...reviews].map((review, index) => {
-          // Todas las reseñas mostradas son de Booking.com (extraidas 2026-08-15)
+          // Todas las reseñas mostradas son de Booking.com (extraidas)
           const platform = platforms[1];
 
           return (

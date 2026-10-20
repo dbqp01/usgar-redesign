@@ -23,8 +23,7 @@ use Throwable;
 class QloAppAdapter implements PmsPortInterface {
     private const QLOAPPS_LOCAL_PREFIX = 'USGAR-';
 
-    // Fix P2-3 (2026-08-12): literales de la instalacion QloApps verificada
-    // que estaban duplicados en varias consultas de confirmOrder().
+    // Literales de la instalacion QloApps verificada.
     private const SHOP_GROUP_ID = 1;
     private const SHOP_ID = 1;
     private const LANG_ID = 1;
@@ -334,7 +333,7 @@ class QloAppAdapter implements PmsPortInterface {
 
             // Bloqueos del dueño / mantenimiento (qlo_htl_room_disable_dates):
             // descuentan disponibilidad igual que una reserva — nadie compra en
-            // la web una habitación bloqueada (fix panel 2026-08-15).
+            // la web una habitación bloqueada.
             $disabledStmt = $this->pdo->prepare("
                 SELECT rd.id_room_type, rd.id_room, rd.date_from, rd.date_to
                 FROM qlo_htl_room_disable_dates rd
@@ -518,8 +517,7 @@ class QloAppAdapter implements PmsPortInterface {
 
         // payment_status valido para HOLD sin pagar: 3 = Awaiting
         // (WebserviceSpecificManagementBookings: API_BOOKING_PAYMENT_STATUS_*
-        // 1=Completed, 2=Partial, 3=Awaiting; 0 => 400 "Estado de pago invalido",
-        // bug verificado en codigo fuente 2026-08-12).
+        // 1=Completed, 2=Partial, 3=Awaiting; 0 => 400 "Estado de pago invalido").
         $xmlData = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <qloapps xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -674,9 +672,9 @@ XML;
             // Moneda de la orden: la pasarela cobra PEN (MERCADO_PAGO_CURRENCY).
             // La tienda QloApps opera en USD (PS_CURRENCY_DEFAULT=2) y el codigo
             // antiguo fijaba id_currency=2 creyendo que era PEN — las ordenes
-            // nacian "USD 684" con montos PEN (auditoria 2026-08-11). Se resuelve
-            // la moneda PEN real (id + conversion_rate de qlo_currency); el
-            // fallback conserva el id 1 (PEN en la instalacion verificada).
+            // nacian "USD 684" con montos PEN. Se resuelve la moneda PEN real
+            // (id + conversion_rate de qlo_currency); el fallback conserva el
+            // id 1 (PEN en la instalacion verificada).
             $penCurrencyId = 1;
             $penConversionRate = 1.0;
             // P2-3: constantes del adapter como variables interpolables
@@ -710,8 +708,8 @@ XML;
                     VALUES ({$shopGroupId}, {$shopId}, ?, ?, ?, ?, ?, 1, 1, NOW(), NOW())
                 ");
                 // passwd/secure_key de clientes guest: valores criptograficamente
-                // aleatorios (fix 2026-08-10 — antes md5(rand()), CWE-338: PRNG
-                // predecible para secretos de acceso a ordenes de PrestaShop).
+                // aleatorios (md5(rand()) era un PRNG predecible para secretos
+                // de acceso a ordenes de PrestaShop, CWE-338).
                 // Formato 32-hex compatible con el schema de PrestaShop/QloApps.
                 $guestPasswd = bin2hex(random_bytes(16));
                 $guestSecureKey = bin2hex(random_bytes(16));

@@ -47,11 +47,11 @@ class HandleMercadoPagoWebhookAction {
         $type = $body['type'] ?? ($body['action'] ?? null);
         $topic = $request->getQuery('topic');
 
-        // 0.1 TODO 13: filtro ESTRICTO $type === 'payment'. El str_contains
-        // laxo dejaba pasar topics SEPARADOS que contienen la subcadena
-        // 'payment' (subscription_authorized_payment, topic_chargebacks_wh,
-        // etc. — doc MP webhooks, tabla de topics). Cualquier otro type se
-        // reconoce con 200 sin procesar ni validar firma.
+        // 0.1 Filtro ESTRICTO $type === 'payment': el str_contains laxo dejaba
+        // pasar topics SEPARADOS que contienen la subcadena 'payment'
+        // (subscription_authorized_payment, topic_chargebacks_wh, etc. — doc MP
+        // webhooks, tabla de topics). Cualquier otro type se reconoce con 200
+        // sin procesar ni validar firma.
         if ($type !== 'payment') {
             $nonPaymentMax = (int)Config::get('WEBHOOK_NON_PAYMENT_MAX_REQUESTS', '30');
             $nonPaymentWindow = (int)Config::get('WEBHOOK_NON_PAYMENT_WINDOW_SECONDS', '60');
@@ -65,10 +65,10 @@ class HandleMercadoPagoWebhookAction {
             return;
         }
 
-        // 1. TODO 13: el payment id sale SOLO de data.id del body y de
-        // data.id/data_id del query (MP envia ?data.id=XXX, PHP lo convierte
-        // a data_id). body['id'] es el ID de la NOTIFICACION, NO el del pago
-        // (doc MP) — nunca se usa como payment id.
+        // 1. El payment id sale SOLO de data.id del body y de data.id/data_id
+        // del query (MP envia ?data.id=XXX, PHP lo convierte a data_id).
+        // body['id'] es el ID de la NOTIFICACION, NO el del pago (doc MP) —
+        // nunca se usa como payment id.
         $queryDataId = $request->getQuery('data_id') ?? $request->getQuery('data.id');
         $bodyDataId = $body['data']['id'] ?? null;
         if ($queryDataId !== null && $bodyDataId !== null
@@ -133,25 +133,23 @@ class HandleMercadoPagoWebhookAction {
                 return;
             }
 
-            // 3. TODO 11: la transaccion inicia ANTES del chequeo de
-            // idempotencia (SELECT ... FOR UPDATE sobre processed_payments)
-            // para que el lock no se suelte en autocommit. El chequeo es
-            // FAIL-CLOSED: si el SELECT falla -> excepcion -> 500 (MP
-            // reintenta; nunca reprocesa un duplicado).
+            // 3. La transaccion inicia ANTES del chequeo de idempotencia
+            // (SELECT ... FOR UPDATE sobre processed_payments) para que el lock
+            // no se suelte en autocommit. El chequeo es FAIL-CLOSED: si el
+            // SELECT falla -> excepcion -> 500 (MP reintenta; nunca reprocesa
+            // un duplicado).
             $this->pdo->beginTransaction();
 
             $status = $paymentDetails['status'] ?? 'pending';
-            // Coordinacion W3: el create (todo 3) envia external_reference
-            // 'USGAR-{cartId}'; al resolver el hold se STRIP-ea el prefijo
-            // (back-compat: ref sin prefijo se usa directo).
+            // El create envia external_reference 'USGAR-{cartId}'; al resolver
+            // el hold se STRIP-ea el prefijo (back-compat: ref sin prefijo se
+            // usa directo).
             $cartId = $this->resolveCartId($paymentDetails['external_reference'] ?? null);
             $transactionAmount = (float)($paymentDetails['transaction_amount'] ?? 0.0);
 
-            // 4.5 TODO 12: idempotencia POR TIPO DE EVENTO. El indice unico
+            // 4.5 Idempotencia POR TIPO DE EVENTO: el indice unico
             // (payment_id, event_type) permite que un refund del mismo
-            // payment_id coexista con su approved; la rama refund la refina
-            // la Wave 3, aqui queda la infraestructura (valores de event_type
-            // ya definidos).
+            // payment_id coexista con su approved.
             $eventType = $this->resolveEventType($status);
 
             if ($this->bookingRepo->isPaymentProcessed($paymentIdStr, $eventType)) {
@@ -161,15 +159,14 @@ class HandleMercadoPagoWebhookAction {
                 return;
             }
 
-            // TODO 13 (r1/r2): status rejected/failed -> 200 +
-            // markPaymentProcessed('rejected') (cart_id del hold si existe,
-            // '' si no). NUNCA 400/500: un error haria que MP reintente la
-            // notificacion cada 15 min por siempre (doc MP retries).
-            // FIX 2026-08-13: transicion del hold pending -> failed. Sin
-            // ella el hold quedaba pending hasta vencer el TTL y la pagina
-            // de exito mostraba "BOOKING EXPIRED" aunque MP ya habia
-            // rechazado el pago (correo de rechazo llegaba igual). El guard
-            // de updateStatus (solo desde pending) la hace segura.
+            // status rejected/failed -> 200 + markPaymentProcessed('rejected')
+            // (cart_id del hold si existe, '' si no). NUNCA 400/500: un error
+            // haria que MP reintente la notificacion cada 15 min por siempre
+            // (doc MP retries). Ademas transiciona el hold pending -> failed:
+            // sin ella el hold quedaba pending hasta vencer el TTL y la pagina
+            // de exito mostraba "BOOKING EXPIRED" aunque MP ya habia rechazado
+            // el pago. El guard de updateStatus (solo desde pending) la hace
+            // segura.
             if (in_array($status, ['rejected', 'failed'], true)) {
                 if ($cartId !== null && $cartId !== '') {
                     // A rejected/failed payment can reference a deleted or
@@ -193,17 +190,14 @@ class HandleMercadoPagoWebhookAction {
 
             if ($status !== 'approved') {
                 if (in_array($status, ['refunded', 'charged_back', 'cancelled'], true)) {
-                    // Rama refund/chargeback/cancel (fix 2026-08-07): el dinero
-                    // salio y el hold/PMS quedan 'paid' — la reconciliacion con
-                    // QloApps (cancelar la orden) sigue siendo el refactor W3
-                    // diferido. Minimo viable: idempotencia con el MISMO
-                    // $eventType del chequeo (L128) + alerta para resolucion
-                    // manual (mismo canal que expired_paid/fraud_review).
-                    // Antes era un no-op silencioso: updateStatus('failed') es
-                    // fail-closed (target no declarado en el guard del todo 9)
-                    // y, sin markPaymentProcessed, cada notificacion repetida
-                    // de MP reprocesaba el evento para siempre.
-                    // FIX 2026-08-13: 'cancelled' SI es terminal sin dinero
+                    // Rama refund/chargeback/cancel: el dinero salio y el
+                    // hold/PMS quedan 'paid' — la cancelacion de la orden en
+                    // QloApps sigue pendiente de decision de producto. Minimo
+                    // viable: idempotencia con el MISMO $eventType del chequeo
+                    // + alerta para resolucion manual (mismo canal que
+                    // expired_paid/fraud_review). Sin markPaymentProcessed
+                    // cada notificacion repetida de MP reprocesaba el evento
+                    // para siempre. 'cancelled' SI es terminal sin dinero
                     // capturado -> pending -> failed (mismo guard); un pago
                     // cancelado no debe dejar el hold pending hasta el TTL.
                     if ($status === 'cancelled' && $cartId) {
@@ -240,9 +234,9 @@ class HandleMercadoPagoWebhookAction {
                 return;
             }
 
-            // TODO 14: pago approved SIN external_reference localizable ->
-            // orphan (el hold no puede resolverse). Se marca procesado para
-            // cortar el reintento infinito de MP.
+            // Pago approved SIN external_reference localizable -> orphan (el
+            // hold no puede resolverse). Se marca procesado para cortar el
+            // reintento infinito de MP.
             if (!$cartId) {
                 $this->markOrphan($paymentIdStr);
                 return;
@@ -251,12 +245,12 @@ class HandleMercadoPagoWebhookAction {
             // 5. Transaccion Local PDO con Bloqueo Pesimista
             $hold = $this->bookingRepo->getByCartIdForUpdate((string)$cartId);
             if (!$hold) {
-                // TODO 14: firma valida + hold inexistente -> 200 + fila
-                // orphan (cart_id='' — la columna es NOT NULL). MP reintenta
-                // cada 15 min indefinidamente ante no-200 (doc MP); marcarlo
+                // Firma valida + hold inexistente -> 200 + fila orphan
+                // (cart_id='' — la columna es NOT NULL). MP reintenta cada
+                // 15 min indefinidamente ante no-200 (doc MP); marcarlo
                 // procesado corta el retry. El chequeo isPaymentProcessed
-                // corre DENTRO de la txn ANTES del INSERT (patron todo 11) y
-                // el INSERT usa ON DUPLICATE KEY (carrera concurrente segura).
+                // corre DENTRO de la txn ANTES del INSERT y el INSERT usa
+                // ON DUPLICATE KEY (carrera concurrente segura).
                 Logger::error("HandleMercadoPagoWebhookAction ALERTA ORPHAN: Pago {$paymentIdStr} sin hold para Cart ID {$cartId}");
                 $this->markOrphan($paymentIdStr);
                 return;
@@ -273,8 +267,8 @@ class HandleMercadoPagoWebhookAction {
 
             $holdStatus = BookingStatus::tryFrom($hold['status']);
 
-            // 5.1 TODO 9: pago approved sobre hold EXPIRADO -> expired_paid +
-            // alerta (log + tabla) para resolucion manual: la habitacion pudo
+            // 5.1 Pago approved sobre hold EXPIRADO -> expired_paid + alerta
+            // (log + tabla) para resolucion manual: la habitacion pudo
             // re-venderse mientras el pago tardaba. No se revive la reserva.
             if ($holdStatus === BookingStatus::Expired) {
                 Logger::error("HandleMercadoPagoWebhookAction ALERTA: Pago approved {$paymentIdStr} llego sobre hold expirado {$cartId} (posible reventa). Marcado expired_paid.");
@@ -324,11 +318,11 @@ class HandleMercadoPagoWebhookAction {
                 return;
             }
 
-            // 5.5 VALIDACION DE SEGURIDAD ESTRICTA (Amount Mismatch) — todo 32.
+            // 5.5 VALIDACION DE SEGURIDAD ESTRICTA (Amount Mismatch).
             // Comparacion en CENTAVOS ENTEROS: NUNCA igualdad float ni
             // number_format (imprecision de punto flotante = falsos positivos).
             // expected_pen_cents se DERIVA del PEN CONGELADO al cotizar
-            // (price_snapshot_pen, columna auto-heal + write del todo 25):
+            // (price_snapshot_pen, columna auto-heal + write al cotizar):
             // el hold fija la tasa en creacion, el cambio posterior de
             // EXCHANGE_RATE_USD_PEN NO debe producir falso fraude. Back-compat
             // documentado: hold legacy sin la columna (NULL) deriva con la
@@ -339,11 +333,11 @@ class HandleMercadoPagoWebhookAction {
                 : (int)round(PriceCalculator::toGatewayPrice((float)($hold['price_snapshot'] ?? 0.0)) * 100);
             $chargedPenCents = (int)round($transactionAmount * 100);
             if ($chargedPenCents < $expectedPenCents) {
-                // TODO 16: monto insuficiente -> FraudReview + processed('fraud_review')
+                // Monto insuficiente -> FraudReview + processed('fraud_review')
                 // EN LA MISMA transaccion + 200 (antes 400 sin marcar -> MP
                 // reintentaba cada 15 min por siempre). La reserva NO queda
-                // paid; fraud_review -> paid es legal cuando el cron del todo
-                // 24 re-despacha con el monto correcto (guard del todo 9).
+                // paid; fraud_review -> paid es legal cuando el cron de
+                // revision manual re-despacha con el monto correcto.
                 Logger::error("HandleMercadoPagoWebhookAction ALERTA FRAUDE: Monto cobrado ({$chargedPenCents} centavos) es menor al esperado ({$expectedPenCents} centavos) para Cart ID {$cartId}");
                 if (!$this->bookingRepo->isPaymentProcessed($paymentIdStr, 'fraud_review')) {
                     if (!$this->bookingRepo->updateStatus((string)$cartId, BookingStatus::FraudReview->value)
@@ -367,15 +361,15 @@ class HandleMercadoPagoWebhookAction {
                 throw new \RuntimeException('No se pudo persistir el pago aprobado.');
             }
 
-            // TODO 18/23 (Wave 4): el INSERT del evento en event_outbox corre
-            // DENTRO de la transaccion (dispatch -> outbox) ANTES del commit —
-            // patron transactional-outbox (microservices.io): si el commit se
+            // El INSERT del evento en event_outbox corre DENTRO de la
+            // transaccion (dispatch -> outbox) ANTES del commit — patron
+            // transactional-outbox (microservices.io): si el commit se
             // confirma, el evento YA esta persistido; no se pierde en la
             // ventana commit->ACK. Los listeners corren en el cron
-            // (process_outbox, todo 19); aqui NO queda trabajo pesado tras el
-            // ACK. Fail-closed (todo 11): si el INSERT del outbox falla y el
-            // fallback dispatchNow lanza, la excepcion propaga -> rollback ->
-            // 500 -> MP reintenta (idempotencia protege).
+            // process_outbox; aqui NO queda trabajo pesado tras el ACK.
+            // Fail-closed: si el INSERT del outbox falla y el fallback
+            // dispatchNow lanza, la excepcion propaga -> rollback -> 500 ->
+            // MP reintenta (idempotencia protege).
             $event = BookingPaidEvent::fromHold((string)$cartId, $paymentIdStr, $hold);
             $this->eventDispatcher->dispatch($event);
 
@@ -404,10 +398,10 @@ class HandleMercadoPagoWebhookAction {
     }
 
     /**
-     * Mapea el status del pago al tipo de evento de idempotencia (todo 12).
+     * Mapea el status del pago al tipo de evento de idempotencia.
      * La rama refunded/charged_back habilita los refunds; rejected/failed
      * evita reintentos eternos de MP; orphan/fraud_review los usan las ramas
-     * de la Wave 3.
+     * de orphan y revision antifraude.
      */
     private function resolveEventType(string $status): string {
         return match ($status) {
@@ -419,9 +413,9 @@ class HandleMercadoPagoWebhookAction {
 
     /**
      * Normaliza el external_reference del pago al cartId local.
-     * Coordinacion W3: el create (todo 3) envia 'USGAR-{cartId}'; se
-     * STRIP-ea el prefijo. Back-compat: una ref sin prefijo (legacy) se usa
-     * directa. Devuelve null si no hay ref o el prefijo deja vacio.
+     * El create envia 'USGAR-{cartId}'; se STRIP-ea el prefijo. Back-compat:
+     * una ref sin prefijo (legacy) se usa directa. Devuelve null si no hay ref
+     * o el prefijo deja vacio.
      */
     private function resolveCartId(?string $externalReference): ?string {
         if ($externalReference === null || $externalReference === '') {
@@ -435,11 +429,11 @@ class HandleMercadoPagoWebhookAction {
     }
 
     /**
-     * TODO 14: marca un pago sin hold como procesado (orphan) y responde 200,
-     * cortando el reintento infinito de MP. El chequeo isPaymentProcessed
-     * corre DENTRO de la transaccion ANTES del INSERT (determinismo bajo
-     * carrera; el INSERT usa ON DUPLICATE KEY como cinturon-y-tirantes).
-     * cart_id = '' porque la columna es NOT NULL. Requiere txn activa.
+     * Marca un pago sin hold como procesado (orphan) y responde 200, cortando
+     * el reintento infinito de MP. El chequeo isPaymentProcessed corre DENTRO
+     * de la transaccion ANTES del INSERT (determinismo bajo carrera; el INSERT
+     * usa ON DUPLICATE KEY como cinturon-y-tirantes). cart_id = '' porque la
+     * columna es NOT NULL. Requiere txn activa.
      */
     private function markOrphan(string $paymentIdStr): void {
         if (!$this->bookingRepo->isPaymentProcessed($paymentIdStr, 'orphan')) {

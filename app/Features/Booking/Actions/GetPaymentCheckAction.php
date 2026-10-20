@@ -12,16 +12,16 @@ use App\Features\Shared\Ports\PaymentGatewayPortInterface;
 
 /**
  * Accion ADR: GET /api/payment-check?cart_id=...&token=...
- * Consulta si existe un pago en MercadoPago para el cart (todo 31, W5).
+ * Consulta si existe un pago en MercadoPago para el cart.
  * Misma validacion de ownership de cart que GetBookingStatusAction (token
  * HMAC derivado de cart_id + email del guest): NUNCA expone la existencia de
  * pagos por cartId sin verificacion.
  *
  * Orden de fuentes:
  *   1) payment_id local del hold (intento previo pending/commit-falla).
- *   2) MP por external_reference USGAR-{cartId} (findPaymentByExternalReference,
- *      W1) — con REINTENTOS por consistencia eventual de GET /v1/payments/search
- *      (2-3 intentos con backoff 1-2s antes de declarar vacio; fix MAJOR r5).
+ *   2) MP por external_reference USGAR-{cartId} (findPaymentByExternalReference)
+ *      — con REINTENTOS por consistencia eventual de GET /v1/payments/search
+ *      (2-3 intentos con backoff 1-2s antes de declarar vacio).
  */
 class GetPaymentCheckAction {
     private ProvisionalBookingRepository $bookingRepo;
@@ -76,8 +76,8 @@ class GetPaymentCheckAction {
             return;
         }
 
-        // 2) Fuente MP: buscar por external_reference compartida USGAR-{cartId}
-        //    (todo 3). Reintentos con backoff 1-2s: el search es eventualmente
+        // 2) Fuente MP: buscar por external_reference compartida USGAR-{cartId}.
+        //    Reintentos con backoff 1-2s: el search es eventualmente
         //    consistente y el pago puede existir sin aparecer aun.
         $externalRef = 'USGAR-' . $cartId;
         $payment = null;

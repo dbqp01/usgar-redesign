@@ -1,14 +1,15 @@
 // src/utils/paymentErrors.ts
-// Normalizacion de errores de pago del backend (todo 26).
+// Normalizacion de errores de pago del backend.
 // El backend responde en DOS formas planas:
 //   1) Response::error  -> { success:false, error:{ code, message, details:{ status_detail } } }
 //   2) Gates/estados    -> { success:false, status, status_detail?, message?, payment_id? }
 // Esta utilidad unifica ambas a { code, message, status_detail } y expone el
 // mapeo status_detail -> clave i18n accionable (lista estandar MP, verificada
 // con mercadopago-mcp-server search_documentation "rejected payments
-// status_detail" — MPE/es, 2026-08-06).
-// (audit 2026-08-12: forma 1 confirmada en Response::error + rama MPApiException
-// de ProcessPaymentAction; forma 2 en los gates pending/expired/rejected/commit-falla)
+// status_detail" — MPE/es).
+// La forma 1 viene de Response::error + la rama MPApiException de
+// ProcessPaymentAction; la forma 2, de los gates pending/expired/rejected/
+// commit-falla.
 
 export interface NormalizedPaymentError {
   code: string;
@@ -16,7 +17,7 @@ export interface NormalizedPaymentError {
   status_detail?: string;
   /** Estado plano del pago (pending/in_process/rejected/expired/...) cuando viene del backend. */
   status?: string;
-  /** payment_id plano (ramas pending/commit-falla) para reconciliacion del todo 31. */
+  /** payment_id plano (ramas pending/commit-falla) para reconciliacion. */
   payment_id?: string;
 }
 

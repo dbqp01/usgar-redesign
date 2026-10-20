@@ -9,7 +9,7 @@ export interface RoomAvailability {
   maxGuests: number;
   description?: string;
   images?: string[];
-  /** Tarifas servidas por el backend (fuente única). standard = precio QloApps, non_refundable = precio con descuento del Feature Price Plan de QloApps. (audit 2026-08-12) */
+  /** Tarifas servidas por el backend (fuente única). standard = precio QloApps, non_refundable = precio con descuento del Feature Price Plan de QloApps. */
   rate_plans?: { standard: number; non_refundable: number };
 }
 
@@ -20,21 +20,21 @@ export interface GuestDetails {
   phone: string;
   documentType?: string;
   documentNumber?: string;
-  /** Idioma del huésped — se persiste en guest_data para el email de confirmación (voucher, 2026-08-14). */
+  /** Idioma del huésped — se persiste en guest_data para el email de confirmación (voucher). */
   locale?: string;
   specialRequests?: string;
 }
 
 export interface BookingPayload {
-  /** Multi-room (2026-08-12): lista de habitaciones con sus huespedes. */
+  /** Multi-room: lista de habitaciones con sus huespedes. */
   rooms: { slug: string; guests: number }[];
   checkIn: string;
   checkOut: string;
-  /** Back-compat: 1 habitacion (payload legacy roomSlug). (audit 2026-08-12) */
+  /** Back-compat: 1 habitacion (payload legacy roomSlug). */
   roomSlug?: string;
   guests?: number;
   guestDetails: GuestDetails;
-  /** Tarifa elegida (global por reserva); el backend calcula y congela el precio (nunca confiar en precios del cliente). (audit 2026-08-12) */
+  /** Tarifa elegida (global por reserva); el backend calcula y congela el precio (nunca confiar en precios del cliente). */
   rateType?: 'standard' | 'non_refundable';
 }
 
@@ -115,7 +115,7 @@ async function request(url: string, init: RequestInit = {}): Promise<{ ok: boole
 /**
  * Servicio de Negocio de Reservas para el Frontend Astro.
  * Utiliza fetch nativo con AbortSignal.timeout() de forma directa.
- * (audit 2026-08-12)
+ *
  */
 export const bookingService = {
   async getAvailableRooms(checkIn?: string, checkOut?: string, lang?: string, signal?: AbortSignal): Promise<ApiResult<RoomAvailability[]>> {

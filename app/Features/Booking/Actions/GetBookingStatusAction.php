@@ -64,7 +64,7 @@ class GetBookingStatusAction {
             ? (float)$priceSnapshotPen
             : PriceCalculator::toGatewayPrice($priceUSD, $exchangeRate);
 
-        // room_data: LISTA desde 2026-08-12 (multi-room). Los campos legacy
+        // room_data: LISTA (multi-room). Los campos legacy
         // (room_name/price_per_night/nights) se resuelven del PRIMER room;
         // nights es identico para todas las habitaciones de la reserva.
         $roomData = $hold['room_data'] ?? [];
@@ -104,21 +104,21 @@ class GetBookingStatusAction {
             'time_left_seconds' => $timeLeftSeconds,
         ];
 
-        // PII SOLO con token valido (auditoria 2026-08-11): los cart_id del
-        // webservice son INTs secuenciales; devolver nombre/email/telefono con
-        // solo el status paid hacia la PII enumerable sin autenticacion.
+        // PII SOLO con token valido: los cart_id del webservice son INTs
+        // secuenciales; devolver nombre/email/telefono con solo el status paid
+        // hacia la PII enumerable sin autenticacion.
         if ($isAuthenticated) {
-            // payment_id: contrato del retry plan del frontend (todo 31;
-            // paymentStatus.ts -> resolvePaymentOutcome/planRetryAfterFailure
+            // payment_id: contrato del retry plan del frontend
+            // (paymentStatus.ts -> resolvePaymentOutcome/planRetryAfterFailure
             // leen localStatus.payment_id). Sin esta clave la rama local era
             // codigo muerto y todo retry caia al payment-check contra MP.
             $payload['payment_id']  = $hold['payment_id'] ?? null;
             $payload['guest_name']  = $hold['guest_data']['name'] ?? '';
             $payload['guest_email'] = $guestEmail;
             $payload['guest_phone'] = $hold['guest_data']['phone'] ?? '';
-            // FIX 2026-08-14: pickup del aeropuerto persistido — el recibo de
-            // exito inline lo muestra para que el huesped sepa que quedo
-            // registrado (y el hotel lo coordine).
+            // Pickup del aeropuerto persistido — el recibo de exito inline lo
+            // muestra para que el huesped sepa que quedo registrado (y el
+            // hotel lo coordine).
             $payload['special_requests'] = $hold['guest_data']['special_requests'] ?? '';
         }
 

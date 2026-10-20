@@ -2,7 +2,7 @@ import { gsap } from 'gsap';
 
 // Rotación de los 3 segmentos del hero con transición "wipe dorado" (GSAP
 // clip-path) y elección de codec (AV1 si el navegador lo soporta, fallback H.264).
-// Centralizado 2026-08-15: antes vivía en el <script> de Hero.astro; ahora es
+// Antes vivía en el <script> de Hero.astro; ahora es
 // un módulo del engine de animaciones (patrón del repo: features/animations/modules).
 //
 // El hero es sticky (efecto "periódico" del dueño): el wipe solo se usa en la
@@ -15,7 +15,7 @@ function pickParts(video: HTMLVideoElement): string[] {
   };
   const list = window.matchMedia('(max-width: 767px)').matches ? raw.mobile : raw.desktop;
   // AV1 SOLO desktop (>=768px): en movil se decodifica por software en la
-  // mayoria de dispositivos -> CPU alta/jank (queja del dueno 2026-08-16).
+  // mayoria de dispositivos -> CPU alta/jank (queja del dueno).
   // Movil siempre h264 (decode HW universal).
   const supportsAv1 = video.canPlayType('video/mp4; codecs="av01.0.04M.08"') !== ''
     && window.innerWidth >= 768;
@@ -60,7 +60,7 @@ export function initHeroVideo(): () => void {
   // Reset de estados visuales (navegación SPA: el DOM viejo puede llegar sucio)
   // opacity 0 -> 1 al primer frame reproducible: con opacity 0 el video NO es
   // candidato LCP (spec) — el <img> poster AVIF debajo (mismo frame, 128KB)
-  // gana el LCP en vez del primer frame del MP4 (fix rendimiento 2026-08-16).
+  // gana el LCP en vez del primer frame del MP4 (fix de rendimiento).
   const revealVideo = () => { videoEl.style.opacity = ''; };
   videoEl.style.opacity = '0';
   videoEl.addEventListener('playing', revealVideo, { once: true });
@@ -95,7 +95,7 @@ export function initHeroVideo(): () => void {
 
     // Si el codec elegido (AV1) falla al decodificar en este navegador, saltar
     // al fallback H.264 del mismo segmento — nunca dejar el poster estático.
-    // (Regresión 2026-08-15: "no veo los videos, queda una imagen de fondo".)
+    // (Regresión: "no veo los videos, queda una imagen de fondo".)
     videoEl.onerror = () => {
       if (!src.includes('.av1.')) return;
       const h264 = src.replace(/\.av1\.mp4$/, '.mp4');
@@ -132,13 +132,13 @@ export function initHeroVideo(): () => void {
       });
   }
 
-  // Arranque retrasado (fix rendimiento 2026-08-16): el video NO se ve hasta
+  // Arranque retrasado (fix de rendimiento): el video NO se ve hasta
   // que el preloader termina (1ª visita) o hasta el load del documento
   // (visitas con sessionStorage) — mientras, el LCP lo resuelve el poster
   // AVIF (128KB) en lugar del primer frame del MP4 (2.8-4.3MB móvil, LCP
   // 6.3s en PSI). Cero cambio visual: cuando el preloader se va, el video
   // ya está en camino y el poster cubre el fondo durante el buffering.
-  // RACE FIX (2026-08-16): en visitas con sessionStorage el preloader hace
+  // RACE FIX: en visitas con sessionStorage el preloader hace
   // done() (y dispatchea) DENTRO de page-load — podía ocurrir antes de
   // registrar el listener y el video nunca arrancaba. Ahora startOnce() con
   // guard cubre readyState-complete + load + preloader-done, idempotente.

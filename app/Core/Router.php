@@ -134,8 +134,8 @@ class Router {
                 throw HttpException::internal("Action class {$handler} is not invocable and has no handle/execute method.");
             }
 
-            // Fix P2-5 (2026-08-12, RFC 9110 §9.6.2): si la ruta existe pero no
-            // para este metodo, responder 405 con header Allow (antes: 404).
+            // RFC 9110 §9.6.2: si la ruta existe pero no para este metodo,
+            // responder 405 con header Allow (antes: 404).
             $allowed = $this->allowedMethods($path);
             if ($allowed !== []) {
                 header('Allow: ' . implode(', ', $allowed));

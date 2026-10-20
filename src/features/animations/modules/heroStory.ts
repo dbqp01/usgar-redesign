@@ -4,7 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Hero "periódico" (efecto del dueño 2026-08-15: "se mantiene estático y el
+ * Hero "periódico" (efecto del dueño: "se mantiene estático y el
  * resto de la página sube como un periódico frente a los ojos"). Pin de
  * ScrollTrigger con pinSpacing:false — el hero queda fijo y el contenido
  * siguiente (ReviewMarquee, z-10) se desliza POR ENCIMA. El pin es la vía
@@ -12,7 +12,7 @@ gsap.registerPlugin(ScrollTrigger);
  * scroll, nunca activa el sticky del navegador). El fondo oscuro 3-5%
  * permanente del hero evita el "blanco detrás" al pasar el contenido.
  *
- * 2026-08-15 (fix de raíz): la animación de entrada con SplitText se
+ * Fix de raíz: la animación de entrada con SplitText se
  * ELIMINÓ. Causa: usaba `new SplitText(...)` sin importar el módulo →
  * `ReferenceError: SplitText is not defined` → el `gsap.set([subtitle,
  * buttons], {autoAlpha: 0})` previo dejaba subtítulo y botones ocultos

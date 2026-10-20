@@ -18,9 +18,7 @@ use Throwable;
  * Listener que envía el email de confirmación (voucher) al huésped cuando
  * el pago se confirma (BookingPaidEvent -> outbox -> cron process_outbox).
  *
- * 2026-08-14: no existía NINGÚN correo transaccional en el proyecto (ni
- * SMTP, ni listener) — el huésped nunca recibía su voucher. Este listener
- * construye el recibo HTML (estilos inline, compatibles con Gmail/Outlook)
+ * Construye el recibo HTML (estilos inline, compatibles con Gmail/Outlook)
  * con los datos congelados del hold (monto PEN cobrado + tasa) y lo envía
  * al email del huésped en su idioma (guest_data.locale, default 'en').
  *

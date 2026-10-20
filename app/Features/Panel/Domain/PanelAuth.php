@@ -17,10 +17,9 @@ use Throwable;
  * secret que SessionService, con claims role/iss/aud/jti y cookie separada
  * (usgar_panel). TTL 12h. No toca la zona de Auth del sitio.
  *
- * Migrado a firebase/php-jwt (2026-08-10) — misma libreria que SessionService;
- * la implementacion casera anterior (b64/unb64 + validacion manual) queda
- * eliminada. Los tokens emitidos antes siguen siendo validos (mismo
- * secret/alg HS256).
+ * Usa firebase/php-jwt, la misma libreria que SessionService (la
+ * implementacion casera de b64/unb64 + validacion manual quedo eliminada).
+ * Los tokens emitidos antes siguen siendo validos (mismo secret/alg HS256).
  */
 class PanelAuth {
     private const COOKIE_NAME = 'usgar_panel';

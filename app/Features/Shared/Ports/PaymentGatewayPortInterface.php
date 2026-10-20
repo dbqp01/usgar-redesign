@@ -35,7 +35,7 @@ interface PaymentGatewayPortInterface {
     /**
     * Busca un pago por external_reference (GET /v1/payments/search).
      * Devuelve un resultado reciente e inequívoco o null si no existe/ambigua.
-     * Consumido por GetPaymentCheckAction (todo 31, W5) para evitar segundos
+     * Consumido por GetPaymentCheckAction para evitar segundos
      * cobros tras commit-falla; la busqueda es eventualmente consistente, el
      * caller reintenta con backoff.
      *

@@ -91,7 +91,7 @@ const slides = [slide1, slide2, slide3, slide4];
   </div>
 
   <!-- Dark Overlay (permanente: el hero es sticky, el contenido sube por encima
-       y el fondo debe mantenerse oscuro — "periodico" del dueño, 2026-08-15) -->
+       y el fondo debe mantenerse oscuro — "periodico" del dueño) -->
   <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/60">
   </div>
   <div class="absolute inset-0 bg-black/[0.05] pointer-events-none" aria-hidden="true"></div>
@@ -104,7 +104,7 @@ const slides = [slide1, slide2, slide3, slide4];
     aria-hidden="true"
   ></div>
 
-  <!-- Overlay "cargando video" (patrón YouTube, 2026-08-16): visible mientras
+  <!-- Overlay "cargando video" (patrón YouTube): visible mientras
          el MP4 bufferiza antes del primer frame reproducible. En red lenta el
          usuario ve el poster + "Cargando video…" (sensacion de carga a proposito,
          no pantalla muerta); desaparece con fade en 'playing'. Timeout 12s de
@@ -123,7 +123,7 @@ const slides = [slide1, slide2, slide3, slide4];
       </div>
     </div>
 
-    <!-- Content (estructura de produccion -- revert 2026-08-15: el dueño pidio
+    <!-- Content (estructura de produccion -- revert: el dueño pidio
          "que se vea como prod"; prod = centrado + h1 puro, el wrap del titulo en
          dos lineas lo da el fluid-h1 segun el viewport) -->
   <div class="relative z-10 text-center text-white px-4 pb-24 sm:pb-28 lg:pb-20 max-w-4xl mx-auto">

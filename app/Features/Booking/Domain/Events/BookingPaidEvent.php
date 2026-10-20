@@ -10,7 +10,7 @@ use DateTimeImmutable;
 /**
  * Evento de Dominio: Se ha confirmado un pago de reserva en la plataforma.
  *
- * Todo 25 (Wave 4): el evento (y su payload de outbox) lleva amount_pen
+ * El evento (y su payload de outbox) lleva amount_pen
  * (int centavos), currency = 'PEN' y exchange_rate CONGELADO del hold
  * (exchange_rate_snapshot / price_snapshot_pen, escritos al cotizar por
  * CreateBookingAction). Los listeners usan amount_pen para el PMS: los
@@ -66,7 +66,7 @@ class BookingPaidEvent implements EventInterface {
     /**
      * Construye el evento a partir de un hold de reserva con los defaults del dominio.
      *
-     * Todo 25: usa el PEN y la tasa CONGELADOS del hold
+     * Usa el PEN y la tasa CONGELADOS del hold
      * (price_snapshot_pen / exchange_rate_snapshot). Back-compat: holds
      * legacy sin las columnas derivan el PEN con la tasa actual.
      *
@@ -91,7 +91,7 @@ class BookingPaidEvent implements EventInterface {
             $hold['guest_data'] ?? [],
             $hold['room_data'] ?? [],
             $amountPen,
-            (string)Config::get('MERCADO_PAGO_CURRENCY', 'PEN'), // todo 34: moneda de Config (unica fuente)
+            (string)Config::get('MERCADO_PAGO_CURRENCY', 'PEN'), // moneda de Config (unica fuente)
             $exchangeRate !== null ? (float)$exchangeRate : null
         );
     }
@@ -112,7 +112,7 @@ class BookingPaidEvent implements EventInterface {
         return $this->amount;
     }
 
-    /** Monto PEN en centavos enteros (todo 25) — lo que reciben los PMS. */
+    /** Monto PEN en centavos enteros — lo que reciben los PMS. */
     public function getAmountPen(): int {
         return $this->amountPen;
     }

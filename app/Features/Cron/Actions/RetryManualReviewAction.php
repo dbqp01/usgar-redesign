@@ -18,13 +18,13 @@ use Throwable;
 
 /**
  * Accion ADR: POST /api/cron/manual-review
- * Cron de resolucion de holds en ManualReview/FraudReview (Wave 4, todo 24).
+ * Cron de resolucion de holds en ManualReview/FraudReview.
  *
  * - list (default): bookings en manual_review/fraud_review con el contador
  *   de re-despachos (auditoria en payment_alerts, alert_type='redispatch').
  * - redispatch {cart_id}: re-chequea el pago contra la gateway; si el monto
- *   YA coincide -> fraud_review -> paid (guard del todo 9 lo permite) y
- *   re-despacha el evento (outbox -> listeners); si no coincide -> permanece
+ *   YA coincide -> fraud_review -> paid (el guard de transiciones lo permite)
+ *   y re-despacha el evento (outbox -> listeners); si no coincide -> permanece
  *   en revision (NUNCA confirmar el PMS con monto errado). Log de auditoria
  *   por re-despacho (recordAlert + Logger).
  * - expire {cart_id}: libera el hold (status -> 'expired'; FROM-set
@@ -136,7 +136,6 @@ class RetryManualReviewAction {
             return;
         }
 
-        // Auditoria de cada re-despacho (todo 24: log de auditoria).
         Logger::info("RetryManualReviewAction: re-despacho para cart {$cartId} (payment {$paymentId}, status {$hold['status']})");
 
         $paymentDetails = null;
@@ -161,7 +160,7 @@ class RetryManualReviewAction {
         }
 
         // Comparacion de monto: misma logica que el webhook (centavos enteros,
-        // price_snapshot_pen congelado al cotizar — todo 32).
+        // price_snapshot_pen congelado al cotizar).
         $priceSnapshotPen = $hold['price_snapshot_pen'] ?? null;
         $expectedPenCents = $priceSnapshotPen !== null
             ? (int)round((float)$priceSnapshotPen * 100)
@@ -181,11 +180,10 @@ class RetryManualReviewAction {
             return;
         }
 
-        // NOTA r2: monto ya coincide -> fraud_review -> paid (guard todo 9).
-        // FIX 2026-08-11: dispatch DENTRO de la txn (transactional-outbox,
-        // patrón del webhook) — antes el evento se insertaba post-commit con
-        // catch silencioso: si el outbox fallaba, paid sin sincronizar PMS y
-        // sin reintento posible.
+        // Monto ya coincide -> fraud_review -> paid.
+        // Dispatch DENTRO de la txn (transactional-outbox, patrón del
+        // webhook): insertar el evento post-commit con catch silencioso
+        // dejaba el pago paid sin sincronizar el PMS y sin reintento posible.
         try {
             $this->pdo->beginTransaction();
             if (!$this->bookingRepo->updateStatus($cartId, BookingStatus::Paid->value)

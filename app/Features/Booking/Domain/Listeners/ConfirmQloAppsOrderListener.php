@@ -14,20 +14,18 @@ use RuntimeException;
 /**
  * Listener que reacciona a BookingPaidEvent confirmando la orden en QloApps PMS.
  *
- * Todo 21 (Wave 4):
- *  - 1 intento + THROW ante confirmOrder null (el outbox reintenta via
- *    el cron process_outbox — todo 19). Se elimina el retry loop interno.
- *  - DEDUP del consumidor: UNICO mecanismo = pre-chequeo por
- *    external_reference = USGAR-{cartId}. Si la orden YA esta confirmada en
- *    QloApps -> skip/exito SIN llamar confirmOrder (la ventana crash entre un
- *    confirmOrder exitoso y el write COMPLETED del outbox deja el evento
- *    IN_PROGRESS y el reclaim del todo 19 lo re-entrega -> doble confirm sin
- *    el dedup).
- *  - FAIL-CLOSED en el pre-chequeo: si el pre-chequeo mismo falla (PMS caido)
- *    THROW -> outbox reintenta; nunca skip por error. El null de un
- *    confirmOrder real SIEMPRE hace throw (el dedup-skip es un camino de
- *    exito distinto que NO pasa por el throw-on-null).
- *  - Todo 25: el PMS recibe monto PEN (amount_pen), no USD.
+ * - 1 intento + THROW ante confirmOrder null (el outbox reintenta via el cron
+ *   process_outbox). Se elimina el retry loop interno.
+ * - DEDUP del consumidor: UNICO mecanismo = pre-chequeo por
+ *   external_reference = USGAR-{cartId}. Si la orden YA esta confirmada en
+ *   QloApps -> skip/exito SIN llamar confirmOrder (la ventana crash entre un
+ *   confirmOrder exitoso y el write COMPLETED del outbox deja el evento
+ *   IN_PROGRESS y el reclaim lo re-entrega -> doble confirm sin el dedup).
+ * - FAIL-CLOSED en el pre-chequeo: si el pre-chequeo mismo falla (PMS caido)
+ *   THROW -> outbox reintenta; nunca skip por error. El null de un
+ *   confirmOrder real SIEMPRE hace throw (el dedup-skip es un camino de
+ *   exito distinto que NO pasa por el throw-on-null).
+ * - El PMS recibe el monto PEN (amount_pen), no USD.
  */
 class ConfirmQloAppsOrderListener implements ListenerInterface {
     private PmsPortInterface $pmsAdapter;
@@ -43,7 +41,7 @@ class ConfirmQloAppsOrderListener implements ListenerInterface {
 
         $cartId    = $event->getCartId();
         $paymentId = $event->getPaymentId();
-        $amountPen = $event->getAmountPen() / 100; // PEN float para el PMS (todo 25)
+        $amountPen = $event->getAmountPen() / 100; // PEN float para el PMS
         $guestData = $event->getGuestData();
 
         $guestName  = (string)($guestData['name'] ?? Config::get('QLOAPPS_DEFAULT_GUEST_NAME', 'Huésped USGAR'));
@@ -51,7 +49,7 @@ class ConfirmQloAppsOrderListener implements ListenerInterface {
 
         Logger::info("ConfirmQloAppsOrderListener: Procesando confirmación en QloApps para Cart ID {$cartId} (Monto PEN: {$amountPen})");
 
-        // TODO 21: DEDUP del consumidor (mecanismo UNICO). FAIL-CLOSED: si el
+        // DEDUP del consumidor (mecanismo UNICO). FAIL-CLOSED: si el
         // pre-chequeo lanza (PMS caido), la excepcion propaga -> el outbox
         // reintenta — nunca skip por error.
         $externalReference = 'USGAR-' . $cartId;
@@ -60,7 +58,7 @@ class ConfirmQloAppsOrderListener implements ListenerInterface {
             return;
         }
 
-        // 1 intento + throw (el retry lo gestiona el outbox, todo 19).
+        // 1 intento + throw (el retry lo gestiona el outbox).
         // room_data is the frozen canonical line payload. Passing it through
         // the port prevents a multi-room payment from collapsing into one PMS
         // booking line; legacy adapters may ignore the optional argument.

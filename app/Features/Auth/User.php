@@ -90,7 +90,7 @@ class User {
 
     /**
      * Convierte una fila cruda de la tabla users (PDO devuelve string|int según
-     * la columna) al shape tipado del modelo (P3-4, 2026-08-12). Sin esto,
+     * la columna) al shape tipado del modelo. Sin esto,
      * PHPStan ve array<string,mixed> y no puede verificar createToken().
      *
      * @param array<string, mixed> $row
@@ -243,9 +243,9 @@ class User {
             return null;
         }
 
-        // Fix P1-4 (2026-08-12): rehash automatico en login exitoso cuando el
-        // algoritmo/costos del hash actual quedaron obsoletos (PASSWORD_DEFAULT
-        // permite migrar de bcrypt a argon2 sin intervencion manual).
+        // Rehash automatico en login exitoso cuando el algoritmo/costos del
+        // hash actual quedaron obsoletos (PASSWORD_DEFAULT permite migrar de
+        // bcrypt a argon2 sin intervencion manual).
         if (password_needs_rehash($user['password_hash'], PASSWORD_DEFAULT)) {
             try {
                 $this->pdo->prepare('UPDATE users SET password_hash = :hash WHERE id = :id')->execute([

@@ -28,7 +28,7 @@ class RateLimiter {
                 @mkdir(self::$limitsDir, 0755, true);
             }
         }
-        // P3-3 (2026-08-12, OWASP API4:2023 resource consumption): los archivos
+        // OWASP API4:2023 resource consumption: los archivos
         // limit_*.json son inmortales si nadie los purga. Umbral = 2 ventanas:
         // cubre la ventana mas larga del repo (auth 900s < 2x600s) sin borrar
         // contadores vivos. Costo O(n) de un glob por peticion: aceptable

@@ -54,7 +54,7 @@ const categoryLabels: Record<string, string> = {
     <!-- Móvil (<768px): carrusel horizontal de destinos (scroll-snap nativo, sin
        JS) — el atlas completo (imagen gigante + lista apilada) no funcionaba
        en pantalla angosta: titulo tapando el sujeto, redundancia imagen/lista,
-       sensacion apretada (rediseno movil 2026-08-16). Desktop conserva el atlas. -->
+       sensacion apretada (rediseno movil). Desktop conserva el atlas. -->
     <ul
       class="lg:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 -mx-4 px-4"
       aria-label={t('explore.title')}
@@ -178,7 +178,7 @@ const categoryLabels: Record<string, string> = {
   let cleanup: (() => void) | null = null;
 
   function init() {
-    // El atlas es desktop-only (rediseno movil 2026-08-16: en <768px se usa el
+    // El atlas es desktop-only (rediseno movil: en <768px se usa el
     // carrusel horizontal; el JS del atlas sobre un contenedor hidden es inerte).
     if (window.matchMedia('(max-width: 767px)').matches) return;
     const root = document.querySelector('[data-explore-atlas]') as HTMLElement | null;

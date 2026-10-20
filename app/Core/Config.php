@@ -67,7 +67,7 @@ class Config {
     }
 
     /**
-     * Timestamp absoluto de expiracion del hold de reserva (P3-4, 2026-08-12).
+     * Timestamp absoluto de expiracion del hold de reserva.
      * El valor de BOOKING_HOLD_TTL es relativo (ej. '+15 minutes') y pasa por
      * strtotime: si el .env lo trae mal escrito, strtotime devuelve false y
      * date() producia 1970-01-01 (hold expiraba al instante). Fallback
@@ -133,7 +133,7 @@ class Config {
      *
      * En Hostinger la fuente unica es hPanel -> Environment variables, que
      * escribe `hbuilds/config/.env` en la raiz del dominio (verificado en el
-     * File Manager el 2026-10-19: existe hbuilds/config/.env y NO existe
+     * File Manager: existe hbuilds/config/.env y NO existe
      * .builds/). El .env suelto en la raiz del dominio queda como fallback.
      *
      * @return list<string>
@@ -225,8 +225,8 @@ class Config {
     /**
      * Parsea una linea del .env a [key, value].
      * Comentarios inline (" #") SOLO se recortan cuando el valor no esta
-     * entre comillas (fix P1-2 2026-08-12: contrasenas con " #" se
-     * truncaban; ej. DB_PASS="ab #cd" se cortaba a "ab").
+     * entre comillas (si no, contrasenas con " #" se truncan; ej.
+     * DB_PASS="ab #cd" se cortaba a "ab").
      *
      * @return array{key: string, value: string}|null
      */

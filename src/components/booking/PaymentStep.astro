@@ -1,13 +1,11 @@
 ---
-// debt: oversized module (637 LOC @2026-08-12) — split into concept-named components when touched; ceiling 250 pure LOC
+// debt: oversized module — split into concept-named components when touched; ceiling 250 pure LOC
 // src/components/booking/PaymentStep.astro
-// Paso 3 del wizard: el flujo de pago MercadoPago EXISTENTE, intacto
-// (createHold -> cardForm -> processPayment). Solo maquetado editorial.
-// (audit 2026-08-12: flujo confirmado en este script — createHold L421,
-// bricksBuilder cardPayment L485, processPayment L534)
-// W5 (todos 28-31): pending -> success (sin apilar), pre-retry booking-status
-// + payment-check, countdown del hold + extend, cooldown deterministico,
-// beforeunload guard. Todo texto sale del i18n (todo 30).
+// Paso 3 del wizard: el flujo de pago MercadoPago (createHold -> cardForm ->
+// processPayment). Solo maquetado editorial.
+// pending -> success (sin apilar), pre-retry booking-status + payment-check,
+// countdown del hold + extend, cooldown deterministico, beforeunload guard.
+// Todo texto sale del i18n.
 import { useTranslations, type Locale } from '../../i18n/utils';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 
@@ -76,7 +74,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     <div id="mp-payment-form-wrap" class="space-y-4">
       <div id="cardPaymentBrick_container"></div>
 
-      <!-- Transparencia de moneda (2026-08-14): el sitio cotiza en USD pero la
+      <!-- Transparencia de moneda: el sitio cotiza en USD pero la
            cuenta MP es peruana -> el cargo real es PEN. El hueped debe ver la
            equivalencia ANTES de pagar, no en el estado de cuenta del banco. -->
       <p data-pen-note class="hidden text-[11px] text-text-secondary-light dark:text-text-secondary-dark text-center"></p>
@@ -125,12 +123,12 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     </div>
   </div>
 
-  <!-- Resultado del pago inline (2026-08-13): el wizard ya NO redirige a
+  <!-- Resultado del pago inline: el wizard ya NO redirige a
        /book/success; el estado (aprobado/pendiente/rechazado/expirado) se
        muestra aqui mismo. success.astro sigue existiendo como recibo
        imprimible / URL compartible, no como destino obligatorio. -->
   <div data-payment-result class="hidden space-y-5">
-    <!-- Exito (2026-08-14): recibo completo tipo voucher inline — el usuario
+    <!-- Exito: recibo completo tipo voucher inline — el usuario
          pidió que la página de éxito "se vea bien" (como el recibo de NordVPN:
          fotografiarlo y listo). Datos del booking-status: guest, fechas,
          habitación, total PEN cobrado + equivalencia USD + nota pickup. -->
@@ -301,10 +299,10 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
 
   type TFunc = (key: string) => string;
 
-  // Locales del SDK de MercadoPago por idioma del sitio (todo 30).
+  // Locales del SDK de MercadoPago por idioma del sitio.
   const MP_LOCALES: Record<Locale, string> = { en: 'en-US', es: 'es-PE', fr: 'fr-FR', pt: 'pt-BR' };
 
-  // Todo 31: cooldown deterministico >= 60s entre reintentos tras fallo de red.
+  // Cooldown deterministico >= 60s entre reintentos tras fallo de red.
   const RETRY_COOLDOWN_MS = 60_000;
 
   let abortController = new AbortController();
@@ -314,11 +312,11 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
   // Timer de seguridad: si onReady no llega (iframes bloqueados por adblocker,
   // SDK lento), habilita el botón Pay para no bloquear al usuario para siempre.
   let payReadyTimer: number | null = null;
-  // Todo 29: countdown del hold + extend (una sola vez).
+  // Countdown del hold + extend (una sola vez).
   let countdownTimer: number | null = null;
   let holdCountdownController: AbortController | null = null;
   let holdExtendCalled = false;
-  // Todo 31: estado del reintento.
+  // Estado del reintento.
   let retryBlockedStreak = 0;
   let cooldownEndsAt = 0;
   let retryTimer: number | null = null;
@@ -354,7 +352,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
   }
 
   function resetPaymentUi(): void {
-    // Root cause (2026-08-14): la visibilidad REAL de los paneles la gobierna
+    // La causa: la visibilidad REAL de los paneles la gobierna
     // applyState() en book.astro segun wizardStore.step. resetPaymentUi solo
     // tocaba clases CSS del guest step, pero el wizard seguia en step 3 con el
     // panel 2 hidden+inert -> pantalla vacia (bug b23dbed 03/08, visto en la
@@ -388,7 +386,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     });
   }
 
-  // ---- Todo 28 (2026-08-13): resultado inline en el wizard ----
+  // ---- resultado inline en el wizard ----
   // Ya NO se redirige a /book/success: el estado del pago se muestra aqui
   // mismo (success/pending/error), con polling automatico + boton manual
   // "Verificar de nuevo". El token se persiste en sessionStorage para que
@@ -419,7 +417,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     resultPollController?.abort();
     const pollController = new AbortController();
     resultPollController = pollController;
-    // UX (2026-08-14): el boton "Verificar de nuevo" nace OCULTO — el polling
+    // UX: el boton "Verificar de nuevo" nace OCULTO — el polling
     // automatico es la via principal (15s x 40). Solo se muestra si el polling
     // se agota (10 min sin resolucion) o falla: ninguna plataforma te pide
     // verificar manualmente mientras el sistema ya esta verificando.
@@ -485,7 +483,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     if (ui === 'paid') {
       if (confCode) confCode.textContent = booking?.cart_id || cartId;
 
-      // Recibo completo (2026-08-14): guest, fechas, habitación, totales.
+      // Recibo completo: guest, fechas, habitación, totales.
       const guestNameEl = document.querySelector('[data-result-guest-name]') as HTMLElement | null;
       const guestEmailEl = document.querySelector('[data-result-guest-email]') as HTMLElement | null;
       const guestPhoneEl = document.querySelector('[data-result-guest-phone]') as HTMLElement | null;
@@ -534,8 +532,8 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
         fullReceiptLink.href = `${prefix}/book/success?bookingId=${encodeURIComponent(cartId)}${token ? `&token=${encodeURIComponent(token)}` : ''}`;
       }
 
-      // FIX 2026-08-14: pickup del aeropuerto persistido — el recibo inline
-      // confirma al huesped que su traslado quedo registrado.
+      // Pickup del aeropuerto persistido — el recibo inline confirma al
+      // huesped que su traslado quedo registrado.
       const pickupNote = document.querySelector('[data-result-pickup-note]') as HTMLElement | null;
       if (pickupNote) {
         const hasPickup = typeof booking?.special_requests === 'string' && booking.special_requests.trim() !== '';
@@ -557,7 +555,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     errorBox?.classList.remove('hidden');
   }
 
-  // ---- Todo 29: countdown del hold + extend (una vez) + beforeunload ----
+  // ---- Countdown del hold + extend (una vez) + beforeunload ----
   function stopHoldCountdown(): void {
     holdCountdownController?.abort();
     holdCountdownController = null;
@@ -628,7 +626,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     }
   }
 
-  // ---- Todo 31: cooldown deterministico visible en el botón ----
+  // ---- Cooldown deterministico visible en el botón ----
   function startCooldown(seconds: number, t: TFunc): void {
     const btn = document.getElementById('btn-final-pay') as HTMLButtonElement | null;
     const text = document.getElementById('btn-final-text');
@@ -664,7 +662,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     }
   }
 
-  // ---- Todo 31: flujo pre-retry (booking-status -> payment-check -> plan) ----
+  // ---- Flujo pre-retry (booking-status -> payment-check -> plan) ----
   async function handlePaymentFailure(
     error: { code?: string; message?: string; statusDetail?: string },
     cartId: string,
@@ -676,7 +674,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     if (signal.aborted) return;
     const isNetworkFailure = error.code === 'TIMEOUT_ERROR' || error.code === 'NETWORK_ERROR';
 
-    // Mensaje accionable por status_detail (todo 26/30) o generico.
+    // Mensaje accionable por status_detail o generico.
     const detailKey = statusDetailKey(error.statusDetail);
     if (signal.aborted) return;
     showError(detailKey ? t(detailKey) : t(paymentErrorFallbackKey()));
@@ -689,7 +687,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
         showPaymentResult(cartId, accessToken);
         return;
       }
-      // 2) MP por external_reference (payment-check, todo 31): pago existente
+      // 2) MP por external_reference (payment-check): pago existente
       //    -> success; NUNCA crear un segundo pago.
       const check = await bookingService.checkPayment(cartId, accessToken, signal);
       if (signal.aborted) return;
@@ -873,10 +871,10 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
           return;
         }
 
-        // Todo 30: locale del SDK por idioma (es-PE default para es).
+        // Locale del SDK por idioma (es-PE default para es).
         const mp = new (window as any).MercadoPago(mpPublicKey, { locale: MP_LOCALES[lang] || 'es-PE' });
 
-        // Todo 29: countdown del hold desde time_left_seconds (best-effort).
+        // Countdown del hold desde time_left_seconds (best-effort).
         void startHoldCountdown(cartId, accessToken, t);
 
         // Mostrar el formulario ANTES de crear el Card Payment Brick.
@@ -1051,7 +1049,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
     started = false;
   }
 
-  // Todo 29: guard beforeunload durante processPayment (avisar antes de salir
+  // Guard beforeunload durante processPayment (avisar antes de salir
   // mientras el pago está en vuelo — el doble submit y el abandono son el
   // riesgo que estos todos mitigan).
   function handleBeforeUnload(event: BeforeUnloadEvent): void {

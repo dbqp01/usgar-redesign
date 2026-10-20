@@ -1,5 +1,5 @@
 ---
-// debt: oversized module (453 LOC @2026-08-12) — split into concept-named components when touched; ceiling 250 pure LOC
+// debt: oversized module — split into concept-named components when touched; ceiling 250 pure LOC
 import Layout from '../../layouts/Layout.astro';
 import { rooms } from '../../data/rooms';
 import { siteSettings } from '../../data/settings';
@@ -228,12 +228,12 @@ const successDescription = t('meta.success')
   import { formatDate } from '../../utils/format';
   import { fetchBookingStatus, pollForPayment } from '../../features/booking/bookingStatus';
 
-  // Todo 27: polling continuo cada 15s hasta 10 minutos (el polling anterior
-  // moria ~88s y dejaba la tarjeta pending terminal) + boton manual
-  // "Verificar de nuevo" + fraud_review/manual_review como pendiente con
-  // mensaje "en revision" + expired_paid como pagado (enum nuevo de W2).
-  // (2026-08-13: fetch/poll extraidos a features/booking/bookingStatus.ts —
-  // compartidos con PaymentStep del wizard, que ya no redirige aqui.)
+  // Polling continuo cada 15s hasta 10 minutos (un polling mas corto dejaba
+  // la tarjeta pending terminal) + boton manual "Verificar de nuevo" +
+  // fraud_review/manual_review como pendiente con mensaje "en revision" +
+  // expired_paid como pagado. El fetch/poll vive en
+  // features/booking/bookingStatus.ts, compartido con PaymentStep del wizard,
+  // que ya no redirige aqui.
 
   let pollingAbortController: AbortController | null = null;
 
@@ -301,7 +301,7 @@ const successDescription = t('meta.success')
         if (guestEmailEl) guestEmailEl.textContent = booking.guest_email || booking.guestEmail || '---';
         if (guestPhoneEl) guestPhoneEl.textContent = booking.guest_phone || booking.guestPhone || '---';
         if (roomNameEl) {
-          // Multi-room (2026-08-12): room_summary lista todas las habitaciones.
+          // Multi-room: room_summary lista todas las habitaciones.
           const summary = Array.isArray(booking.room_summary) ? booking.room_summary : null;
           if (summary && summary.length > 1) {
             roomNameEl.textContent = summary.map((r: any) => r.room_name || 'Room').join(' + ');
@@ -361,9 +361,9 @@ const successDescription = t('meta.success')
       }
 
       // error: expired muestra estado correcto; failed/rejected/cancelled ->
-      // pago rechazado (fix 2026-08-13: antes el webhook de rechazo dejaba
-      // el hold pending hasta el TTL y la UI mostraba 'expired' en vez de
-      // 'rejected'); el resto, reserva no encontrada.
+      // pago rechazado (el webhook de rechazo transiciona pending -> failed,
+      // asi que la UI distingue 'expired' de 'rejected'); el resto, reserva no
+      // encontrada.
       if (errorTitle && status === 'expired') errorTitle.textContent = L.paymentExpiredTitle || '';
       if (errorMsgText && status === 'expired') errorMsgText.textContent = L.paymentExpiredMsg || '';
       if (errorTitle && (status === 'failed' || status === 'rejected' || status === 'cancelled')) {
@@ -402,7 +402,7 @@ const successDescription = t('meta.success')
     try {
       pollingAbortController = new AbortController();
       // Poll para la confirmacion del pago (maneja la carrera del webhook).
-      // UX (2026-08-14): el boton manual nace oculto — solo se muestra si el
+      // UX: el boton manual nace oculto — solo se muestra si el
       // polling se agota (10 min sin resolucion) o falla. Ninguna plataforma
       // pide verificar manualmente mientras el sistema ya esta verificando.
       const booking = await pollForPayment(bookingId, token, pollingAbortController.signal, isPendingStatus);

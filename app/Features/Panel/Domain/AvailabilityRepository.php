@@ -15,7 +15,7 @@ use PDOException;
  * SQL READ-ONLY contra tablas qlo_* (mismo patron que QloAppAdapter) + tabla
  * propia manual_blocks (bloqueos importados por el dueno).
  *
- * Schema verificado contra la BD real (2026-08-11):
+ * Schema verificado contra la BD real:
  *  - qlo_htl_room_information: id (PK), id_product, id_hotel, room_num,
  *    id_status, floor. El room type se resuelve por id_product (rt.id).
  *  - qlo_htl_booking_detail: id_room, room_num, id_customer,

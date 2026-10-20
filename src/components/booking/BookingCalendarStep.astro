@@ -14,7 +14,7 @@ import { useTranslations, type Locale } from '../../i18n/utils';
 const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
 
-// QloApps catalog includes a family room with max_guests=8 (see docs/STATE.md).
+// El catalogo incluye una habitacion familiar de 8 huespedes (src/content/rooms/rooms.json).
 const guestOptions = Array.from({ length: 8 }, (_, i) => i + 1);
 ---
 

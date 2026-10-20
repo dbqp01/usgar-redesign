@@ -102,11 +102,10 @@ class ReconcilePaymentsAction {
             }
             $mpStatus = (string)($paymentDetails['status'] ?? '');
 
-            // FIX 2026-08-13 (clase rechazo): pago final-rechazado/cancelado
-            // con webhook nunca llegado -> transicion pending -> failed (mismo
-            // guard que el webhook). Antes: skip sin transicion -> el hold
-            // quedaba pending hasta el TTL -> el usuario veia "BOOKING
-            // EXPIRED" aunque MP habia rechazado.
+            // Pago final-rechazado/cancelado con webhook nunca llegado ->
+            // transicion pending -> failed (mismo guard que el webhook). Sin
+            // esta transicion el hold quedaba pending hasta el TTL y el
+            // usuario veia "BOOKING EXPIRED" aunque MP habia rechazado.
             if (in_array($mpStatus, ['rejected', 'failed', 'cancelled'], true)) {
                 try {
                     $this->pdo->beginTransaction();
@@ -141,7 +140,7 @@ class ReconcilePaymentsAction {
             $holdStatus = BookingStatus::tryFrom((string)($hold['status'] ?? ''));
 
             // Validacion de monto: misma logica que el webhook (centavos
-            // enteros, price_snapshot_pen congelado al cotizar — todo 32).
+            // enteros, price_snapshot_pen congelado al cotizar).
             $priceSnapshotPen = $hold['price_snapshot_pen'] ?? null;
             $expectedPenCents = $priceSnapshotPen !== null
                 ? (int)round((float)$priceSnapshotPen * 100)
@@ -172,11 +171,10 @@ class ReconcilePaymentsAction {
                 continue;
             }
 
-            // FIX 2026-08-11 (auditoría webhooks): hold expirado + pago
-            // approved con webhook nunca llegado -> misma semántica que el
-            // webhook (rama expired_paid): alerta para resolución manual, NO
-            // se revive la reserva (la habitación pudo re-venderse) y NO se
-            // despacha el evento (no confirmar el PMS en ese caso).
+            // Hold expirado + pago approved con webhook nunca llegado ->
+            // misma semántica que el webhook (rama expired_paid): alerta para
+            // resolución manual, NO se revive la reserva (la habitación pudo
+            // re-venderse) y NO se despacha el evento (no confirmar el PMS).
             if ($holdStatus === BookingStatus::Expired) {
                 try {
                     $this->pdo->beginTransaction();
@@ -204,11 +202,10 @@ class ReconcilePaymentsAction {
                     || !$this->bookingRepo->markPaymentProcessed($paymentId, $cartId, 'approved')) {
                     throw new \RuntimeException('No se pudo persistir la reconciliación del pago aprobado.');
                 }
-                // FIX 2026-08-11: transactional-outbox — el evento se persiste
-                // en la MISMA txn (patrón del webhook). Antes: dispatch
-                // post-commit con catch silencioso = si el INSERT del outbox
-                // fallaba, el pago quedaba paid/processed y el evento
-                // (confirmOrder en QloApps) se perdía para siempre.
+                // Transactional-outbox: el evento se persiste en la MISMA txn
+                // (patrón del webhook). Un dispatch post-commit con catch
+                // silencioso perdia el evento (confirmOrder en QloApps) para
+                // siempre si el INSERT del outbox fallaba.
                 $event = BookingPaidEvent::fromHold($cartId, $paymentId, $hold);
                 $this->eventDispatcher->dispatch($event);
                 $this->pdo->commit();

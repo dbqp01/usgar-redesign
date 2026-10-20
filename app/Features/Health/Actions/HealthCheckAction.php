@@ -13,9 +13,8 @@ use Exception;
  * Accion ADR: GET /api/health
  * Retorna el estado de salud del sistema y la conexion a BD.
  *
- * 2026-08-15: eliminado el bloque env_diag (document_root, ruta del .env,
- * prefijos de tokens) — dependia de APP_ENV, que se elimino de raiz. El
- * default seguro es NO exponer informacion de entorno por HTTP publico.
+ * No expone informacion de entorno por HTTP publico (document_root, ruta del
+ * .env, prefijos de tokens): el default seguro es no filtrarla.
  */
 class HealthCheckAction {
     public function __invoke(Request $request): void {

@@ -10,7 +10,7 @@ namespace App\Features\Shared;
  * de QloApps (Hotel Reservation -> Settings -> Feature Price) y el backend lo
  * RESUELVE al cotizar — el frontend solo muestra rate_plans y envia rateType.
  *
- * VERIFICADO contra la BD real (2026-08-10) y el codigo fuente de QloApps
+ * VERIFICADO contra la BD real y el codigo fuente de QloApps
  * (modules/hotelreservationsystem/classes/HotelRoomTypeFeaturePricing.php y
  * AdminHotelFeaturePricesSettings.php):
  *  - Los planes maestros viven en `qlo_htl_room_type_feature_pricing` con

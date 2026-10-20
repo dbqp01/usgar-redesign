@@ -112,7 +112,7 @@ class ProcessPaymentAction {
                 return;
             }
 
-            // --- Todo 8 (W2): gates del lock pesimista ---
+            // --- Gates del lock pesimista ---
             // El cobro ocurre DENTRO de la transaccion del lock (FOR UPDATE):
             // la ventana commit-antes-de-cobrar desaparece y un segundo
             // intento concurrente sobre el mismo hold no puede volver a cobrar.
@@ -131,7 +131,7 @@ class ProcessPaymentAction {
                 return;
             }
 
-            // Gate 2 (fix BLOCKER r3): si el hold YA tiene payment_id (intento
+            // Gate 2: si el hold YA tiene payment_id (intento
             // previo pending/in_process), NO llamar la gateway — responder
             // success:false(status pending) y dejar que polling/webhook
             // reconcilien. Sin este gate, un reintento concurrente vuelve a
@@ -159,19 +159,19 @@ class ProcessPaymentAction {
                 $paymentIdempotencyKey = $reservedIdempotencyKey;
             }
 
-            // --- Todo 3/4 (W1): densidad antifraude desde el HOLD persistido ---
+            // --- Densidad antifraude desde el HOLD persistido ---
             // payer.name/surname/phone salen de guest_data (no del request del
             // cliente); additional_info.items[] con categoria travel (noches PEN).
             $guestData = is_array($hold['guest_data']) ? $hold['guest_data'] : [];
             $roomData  = is_array($hold['room_data']) ? $hold['room_data'] : [];
-            // room_data es LISTA desde 2026-08-12 (multi-room): campos legacy
+            // room_data es LISTA (multi-room): campos legacy
             // del primer room (nights identico para todas las habitaciones).
             if (isset($roomData['room_name'])) {
                 $roomData = [$roomData];
             }
             $firstRoom = $roomData[0] ?? [];
 
-            // Todo 32 (W6): usar el PEN congelado al cotizar (sin re-leer la tasa
+            // Usar el PEN congelado al cotizar (sin re-leer la tasa
             // actual); fallback legacy a la derivacion USD x tasa actual.
             $frozenPen = $hold['price_snapshot_pen'] ?? null;
             $gatewayPrice = $frozenPen !== null
@@ -183,13 +183,11 @@ class ProcessPaymentAction {
             $guestName = trim((string)($guestData['name'] ?? ''));
 
             $payer = is_array($paymentData['payer'] ?? null) ? $paymentData['payer'] : [];
-            // Fix F3 (2026-08-06, verificado con mercadopago-mcp-server
-            // search_documentation "create payment payer" es/MPE + sandbox real):
-            // el schema del create /v1/payments usa first_name/last_name; el
-            // envio de name/surname devuelve 400 bad_request ("The name of the
+            // El create /v1/payments usa first_name/last_name; el envio de
+            // name/surname devuelve 400 bad_request ("The name of the
             // following parameters is wrong : [payer.surname, payer.name]").
             if ($guestName === '') {
-                // QA- (todo 3): guest sin name -> nombre por defecto sin romper el payload
+                // Guest sin name -> nombre por defecto sin romper el payload
                 $payer['first_name'] = 'Huesped USGAR';
                 $payer['last_name']  = '';
             } else {
@@ -224,17 +222,16 @@ class ProcessPaymentAction {
                 ];
             }
 
-            $paymentData['external_reference'] = 'USGAR-' . $cartId; // formato compartido con todo 22 (dedup PMS)
+            $paymentData['external_reference'] = 'USGAR-' . $cartId; // formato compartido con el dedup del PMS
             $paymentData['idempotency_key'] = $paymentIdempotencyKey;
             $paymentData['transaction_amount'] = $gatewayPrice;
             // Descripcion del producto visible para el comprador (email de
             // confirmacion/rechazo de MP: sin 'description' el correo muestra
             // "Producto sin nombre" — hallazgo real de produccion 2026-08-06).
             $paymentData['description'] = sprintf('%d noche(s) - %s', $nights, $roomName !== '' ? $roomName : 'Habitación');
-            // Fix F3 (2026-08-06): el create /v1/payments NO acepta
-            // currency_id (verificado con MCP + sandbox real; MP infiere la
-            // moneda de la cuenta). La moneda de cobro (Config, todo 34) se
-            // propaga via BookingPaidEvent al PMS, no en el create.
+            // El create /v1/payments NO acepta currency_id (MP infiere la
+            // moneda de la cuenta). La moneda de cobro (Config) se propaga
+            // via BookingPaidEvent al PMS, no en el create.
             if (!empty($paymentData['device_session_id'])) {
                 $paymentData['device_session_id'] = (string)$paymentData['device_session_id'];
             }
@@ -274,9 +271,8 @@ class ProcessPaymentAction {
             $paymentIdStr = (string)$paymentResult['id'];
 
             if ($status === 'approved') {
-                // Todo 8 (fix MINOR r4): persistir payment_id + status paid
-                // DENTRO de la txn (polling todo 27 y refunds todo 12
-                // dependen de payment_id persistido).
+                // Persistir payment_id + status paid DENTRO de la txn (el
+                // polling y los refunds dependen de payment_id persistido).
                 if (!$this->bookingRepo->attachPaymentId($cartId, $paymentIdStr)
                     || !$this->bookingRepo->updateStatus($cartId, BookingStatus::Paid->value)
                     || !$this->bookingRepo->markPaymentProcessed($paymentIdStr, $cartId, 'approved')) {
@@ -302,16 +298,15 @@ class ProcessPaymentAction {
                 return;
             }
 
-            // --- RAMA COMMIT-FALLA (revision r1): la gateway tuvo exito pero
-            // commit() lanza (error BD/red) -> el pago existe en MP y el hold
-            // quedaria pending SIN payment_id; un reintento seria doble cobro.
+            // --- RAMA COMMIT-FALLA: la gateway tuvo exito pero commit()
+            // lanza (error BD/red) -> el pago existe en MP y el hold quedaria
+            // pending SIN payment_id; un reintento seria doble cobro.
             // Best-effort: transaccion corta para attachPaymentId ANTES de
             // responder + success:false(status pending) para que el
-            // polling/webhook (todo 31) reconcilien; si ni el attach funciona
-            // -> 500.
+            // polling/webhook reconcilien; si ni el attach funciona -> 500.
             // El dispatch (INSERT outbox) corre DENTRO de la misma unidad de
-            // persistencia (paridad con el webhook, todo 18): antes iba DESPUES
-            // del commit con catch-solo-log — un fallo del INSERT perdia la
+            // persistencia (paridad con el webhook): antes iba DESPUES del
+            // commit con catch-solo-log — un fallo del INSERT perdia la
             // confirmacion del PMS para siempre (reconcile salta pagos ya
             // 'approved'). Si dispatch o commit fallan, aplica el MISMO
             // recovery: rollback + attach best-effort + status pending.
@@ -362,7 +357,7 @@ class ProcessPaymentAction {
                 ]);
             } else {
                 // Pago pending/in_process: el payment_id ya quedo persistido
-                // dentro de la txn; polling (todo 27) y webhook resolveran.
+                // dentro de la txn; polling y webhook resolveran.
                 Response::json([
                     'success' => false,
                     'status' => $status,
@@ -377,8 +372,8 @@ class ProcessPaymentAction {
             }
             throw $e;
         } catch (MPApiException $e) {
-            // Todo 6: errores de MercadoPago -> passthrough del status real (400/422)
-            // con details.status_detail para el frontend (todo 26); nunca 500 generico.
+            // Errores de MercadoPago -> passthrough del status real (400/422)
+            // con details.status_detail para el frontend; nunca 500 generico.
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }

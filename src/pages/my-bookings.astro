@@ -176,7 +176,7 @@ const statusLabels = JSON.stringify({
                 ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
                 : 'bg-stone-500/10 text-stone-600 dark:text-stone-400 border-stone-500/20';
 
-              // room_data: LISTA desde 2026-08-12 (multi-room); primer room para
+              // room_data: LISTA (multi-room); primer room para
               // el nombre (legacy: objeto unico con room_name).
               const rd = Array.isArray(b.room_data) ? b.room_data[0] : b.room_data;
               const roomName = rd?.room_name || rd?.name?.en || rd?.name || b.id_room_type || 'Hotel Room';

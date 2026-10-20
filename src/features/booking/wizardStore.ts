@@ -12,13 +12,13 @@ export interface WizardState {
   allocation: AllocationOption | null;
   options: AllocationOption[] | null;
   availabilityMap: Record<string, number> | null;
-  /** Tarifa elegida en AllocationStep; se envía al backend (única fuente del precio). (audit 2026-08-12) */
+  /** Tarifa elegida en AllocationStep; se envía al backend (única fuente del precio). */
   rateType: RateType;
   /**
    * Tarifas por habitación servidas por GET /api/rooms (rate_plans, resueltas
    * por el backend desde los Feature Price Plans de QloApps — DiscountResolver,
    * tabla qlo_htl_room_type_feature_pricing; NO existe qlo_catalog_price_rule
-   * en esta instalación). null = API caída. (audit 2026-08-12)
+   * en esta instalación). null = API caída.
    */
   ratePlans: Record<string, { standard: number; non_refundable: number }> | null;
   /** Daily calendar availability has completed for the active date range. */

@@ -12,8 +12,7 @@ use Throwable;
 
 /**
  * Servicio de sesiones basado en JWT (JSON Web Tokens).
- * Implementado con firebase/php-jwt (RFC 7519) — reemplaza la
- * implementacion casera anterior (2026-08-10): la libreria valida
+ * Implementado con firebase/php-jwt (RFC 7519): la libreria valida
  * algoritmo/exp/firma de forma estandar y resiste alg-confusion/alg=none.
  *
  * Seguridad:
@@ -76,10 +75,10 @@ class SessionService {
     public static function validateToken(string $jwt): ?array {
         try {
             $decoded = JWT::decode($jwt, new Key(self::getSecret(), self::ALG));
-            // Fix P1-7 (2026-08-12): validar iss/aud explicitamente (la
-            // libreria solo valida exp/iat/firma). Rechaza tokens emitidos
-            // para otro origen/audiencia; los tokens viejos sin estos claims
-            // quedan invalidados (re-login unica vez).
+            // Validar iss/aud explicitamente (la libreria solo valida
+            // exp/iat/firma). Rechaza tokens emitidos para otro
+            // origen/audiencia; los tokens viejos sin estos claims quedan
+            // invalidados (re-login unica vez).
             $expectedIss = Config::get('SITE_URL', 'https://usgarhoteles.com');
             if (($decoded->iss ?? null) !== $expectedIss || ($decoded->aud ?? null) !== self::AUDIENCE) {
                 return null;

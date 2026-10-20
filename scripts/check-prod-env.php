@@ -6,18 +6,16 @@ namespace App\Scripts;
 use App\Core\Config;
 
 /**
- * Guard de deploy (todo 33, Wave 6): exige que MERCADO_PAGO_ACCESS_TOKEN
+ * Guard de deploy: exige que MERCADO_PAGO_ACCESS_TOKEN
  * pertenezca a la ALLOWLIST configurada por HASH (sha256) — NUNCA por
  * prefijo de token: la doc MP vigente confirma que los tokens de PRUEBA
  * tambien empiezan con APP_USR (Checkout Pro y Orders crean la cuenta de
  * prueba automaticamente con prefijo APP_USR) y que el prefijo puede variar
  * segun la solucion; el entorno lo define la app/panel, no el prefijo.
  *
- * 2026-08-15: el guard aplica SIEMPRE (fail-closed). Antes se omitia fuera
- * de APP_ENV=production; APP_ENV se elimino de raiz por decision del dueño
- * (una variable de entorno menos que pueda causar problemas). Como es un
- * script manual de pre-deploy, bloquear siempre es el comportamiento
- * correcto: sin allowlist configurada, no se despliega.
+ * El guard aplica SIEMPRE (fail-closed): es un script manual de pre-deploy,
+ * asi que bloquear siempre es el comportamiento correcto — sin allowlist
+ * configurada, no se despliega.
  *
  * La allowlist la provee el USUARIO en `.env.production` (archivo FUERA de
  * git) con la clave:

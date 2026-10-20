@@ -1,5 +1,5 @@
 ---
-// debt: oversized module (595 LOC @2026-08-12) — split into concept-named components when touched; ceiling 250 pure LOC
+// debt: oversized module — split into concept-named components when touched; ceiling 250 pure LOC
 import { Image, getImage } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import RoomGallery from "./room/RoomGallery.astro";
@@ -414,10 +414,9 @@ const roomSchema = {
     const totalSlides = slides.length;
 
     // Actualiza la imagen activa del slider y miniaturas.
-    // Fix 2026-08-15 (queja del dueño: "parpadea en negro, se mantiene la
-    // primera imagen y de golpe cambia"): el swap de src se hacía con un
-    // setTimeout fijo sin esperar a que la imagen nueva CARGA. Ahora se
-    // precarga (new Image) y el fade-in ocurre cuando el frame ya está listo.
+    // El swap de src se hace con un setTimeout fijo sin esperar a que la
+    // imagen nueva CARGA (parpadeo en negro). Ahora se precarga (new Image) y
+    // el fade-in ocurre cuando el frame ya está listo.
     function updateSliderImage(index: number) {
       if (!activeImg) return;
       activeIndex = index;

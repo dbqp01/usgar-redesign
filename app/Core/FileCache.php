@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Core;
 
 /**
- * P3-1 (2026-08-12, RFC 9111 via http.dev/cache-control): cache de display en
- * archivo para respuestas GET que toleran frescura de 30-60s (GET /api/rooms).
+ * Cache de display en archivo (RFC 9111 via http.dev/cache-control) para
+ * respuestas GET que toleran frescura de 30-60s (GET /api/rooms).
  *
  * - Archivos auto-expirados por mtime en la lectura: sin purga necesaria.
  * - Mismo patron que RateLimiter: dir fuera de public/, sha256, LOCK_EX.

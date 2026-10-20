@@ -53,7 +53,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
                 . 'Get your Access Token from Tus integraciones (Mercado Pago panel). '
                 . 'Note: the token prefix does NOT define the environment — test and '
                 . 'production credentials can both start with APP_USR (doc MP); the '
-                . 'deploy guard (scripts/check-prod-env.php, todo 33) enforces an '
+                . 'deploy guard (scripts/check-prod-env.php) enforces an '
                 . 'allowlist by hash instead of a prefix rule.'
             );
         }
@@ -86,12 +86,11 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             // Descripcion del producto: se muestra en el email del comprador
             // ("Producto sin nombre" si falta — hallazgo real 2026-08-06).
             'description'         => $paymentData['description'] ?? '',
-            // Fix F3 (2026-08-06, verificado con MCP search_documentation
-            // "create payment" es/MPE + sandbox real): el create /v1/payments
-            // NO acepta currency_id (400 "The name of the following parameters
-            // is wrong : currency_id"); MP infiere la moneda de la cuenta. La
-            // moneda de cobro sigue siendo Config::get('MERCADO_PAGO_CURRENCY')
-            // para el evento/PMS (todo 34); el create simplemente no la envia.
+            // El create /v1/payments NO acepta currency_id (400 "The name of
+            // the following parameters is wrong : currency_id"); MP infiere la
+            // moneda de la cuenta. La moneda de cobro sigue siendo
+            // Config::get('MERCADO_PAGO_CURRENCY') para el evento/PMS; el
+            // create simplemente no la envia.
             'statement_descriptor'=> $statementDescriptor,
             'binary_mode'         => filter_var(
                 Config::get('MP_BINARY_MODE', 'false'),
@@ -120,12 +119,11 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
 
             $client = $this->paymentClient;
             $requestOptions = new RequestOptions();
-            // Todo 2: UUID v4 FRESCO por intento. Una key determinista por carrito
-            // bloqueaba reintentos legitimos (MP deduplica por X-Idempotency-Key).
-            // Fix F3 (2026-08-06, verificado con MCP search_documentation
-            // "create payment" es/MPE + sandbox real): el SDK espera el header
-            // como string "Name: value" (doc oficial: setCustomHeaders(["X-
-            // Idempotency-Key: <UUID>"])). La forma ASOCIATIVA
+            // UUID v4 FRESCO por intento: una key determinista por carrito
+            // bloqueaba reintentos legitimos (MP deduplica por
+            // X-Idempotency-Key). El SDK espera el header como string "Name:
+            // value" (doc oficial: setCustomHeaders(["X-Idempotency-Key:
+            // <UUID>"])). La forma ASOCIATIVA
             // ['x-idempotency-key' => $uuid] se pierde en el transporte: el
             // array_merge + CURLOPT_HTTPHEADER deja un valor sin ':' que curl
             // descarta -> MP responde 400 "Header X-Idempotency-Key can't be null".
@@ -201,7 +199,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             return false;
         }
 
-        // Anti-replay (Todo 15) con las unidades reales de MP: la doc dice que
+        // Anti-replay con las unidades reales de MP: la doc dice que
         // el ts va en ms, pero la notificacion real llega en SEGUNDOS
         // (x-signature: ts=1792467232 — ver log prod 2026-10-19 22:33:52). El
         // WebhookSignatureValidator compara ts contra now() en ms, asi que su
@@ -256,14 +254,14 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
      * @return array<string, mixed>|null
      */
     public function getPaymentDetails(string $paymentId): ?array {
-        // Todo 7 (QA-): guard ctype_digit antes del cast — un id alfanumerico
+        // Guard ctype_digit antes del cast — un id alfanumerico
         // no debe llegar a la API como (int)0 ni lanzar TypeError.
         if (!ctype_digit($paymentId)) {
             Logger::error("MercadoPagoAdapter: paymentId no numerico ignorado: {$paymentId}");
             return null;
         }
 
-        // Todo 17: el path del webhook corre ANTES del ACK (MP espera
+        // El path del webhook corre ANTES del ACK (MP espera
         // 200/201 en 22s, doc webhooks). El SDK reintenta 3x por defecto
         // con backoff exponencial sobre timeouts (4x8s excederia la ventana);
         // RequestOptions no expone retries, asi que el unico knob es la
@@ -283,7 +281,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             return [
                 'id' => $payment->id,
                 'status' => $payment->status,
-                'status_detail' => $payment->status_detail, // todo 7: motivos de rechazo MP
+                'status_detail' => $payment->status_detail, // motivos de rechazo MP
                 'external_reference' => $payment->external_reference,
                 'transaction_amount' => $payment->transaction_amount,
             ];
@@ -310,9 +308,10 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
 
     /**
      * Busca un pago por external_reference (GET /v1/payments/search).
-     * Consumido por el todo 31 (W5) para evitar segundos cobros tras commit-falla.
-     * Devuelve un resultado inequívoco reciente, o null si no existe o hay
-     * más de una coincidencia (la ambigüedad debe ir a reconciliación).
+     * Consumido por el retry plan del frontend para evitar segundos cobros
+     * tras commit-falla. Devuelve un resultado inequívoco reciente, o null si
+     * no existe o hay más de una coincidencia (la ambigüedad debe ir a
+     * reconciliación).
      */
     public function findPaymentByExternalReference(string $externalRef): ?array {
         try {
@@ -371,11 +370,10 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             MercadoPagoConfig::setAccessToken($this->accessToken);
             $client = $this->refundClient;
             $requestOptions = new RequestOptions();
-            // Fix F3 (2026-08-06): mismo contrato del SDK que processPayment —
-            // header como string "Name: value" (la forma asociativa se pierde
-            // en CURLOPT_HTTPHEADER).
-            // Mismo contrato del SDK que processPayment: lista "Name: value"
-            // (validado E2E en TEST, live_mode:false — pendiente LIVE).
+            // Mismo contrato del SDK que processPayment: header como string
+            // "Name: value" (la forma asociativa se pierde en
+            // CURLOPT_HTTPHEADER). Validado E2E en TEST, live_mode:false —
+            // pendiente LIVE.
             // @phpstan-ignore argument.type
             $requestOptions->setCustomHeaders(['X-Idempotency-Key: refund_' . $paymentId . '_' . hash('sha256', $paymentId . '_' . ($amount ?? 'full'))]);
             $requestOptions->setConnectionTimeout(10000); // 10s

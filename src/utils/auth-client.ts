@@ -12,8 +12,8 @@
  * 401: la cookie JWT no tiene endpoint de renovación (docs/API.md §Auth) —
  * el "refresh" es de ESTADO: invalidar cache, notificar y reintentar una vez
  * por si otra pestaña acaba de re-loggear; si persiste, no hay sesión.
- * (audit 2026-08-12: /api/auth/me + cookie HttpOnly usgar_session confirmados
- * en public/index.php y SessionService; P1-8 añadió la cookie usgar_csrf.)
+ * /api/auth/me + cookie HttpOnly usgar_session confirmados en public/index.php
+ * y SessionService; la cookie usgar_csrf la exige X-CSRF-Token.
  */
 
 const AUTH_API_BASE = '/api/auth';

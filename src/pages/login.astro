@@ -11,7 +11,7 @@ const t = useTranslations(lang);
 // BUILD, no por request — por eso ?error= y ?redirect= se leen en el CLIENTE
 // (URLSearchParams(window.location.search)) dentro del script, y aquí solo
 // queda una constante por defecto para el SSR inicial.
-// (audit 2026-08-12: output:'static' + prefixDefaultLocale:false confirmados en astro.config.mjs)
+// output:'static' + prefixDefaultLocale:false confirmados en astro.config.mjs
 const DEFAULT_REDIRECT = '/my-bookings';
 ---
 
@@ -232,7 +232,7 @@ const DEFAULT_REDIRECT = '/my-bookings';
       // never wrap initLogin in a `window.__loginInit` latch.
       //
       // Two mechanisms cooperate to re-run it:
-      //   1. data-astro-rerun (plan Todo 5) — forces the router to re-execute
+      //   1. data-astro-rerun — forces the router to re-execute
       //      this inline script on every transition. NOTE: with define:vars
       //      present, Astro strips data-astro-rerun from the served script
       //      tag (verified on Astro 7.1.1 dev, see swap-functions.js), so the

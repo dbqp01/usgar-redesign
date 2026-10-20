@@ -17,7 +17,7 @@ if ($pdo === null) {
     exit(1);
 }
 
-// Todo 19/20: la logica (auto-heal de columnas attempts/next_attempt_at con
+// La logica (auto-heal de columnas attempts/next_attempt_at con
 // backfill, claim FOR UPDATE SKIP LOCKED con lease, reintento de FAILED con
 // backoff, reclaim de IN_PROGRESS huerfanos y residuales, set_time_limit(0))
 // vive en ProcessOutboxAction — mismo patron que ReconcilePaymentsAction.

@@ -127,8 +127,8 @@ class AuthService {
 
     /**
      * Asegura la carga de la libreria Hybridauth.
-     * Desde 2026-08-10 el autoloader PSR-4 de Composer (bootstrap.php) cubre
-     * vendor/ completo; el escaneo manual de rutas anterior queda eliminado.
+     * El autoloader PSR-4 de Composer (bootstrap.php) cubre vendor/ completo;
+     * el escaneo manual de rutas quedo eliminado.
      * Solo queda el guard por si una accion se ejecuta sin bootstrap (tests).
      */
     public static function ensureHybridauthLoaded(): bool {

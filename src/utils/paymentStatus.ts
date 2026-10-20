@@ -1,11 +1,10 @@
 // src/utils/paymentStatus.ts
-// Estados del flujo de pago -> UI (todos 27/28/31).
+// Estados del flujo de pago -> UI.
 // El backend expone status: pending/paid/failed/expired/manual_review/
 // fraud_review/expired_paid/in_process/approved/rejected (GetBookingStatusAction
-// + ProcessPaymentAction, waves 1-4; 'failed' desde 2026-08-13: el webhook de
-// rechazo transiciona pending -> failed para que la UI muestre "rejected").
-// (audit 2026-08-12: confirmado contra BookingStatus enum + ramas de
-// ProcessPaymentAction; 'rejected'/'approved'/'in_process' son passthrough de MP)
+// + ProcessPaymentAction; 'failed' cuando el webhook de rechazo transiciona
+// pending -> failed para que la UI muestre "rejected"). 'rejected'/'approved'/
+// 'in_process' son passthrough de MP.
 
 const PAID_STATUSES: readonly string[] = ['paid', 'approved', 'expired_paid'];
 const PENDING_STATUSES: readonly string[] = [
@@ -21,8 +20,8 @@ export type BookingUiStatus = 'paid' | 'pending' | 'error';
 
 /**
  * Mapea un status del backend a la UI de 3 estados.
- * expired_paid -> paid (el enum nuevo de W2); fraud_review/manual_review ->
- * pending con mensaje "en revision" (todo 27); lo demas -> error.
+ * expired_paid -> paid; fraud_review/manual_review -> pending con mensaje
+ * "en revision"; lo demas -> error.
  */
 export function mapBookingStatus(status: string | null | undefined): BookingUiStatus {
   const s = String(status || '');
@@ -40,7 +39,7 @@ export function isPendingStatus(status: string | null | undefined): boolean {
 }
 
 /**
- * Clave i18n del mensaje de la tarjeta pending (todo 27): manual_review y
+ * Clave i18n del mensaje de la tarjeta pending: manual_review y
  * fraud_review muestran "en revision"; el resto usa el mensaje de verificacion.
  */
 export function pendingMessageKey(status: string | null | undefined): string {
@@ -52,11 +51,11 @@ export function pendingMessageKey(status: string | null | undefined): string {
 export type PaymentOutcome = 'redirect_success' | 'show_error';
 
 /**
- * Todo 28: decide el outcome del POST process-payment.
+ * Decide el outcome del POST process-payment.
  * - status pending/in_process o payment_id presente -> redirect a success
  *   (el polling de success.astro resuelve; NUNCA apilar reintentos).
  * - booking-status confirma payment_id o status pagado -> redirect.
- * - cualquier otro -> error mostrado (reintento gobernado por todo 31).
+ * - cualquier otro -> error mostrado (reintento gobernado por el frontend).
  */
 export function resolvePaymentOutcome(
   processError: { paymentStatus?: string; paymentId?: string } | null,
@@ -79,7 +78,7 @@ export function resolvePaymentOutcome(
 }
 
 // ---------------------------------------------------------------------------
-// Todo 31: plan de reintento tras fallo de red/timeout.
+// Plan de reintento tras fallo de red/timeout.
 // 1) booking-status -> payment_id -> redirect success.
 // 2) payment-check (MP por external_reference) -> pago activo -> redirect.
 // 3) ambos vacios -> retry con cooldown deterministico >= 60s; tras N=2

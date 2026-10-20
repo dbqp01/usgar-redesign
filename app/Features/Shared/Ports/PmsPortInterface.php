@@ -15,7 +15,7 @@ interface PmsPortInterface {
 
     /**
      * Tasa de conversion USD -> PEN del propio PMS (qlo_currency), la unica
-     * fuente coherente con el back-office (auditoria 2026-08-11): la tasa
+     * fuente coherente con el back-office: la tasa
      * fija de Config (3.80) diferia de la del CMS (3.388) y los montos PEN
      * del sitio no cuadraban con los reportes de QloApps. FAIL-SAFE: si la
      * consulta falla (PMS caido), devuelve la tasa de Config (EXCHANGE_RATE_USD_PEN)
@@ -45,7 +45,7 @@ interface PmsPortInterface {
     ): ?string;
 
     /**
-     * Dedup del consumidor (todo 21): indica si la orden con la referencia
+     * Dedup del consumidor: indica si la orden con la referencia
      * externa dada (USGAR-{cartId}) YA esta confirmada en el PMS.
      * FAIL-CLOSED: si el PMS esta caido/no responde, DEBE lanzar (nunca
      * devolver false por error — el caller reintenta via outbox).

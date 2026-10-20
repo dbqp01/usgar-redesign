@@ -206,10 +206,10 @@ class ProvisionalBookingRepository {
                 Logger::info('ProvisionalBookingRepository: Columna payment_idempotency_key creada automaticamente en provisional_bookings.');
             }
 
-            // Auto-heal (todo 25, Wave 4): PEN y tasa CONGELADOS al cotizar.
-            // El WRITE lo hace CreateBookingAction; el todo 32 (W6) solo lo
-            // verifica. Sin estas columnas, BookingPaidEvent::fromHold
-            // derivaria con la tasa ACTUAL (falso fraude por descalce).
+            // Auto-heal: PEN y tasa CONGELADOS al cotizar. El WRITE lo hace
+            // CreateBookingAction; aqui solo se verifica. Sin estas columnas,
+            // BookingPaidEvent::fromHold derivaria con la tasa ACTUAL (falso
+            // fraude por descalce).
             if (!$this->columnExists('provisional_bookings', 'price_snapshot_pen')) {
                 $this->pdo->exec("ALTER TABLE provisional_bookings ADD COLUMN price_snapshot_pen DECIMAL(12,2) NULL AFTER price_snapshot");
                 Logger::info('ProvisionalBookingRepository: Columna price_snapshot_pen creada automaticamente en provisional_bookings.');
@@ -219,15 +219,15 @@ class ProvisionalBookingRepository {
                 Logger::info('ProvisionalBookingRepository: Columna exchange_rate_snapshot creada automaticamente en provisional_bookings.');
             }
 
-            // Auto-heal (todo 12): processed_payments con event_type + indice
-            // unico compuesto (payment_id, event_type). Desbloquea los refunds:
-            // un evento refunded del mismo payment_id ya no colisiona con el
+            // Auto-heal: processed_payments con event_type + indice unico
+            // compuesto (payment_id, event_type). Desbloquea los refunds: un
+            // evento refunded del mismo payment_id ya no colisiona con el
             // registro approved.
             $this->migrateProcessedPaymentsEventType();
 
-            // Auto-heal (auditoria 2026-08-11): extend_count limita las
-            // extensiones del hold (el tope por expires_at fallaba con
-            // extensiones inmediatas — cada una resetea expires_at a +TTL).
+            // Auto-heal: extend_count limita las extensiones del hold (el tope
+            // por expires_at fallaba con extensiones inmediatas — cada una
+            // resetea expires_at a +TTL).
             if (!$this->columnExists('provisional_bookings', 'extend_count')) {
                 $this->pdo->exec("ALTER TABLE provisional_bookings ADD COLUMN extend_count INT NOT NULL DEFAULT 0 AFTER expires_at");
                 Logger::info('ProvisionalBookingRepository: Columna extend_count creada automaticamente en provisional_bookings.');
@@ -265,12 +265,12 @@ class ProvisionalBookingRepository {
     }
 
     /**
-     * Migracion idempotente de processed_payments (todo 12):
+     * Migracion idempotente de processed_payments:
      *   1. ADD COLUMN event_type (si falta)
      *   2. backfill -> 'approved' (NULL nunca colisiona en indices unicos MySQL)
      *   3. swap del indice legacy UNIQUE(payment_id) -> UNIQUE(payment_id,
-     *      event_type) en UNA sentencia atomica (fix MAJOR r9: sin ventana sin
-     *      indice entre DROP y ADD).
+     *      event_type) en UNA sentencia atomica (sin ventana sin indice entre
+     *      DROP y ADD).
      * Validacion previa del indice legacy desde information_schema: SOLO se
      * dropea si es EXACTAMENTE single-column UNIQUE(payment_id); si la
      * validacion falla -> FAIL-CLOSED (abortar, nunca dropear a ciegas).
@@ -420,10 +420,10 @@ class ProvisionalBookingRepository {
 
     /**
      * Verifica si un (payment_id, event_type) ya fue procesado en la tabla de
-     * idempotencia. Debe ejecutarse DENTRO de la transaccion del webhook
-     * (todo 11). FAIL-CLOSED: ante error de BD lanza PDOException (el webhook
-     * responde 500 y MP reintenta) — nunca devuelve false por error, que
-     * reprocesaria un pago duplicado.
+     * idempotencia. Debe ejecutarse DENTRO de la transaccion del webhook.
+     * FAIL-CLOSED: ante error de BD lanza PDOException (el webhook responde
+     * 500 y MP reintenta) — nunca devuelve false por error, que reprocesaria
+     * un pago duplicado.
      *
      * @throws PDOException
      */
@@ -439,7 +439,7 @@ class ProvisionalBookingRepository {
 
     /**
      * Registra un pago procesado en la tabla de idempotencia processed_payments.
-     * El tercer parametro es el TIPO DE EVENTO (todo 12): 'approved',
+     * El tercer parametro es el TIPO DE EVENTO: 'approved',
      * 'refunded', 'rejected', 'orphan', 'fraud_review' — el indice unico
      * compuesto (payment_id, event_type) permite que un refund del mismo
      * payment_id coexista con su approved. INSERT ... ON DUPLICATE KEY como
@@ -465,7 +465,7 @@ class ProvisionalBookingRepository {
     }
 
     /**
-     * Transiciones de status ATOMICAS POR-TARGET (todo 9, fix MAJOR r3):
+     * Transiciones de status ATOMICAS POR-TARGET:
      * NUNCA WHERE solo por cart_id (resucitaria holds expirados y dejaria
      * dinero capturado sin reserva). Si dos actores corren concurrentes
      * (webhook vs cron), gana el primer UPDATE atomico y el segundo matchea
@@ -483,7 +483,7 @@ class ProvisionalBookingRepository {
             BookingStatus::FraudReview->value => "status IN ({$transient})",
             BookingStatus::ManualReview->value => "status IN ({$transient})",
             BookingStatus::ExpiredPaid->value => "status IN ('" . BookingStatus::Expired->value . "')",
-            // Pago final-rechazado/cancelado (fix 2026-08-13): desde pending
+            // Pago final-rechazado/cancelado: desde pending
             // (caso normal) y desde expired (el pago tardo mas que el TTL del
             // hold y el cron ya lo marco — la UI debe mostrar "rechazado", no
             // "expirado"; failed es terminal, sin dinero ni inventario).
@@ -510,9 +510,9 @@ class ProvisionalBookingRepository {
     }
 
     /**
-     * Registra una alerta de pago para resolucion manual (todo 9: pago
-     * approved sobre hold expirado -> expired_paid; la habitacion pudo
-     * re-venderse). Log + tabla payment_alerts.
+     * Registra una alerta de pago para resolucion manual (pago approved
+     * sobre hold expirado -> expired_paid; la habitacion pudo re-venderse).
+     * Log + tabla payment_alerts.
      */
     public function recordAlert(string $cartId, string $paymentId, string $alertType): bool {
         try {
@@ -600,11 +600,10 @@ class ProvisionalBookingRepository {
 
     public function extend(string $cartId, string $newExpiration): bool {
         try {
-            // Tope por CONTEO de extensiones (auditoria 2026-08-11): sin
-            // limite, un bot con el token podia acaparar la habitacion
-            // indefinidamente (5 extensiones seguidas verificadas). Un tope
-            // temporal por expires_at falla con extensiones inmediatas (cada
-            // una resetea expires_at a +TTL); el contador es exacto.
+            // Tope por CONTEO de extensiones: sin limite, un bot con el token
+            // podia acaparar la habitacion indefinidamente. Un tope temporal
+            // por expires_at falla con extensiones inmediatas (cada una
+            // resetea expires_at a +TTL); el contador es exacto.
             // El frontend extiende 1 vez para cubrir el pago en vuelo; 3 es
             // margen de sobra (MAX_HOLD_EXTENSIONS).
             $maxExtensions = (int)Config::get('BOOKING_HOLD_MAX_EXTENSIONS', '3');
@@ -617,7 +616,7 @@ class ProvisionalBookingRepository {
             ");
             // rowCount > 0: sin esto, un UPDATE que matchea 0 filas (limite
             // alcanzado) devuelve true y el action respondia success sin
-            // haber extendido nada (verificado en la auditoria 2026-08-11).
+            // haber extendido nada.
             return $stmt->execute([':newExp' => $newExpiration, ':cartId' => $cartId]) && $stmt->rowCount() > 0;
         } catch (PDOException $e) {
             Logger::error('ProvisionalBookingRepository::extend Error: ' . $e->getMessage());
@@ -627,7 +626,7 @@ class ProvisionalBookingRepository {
 
     public function cleanExpiredCarts(): int {
         try {
-            // FROM-set explicito (todo 9): incluye manual_review y fraud_review
+            // FROM-set explicito: incluye manual_review y fraud_review
             // para que un hold en fraude no bloquee la habitacion
             // indefinidamente; NUNCA por cart_id solo, y NUNCA afecta
             // paid/expired_paid (dinero capturado sin reserva).
@@ -650,9 +649,9 @@ class ProvisionalBookingRepository {
     }
 
     /**
-     * Serializa la creacion de holds de una habitacion (todo 10).
+     * Serializa la creacion de holds de una habitacion.
      *
-     * MECANISMO (fix MAJOR r4+r5): get-or-create de la fila en room_locks
+     * MECANISMO: get-or-create de la fila en room_locks
      * (INSERT ... ON DUPLICATE KEY UPDATE = no-op) seguido de SELECT ... FOR
      * UPDATE sobre ESA fila — el objetivo de lock SIEMPRE existe, incluso
      * para habitaciones sin holds. Debe ejecutarse DENTRO de la transaccion
@@ -693,10 +692,10 @@ class ProvisionalBookingRepository {
      * Cuenta holds paid/pending-no-expirados que solapan el rango de fechas.
      * $createdAfter (opcional): limita al conteo a holds creados DESPUÉS de un
      * timestamp — el re-check de CreateBookingAction lo usa para no volver a
-     * restar los holds que getAvailableRooms YA descontó (doble conteo,
-     * auditoría 2026-08-11). SIN FOR UPDATE (todo 10): el lock de serializacion
-     * es la fila de room_locks tomada con lockRoom(); un FOR UPDATE sobre el
-     * rango de fechas no bloquearia nada si el rango esta vacio.
+     * restar los holds que getAvailableRooms YA descontó (doble conteo).
+     * SIN FOR UPDATE: el lock de serializacion es la fila de room_locks
+     * tomada con lockRoom(); un FOR UPDATE sobre el rango de fechas no
+     * bloquearia nada si el rango esta vacio.
      */
     public function getHoldCountForRoomForUpdate(int $idRoomType, string $checkIn, string $checkOut, int $idHotel, ?string $createdAfter = null): int {
         if (!$this->pdo) {
@@ -774,11 +773,10 @@ class ProvisionalBookingRepository {
                 $this->pdo->beginTransaction();
                 $startedTransaction = true;
             }
-            // FIX 2026-08-11 (auditoría webhooks): incluye 'expired' y elimina
-            // el filtro de expiración — un hold expirado con pago approved y
-            // webhook perdido quedaba huérfano para siempre (nadie lo
-            // reconciliaba). El action decide: pending -> paid, expired ->
-            // expired_paid + alerta.
+            // Incluye 'expired' y elimina el filtro de expiración — un hold
+            // expirado con pago approved y webhook perdido quedaba huérfano
+            // para siempre (nadie lo reconciliaba). El action decide:
+            // pending -> paid, expired -> expired_paid + alerta.
             $stmt = $this->pdo->prepare("
                 SELECT * FROM provisional_bookings
                 WHERE status IN ('".BookingStatus::Pending->value."','".BookingStatus::Expired->value."')

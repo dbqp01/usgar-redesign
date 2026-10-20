@@ -10,16 +10,15 @@ use PDOException;
 use Throwable;
 
 /**
- * Accion del cron de outbox transaccional (Wave 4, todos 19 y 20).
+ * Accion del cron de outbox transaccional.
  * Invocada por cron/process_outbox.php.
  *
- * Maquina de estados — SEMANTICA LITERAL del plan (todo 19, fijada tras 8
- * rondas de revision dual; cualquier desviacion de reclaim/terminal/backoff/
- * lease/backfill es un fallo):
+ * Maquina de estados — cualquier desviacion de reclaim/terminal/backoff/
+ * lease/backfill es un fallo:
  *
  *   Gate de claim: status IN ('PENDING','FAILED') AND attempts < MAX (5)
  *   AND next_attempt_at <= NOW() -> claim con FOR UPDATE SKIP LOCKED ->
- *   IN_PROGRESS con lease next_attempt_at = NOW() + GRACE (30 min, todo 20)
+ *   IN_PROGRESS con lease next_attempt_at = NOW() + GRACE (30 min)
  *   -> dispatchNow -> COMPLETED | FAILED.
  *
  *   Transicion FAILED (fallo vivo): attempts = attempts + 1 ANTES de fijar
@@ -38,18 +37,16 @@ use Throwable;
  *   alerta. Eventos en MAX -> FAILED terminal + alerta, NUNCA PENDING
  *   silencioso.
  *
- *   Backfill de migracion (fix MAJOR r7 + MINOR r9): inmediatamente despues
- *   del ALTER, UPDATE event_outbox SET next_attempt_at = NOW() WHERE
- *   next_attempt_at IS NULL — el mecanismo UNICO (COALESCE solo como
- *   invariante asertada, nunca como sustituto).
+ *   Backfill de migracion: inmediatamente despues del ALTER, UPDATE
+ *   event_outbox SET next_attempt_at = NOW() WHERE next_attempt_at IS NULL —
+ *   el mecanismo UNICO (COALESCE solo como invariante asertada, nunca como
+ *   sustituto).
  *
- * Convergencia eventual (todo 20): dos eventos del mismo cart (paid, refund)
- * pueden ser reclamados por workers paralelos y entregarse DESORDENADOS al
- * PMS durante una ventana de redeploy — NO es perdida: el dedup +
- * throw-on-null + backoff de los todos 21/22 dan convergencia eventual. El
- * claim ordena por id ASC (FIFO) porque cart_id vive en el payload
- * serializado, no en una columna (el orden por cart_id seria una columna
- * nueva fuera del scope del plan).
+ * Convergencia eventual: dos eventos del mismo cart (paid, refund) pueden ser
+ * reclamados por workers paralelos y entregarse DESORDENADOS al PMS durante
+ * una ventana de redeploy — NO es perdida: el dedup + throw-on-null + backoff
+ * dan convergencia eventual. El claim ordena por id ASC (FIFO) porque cart_id
+ * vive en el payload serializado, no en una columna.
  */
 class ProcessOutboxAction {
     public const MAX_ATTEMPTS = 5;
@@ -165,9 +162,9 @@ class ProcessOutboxAction {
      * @return array{claimed: int, completed: int, failed: int, reclaimed: int, terminal: int}
      */
     public function run(): array {
-        // Todo 20: sin limite de tiempo — 50 eventos x listeners lentos
-        // superaria el default de 30s (el kill dejaria IN_PROGRESS y el
-        // reclaim del todo 19 reintentaria con duplicados).
+        // Sin limite de tiempo — 50 eventos x listeners lentos superaria el
+        // default de 30s (el kill dejaria IN_PROGRESS y el reclaim
+        // reintentaria con duplicados).
         set_time_limit(0);
 
         $stats = ['claimed' => 0, 'completed' => 0, 'failed' => 0, 'reclaimed' => 0, 'terminal' => 0];
@@ -187,7 +184,7 @@ class ProcessOutboxAction {
 
     /**
      * Reclaim de IN_PROGRESS huerfanos con lease vencido + residuales.
-     * Solo toca eventos cuyo lease (todo 20) ya expiro: un evento VIVO
+     * Solo toca eventos cuyo lease ya expiro: un evento VIVO
      * (recien reclamado) tiene next_attempt_at en el futuro y NO se toca.
      *
      * @param array{claimed:int,completed:int,failed:int,reclaimed:int,terminal:int} $stats
@@ -196,9 +193,8 @@ class ProcessOutboxAction {
         $reclaimed = 0;
 
         // a) IN_PROGRESS con lease vencido y aun reintentable -> PENDING
-        //    (attempts + 1 < MAX; fix MAJOR r8: con `attempts < MAX` un
-        //    reclaim sobre attempts=MAX-1 dejaria PENDING@MAX excluido para
-        //    siempre).
+        //    (attempts + 1 < MAX: con `attempts < MAX` un reclaim sobre
+        //    attempts=MAX-1 dejaria PENDING@MAX excluido para siempre).
         $upd = $this->pdo->prepare(
             "UPDATE event_outbox SET status = 'PENDING', attempts = attempts + 1,
                     claim_token = NULL
@@ -209,7 +205,7 @@ class ProcessOutboxAction {
         $reclaimed += $upd->rowCount();
 
         // b) IN_PROGRESS con lease vencido en MAX -> FAILED terminal con
-        //    attempts = MAX (fix MAJOR r9/r10: la particion attempts+1 >= MAX
+        //    attempts = MAX (la particion attempts+1 >= MAX
         //    es exhaustiva; se FIJA attempts = MAX, no solo el predicado —
         //    sin esto, IN_PROGRESS@4 seria FAILED@4 y el gate attempts < MAX
         //    lo reclamaria otra vez en crash-loop MAS ALLA de MAX) + alerta.
@@ -279,7 +275,7 @@ class ProcessOutboxAction {
      * Claim transaccional: SELECT ... FOR UPDATE SKIP LOCKED (doble cron
      * concurrente no procesa el mismo evento) + marca IN_PROGRESS con lease
      * next_attempt_at = NOW() + GRACE. El commit libera los locks; el lease
-     * futuro protege la fila del reclaim del todo 19 mientras se procesa.
+     * futuro protege la fila del reclaim mientras se procesa.
      *
      * @return array<int, array<string, mixed>>
      */
@@ -337,14 +333,14 @@ class ProcessOutboxAction {
         }
 
         try {
-            // Auditoría 2026-08-11 (semgrep): unserialize sin restricciones
-            // sobre el payload del outbox. El origen es interno (solo
-            // EventDispatcher escribe event_outbox), pero allowed_classes
-            // elimina la clase entera de ataques de object injection si la BD
-            // se compromete. Solo existen BookingPaidEvent + DateTimeImmutable
-            // (propiedad occurredAt del evento — sin ella el unserialize lanza
-            // TypeError: __PHP_Incomplete_Class en propiedad tipada) en el
-            // grafo; añadir aqui cualquier clase nueva que se serialice.
+            // allowed_classes acotado a las 2 clases que se serializan: el
+            // origen es interno (solo EventDispatcher escribe event_outbox),
+            // pero acotar las clases elimina la entera de ataques de object
+            // injection si la BD se compromete. Solo existen BookingPaidEvent
+            // + DateTimeImmutable (propiedad occurredAt del evento — sin ella
+            // el unserialize lanza TypeError: __PHP_Incomplete_Class en
+            // propiedad tipada) en el grafo; añadir aqui cualquier clase
+            // nueva que se serialice.
             $eventObj = unserialize(
                 base64_decode((string)$row['payload']),
                 ['allowed_classes' => [
@@ -369,14 +365,14 @@ class ProcessOutboxAction {
         } catch (Throwable $e) {
             Logger::error('ProcessOutboxAction error procesando evento ' . $id . ': ' . $e->getMessage());
 
-            // Todo 19: la alerta terminal se evalua sobre el valor
-            // PRE-incremento (attempts == MAX - 1 antes del incremento).
+            // La alerta terminal se evalua sobre el valor PRE-incremento
+            // (attempts == MAX - 1 antes del incremento).
             $isTerminal = $preAttempts === self::MAX_ATTEMPTS - 1;
             $newAttempts = $preAttempts + 1;
             $backoff = self::backoffMinutes($newAttempts);
 
             // FAILED incrementa attempts ANTES de fijar el backoff, y
-            // SOBRESCRIBE el lease INCONDICIONALMENTE (fix MAJOR r6).
+            // SOBRESCRIBE el lease INCONDICIONALMENTE.
             // processed_at NO se toca: significa "entregado COMPLETED"
             // (idempotencia por listener); FAILED conserva su valor NULL.
             $upd = $this->pdo->prepare(
