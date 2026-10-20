@@ -62,10 +62,11 @@ heredado y hold liberado. Datos crudos y trazas:
 
 | Comprobación | Resultado |
 |---|---|
-| PHPUnit (`tests/Unit`) | 342 tests · 1020 aserciones · 38 skipped · 0 fallos |
+| PHPUnit (`tests/Unit`) | 344 tests · 1023 aserciones · 38 skipped · 0 fallos |
 | PHPStan (nivel 7) | `ok` |
 | Vitest (`npm run test:unit`) | 11 archivos · 77 tests · 0 fallos |
 | `astro check` | 0 errores · 0 avisos |
+| Suite PHP de integración (`npm run test:php`) | 23/23 — **aislada**: su servidor arranca sin credenciales (`ENV_FILE`), así que `database: offline` y 503 sin PMS; no toca BD, MP ni SMTP |
 | Auditoría SEO / contenido / CSP | 123 páginas, 0 errores de schema · 121 páginas, 0 errores · CSP 114/114 sin violaciones |
 | Build de Hostinger (commit `a87fc65`, con `vendor/` solo de producción) | `completed` (3 min 34 s) |
 | CI (`.github/workflows/build.yml`) | `success` — incluye el guard de `vendor/` |
