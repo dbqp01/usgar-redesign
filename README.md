@@ -10,7 +10,7 @@ Requisitos: Node 22 (según `engines` y Hostinger), PHP ≥ 8.2 (con pdo_mysql, 
 
 ```bash
 npm ci
-composer install          # vendor/ (en prod Hostinger no existe: el build lo copia)
+composer install          # vendor/ ya viene en el repo (solo prod); esto añade las dev (phpunit, phpstan)
 cp .env.example .env      # credenciales reales (BD, MP, QloApps)
 npm run dev:all           # Astro en :4321 + PHP API en :8000 (proxy /api)
 ```
@@ -45,8 +45,9 @@ Para E2E, instala Chromium una vez con `npx playwright install chromium`. `npm r
 2. **Un cambio = un commit**, pequeño y con prefijo `feat:` / `fix:` / `chore:` /
    `docs:`. Nada de push a `main` sin ok explícito del dueño del proyecto.
 3. **Verifica según lo que tocaste** (tabla en `AGENTS.md` § Tests): frontend →
-   `npm run check`; backend → `php vendor/bin/phpunit` + `composer analyse`;
-   solo docs → leer y contrastar con el código, sin instalar nada.
+   `npm run check`; backend → `composer install` (para phpunit/phpstan) y luego
+   `php vendor/bin/phpunit` + `composer analyse`; solo docs → leer y contrastar
+   con el código, sin instalar nada.
 4. **No toques lo que no es tuyo**: credenciales, tablas `qlo_*` del PMS y los
    refunds se resuelven desde el back-office de QloApps o el panel, nunca por
    SQL ni editando un `.env` versionado.
