@@ -1,6 +1,6 @@
 # STATE — Backend USGAR (estado actual)
 
-> **Última verificación: 2026-10-20 11:30–12:45 y 15:50–16:15, contra producción.**
+> **Última verificación: 2026-10-20 11:30–12:45, 15:50–16:15 y 18:25–18:35, contra producción.**
 > Este archivo describe **lo que el sistema es hoy**, no lo que se hizo. La
 > bitácora de sesiones (2026-08 → 2026-10) está en
 > [`docs/archive/state-log-2026-08-10.md`](archive/state-log-2026-08-10.md).
@@ -68,12 +68,13 @@ heredado y hold liberado. Datos crudos y trazas:
 | `astro check` | 0 errores · 0 avisos |
 | Suite PHP de integración (`npm run test:php`) | 23/23 — **aislada**: su servidor arranca sin credenciales (`ENV_FILE`), así que `database: offline` y 503 sin PMS; no toca BD, MP ni SMTP |
 | Auditoría SEO / contenido / CSP | 123 páginas, 0 errores de schema · 121 páginas, 0 errores · CSP 114/114 sin violaciones |
-| Build de Hostinger (commit `a87fc65`, con `vendor/` solo de producción) | `completed` (3 min 34 s) |
+| Build de Hostinger (commit `4b4c5c5`, con `vendor/` solo de producción) | `completed` (3 min 44 s) |
 | CI (`.github/workflows/build.yml`) | `success` — incluye el guard de `vendor/` |
 | `GET /api/health` | `healthy` · `database: online` |
 | `GET /api/rooms` 20→22 nov | **8/8** en Doble Superior (holds caducados liberados) |
 | `GET /api/rooms` 25→28 nov | **6/8** (dos reservas pagadas en ese rango, una por habitación) |
 | `GET /api/reviews-score` | `kayak 8.6 / 701` (cron ejecutado a mano, scores reales) |
+| Servicios en producción | 35 ítems del catálogo unificado (21 del hotel + 14 de la habitación), sin la línea duplicada de recepción 24 h |
 | E2E de pago en producción | hold 292 → `approved` → orden 293 pagada |
 | `composer audit` | sin avisos de seguridad |
 
