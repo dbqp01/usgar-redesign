@@ -105,7 +105,7 @@ y compone con una transacción abierta por el caller (panel u outbox).
 | `src/layouts/` | Layout.astro |
 | `src/features/animations/`, `src/features/ui/` | Animaciones GSAP, toasts |
 | `src/i18n/` | Traducciones (4 locales) |
-| `src/content/` + `src/data/` | Contenido (ver nota de duplicación) |
+| `src/content/` + `src/data/` | Contenido: JSON por dominio + cargadores tipados sobre él |
 
 ### ZONA DE INTERFAZ — entender el contrato antes de editar
 | Archivo | Conecta con |
@@ -131,6 +131,13 @@ y compone con una transacción abierta por el caller (panel u outbox).
 
 El schema de QloApps soporta multi-tienda (`id_hotel` + `id_shop`). Los endpoints reciben `id_hotel` (default `DEFAULT_HOTEL_ID=1`); el frontend no envía hotel hoy. Para añadir un hotel nuevo: crear la tienda en QloApps (Multitienda), definir `SITE_URL` + `PUBLIC_HOTEL_ID` en el despliegue del subdominio y verificar que las consultas del adapter filtren por `id_hotel` (todas lo hacen: `QloAppAdapter`, `ProvisionalBookingRepository`). No hay código multi-hotel en el frontend; el contrato API es compatible.
 
-## Nota de duplicación de contenido (deuda conocida)
+## Contenido: una fuente, dos capas
 
-Existen dos fuentes paralelas de datos de negocio: `src/content/*.json` (rooms, services, faq, reviews, explore, settings, about) y `src/data/*.ts` (rooms, services, faq, reviews, hotelServices, attractions, settings, about). Antes de editar un dato, verifica con grep cuál consumen los componentes (ej. `rooms.ts` vs `rooms.json`). Consolidación pendiente: `docs/ROADMAP.md` F-6.
+`src/content/<dominio>/<dominio>.json` es el **dato** (rooms, services, faq, reviews,
+explore, about, settings). `src/data/<dominio>.ts` es el **cargador tipado** sobre esas
+colecciones (`getCollection` / `getEntry`): los componentes leen de ahí, no del JSON
+crudo. Editar el JSON y el componente ya ve el cambio.
+
+Excepción: `src/data/hotelServices.ts` es una lista propia, no derivada de una
+colección, y describe el mismo catálogo que `src/content/services/services.json` con
+nombres distintos. Está registrado como deuda en `docs/ROADMAP.md` (P2).

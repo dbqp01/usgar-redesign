@@ -9,6 +9,12 @@ Guía funcional para agentes: qué es este proyecto, dónde está cada cosa y c�
 3. **No reinventar**: verifica antes de asumir. El stack está verificado en este documento y en `docs/` — lee, no adivines. Cualquier duda sobre APIs externas (MercadoPago, QloApps) se resuelve consultando la documentación oficial en línea, no inventando el contrato.
 4. **Regla del usuario**: si funciona, funciona. No "mejorar" código que no está roto sin petición explícita. Mantenimiento = tocar solo lo que el ticket pide.
 5. **Fuentes de verdad**: `docs/` centraliza todo. No crees archivos nuevos sin revisar si la fuente ya existe.
+6. **Pensamiento secuencial** para problemas no triviales (arquitectura, debugging, decisiones).
+7. **Zero hardcoding**: credenciales/URLs/precios → `.env` o BD. Jamás literales en código.
+8. **No tocar generados**: `graphify-out/`, `dist/`, `node_modules/`, `*.map` — se regeneran, no se editan ni se commitean. **`vendor/` es la excepción: está versionado a propósito** (en prod no hay Composer y el build lo copia a `dist/`); no se edita a mano salvo los dos parches de `patches/`.
+9. **Commits**: pequeños, por tema, prefijo `feat:` / `fix:` / `chore:` / `docs:`. No mega-commits. NO push a main sin OK explícito del usuario.
+10. **Herramientas según el alcance**: consulta la doc oficial o Context7 para APIs de librerías; navegador para cambios visuales; herramientas de BD/pagos solo al verificar esos recorridos autorizados. Si falta una herramienta necesaria, continúa el trabajo independiente y reporta qué no pudiste verificar; no declares bloqueada una tarea local por un MCP ajeno a su alcance.
+11. **Duda → preguntar**: si el pedido del usuario choca con el plan de migración o la arquitectura (ver `docs/ROADMAP.md`), pregunta antes de codear.
 
 ## Qué es
 
@@ -59,8 +65,10 @@ src/                          Frontend Astro
                               animations/ (engine + módulos GSAP), ui/toast
   services/                   bookingService.ts (única capa de fetch al /api)
   i18n/                       en.json es.json fr.json pt.json + utils.ts (fallbackChain)
-  content/ + data/            Contenido duplicado por dominio (rooms, services, faq…):
-                              verifica CUÁL consume el componente antes de editar
+  content/                    Datos del sitio, un JSON por dominio (rooms, services,
+                              faq, reviews, explore, about, settings)
+  data/                       Carga tipada sobre esas colecciones (getCollection /
+                              getEntry): los componentes leen de aquí, no del JSON crudo
   layouts/                    Layout.astro (único)
 app/                          Backend PHP
   Core/                       Request, Response, Database (PDO), Container (PSR-11), Validator,
@@ -84,7 +92,7 @@ docs/                         Documentación centralizada (ver tabla de fuentes)
 
 ### Frontend (Astro)
 1. Cambios de texto: `src/i18n/<locale>.json` — SIEMPRE las 4 locales (fr y pt caen a en/es vía fallback).
-2. Datos de negocio (habitaciones, servicios): `src/content/*.json` o `src/data/*.ts` — revisa cuál consume el componente (duplicación conocida, ver `docs/ROADMAP.md` F-6).
+2. Datos de negocio (habitaciones, servicios): edita el JSON de `src/content/<dominio>/`; los componentes los reciben ya tipados por `src/data/<dominio>.ts` (cargador sobre la colección). Excepción: `src/data/hotelServices.ts` es una lista propia, no derivada de una colección (ver `docs/ROADMAP.md`).
 3. UI: componentes en `src/components`; estilos Tailwind v4 (CSS-first, sin config v3).
 4. Validar con `npm run check` (astro check + TS).
 
@@ -129,33 +137,21 @@ Playwright usa la configuración versionada y `npm run test:e2e -- <spec>` para 
 - Env vars de prod: hPanel → **Despliegues → Ajustes → Variables de entorno → «Guardar»** (escribe `hbuilds/config/.env` en la raíz del dominio; el efecto es inmediato, sin redeploy). La página «Sitios web → Variables de entorno» **no** reescribe el archivo. Fallback `.env` un nivel arriba de `public_html` (`app/Core/Config.php::loadEnv`). El `.env` **no** va en `dist/` (el postbuild lo elimina). Detalle: `docs/DEPLOYMENT.md`.
 - El hook `pre-commit` comprime `.mp4`/imágenes staged (requiere ffmpeg + `scripts/compress-images.js`; ver `docs/DEPLOYMENT.md` §Hooks).
 
-## Reglas imperativas
-
-- **Docs-first**: antes de escribir código con una librería, consulta su documentación (Astro → `astro-docs`, librerías → `context7`, patrones → `tavily`). No asumas APIs de memoria.
-- **Pensamiento secuencial** para problemas no triviales (arquitectura, debugging, decisiones).
-- **Zero hardcoding**: credenciales/URLs/precios → `.env` o BD. Jamás literales en código.
-- **No tocar generados**: `graphify-out/`, `dist/`, `node_modules/`, `vendor/` (a mano), `*.map`. Si algo es regenerable, no se edita ni se commitea.
-- **Commits**: pequeños, por tema, prefijo `feat:` / `fix:` / `chore:` / `docs:`. No mega-commits. NO push a main sin OK explícito del usuario.
-- **Herramientas según el alcance** (incluye subagentes): consulta Context7 o docs oficiales para APIs de librerías; navegador para cambios visuales; herramientas de BD/pagos solo al verificar esos recorridos autorizados. Usa las capacidades disponibles, sin instalar duplicados ni llamar todos los MCPs por rutina. Si falta una herramienta realmente necesaria, continúa el trabajo independiente y reporta exactamente qué no pudiste verificar; no declares bloqueada una tarea local por un MCP ajeno a su alcance.
-- **Duda → preguntar**: si el pedido del usuario choca con el plan de migración o la arquitectura (ver `docs/ROADMAP.md`), pregunta antes de codear.
-
 ## Principios de ingeniería (reglas de senior dev)
 
-Aplicar en orden; detente en la primera que aplique. Las reglas 1 y 7 del original se suavizan a propósito (el original casi borró una tabla de producción del autor).
+Aplicar en orden; detente en la primera que aplique. Se suavizan a proposito las
+que en su version original casi borraban una tabla de produccion del autor.
 
 1. **Sin capas de compatibilidad especulativas**: borra caminos obsoletos directo, pero NUNCA sin antes verificar dependencias y con `git` limpio y reversible. No añadas migraciones/fallbacks "por si acaso". Cambios de schema: coordinar con QloApps (ver sección BD).
-2. **Implementación más simple que satisfaga la necesidad actual**: sin abstracción preventiva, sin interfaces para un solo uso futuro.
-3. **Build the thinnest end-to-end slice first**: un corte vertical mínimo funcionando antes que infraestructura; nunca reemplaces código que funciona con complejidad a medias.
-4. **Componentes modulares**: separación de concerns (el ADR del proyecto ya lo impone: Action → Domain → Ports/Adapters).
-5. **Preferir librerías maduras**: no reescribas lo que una librería estable ya resuelve (compatible con "dependencia mínima" del deploy Hostinger).
-6. **Revisar dependencias existentes** antes de añadir paquetes nuevos: revisa `composer.json`/`package.json` y qué ya importa el código antes de instalar algo.
-7. **Decisiones de arquitectura a largo plazo**: rechaza hacks "lo cambiamos luego" para cosas que cruzan capas o la BD; documenta en `docs/DECISIONS.md` (patrón ADR del proyecto).
-8. **Estudia cómo lo resolvieron productos maduros**: usa patrones probados (PrestaShop/QloApps, estándares del sector) antes de inventar.
+2. **Build the thinnest end-to-end slice first**: un corte vertical mínimo funcionando antes que infraestructura; nunca reemplaces código que funciona con complejidad a medias.
+3. **Componentes modulares**: separación de concerns (el ADR del proyecto ya lo impone: Action → Domain → Ports/Adapters).
+4. **Preferir librerías maduras**: no reescribas lo que una librería estable ya resuelve (compatible con "dependencia mínima" del deploy Hostinger).
+5. **Revisar dependencias existentes** antes de añadir paquetes nuevos: revisa `composer.json`/`package.json` y qué ya importa el código antes de instalar algo.
+6. **Decisiones de arquitectura a largo plazo**: rechaza hacks "lo cambiamos luego" para cosas que cruzan capas o la BD; documenta en `docs/DECISIONS.md` (patrón ADR del proyecto).
+7. **Estudia cómo lo resolvieron productos maduros**: usa patrones probados (PrestaShop/QloApps, estándares del sector) antes de inventar.
 
-## Herramientas de calidad disponibles (instaladas 2026-08-04)
+## Herramientas de calidad
 
-- **Semgrep MCP** (`semgrep` en MCPs): SAST local y gratuito — auditor de seguridad estándar. Usa `semgrep mcp` para escanear el diff/código.
-- **open-code-review (Alibaba)**: `ocr delegate preview` + `ocr delegate rule <file>` para revisión de código independiente en modo delegación (sin API key extra).
-- **Ponytail**: plugin OpenCode activo — sigue la "ladder" YAGNI antes de generar código (¿existe? ¿stdlib? ¿dependencia instalada? → solo entonces el mínimo que funciona). Niveles `/ponytail lite|full|ultra`.
-- **Skills de diseño**: `design-taste-frontend` (anti-slop, landing/redesign — NO usar en el booking wizard) y `modlens` (visión para imágenes: requiere `GEMINI_API_KEY`).
-- **codebase-memory-mcp**: NO instalar como MCP — duplica `graphify` (ya configurado). Si se quiere comparar, usar su CLI standalone.
+Las herramientas de SAST, revision y skills de diseno disponibles en este repo
+estan listadas en [`.agents/TOOLS.md`](.agents/TOOLS.md). No son requisito para
+contribuir: usalas si aportan al cambio, no por rutina.

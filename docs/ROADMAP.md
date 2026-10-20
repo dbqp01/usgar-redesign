@@ -14,12 +14,18 @@ hecer: lo cerrado está en [`docs/STATE.md`](STATE.md) (estado actual) o en
 | P1-D4 | **Configurar SMTP (`SMTP_*`)** | Sin SMTP no sale el email de confirmación (fail-soft por diseño) |
 | P1-D5 | **Activar QloApps Channel Manager (Webkul)** | Activación de pago; runbook en `docs/PMS.md` §D |
 
-## P2 — Deuda estructural (backend)
+## P2 — Deuda estructural
 
 - [ ] **P2-7** `Response::json()` hace `exit()` dentro de la clase → mover el
   exit al front controller. **Diferido**: ~40 call sites asumen que la
   respuesta termina el script; tocarlo sin refactorizar las acciones a la vez
   es una regresión garantizada. Revisar junto a un refactor mayor de acciones.
+- [ ] **Lista de servicios del hotel en dos sitios**:
+  `src/data/hotelServices.ts` (33 etiquetas del detalle de habitación) y
+  `src/content/services/services.json` (23 ítems de la página de servicios)
+  describen el mismo catálogo con nombres distintos ("Buffet breakfast
+  (6:00 am - 9:00 am)" vs "Breakfast Buffet"). Unificar: el JSON como dato y
+  `hotelServices.ts` como vista derivada.
 - [ ] **Compensación del carrito de QloApps** si el INSERT local falla después
   de crear el carrito remoto (auditoría 2026-09-07): el contrato de cancelación
   del webservice aún no está verificado.

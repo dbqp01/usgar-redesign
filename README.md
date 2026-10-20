@@ -2,7 +2,7 @@
 
 Sitio transaccional del hotel boutique Usgar (San Pedro, Cusco, Perú): reservas directas, 4 idiomas (en/es/fr/pt), pagos USD. Frontend Astro 7 estático + API PHP nativa (monolito ADR).
 
-> **Para agentes:** lee primero `AGENTS.md` (estructura, reglas y fuentes de verdad). **Documentación centralizada en `docs/`** (8 archivos): arquitectura, API, deploy, PMS, seguridad, roadmap y decisiones — ver la tabla de fuentes en `AGENTS.md`.
+> **Para agentes:** lee primero `AGENTS.md` (estructura, reglas y fuentes de verdad). **Documentación centralizada en `docs/`**: el índice es [`docs/README.md`](docs/README.md) — arquitectura, API, deploy, PMS, seguridad, roadmap, decisiones y estado actual. El histórico ya resuelto vive en `docs/archive/`.
 
 ## Quickstart
 
@@ -36,6 +36,22 @@ npm run dev:all           # Astro en :4321 + PHP API en :8000 (proxy /api)
 Para una revisión superficial de frontend, usa `npm run test:unit` y `npm run check`; añade build si cambias componentes o configuración de compilación. `composer test` y los harness PHP pueden incluir BD o sandbox externos: revisa sus fixtures y valida el destino antes de ejecutarlos. Que un archivo esté en `tests/Unit` o un token empiece por `TEST-` no garantiza aislamiento. Nunca uses credenciales de producción para estas verificaciones locales.
 
 Para E2E, instala Chromium una vez con `npx playwright install chromium`. `npm run test:e2e -- --list` lista solo E2E, sin cargar Vitest; `npm run test:e2e -- panel-flow.spec.ts` ejecuta el caso local con API mockeada. Playwright inicia y detiene Astro automáticamente y falla si :4321 ya está ocupado. Los casos que necesitan API PHP requieren además un backend local de pruebas; no apuntes el proxy a producción.
+
+## Cómo contribuir
+
+1. **Antes de tocar código**, busca en `docs/` si el comportamiento ya está
+   documentado (índice en `docs/README.md`). Si cambias cómo funciona algo,
+   actualiza el doc en el **mismo commit**.
+2. **Un cambio = un commit**, pequeño y con prefijo `feat:` / `fix:` / `chore:` /
+   `docs:`. Nada de push a `main` sin ok explícito del dueño del proyecto.
+3. **Verifica según lo que tocaste** (tabla en `AGENTS.md` § Tests): frontend →
+   `npm run check`; backend → `php vendor/bin/phpunit` + `composer analyse`;
+   solo docs → leer y contrastar con el código, sin instalar nada.
+4. **No toques lo que no es tuyo**: credenciales, tablas `qlo_*` del PMS y los
+   refunds se resuelven desde el back-office de QloApps o el panel, nunca por
+   SQL ni editando un `.env` versionado.
+5. **Dudas**: `AGENTS.md` § "Duda → preguntar", y `docs/ROADMAP.md` para saber
+   qué está pendiente y por qué.
 
 ## Deploy (Hostinger — automático desde GitHub)
 
