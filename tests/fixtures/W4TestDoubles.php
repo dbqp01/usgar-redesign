@@ -128,6 +128,10 @@ final class W4PmsPortDouble implements PmsPortInterface {
         }
         return $this->dedupResult;
     }
+
+    public function releaseStaleWebserviceHolds(): int {
+        return 0;
+    }
 }
 
 /**

@@ -169,8 +169,33 @@ final class QloAppAdapterSqlTest extends TestCase {
         self::assertContains('4|286', $params);
     }
 
-    public function testMultiRoomDetailsAllocateExactGatewayCurrencyTotal(): void {
+    /**
+     * Una reserva local caducada (expirada/cancelada/fallida) deja su hold en
+     * QloApps bloqueando la habitacion: sin liberarlo, la habitacion no vuelve
+     * a estar disponible hasta que el Cleaner del PMS purgue el carrito.
+     */
+    public function testReleaseStaleWebserviceHoldsFreesThePmsRooms(): void {
         $pdo = new FakePdoForSqlTest();
+        // Holds caducados que siguen bloqueando en el PMS.
+        $pdo->fetchAllQueue = ['284', '285'];
+        // PS_OS_CANCELED de la tienda (una lectura por hold liberado).
+        $pdo->fetchColumnQueue = [4, 4];
+
+        $adapter = new QloAppAdapter($pdo);
+        self::assertSame(2, $adapter->releaseStaleWebserviceHolds());
+
+        $queries = implode("\n", $pdo->preparedQueries);
+
+        // Solo reservas locales ya no activas, y solo las que siguen bloqueando.
+        self::assertStringContainsString("WHERE pb.status IN ('expired','cancelled','failed')", $queries);
+        self::assertStringContainsString('bd.is_refunded = 0 AND bd.is_cancelled = 0', $queries);
+
+        // Libera la habitacion (is_refunded) y cancela la orden del hold.
+        self::assertStringContainsString('SET is_refunded = 1, is_cancelled = 1', $queries);
+        self::assertStringContainsString('UPDATE qlo_orders SET current_state = ? WHERE id_order = ? AND current_state = 1', $queries);
+    }
+
+    public function testMultiRoomDetailsAllocateExactGatewayCurrencyTotal(): void {        $pdo = new FakePdoForSqlTest();
         $pdo->fetchQueue = [[
             'id_hotel' => '1', 'id_room_type' => '3', 'checkin' => '2026-09-01',
             'checkout' => '2026-09-03', 'guest_data' => '{"guests":2}',

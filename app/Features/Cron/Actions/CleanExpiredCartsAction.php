@@ -8,16 +8,21 @@ use App\Core\Response;
 use App\Core\Logger;
 use App\Core\Config;
 use App\Features\Booking\Domain\ProvisionalBookingRepository;
+use App\Features\Shared\Ports\PmsPortInterface;
 
 /**
  * Accion ADR: POST /api/cron/cleanup
  * Tarea programada para limpiar carritos expirados (mas de 15 minutos sin pago).
+ * Ademas libera en el PMS los holds de esas reservas caducadas: sin eso la
+ * habitacion queda bloqueada en el calendario de QloApps.
  */
 class CleanExpiredCartsAction {
     private ProvisionalBookingRepository $bookingRepo;
+    private PmsPortInterface $pms;
 
-    public function __construct(ProvisionalBookingRepository $bookingRepo) {
+    public function __construct(ProvisionalBookingRepository $bookingRepo, PmsPortInterface $pms) {
         $this->bookingRepo = $bookingRepo;
+        $this->pms = $pms;
     }
 
     public function __invoke(Request $request): void {
@@ -47,12 +52,14 @@ class CleanExpiredCartsAction {
         }
 
         $cleanedCount = $this->bookingRepo->cleanExpiredCarts();
-        Logger::info("CleanExpiredCartsAction: Se limpiaron {$cleanedCount} bloqueos temporales expirados.");
+        $releasedCount = $this->pms->releaseStaleWebserviceHolds();
+        Logger::info("CleanExpiredCartsAction: Se limpiaron {$cleanedCount} bloqueos temporales expirados y se liberaron {$releasedCount} reservas del PMS.");
 
         Response::json([
-            'success'       => true,
-            'cleaned_count' => $cleanedCount,
-            'timestamp'     => date('Y-m-d H:i:s'),
+            'success'             => true,
+            'cleaned_count'       => $cleanedCount,
+            'released_pms_holds'  => $releasedCount,
+            'timestamp'           => date('Y-m-d H:i:s'),
         ]);
     }
 }

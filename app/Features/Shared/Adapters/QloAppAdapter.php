@@ -9,6 +9,7 @@ use App\Features\Shared\DiscountResolver;
 use App\Core\Config;
 use App\Core\Logger;
 use App\Core\Database;
+use App\Core\BookingStatus;
 use PDO;
 use PDOException;
 use SimpleXMLElement;
@@ -857,39 +858,9 @@ XML;
 
             // 10. El hold del webservice (POST /api/bookings) queda superado por
             // esta orden pagada: se libera para no dejar la reserva duplicada en
-            // el PMS (la habitacion ya quedo heredada en el paso 4c). QloApps
-            // libera la habitacion cuando is_refunded = 1 (su disponibilidad
-            // filtra is_refunded = 0) y marca la reserva como cancelada con
-            // is_cancelled = 1.
+            // el PMS (la habitacion ya quedo heredada en el paso 4c).
             if (ctype_digit($cartId)) {
-                $stmtCancelHold = $this->pdo->prepare("
-                    UPDATE qlo_htl_booking_detail
-                    SET is_refunded = 1, is_cancelled = 1
-                    WHERE id_order = ? AND is_refunded = 0 AND is_cancelled = 0
-                ");
-                $stmtCancelHold->execute([(int)$cartId]);
-
-                // Estado de orden "Cancelado" (PS_OS_CANCELED de la tienda).
-                $stmtCancelState = $this->pdo->prepare(
-                    "SELECT value FROM qlo_configuration WHERE name = 'PS_OS_CANCELED' AND id_shop_group = {$shopGroupId} AND id_shop = {$shopId} LIMIT 1"
-                );
-                $stmtCancelState->execute();
-                $cancelledStateId = (int)$stmtCancelState->fetchColumn();
-                if ($cancelledStateId > 0) {
-                    $stmtHoldOrder = $this->pdo->prepare(
-                        "UPDATE qlo_orders SET current_state = ? WHERE id_order = ? AND current_state = 1"
-                    );
-                    $stmtHoldOrder->execute([$cancelledStateId, (int)$cartId]);
-                    if ($stmtHoldOrder->rowCount() > 0) {
-                        $stmtHoldHistory = $this->pdo->prepare("
-                            INSERT INTO qlo_order_history (id_employee, id_order, id_order_state, date_add)
-                            VALUES (0, ?, ?, NOW())
-                        ");
-                        $stmtHoldHistory->execute([(int)$cartId, $cancelledStateId]);
-                    }
-                } else {
-                    Logger::warning("QloAppAdapter: PS_OS_CANCELED no encontrado; el hold {$cartId} quedo liberado sin cambiar el estado de su orden");
-                }
+                $this->releaseWebserviceHold((int)$cartId);
             }
 
             if ($startedTransaction) {
@@ -907,6 +878,100 @@ XML;
         }
     }
 
+
+    /**
+     * Libera el hold del webservice (POST /api/bookings) de un carrito.
+     *
+     * QloApps libera la habitacion cuando is_refunded = 1 (su consulta de
+     * disponibilidad filtra is_refunded = 0) y marca la reserva como cancelada
+     * con is_cancelled = 1 (semantica verificada en el codigo de QloApps
+     * v1.7.0, 2026-10-20). La orden del hold pasa a "Cancelado"
+     * (PS_OS_CANCELED de la tienda, leido de qlo_configuration).
+     *
+     * @return int reservas liberadas
+     */
+    private function releaseWebserviceHold(int $cartId): int {
+        $shopGroupId = self::SHOP_GROUP_ID;
+        $shopId = self::SHOP_ID;
+
+        $stmtCancelHold = $this->pdo->prepare("
+            UPDATE qlo_htl_booking_detail
+            SET is_refunded = 1, is_cancelled = 1
+            WHERE id_order = ? AND is_refunded = 0 AND is_cancelled = 0
+        ");
+        $stmtCancelHold->execute([$cartId]);
+        $released = $stmtCancelHold->rowCount();
+
+        // Estado de orden "Cancelado" (PS_OS_CANCELED de la tienda).
+        $stmtCancelState = $this->pdo->prepare(
+            "SELECT value FROM qlo_configuration WHERE name = 'PS_OS_CANCELED' AND id_shop_group = {$shopGroupId} AND id_shop = {$shopId} LIMIT 1"
+        );
+        $stmtCancelState->execute();
+        $cancelledStateId = (int)$stmtCancelState->fetchColumn();
+        if ($cancelledStateId > 0) {
+            $stmtHoldOrder = $this->pdo->prepare(
+                "UPDATE qlo_orders SET current_state = ? WHERE id_order = ? AND current_state = 1"
+            );
+            $stmtHoldOrder->execute([$cancelledStateId, $cartId]);
+            if ($stmtHoldOrder->rowCount() > 0) {
+                $stmtHoldHistory = $this->pdo->prepare("
+                    INSERT INTO qlo_order_history (id_employee, id_order, id_order_state, date_add)
+                    VALUES (0, ?, ?, NOW())
+                ");
+                $stmtHoldHistory->execute([$cartId, $cancelledStateId]);
+            }
+        } else {
+            Logger::warning("QloAppAdapter: PS_OS_CANCELED no encontrado; el hold {$cartId} quedo liberado sin cambiar el estado de su orden");
+        }
+
+        return $released;
+    }
+
+    /**
+     * Libera en el PMS los holds del webservice cuyas reservas locales ya no
+     * estan activas (expiradas, canceladas o fallidas).
+     *
+     * Sin esto la habitacion queda bloqueada en el calendario de QloApps
+     * hasta que su propio Cleaner purgue el carrito (verificado en produccion
+     * el 2026-10-20: los holds caducados seguian con is_refunded = 0).
+     * Idempotente: solo toca reservas que siguen bloqueando.
+     *
+     * @return int reservas liberadas
+     */
+    public function releaseStaleWebserviceHolds(): int {
+        if (!$this->pdo) {
+            return 0;
+        }
+        try {
+            $dead = "'" . implode("','", [
+                BookingStatus::Expired->value,
+                BookingStatus::Cancelled->value,
+                BookingStatus::Failed->value,
+            ]) . "'";
+            $stmt = $this->pdo->prepare("
+                SELECT DISTINCT pb.cart_id
+                FROM provisional_bookings pb
+                INNER JOIN qlo_htl_booking_detail bd
+                    ON bd.id_order = CAST(pb.cart_id AS UNSIGNED)
+                   AND bd.is_refunded = 0 AND bd.is_cancelled = 0 AND bd.is_back_order = 0
+                WHERE pb.status IN ({$dead})
+                  AND pb.cart_id REGEXP '^[0-9]+$'
+            ");
+            $stmt->execute();
+
+            $released = 0;
+            foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $cartId) {
+                $released += $this->releaseWebserviceHold((int)$cartId);
+            }
+            if ($released > 0) {
+                Logger::info("QloAppAdapter: Se liberaron {$released} reservas del PMS de reservas locales caducas.");
+            }
+            return $released;
+        } catch (PDOException $e) {
+            Logger::error('QloAppAdapter: Error al liberar los holds caducados: ' . $e->getMessage());
+            return 0;
+        }
+    }
 
     public function extendCartSession(string $cartId): bool {
         if (!$this->pdo) {

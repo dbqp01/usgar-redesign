@@ -51,4 +51,12 @@ interface PmsPortInterface {
      * devolver false por error — el caller reintenta via outbox).
      */
     public function isOrderConfirmed(string $externalReference): bool;
+
+    /**
+     * Libera en el PMS los holds (reservas del webservice) cuyas reservas
+     * locales ya no estan activas (expiradas/canceladas/fallidas): la
+     * habitacion vuelve a estar disponible en el calendario del PMS.
+     * Idempotente. @return int reservas liberadas
+     */
+    public function releaseStaleWebserviceHolds(): int;
 }
