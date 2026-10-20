@@ -28,6 +28,8 @@ final class ReviewScoresPathTest extends TestCase {
         $file = GetReviewScoresAction::scoresFile();
         $this->assertNotSame('/review-scores.json', $file);
         $this->assertStringEndsWith('/storage/review-scores.json', $file);
+        // La raiz del proyecto, nunca app/ (que el postbuild copia a dist/).
+        $this->assertStringStartsWith(dirname(__DIR__, 3) . '/storage/', $file);
     }
 
     public function testDefaultStorageDirectoryHasAnExistingParent(): void {

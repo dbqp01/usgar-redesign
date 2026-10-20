@@ -202,7 +202,7 @@ Webhook de MercadoPago (topic `payment`). Registrado en el panel MP (app de prod
 
 ## GET /api/reviews-score
 
-Scores de reseñas de Booking/KAYAK/Expedia servidos al ribbon de la home (sección de reviews). Los refresca el cron `refresh-reviews` (POST `/api/cron/refresh-reviews`, CLI o HTTP con `x-cron-secret`) en `storage/review-scores.json`, bajo la raíz del dominio (`Config::deploymentBase()`) y **fuera** del árbol que cada build reemplaza; si `STORAGE_PATH` está definido, manda esa ruta.
+Scores de reseñas de Booking/KAYAK/Expedia servidos al ribbon de la home (sección de reviews). Los refresca el cron `refresh-reviews` (POST `/api/cron/refresh-reviews`, CLI o HTTP con `x-cron-secret`) en `storage/review-scores.json`, bajo la raíz del dominio (`Config::deploymentBase()`) y **fuera** del árbol que cada build reemplaza; si `STORAGE_PATH` está definido, manda esa ruta. Sin `STORAGE_PATH` y sin raíz de despliegue (dev/CLI) cae en `<raíz del proyecto>/storage/`, nunca en `app/` (que el postbuild copia a `dist/`).
 
 Respuesta:
 La respuesta incluye `success: true` además de `scores` y `updatedAt`.

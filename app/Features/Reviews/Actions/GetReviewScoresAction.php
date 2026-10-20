@@ -32,8 +32,9 @@ class GetReviewScoresAction {
         if ($base === null || trim($base) === '') {
             // Fuera del arbol que el deploy reemplaza (igual que los logs): si el
             // fichero vive dentro de public_html cada build lo borra y el cron
-            // refresh-reviews no sirve de nada.
-            $base = (Config::deploymentBase() ?? dirname(__DIR__, 3)) . '/storage';
+            // refresh-reviews no sirve de nada. Sin deploymentBase (dev/CLI) cae
+            // en la raiz del proyecto, nunca en app/ (que si se copia a dist/).
+            $base = (Config::deploymentBase() ?? dirname(__DIR__, 4)) . '/storage';
         }
         return rtrim($base, '/') . '/review-scores.json';
     }

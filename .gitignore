@@ -16,6 +16,7 @@ graphify-out/transcripts/
 logs/
 log/
 log
+storage/
 *.map
 .opencode.json
 opencode.json
@@ -43,5 +44,4 @@ tools/rsshub/
 
 # Fixture de credenciales de prueba (eliminado 2026-08-07: nada lo lee, git lo restauraba).
 .env.testing
-app/storage/
 runtime/
