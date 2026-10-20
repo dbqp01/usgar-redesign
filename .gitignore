@@ -1,5 +1,8 @@
 .env
 .env.production
+# Copias de seguridad de secretos de prod (nunca versionadas)
+.backups/
+backup-env-prod-*.env
 node_modules/
 dist/
 .astro/
