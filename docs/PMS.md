@@ -579,6 +579,12 @@ El repo ya prueba los mismos contratos sin Postman:
 | `qlo_orders` | UPDATE (libera el hold del webservice) | `current_state` (WHERE `id_order` = id del hold AND `current_state` = 1) |
 | `qlo_order_history` | INSERT | `id_employee, id_order, id_order_state, date_add` |
 
+> **`qlo_order_payment` no tiene `id_order`** en esta instalación (verificado con
+> `SHOW COLUMNS` el 2026-10-20): enlaza con la orden por **`order_reference`**
+> (`varchar(9)`), igual que `qlo_orders.reference` = `USGAR-<cartId>`. Cualquier
+> consulta de auditoría sobre pagos debe filtrar por `order_reference`, no por
+> `id_order` (error `#1054`).
+
 ### Semántica de QloApps v1.7.0 verificada en su código (2026-10-20)
 
 Instalación en producción: `QLO_VERSION_DB=1.7.0.0` = tag `v1.7.0` del repo
