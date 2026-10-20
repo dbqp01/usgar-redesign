@@ -30,7 +30,7 @@ function assertTest(string $description, bool $condition, $debugData = null): vo
     } else {
         echo "    FAIL: $description" . PHP_EOL;
         if ($debugData !== null) {
-            echo "      DEBUG DATA: " . print_r($debugData, true) . PHP_EOL;
+            echo "      DEBUG DATA: " . json_encode($debugData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL;
         }
         $failedTests++;
     }
@@ -126,10 +126,46 @@ $descriptorspec = [
 $docRoot = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'public';
 $routerScript = $docRoot . DIRECTORY_SEPARATOR . 'index.php';
 
-$cmd = sprintf('php -S %s:%d -t %s %s', $host, $port, escapeshellarg($docRoot), escapeshellarg($routerScript));
-$process = proc_open($cmd, $descriptorspec, $pipes, dirname(__DIR__));
+// .env de pruebas: SIN credenciales de servicios externos. El servidor de
+// pruebas arranca con este archivo (ENV_FILE), asi que no puede tocar la BD
+// real, Mercado Pago ni SMTP por mucho que crezca la suite.
+$testEnvFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'usgar-test-env-' . getmypid() . '.env';
+file_put_contents($testEnvFile, implode(PHP_EOL, [
+    'SITE_URL=http://' . $host . ':' . $port,
+    'TIMEZONE=America/Lima',
+    'ALLOWED_ORIGINS=*',
+    'DB_USER=',   // vacio -> Database no conecta (modo offline)
+    'DB_NAME=',
+    '',
+]));
 
-register_shutdown_function(function () use (&$process, &$pipes) {
+/**
+ * Entorno del proceso hijo: el del padre SIN credenciales de servicios
+ * externos, mas ENV_FILE (el .env de pruebas).
+ *
+ * @return array<string, string>
+ */
+function testChildEnv(string $envFile): array {
+    $env = getenv();
+    foreach ([
+        'DB_HOST', 'DB_PORT', 'DB_USER', 'DB_PASS', 'DB_NAME',
+        'MERCADO_PAGO_ACCESS_TOKEN', 'MERCADO_PAGO_WEBHOOK_SECRET', 'PUBLIC_MERCADO_PAGO_PUBLIC_KEY',
+        'SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS',
+        'QLOAPP_API_URL', 'QLOAPP_API_KEY',
+    ] as $key) {
+        unset($env[$key]);
+    }
+    $env['ENV_FILE'] = $envFile;
+    return $env;
+}
+
+// Comando como array: sin cmd.exe en Windows, asi que proc_terminate mata al
+// php -S y no deja servidores zombie (el string pasaria por cmd y el hijo
+// sobrevivia).
+$cmd = [PHP_BINARY, '-S', $host . ':' . $port, '-t', $docRoot, $routerScript];
+$process = proc_open($cmd, $descriptorspec, $pipes, dirname(__DIR__), testChildEnv($testEnvFile));
+
+register_shutdown_function(function () use (&$process, &$pipes, $testEnvFile) {
     if (is_resource($process)) {
         if (isset($pipes[0]) && is_resource($pipes[0])) {
             @fclose($pipes[0]);
@@ -137,7 +173,34 @@ register_shutdown_function(function () use (&$process, &$pipes) {
         @proc_terminate($process);
         @proc_close($process);
     }
+    @unlink($testEnvFile);
 });
+
+/**
+ * GET simple con timeout. curl aborta a los $timeoutSeconds: file_get_contents
+ * se queda colgado si el servidor (single-thread) esta ocupado.
+ */
+function httpGet(string $url, int $timeoutSeconds = 5): array {
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HEADER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $timeoutSeconds);
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+
+    if ($response === false) {
+        return ['status' => 0, 'headers' => [], 'body' => ''];
+    }
+
+    $headersRaw = substr($response, 0, $headerSize);
+    $body = substr($response, $headerSize);
+
+    return [
+        'status' => $httpCode,
+        'body' => $body,
+    ];
+}
 
 $serverReady = false;
 for ($i = 0; $i < 30; $i++) {
@@ -145,8 +208,8 @@ for ($i = 0; $i < 30; $i++) {
     $fp = @fsockopen($host, $port, $errno, $errstr, 0.5);
     if ($fp) {
         fclose($fp);
-        $healthCheck = @file_get_contents("http://$host:$port/api/health");
-        if ($healthCheck !== false && str_contains($healthCheck, '"success":true')) {
+        $probe = httpGet("http://$host:$port/api/health", 3);
+        if ($probe['status'] === 200 && str_contains($probe['body'], '"success":true')) {
             $serverReady = true;
             break;
         }
@@ -164,32 +227,25 @@ if (!$serverReady) {
 
 echo "   Servidor de pruebas listo en http://$host:$port" . PHP_EOL;
 
-function httpGet(string $url): array {
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HEADER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-
-    if ($response === false) {
-        return ['status' => 0, 'headers' => [], 'body' => ''];
-    }
-
-    $headersRaw = substr($response, 0, $headerSize);
-    $body = substr($response, $headerSize);
-    
-    return [
-        'status' => $httpCode,
-        'body' => $body,
-    ];
-}
-
 // Test /api/health
 $healthRes = httpGet("http://$host:$port/api/health");
 assertTest("Endpoint GET /api/health retorna HTTP 200", $healthRes['status'] === 200);
 assertTest("Endpoint GET /api/health retorna JSON válido con success=true", str_contains($healthRes['body'], '"success":true'));
+
+// Aislamiento: el servidor de pruebas arranca sin credenciales de servicios
+// (ver ENV_FILE mas arriba), asi que la BD real no se toca y el health lo dice.
+assertTest("El servidor de pruebas NO tiene conexion a la BD real (database: offline)",
+    str_contains($healthRes['body'], '"database":"offline"'), $healthRes['body']);
+
+// Un endpoint que depende del PMS responde 503 en vez de consultar QloApps.
+// Rango unico por ejecucion: la clave de cache de /api/rooms incluye las
+// fechas, asi que el test nunca lee una respuesta cacheada de otra corrida.
+$pmsOffset = 4000 + (getmypid() % 300) + random_int(0, 200);
+$pmsCheckIn = date('Y-m-d', strtotime("+{$pmsOffset} days"));
+$pmsCheckOut = date('Y-m-d', strtotime('+' . ($pmsOffset + 1) . ' days'));
+$roomsPmsRes = httpGet("http://$host:$port/api/rooms?checkIn={$pmsCheckIn}&checkOut={$pmsCheckOut}");
+assertTest("GET /api/rooms sin PMS responde 503 (no consulta el PMS real)",
+    $roomsPmsRes['status'] === 503, $roomsPmsRes);
 
 // La validación de entrada no depende de inventario ni disponibilidad del PMS.
 $roomsHotelInvalidRes = httpGet("http://$host:$port/api/rooms?id_hotel=0");

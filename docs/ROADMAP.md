@@ -27,12 +27,6 @@ hecer: lo cerrado está en [`docs/STATE.md`](STATE.md) (estado actual) o en
   fatal; falta decidir una única estrategia.
 - [ ] **Cancelaciones por refund/chargeback**: hoy son manuales.
 
-## P3 — Operación
-
-- [ ] **P3-6** `run-exhaustive-tests.php` sigue golpeando servicios reales
-  (Mercado Pago, BD remota) si se amplían los tests de integración → mockear
-  los adapters antes de añadir esos tests. La suite unitaria sí es hermética.
-
 ## Channel manager — pasos de activación
 
 - [ ] Confirmar con Webkul antes de pagar: conectividad Booking/Expedia

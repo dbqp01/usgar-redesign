@@ -140,6 +140,17 @@ class Config {
      */
     public static function envCandidates(?string $deploymentBase): array {
         $candidates = [];
+
+        // Override explicito para tests: ENV_FILE=/ruta/.env.test.
+        // Solo en dev/CLI (sin base de despliegue): en produccion manda siempre
+        // el .env de hPanel, nunca otro archivo.
+        if ($deploymentBase === null) {
+            $override = getenv('ENV_FILE');
+            if (is_string($override) && $override !== '') {
+                $candidates[] = $override;
+            }
+        }
+
         if ($deploymentBase !== null) {
             $candidates[] = $deploymentBase . DIRECTORY_SEPARATOR . 'hbuilds'
                 . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . '.env';
