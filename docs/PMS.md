@@ -548,25 +548,84 @@ El repo ya prueba los mismos contratos sin Postman:
 
 > **Riesgo documentado:** `QloAppAdapter::confirmOrder()` escribe DIRECTAMENTE en
 > tablas del schema PrestaShop/QloApps (`qlo_*`) vía PDO local — NO usa el
-> webservice para crear órdenes (el POST `bookings` del webservice da 500 en
-> esta instalación; verificado 2026-08-12: `QLO_VERSION_DB=1.7.0.0` = release
-> v1.7.0, la última — el fix de #1471 de v1.7.0 eliminó el specific management
-> qlo web service, así que el 500 no se resuelve con un upgrade; el fallback
-> `USGAR-` es el diseño resiliente vigente). Escribir contra el schema interno
-> de un PMS es frágil ante upgrades: PrestaShop/QloApps NO garantiza estabilidad
-> de columnas/tablas entre versiones.
+> webservice para crear órdenes. Escribir contra el schema interno de un PMS
+> es frágil ante upgrades: PrestaShop/QloApps NO garantiza estabilidad de
+> columnas/tablas entre versiones.
+>
+> **Corrección 2026-10-20 (importante):** esta sección daba por muerto el
+> `POST /api/bookings` del webservice ("da 500 en esta instalación… no se
+> resuelve con un upgrade"). El 500 real era otro: el módulo `qlocmconnector`
+> v5.0.4 inyecta `rate_plan_name` en la definición de `HotelBookingDetail` y la
+> columna **no existía** en la BD → `PDOException` en cada POST. Con
+> `ALTER TABLE qlo_htl_booking_detail ADD COLUMN rate_plan_name VARCHAR(255)
+> DEFAULT NULL` el webservice volvió a funcionar (verificado: creó la orden
+> 286 + su booking 227). El 500 no era del "specific management" eliminado en
+> v1.7.0. El webservice se usa hoy como **hold de inventario** (crea la
+> reserva pendiente que bloquea la habitación mientras el huésped paga) y la
+> orden pagada la crea el PDO local (ver más abajo).
 
-### Tablas y columnas que toca el adapter (verificado en código, 2026-08-12)
+### Tablas y columnas que toca el adapter (verificado en código, 2026-08-12; actualizado 2026-10-20)
 
 | Tabla | Operación | Columnas escritas |
 |---|---|---|
 | `qlo_customer` | INSERT (solo si el email no existe) | `id_shop_group, id_shop, firstname, lastname, email, passwd, secure_key, active, is_guest` |
 | `qlo_cart` | INSERT | `id_shop_group, id_shop, id_lang, id_currency, id_customer, id_address_delivery, id_address_invoice` |
-| `qlo_orders` | INSERT | `reference, id_shop_group, id_shop, id_carrier, id_lang, id_customer, id_cart, id_currency, current_state, payment, total_paid*, conversion_rate, module, valid, source` |
+| `qlo_orders` | INSERT | `reference, id_shop_group, id_shop, id_carrier, id_lang, id_customer, id_cart, id_currency, current_state, payment, total_paid*, total_paid_real, total_paid_tax_*, total_products*, conversion_rate, module, valid, source` |
+| `qlo_order_payment` | INSERT | `order_reference, id_currency, amount, payment_method, payment_type, conversion_rate, date_add` |
 | `qlo_order_detail` | INSERT | `id_order, id_shop, product_id, product_name, product_quantity, product_price, total_price_tax_*, unit_price_tax_*, is_booking_product` |
 | `qlo_htl_cart_booking_data` | INSERT | `id_cart, id_guest, id_order, id_customer, id_currency, id_product, id_room, id_hotel, quantity, booking_type, is_back_order, extra_demands, date_from, date_to, adults, children, child_ages` |
 | `qlo_htl_booking_detail` | INSERT | `id_product, id_order, id_order_detail, id_cart, id_room, id_hotel, id_customer, booking_type, id_status, check_in, check_out, planned_check_out, date_from, date_to, total_price_tax_*, total_paid_amount, is_back_order, hotel_name, room_type_name, city, phone, email, adults, children, child_ages, is_refunded, is_cancelled` |
+| `qlo_htl_booking_detail` | UPDATE (libera el hold del webservice) | `is_refunded`, `is_cancelled` (WHERE `id_order` = id del hold) |
+| `qlo_orders` | UPDATE (libera el hold del webservice) | `current_state` (WHERE `id_order` = id del hold AND `current_state` = 1) |
 | `qlo_order_history` | INSERT | `id_employee, id_order, id_order_state, date_add` |
+
+### Semántica de QloApps v1.7.0 verificada en su código (2026-10-20)
+
+Instalación en producción: `QLO_VERSION_DB=1.7.0.0` = tag `v1.7.0` del repo
+`Qloapps/QloApps`. Datos verificados leyendo ese tag:
+
+- **Cancelar una reserva:** su consulta de disponibilidad filtra
+  `is_back_order = 0 AND is_refunded = 0`; el comentario del propio módulo dice
+  *"currently we always set is_refunded to 1 when room is free"*. Es decir:
+  **`is_refunded = 1` libera la habitación** y `is_cancelled = 1` marca la
+  reserva como cancelada (es lo que hace `processRefundInBookingTables()` cuando
+  la reserva nunca se pagó). En v1.7.0 **no existe** un estado "cancelado" en
+  `htl_booking_detail.id_status` (sus constantes son `STATUS_ALLOTED=1`,
+  `STATUS_CHECKED_IN=2`, `STATUS_CHECKED_OUT=3`): no tocar `id_status`.
+- **Estados de orden** (`qlo_order_state` + `qlo_order_state_lang`, lang 1):
+  1 Pago pendiente · 2 Pago completo recibido · 3 Preparación en proceso ·
+  **4 Cancelado** · 5 Reembolso · 6 Error en el pago · 8 Pago parcial recibido.
+  El adapter toma el id de "Cancelado" de `qlo_configuration` (`PS_OS_CANCELED`).
+- **Habitación física:** la disponibilidad de QloApps une `htl_booking_detail`
+  con `htl_room_information` **por `id_room`**. Una reserva con `id_room = 0` no
+  bloquea ninguna habitación en el calendario del PMS → la reserva pagada
+  **hereda la habitación que QloApps asignó al hold** del webservice.
+- **Webservice:** `booking_status` 1=new · 2=completed · 3=cancelled ·
+  4=refunded; `payment_status` 1=completed · 2=partial · 3=awaiting. El POST de
+  la web usa `booking_status=1` + `payment_status=3` (reserva pendiente) ✓. El
+  `GET` expone `total_paid` desde `orders.total_paid_real` y `is_cancelled`
+  desde `htl_booking_detail.id_status` — de ahí que la orden pagada escriba
+  también `total_paid_real`.
+
+### Flujo completo de una reserva web (2026-10-20)
+
+1. `POST /api/booking` → hold local (`provisional_bookings`) + hold del PMS vía
+   `POST /api/bookings` del webservice (QloApps asigna la habitación física y
+   bloquea el inventario mientras el huésped paga). El `cart_id` que devuelve la
+   web es **el `id_order` de ese booking del webservice**.
+2. Pago aprobado (webhook de MP o cron de reconciliación) → `booking.paid` →
+   `ConfirmQloAppsOrderListener` → `confirmOrder()`:
+   - crea la orden pagada (`current_state=2`), sus detalles, el booking detail y
+     la **transacción de pago** (`qlo_order_payment`) — sin esta fila el pedido
+     aparece en el back-office como *"Total pagado S/. 0 / adeudado S/. <total>"*;
+   - **hereda la habitación física** del hold (arriba);
+   - **libera el hold del webservice** (`is_refunded=1, is_cancelled=1` + su
+     orden a "Cancelado" con su historial): sin esto la reserva queda duplicada
+     en el PMS y la habitación bloqueada dos veces.
+3. La web cuenta la reserva **una sola vez**: la disponibilidad excluye el
+   booking del webservice cuando existe un hold local activo para ese
+   `cart_id` (`pb.cart_id = CAST(bd.id_order AS CHAR)`), porque el
+   `id_order` del booking del webservice **es** el `cart_id`.
 
 ### Valores fijos de la instalación (constantes de `QloAppAdapter`, P2-3)
 
@@ -585,3 +644,32 @@ El repo ya prueba los mismos contratos sin Postman:
 3. Si se restaura el webservice de `bookings`, evaluar migrar `confirmOrder` a
    webservice y dejar el PDO directo como fallback (el schema interno quedaría
    solo de lectura).
+4. **El hold del webservice sigue bloqueando la habitación si el huésped
+   abandona el checkout** (no hay pago → `confirmOrder()` nunca corre). El
+   cron `cleanup` marca `expired` el hold local, pero la reserva pendiente del
+   PMS queda viva hasta que QloApps purgue el carrito (módulo *Cleaner*) o se
+   cancele a mano. Mientras tanto, la web y el PMS cuentan esa habitación como
+   ocupada (coherente, pero se pierde inventario). Pendiente: que el cleanup
+   local cancele también el hold del PMS (misma operación que el punto 2 del
+   flujo de arriba).
+
+### Diagnóstico del 2026-10-20 (500 del POST /api/bookings)
+
+Orden del hallazgo (todo verificado en producción):
+
+1. `POST /api/bookings` respondía 500 en cada intento. La traza del módulo
+   `qlocmconnector` v5.0.4 muestra que inyecta `rate_plan_name` en la
+   definición de `HotelBookingDetail` (hooks `actionObjectHotelBookingDetailPropertiesModifier`
+   y `…DefinitionModifier`); la columna no existía → `PDOException`.
+2. Fix: `ALTER TABLE qlo_htl_booking_detail ADD COLUMN rate_plan_name VARCHAR(255) DEFAULT NULL`
+   (idempotente, el mismo DDL que declara el propio módulo en su `upgrade-5.0.4.php`).
+3. Con la columna creada, el webservice volvió a crear reservas (orden 286 +
+   booking 227) y el flujo web completo se verificó en vivo: webhook de MP
+   recibido, `processed_payments` con la fila del pago, orden 287 creada y
+   pagada en el PMS.
+
+> Si tras un upgrade de QloApps reaparece el 500, revisar primero si el módulo
+> de channel manager (`qlocmconnector`) volvió a exigir una columna nueva:
+> `SHOW COLUMNS FROM qlo_htl_booking_detail` y comparar con lo que inyectan sus
+> hooks.
+
