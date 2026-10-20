@@ -1,6 +1,6 @@
 # Arquitectura — USGAR Hotels
 
-Fuente de verdad de capas, flujos y zonas de riesgo. Verificada contra el código (2026-08-11). El contrato de la API vive en `docs/API.md`; el deploy en `docs/DEPLOYMENT.md`.
+Fuente de verdad de capas, flujos y zonas de riesgo. Verificada contra el código (2026-10-20). El contrato de la API vive en `docs/API.md`; el deploy en `docs/DEPLOYMENT.md`.
 
 ## Diagrama de capas
 
@@ -141,6 +141,11 @@ explore, about, settings). `src/data/<dominio>.ts` es el **cargador tipado** sob
 colecciones (`getCollection` / `getEntry`): los componentes leen de ahí, no del JSON
 crudo. Editar el JSON y el componente ya ve el cambio.
 
-Excepción: `src/data/hotelServices.ts` es una lista propia, no derivada de una
-colección, y describe el mismo catálogo que `src/content/services/services.json` con
-nombres distintos. Está registrado como deuda en `docs/ROADMAP.md` (P2).
+Excepción: `src/data/legal.ts` es texto legal propio (no viene de una
+colección).
+
+El catálogo de servicios es **una sola fuente**: `src/content/services/services.json`
+tiene los 35 servicios del hotel con `group: "hotel" | "room"`, y
+`src/data/services.ts` los expone ya tipados y de ahí se derivan las dos
+listas (`hotelServices`, `roomServices`). Editar el JSON cambia las tarjetas
+destacadas y las dos listas de la web a la vez.

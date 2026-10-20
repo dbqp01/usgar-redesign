@@ -72,7 +72,7 @@ src/                          Frontend Astro
   content/                    Datos del sitio, un JSON por dominio (about, explore, faq,
                               reviews, rooms, services, settings)
   data/                       Carga tipada sobre esas colecciones (getCollection /
-                              getEntry) + listas propias (hotelServices, legal)
+                              getEntry) + lista propia (legal)
   assets/                     Imágenes y fuentes que importa Astro
   styles/                     global.css (Tailwind v4, CSS-first)
   layouts/                    Layout.astro (único)
@@ -100,7 +100,7 @@ docs/                         Documentación centralizada (ver tabla de fuentes)
 
 ### Frontend (Astro)
 1. Cambios de texto: `src/i18n/<locale>.json` — SIEMPRE las 4 locales (fr y pt caen a en/es vía fallback).
-2. Datos de negocio (habitaciones, servicios): edita el JSON de `src/content/<dominio>/`; los componentes los reciben ya tipados por `src/data/<dominio>.ts` (cargador sobre la colección). Excepciones (listas propias, no derivadas de una colección): `src/data/hotelServices.ts` (catálogo del hotel, ver `docs/ROADMAP.md`) y `src/data/legal.ts` (texto legal en/es).
+2. Datos de negocio (habitaciones, servicios): edita el JSON de `src/content/<dominio>/`; los componentes los reciben ya tipados por `src/data/<dominio>.ts` (cargador sobre la colección). El catálogo de servicios es un solo JSON: `group: "hotel" | "room"` separa las dos listas (`hotelServices`, `roomServices`) y `src/data/services.ts` las deriva. Excepción (lista propia, no derivada de una colección): `src/data/legal.ts` (texto legal en/es).
 3. UI: componentes en `src/components`; estilos Tailwind v4 (CSS-first, sin config v3).
 4. Validar con `npm run check` (astro check + TS).
 

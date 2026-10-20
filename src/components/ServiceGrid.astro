@@ -1,8 +1,7 @@
 ---
 import { Picture } from 'astro:assets';
 import SectionHeader from './ui/SectionHeader.astro';
-import { services } from '../data/services';
-import { hotelServices, roomServices } from '../data/hotelServices';
+import { services, hotelServices, roomServices, type ServiceItem } from '../data/services';
 import { useTranslations, type Locale } from '../i18n/utils';
 import breakfastImage from '../assets/hotel/fallback-room-desayuno.jpg';
 import oxygenImage from '../assets/hotel/fallback-room-oxigeno.jpg';
@@ -27,8 +26,8 @@ const featureServices = featureIds
   })
   .filter((service): service is NonNullable<typeof service> => Boolean(service));
 
-function label(item: { label: Record<string, string> }, locale: Locale): string {
-  return item.label[locale] || item.label.en || item.label.es;
+function label(item: ServiceItem, locale: Locale): string {
+  return item.label[locale] || item.label.en;
 }
 ---
 
@@ -66,7 +65,7 @@ function label(item: { label: Record<string, string> }, locale: Locale): string 
           <div class="absolute inset-x-5 bottom-5 z-10 sm:inset-x-7 sm:bottom-7">
             <div class="max-w-xl border-l-2 border-secondary bg-black/35 px-5 py-4 backdrop-blur-md transition-transform duration-700 ease-out motion-safe:group-hover:translate-x-2 sm:px-6 sm:py-5">
               <h3 class="font-display text-3xl leading-none text-white sm:text-5xl">{service.name[lang]}</h3>
-              <p class="mt-3 max-w-lg text-sm leading-relaxed text-white/75 sm:text-base">{service.description[lang]}</p>
+              <p class="mt-3 max-w-lg text-sm leading-relaxed text-white/75 sm:text-base">{service.description?.[lang] ?? ''}</p>
             </div>
           </div>
         </article>

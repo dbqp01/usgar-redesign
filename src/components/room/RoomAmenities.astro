@@ -1,9 +1,9 @@
 ---
 // src/components/room/RoomAmenities.astro
-// Servicios COMPLETOS del hotel (fuente: lista oficial del cliente): secciones
-// "Servicios del hotel" + "Servicios en la habitacion". Son globales del hotel,
-// identicas para todas las habitaciones (src/data/hotelServices.ts).
-import { hotelServices, roomServices } from "../../data/hotelServices";
+// Servicios COMPLETOS del hotel: secciones "Servicios del hotel" + "Servicios
+// en la habitacion". Son globales del hotel, identicas para todas las
+// habitaciones; salen del catalogo unico (src/content/services/services.json).
+import { hotelServices, roomServices, type ServiceItem } from "../../data/services";
 import { useTranslations, type Locale } from "../../i18n/utils";
 
 interface Props {
@@ -13,8 +13,8 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-function label(item: { label: Record<string, string> }, locale: Locale): string {
-  return item.label[locale] || item.label.en || item.label.es;
+function label(item: ServiceItem, locale: Locale): string {
+  return item.label[locale] || item.label.en;
 }
 ---
 

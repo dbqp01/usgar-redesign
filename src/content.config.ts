@@ -95,15 +95,19 @@ const services = defineCollection({
   schema: z.object({
     id: z.string(),
     order: z.number(),
+    // "hotel" = servicio del hotel (globales); "room" = servicio de la habitacion.
+    // Separa las dos listas que consumen los componentes (src/data/services.ts).
+    group: z.enum(['hotel', 'room']),
     name_en: z.string(),
     name_es: z.string(),
     name_fr: z.string(),
     name_pt: z.string(),
-    description_en: z.string(),
-    description_es: z.string(),
-    description_fr: z.string(),
-    description_pt: z.string(),
-    icon: z.string(),
+    // Descripcion larga: solo la usan las tarjetas destacadas de la seccion
+    // de servicios; el resto del catalogo se muestra como lista de etiquetas.
+    description_en: z.string().optional(),
+    description_es: z.string().optional(),
+    description_fr: z.string().optional(),
+    description_pt: z.string().optional(),
   }),
 });
 
