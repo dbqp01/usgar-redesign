@@ -12,20 +12,20 @@ use App\Features\Booking\Domain\Listeners\ConfirmQloAppsOrderListener;
 use App\Test\Fixtures\W4PmsPortDouble;
 
 /**
- * Tests del listener de QloApps (Wave 4, todo 21).
+ * Tests del listener de QloApps.
  *
- * - confirmOrder null/false -> THROW (el outbox reintenta via el cron del
- *   todo 19); sin retry loop interno (1 intento).
+ * - confirmOrder null/false -> THROW (el outbox reintenta via el cron);
+ *   sin retry loop interno (1 intento).
  * - DEDUP del consumidor: UNICO mecanismo = pre-chequeo por
  *   external_reference = USGAR-{cartId} (si la orden YA esta confirmada ->
  *   skip/exito sin llamar confirmOrder). La ventana crash entre un
  *   confirmOrder exitoso y el write COMPLETED del outbox deja el evento
- *   IN_PROGRESS y el reclaim del todo 19 lo re-entrega -> doble confirm sin
+ * IN_PROGRESS y el reclaim lo re-entrega -> doble confirm sin
  *   el dedup.
  * - FAIL-CLOSED en el pre-chequeo: si falla (PMS caido) -> THROW, nunca skip
  *   por error. El null de un confirmOrder real SIEMPRE hace throw (el
  *   dedup-skip es un camino de exito distinto).
- * - El listener usa amount_pen (PEN) para el PMS (todo 25).
+ * - El listener usa amount_pen (PEN) para el PMS.
  *
  * Test double in-memory del PUERTO PmsPortInterface (sin red) que cuenta
  * llamadas — nunca un mock de resultados de MercadoPago (mandato r10).
@@ -108,7 +108,7 @@ final class ConfirmQloAppsOrderListenerTest extends TestCase {
     }
 
     public function testListenerSendsPenAmountToPms(): void {
-        // Todo 25: los adapters reciben monto PEN (285.00), no USD (75.00).
+        // los adapters reciben monto PEN (285.00), no USD (75.00).
         $this->pms->confirmResult = 'OK-ORDER-1';
         $this->pms->dedupResult = false;
 

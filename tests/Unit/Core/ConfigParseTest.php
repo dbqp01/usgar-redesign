@@ -7,7 +7,7 @@ use App\Core\Config;
 use PHPUnit\Framework\TestCase;
 
 /**
- * P1-2 (2026-08-12): el parseo de .env truncaba valores con " #"
+ * el parseo de .env truncaba valores con " #"
  * (ej. DB_PASS="ab #cd" -> "ab"). parseLine es la unidad testeable.
  */
 final class ConfigParseTest extends TestCase {

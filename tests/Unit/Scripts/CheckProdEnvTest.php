@@ -13,7 +13,7 @@ use App\Core\Config;
 use App\Scripts\CheckProdEnv;
 
 /**
- * Tests del guard de deploy (todo 33, Wave 6): el MERCADO_PAGO_ACCESS_TOKEN
+ * Tests del guard de deploy: el MERCADO_PAGO_ACCESS_TOKEN
  * debe pertenecer a la ALLOWLIST POR HASH (sha256) — NUNCA validacion por
  * prefijo: la doc MP vigente confirma que los tokens de PRUEBA tambien
  * empiezan con APP_USR (Checkout Pro/Orders) y que el prefijo puede variar

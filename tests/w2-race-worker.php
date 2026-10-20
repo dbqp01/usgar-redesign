@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * Worker CLI de carrera (Wave 2, todos 8 y 10).
+ * Worker CLI de carrera.
  *
  * Modo payment-race: ejecuta ProcessPaymentAction completo con un FakeGateway
  * (doble del PORT propio, no mock de MP) contra la BD real configurada en
@@ -11,7 +11,7 @@ declare(strict_types=1);
  *
  * Modo hold-race: ejecuta el flujo de creacion de hold a nivel repositorio
  * (lockRoom -> getHoldCountForRoomForUpdate -> create) para la serializacion
- * de holds fantasma (todo 10).
+ * de holds fantasma.
  *
  * Uso:
  *   php tests/w2-race-worker.php payment-race <cartId> <accessToken> <scenario> <gatewayLog>

@@ -10,7 +10,7 @@ use PDO;
 use PDOException;
 
 /**
- * Tests unitarios de ProvisionalBookingRepository (Wave 2, todos 9-12).
+ * Tests unitarios de ProvisionalBookingRepository.
  *
  * Los SQL se capturan via mocks de PDO/PDOStatement: se valida la FORMA de
  * cada sentencia (UPDATEs condicionales por-target, auto-heal con ALTER
@@ -82,7 +82,7 @@ final class ProvisionalBookingRepositoryTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 9 — updateStatus con guard por-target + expired_paid.
+    // updateStatus con guard por-target + expired_paid.
     // =====================================================================
 
     public function testUpdateStatusPaidTargetsOnlyTransientStatuses(): void {
@@ -154,7 +154,7 @@ final class ProvisionalBookingRepositoryTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 10 — room_locks: get-or-create + SELECT FOR UPDATE.
+    // room_locks: get-or-create + SELECT FOR UPDATE.
     // =====================================================================
 
     public function testLockRoomGetOrCreateThenSelectForUpdate(): void {
@@ -167,7 +167,7 @@ final class ProvisionalBookingRepositoryTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 11 — isPaymentProcessed: event_type + FOR UPDATE + fail-closed.
+    // isPaymentProcessed: event_type + FOR UPDATE + fail-closed.
     // =====================================================================
 
     public function testIsPaymentProcessedFiltersByEventTypeWithForUpdate(): void {
@@ -184,7 +184,7 @@ final class ProvisionalBookingRepositoryTest extends TestCase {
         $pdo->method('prepare')->willThrowException(new PDOException('connection lost'));
         $repo = new ProvisionalBookingRepository($pdo);
 
-        // FAIL-CLOSED (todo 11): un error de BD en el chequeo NUNCA devuelve
+        // FAIL-CLOSED: un error de BD en el chequeo NUNCA devuelve
         // false (fail-open); debe propagarse para que el webhook responda 500.
         $this->expectException(PDOException::class);
         $repo->isPaymentProcessed('555', 'approved');
@@ -203,7 +203,7 @@ final class ProvisionalBookingRepositoryTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 12 — processed_payments: event_type + indice unico compuesto.
+    // processed_payments: event_type + indice unico compuesto.
     // =====================================================================
 
     public function testMarkPaymentProcessedWritesEventTypeColumn(): void {

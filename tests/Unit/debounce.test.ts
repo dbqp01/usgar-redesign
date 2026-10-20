@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { debounce } from '../../src/utils/debounce';
 
 // =============================================================================
-// CONTRATO de src/utils/debounce (W3/21 behavior lock -> implementado en W3/23).
+// CONTRATO de src/utils/debounce (behavior lock: la API no debe cambiar).
 // Pin de la implementacion inline EXACTA que hoy vive en explore.astro:207-213:
 //
 //   function debounce<T extends (...args: any[]) => void>(fn: T, ms: number) {

@@ -338,7 +338,7 @@ $r = httpReq('POST', "$base/api/booking", ['roomSlug' => 'matrimonial']);
 logTest('B13 booking sin campos requeridos → 400', $r['code'] === 400, 'HTTP ' . $r['code']);
 
 // B14. webhook sin firma → 400/401/403 (fail-closed). type='payment' es el único
-//     que llega a validación de firma (filtro estricto TODO 13: otros tipos se
+//     que llega a validación de firma (filtro estricto: otros tipos se
 //     acusean 200 sin procesar, intencional).
 $r = httpReq('POST', "$base/api/webhook", ['type' => 'payment', 'data' => ['id' => '123456789']]);
 logTest('B14 webhook type=payment sin firma HMAC → 400/401/403', in_array($r['code'], [400, 401, 403], true), 'HTTP ' . $r['code']);

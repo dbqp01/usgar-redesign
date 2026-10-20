@@ -18,7 +18,7 @@ use MercadoPago\Net\MPResponse;
 use PDO;
 
 /**
- * Todos 3/4 (W1): payload density (additional_info travel + payer completo
+ * payload density (additional_info travel + payer completo
  * desde guest_data del hold) + currency_id explicito.
  * Test double SOLO del port propio (PaymentGatewayPortInterface) — permitido
  * por el mandato r10; nunca se simulan resultados de MercadoPago.
@@ -36,7 +36,7 @@ final class ProcessPaymentActionTest extends TestCase {
 
     protected function setUp(): void {
         Config::set('EXCHANGE_RATE_USD_PEN', '3.80');
-        // NOTE: MERCADO_PAGO_CURRENCY NO se setea -> QA- del todo 4: default 'PEN'.
+        // NOTE: MERCADO_PAGO_CURRENCY NO se setea -> QA-: default 'PEN'.
         Config::set('BOOKING_TOKEN_SECRET', 'test-booking-token-secret');
 
         $this->pdo = $this->createMock(PDO::class);
@@ -130,17 +130,17 @@ final class ProcessPaymentActionTest extends TestCase {
         $data = $this->capturedPaymentData;
         $this->assertNotNull($data, 'La pasarela debe ser llamada.');
 
-        // Todo 3: external_reference compartida con todo 22 (dedup por USGAR-{cartId}).
+        // external_reference compartida por carrito (dedup por USGAR-{cartId}).
         $this->assertSame('USGAR-CART-1', $data['external_reference']);
         // Hallazgo real 2026-08-06: sin 'description' el email del comprador
         // muestra "Producto sin nombre" — debe ir el nombre de la habitacion.
         $this->assertSame('2 noche(s) - Suite Deluxe', $data['description']);
-        // Fix F3 (2026-08-06): el create /v1/payments NO acepta currency_id
+        // el create /v1/payments NO acepta currency_id
         // (400 bad_request, verificado con MCP + sandbox real); MP infiere la
-        // moneda de la cuenta. La moneda se propaga via evento/PMS (todo 34).
+        // moneda de la cuenta. La moneda se propaga via evento/PMS.
         $this->assertArrayNotHasKey('currency_id', $data);
 
-        // Todo 3: additional_info.items[] con categoria travel.
+        // additional_info.items[] con categoria travel.
         $items = $data['additional_info']['items'] ?? null;
         $this->assertIsArray($items);
         $this->assertCount(1, $items);
@@ -151,7 +151,7 @@ final class ProcessPaymentActionTest extends TestCase {
         $this->assertSame(380.0, $item['unit_price']); // 200 USD x 3.80 / 2 noches
         $this->assertSame('travel', $item['category_id']);
 
-        // Todo 3 + fix F3 (2026-08-06, verificado con MCP search_documentation
+        // (fix verificado con MCP search_documentation
         // "create payment payer" es/MPE + sandbox real): el schema del create
         // /v1/payments usa first_name/last_name — name/surname devuelve 400
         // bad_request ([payer.surname, payer.name]).
@@ -164,7 +164,7 @@ final class ProcessPaymentActionTest extends TestCase {
     }
 
     public function testPaymentPayloadUsesFrozenPenWhenRateChangesAfterQuote(): void {
-        // Todo 32 (W6): el cargo usa price_snapshot_pen congelado al cotizar,
+        // el cargo usa price_snapshot_pen congelado al cotizar,
         // NO la tasa actual (un cambio de .env entre creacion y pago no debe
         // desviar el cargo: ni falso fraud_review ni sobrecobro).
         Config::set('EXCHANGE_RATE_USD_PEN', '3.90'); // cambio post-cotizacion (3.75 al cotizar)
@@ -182,7 +182,7 @@ final class ProcessPaymentActionTest extends TestCase {
         $this->assertSame(140.63, $data['additional_info']['items'][0]['unit_price']); // 281.25 / 2 noches
     }
 
-    public function testGuestWithoutNameFallsBackToHuespedUsgar(): void {        // QA- del todo 3: guest sin name -> "Huesped USGAR" sin romper el payload.
+    public function testGuestWithoutNameFallsBackToHuespedUsgar(): void {        // QA-: guest sin name -> "Huesped USGAR" sin romper el payload.
         $this->bookingRepo->method('getByCartIdForUpdate')->willReturn(
             $this->holdFixture(guestName: '', phone: '')
         );
@@ -199,7 +199,7 @@ final class ProcessPaymentActionTest extends TestCase {
     }
 
     public function testMpApiExceptionReturnsMpStatusWithStatusDetail(): void {
-        // Todo 6 (QA+): MPApiException -> passthrough del status MP (400/422)
+        // MPApiException -> passthrough del status MP (400/422)
         // con details.status_detail; nunca 500 generico.
         $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->holdFixture());
         $this->paymentGateway->method('processPayment')
@@ -216,7 +216,7 @@ final class ProcessPaymentActionTest extends TestCase {
     }
 
     public function testNetworkErrorReturns500(): void {
-        // Todo 6 (QA-): error NO-MP (red/transporte) -> 500 generico.
+        // error NO-MP (red/transporte) -> 500 generico.
         $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->holdFixture());
         $this->paymentGateway->method('processPayment')
             ->willThrowException(new \Exception('Connection timed out'));
@@ -228,7 +228,7 @@ final class ProcessPaymentActionTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 8 (W2): cobro DENTRO de la transaccion del lock pesimista.
+    // cobro DENTRO de la transaccion del lock pesimista.
     // La gateway solo se llama si el hold esta pending, NO expirado y
     // payment_id IS NULL; el attach ocurre dentro de la txn en AMBAS ramas
     // (approved y pending/in_process); commit-falla -> attach best-effort.
@@ -265,7 +265,7 @@ final class ProcessPaymentActionTest extends TestCase {
     public function testPendingGatewayResultAttachesPaymentIdInsideTransaction(): void {
         // QA+2 (carrera CONT): create OK in_process -> attach DENTRO de la
         // txn + commit + success:false(status in_process); el payment_id
-        // queda persistido para reconciliacion (todo 27).
+        // queda persistido para reconciliacion.
         $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->holdFixture());
         $this->paymentGateway->method('processPayment')->willReturn([
             'id' => 987, 'status' => 'in_process', 'status_detail' => 'pending_contingency',
@@ -281,7 +281,7 @@ final class ProcessPaymentActionTest extends TestCase {
 
     public function testApprovedAttachesPaymentIdAndStatusPaidInsideTransaction(): void {
         // fix MINOR r4: el attach aplica TAMBIEN a la rama approved (el
-        // polling del todo 27 y los refunds del todo 12 dependen de que
+        // polling y los refunds dependen de que
         // payment_id este persistido).
         $this->bookingRepo->method('getByCartIdForUpdate')->willReturn($this->holdFixture());
         $this->stubApprovedGateway();

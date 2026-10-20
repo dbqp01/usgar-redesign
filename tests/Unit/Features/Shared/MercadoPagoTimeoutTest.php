@@ -48,7 +48,7 @@ final class CapturingHttpRequest implements HttpRequest {
 }
 
 /**
- * Todo 5 (W1): timeout TOTAL acotado en las llamadas SDK.
+ * timeout TOTAL acotado en las llamadas SDK.
  * - Mecanismo: el MPDefaultHttpClient REAL debe entregar CURLOPT_TIMEOUT_MS a curl.
  * - Comportamiento (fixture de red local, permitido por r10): endpoint que acepta
  *   la conexion (handshake TCP del kernel) pero NUNCA responde -> el read colgado
@@ -130,7 +130,7 @@ final class MercadoPagoTimeoutTest extends TestCase {
     }
 
     public function testHungEndpointFailsWithinTimeoutPlusOneSecond(): void {
-        // QA+ del todo 5: endpoint colgado (delay > timeout) -> falla en ~1s, no cuelga.
+        // QA+: endpoint colgado (delay > timeout) -> falla en ~1s, no cuelga.
         // Guard: sin el patch (CURLOPT_TIMEOUT_MS ausente) curl espera indefinidamente
         // y colgaria el suite; el RED limpio del mecanismo lo cubre el test
         // testTotalTimeoutOptionIsDeliveredToCurl.
@@ -159,7 +159,7 @@ final class MercadoPagoTimeoutTest extends TestCase {
     }
 
     public function testFastTransportRespondsOk(): void {
-        // QA- del todo 5: transporte con respuesta inmediata -> OK (el timeout
+        // QA-: transporte con respuesta inmediata -> OK (el timeout
         // no afecta llamadas normales).
         Config::set('MERCADO_PAGO_TIMEOUT_CREATE_MS', '1000');
         $paymentClient = new \MercadoPago\Client\Payment\PaymentClient(new FastSpyHttpClient());

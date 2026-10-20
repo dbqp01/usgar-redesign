@@ -12,10 +12,10 @@ use MercadoPago\Client\Common\RequestOptions;
 use MercadoPago\Resources\Payment;
 
 /**
- * Tests del plumbing de moneda (Wave 6, todo 34): UNA UNICA fuente de
+ * Tests del plumbing de moneda: UNA UNICA fuente de
  * verdad para la moneda de cobro — Config::get('MERCADO_PAGO_CURRENCY') —
- * usada en el evento (currency, todo 25) y propagada en el payload del
- * outbox (el create /v1/payments NO acepta currency_id — fix F3). Sin
+ * usada en el evento (currency) y propagada en el payload del
+ * outbox (el create /v1/payments NO acepta currency_id). Sin
  * literales en el flujo de pago (los listeners reciben amount_pen/currency
  * del evento).
  */
@@ -68,11 +68,11 @@ final class CurrencyPlumbingTest extends TestCase {
     }
 
     public function testAdapterCreateDoesNotSendCurrencyId(): void {
-        // Fix F3 (2026-08-06, verificado con MCP search_documentation "create
+        // (verificado con MCP search_documentation "create
         // payment" es/MPE + sandbox real): el create /v1/payments NO acepta
         // currency_id (400 "The name of the following parameters is wrong :
         // currency_id"); MP infiere la moneda de la cuenta. La moneda de cobro
-        // sigue siendo single-source en Config (todo 34) para el EVENTO/PMS.
+        // sigue siendo single-source en Config para el EVENTO/PMS.
         Config::set('MERCADO_PAGO_CURRENCY', 'USD');
 
         $paymentClient = $this->createMock(PaymentClient::class);

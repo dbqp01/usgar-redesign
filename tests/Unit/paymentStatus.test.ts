@@ -14,8 +14,8 @@ function outcomeFor(processError: { paymentStatus?: string; paymentId?: string; 
   return resolvePaymentOutcome(processError, bookingStatus);
 }
 
-describe('mapBookingStatus (todo 27: estados del flujo -> UI)', () => {
-  it('expired_paid se muestra como pagado (enum nuevo de W2)', () => {
+describe('mapBookingStatus (estados del flujo -> UI)', () => {
+  it('expired_paid se muestra como pagado', () => {
     expect(mapBookingStatus('expired_paid')).toBe('paid');
     expect(isPaidStatus('expired_paid')).toBe(true);
   });
@@ -44,7 +44,7 @@ describe('mapBookingStatus (todo 27: estados del flujo -> UI)', () => {
   });
 });
 
-describe('resolvePaymentOutcome (todo 28: pending -> redirect a success, no apilar)', () => {
+describe('resolvePaymentOutcome (pending -> redirect a success, no apilar)', () => {
   it('processPayment con status pending/in_process sin payment_id -> redirect a success', () => {
     expect(outcomeFor({ paymentStatus: 'pending' }, null)).toBe('redirect_success');
     expect(outcomeFor({ paymentStatus: 'in_process' }, null)).toBe('redirect_success');
@@ -70,7 +70,7 @@ describe('resolvePaymentOutcome (todo 28: pending -> redirect a success, no apil
   });
 });
 
-describe('planRetryAfterFailure (todo 31: pre-retry booking-status + payment-check + cooldown)', () => {
+describe('planRetryAfterFailure (pre-retry booking-status + payment-check + cooldown)', () => {
   const now = 1_800_000_000_000;
 
   it('booking-status con payment_id -> redirect a success (nunca segundo pago)', () => {
@@ -163,7 +163,7 @@ describe('planRetryAfterFailure (todo 31: pre-retry booking-status + payment-che
   });
 });
 
-describe('cooldownSecondsRemaining (todo 31: cooldown deterministico >= 60s)', () => {
+describe('cooldownSecondsRemaining (cooldown deterministico >= 60s)', () => {
   it('devuelve 0 cuando el cooldown ya termino o no existe', () => {
     expect(cooldownSecondsRemaining(0, 1_800_000_000_000)).toBe(0);
     expect(cooldownSecondsRemaining(1_800_000_000_000, 1_800_000_000_000)).toBe(0);

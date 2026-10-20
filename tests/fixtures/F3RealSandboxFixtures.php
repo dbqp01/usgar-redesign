@@ -155,7 +155,7 @@ final class F3RealSandboxFixtures {
                 'nights'          => 2,
             ],
             'price_snapshot'          => 150.0,
-            'price_snapshot_pen'      => 281.25,   // PEN congelado al cotizar (todo 25/32)
+            'price_snapshot_pen'      => 281.25,   // PEN congelado al cotizar
             'exchange_rate_snapshot'  => 3.75,
             'checkin'                 => date('Y-m-d', strtotime('+30 days')),
             'checkout'                => date('Y-m-d', strtotime('+32 days')),

@@ -14,9 +14,9 @@ use App\Test\Fixtures\W4Db;
 use PDO;
 
 /**
- * Tests del cron de outbox transaccional (Wave 4, todos 19 y 20).
+ * Tests del cron de outbox transaccional.
  *
- * Semantica LITERAL del todo 19 (fijada tras 8 rondas de revision dual):
+ * Semantica LITERAL (fijada tras 8 rondas de revision dual):
  *  - backfill de migracion como mecanismo UNICO (NULL -> procesado en el
  *    primer run; NUNCA COALESCE como sustituto).
  *  - FAILED incrementa attempts ANTES de fijar next_attempt_at =
@@ -25,10 +25,10 @@ use PDO;
  *  - reclaim de IN_PROGRESS con lease vencido: attempts+1 < MAX -> PENDING;
  *    attempts+1 >= MAX -> FAILED terminal con attempts = MAX (NUNCA
  *    PENDING@MAX silencioso); residual PENDING@MAX -> FAILED + alerta.
- *  - claim con FOR UPDATE SKIP LOCKED + lease GRACE = 30 min (todo 20).
+ * - claim con FOR UPDATE SKIP LOCKED + lease GRACE = 30 min.
  *
  * BD real con filas aisladas (prefijo W4TEST-*) + limpieza estricta
- * setUp/tearDown (mismo patron que la Wave 2). El dispatcher es un doble
+ * setUp/tearDown (mismo patron que la). El dispatcher es un doble
  * in-memory del PORT de dominio (permite inyectar fallos y contar llamadas —
  * nunca un mock de resultados de MercadoPago).
  */
@@ -87,7 +87,7 @@ final class ProcessOutboxActionTest extends TestCase {
         return $action;
     }
 
-    /** Pone un evento reclamable en el outbox (gate del todo 19). */
+    /** Pone un evento reclamable en el outbox (gate de claim). */
     private function insertReclaimable(string $cartId, string $status = 'PENDING', int $attempts = 0): int {
         return W4Db::insertOutboxEvent($this->pdo, $cartId, $status, $attempts, 'NOW() - INTERVAL 1 MINUTE');
     }
@@ -110,7 +110,7 @@ final class ProcessOutboxActionTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 19 — backfill de migracion (mecanismo UNICO).
+    // backfill de migracion (mecanismo UNICO).
     // =====================================================================
 
     public function testRowWithNullNextAttemptIsProcessedOnFirstRun(): void {
@@ -140,7 +140,7 @@ final class ProcessOutboxActionTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 19 — FAILED reintentable + backoff + tope MAX + alerta terminal.
+    // FAILED reintentable + backoff + tope MAX + alerta terminal.
     // =====================================================================
 
     public function testFailedEventIsRetriedAndCompletes(): void {
@@ -199,7 +199,7 @@ final class ProcessOutboxActionTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 19 — reclaim de IN_PROGRESS (lease vencido) + terminal + residual.
+    // reclaim de IN_PROGRESS (lease vencido) + terminal + residual.
     // =====================================================================
 
     public function testInProgressWithFutureLeaseIsNotReclaimed(): void {
@@ -252,7 +252,7 @@ final class ProcessOutboxActionTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 20 — claim con lease (GRACE 30 min) + run con listener lento.
+    // claim con lease (GRACE 30 min) + run con listener lento.
     // =====================================================================
 
     public function testClaimSetsInProgressWithGraceLeaseBeforeProcessing(): void {
@@ -261,7 +261,7 @@ final class ProcessOutboxActionTest extends TestCase {
 
         // El dispatcher observa el estado de la fila MIENTRAS procesa: debe
         // estar IN_PROGRESS con lease ~30 min en el futuro (el reclaim del
-        // todo 19 lo respeta; otro cron no puede robarlo).
+        // outbox lo respeta; otro cron no puede robarlo).
         $observed = null;
         $dispatch = function () use ($id, &$observed) {
             $stmt = $this->pdo->prepare(
@@ -354,7 +354,7 @@ final class ProcessOutboxActionTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 20 — dos crons concurrentes no procesan el mismo evento.
+    // dos crons concurrentes no procesan el mismo evento.
     // =====================================================================
 
     public function testConcurrentRunsProcessEachEventExactlyOnce(): void {

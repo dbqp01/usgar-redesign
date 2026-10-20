@@ -7,7 +7,7 @@ use App\Core\Config;
 use PHPUnit\Framework\TestCase;
 
 /**
- * P3-4 (2026-08-12): BOOKING_HOLD_TTL invalido pasaba a strtotime -> false ->
+ * BOOKING_HOLD_TTL invalido pasaba a strtotime -> false ->
  * date() producia 1970-01-01 y el hold expiraba al instante. El helper
  * fallback a +15 min con log. $ttl inyectable para testeo hermetico.
  */

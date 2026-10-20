@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { normalizePaymentError, statusDetailKey } from '../../src/utils/paymentErrors';
 
-describe('normalizePaymentError (todo 26: respuesta plana -> {code,message,status_detail})', () => {
+describe('normalizePaymentError (respuesta plana -> {code,message,status_detail})', () => {
   it('normaliza la forma Response::error (error anidado con details.status_detail)', () => {
     const res = normalizePaymentError({
       success: false,
@@ -76,7 +76,7 @@ describe('normalizePaymentError (todo 26: respuesta plana -> {code,message,statu
   });
 });
 
-describe('statusDetailKey (todo 26/30: status_detail conocido -> key i18n accionable)', () => {
+describe('statusDetailKey (status_detail conocido -> key i18n accionable)', () => {
   it('mapea status_detail conocidos de la lista estandar MP', () => {
     expect(statusDetailKey('cc_rejected_bad_filled_security_code')).toBe('payment.statusDetails.cc_rejected_bad_filled_security_code');
     expect(statusDetailKey('cc_rejected_insufficient_amount')).toBe('payment.statusDetails.cc_rejected_insufficient_amount');

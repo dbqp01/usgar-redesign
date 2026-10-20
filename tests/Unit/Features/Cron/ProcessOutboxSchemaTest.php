@@ -9,9 +9,9 @@ use PDO;
 use PDOStatement;
 
 /**
- * Tests del auto-heal del schema de event_outbox (todo 19).
+ * Tests del auto-heal del schema de event_outbox.
  *
- * Se capturan las sentencias SQL via mock de PDO (patron de la Wave 2:
+ * Se capturan las sentencias SQL via mock de PDO (patron de concurrencia:
  * ProvisionalBookingRepositoryTest::buildRepo): se valida que una tabla
  * LEGACY recibe ALTER de attempts -> ALTER de next_attempt_at -> BACKFILL en
  * ese orden (el backfill es EL mecanismo unico, fijado tras el ALTER; nunca

@@ -10,7 +10,7 @@ use App\Features\Booking\Domain\Listeners\SendBookingConfirmationEmailListener;
 use App\Features\Shared\Ports\MailerPortInterface;
 
 /**
- * Tests del listener del voucher (2026-08-14): el email de confirmación se
+ * Tests del listener del voucher: el email de confirmación se
  * envía al huésped cuando el pago se confirma, en su idioma, con los montos
  * congelados del hold. Hermético: MailerPortInterface mockeado (nunca SMTP).
  *

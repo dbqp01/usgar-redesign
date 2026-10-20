@@ -9,7 +9,7 @@ use App\Core\Request;
 use PHPUnit\Framework\TestCase;
 
 /**
- * P3-3 (2026-08-12, OWASP API4:2023 "limits set appropriately"): el rate
+ * (OWASP API4:2023 "limits set appropriately"): el rate
  * limit global exime /api/webhook y /api/health — MP reintenta en rafagas
  * legitimas y health es el probe de monitoreo.
  */

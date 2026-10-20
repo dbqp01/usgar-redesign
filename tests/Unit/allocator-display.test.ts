@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { allocateRooms } from '../../src/features/booking/roomAllocator';
 
-// Caracterización (2026-08-12): datos reales de rooms.json sincronizados con
+// Caracterización: datos reales de rooms.json sincronizados con
 // QloApps (qlo_htl_room_type.max_guests = 3/3/4/8). Regla del negocio: toda
 // habitacion admite +1 persona sobre su ocupancia base (base = max - 1) con
 // cargo extraGuestCharge=30/noche. El allocator debe mostrar exactamente lo

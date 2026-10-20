@@ -16,7 +16,7 @@ use App\Test\Fixtures\W3WebhookFixtures;
 use PDO;
 
 /**
- * Tests del action de webhook (W3 — ciclo de vida): todos 13 (filtro estricto
+ * Tests del action de webhook (ciclo de vida): filtro estricto
  * type === 'payment' + rama rejected/failed), 14 (orphan 404 -> 200 + marcado),
  * 16 (rama fraude -> 200 + fraud_review) y la coordinacion del prefijo
  * USGAR- al resolver el hold.
@@ -75,7 +75,7 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
         return ['code' => http_response_code(), 'body' => $body];
     }
 
-    /** Payload oficial + firma HMAC real (todo 13: data.id es el ID del pago). */
+    /** Payload oficial + firma HMAC real (data.id es el ID del pago). */
     private function signedRequest(string $dataId, array $body = [], array $extraHeaders = []): Request {
         $body = array_merge(['type' => 'payment', 'data' => ['id' => $dataId]], $body);
         $headers = array_merge([
@@ -107,7 +107,7 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
         ];
     }
 
-    // ---------------------------------------------------------------- todo 13
+    // ----------------------------------------------------------------
 
     public function testNonPaymentEventIsAcknowledgedWithoutProcessing(): void {
         $this->bookingRepo->expects($this->never())->method('isPaymentProcessed');
@@ -122,7 +122,7 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
     }
 
     public function testSubscriptionAuthorizedPaymentIsStrictlyIgnored(): void {
-        // Todo 13: 'subscription_authorized_payment' CONTIENE 'payment' pero es
+        // 'subscription_authorized_payment' CONTIENE 'payment' pero es
         // un topico SEPARADO (doc MP webhooks — tabla de topicos). El filtro
         // estricto $type === 'payment' lo ignora con 200 y sin validar firma
         // ni persistir nada.
@@ -143,7 +143,7 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
     }
 
     public function testNotificationIdFallbackIsNotUsedAsPaymentId(): void {
-        // Todo 13: body['id'] es el ID de la NOTIFICACION (doc MP), no el del
+        // body['id'] es el ID de la NOTIFICACION (doc MP), no el del
         // pago. Sin data.id en body ni query -> 200 sin procesar.
         $this->paymentGateway->expects($this->never())->method('getPaymentDetails');
         $this->bookingRepo->expects($this->never())->method('isPaymentProcessed');
@@ -192,7 +192,7 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
     }
 
     public function testPaymentIdFromQueryDataIdIsUsed(): void {
-        // Todo 13: MP envia ?data.id=XXX (PHP lo convierte a data_id); el id
+        // MP envia ?data.id=XXX (PHP lo convierte a data_id); el id
         // del query SI es fuente valida de payment id.
         $this->acceptSignature();
         $_GET['data_id'] = '555666777';
@@ -215,7 +215,7 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
     }
 
     public function testRejectedPaymentIsMarkedProcessedAndAcked(): void {
-        // Todo 13 (r1/r2): status rejected -> 200 + markPaymentProcessed('rejected')
+        // status rejected -> 200 + markPaymentProcessed('rejected')
         // (nunca 400/500 — causaria reintentos eternos de MP).
         // Fix 2026-08-13: ademas transiciona el hold pending -> failed (si no,
         // la pagina de exito mostraba 'expired' por TTL aunque MP habia rechazado).
@@ -387,10 +387,10 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
         $this->assertSame(401, $response['code']);
     }
 
-    // ---------------------------------------------------------------- todo 14
+    // ----------------------------------------------------------------
 
     public function testValidPaymentWithoutHoldIsMarkedOrphanAndAcked(): void {
-        // Todo 14: firma valida + hold inexistente -> processed('orphan') +
+        // firma valida + hold inexistente -> processed('orphan') +
         // 200 (corta el retry infinito de MP cada 15 min). Segunda entrega ->
         // 200 inmediato por idempotencia (SELECT in-txn antes del INSERT).
         $this->acceptSignature();
@@ -436,10 +436,10 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
         $this->assertSame(200, $response['code']);
     }
 
-    // ---------------------------------------------------------------- todo 16
+    // ----------------------------------------------------------------
 
     public function testFraudBranchAcks200AndMarksProcessed(): void {
-        // Todo 16: monto insuficiente -> updateStatus(FraudReview) +
+        // monto insuficiente -> updateStatus(FraudReview) +
         // markPaymentProcessed('fraud_review') EN LA MISMA txn + 200 (antes
         // 400 sin marcar -> loop de reintentos de MP). Segunda entrega -> 200
         // por idempotencia, sin repetir updateStatus ni el INSERT.
@@ -505,7 +505,7 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
     // ------------------------------------------------ coordinacion USGAR- prefix
 
     public function testExternalReferencePrefixIsStrippedBeforeHoldLookup(): void {
-        // Coordinacion W3: el create (todo 3) envia external_reference
+        // Coordinacion: el create envia external_reference
         // 'USGAR-{cartId}'; el webhook debe STRIP-ear el prefijo antes de
         // resolver el hold.
         $this->acceptSignature();
@@ -671,10 +671,10 @@ final class HandleMercadoPagoWebhookActionTest extends TestCase {
         $this->assertSame(['attachPaymentId', 'updateStatus', 'markPaymentProcessed'], $order);
     }
 
-    // ------------------------------------------------------------ todo 23
+    // ------------------------------------------------------------
 
     public function testOrderIsCommitAfterOutboxInsertAndAckLast(): void {
-        // Todo 23: orden final beginTransaction -> lock -> validar -> fetch ->
+        // orden final beginTransaction -> lock -> validar -> fetch ->
         // updateStatus + markPaymentProcessed + INSERT outbox (dispatch) ->
         // commit -> jsonAsync 200. NADA despues del commit (los listeners
         // corren en el cron; el ACK no deja ventana de perdida post-200).

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Test\Fixtures;
 
 /**
- * Fixtures FIRMADOS de webhook para la Wave 3 (todo 13/14/16).
+ * Fixtures FIRMADOS de webhook.
  *
  * MANDATO r10 + estrategia del plan: el handler de webhook se prueba con el
  * payload oficial (`{"type":"payment","data":{"id":...}}`) y firma HMAC-SHA256

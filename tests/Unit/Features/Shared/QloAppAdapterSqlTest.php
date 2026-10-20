@@ -9,7 +9,7 @@ use PDO;
 use PDOStatement;
 
 /**
- * P2-3 (2026-08-12): verifica que las consultas SQL de confirmOrder() se
+ * verifica que las consultas SQL de confirmOrder() se
  * interpolan con las constantes del adapter y NO contienen literales
  * "self::CONST" (los strings SQL de doble comilla no expanden constantes).
  * Sin red ni BD real: PDO fake que captura los strings de prepare().

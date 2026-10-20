@@ -12,7 +12,7 @@ declare(strict_types=1);
  * Salida: "OK:<httpCode>:<body>" o "ERR:<mensaje>" en stdout. Nunca imprime
  * secretos. Dos procesos lanzados a la vez sobre el MISMO payment demuestran
  * la idempotencia por indice unico (payment_id, event_type) + ON DUPLICATE KEY
- * (todo 11/14): exactamente 1 registro en processed_payments.
+ * exactamente 1 registro en processed_payments.
  */
 
 require __DIR__ . '/../tests/bootstrap.php';

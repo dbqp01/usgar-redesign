@@ -31,7 +31,7 @@ final class SpyMpHttpClient implements MPHttpClient {
 }
 
 /**
- * Todo 1 (W1): composer-patch dx-php para getIdempotencyKey/headerExists.
+ * composer-patch dx-php para getIdempotencyKey/headerExists.
  * Con la key en MAYUSCULAS el SDK debe enviar EXACTAMENTE UN header de
  * idempotencia con el valor custom (ni null, ni UUID, ni duplicado).
  */
@@ -44,7 +44,7 @@ final class SdkIdempotencyKeyTest extends TestCase {
     }
 
     public function testStringFormCustomIdempotencyHeaderReachesTransport(): void {
-        // Fix F3 (2026-08-06): el SDK espera el header como STRING "Name: value"
+        // el SDK espera el header como STRING "Name: value"
         // (doc oficial setCustomHeaders(["X-Idempotency-Key: <UUID>"])). El spy
         // captura los headers CRUDOS (los mismos que recibe CURLOPT_HTTPHEADER):
         // un header en forma de string sobrevive al array_merge del SDK y llega

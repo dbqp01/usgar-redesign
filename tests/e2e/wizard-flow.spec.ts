@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 
-// Flujo del wizard tras la unificacion de pasos (2026-08-10):
+// Flujo del wizard tras la unificacion de pasos:
 // paso 1 = barra de busqueda + calendario en popover + seleccion de
 // habitacion/tarifa en el mismo panel, paso 2 = datos del huesped, paso 3 = pago.
 // La tarifa se elige con [data-select-rate]; [data-allocation-next] avanza.

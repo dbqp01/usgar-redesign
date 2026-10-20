@@ -14,7 +14,7 @@ use App\Test\Fixtures\TestDb;
 use PDO;
 
 /**
- * Tests de integracion/concurrencia de la Wave 2 (todos 8, 9, 10, 12).
+ * Tests de integracion y concurrencia del booking.
  *
  * RESTRICCION DE ENTORNO DOCUMENTADA: no existe MySQL local ni permiso para
  * CREATE DATABASE (usuario hosting); la unica BD disponible es la real
@@ -171,7 +171,7 @@ final class ProvisionalBookingConcurrencyTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 8 — QA+ (APRO): 2 procesos concurrentes, exactamente 1 gateway.
+    // QA+ (APRO): 2 procesos concurrentes, exactamente 1 gateway.
     // =====================================================================
 
     public function testConcurrentApprovedPaymentsCallGatewayExactlyOnce(): void {
@@ -194,7 +194,7 @@ final class ProvisionalBookingConcurrencyTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 8 — QA+2 (CONT): 1 payment + 1 attach; el segundo no vuelve a cobrar.
+    // QA+2 (CONT): 1 payment + 1 attach; el segundo no vuelve a cobrar.
     // =====================================================================
 
     public function testConcurrentPendingPaymentsAttachOnceAndDoNotDoubleCharge(): void {
@@ -217,7 +217,7 @@ final class ProvisionalBookingConcurrencyTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 8 — QA-1 (OTHE): rechazo -> rollback, sin payment_id persistido.
+    // QA-1 (OTHE): rechazo -> rollback, sin payment_id persistido.
     // =====================================================================
 
     public function testRejectedPaymentRollsBackWithoutPersistingPaymentId(): void {
@@ -231,7 +231,7 @@ final class ProvisionalBookingConcurrencyTest extends TestCase {
         $this->assertSame(0, $r2['code'], 'Worker 2: ' . $r2['out'] . ' ' . $r2['err']);
 
         $this->assertSame(0, $this->gatewayCallCount($cart), 'El rechazo OTHE no registra ningun pago.');
-        $this->assertStringContainsString('cc_rejected_other_reason', $r1['out'] . $r2['out'], 'El status_detail del rechazo llega al cliente (todo 6).');
+        $this->assertStringContainsString('cc_rejected_other_reason', $r1['out'] . $r2['out'], 'El status_detail del rechazo llega al cliente.');
 
         $hold = $this->getHold($cart);
         $this->assertNotNull($hold);
@@ -240,7 +240,7 @@ final class ProvisionalBookingConcurrencyTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 10 — QA- (secuencial OK sin deadlock) y QA+ (1 solo hold).
+    // QA- (secuencial OK sin deadlock) y QA+ (1 solo hold).
     // =====================================================================
 
     public function testSequentialHoldCreationStillWorksWithoutDeadlock(): void {
@@ -289,7 +289,7 @@ final class ProvisionalBookingConcurrencyTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 9 — integracion: cleanExpiredCarts respeta el FROM-set (paid intacto).
+    // integracion: cleanExpiredCarts respeta el FROM-set (paid intacto).
     // =====================================================================
 
     public function testCleanExpiredCartsKeepsPaidHoldUntouched(): void {
@@ -317,7 +317,7 @@ final class ProvisionalBookingConcurrencyTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 12 — integracion: secuencia approved->refunded contra el indice
+    // integracion: secuencia approved->refunded contra el indice
     // unico compuesto (payment_id, event_type). Se usa una tabla TEMPORARY
     // sombra (misma conexion): la migracion real de la BD de produccion la
     // ejecuta el auto-heal en deploy, NO estos tests.

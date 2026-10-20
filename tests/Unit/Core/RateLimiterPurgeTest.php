@@ -7,7 +7,7 @@ use App\Core\RateLimiter;
 use PHPUnit\Framework\TestCase;
 
 /**
- * P3-3 (2026-08-12, OWASP API4:2023 resource consumption): purgeOldFiles
+ * (OWASP API4:2023 resource consumption): purgeOldFiles
  * elimina archivos de limites viejos sin tocar los vivos ni archivos ajenos.
  */
 final class RateLimiterPurgeTest extends TestCase {

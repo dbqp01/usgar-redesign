@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * Worker de concurrencia para el cron de outbox (Wave 4, todo 20).
+ * Worker de concurrencia para el cron de outbox.
  * Uso: php tests/w4-outbox-worker.php <dispatchLog>
  *
  * Corre ProcessOutboxAction contra la BD real con un dispatcher in-memory

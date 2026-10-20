@@ -11,7 +11,7 @@ use App\Core\Router;
 use PHPUnit\Framework\TestCase;
 
 /**
- * P2-5 (2026-08-12): el Router responde 405 + header Allow (RFC 9110 §9.6.2)
+ * el Router responde 405 + header Allow (RFC 9110 §9.6.2)
  * cuando la ruta existe pero con otro metodo HTTP (antes: 404).
  *
  * NOTA: en CLI/phpunit header() no se registra en headers_list() (el banner

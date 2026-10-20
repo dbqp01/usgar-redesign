@@ -16,14 +16,14 @@ use App\Test\Fixtures\W3WebhookFixtures;
 use PDO;
 
 /**
- * Tests de la Wave 6 (todo 32): la comparacion de montos del webhook se
+ * Tests de la comparacion de montos del webhook:
  * migra a CENTAVOS ENTEROS usando el PEN CONGELADO al cotizar
- * (price_snapshot_pen, escrito por CreateBookingAction — todo 25 W4) en
+ * (price_snapshot_pen, escrito por CreateBookingAction) en
  * lugar de derivar con la tasa ACTUAL. Sin esto, un cambio de
  * EXCHANGE_RATE_USD_PEN entre la cotizacion y el cobro produce FALSOS
  * fraudes (pago correcto -> fraud_review).
  *
- * Fixtures firmados: payload oficial + firma HMAC real (mismo patron W3).
+ * Fixtures firmados: payload oficial + firma HMAC real (mismo patron).
  */
 final class HandleMercadoPagoWebhookActionW6Test extends TestCase {
     private PDO $pdo;
@@ -118,7 +118,7 @@ final class HandleMercadoPagoWebhookActionW6Test extends TestCase {
     }
 
     public function testApprovedWithFrozenPenMatchesPaidDespiteRateChange(): void {
-        // Todo 32 (QA+): hold con PEN congelado 281.25 (tasa 3.75 al
+        // hold con PEN congelado 281.25 (tasa 3.75 al
         // cotizar); el entorno ahora tiene tasa 3.90. El pago approved de
         // 281.25 DEBE quedar PAID sin falso fraude — la comparacion usa el
         // congelado, nunca la tasa actual.
@@ -140,8 +140,8 @@ final class HandleMercadoPagoWebhookActionW6Test extends TestCase {
     }
 
     public function testChargedBelowFrozenPenCentsGoesFraudReview(): void {
-        // Todo 32 (QA-): monto cobrado (280.00) MENOR al PEN congelado
-        // (281.25) -> fraud_review (todo 16 sigue pasando; la comparacion en
+        // monto cobrado (280.00) MENOR al PEN congelado
+        // (281.25) -> fraud_review (sigue pasando; la comparacion en
         // centavos enteros: 28000 < 28125).
         $this->acceptSignature();
         $this->paymentGateway->method('getPaymentDetails')->willReturn($this->approvedPayment('USGAR-CART-W6', 280.00));
@@ -160,7 +160,7 @@ final class HandleMercadoPagoWebhookActionW6Test extends TestCase {
     }
 
     public function testLegacyHoldWithoutFrozenPenFallsBackToCurrentRateDerivation(): void {
-        // Todo 32 (back-compat): hold legacy SIN price_snapshot_pen ->
+        // hold legacy SIN price_snapshot_pen ->
         // fallback documentado: derivar el PEN con la tasa ACTUAL
         // (75 x 3.90 = 292.50). Un pago de 292.50 queda paid sin fraude.
         $this->acceptSignature();

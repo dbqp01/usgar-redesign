@@ -7,7 +7,7 @@ use App\Core\Request;
 use PHPUnit\Framework\TestCase;
 
 /**
- * P2-6 (2026-08-12): Request::getRequestId() respeta el header x-request-id
+ * Request::getRequestId() respeta el header x-request-id
  * entrante (patron generate-if-missing) o genera uno CSPRNG de 32 hex.
  */
 final class RequestIdTest extends TestCase {

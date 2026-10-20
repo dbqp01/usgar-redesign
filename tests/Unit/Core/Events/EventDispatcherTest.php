@@ -15,12 +15,12 @@ use PDO;
 use Throwable;
 
 /**
- * Tests del outbox transaccional (Wave 4, todo 18).
+ * Tests del outbox transaccional.
  *
  * El INSERT del evento en event_outbox ocurre DENTRO de la transaccion del
  * llamador (webhook) ANTES del commit, con next_attempt_at = NOW() para
  * eventos frescos (fix r6 de Momus: sin esto, `next_attempt_at NULL <= NOW()`
- * es NULL/false en SQL y el cron del todo 19 nunca los procesaria). Sin
+ * es NULL/false en SQL y el cron nunca los procesaria). Sin
  * transaccion activa -> autocommit propio (back-compat para
  * ReconcilePaymentsAction).
  *
@@ -88,7 +88,7 @@ final class EventDispatcherTest extends TestCase {
     }
 
     // =====================================================================
-    // Todo 18 — INSERT dentro de la txn del llamador + next_attempt_at.
+    // INSERT dentro de la txn del llamador + next_attempt_at.
     // =====================================================================
 
     public function testEventIsInOutboxAfterCommitEvenIfPostCommitWorkFails(): void {

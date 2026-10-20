@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 
-// Todo 8: progressive-enhancement fallback for `.animate-on-scroll`.
+// progressive-enhancement fallback for `.animate-on-scroll`.
 // The hidden-by-default rules are gated behind `html.js`, so without JS the
 // content is born visible; with JS the `js` class is re-applied on the INCOMING
 // root in `astro:before-swap` (the router's swapRootAttributes wipes the current

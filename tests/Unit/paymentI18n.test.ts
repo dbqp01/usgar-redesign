@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
-// Todo 30: el flujo de pago NO debe contener literales en ingles visibles.
+// el flujo de pago NO debe contener literales en ingles visibles.
 // Todo texto del wizard sale del i18n (src/i18n/*.json, es-PE default).
 // El test lee los componentes del flujo y falla si aparece un literal
 // prohibido fuera de comentarios y llamadas internas de consola.
@@ -51,7 +51,7 @@ function isAllowedLine(line: string): boolean {
   return false;
 }
 
-describe('i18n del flujo de pago (todo 30: sin literales en ingles visibles)', () => {
+describe('i18n del flujo de pago (sin literales en ingles visibles)', () => {
   for (const file of FLOW_FILES) {
     it(`no contiene literales en ingles en ${file.split('/src/')[1]}`, () => {
       const lines = readFileSync(file, 'utf8').split(/\r?\n/);

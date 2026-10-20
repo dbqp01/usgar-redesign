@@ -7,7 +7,7 @@ use App\Core\FileCache;
 use PHPUnit\Framework\TestCase;
 
 /**
- * P3-1 (2026-08-12): cache de display en archivo con TTL por mtime.
+ * cache de display en archivo con TTL por mtime.
  * Dir temporal por test: hermetico, no toca data/cache de runtime.
  */
 final class FileCacheTest extends TestCase {

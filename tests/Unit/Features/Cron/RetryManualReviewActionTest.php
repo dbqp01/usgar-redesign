@@ -14,13 +14,13 @@ use PDO;
 use PDOStatement;
 
 /**
- * Tests del cron de ManualReview/FraudReview (Wave 4, todo 24).
+ * Tests del cron de ManualReview/FraudReview.
  *
  * - list: bookings en manual_review/fraud_review con contador de re-despachos
  *   (auditoria en payment_alerts) — endpoint protegido por CRON_SECRET en
  *   HTTP (mismo patron que CleanExpiredCartsAction; en CLI se omite).
  * - redispatch: re-chequea el pago contra la gateway; si el monto ya
- *   coincide -> fraud_review -> paid (guard del todo 9) + re-despacho del
+ * coincide -> fraud_review -> paid (guard) + re-despacho del
  *   evento; si no coincide -> permanece en revisión (nunca confirmar PMS con
  *   monto errado). Log de auditoría por re-despacho.
  * - expire: libera el hold (status -> expired; FROM-set manual/fraud_review)
@@ -166,7 +166,7 @@ final class RetryManualReviewActionTest extends TestCase {
 
     public function testRedispatchFraudReviewWithMatchingPaymentBecomesPaid(): void {
         // NOTA r2: si el monto ya coincide tras el re-despacho, la transicion
-        // fraud_review -> paid DEBE ejecutarse (guard del todo 9 lo permite) y
+        // fraud_review -> paid DEBE ejecutarse (guard lo permite) y
         // el evento se re-despacha (outbox -> listeners).
         $this->bookingRepo->method('getByCartId')->willReturn($this->reviewHold('CART-FR'));
         $this->paymentGateway->method('getPaymentDetails')->willReturn([

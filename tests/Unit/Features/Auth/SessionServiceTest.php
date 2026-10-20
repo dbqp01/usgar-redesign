@@ -11,7 +11,7 @@ use App\Features\Auth\SessionService;
 use PHPUnit\Framework\TestCase;
 
 /**
- * P1-7/P1-8 (2026-08-12): JWT con iss/aud/jti + validacion, y
+ * JWT con iss/aud/jti + validacion, y
  * patron de doble cookie CSRF en mutaciones autenticadas.
  */
 final class SessionServiceTest extends TestCase {

@@ -8,7 +8,7 @@ use App\Core\Config;
 use App\Features\Shared\Adapters\QloAppAdapter;
 
 /**
- * Regresion del HTTP 500 del webservice de QloApps (2026-10-20).
+ * Regresion del HTTP 500 del webservice de QloApps.
  *
  * El PMS valida firstname/lastname con Validate::isName() y un cliente ya
  * guardado con un nombre invalido (p.ej. "E2E") hace que POST /api/bookings

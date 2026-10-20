@@ -11,7 +11,7 @@ use Exception;
 use PDO;
 
 /**
- * Test doubles in-memory para la Wave 4 (C4 Outbox + sync PMS).
+ * Test doubles in-memory para la (C4 Outbox + sync PMS).
  *
  * MANDATO r10: los test doubles SOLO cubren puertos propios del proyecto
  * (PmsPortInterface) — sin red, nunca simulan resultados de la API real de
@@ -135,7 +135,7 @@ final class W4PmsPortDouble implements PmsPortInterface {
 }
 
 /**
- * Utilidades de BD para la Wave 4 (patron TestDb de la Wave 2, ampliado).
+ * Utilidades de BD para la (patron TestDb de la ampliado).
  * Filas aisladas con prefijo W4TEST-* + limpieza estricta setUp/tearDown.
  *
  * Los ids insertados se registran en memoria: la limpieza borra POR ID

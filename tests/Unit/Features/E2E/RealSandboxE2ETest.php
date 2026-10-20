@@ -251,7 +251,7 @@ final class RealSandboxE2ETest extends TestCase {
             $this->assertSame(1, F3RealSandboxFixtures::countProcessed(self::$pdo, $pid, 'rejected'), '1 registro rejected');
         }
 
-        // Frontend mapping (todo 26): el status_detail REAL esta cubierto.
+        // Frontend mapping: el status_detail REAL esta cubierto.
         $known = $this->knownStatusDetails();
         foreach (array_filter(self::$realStatusDetails) as $realDetail) {
             $this->assertContains($realDetail, $known, "status_detail real {$realDetail} cubierto por KNOWN_STATUS_DETAILS");
@@ -285,7 +285,7 @@ final class RealSandboxE2ETest extends TestCase {
         F3RealSandboxFixtures::evidence("F3c create pagoefectivo_atm NUEVO: http={$resp['code']} body=" . $resp['body']);
         $body = $this->jsonBody($resp);
         // El entorno de HOY bloquea los creates nuevos; el attachPaymentId
-        // (todo 28) queda verificado a nivel unitario (ProcessPaymentActionTest)
+        // queda verificado a nivel unitario (ProcessPaymentActionTest)
         // y documentado como desviacion de entorno en el reporte F3.
         if (in_array((string)($body['status'] ?? ''), ['pending', 'in_process'], true)) {
             $this->assertSame((string)($body['payment_id'] ?? ''), $this->holdPaymentId($cart), 'payment_id persistido');
@@ -301,7 +301,7 @@ final class RealSandboxE2ETest extends TestCase {
     // ------------------------------------------------ d. REFUND (infra real + bloqueo)
 
     public function testF3dRefundBranchInfrastructureReal(): void {
-        // Infraestructura real de refunds (todo 12): el indice unico
+        // Infraestructura real de refunds: el indice unico
         // (payment_id, event_type) debe existir en la BD real para que un
         // evento refunded del mismo payment_id coexista con su approved.
         $idx = self::$pdo->query(
@@ -325,7 +325,7 @@ final class RealSandboxE2ETest extends TestCase {
         // puede ejecutarse; se documenta como desviacion con la cita de doc
         // MP (reembolsos: /checkout-api-payments/payment-management/cancellations-and-refunds)
         // y queda cubierto a nivel unitario por el port refundPayment.
-        F3RealSandboxFixtures::evidence('F3d DESVIACION DOCUMENTADA: refund E2E real bloqueado por el entorno (no se puede crear un payment propio hoy: Card Token not found 2006/404); la rama refunded del handler ya NO es infra-only (fix 2026-08-07): marca processed con el $eventType del chequeo y registra alerta en payment_alerts para resolucion manual; el guard del todo 9 sigue intacto y el hold permanece paid por decision W3 diferida (cancelacion de la orden en PMS pendiente de decision de producto).');
+        F3RealSandboxFixtures::evidence('F3d DESVIACION DOCUMENTADA: refund E2E real bloqueado por el entorno (no se puede crear un payment propio hoy: Card Token not found 2006/404); la rama refunded del handler ya NO es infra-only (fix 2026-08-07): marca processed con el $eventType del chequeo y registra alerta en payment_alerts para resolucion manual; el guard de deduplicacion sigue intacto y el hold permanece paid por decision de producto diferida (cancelacion de la orden en PMS pendiente de decision de producto).');
     }
 
     // ------------------------------------------------ e. DOBLE ENTREGA secuencial
@@ -349,7 +349,7 @@ final class RealSandboxE2ETest extends TestCase {
     // ------------------------------------------------ f. CONCURRENCIA (2 procesos reales)
 
     public function testF3fConcurrentWebhooksExactlyOneRow(): void {
-        $pid = F3RealSandboxFixtures::PAY_APPROVED_NO_REF; // approved real SIN ref -> rama orphan (todo 14)
+        $pid = F3RealSandboxFixtures::PAY_APPROVED_NO_REF; // approved real SIN ref -> rama orphan
         F3RealSandboxFixtures::trackPaymentId($pid);
 
         $repoRoot = dirname(__DIR__, 4);
@@ -401,7 +401,7 @@ final class RealSandboxE2ETest extends TestCase {
         $this->assertSame(1, (int)$rowR['attempts']);
         $this->assertSame(1, (int)$rowT['attempts']);
 
-        // El fallo transitorio se resuelve para RETRY; backoff saltado (todo 19).
+        // El fallo transitorio se resuelve para RETRY; backoff saltado.
         $this->forceNextAttempt($idRetry);
         $this->forceNextAttempt($idTerm);
         $delivered = [];
@@ -449,7 +449,7 @@ final class RealSandboxE2ETest extends TestCase {
         $wh = F3RealSandboxFixtures::deliverWebhook(self::$pdo, $pid, 'req-f3h');
         F3RealSandboxFixtures::evidence("F3h webhook real (idempotente): http={$wh['code']} tiempo_total_ms=" . round($wh['elapsed_ms'], 1) . ' body=' . $wh['body']);
         $this->assertSame(200, $wh['code'], 'webhook 200');
-        // Doc MP webhooks: ventana de ACK = 22s. Con fetch de 8s max (todo 17),
+        // Doc MP webhooks: ventana de ACK = 22s. Con fetch de 8s max,
         // el handler real responde muy por debajo.
         $this->assertLessThan(22000, $wh['elapsed_ms'], 'ACK real < 22s (doc MP webhooks)');
     }
@@ -459,7 +459,7 @@ final class RealSandboxE2ETest extends TestCase {
     public function testF3iOrphanSignedWebhookTwiceAcked(): void {
         $pid = F3RealSandboxFixtures::PAY_APPROVED_NO_REF; // approved real SIN external_reference
         F3RealSandboxFixtures::trackPaymentId($pid);
-        F3RealSandboxFixtures::evidence('F3i payment real sin ref: ' . $pid . ' -> rama orphan (todo 14)');
+        F3RealSandboxFixtures::evidence('F3i payment real sin ref: ' . $pid . ' -> rama orphan');
 
         $r1 = F3RealSandboxFixtures::deliverWebhook(self::$pdo, $pid, 'req-f3i1');
         F3RealSandboxFixtures::evidence("F3i entrega 1: http={$r1['code']} ms=" . round($r1['elapsed_ms'], 1) . ' body=' . $r1['body']);
@@ -480,7 +480,7 @@ final class RealSandboxE2ETest extends TestCase {
         // E2E real bloqueado por el entorno: se necesita un payment approved
         // con external_reference controlada y monto MENOR al esperado; hoy no
         // se pueden crear payments nuevos (ver F3 CardCreate probe). La rama
-        // fraud_review (todo 16/32: comparacion en centavos enteros) esta
+        // fraud_review (comparacion en centavos enteros) esta
         // cubierta por HandleMercadoPagoWebhookActionW6Test.
         $w6Path = dirname(__DIR__, 1) . '/Webhooks/HandleMercadoPagoWebhookActionW6Test.php';
         $w6 = file_exists($w6Path) ? (string)file_get_contents($w6Path) : '';

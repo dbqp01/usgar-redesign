@@ -14,8 +14,8 @@ use App\Features\Booking\Domain\ProvisionalBookingRepository;
 use App\Features\Shared\Ports\PaymentGatewayPortInterface;
 
 /**
- * Todo 31 (W5): GET /api/payment-check?cart_id&token
- * Expone findPaymentByExternalReference (W1) al frontend con la MISMA
+ * GET /api/payment-check?cart_id&token
+ * Expone findPaymentByExternalReference al frontend con la MISMA
  * validacion de ownership de cart que booking-status (token HMAC derivado
  * del email del guest). Nunca expone existencia de pagos sin verificar.
  * Test double SOLO del port propio (PaymentGatewayPortInterface) — permitido

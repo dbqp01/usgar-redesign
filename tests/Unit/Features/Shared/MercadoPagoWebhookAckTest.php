@@ -18,7 +18,7 @@ use PDO;
 use Exception;
 
 /**
- * Todo 17 (W3): ACK < 22s garantizado en el path del webhook.
+ * ACK < 22s garantizado en el path del webhook.
  *
  * Doc MP (MCP search_documentation "webhooks", es/MPE): MP espera HTTP
  * 200/201 en 22 segundos; si no, reintenta cada 15 min. El handler hace
@@ -29,7 +29,7 @@ use Exception;
  *   backoff exponencial sobre errores de transporte/timeout — 4 intentos de
  *   8s excederian la ventana de 22s.
  * - Fixture de red local (endpoint que acepta conexion pero nunca responde —
- *   listen sin accept, patron de MercadoPagoTimeoutTest W1): es un test de
+ * listen sin accept, patron de MercadoPagoTimeoutTest): es un test de
  *   limites del cliente HTTP, NO un mock de MP (mandato r10).
  */
 final class MercadoPagoWebhookAckTest extends TestCase {
@@ -85,7 +85,7 @@ final class MercadoPagoWebhookAckTest extends TestCase {
     }
 
     public function testGetPaymentDetailsRunsSingleAttemptAndRestoresRetries(): void {
-        // Todo 17 (mecanismo): con maxRetries del SDK = 3 (default), el path
+        // con maxRetries del SDK = 3 (default), el path
         // del webhook DEBE ejecutar getPaymentDetails con 1 SOLO intento
         // (4 intentos de 1s + backoff tardarian ~4s; 4x8s excederian el ACK
         // de 22s). Tras la llamada, la config global se restaura.
@@ -108,10 +108,10 @@ final class MercadoPagoWebhookAckTest extends TestCase {
     }
 
     public function testWebhookHandlerResponds500WithinAckWindowOnHungFetch(): void {
-        // Todo 17 (QA+ del plan): el HANDLER con el adapter real y un endpoint
+        // el HANDLER con el adapter real y un endpoint
         // colgado (delay > timeout 8s) responde 500 en < 9s — dentro de la
         // ventana de ACK de 22s de MP. Si el fetch falla -> 500: MP reintenta
-        // y la idempotencia (todos 11/12) protege contra reprocesamiento.
+        // y la idempotencia protege contra reprocesamiento.
         Config::set('MERCADO_PAGO_TIMEOUT_GET_MS', '8000');
         MercadoPagoConfig::setMaxRetries(3); // el adapter debe desactivarlos en este path
 

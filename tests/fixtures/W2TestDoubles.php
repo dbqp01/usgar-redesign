@@ -13,7 +13,7 @@ use PDOException;
 use Throwable;
 
 /**
- * Test doubles in-memory para la Wave 2 (concurrencia/transacciones).
+ * Test doubles in-memory para la (concurrencia/transacciones).
  *
  * MANDATO r10: los test doubles SOLO cubren puertos propios del proyecto
  * (PaymentGatewayPortInterface) — NUNCA simulan resultados de la API real
@@ -91,8 +91,8 @@ final class FakeGateway implements PaymentGatewayPortInterface {
     }
 
     public function findPaymentByExternalReference(string $externalRef): ?array {
-        // Test double del port (todo 31): la busqueda por external_reference
-        // no se usa en los workers de carrera de W2 -> sin resultados.
+        // Test double del port: la busqueda por external_reference
+        // no se usa en los workers de carrera de -> sin resultados.
         return null;
     }
 

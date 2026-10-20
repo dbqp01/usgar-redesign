@@ -46,17 +46,17 @@ final class MercadoPagoAdapterTest extends TestCase {
                     $this->assertSame('USGAR HOTELES CUSCO', $payload['statement_descriptor']);
                     $this->assertTrue($payload['binary_mode']);
                     $this->assertSame('https://usgarhoteles.com/api/webhook', $payload['notification_url']);
-                    // Fix F3 (2026-08-06, verificado con MCP search_documentation
+                    // (verificado con MCP search_documentation
                     // "create payment" es/MPE + sandbox real): el create
                     // /v1/payments NO acepta currency_id (400 bad_request); MP
                     // infiere la moneda de la cuenta. La moneda de cobro vive en
-                    // el evento/PMS (todo 34), no en el create.
+                    // el evento/PMS, no en el create.
                     $this->assertArrayNotHasKey('currency_id', $payload);
                     $this->assertSame(['email' => 'cliente@test.com'], $payload['payer']);
                     $this->assertSame('CARD_TOKEN_XYZ', $payload['token']);
                     $this->assertSame('310', $payload['issuer_id']);
                     $this->assertSame(3, $payload['installments']);
-                    // Todo 3: additional_info pasa tal cual (density armada en la accion).
+                    // additional_info pasa tal cual (density armada en la accion).
                     $this->assertSame('travel', $payload['additional_info']['items'][0]['category_id']);
                     $this->assertSame(2, $payload['additional_info']['items'][0]['quantity']);
                     return true;
@@ -100,11 +100,11 @@ final class MercadoPagoAdapterTest extends TestCase {
                 $this->callback(function (RequestOptions $options): bool {
                     $headers = array_values($options->getCustomHeaders() ?? []);
                     $this->assertNotEmpty($headers, 'Debe enviar x-idempotency-key');
-                    // Fix F3 (2026-08-06): el SDK espera "Name: value" string;
+                    // el SDK espera "Name: value" string;
                     // la forma asociativa se pierde en CURLOPT_HTTPHEADER.
                     $found = array_values(array_filter($headers, static fn ($h) => is_string($h) && stripos($h, 'X-Idempotency-Key:') === 0));
                     $this->assertCount(1, $found, 'exactamente un header X-Idempotency-Key en forma string');
-                    // Todo 2: UUID v4 por intento (ya no es determinista por carrito).
+                    // UUID v4 por intento (ya no es determinista por carrito).
                     $this->assertMatchesRegularExpression(
                         '/^X-Idempotency-Key: [0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/',
                         (string)$found[0],
@@ -125,7 +125,7 @@ final class MercadoPagoAdapterTest extends TestCase {
     }
 
     public function testProcessPaymentGeneratesFreshIdempotencyKeyPerAttempt(): void {
-        // Todo 2 (QA+): dos llamadas seguidas sobre el MISMO cart -> keys DISTINTAS
+        // dos llamadas seguidas sobre el MISMO cart -> keys DISTINTAS
         // (la key determinista por carrito bloqueaba reintentos legitimos).
         $capturedKeys = [];
         $paymentClient = $this->createMock(PaymentClient::class);
@@ -194,7 +194,7 @@ final class MercadoPagoAdapterTest extends TestCase {
     }
 
     public function testGetPaymentDetailsIncludesStatusDetail(): void {
-        // Todo 7 (QA+): el retorno incluye status_detail (motivos de rechazo MP).
+        // el retorno incluye status_detail (motivos de rechazo MP).
         $paymentClient = $this->createMock(PaymentClient::class);
         $paymentClient->expects($this->once())
             ->method('get')
@@ -208,7 +208,7 @@ final class MercadoPagoAdapterTest extends TestCase {
     }
 
     public function testGetPaymentDetailsReturnsNullForNonNumericId(): void {
-        // Todo 7 (QA-): paymentId alfanumerico -> null + log, sin TypeError del cast.
+        // paymentId alfanumerico -> null + log, sin TypeError del cast.
         $paymentClient = $this->createMock(PaymentClient::class);
         $paymentClient->expects($this->never())->method('get');
 
@@ -217,7 +217,7 @@ final class MercadoPagoAdapterTest extends TestCase {
     }
 
     public function testFindPaymentByExternalReferenceReturnsNormalizedPayment(): void {
-        // Todo 7: dueno de findPaymentByExternalReference (consume todo 31).
+        // dueno de findPaymentByExternalReference (consume el lock de la reserva).
         $result = new PaymentSearchResult();
         $result->id = 777;
         $result->status = 'approved';
@@ -333,7 +333,7 @@ final class MercadoPagoAdapterTest extends TestCase {
     }
 
     public function testVerifySignatureAcceptsRecentTimestampWithinTolerance(): void {
-        // Todo 15 (QA-): con toleranceSeconds=300 activado, una firma RECIENTE
+        // con toleranceSeconds=300 activado, una firma RECIENTE
         // (dentro de 5 min) sigue siendo valida.
         $dataId = '123456789';
         $requestId = 'req-fresh-ts';
@@ -344,7 +344,7 @@ final class MercadoPagoAdapterTest extends TestCase {
     }
 
     public function testVerifySignatureRejectsTimestampBeyondTolerance(): void {
-        // Todo 15 (QA+): firma con ts viejo (>300s) -> INVALIDA (ventana de
+        // firma con ts viejo (>300s) -> INVALIDA (ventana de
         // replay de 5 min). RED: sin tolerance, el SDK no chequeaba skew y la
         // firma era aceptada.
         $dataId = '123456789';
@@ -385,7 +385,7 @@ final class MercadoPagoAdapterTest extends TestCase {
     }
 
     public function testVerifySignatureRejectsInvalidHmac(): void {
-        // ts en ms por coherencia con el tolerance (todo 15); el fallo de
+        // ts en ms por coherencia con el tolerance; el fallo de
         // este test es por HMAC distinto, no por skew.
         $ts = (string) ((int) (microtime(true) * 1000));
         $dataId = '123456789';
@@ -406,7 +406,7 @@ final class MercadoPagoAdapterTest extends TestCase {
 
         $adapter = new MercadoPagoAdapter($paymentClient);
 
-        // ts en ms (todo 15: tolerance 300s activado — la firma debe ser
+        // ts en ms (tolerance 300s activado — la firma debe ser
         // reciente en ms para pasar el skew check).
         $ts = (string) ((int) (microtime(true) * 1000));
         $dataId = '555666777';

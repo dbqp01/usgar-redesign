@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { formatPrice, formatDate } from '../../src/utils/format';
 
 // =============================================================================
-// CONTRATO de src/utils/format (W3/21 behavior lock -> implementado en W3/23).
+// CONTRATO de src/utils/format (behavior lock: la API no debe cambiar).
 // Estas aserciones PINNAN las salidas EXACTAS que la UI actual produce hoy,
 // derivadas de las implementaciones inline que reemplaza la extraccion:
 //

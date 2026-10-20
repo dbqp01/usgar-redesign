@@ -8,7 +8,7 @@ use App\Core\Config;
 use App\Features\Booking\Domain\Events\BookingPaidEvent;
 
 /**
- * Tests del evento de pago consciente de moneda (Wave 4, todo 25).
+ * Tests del evento de pago consciente de moneda.
  *
  * El evento (y su payload de outbox) lleva amount_pen (int centavos),
  * currency = 'PEN' y exchange_rate CONGELADO del hold (escrito al cotizar
@@ -22,7 +22,7 @@ final class BookingPaidEventTest extends TestCase {
     }
 
     public function testFromHoldUsesFrozenPenColumns(): void {
-        // Hold con las columnas congeladas (escritas al cotizar, todo 25):
+        // Hold con las columnas congeladas (escritas al cotizar):
         // amount_pen = (int)round(price_snapshot_pen * 100); exchange_rate =
         // exchange_rate_snapshot (la tasa de creacion, no la actual).
         $hold = [
