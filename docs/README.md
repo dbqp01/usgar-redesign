@@ -7,8 +7,7 @@
 > el **mismo commit**. Los docs con fecha dentro del texto son snapshots: para
 > el histórico hay `docs/archive/`.
 >
-> Fuera de `docs/`: `AGENTS.md` (guía de agentes) y `.agents/TOOLS.md`
-> (herramientas de apoyo disponibles).
+> Fuera de `docs/`: `AGENTS.md` (guía de agentes: estructura, reglas y flujo).
 
 ## Documentos operativos
 

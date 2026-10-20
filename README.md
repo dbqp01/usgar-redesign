@@ -55,7 +55,7 @@ Para E2E, instala Chromium una vez con `npx playwright install chromium`. `npm r
 
 ## Deploy (Hostinger — automático desde GitHub)
 
-Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo mira la rama `main`**. No se sube nada manualmente; no existe rama `build` (el workflow `deploy-build-branch.yml` está desactivado y es historial).
+Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo mira la rama `main`**. No se sube nada manualmente; la rama `build` es histórico y el deploy nunca la usa.
 
 1. `git push origin main` → Hostinger hace pull, `npm install` y `npm run build` desde cero, y sirve el resultado (unos minutos; historial y logs en hPanel → **Deployments**).
 2. El `postbuild` (package.json) copia `app/` y `vendor/` a `dist/` (Composer no existe en prod) y elimina cualquier `dist/.env`. Astro vuelca `public/*` en la raíz de `dist/`, así que el entry PHP queda en `dist/index.php` + `dist/.htaccess`.
@@ -99,4 +99,4 @@ Para generar el hash: `php -r "echo hash('sha256', getenv('MERCADO_PAGO_ACCESS_T
 
 ## Stack
 
-Astro 7.2.4 · Tailwind CSS 4 · GSAP · Leaflet · Lenis · PHP 8 (PDO/MySQL, non framework) · MercadoPago · QloApps (PMS; Channel Manager Webkul pendiente de pago) · hybridauth · Vitest · PHPStan
+Astro 7.3 · Tailwind CSS 4 · GSAP · Leaflet · Lenis · PHP 8 (PDO/MySQL, non framework) · MercadoPago · QloApps (PMS; Channel Manager Webkul pendiente de pago) · hybridauth · Vitest · PHPStan

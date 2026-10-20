@@ -11,7 +11,7 @@ Guía funcional para agentes: qué es este proyecto, dónde está cada cosa y c�
 5. **Fuentes de verdad**: `docs/` centraliza todo. No crees archivos nuevos sin revisar si la fuente ya existe.
 6. **Pensamiento secuencial** para problemas no triviales (arquitectura, debugging, decisiones).
 7. **Zero hardcoding**: credenciales/URLs/precios → `.env` o BD. Jamás literales en código.
-8. **No tocar generados**: `graphify-out/`, `dist/`, `node_modules/`, `*.map` — se regeneran, no se editan ni se commitean. **`vendor/` es la excepción: está versionado a propósito** (en prod no hay Composer y el build lo copia a `dist/`); no se edita a mano salvo los dos parches de `patches/`.
+8. **No tocar generados**: `dist/`, `node_modules/`, `*.map` — se regeneran, no se editan ni se commitean. **`vendor/` es la excepción: está versionado a propósito** (en prod no hay Composer y el build lo copia a `dist/`); no se edita a mano salvo los dos parches de `patches/`.
 9. **Commits**: pequeños, por tema, prefijo `feat:` / `fix:` / `chore:` / `docs:`. No mega-commits. NO push a main sin OK explícito del usuario.
 10. **Herramientas según el alcance**: consulta la doc oficial o Context7 para APIs de librerías; navegador para cambios visuales; herramientas de BD/pagos solo al verificar esos recorridos autorizados. Si falta una herramienta necesaria, continúa el trabajo independiente y reporta qué no pudiste verificar; no declares bloqueada una tarea local por un MCP ajeno a su alcance.
 11. **Duda → preguntar**: si el pedido del usuario choca con el plan de migración o la arquitectura (ver `docs/ROADMAP.md`), pregunta antes de codear.
@@ -26,7 +26,7 @@ Sitio web transaccional del hotel boutique Usgar (San Pedro, Cusco, Perú): rese
 - Backend: **PHP 8 nativo** (sin framework) — monolito modular ADR (Action → Domain → Ports/Adapters), DI PSR-11 (`App\Core\Container`, autowiring por Reflection), PDO/MySQL. Entry point único: `public/index.php`.
 - Pagos: **MercadoPago Checkout API** (Custom Checkout, cardForm) — webhooks en `app/Features/Webhooks/`; SDK oficial `mercadopago/dx-php` v3 con parches propios (idempotency case + timeout total, ver `composer.json` extra.patches).
 - PMS: **QloApps** (`QloAppAdapter`, webservice XML `https://cms.usgarhoteles.com/api` + SQL directo PDO a tablas `qlo_*`). Channel manager: **QloApps Channel Manager** (Webkul) — sin código en el repo, activación pendiente de pago (ver `docs/PMS.md` §D y `docs/ROADMAP.md`).
-- Auth: JWT propio HMAC-SHA256 en cookie HttpOnly (`SessionService`) + OAuth social vía hybridauth 3 (Google/Microsoft/Facebook, solo si hay credenciales en `.env`).
+- Auth: JWT HS256 (firebase/php-jwt) en cookie HttpOnly (`SessionService`) + OAuth social vía hybridauth 3 (Google/Microsoft/Facebook, solo si hay credenciales en `.env`).
 - Deploy: **Hostinger compartido, integración Node.js GitHub** — push a `main` → pull + `npm install` + `npm run build` → sirve `dist/`. Sin FTP, sin rama `build`, sin Composer en prod (el build copia `vendor/` a `dist/`). Detalle: `docs/DEPLOYMENT.md`.
 
 ## Fuentes de verdad (docs centralizadas)
@@ -56,34 +56,41 @@ la historia. Lo que se intentó, falló o se diagnosticó con fecha va a
 
 ```
 src/                          Frontend Astro
-  pages/                      Rutas públicas: index, rooms, rooms/[slug], book.astro,
-                              book/success, explore, explore/[slug], gallery, contact,
-                              login, my-bookings, profile + copias es/ fr/ pt/
-  components/                 UI por dominio: booking/ (wizard 3 pasos), navbar/, room/,
-                              contact/, profile/, common/ (Preloader, CustomCursor…), ui/
-  features/                   Lógica TS: booking/ (wizardStore, calendar, roomAllocator),
-                              animations/ (engine + módulos GSAP), ui/toast
+  pages/                      index, rooms, rooms/[slug], book, book/success, explore,
+                              explore/[slug], gallery, contact, login, my-bookings,
+                              profile, panel, privacy, terms, 404 + copias es/ fr/ pt/
+  components/                 UI por dominio: booking/ (wizard 4 pasos), navbar/, room/,
+                              contact/, profile/, common/ (Preloader, CustomCursor…), ui/,
+                              icons/ + secciones de landing (Hero, Footer, Gallery…)
+  features/                   Lógica TS: booking/ (wizardStore, calendar, roomAllocator,
+                              bookingStatus), animations/ (engine + módulos GSAP), ui/toast
   services/                   bookingService.ts (única capa de fetch al /api)
+  utils/                      auth-client, paymentErrors/Status, holdCountdown, csrfToken,
+                              getUser, logout, format, helpers, debounce, ogImage
   i18n/                       en.json es.json fr.json pt.json + utils.ts (fallbackChain)
-  content/                    Datos del sitio, un JSON por dominio (rooms, services,
-                              faq, reviews, explore, about, settings)
+  content/                    Datos del sitio, un JSON por dominio (about, explore, faq,
+                              reviews, rooms, services, settings)
   data/                       Carga tipada sobre esas colecciones (getCollection /
-                              getEntry): los componentes leen de aquí, no del JSON crudo
+                              getEntry) + listas propias (hotelServices, legal)
+  assets/                     Imágenes y fuentes que importa Astro
+  styles/                     global.css (Tailwind v4, CSS-first)
   layouts/                    Layout.astro (único)
 app/                          Backend PHP
   Core/                       Request, Response, Database (PDO), Container (PSR-11), Validator,
                               Middleware, Config, Logger, HttpException, Router, RateLimiter,
                               BookingStatus, BookingHoldToken, PriceCalculator, Events/
   Features/<Feature>/         Módulos: Auth, Booking, Contact, Cron, Health, Newsletter,
-                              Rooms, Shared, Webhooks
+                              Panel, Reviews, Rooms, Shared, Webhooks
     Actions/                  Clases ADR invocables (ruta → action)
     Domain/                   Repositorios (ProvisionalBookingRepository), Listeners
                               (ConfirmQloAppsOrderListener), Events (BookingPaidEvent)
     Shared/                   Adapters/ (QloApp, MercadoPago) + Ports/ (interfaces) +
                               DiscountResolver, RoomTypeRegistry
-public/                       index.php (front controller + registro de rutas) + .htaccess
-cron/                         process_outbox.php, reconcile_payments.php (CLI, invocan actions)
-scripts/                      dev.js (dev:all), tests, auditorías (seguridad/SEO), sync stock
+public/                       index.php (front controller + registro de rutas), .htaccess,
+                              assets/ (fotos de habitaciones), favicon, robots.txt, og-image
+cron/                         process_outbox.php, reconcile_payments.php, cleanup.php
+                              (CLI, invocan actions)
+scripts/                      dev.js (dev:all), tests, auditorías (seguridad/SEO/CSP), sync stock
 tests/                        api-harness.php (contrato booking) + phpunit (Unit/) + e2e/ (Playwright)
 docs/                         Documentación centralizada (ver tabla de fuentes)
 ```
@@ -92,7 +99,7 @@ docs/                         Documentación centralizada (ver tabla de fuentes)
 
 ### Frontend (Astro)
 1. Cambios de texto: `src/i18n/<locale>.json` — SIEMPRE las 4 locales (fr y pt caen a en/es vía fallback).
-2. Datos de negocio (habitaciones, servicios): edita el JSON de `src/content/<dominio>/`; los componentes los reciben ya tipados por `src/data/<dominio>.ts` (cargador sobre la colección). Excepción: `src/data/hotelServices.ts` es una lista propia, no derivada de una colección (ver `docs/ROADMAP.md`).
+2. Datos de negocio (habitaciones, servicios): edita el JSON de `src/content/<dominio>/`; los componentes los reciben ya tipados por `src/data/<dominio>.ts` (cargador sobre la colección). Excepciones (listas propias, no derivadas de una colección): `src/data/hotelServices.ts` (catálogo del hotel, ver `docs/ROADMAP.md`) y `src/data/legal.ts` (texto legal en/es).
 3. UI: componentes en `src/components`; estilos Tailwind v4 (CSS-first, sin config v3).
 4. Validar con `npm run check` (astro check + TS).
 
@@ -121,7 +128,7 @@ Elige checks según los archivos y contratos afectados. Una revisión superficia
 | Endpoints/SEO | Auditoría existente correspondiente, acotada al cambio |
 | Solo documentación | Verificar comandos/rutas contra manifiestos y código, sin instalar ni ejecutar toda la suite |
 
-`npm test` conserva el chequeo Astro y la integración PHP, y añade Vitest. CI ejecuta los tres controles; no omitas una suite para ocultar un fallo ni elimines aserciones para obtener verde.
+`npm test` conserva el chequeo Astro y la integración PHP, y añade Vitest. El CI (`.github/workflows/build.yml`) corre Vitest, PHPUnit, la integración HTTP, PHPStan, `astro check`, el build y las auditorías (seguridad, SEO/schema, contenido, CSP); no omitas una suite para ocultar un fallo ni elimines aserciones para obtener verde.
 
 **Aislamiento primero:** `composer test` descubre todo `tests/Unit`, incluidos casos que cargan `.env`, consultan pagos sandbox y escriben en BD. Los harness (`test:php`, `api-harness`, `user-flow`, workers y stress tests) requieren revisar fixtures/destino y un entorno dedicado. El nombre Unit, `PHP_TESTING` o un token `TEST-` no acreditan aislamiento. Para una tarea local usa casos sin servicios externos; pruebas que mutan BD/PMS/pagos requieren autorización específica y destino de pruebas verificado. Nunca cargues credenciales de producción para pasarlas.
 
@@ -132,7 +139,7 @@ Playwright usa la configuración versionada y `npm run test:e2e -- <spec>` para 
 ## Deploy (Hostinger) — SOLO rama main, build automático
 
 - **Hostinger mira ÚNICAMENTE la rama `main`** (integración Node.js GitHub; docs oficiales: `docs.hostinger.com/node.js/github`). Cada `git push origin main` → Hostinger hace pull + `npm install` + `npm run build` y sirve `dist/` (config hPanel: branch `main` · build `build` · output `dist` · Node 22).
-- El workflow `.github/workflows/deploy-build-branch.yml` está **DISABLED** (plan DEPLOY-B2 nunca activado) — ignorarlo. La rama remota `origin/build` existe con contenido viejo pero **Hostinger no la usa**.
+- Solo existe un workflow: `.github/workflows/build.yml` (CI). La rama remota `origin/build` tiene contenido viejo, pero **Hostinger no la usa**: el deploy es `main` → pull + build.
 - Nunca sugerir subir `dist/` por FTP/File Manager ni hablar de la rama `build`. Único flujo: commit → `git push origin main` → esperar el build de Hostinger → https://usgarhoteles.com refleja el cambio.
 - Env vars de prod: hPanel → **Despliegues → Ajustes → Variables de entorno → «Guardar»** (escribe `hbuilds/config/.env` en la raíz del dominio; el efecto es inmediato, sin redeploy). La página «Sitios web → Variables de entorno» **no** reescribe el archivo. Fallback `.env` un nivel arriba de `public_html` (`app/Core/Config.php::loadEnv`). El `.env` **no** va en `dist/` (el postbuild lo elimina). Detalle: `docs/DEPLOYMENT.md`.
 - El hook `pre-commit` comprime `.mp4`/imágenes staged (requiere ffmpeg + `scripts/compress-images.js`; ver `docs/DEPLOYMENT.md` §Hooks).
@@ -149,9 +156,3 @@ que en su version original casi borraban una tabla de produccion del autor.
 5. **Revisar dependencias existentes** antes de añadir paquetes nuevos: revisa `composer.json`/`package.json` y qué ya importa el código antes de instalar algo.
 6. **Decisiones de arquitectura a largo plazo**: rechaza hacks "lo cambiamos luego" para cosas que cruzan capas o la BD; documenta en `docs/DECISIONS.md` (patrón ADR del proyecto).
 7. **Estudia cómo lo resolvieron productos maduros**: usa patrones probados (PrestaShop/QloApps, estándares del sector) antes de inventar.
-
-## Herramientas de calidad
-
-Las herramientas de SAST, revision y skills de diseno disponibles en este repo
-estan listadas en [`.agents/TOOLS.md`](.agents/TOOLS.md). No son requisito para
-contribuir: usalas si aportan al cambio, no por rutina.
