@@ -9,7 +9,7 @@ Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo m
 1. `git push origin main` → GitHub envía webhook → Hostinger hace pull, `npm install` (auto-detecta npm por lockfile), `npm run build`, y sirve el output. Un solo deploy a la vez; pushes extra se encolan.
 2. El `postbuild` (package.json) copia `app/`, `vendor/` y `cron/` a `dist/` (Composer no existe en prod) y **elimina cualquier `dist/.env`**. Astro vuelca `public/*` en la raíz de `dist/`, así que el entry PHP queda en `dist/index.php` + `dist/.htaccess`.
    El `.htaccess` bloquea por HTTP el acceso directo a `app/`, `vendor/`, `cron/`, `logs/`, `storage/` y `runtime/`; esos directorios solo se conservan en el webroot para que los trabajos CLI puedan ejecutarse. Las revocaciones JWT se escriben en `runtime/revoked-tokens` en la **raíz del dominio** (junto a `public_html`), fuera del árbol que el deploy reemplaza, y no se mueven al cambiar de fuente de `.env`.
-   El log de la app (`app.log`) se escribe en **`/home/<usuario>/domains/usgarhoteles.com/logs/`** (raíz del dominio, fuera de `public_html`): el build reemplaza `public_html` entero, así que un log dentro se reiniciaba en cada push (verificado: el `app.log` de prod empezaba en la fecha del último build). Si esa carpeta no fuese escribible, `Logger` cae al `logs/` del árbol de deploy y, en último caso, a `error_log()`.
+   El log de la app (`app.log`) se escribe en **`/home/<usuario>/domains/usgarhoteles.com/logs/`** (raíz del dominio, fuera de `public_html`): el build reemplaza `public_html` entero, así que un log dentro se reiniciaba en cada push (verificado: el `app.log` de prod empezaba en la fecha del último build). Si esa carpeta no fuese escribible, `Logger` cae al `logs/` del árbol de deploy y, en último caso, a `error_log()`. **Verificado en prod el 2026-10-20** tras el deploy: `logs/app.log` aparece en la raíz del dominio con su `.htaccess` de protección y recibe tanto las líneas de los crons (`ReconcilePaymentsAction`, `CleanExpiredCartsAction`) como las de las peticiones HTTP (`HandleMercadoPagoWebhookAction`).
 3. Config vigente en hPanel: branch `main` · build script `build` · output directory `dist` · Node **22** (fijado también en `engines` de package.json) · package manager npm.
 4. Historial/logs de cada build: hPanel → Deployments (branch, commit, autor, estado, log completo).
 5. Si el build falla durante `npm install`: primera causa = versión de Node vs `engines` (npm reintenta con `--legacy-peer-deps` antes de fallar).
@@ -49,15 +49,22 @@ Los procesos CLI de cron aplican la misma precedencia aunque no reciban `DOCUMEN
 
 **Regla de oro:** hPanel → Variables de entorno es la fuente única. No volver a subir un `.env` a la raíz del dominio: volvería a ganar por precedencia y los cambios del panel dejarían de aplicarse.
 
-### Puente entre el código desplegado y el archivo de hPanel (2026-10-19)
+### Puente entre el código desplegado y el archivo de hPanel (2026-10-19 · RESUELTO 2026-10-20)
 
-El código **desplegado** (commit `2a824b3`) todavía no conoce la ruta `hbuilds/config/.env`: su lista de candidatos es `raíz/.env` → `raíz/.builds/config/.env` → `raíz del proyecto/.env`. Como la raíz ya no tiene `.env`, hace falta el segundo:
+**Estado: ya no existe.** Se resolvió al desplegar `5361623` (y `2cc9479`) en `main`.
 
-- `<raíz del dominio>/.builds/config/.env` → **symlink** a `hbuilds/config/.env`.
-- Cron vigilante (`yr3HD0iHWR`, `*/5`): `ln -sfn <raíz>/hbuilds/config/.env <raíz>/.builds/config/.env` — lo recrea si un deploy lo borra.
-- El `.env` viejo de la raíz del dominio quedó renombrado a `.env.pre-hpanel-2026-10-19` (copia de rollback; **no** lo lee la app porque no es un candidato).
+*Lo que fue*: el código desplegado (`2a824b3`) solo conocía `raíz/.env` → `raíz/.builds/config/.env` → `raíz del proyecto/.env`. Como la raíz ya no tiene `.env` (renombrado), se creó un **symlink** `raíz/.builds/config/.env → hbuilds/config/.env` con un cron vigilante (`yr3HD0iHWR`, `*/5`, `ln -sfn …`) que lo recreaba cada 5 minutos.
 
-**Se elimina al desplegar el commit `5361623`** (que ya pone `hbuilds/config/.env` como candidato 1): borrar el symlink, la carpeta `.builds/` y el cron vigilante.
+*Cómo se retiró (2026-10-20, en este orden para no dejar el puente a medias)*:
+
+1. **Borrar primero el cron vigilante** (`hosting_cron-jobs_delete`, uid `yr3HD0iHWR`): si siguiera vivo, recrearía el symlink.
+2. **Borrar el symlink** con un cron de un solo binario: `/usr/bin/rm -f <raíz>/.builds/config/.env` — `rm` **no** sigue symlinks, borra el enlace y deja intacto `hbuilds/config/.env` (verificado: el archivo siguió en disco con su mtime).
+3. **Borrar las carpetas vacías**: `/usr/bin/rmdir <raíz>/.builds/config` y `/usr/bin/rmdir <raíz>/.builds`.
+4. Borrar los crons temporales y verificar: `hbuilds/config/.env` sigue ahí, `.builds/` ya no existe, y el sitio sigue sano.
+
+> No borrar `hbuilds/config/.env` desde el File Manager esperando que borre el symlink: se depende del enlace. Para symlinks usar `rm` en un cron de un solo binario (o el File Manager, que también borra el enlace y no el destino).
+
+*Rollback del puente* (si hubiera que volver atrás): recrear el symlink `raíz/.builds/config/.env → hbuilds/config/.env` y volver a desplegar el código antiguo; no hace falta tocar hPanel.
 
 **Pendiente de seguridad:** `PANEL_PASSWORD` tiene hoy **el mismo valor** que `DB_PASS` (verificado en la tabla de hPanel). Rotar `PANEL_PASSWORD` por un valor propio y distinto.
 
@@ -119,7 +126,7 @@ Verificado en Hostinger vía API (2026-08-14) — esta es la configuración REAL
 | 10 min | `php /home/<USER>/domains/usgarhoteles.com/public_html/cron/cleanup.php` | Marca `expired` los holds `pending` vencidos (auditoría 2026-08-11: el endpoint HTTP no tenía operador y la tabla acumulaba basura) |
 | 20 min | `php /home/<USER>/domains/usgarhoteles.com/public_html/index.php /api/cron/manual-review` | Lista holds en `manual_review`/`fraud_review` para revisión operativa (la acción CLI por defecto es `list`; no redispatcha pagos automáticamente) |
 | **1 día** | `/usr/bin/php /home/<USER>/domains/usgarhoteles.com/public_html/index.php /api/cron/refresh-reviews` | Refresca los scores de reseñas (Booking/KAYAK/Expedia) → `app/storage/review-scores.json`; `GET /api/reviews-score` los sirve al ribbon de la home. Fallback por fuente (fetch/parse fallido → valor anterior). **REGISTRADO en hPanel 2026-08-15** (uid `egFzCUjpmW`, `0 3 * * *` = diario 03:00). Verificación manual: `php public/index.php /api/cron/refresh-reviews` → JSON con `scores` |
-| 5 min *(temporal)* | `/usr/bin/ln -sfn /home/<USER>/domains/usgarhoteles.com/hbuilds/config/.env /home/<USER>/domains/usgarhoteles.com/.builds/config/.env` | **Vigilante del symlink del `.env`** (uid `yr3HD0iHWR`, creado 2026-10-19): mantiene el enlace que el código desplegado (`2a824b3`) necesita para leer el archivo de hPanel. **Borrar al desplegar el commit `5361623`** (ver §Puente entre el código desplegado y el archivo de hPanel) |
+
 
 > Nota: el cron real de reconcile es **15 min** (no 10 como decía esta tabla antes — la doc estaba desincronizada de hPanel). El polling del frontend aguanta 10 min; si el webhook se pierde, el hold se resuelve en ≤15 min por el cron y el usuario puede pulsar "Verificar de nuevo".
 

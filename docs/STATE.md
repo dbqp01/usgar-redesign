@@ -9,7 +9,7 @@ Auditoría del entorno de Hostinger hecha **con el panel abierto en el navegador
 - **Los valores coinciden**: comparadas en memoria del navegador (sin sacarlos de él) las 38 claves del `.env` físico contra las 39 de hPanel → **38 idénticas, 0 diferencias**; hPanel añade solo `PANEL_PASSWORD`. Se conserva intacto el token de MP (**el de test**, decisión del dueño) y la ausencia de `SMTP_*` (emails siguen apagados por diseño).
 - **Efectos colaterales revisados**: `PANEL_PASSWORD` pasa a estar configurado → `/panel` (disponibilidad del dueño) deja de estar fail-closed; `MP_BINARY_MODE=true` ya era el valor efectivo (está en las dos fuentes) → el payload de MP no cambia; `TokenRevocationStore` pasa a usar la raíz del despliegue (no la carpeta del `.env`), así que la lista de revocaciones no se invalida ni se mueve al cambiar de fuente.
 - **El `.env` de la raíz del dominio queda RENOMBRADO** a `.env.pre-hpanel-2026-10-19` (no se borra: es el rollback). Con ese nombre ya no compite por precedencia — la app no lo lee. Copia local de seguridad en `.backups/prod-env-2026-10-19.env` (**gitignored**).
-- **Puente para el código todavía sin desplegar**: el código en producción (`2a824b3`) solo conoce `raíz/.env` → `raíz/.builds/config/.env` → `raíz del proyecto/.env`. Con el `.env` de la raíz fuera, se creó el symlink `raíz/.builds/config/.env → hbuilds/config/.env` (cron vigilante `yr3HD0iHWR`, `*/5`, que lo recrea si un deploy lo borra). Se elimina al desplegar el commit `5361623`.
+- **Puente para el código todavía sin desplegar** *(resuelto el 2026-10-20, ver §Deploy a `main` y verificación en producción)*: el código en producción (`2a824b3`) solo conocía `raíz/.env` → `raíz/.builds/config/.env` → `raíz del proyecto/.env`. Con el `.env` de la raíz fuera, se creó el symlink `raíz/.builds/config/.env → hbuilds/config/.env` (cron vigilante `yr3HD0iHWR`, `*/5`). **Ya retirado** al desplegar `5361623`: cron borrado, symlink borrado (con `rm`, que no sigue el enlace) y carpeta `.builds/` eliminada.
 
 ### El mecanismo real de hPanel (verificado 2026-10-19, no deducido)
 
@@ -18,13 +18,26 @@ Auditoría del entorno de Hostinger hecha **con el panel abierto en el navegador
 - **Un build no reescribe el `.env`**: un redeploy del mismo commit (2026-10-20, uuid `01a156d7-2074-73d8-aaf4-a82dbf572072`, completado) regeneró `hbuilds/config/package.json` y `package-lock.json` pero dejó `hbuilds/config/.env` con su mtime anterior. El build solo lee ese archivo («Environment: variables loaded from .env»).
 - **Pendiente de seguridad**: `PANEL_PASSWORD` tiene **el mismo valor** que `DB_PASS`. Rotarlo por un valor propio.
 
-**Estado final del entorno (2026-10-20):** raíz del dominio = `hbuilds/` · `public_html/` · `runtime/` · `.builds/` (symlink) · `.env.pre-hpanel-2026-10-19` (rollback) · `DO_NOT_UPLOAD_HERE`. `hbuilds/config/.env` = 39 claves, valores entre comillas simples, **0 diferencias** contra el `.env` viejo en las 38 claves comunes.
+**Estado final del entorno (2026-10-20, tras el deploy):** raíz del dominio = `hbuilds/` · `public_html/` · `runtime/` · `logs/` · `.env.pre-hpanel-2026-10-19` (rollback) · `DO_NOT_UPLOAD_HERE`. **Ya no existe `.builds/`** (el puente se retiró; ver §Deploy a `main`). `hbuilds/config/.env` = 39 claves, valores entre comillas simples, **0 diferencias** contra el `.env` viejo en las 38 claves comunes.
 
 **Limpieza en prod (mismo día, sin deploy):** los 3 holds `expired` con `payment_id` (1349906085 / 1327783824 / 171954453246, del 3-4 de agosto) se pasaron a `failed` en `provisional_bookings` → el cron `reconcile_payments` ya no los reintenta. Verificado: `Reconciliacion completada: checked=0, reconciled=0, skipped=0` (antes `checked=3, skipped=3`).
 
-**Por qué era ruido y no ruido:** el `app.log` de prod tenía **1640 entradas ERROR de las cuales 1638 eran los 404 de MercadoPago** de esos 3 pagos (MercadoPago ya no los tiene: se purgaron de la cuenta de pruebas). El 99,9 % del log lo ocupaba un problema ya resuelto a mano; el resto de errores reales quedaban enterrados. La causa en código (un 404 no es un fallo de API, es una respuesta definitiva) ya está corregida en `MercadoPagoAdapter`, pendiente de deploy.
+**Por qué era ruido y no ruido:** el `app.log` de prod tenía **1640 entradas ERROR de las cuales 1638 eran los 404 de MercadoPago** de esos 3 pagos (MercadoPago ya no los tiene: se purgaron de la cuenta de pruebas). El 99,9 % del log lo ocupaba un problema ya resuelto a mano; el resto de errores reales quedaban enterrados. La causa en código (un 404 no es un fallo de API, es una respuesta definitiva) ya está corregida en `MercadoPagoAdapter` y **desplegada el 2026-10-20**.
 
-**Pendiente de push (20 commits locales, `main` sigue en `2a824b3`):** el fix de la ruta del `.env` (`hbuilds/config/.env`), el fix de las revocaciones, el log en la raíz del dominio, el 404 como INFO y el bump de dependencias que cierra 10 de las 12 vulnerabilidades que reporta hPanel. El `.env` de la raíz ya no estorba (renombrado) y el symlink cubre al código desplegado; **al desplegar `5361623` hay que borrar el symlink, la carpeta `.builds/` y el cron vigilante `yr3HD0iHWR`**.
+**Desplegado:** el fix de la ruta del `.env` (`hbuilds/config/.env`), el fix de las revocaciones, el log en la raíz del dominio, el 404 como INFO y el bump de dependencias que cierra 10 de las 12 vulnerabilidades que reporta hPanel. `main` = `2cc9479` (22 commits por delante de `2a824b3`).
+
+## Deploy a `main` y verificación en producción — 2026-10-20
+
+Push de `2a824b3..2cc9479` (22 commits) y **verificación en vivo** en `https://usgarhoteles.com`:
+
+- **Push por SSH**: el token OAuth de `gh` no tiene el scope `workflow` y el lote toca `.github/workflows/`, así que `git push git@github.com:dbqp01/usgar-redesign.git main:main` (`2a824b3..2cc9479 main -> main`).
+- **Build de Hostinger**: uuid `01a156e4-9abc-72a1-9e73-465fc280b409` → *checkout 2cc9479* · `npm install` (372 paquetes) · 114 páginas · postbuild copió `app/`, `vendor/` y `cron/` a `dist/` y no dejó `dist/.env` · publicado en 3 min 24 s. **El sitio siguió en 200 durante el build** (home 200 / 275 KB, `/api/health` con `database: online`).
+- **Código nuevo confirmado en disco**: `public_html/app/Core/Config.php` en prod ya lista `hbuilds/config/.env` como **candidato 1** (leído desde el File Browser).
+- **Puente retirado, en este orden**: cron vigilante `yr3HD0iHWR` borrado → symlink borrado con `rm` (un cron de un solo binario: `rm` **no** sigue enlaces, `hbuilds/config/.env` quedó intacto con su mtime) → `rmdir .builds/config` → `rmdir .builds`. Crons temporales borrados después. Resultado: **`.builds/` ya no existe** y solo quedan los 5 crons de la app.
+- **Prueba de que la app lee el archivo de hPanel**: con `hbuilds/config/.env` como **única** fuente de env (raíz sin `.env`, sin `.builds/`), `/api/health` responde `database: online` — `DB_PASS` no tiene valor por defecto en código, así que sale del archivo de hPanel.
+- **Log en la raíz del dominio, verificado**: `logs/app.log` (con su `.htaccess`) recibe líneas de los crons (`ReconcilePaymentsAction`, `CleanExpiredCartsAction`) y de las peticiones HTTP (`HandleMercadoPagoWebhookAction`); ya no se pierde en cada push.
+
+**Pendiente para el dueño:** rotar `PANEL_PASSWORD` (tiene hoy **el mismo valor** que `DB_PASS`).
 
 ## Jerarquía de encabezados y paridad E2E contra `main` — 2026-10-19
 
