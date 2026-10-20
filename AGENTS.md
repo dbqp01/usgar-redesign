@@ -59,9 +59,10 @@ src/                          Frontend Astro
   pages/                      index, rooms, rooms/[slug], book, book/success, explore,
                               explore/[slug], gallery, contact, login, my-bookings,
                               profile, panel, privacy, terms, 404 + copias es/ fr/ pt/
-  components/                 UI por dominio: booking/ (wizard 4 pasos), navbar/, room/,
-                              contact/, profile/, common/ (Preloader, CustomCursor…), ui/,
-                              icons/ + secciones de landing (Hero, Footer, Gallery…)
+  components/                 UI por dominio: booking/ (wizard 3 pasos: fechas+habitación,
+                              huéspedes, pago), navbar/, room/, contact/, profile/,
+                              common/ (Preloader, CustomCursor…), ui/, icons/ + secciones
+                              de landing (Hero, Footer, Gallery…)
   features/                   Lógica TS: booking/ (wizardStore, calendar, roomAllocator,
                               bookingStatus), animations/ (engine + módulos GSAP), ui/toast
   services/                   bookingService.ts (única capa de fetch al /api)

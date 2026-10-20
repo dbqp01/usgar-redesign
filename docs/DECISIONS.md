@@ -17,7 +17,7 @@ Registro de decisiones de arquitectura vivas (las que siguen gobernando el códi
 
 ## Frontend (2026-08-01)
 - **Astro 7 estático + i18n routing oficial** (default `en`, fallback de páginas fr→en, pt→es; fallback de claves en `src/i18n/utils.ts`). Sin SSR — el contenido dinámico vive en la API PHP.
-- **Wizard de reserva en 3 pasos** (Guest → Allocación → Pago) con store TS puro y transiciones GSAP; pago MP intacto (createHold → cardForm → processPayment).
+- **Wizard de reserva en 3 pasos** (Fechas + habitación → Huéspedes → Pago) con store TS puro (`WizardStep = 1 | 2 | 3`) y transiciones GSAP; pago MP intacto (createHold → cardForm → processPayment).
 - **Modo claro = referencia visual**; dark mode solo ajusta el morado lavanda, nunca los fondos (#121214/#1A1A1E intocables).
 - **Capacidades +1 persona con $30/noche**: `baseOccupancy` + `maxCapacity` + `extraGuestCharge` (doble 3, matri 3, triple 4, familiar 8).
 - **Algoritmo de habitaciones**: individual + combinaciones multi-habitación, orden por precio, top 3-4, badge "Mejor precio" (`src/features/booking/roomAllocator.ts`). El backend soporta UN roomSlug por hold → solo opciones de 1 habitación son pagables online.
@@ -27,6 +27,7 @@ Registro de decisiones de arquitectura vivas (las que siguen gobernando el códi
 
 ## Operación
 - **Deploy**: solo rama `main` con integración Node.js de Hostinger (build en servidor). Prohibido FTP/File Manager/rama build (histórico DEPLOY-B2 desactivado).
+- **`vendor/` se versiona, pero solo con las dependencias de producción** (composer.lock → `packages`). En prod no hay Composer, así que el build copia `vendor/` a `dist/`; versionar las herramientas de desarrollo (phpstan, phpunit: 58 MB) solo engordaría el repo y el deploy. El autoloader versionado se genera en modo `--no-dev` y `scripts/check-vendor-prod.php` (con paso en el CI) verifica que resuelva contra archivos presentes: con dev, el autoloader incluye phpstan/phpunit en "files" y el sitio muere al arrancar.
 - **Cron**: `cron/process_outbox.php` (5 min) + `cron/reconcile_payments.php` (15 min) — nunca mover su lógica a la petición HTTP.
 - **Hooks git**: `core.hooksPath=.githooks`; pre-commit comprime media y nunca bloquea. Commits por tema con prefijo `feat:`/`fix:`/`chore:`/`docs:`.
 

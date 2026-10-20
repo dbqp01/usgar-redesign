@@ -1,6 +1,6 @@
 # STATE — Backend USGAR (estado actual)
 
-> **Última verificación: 2026-10-20 11:30–12:45, contra producción.**
+> **Última verificación: 2026-10-20 11:30–12:45 y 15:50–16:15, contra producción.**
 > Este archivo describe **lo que el sistema es hoy**, no lo que se hizo. La
 > bitácora de sesiones (2026-08 → 2026-10) está en
 > [`docs/archive/state-log-2026-08-10.md`](archive/state-log-2026-08-10.md).
@@ -41,6 +41,12 @@ heredado y hold liberado. Datos crudos y trazas:
 - **Deploy**: push a `main` → integración Node.js de Hostinger (pull +
   `npm install` + `npm run build`, salida `dist/`). Solo `main`; el build
   publica en 3–4 min.
+- **Dependencias PHP**: en prod no hay Composer, así que `vendor/` viaja
+  versionado — pero **solo con las dependencias de producción** (9,9 MB de los
+  68 MB que eran antes; las 58 MB de phpstan/phpunit no se commitean). El
+  autoloader versionado está generado en `--no-dev` y el CI lo verifica antes
+  de instalar (`scripts/check-vendor-prod.php`), porque con dev el sitio
+  muere al arrancar.
 - **Variables de entorno**: **hPanel es la única fuente** → Despliegues →
   Ajustes → Variables de entorno → «Guardar» escribe `hbuilds/config/.env` (la
   app lo lee). El `.env` de la raíz del dominio está renombrado a
@@ -58,12 +64,17 @@ heredado y hold liberado. Datos crudos y trazas:
 |---|---|
 | PHPUnit (`tests/Unit`) | 342 tests · 1020 aserciones · 38 skipped · 0 fallos |
 | PHPStan (nivel 7) | `ok` |
-| Build de Hostinger (commit `4a6eb9d`) | `completed` |
+| Vitest (`npm run test:unit`) | 11 archivos · 77 tests · 0 fallos |
+| `astro check` | 0 errores · 0 avisos |
+| Auditoría SEO / contenido / CSP | 123 páginas, 0 errores de schema · 121 páginas, 0 errores · CSP 114/114 sin violaciones |
+| Build de Hostinger (commit `a87fc65`, con `vendor/` solo de producción) | `completed` (3 min 34 s) |
+| CI (`.github/workflows/build.yml`) | `success` — incluye el guard de `vendor/` |
 | `GET /api/health` | `healthy` · `database: online` |
 | `GET /api/rooms` 20→22 nov | **8/8** en Doble Superior (holds caducados liberados) |
 | `GET /api/rooms` 25→28 nov | **6/8** (dos reservas pagadas en ese rango, una por habitación) |
 | `GET /api/reviews-score` | `kayak 8.6 / 701` (cron ejecutado a mano, scores reales) |
 | E2E de pago en producción | hold 292 → `approved` → orden 293 pagada |
+| `composer audit` | sin avisos de seguridad |
 
 ## Decisiones vigentes
 

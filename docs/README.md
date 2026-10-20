@@ -16,9 +16,9 @@
 | [`API.md`](API.md) | Contrato de la API HTTP (33 endpoints, envelope de errores, env vars). Fuente: `public/index.php` | 2026-10-20 |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Capas, flujo de reserva, zonas de riesgo | 2026-10-20 |
 | [`SECURITY.md`](SECURITY.md) | Modelo de seguridad (auth, webhooks, headers, CSRF) | 2026-09-11 |
-| [`DEPLOYMENT.md`](DEPLOYMENT.md) | Deploy en Hostinger, crons, hooks git, secretos, env vars | 2026-08-11 |
+| [`DEPLOYMENT.md`](DEPLOYMENT.md) | Deploy en Hostinger, crons, hooks git, secretos, env vars | 2026-10-20 |
 | [`PMS.md`](PMS.md) | QloApps: tutorial del dueño, inventario, tarifa, webservice, channel manager, contrato de escritura en `qlo_*` (§F) | 2026-08-11 · §F 2026-10-20 |
-| [`DECISIONS.md`](DECISIONS.md) | Decisiones de arquitectura vivas | 2026-08-11 |
+| [`DECISIONS.md`](DECISIONS.md) | Decisiones de arquitectura vivas | 2026-10-20 |
 
 ## Estado y backlog
 

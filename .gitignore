@@ -1,55 +1,47 @@
+# Secretos
 .env
 .env.production
+.env.testing
 # Copias de seguridad de secretos de prod (nunca versionadas)
 .backups/
 backup-env-prod-*.env
+
+# Dependencias y artefactos de build
 node_modules/
 dist/
 .astro/
-localhost_*.json
-original-assets/
-/data/
-graphify-out/
-graphify-out/.*
-graphify-out/cost.json
-graphify-out/transcripts/
-logs/
-log/
-log
-storage/
 *.map
-.opencode.json
-opencode.json
+
+# Cache de herramientas
 .phpunit.cache/
 .phpstan-cache/
 
-# Artefactos de pruebas e instrumentacion (2026-08-01)
+# Datos y logs locales en tiempo de ejecucion
+/data/
+logs/
+log
+runtime/
+storage/
+localhost_*.json
+original-assets/
+
+# Artefactos de pruebas
 playwright-report/
 test-results/
 .playwright-mcp/
-preview.log
 *.log
-.hermes/
-.HERMES/
-.antigravity.md
-.superpowers/
-.primer/
-.omo/
-skills-lock.json
 tests/latest_payment_id.txt
+
+# Herramientas locales del dueno (nunca versionadas)
+.opencode.json
+opencode.json
+skills-lock.json
+graphify-out/
+.agents/
+composer.phar
 
 # Clones de herramientas externas (nunca subir: repos anidados)
 tools/rsshub/
-
-
-# Fixture de credenciales de prueba (eliminado 2026-08-07: nada lo lee, git lo restauraba).
-.env.testing
-runtime/
-
-# Solo en la maquina del dueno: skills de agente y el binario de Composer
-# (el repo no los necesita para construir ni para desplegar).
-.agents/
-composer.phar
 
 # vendor/ se versiona, pero solo con las dependencias de produccion
 # (composer.lock -> "packages"). Las de desarrollo (phpstan, phpunit,

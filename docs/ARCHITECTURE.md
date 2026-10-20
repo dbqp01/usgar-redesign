@@ -111,9 +111,10 @@ y compone con una transacción abierta por el caller (panel u outbox).
 | Archivo | Conecta con |
 |---|---|
 | `src/services/bookingService.ts` | Todos los endpoints de Booking, Rooms, Auth |
-| `src/features/booking/` (wizardStore, calendar, roomAllocator) | Lógica del wizard; contrato en docs/API.md |
+| `src/features/booking/` (wizardStore, calendar, roomAllocator, bookingStatus) | Lógica del wizard; contrato en docs/API.md |
 | `src/pages/book.astro` / `book/success.astro` | Flujo completo de reserva + polling de pago |
 | `src/pages/login.astro` / `my-bookings.astro` / `profile.astro` | Endpoints de Auth |
+| `app/Features/Reviews/` | Scrapea fuentes externas (allowlist de URLs) y escribe el JSON de scores; lo consume la home |
 
 ### ZONA CRÍTICA — no tocar sin justificación
 | Archivo/Directorio | Razón |
@@ -123,6 +124,8 @@ y compone con una transacción abierta por el caller (panel u outbox).
 | `app/Features/Shared/Adapters/` | Conectan con servicios externos reales (dinero real) |
 | `app/Features/Webhooks/` | Reciben confirmaciones de pago — si fallan, se pierden ventas |
 | `app/Features/Booking/` | El flujo hold→pago→confirmación (transacciones + outbox) |
+| `app/Features/Panel/` | El panel del hotel **escribe en QloApps** (bloqueo de habitaciones, reservas, importación de disponibilidad) |
+| `app/Features/Auth/` | Credenciales, emisión y revocación de JWT |
 | `app/Features/Cron/Actions/ProcessOutboxAction.php` | Máquina de estados del outbox (semántica literal documentada en su cabecera) |
 | `public/index.php` | Registro de rutas y entry point — toda la API depende de este archivo |
 | `.env` (fuera de git) | Credenciales de producción |
