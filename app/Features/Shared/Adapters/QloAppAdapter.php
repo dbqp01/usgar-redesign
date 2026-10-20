@@ -48,6 +48,29 @@ class QloAppAdapter implements PmsPortInterface {
     }
 
     /**
+     * Nombres de huesped en el formato que exige el PMS.
+     *
+     * PrestaShop/QloApps valida firstname y lastname con Validate::isName(),
+     * que rechaza digitos y !<>,;?=+()@#"°{}_$% (classes/Validate.php del CMS).
+     * Un cliente guardado con un nombre invalido hace revocar el webservice al
+     * actualizarlo: PrestaShopException que el dispatcher no captura -> HTTP
+     * 500 sin cuerpo. Normalizamos aqui todo nombre que entra al PMS.
+     *
+     * @return array{0:string,1:string} [firstname, lastname]
+     */
+    public static function pmsGuestNames(string $guestName): array {
+        $parts = explode(' ', trim($guestName), 2);
+        $default = (string)Config::get('DEFAULT_GUEST_NAME', 'Guest');
+        $names = [];
+        foreach ([$parts[0], $parts[1] ?? ''] as $part) {
+            $clean = preg_replace('/[0-9!<>;,?=+()@#"°{}_$%:]/u', ' ', $part) ?? '';
+            $clean = trim(preg_replace('/\s+/u', ' ', $clean) ?? '');
+            $names[] = $clean === '' ? $default : mb_substr($clean, 0, 32);
+        }
+        return $names;
+    }
+
+    /**
      * @return array<int, array<string, mixed>>
      */
     public function getAvailableRooms(string $checkIn, string $checkOut, int $idHotel = 1, ?int $idLang = null): array {
@@ -457,9 +480,9 @@ class QloAppAdapter implements PmsPortInterface {
             return 'USGAR-' . bin2hex(random_bytes(6));
         }
 
-        $nameParts = explode(' ', $guestName, 2);
-        $firstName = htmlspecialchars($nameParts[0] ?: Config::get('DEFAULT_GUEST_NAME', 'Guest'), ENT_XML1);
-        $lastName = htmlspecialchars($nameParts[1] ?? Config::get('DEFAULT_GUEST_NAME', 'Guest'), ENT_XML1);
+        [$firstName, $lastName] = self::pmsGuestNames($guestName);
+        $firstName = htmlspecialchars($firstName, ENT_XML1);
+        $lastName = htmlspecialchars($lastName, ENT_XML1);
         $safeEmail = htmlspecialchars($guestEmail ?: Config::get('DEFAULT_REPLY_EMAIL'), ENT_XML1);
         $phone = htmlspecialchars($guestPhone ?: Config::get('OTA_DEFAULT_PHONE', '000000000'), ENT_XML1);
         $currency = Config::get('MERCADO_PAGO_CURRENCY', 'USD');
@@ -605,9 +628,7 @@ XML;
             $guests = (int)($guestData['guests'] ?? 1);
             $phone = (string)($guestData['phone'] ?? Config::get('OTA_DEFAULT_PHONE', '000000000'));
 
-            $nameParts = explode(' ', trim($guestName), 2);
-            $firstName = $nameParts[0] ?: 'Guest';
-            $lastName = $nameParts[1] ?? 'Guest';
+            [$firstName, $lastName] = self::pmsGuestNames($guestName);
 
             // Canonical room lines are frozen in the hold. Expand quantity into
             // physical PMS rows so availability cannot undercount an A+A booking.
