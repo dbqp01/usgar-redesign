@@ -32,6 +32,9 @@ use Exception;
  * - X-Idempotency-Key header
  */
 class MercadoPagoAdapter implements PaymentGatewayPortInterface {
+    /** Ventana anti-replay de la firma del webhook, en segundos. */
+    private const WEBHOOK_TOLERANCE_SECONDS = 300;
+
     private readonly string $accessToken;
     private readonly ?string $webhookSecret;
     private readonly PaymentClient $paymentClient;
@@ -198,17 +201,31 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             return false;
         }
 
+        // Anti-replay (Todo 15) con las unidades reales de MP: la doc dice que
+        // el ts va en ms, pero la notificacion real llega en SEGUNDOS
+        // (x-signature: ts=1792467232 — ver log prod 2026-10-19 22:33:52). El
+        // WebhookSignatureValidator compara ts contra now() en ms, asi que su
+        // chequeo de skew rechazaba TODAS las notificaciones; el skew se
+        // chequea aqui, normalizado a segundos.
+        $timestamp = $this->extractSignatureTimestamp($signatureHeader);
+        if ($timestamp === null) {
+            Logger::error("MercadoPagoAdapter: x-signature sin ts. DataId: {$dataId}");
+            return false;
+        }
+        $drift = abs(time() - $timestamp);
+        if ($drift > self::WEBHOOK_TOLERANCE_SECONDS) {
+            Logger::error("MercadoPagoAdapter: ts fuera de la ventana anti-replay ({$drift}s). DataId: {$dataId}");
+            return false;
+        }
+
         try {
-            // Todo 15: toleranceSeconds=300 — ventana de replay de 5 min. La
-            // doc MP (webhooks x-signature) declara ts en MILISEGUNDOS y el
-            // SDK compara contra now() en ms (verificado empiricamente en W3).
-            // Sin tolerance, cualquier replay del header era aceptado.
+            // toleranceSeconds = null: el chequeo de skew ya se hizo arriba con
+            // las unidades correctas; el del SDK asume ts en ms.
             WebhookSignatureValidator::validate(
                 $signatureHeader,
                 $requestId,
                 $dataId,
-                $this->webhookSecret,
-                300
+                $this->webhookSecret
             );
             Logger::info("MercadoPagoAdapter: Firma de webhook validada correctamente. DataId: {$dataId}");
             return true;
@@ -219,6 +236,20 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
             Logger::error("MercadoPagoAdapter: Invalid argument in signature validation - {$e->getMessage()}");
             return false;
         }
+    }
+
+    /**
+     * Extrae el ts del header x-signature y lo normaliza a segundos.
+     * Acepta ts en milisegundos (como dice la doc de MP) o en segundos (como
+     * llega en la notificacion real).
+     */
+    private function extractSignatureTimestamp(?string $signatureHeader): ?int {
+        if ($signatureHeader === null
+            || !preg_match('/(?:^|,)\s*ts\s*=\s*(\d+)/', $signatureHeader, $matches)) {
+            return null;
+        }
+        $timestamp = (int) $matches[1];
+        return $timestamp > 100000000000 ? intdiv($timestamp, 1000) : $timestamp;
     }
 
     /**

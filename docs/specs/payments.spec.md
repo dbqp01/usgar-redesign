@@ -38,6 +38,7 @@ Cobrar la reserva vía MercadoPago Checkout API (Custom Checkout, cardForm), con
 - RF-16b: SI los IDs de pago del query y del body no coinciden, o el ID devuelto por Mercado Pago no coincide con el webhook, EL SISTEMA DEBE responder 400 `PAYMENT_ID_MISMATCH` sin abrir una transacción local.
 - RF-17: SIEMPRE el ID de pago se extrae de `data.id` del body o `data_id`/`data.id` del query, nunca de `body.id` (que es el ID de la notificación).
 - RF-18: CUANDO la firma `x-signature`/`x-request-id` está ausente o no valida (HMAC-SHA256 vía SDK, `PaymentGatewayPortInterface::verifySignature` con `MERCADO_PAGO_WEBHOOK_SECRET`), EL SISTEMA DEBE responder 401.
+- RF-18a: CUANDO la firma HMAC es válida pero el `ts` de `x-signature` cae fuera de la ventana anti-replay de 300s, EL SISTEMA DEBE responder 401. El `ts` se normaliza a segundos antes de comparar: MP lo documenta en milisegundos pero lo envía en segundos (evidencia prod: `ts=1792467232`, 2026-10-19 22:33:52), por lo que el cálculo de drift lo hace el adaptador y el SDK se invoca sin tolerancia.
 - RF-19: SIEMPRE la transacción inicia ANTES del chequeo de idempotencia (fail-closed: si falla, 500 y MP reintenta; nunca reprocesar un duplicado).
 - RF-20: SIEMPRE la idempotencia es por par `(payment_id, event_type)` en `processed_payments` (índice único; permite que un refund coexista con el approved).
 - RF-21: CUANDO el pago es `rejected`/`failed`, EL SISTEMA DEBE responder 200, marcar el hold como `failed` y registrar idempotencia `rejected` (cortar reintentos de MP).

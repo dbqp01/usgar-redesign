@@ -20,7 +20,7 @@ Modelo de seguridad verificado contra el código (2026-09-11). Los pendientes pr
 
 ### Pagos (MercadoPago)
 - SDK oficial dx-php v3 detrás de `PaymentGatewayPortInterface`; token solo en el backend (`.env`), nunca en el frontend.
-- Webhooks: firma HMAC validada con `WebhookSignatureValidator` del SDK (`x-signature` + `x-request-id`, tolerancia 300s anti-replay); fail-closed si falta el secret.
+- Webhooks: firma HMAC validada con `WebhookSignatureValidator` del SDK (`x-signature` + `x-request-id`) + ventana anti-replay de 300s calculada por el adaptador (`MercadoPagoAdapter::verifySignature`): MP documenta el `ts` en milisegundos pero lo envía en **segundos** (evidencia: `ts=1792467232`, log prod 2026-10-19 22:33:52) y el chequeo de skew del SDK asume ms — por eso el cálculo de drift vive en el adaptador (normaliza ambos formatos) y el SDK se invoca sin tolerancia; fail-closed si falta el secret.
 - Doble cobro imposible por diseño: gates de hold (expirado / payment_id existente) + transacción con `FOR UPDATE` alrededor del cobro + idempotency key fresca por intento + dedup `isOrderConfirmed` en el PMS + reconciliación por cron.
 - Guard de deploy: `scripts/check-prod-env.php` valida el token de producción por allowlist de hashes (el prefijo del token no define entorno).
 - Secretos nunca en git: `.env` gitignored, historial escaneado limpio; el postbuild borra `dist/.env`.

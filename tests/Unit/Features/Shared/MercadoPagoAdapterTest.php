@@ -356,6 +356,34 @@ final class MercadoPagoAdapterTest extends TestCase {
         $this->assertFalse($adapter->verifySignature($signatureHeader, $requestId, $dataId));
     }
 
+    public function testVerifySignatureAcceptsTimestampInSecondsAsMpSends(): void {
+        // MP documenta el ts en ms, pero la notificacion real lo manda en
+        // SEGUNDOS (x-signature: ts=1792467232, log prod 2026-10-19 22:33:52).
+        // Con el ts en segundos la firma debe validarse igual.
+        $ts = (string) time();
+        $dataId = '1353921761';
+        $requestId = 'req-seconds-ts';
+        $manifest = "id:{$dataId};request-id:{$requestId};ts:{$ts};";
+        $v1 = hash_hmac('sha256', $manifest, 'test-webhook-secret');
+        $signatureHeader = "ts={$ts},v1={$v1}";
+
+        $adapter = new MercadoPagoAdapter();
+        $this->assertTrue($adapter->verifySignature($signatureHeader, $requestId, $dataId));
+    }
+
+    public function testVerifySignatureRejectsStaleTimestampInSeconds(): void {
+        // ts en segundos fuera de la ventana anti-replay (600s) -> INVALIDA.
+        $ts = (string) (time() - 600);
+        $dataId = '1353921761';
+        $requestId = 'req-stale-seconds-ts';
+        $manifest = "id:{$dataId};request-id:{$requestId};ts:{$ts};";
+        $v1 = hash_hmac('sha256', $manifest, 'test-webhook-secret');
+        $signatureHeader = "ts={$ts},v1={$v1}";
+
+        $adapter = new MercadoPagoAdapter();
+        $this->assertFalse($adapter->verifySignature($signatureHeader, $requestId, $dataId));
+    }
+
     public function testVerifySignatureRejectsInvalidHmac(): void {
         // ts en ms por coherencia con el tolerance (todo 15); el fallo de
         // este test es por HMAC distinto, no por skew.

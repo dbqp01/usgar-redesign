@@ -13,10 +13,11 @@ namespace App\Test\Fixtures;
  *   v1 = hash_hmac('sha256', manifest, secret)
  *   x-signature = "ts={ts},v1={v1}"
  *
- * El ts va en MILISEGUNDOS: la doc MP (search_documentation "webhooks
- * x-signature timestamp", es/MPE) declara "El valor para el prefijo ts es el
- * timestamp (en milisegundos) de la notificacion" y el WebhookSignatureValidator
- * del SDK compara ts contra now() en ms (verificado empiricamente en W3).
+ * El ts va en MILISEGUNDOS en estos fixtures (la doc MP — search_documentation
+ * "webhooks x-signature timestamp", es/MPE — declara "El valor para el prefijo
+ * ts es el timestamp (en milisegundos) de la notificacion"). Las notificaciones
+ * REALES de MP lo envian en segundos (ts=1792467232, log prod 2026-10-19
+ * 22:33:52); el adaptador normaliza ambos formatos al calcular el skew.
  */
 final class W3WebhookFixtures {
     public const TEST_SECRET = 'test-webhook-secret';
