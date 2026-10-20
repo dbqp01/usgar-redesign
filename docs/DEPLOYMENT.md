@@ -4,7 +4,7 @@ Fuente de verdad de deploy, cron jobs, hooks de git y secretos. Verificada contr
 
 ## Deploy (Hostinger — automático desde GitHub)
 
-Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo mira la rama `main`**. No se sube nada manualmente; no existe rama `build` útil (el workflow `deploy-build-branch.yml` está desactivado y es historial; `origin/build` tiene contenido viejo que Hostinger no usa).
+Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo mira la rama `main`**. No se sube nada manualmente; la rama `build` es histórico (`origin/build` tiene contenido viejo) y Hostinger no la usa.
 
 1. `git push origin main` → GitHub envía webhook → Hostinger hace pull, `npm install` (auto-detecta npm por lockfile), `npm run build`, y sirve el output. Un solo deploy a la vez; pushes extra se encolan.
 2. El `postbuild` (package.json) copia `app/`, `vendor/` y `cron/` a `dist/` (Composer no existe en prod) y **elimina cualquier `dist/.env`**. Astro vuelca `public/*` en la raíz de `dist/`, así que el entry PHP queda en `dist/index.php` + `dist/.htaccess`.
@@ -171,10 +171,10 @@ Configuración: `core.hooksPath = .githooks` (definido por `npm run prepare`).
 
 | Hook | Qué hace |
 |---|---|
-| `pre-commit` | Comprime media staged: `.mp4` (ffmpeg, tag `USGAR_COMPRESSED` en metadatos para no re-comprimir) e imágenes (sharp vía `scripts/compress-images.js`). Nunca bloquea el commit |
-| `post-commit` / `post-checkout` | Reconstruyen el knowledge graph de graphify |
+| `pre-commit` | Wrapper POSIX: si hay PowerShell, ejecuta `pre-commit.ps1`; si no (Linux/macOS), sale con 0 y el commit sigue |
+| `pre-commit.ps1` | Comprime media staged: `.mp4` (ffmpeg, tag `USGAR_COMPRESSED` en metadatos para no re-comprimir) e imágenes (sharp vía `scripts/compress-images.js`). Nunca bloquea el commit |
 
-Requisitos: `ffmpeg` + `ffprobe` en PATH (`winget install Gyan.FFmpeg`), `node`, `sharp` (npm install). El hook es PowerShell puro (shebang `#!/usr/bin/env powershell`) porque el `sh` de Windows resuelve al relay de WSL (falla con `execvpe(/bin/bash)`).
+Requisitos (solo Windows): `ffmpeg` + `ffprobe` en PATH (`winget install Gyan.FFmpeg`), `node`, `sharp` (npm install). El script real es PowerShell porque el `sh` de Windows resuelve al relay de WSL (falla con `execvpe(/bin/bash)`).
 
 **Limitación conocida:** los commits vía MCP de git invocan `bash` explícitamente y fallan con el relay de WSL, independientemente del hook. Usar terminal/PowerShell para commits, o `git commit --no-verify` si se usa el MCP (el hook ya se validó por terminal).
 

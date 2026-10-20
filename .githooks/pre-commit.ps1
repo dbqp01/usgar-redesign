@@ -1,0 +1,115 @@
+#!/usr/bin/env powershell
+# =============================================================================
+# pre-commit hook — USGAR Hotels (PowerShell, Windows-compatible)
+# =============================================================================
+# Que hace:
+#   1. Comprime videos .mp4 staged con ffmpeg (libx264 crf 18 preset slow,
+#      max 1280px, 60fps interpolados via minterpolate, aac 128k) y marca el
+#      archivo con el tag USGAR_COMPRESSED para no re-comprimir en el proximo
+#      commit. Calidad primero (usuario 2026-08-05: "que se vea fluido"):
+#      crf 28 dejaba pixeleado con frames interpolados -> crf 18 + preset slow
+#      (wiki ffmpeg H.264: 17-18 "visually lossless or nearly so") y
+#      minterpolate fps=60 mci/aobmc/bidir/vsbmc=1 (blog.programster.org;
+#      vsbmc = variable-size block MC, anti-borrosidad en bordes).
+#   2. Comprime imagenes staged (.jpg/.jpeg/.png/.webp) via
+#      node scripts/compress-images.js (sharp: max 1920px, calidad 80-82).
+#   3. Re-stagea los archivos comprimidos.
+#
+# Reglas:
+#   - NUNCA bloquea el commit: si falta ffmpeg/node o falla la compresion,
+#     avisa y continua (exit 0), igual que el hook sh original.
+#   - Solo toca archivos staged (git diff --cached).
+#
+# Por que PowerShell (2026-08-01):
+#   El hook original era un script sh y fallaba en esta maquina con
+#   "WSL (818 - Relay) ERROR: execvpe(/bin/bash) failed" porque el `sh` del
+#   PATH (shim de scoop) delegaba en bash.exe de WSL, que no esta instalado.
+#   Windows PowerShell 5.1 existe en todo Windows (>System32), asi que el hook
+#   ya no depende de sh/bash/WSL. Ver docs/DEPLOYMENT.md §Hooks de git.
+#   Este .ps1 lo invoca el wrapper POSIX .githooks/pre-commit, que en Linux/macOS
+#   no hace nada y deja pasar el commit.
+#
+# Requisitos: ffmpeg + ffprobe (PATH), node (PATH), sharp instalado
+#             (dependencia de scripts/compress-images.js).
+# =============================================================================
+
+# El shebang de arriba solo aplica cuando git ejecuta el hook via su shell
+# MSYS; este archivo es 100% PowerShell y funciona tambien lanzado directo:
+#   powershell -NoProfile -ExecutionPolicy Bypass -File .githooks/pre-commit
+$ErrorActionPreference = 'Continue'
+
+# Los hooks de git se ejecutan con cwd = raiz del repo, pero por robustez
+# nos movemos al top-level del repositorio actual.
+$repoRoot = git rev-parse --show-toplevel
+if ($LASTEXITCODE -ne 0 -or -not $repoRoot) {
+    Write-Host "[pre-commit] No se pudo determinar la raiz del repo. Abortando hook." -ForegroundColor Yellow
+    exit 0
+}
+Push-Location $repoRoot
+try {
+    # ------------------------------------------------------------------
+    # 1. COMPRIMIR VIDEOS (.mp4)
+    # ------------------------------------------------------------------
+    $stagedVideos = @(git diff --cached --name-only --diff-filter=ACM |
+        Where-Object { $_ -match '\.mp4$' -and (Test-Path -LiteralPath $_) })
+
+    if ($stagedVideos.Count -gt 0) {
+        Write-Host "[pre-commit] Comprobando videos staged para compresion..."
+        foreach ($file in $stagedVideos) {
+            # Saltar si ya fue comprimido (tag USGAR_COMPRESSED en metadatos)
+            $comment = & ffprobe -v error -show_entries format_tags=comment `
+                -of default=noprint_wrappers=1:nokey=1 $file 2>$null | Select-Object -First 1
+
+            if ($comment -eq 'USGAR_COMPRESSED') {
+                Write-Host "  - $file ya comprimido. Saltando."
+                continue
+            }
+
+            Write-Host "  - Comprimiendo $file ..."
+            $base = [System.IO.Path]::GetFileNameWithoutExtension($file)
+            $dir  = Split-Path -Parent $file
+            $tempFile = Join-Path $dir ($base + '-temp.mp4')
+
+            & ffmpeg -y -i $file -vcodec libx264 -crf 18 -preset slow -pix_fmt yuv420p `
+                -vf "scale='min(1280,iw)':-2,minterpolate=fps=60:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1" `
+                -c:a aac -b:a 128k -metadata comment="USGAR_COMPRESSED" `
+                -movflags +faststart $tempFile 2>$null | Out-Null
+
+            if ($LASTEXITCODE -eq 0 -and (Test-Path -LiteralPath $tempFile)) {
+                Move-Item -LiteralPath $tempFile -Destination $file -Force
+                git add -- $file
+                Write-Host "    Comprimido exitosamente."
+            } else {
+                Write-Host "    Fallo la compresion de $file. Se conserva el original." -ForegroundColor Yellow
+                if (Test-Path -LiteralPath $tempFile) {
+                    Remove-Item -LiteralPath $tempFile -Force
+                }
+            }
+        }
+    }
+
+    # ------------------------------------------------------------------
+    # 2. COMPRIMIR IMAGENES (.jpg/.jpeg/.png/.webp)
+    # ------------------------------------------------------------------
+    $stagedImages = @(git diff --cached --name-only --diff-filter=ACM |
+        Where-Object { $_ -match '\.(jpg|jpeg|png|webp)$' -and (Test-Path -LiteralPath $_) })
+
+    if ($stagedImages.Count -gt 0) {
+        Write-Host "[pre-commit] Comprimiendo imagenes staged..."
+        & node scripts/compress-images.js $stagedImages
+
+        # Re-stagear las imagenes optimizadas
+        foreach ($file in $stagedImages) {
+            if (Test-Path -LiteralPath $file) {
+                git add -- $file
+            }
+        }
+    }
+} catch {
+    # Nunca bloquear un commit por fallo del hook (paridad con el hook sh original)
+    Write-Host "[pre-commit] Error inesperado en el hook: $($_.Exception.Message)" -ForegroundColor Yellow
+} finally {
+    Pop-Location
+}
+
+exit 0
