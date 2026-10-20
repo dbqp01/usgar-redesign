@@ -83,6 +83,92 @@ final class QloAppAdapterSqlTest extends TestCase {
         self::assertStringContainsString('Panel (phone)', $params);
     }
 
+    /**
+     * PrestaShop calcula "Total pagado" y "Monto adeudado" del pedido sumando
+     * qlo_order_payment (NO orders.total_paid). Una orden creada solo por SQL
+     * queda "Total pagado S/. 0 / adeudado S/. <total>" aunque current_state = 2
+     * (Pago completo recibido) — el hotel ve una reserva pagada como pendiente.
+     */
+    public function testConfirmOrderRecordsPaymentTransaction(): void {
+        $pdo = new FakePdoForSqlTest();
+        $pdo->fetchQueue = [[
+            'id_hotel' => '1', 'id_room_type' => '3', 'checkin' => '2026-09-01',
+            'checkout' => '2026-09-03', 'guest_data' => '{"guests": 2}',
+        ], false, false, false];
+        $pdo->fetchColumnQueue = [0, false];
+
+        $adapter = new QloAppAdapter($pdo);
+        self::assertSame('1', $adapter->confirmOrder('USGAR-pay-cart', 380.0, 'Ana Perez', 'ana@example.com'));
+
+        $paymentInserts = array_values(array_filter(
+            $pdo->preparedQueries,
+            static fn(string $q): bool => str_contains($q, 'INSERT INTO qlo_order_payment')
+        ));
+        self::assertCount(1, $paymentInserts);
+
+        // Params: [referencia de la orden, monto cobrado, metodo de pago].
+        $paymentParams = null;
+        foreach ($pdo->executedParams as $params) {
+            if (is_array($params) && count($params) === 3 && ($params[2] ?? null) === 'Mercado Pago (Online)') {
+                $paymentParams = $params;
+                break;
+            }
+        }
+        self::assertNotNull($paymentParams, 'No se registro la transaccion de pago en qlo_order_payment');
+        self::assertMatchesRegularExpression('/^[A-F0-9]{9}$/', (string) $paymentParams[0]);
+        self::assertEqualsWithDelta(380.0, (float) $paymentParams[1], 0.001);
+
+        // total_paid_real se escribe en la orden: PrestaShop lo recalcula solo
+        // cuando se anaden pagos desde el back-office.
+        self::assertStringContainsString('total_paid_real', implode("\n", $pdo->preparedQueries));
+    }
+
+    /**
+     * El POST /api/bookings del webservice deja un hold (reserva pendiente) en el
+     * PMS. Cuando el pago se confirma, esa orden pagada lo sustituye: si no se
+     * libera, la reserva queda duplicada en el PMS y la habitacion bloqueada dos
+     * veces. Ademas la reserva pagada hereda la habitacion fisica (id_room) que
+     * QloApps asigno al hold: sin ella QloApps no la bloquea en su calendario
+     * (su disponibilidad une booking_detail con room_information por id_room).
+     */
+    public function testConfirmOrderSupersedesWebserviceHold(): void {
+        $pdo = new FakePdoForSqlTest();
+        $pdo->fetchQueue = [[
+            'id_hotel' => '1', 'id_room_type' => '3', 'checkin' => '2026-09-01',
+            'checkout' => '2026-09-03',
+            'guest_data' => '{"guests": 2, "phone": "123456789"}',
+            'room_data' => json_encode([
+                ['id_room_type' => 3, 'id_product' => 2, 'room_name' => 'Doble Superior', 'guests' => 2, 'room_total' => 195.0],
+            ], JSON_THROW_ON_ERROR),
+        ], false, false, false];
+        // [0] = cliente inexistente, [1] = PS_OS_CANCELED de la tienda.
+        $pdo->fetchColumnQueue = [0, 4];
+        // Hold del webservice: QloApps asigno la habitacion fisica 3.
+        $pdo->fetchAllQueue = [['id_product' => 2, 'id_room' => 3]];
+
+        $adapter = new QloAppAdapter($pdo);
+        self::assertSame('1', $adapter->confirmOrder('286', 380.0, 'Ana Perez', 'ana@example.com'));
+
+        $queries = implode("\n", $pdo->preparedQueries);
+        $params = array_map(
+            static fn($p): string => is_array($p) ? implode('|', array_map('strval', array_values($p))) : '',
+            $pdo->executedParams
+        );
+
+        // La reserva pagada hereda la habitacion fisica del hold (id_room = 3).
+        self::assertStringContainsString('?, ?, 1, ?, 3, ?, ?', $queries);
+
+        // El hold queda liberado: QloApps libera la habitacion con is_refunded = 1
+        // y marca la reserva cancelada con is_cancelled = 1.
+        self::assertStringContainsString('UPDATE qlo_htl_booking_detail', $queries);
+        self::assertStringContainsString('SET is_refunded = 1, is_cancelled = 1', $queries);
+        self::assertStringContainsString('WHERE id_order = ? AND is_refunded = 0 AND is_cancelled = 0', $queries);
+
+        // Su orden pasa a "Cancelado" (PS_OS_CANCELED = 4 en la tienda).
+        self::assertStringContainsString('UPDATE qlo_orders SET current_state = ? WHERE id_order = ? AND current_state = 1', $queries);
+        self::assertContains('4|286', $params);
+    }
+
     public function testMultiRoomDetailsAllocateExactGatewayCurrencyTotal(): void {
         $pdo = new FakePdoForSqlTest();
         $pdo->fetchQueue = [[
@@ -121,6 +207,8 @@ final class FakePdoForSqlTest extends PDO {
     public array $fetchQueue = [];
     /** @var list<mixed> */
     public array $fetchColumnQueue = [];
+    /** @var list<list<array<string,mixed>>> */
+    public array $fetchAllQueue = [];
     private int $fetchIndex = 0;
     private int $fetchColumnIndex = 0;
     private bool $transaction = false;
@@ -164,6 +252,11 @@ final class FakePdoForSqlTest extends PDO {
     public function nextFetchColumnResult(): mixed {
         return $this->fetchColumnQueue[$this->fetchColumnIndex++] ?? false;
     }
+
+    /** @return list<array<string,mixed>> */
+    public function nextFetchAllResult(): array {
+        return $this->fetchAllQueue;
+    }
 }
 
 /** @phpstan-ignore-next-line */
@@ -185,5 +278,14 @@ final class FakeStmtForSqlTest extends PDOStatement {
 
     public function fetchColumn(int $column = 0): mixed {
         return $this->pdo->nextFetchColumnResult();
+    }
+
+    /** @return list<array<string,mixed>> */
+    public function fetchAll(int $mode = PDO::FETCH_DEFAULT, mixed ...$args): array {
+        return $this->pdo->nextFetchAllResult();
+    }
+
+    public function rowCount(): int {
+        return 1;
     }
 }

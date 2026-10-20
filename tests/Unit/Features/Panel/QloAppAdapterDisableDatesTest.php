@@ -28,6 +28,11 @@ final class QloAppAdapterDisableDatesTest extends TestCase {
         $this->assertStringContainsString(':date_from_disabled', $allQueries);
         $this->assertStringContainsString(':date_to_disabled', $allQueries);
 
+        // El hold del webservice (POST /api/bookings) y el hold local son la misma
+        // reserva: el booking del webservice tiene como id_order el cart_id, asi
+        // que no puede contar dos veces en la disponibilidad.
+        $this->assertStringContainsString('pb.cart_id = CAST(bd.id_order AS CHAR)', $allQueries);
+
         // Parámetros del rango para disable_dates bindeados.
         $this->assertContains('2026-09-01', $pdo->executedParams[0] ?? []);
         $this->assertContains('2026-09-03', $pdo->executedParams[0] ?? []);

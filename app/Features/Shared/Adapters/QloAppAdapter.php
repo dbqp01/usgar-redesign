@@ -78,6 +78,14 @@ class QloAppAdapter implements PmsPortInterface {
                               AND bd.is_refunded = 0
                               AND bd.date_from < :date_to_booked
                               AND bd.date_to > :date_from_booked
+                              -- El hold del webservice (POST /api/bookings) y el hold
+                              -- local son la MISMA reserva: se cuenta una sola vez
+                              -- (el id_order del booking del webservice es el cart_id).
+                              AND NOT EXISTS (
+                                  SELECT 1 FROM provisional_bookings pb
+                                  WHERE pb.cart_id = CAST(bd.id_order AS CHAR)
+                                    AND (pb.status = 'paid' OR (pb.status = 'pending' AND pb.expires_at > NOW()))
+                              )
                         ), 0) +
                         COALESCE((
                             SELECT COALESCE(SUM(CASE WHEN pbr.quantity IS NULL THEN 1 ELSE pbr.quantity END), 0)
@@ -701,19 +709,35 @@ XML;
             $ref = strtoupper(substr(bin2hex(random_bytes(5)), 0, 9));
 
             // 4. Orden QloApps (current_state = 2: Pago completo recibido, source = $fullCartId)
+            // total_paid_real se escribe tambien: PrestaShop lo recalcula solo cuando
+            // se anaden pagos desde el back-office y en una orden creada por SQL queda
+            // en 0 ("Total pagado S/. 0").
             $stmtOrder = $this->pdo->prepare("
                 INSERT INTO qlo_orders (
                     reference, id_shop_group, id_shop, id_carrier, id_lang, id_customer, id_cart, id_currency,
-                    id_address_delivery, id_address_invoice, current_state, payment, total_paid, total_paid_tax_incl,
-                    total_paid_tax_excl, total_products, total_products_wt, conversion_rate, module, valid, source, date_add, date_upd
+                    id_address_delivery, id_address_invoice, current_state, payment, total_paid, total_paid_real,
+                    total_paid_tax_incl, total_paid_tax_excl, total_products, total_products_wt, conversion_rate, module, valid, source, date_add, date_upd
                 ) VALUES (
                     ?, {$shopGroupId}, {$shopId}, 0, {$langId}, ?, ?, {$penCurrencyId},
                     0, 0, {$orderStatePaid}, ?, ?, ?,
-                    ?, ?, ?, {$penConversionRate}, ?, 1, ?, NOW(), NOW()
+                    ?, ?, ?, ?, {$penConversionRate}, ?, 1, ?, NOW(), NOW()
                 )
             ");
-            $stmtOrder->execute([$ref, $idCustomer, $idCart, $paymentLabel, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $module, $fullCartId]);
+            $stmtOrder->execute([$ref, $idCustomer, $idCart, $paymentLabel, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $totalPrice, $module, $fullCartId]);
             $idOrder = (int)$this->pdo->lastInsertId();
+
+            // 4b. Transaccion de pago: PrestaShop calcula "Total pagado" y
+            // "Monto adeudado" sumando qlo_order_payment (no orders.total_paid).
+            // Sin esta fila el pedido sale "Total pagado S/. 0 / adeudado S/. <total>"
+            // aunque current_state = 2 (Pago completo recibido).
+            $stmtPayment = $this->pdo->prepare("
+                INSERT INTO qlo_order_payment (
+                    order_reference, id_currency, amount, payment_method, payment_type, conversion_rate, date_add
+                ) VALUES (
+                    ?, {$penCurrencyId}, ?, ?, 1, {$penConversionRate}, NOW()
+                )
+            ");
+            $stmtPayment->execute([$ref, $totalPrice, $paymentLabel]);
 
             // 5-8. Persist one PMS line per requested unit. The order total is
             // expressed in the gateway currency (PEN), while room_data keeps
@@ -728,9 +752,30 @@ XML;
             );
             $weightSum = array_sum($lineWeights);
             $allocatedCents = 0;
+
+            // 4c. Asignacion fisica de habitacion heredada del hold del
+            // webservice: QloApps ya asigno una habitacion concreta (id_room)
+            // al booking del POST /api/bookings. Su consulta de disponibilidad
+            // une booking_detail con room_information por id_room, asi que sin
+            // ese id la reserva pagada no bloquearia la habitacion en el
+            // calendario del PMS.
+            $holdRoomsByProduct = [];
+            if (ctype_digit($cartId)) {
+                $stmtHoldRooms = $this->pdo->prepare(
+                    "SELECT id_product, id_room FROM qlo_htl_booking_detail WHERE id_order = ? AND is_refunded = 0 ORDER BY id ASC"
+                );
+                $stmtHoldRooms->execute([(int)$cartId]);
+                foreach ($stmtHoldRooms->fetchAll(PDO::FETCH_ASSOC) as $holdRoom) {
+                    $holdRoomsByProduct[(int)$holdRoom['id_product']][] = (int)$holdRoom['id_room'];
+                }
+            }
+
             foreach ($canonicalLines as $lineIndex => $line) {
                 $lineProduct = (int)$line['id_product'];
                 $lineRoom = (int)($line['id_room'] ?? 0);
+                if ($lineRoom === 0 && !empty($holdRoomsByProduct[$lineProduct])) {
+                    $lineRoom = array_shift($holdRoomsByProduct[$lineProduct]);
+                }
                 $lineGuests = (int)$line['guests'];
                 $isLastLine = $lineIndex === $lineCount - 1;
                 if ($isLastLine) {
@@ -809,6 +854,43 @@ XML;
                 VALUES (0, ?, {$orderStatePaid}, NOW())
             ");
             $stmtHistory->execute([$idOrder]);
+
+            // 10. El hold del webservice (POST /api/bookings) queda superado por
+            // esta orden pagada: se libera para no dejar la reserva duplicada en
+            // el PMS (la habitacion ya quedo heredada en el paso 4c). QloApps
+            // libera la habitacion cuando is_refunded = 1 (su disponibilidad
+            // filtra is_refunded = 0) y marca la reserva como cancelada con
+            // is_cancelled = 1.
+            if (ctype_digit($cartId)) {
+                $stmtCancelHold = $this->pdo->prepare("
+                    UPDATE qlo_htl_booking_detail
+                    SET is_refunded = 1, is_cancelled = 1
+                    WHERE id_order = ? AND is_refunded = 0 AND is_cancelled = 0
+                ");
+                $stmtCancelHold->execute([(int)$cartId]);
+
+                // Estado de orden "Cancelado" (PS_OS_CANCELED de la tienda).
+                $stmtCancelState = $this->pdo->prepare(
+                    "SELECT value FROM qlo_configuration WHERE name = 'PS_OS_CANCELED' AND id_shop_group = {$shopGroupId} AND id_shop = {$shopId} LIMIT 1"
+                );
+                $stmtCancelState->execute();
+                $cancelledStateId = (int)$stmtCancelState->fetchColumn();
+                if ($cancelledStateId > 0) {
+                    $stmtHoldOrder = $this->pdo->prepare(
+                        "UPDATE qlo_orders SET current_state = ? WHERE id_order = ? AND current_state = 1"
+                    );
+                    $stmtHoldOrder->execute([$cancelledStateId, (int)$cartId]);
+                    if ($stmtHoldOrder->rowCount() > 0) {
+                        $stmtHoldHistory = $this->pdo->prepare("
+                            INSERT INTO qlo_order_history (id_employee, id_order, id_order_state, date_add)
+                            VALUES (0, ?, ?, NOW())
+                        ");
+                        $stmtHoldHistory->execute([(int)$cartId, $cancelledStateId]);
+                    }
+                } else {
+                    Logger::warning("QloAppAdapter: PS_OS_CANCELED no encontrado; el hold {$cartId} quedo liberado sin cambiar el estado de su orden");
+                }
+            }
 
             if ($startedTransaction) {
                 $this->pdo->commit();
