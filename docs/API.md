@@ -198,6 +198,7 @@ Webhook de MercadoPago (topic `payment`). Registrado en el panel MP (app de prod
 
 - `cron/reconcile_payments.php` reclama holds `pending|expired` con `payment_id` en lotes ordenados, usando lease (`reconcile_claimed_until` + token) para que dos workers no procesen la misma fila. Si la auto-migración de esas columnas no puede completarse, la reconciliación se difiere y queda registrada en logs; no se trata como cola vacía.
 - `cron/process_outbox.php` reclama filas con `FOR UPDATE SKIP LOCKED` y `claim_token`; las transiciones terminales (`COMPLETED`/`FAILED`) exigen que el token siga siendo el vigente (fencing). El cron conserva backoff y límite de cinco intentos.
+- `cron/cleanup.php` (y `POST /api/cron/cleanup`) marca `expired` los holds vencidos y **libera en el PMS** los holds del webservice cuyas reservas locales ya no están activas (`releaseStaleWebserviceHolds`): respuesta `{"success": true, "cleaned_count": N, "released_pms_holds": M, "timestamp": "…"}`.
 
 ## GET /api/reviews-score
 

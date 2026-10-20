@@ -626,6 +626,10 @@ Instalación en producción: `QLO_VERSION_DB=1.7.0.0` = tag `v1.7.0` del repo
    booking del webservice cuando existe un hold local activo para ese
    `cart_id` (`pb.cart_id = CAST(bd.id_order AS CHAR)`), porque el
    `id_order` del booking del webservice **es** el `cart_id`.
+4. Si el huésped **abandona** el checkout, el cron `cleanup` marca `expired` el
+   hold local y libera en el PMS la reserva pendiente del webservice (misma
+   operación que el paso 2: `is_refunded=1`, `is_cancelled=1`, orden a
+   "Cancelado"): la habitación vuelve a estar disponible.
 
 ### Valores fijos de la instalación (constantes de `QloAppAdapter`, P2-3)
 
@@ -644,14 +648,18 @@ Instalación en producción: `QLO_VERSION_DB=1.7.0.0` = tag `v1.7.0` del repo
 3. Si se restaura el webservice de `bookings`, evaluar migrar `confirmOrder` a
    webservice y dejar el PDO directo como fallback (el schema interno quedaría
    solo de lectura).
-4. **El hold del webservice sigue bloqueando la habitación si el huésped
-   abandona el checkout** (no hay pago → `confirmOrder()` nunca corre). El
-   cron `cleanup` marca `expired` el hold local, pero la reserva pendiente del
-   PMS queda viva hasta que QloApps purgue el carrito (módulo *Cleaner*) o se
-   cancele a mano. Mientras tanto, la web y el PMS cuentan esa habitación como
-   ocupada (coherente, pero se pierde inventario). Pendiente: que el cleanup
-   local cancele también el hold del PMS (misma operación que el punto 2 del
-   flujo de arriba).
+4. **El hold del webservice bloqueaba la habitación si el huésped abandonaba
+   el checkout** (no hay pago → `confirmOrder()` nunca corre). El cron
+   `cleanup` marca `expired` el hold local, pero la reserva pendiente del PMS
+   quedaba viva hasta que QloApps purguese el carrito (módulo *Cleaner*):
+   inventario perdido. **Resuelto el 2026-10-20:** `cleanup` (CLI
+   `cron/cleanup.php` y endpoint `POST /api/cron/cleanup`) llama además a
+   `releaseStaleWebserviceHolds()`, que libera en el PMS los holds cuyas
+   reservas locales ya no están activas (`expired`/`cancelled`/`failed`) con la
+   misma operación del punto 2 del flujo de arriba (`is_refunded=1`,
+   `is_cancelled=1`, orden a "Cancelado" + historial). Es idempotente: solo
+   toca reservas que siguen bloqueando, nunca las `paid`/`expired_paid`
+   (dinero capturado → revisión manual).
 
 ### Diagnóstico del 2026-10-20 (500 del POST /api/bookings)
 

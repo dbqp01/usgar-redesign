@@ -47,6 +47,7 @@ Permitir al huésped reservar 1–3 habitaciones en 3 pasos (fechas → asignaci
 ### Confirmación en QloApps (`ConfirmQloAppsOrderListener`)
 - RF-26: CUANDO se dispara `BookingPaidEvent`, EL SISTEMA DEBE verificar por `external_reference = USGAR-{cartId}` que la orden ya no esté confirmada (dedup-skip) antes de llamar `confirmOrder` con el monto PEN congelado.
 - RF-27: SIEMPRE el listener ejecuta 1 intento y lanza excepción ante fallo o resultado null — el reintento es responsabilidad del outbox (`cron/process_outbox.php`), no hay retry loop interno.
+- RF-28: CUANDO corre la limpieza (cron), EL SISTEMA DEBE liberar en el PMS los holds del webservice cuyas reservas locales ya no estan activas (`expired`/`cancelled`/`failed`) — `is_refunded=1`, `is_cancelled=1` y la orden del hold a "Cancelado" (`releaseStaleWebserviceHolds`) — y NUNCA liberar los `paid`/`expired_paid` (dinero capturado → revision manual).
 
 ## Requisitos no funcionales
 - **Seguridad**: token HMAC-SHA256 por hold (compara con `hash_equals`); PII protegida; whitelist de tarifas fail-safe; errores sin stack traces en producción.
@@ -60,7 +61,7 @@ Permitir al huésped reservar 1–3 habitaciones en 3 pasos (fechas → asignaci
 - `POST /api/extend-hold` — extiende hold (+15 min, máx 3).
 - `GET /api/booking-status` — estado del hold; PII solo con token.
 - Tablas propias: `provisional_bookings`, `room_locks` (auto-creadas, ver RF-23).
-- Integraciones: PMS vía `PmsPortInterface` (`getAvailableRooms`, `createCartMulti`, `extendCartSession`, `confirmOrder`, `isOrderConfirmed`, `getExchangeRatePEN`). Evento interno `BookingPaidEvent` → outbox → `ConfirmQloAppsOrderListener` (detalle de pagos/outbox en `payments.spec.md`).
+- Integraciones: PMS vía `PmsPortInterface` (`getAvailableRooms`, `createCartMulti`, `extendCartSession`, `confirmOrder`, `isOrderConfirmed`, `getExchangeRatePEN`, `releaseStaleWebserviceHolds`). Evento interno `BookingPaidEvent` → outbox → `ConfirmQloAppsOrderListener` (detalle de pagos/outbox en `payments.spec.md`).
 
 ## Verificación
 - TS (vitest): `npx vitest run` — `tests/Unit/wizardStore.test.ts`, `roomAllocator.test.ts`, `allocator-display.test.ts`, `calendar.test.ts`, `holdCountdown.test.ts`.
