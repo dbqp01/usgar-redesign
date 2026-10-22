@@ -1,103 +1,113 @@
-# USGAR Hotels — usgarhoteles.com
+<div align="center">
 
-Sitio transaccional del hotel boutique Usgar (San Pedro, Cusco, Perú): reservas directas, 4 idiomas (en/es/fr/pt), pagos USD. Frontend Astro 7 estático + API PHP nativa (monolito ADR).
+<img src="public/og-image.jpg" alt="Patio interior del hotel Usgar, San Pedro, Cusco" width="720" />
 
-> **Para agentes:** lee primero `AGENTS.md` (estructura, reglas y fuentes de verdad). **Documentación centralizada en `docs/`**: el índice es [`docs/README.md`](docs/README.md) — arquitectura, API, deploy, PMS, seguridad, roadmap, decisiones y estado actual. El histórico ya resuelto vive en `docs/archive/`.
+# USGAR Hotels
 
-## Quickstart
+Sitio de reservas del hotel boutique Usgar, en San Pedro (Cusco, Perú): [usgarhoteles.com](https://usgarhoteles.com).
+Cuatro idiomas, precios en dólares cobrados en soles vía MercadoPago y disponibilidad sincronizada con QloApps.
 
-Requisitos: Node 22 (según `engines` y Hostinger), PHP ≥ 8.2 (con pdo_mysql, xml, mbstring), Composer (solo para vendor), MySQL.
+[![CI](https://github.com/dbqp01/usgar-redesign/actions/workflows/build.yml/badge.svg)](https://github.com/dbqp01/usgar-redesign/actions/workflows/build.yml)
+[![Astro 7](https://img.shields.io/badge/Astro-7-FF5D01?logo=astro&logoColor=white)](https://astro.build)
+[![Tailwind 4](https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php&logoColor=white)](https://www.php.net)
+
+</div>
+
+El frontend es Astro estático. La API es PHP sin framework, dividida por features. Además del hotel, el repo sirve como una colección de piezas que se pueden llevar a otro proyecto: el asignador de habitaciones, el wizard de reserva, el motor de animaciones y los adaptadores de PMS y pagos funcionan sin el resto del sitio. No son paquetes publicados; son módulos del repo que puedes copiar tal cual.
+
+## Piezas que puedes llevarte
+
+### Frontend
+
+| Pieza | Archivo | Qué hace |
+|---|---|---|
+| Asignación de habitaciones | `src/features/booking/roomAllocator.ts` | Reparte huéspedes entre una o dos habitaciones, respeta capacidad e inventario y ordena las opciones por precio total. TS puro, sin dependencias. |
+| Estado del wizard | `src/features/booking/wizardStore.ts` | Store mínimo sobre `EventTarget` con `getState`, `setState`, `subscribe`, `next` y `back`. Sin librerías de estado. |
+| Calendario | `src/features/booking/calendar.ts` | Grid de 42 celdas, noches entre fechas, suma de días y límite de 30 noches. Funciones puras, fáciles de testear. |
+| Polling de estado | `src/features/booking/bookingStatus.ts` | Consulta el estado de la reserva con backoff exponencial y jitter, pausa cuando la pestaña está oculta y respeta `Retry-After`. |
+| Cliente de API | `src/services/bookingService.ts` | Única capa de `fetch` del frontend: timeout de 10 s, cancelación y errores normalizados para toda la app. |
+| i18n con fallback | `src/i18n/utils.ts` | en/es/fr/pt con cadena de fallback por clave (fr cae a en, pt a es). Si una clave falta en todas, devuelve la clave en vez de romper. |
+| Motor de animaciones | `src/features/animations/` | GSAP + ScrollTrigger con carga diferida por página, `prefers-reduced-motion` y un lifecycle por generaciones para no dejar triggers vivos al navegar. |
+| Detalles de UI | `src/components/common/` | Cursor propio, preloader, scroll suave con Lenis y overlay de ruido. Se montan como componentes sueltos. |
+| Contenido tipado | `src/content/` + `src/data/` | Un JSON por dominio y un cargador tipado encima. El catálogo de servicios separa hotel y habitación con un campo `group`. |
+
+### Backend
+
+| Pieza | Archivo | Qué hace |
+|---|---|---|
+| Núcleo HTTP | `app/Core/` | Router, `Request`/`Response`, contenedor PSR-11 con autowiring por reflexión, validador, rate limiter, `PriceCalculator`, logger y eventos. |
+| Módulos ADR | `app/Features/<Feature>/` | Cada feature tiene sus `Actions`, su `Domain` y sus listeners. Añadir una feature no toca las demás. |
+| Puertos y adaptadores | `app/Features/Shared/` | `PmsPortInterface`, `PaymentGatewayPortInterface` y `MailerPortInterface` con implementaciones para QloApps, MercadoPago y PHPMailer. Cambiar de proveedor es escribir un adapter. |
+| Hold y bloqueo de inventario | `app/Core/BookingHoldToken.php` + repositorios | Reserva provisional con token y liberación automática del stock si el pago no llega. |
+| Outbox de eventos | `app/Core/Events/` + `cron/process_outbox.php` | Los eventos de pago se guardan antes de salir a la red y un worker los reintenta. |
+| Suite PHP aislada | `npm run test:php` | Arranca su propio servidor con un `.env` de pruebas: sin BD, sin MercadoPago y sin SMTP. |
+
+## Cómo se arma una reserva
+
+```
+Página Astro → bookingService.ts → /api/* → public/index.php
+                                                ↓
+                                    Features/<Feature>/Actions
+                                                ↓
+                          Ports → Adapters (QloApps, MercadoPago, SMTP)
+```
+
+El recorrido completo pasa por fechas y asignación, un hold que bloquea inventario, el formulario de tarjeta de MercadoPago, el webhook de confirmación, la cola de eventos y la creación de la orden en QloApps. El backend calcula y congela el precio; el cliente no lo envía.
+
+## Empezar
+
+Necesitas Node 22, PHP 8.2 o superior (con `pdo_mysql`, `xml` y `mbstring`), Composer y MySQL.
 
 ```bash
 npm ci
-composer install          # vendor/ ya viene en el repo (solo prod); esto añade las dev (phpunit, phpstan)
-cp .env.example .env      # credenciales reales (BD, MP, QloApps)
-npm run dev:all           # Astro en :4321 + PHP API en :8000 (proxy /api)
+composer install          # vendor/ ya trae producción; esto añade phpunit y phpstan
+cp .env.example .env      # credenciales de BD, MercadoPago y QloApps
+npm run dev:all           # Astro en :4321 + API PHP en :8000 con proxy /api
 ```
 
 ## Comandos
 
-| Comando | Qué hace | Cuándo |
-|---|---|---|
-| `npm run dev:all` | Entorno completo (Astro + PHP API + proxy `/api`) | Desarrollo diario |
-| `npm run dev` / `dev:php` | Solo frontend / solo API | Ajustes puntuales |
-| `npm run check` | astro check + TypeScript | Antes de cada commit frontend |
-| `npm run test:unit` | Vitest: lógica TypeScript aislada, sin PHP ni servicios externos | Cambios en helpers/estado/contratos frontend |
-| `npm run test:php` | Suite exhaustiva integración + unit (`scripts/run-exhaustive-tests.php`) | Tras tocar backend |
-| `php tests/api-harness.php` | Contrato del flujo de reserva vía curl (`POST /api/booking`) | Tras tocar booking |
-| `npm test` | check + test:unit + test:php | Pre-merge, con entorno de integración preparado |
-| `npm run audit:security` | Auditoría seguridad PHP | Tras tocar endpoints |
-| `npm run audit:seo` | Auditoría SEO/schema | Tras tocar páginas públicas |
-| `npm run audit:content` | Auditoría de contenido sobre `dist/` (404, H1, description/og:image, sitemap, horarios, `.htaccess`) | Tras tocar contenido, `.htaccess` o el sitemap — **requiere `npm run build` antes** |
-| `npm run audit:csp` | Carga cada página del build en Chromium con la CSP real del `.htaccess` y falla si el navegador rechaza un recurso | Tras tocar la CSP, el `.htaccess` o los recursos externos — **requiere `npm run build` antes** |
-| `npm run test:e2e` | Playwright en `tests/e2e`, con Astro local en :4321 | Cambios en flujos de usuario |
-| `npm run build` | Build estático + copia `app/` y `vendor/` a `dist/` (el `.env` NO va en `dist/`) | Deploy |
+| Comando | Qué hace |
+|---|---|
+| `npm run dev:all` | Entorno completo: Astro, API PHP y proxy `/api` |
+| `npm run dev` / `npm run dev:php` | Solo frontend / solo API |
+| `npm run check` | `astro check` + TypeScript |
+| `npm run test:unit` | Vitest sobre lógica TypeScript, sin servicios externos |
+| `npm run test:php` | Suite PHP aislada con su propio `.env` de pruebas |
+| `npm run test:e2e` | Playwright; pasa un spec con `npm run test:e2e -- <spec>` |
+| `php tests/api-harness.php` | Contrato del flujo de reserva vía curl |
+| `npm run build` | Build estático y copia de `app/`, `vendor/` y `cron/` a `dist/` |
+| `npm run audit:security`, `audit:seo`, `audit:content`, `audit:csp` | Auditorías. Las de contenido y CSP necesitan `npm run build` antes |
 
-Para una revisión superficial de frontend, usa `npm run test:unit` y `npm run check`; añade build si cambias componentes o configuración de compilación. `composer test` y los harness PHP pueden incluir BD o sandbox externos: revisa sus fixtures y valida el destino antes de ejecutarlos. Que un archivo esté en `tests/Unit` o un token empiece por `TEST-` no garantiza aislamiento. Nunca uses credenciales de producción para estas verificaciones locales.
+`npm test` encadena `check`, `test:unit` y `test:php`. Para E2E, instala Chromium una vez con `npx playwright install chromium`. Los casos con API real necesitan un backend local de pruebas; no apuntes el proxy a producción.
 
-Para E2E, instala Chromium una vez con `npx playwright install chromium`. `npm run test:e2e -- --list` lista solo E2E, sin cargar Vitest; `npm run test:e2e -- panel-flow.spec.ts` ejecuta el caso local con API mockeada. Playwright inicia y detiene Astro automáticamente y falla si :4321 ya está ocupado. Los casos que necesitan API PHP requieren además un backend local de pruebas; no apuntes el proxy a producción.
+## Pagos
 
-## Cómo contribuir
+Las credenciales salen del [panel de desarrolladores de MercadoPago](https://www.mercadopago.com/developers/panel/app). El prefijo del token no indica el entorno: `APP_USR` aparece tanto en pruebas como en producción, así que el deploy a producción pasa por `php scripts/check-prod-env.php` y un allowlist de hashes SHA-256 en `.env.production`, fuera de git.
 
-1. **Antes de tocar código**, busca en `docs/` si el comportamiento ya está
-   documentado (índice en `docs/README.md`). Si cambias cómo funciona algo,
-   actualiza el doc en el **mismo commit**.
-2. **Un cambio = un commit**, pequeño y con prefijo `feat:` / `fix:` / `chore:` /
-   `docs:`. Nada de push a `main` sin ok explícito del dueño del proyecto.
-3. **Verifica según lo que tocaste** (tabla en `AGENTS.md` § Tests): frontend →
-   `npm run check`; backend → `composer install` (para phpunit/phpstan) y luego
-   `php vendor/bin/phpunit` + `composer analyse`; solo docs → leer y contrastar
-   con el código, sin instalar nada.
-4. **No toques lo que no es tuyo**: credenciales, tablas `qlo_*` del PMS y los
-   refunds se resuelven desde el back-office de QloApps o el panel, nunca por
-   SQL ni editando un `.env` versionado.
-5. **Dudas**: `AGENTS.md` § "Duda → preguntar", y `docs/ROADMAP.md` para saber
-   qué está pendiente y por qué.
+## Deploy
 
-## Deploy (Hostinger — automático desde GitHub)
+Hostinger mira únicamente la rama `main`. Al hacer push, toma el repo, ejecuta `npm install` y `npm run build`, y sirve `dist/`. El `postbuild` copia `app/`, `vendor/` y `cron/`, y elimina cualquier `.env` que haya quedado ahí.
 
-Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo mira la rama `main`**. No se sube nada manualmente; la rama `build` es histórico y el deploy nunca la usa.
+Las variables de entorno van en hPanel → Despliegues → Ajustes → Variables de entorno, nunca dentro de `public_html` ni de `dist/`. El detalle de crons, secretos y hooks está en [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
-1. `git push origin main` → Hostinger hace pull, `npm install` y `npm run build` desde cero, y sirve el resultado (unos minutos; historial y logs en hPanel → **Deployments**).
-2. El `postbuild` (package.json) copia `app/` y `vendor/` a `dist/` (Composer no existe en prod) y elimina cualquier `dist/.env`. Astro vuelca `public/*` en la raíz de `dist/`, así que el entry PHP queda en `dist/index.php` + `dist/.htaccess`.
-3. Config vigente en hPanel: branch `main` · build script `build` · output `dist` · Node **22** · package manager **npm** (Node fijado también en `engines` de package.json).
+## Documentación
 
-**Variables de entorno en producción** — nunca dentro de `public_html` ni de `dist/`:
+| Documento | Contenido |
+|---|---|
+| [`docs/README.md`](docs/README.md) | Índice y por dónde empezar |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Capas, flujo de reserva y zonas de riesgo |
+| [`docs/API.md`](docs/API.md) | Contrato de los endpoints y variables de entorno |
+| [`docs/PMS.md`](docs/PMS.md) | Operación de QloApps, inventario y channel manager |
+| [`docs/SECURITY.md`](docs/SECURITY.md) | Modelo de seguridad y pendientes |
+| [`docs/STATE.md`](docs/STATE.md) | Qué está desplegado y verificado hoy |
+| [`docs/DECISIONS.md`](docs/DECISIONS.md) | Decisiones de arquitectura vigentes |
+| [`docs/ROADMAP.md`](docs/ROADMAP.md) | Lo que sigue abierto y por qué |
+| [`docs/specs/`](docs/specs/README.md) | Requisitos por feature en formato EARS |
 
-- Fuente efectiva hoy: hPanel → **Environment variables** (la integración las escribe en `/home/<usuario>/domains/usgarhoteles.com/hbuilds/config/.env`).
-- Fallback soportado por `app/Core/Config.php::loadEnv`: un `.env` **un nivel arriba de `public_html`**; si existe, tiene prioridad sobre las vars de hPanel.
+## Contribuir
 
-## Credenciales de Mercado Pago
+Un cambio por commit, con prefijo `feat:`, `fix:`, `chore:` o `docs:`. Antes de tocar código, revisa si el comportamiento ya está documentado en `docs/`; si cambia, actualiza el doc en el mismo commit. No se hace push a `main` sin el ok del dueño del proyecto.
 
-Las credenciales se obtienen en el panel de desarrolladores de Mercado Pago (Tus integraciones):
-
-1. Ingresa a https://www.mercadopago.com/developers/panel/app y selecciona tu aplicacion.
-2. **Pruebas** (sandbox): seccion *Pruebas* -> *Credenciales de prueba* (Public Key + Access Token).
-3. **Produccion**: seccion *Produccion* -> *Credenciales de produccion* (activar antes completando los datos del negocio).
-
-Configuralas en tu `.env` (nunca en el repo):
-
-```
-MERCADO_PAGO_ACCESS_TOKEN=<Access Token de la app>
-PUBLIC_MERCADO_PAGO_PUBLIC_KEY=<Public Key de la app>
-MERCADO_PAGO_WEBHOOK_SECRET=<secret del webhook de la app>
-MERCADO_PAGO_CURRENCY=PEN
-```
-
-> Importante (doc MP vigente): el **prefijo del token NO define el entorno** — los Access Tokens de prueba y de produccion pueden empezar ambos con `APP_USR` (Checkout Pro/Orders crean la cuenta de prueba automaticamente con prefijo APP_USR) y el prefijo puede variar segun la solucion. El entorno lo define la app/panel. Por eso el deploy exige un **guard por allowlist de hashes** (no por prefijo).
-
-**Guard de deploy (produccion):** antes de desplegar con `APP_ENV=production`, `php scripts/check-prod-env.php` verifica que el token este en la allowlist. Configurala en `.env.production` (archivo FUERA de git, solo hashes, nunca el token en claro):
-
-```
-MERCADO_PAGO_PROD_TOKEN_SHA256=<sha256 del Access Token de produccion>
-```
-
-Para generar el hash: `php -r "echo hash('sha256', getenv('MERCADO_PAGO_ACCESS_TOKEN'));"`. Si el token de produccion se rota o se expone, **renueva las credenciales desde el panel** (Produccion -> Credenciales -> Renovar; las antiguas quedan activas 12 horas) y actualiza el hash.
-
-## Arquitectura en una línea
-
-`src/` (Astro) → consume `/api/*` → `public/index.php` → `app/Features/<X>/Actions` (ADR, DI PSR-11) → `Ports/Adapters` → QloApps (PMS, XML), MercadoPago (pagos USD, webhooks). Channel manager (QloApps CM, Webkul): activación pendiente de pago — ver `docs/PMS.md` §D. Detalle por capa en `AGENTS.md` y `docs/ARCHITECTURE.md`.
-
-## Stack
-
-Astro 7.3 · Tailwind CSS 4 · GSAP · Leaflet · Lenis · PHP 8 (PDO/MySQL, non framework) · MercadoPago · QloApps (PMS; Channel Manager Webkul pendiente de pago) · hybridauth · Vitest · PHPStan
+Si vienes por primera vez, o eres un agente, [`AGENTS.md`](AGENTS.md) tiene el mapa completo, las reglas y qué verificar según lo que toques.
