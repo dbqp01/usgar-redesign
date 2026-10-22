@@ -44,8 +44,6 @@
           anchors: true,
         });
 
-        lenisInstance.on('scroll', ScrollTrigger.update);
-
         rafCallback = (time: number) => {
           lenisInstance!.raf(time * 1000);
         };

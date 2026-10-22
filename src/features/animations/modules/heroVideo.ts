@@ -6,7 +6,7 @@ import { gsap } from 'gsap';
 // un módulo del engine de animaciones (patrón del repo: features/animations/modules).
 //
 // El hero es sticky (efecto "periódico" del dueño): el wipe solo se usa en la
-// rotación de segmentos; la entrada del título la anima heroStory.ts.
+// rotación de segmentos; la salida del título la anima global.css (scroll-driven).
 
 function pickParts(video: HTMLVideoElement): string[] {
   const raw = JSON.parse(video.dataset.videoParts || '{"desktop":[],"mobile":[]}') as {

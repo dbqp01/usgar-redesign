@@ -100,8 +100,8 @@ export default defineConfig({
       entrypoint: 'astro/assets/services/sharp',
       config: {
         limitInputPixels: false,
-        webp: { effort: 6, quality: 90 },
-        avif: { effort: 3, quality: 85 },
+        webp: { effort: 6, quality: 78 },
+        avif: { effort: 3, quality: 62 },
         jpeg: { mozjpeg: true, quality: 85 },
         png: { effort: 6, quality: 90 },
       },

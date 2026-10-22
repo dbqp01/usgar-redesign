@@ -14,19 +14,19 @@ const PREFERS_REDUCED_MOTION = '(prefers-reduced-motion: reduce)';
 const PREFERS_NO_REDUCE = '(prefers-reduced-motion: no-preference)';
 
 // Módulos exclusivos de la home: se cargan bajo demanda para no inflar el bundle
-// base que comparten todas las páginas (heroStory, SplitText, parallax, tilt...).
+// base que comparten todas las páginas (heritage, marquee, tilt...).
 async function loadHomeModules(generation: number): Promise<boolean> {
-  const [heroStory, heritage, marquee] = await Promise.all([
-    import('./modules/heroStory'),
+  const [heritage, marquee] = await Promise.all([
     import('./modules/heritageStory'),
     import('./modules/velocityMarquee'),
   ]);
   if (!isLifecycleGenerationCurrent(generation)) return false;
   register('marquee', marquee.initVelocityMarquee());
-  register('hero', heroStory.initHeroStory());
   register('heritage', heritage.initHeritageStory());
   register('reveals', initGlobalReveals());
-  ScrollTrigger.refresh(true);
+  // Sin ScrollTrigger.refresh(true): no queda ningun trigger con scrub que
+  // necesite recalcular posiciones, y refresh(true) fuerza un layout
+  // sincrono de toda la pagina (~150ms de bloqueo en load).
   return true;
 }
 
@@ -52,17 +52,9 @@ export function bootHomeAnimations(): void {
       const generation = getLifecycleGeneration();
       void loadHomeModules(generation).then((loaded) => {
         if (!loaded || !isDesktop || !isLifecycleGenerationCurrent(generation)) return;
-        void Promise.all([
-          import('./modules/parallaxCards'),
-          import('./modules/mouseTilt'),
-        ]).then(([parallax, tilt]) => {
+        void import('./modules/mouseTilt').then((tilt) => {
           if (!isLifecycleGenerationCurrent(generation)) return;
-          register('parallax', parallax.initParallaxCards());
           register('tilt', tilt.initMouseTilt());
-          // These ScrollTriggers are created after async imports resolve —
-          // recalc positions in case layout settled after the
-          // loadHomeModules refresh above (same pattern as line 24).
-          ScrollTrigger.refresh();
         });
       });
     }

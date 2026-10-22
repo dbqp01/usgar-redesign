@@ -409,14 +409,36 @@ html.js .animate-on-scroll {
   visibility: hidden;
   transform: translate3d(0, 30px, 0);
   transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
 }
 
 html.js .animate-on-scroll.visible {
   opacity: 1;
   visibility: visible;
   transform: translate3d(0, 0, 0);
-  will-change: auto;
+}
+
+/* Salida del hero: scroll-driven animation (corre en el compositor, sin
+   ScrollTrigger ni recalculado de estilos por frame). Sin soporte el hero
+   queda estático: el contenido nunca se oculta. */
+@supports (animation-timeline: view()) {
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    #hero [data-hero-content] {
+      animation: hero-exit linear both;
+    }
+
+    /* Selector con prefijo a propósito: si el minificador fusiona esta regla
+       con la de arriba, mete scroll(root) dentro del shorthand `animation` y
+       Chrome descarta la declaración entera (el shorthand todavía no admite
+       animation-timeline). */
+    html #hero [data-hero-content] {
+      animation-timeline: scroll(root);
+      animation-range: 0 100dvh;
+    }
+  }
+}
+
+@keyframes hero-exit {
+  to { transform: translateY(80px); opacity: 0.35; }
 }
 
 /* ============================================

@@ -1,10 +1,9 @@
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+import { revealOnEnter } from './globalReveals';
 
 export function initExploreAtlas(root: HTMLElement): () => void {
   const listeners: Array<{ item: HTMLElement; type: string; handler: () => void }> = [];
+  let cleanupReveal: (() => void) | null = null;
   const context = gsap.context((scope) => {
     const preview = root.querySelector<HTMLElement>('[data-atlas-preview-media]');
     const name = root.querySelector<HTMLElement>('[data-atlas-name]');
@@ -78,26 +77,13 @@ export function initExploreAtlas(root: HTMLElement): () => void {
 
     if (!reduceMotion) {
       const revealTargets = [root.querySelector('[data-atlas-preview]'), ...items].filter(Boolean) as HTMLElement[];
-      gsap.set(revealTargets, { autoAlpha: 0, y: 30 });
-      const revealBatch = scope.add('revealBatch', (batch: Element[]) => gsap.to(batch, {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-        stagger: 0.05,
-        overwrite: true,
-      }));
-
-      ScrollTrigger.batch(revealTargets, {
-        start: 'top 86%',
-        once: true,
-        onEnter: (batch) => revealBatch(batch),
-      });
+      cleanupReveal = revealOnEnter(revealTargets, { y: 30, duration: 0.8, stagger: 0.05, ease: 'power3.out' });
     }
   }, root);
 
   return () => {
     listeners.forEach(({ item, type, handler }) => item.removeEventListener(type, handler));
+    cleanupReveal?.();
     context.revert();
   };
 }
