@@ -190,15 +190,12 @@ const pois = [
   import { initLocationMap, type MapPOI } from '../features/animations/modules/locationMap';
 
   let cleanup: (() => void) | null = null;
-  let observer: IntersectionObserver | null = null;
   let initToken = 0;
 
   function initMap() {
     const el = document.getElementById('location-map') as HTMLElement | null;
     if (!el) return;
     const token = ++initToken;
-    observer?.disconnect();
-    observer = null;
     cleanup?.();
     cleanup = null;
     const lat = parseFloat(el.dataset.lat || '-13.521528');
@@ -210,10 +207,10 @@ const pois = [
       }
     } catch {}
 
-    observer = new IntersectionObserver(async (entries) => {
-      if (!entries[0].isIntersecting) return;
-      observer?.disconnect();
-      observer = null;
+    // Construir el mapa en idle, no al acercarse con scroll: el import de
+    // Leaflet + construccion + primer tile costaba ~50ms de frame justo
+    // cuando el usuario llegaba a la seccion (micro-corte visible).
+    const start = async () => {
       try {
         const mapCleanup = await initLocationMap(el, lat, lng, pois);
         if (token !== initToken || !el.isConnected) {
@@ -225,15 +222,17 @@ const pois = [
         // Surface failures instead of failing silently (client reported "map not working")
         console.error('[LocationMap] init failed:', err);
       }
-    }, { rootMargin: '400px' });
-    observer.observe(el);
+    };
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => void start(), { timeout: 4000 });
+    } else {
+      setTimeout(() => void start(), 1200);
+    }
   }
 
   document.addEventListener('astro:page-load', initMap);
   document.addEventListener('astro:before-preparation', () => {
     initToken += 1;
-    observer?.disconnect();
-    observer = null;
     cleanup?.();
     cleanup = null;
   });
