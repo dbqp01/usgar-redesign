@@ -49,9 +49,11 @@ heredado y hold liberado. Datos crudos y trazas:
   muere al arrancar.
 - **Variables de entorno**: **hPanel es la única fuente** → Despliegues →
   Ajustes → Variables de entorno → «Guardar» escribe `hbuilds/config/.env` (la
-  app lo lee). El `.env` de la raíz del dominio está renombrado a
-  `.env.pre-hpanel-2026-10-19` (rollback). La página «Sitos web → Variables de
-  entorno» **no** reescribe el archivo: no sirve.
+  app lo lee, y en producción es el **único** candidato: `Config::envCandidates`
+  no tiene fallback, así que rotar una clave en el panel surte efecto en el
+  siguiente request). El `.env` de la raíz está en
+  `.env.pre-hpanel-2026-10-19` (el código ya no lo lee). La página «Sitios web →
+  Variables de entorno» **no** reescribe el archivo: no sirve.
 - **Crons en producción (solo estos 5)**: `process_outbox` (5 min),
   `reconcile_payments` (15 min), `cleanup` (10 min), `manual-review` (20 min),
   `refresh-reviews` (03:00).

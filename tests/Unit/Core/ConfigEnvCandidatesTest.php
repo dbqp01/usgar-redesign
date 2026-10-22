@@ -8,18 +8,17 @@ use PHPUnit\Framework\TestCase;
 
 final class ConfigEnvCandidatesTest extends TestCase
 {
-    public function testPrefersTheHostingerPanelFile(): void
+    public function testOnlyReadsTheHostingerPanelFileInProduction(): void
     {
-        // hPanel -> Environment variables escribe hbuilds/config/.env en la raiz
-        // del dominio: esa es la fuente unica (verificado en el File Manager).
+        // hPanel -> Environment variables escribe hbuilds/config/.env: es la
+        // unica fuente. Sin fallbacks: ni la raiz del dominio ni public_html
+        // pueden tapar una rotacion de claves hecha en el panel.
         $candidates = Config::envCandidates('/srv/dominio');
 
         self::assertSame(
-            '/srv/dominio' . DIRECTORY_SEPARATOR . 'hbuilds' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . '.env',
-            $candidates[0]
+            ['/srv/dominio' . DIRECTORY_SEPARATOR . 'hbuilds' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . '.env'],
+            $candidates
         );
-        self::assertSame('/srv/dominio' . DIRECTORY_SEPARATOR . '.env', $candidates[1]);
-        self::assertSame(dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . '.env', $candidates[2]);
     }
 
     public function testFallsBackToTheProjectRootWithoutADeploymentBase(): void

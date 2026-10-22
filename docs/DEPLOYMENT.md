@@ -20,19 +20,19 @@ Hostinger está conectado a GitHub (integración **Node.js web app**) y **solo m
 ## Variables de entorno en producción
 
 - Archivo efectivo: **`/home/u941268346/domains/usgarhoteles.com/hbuilds/config/.env`** (39 claves, todas con valores entre comillas simples). Lo escribe hPanel; lo lee `app/Core/Config.php::loadEnv` en cada request/cron.
-- Fallback soportado por `loadEnv`: un `.env` **un nivel arriba de `public_html`**, que solo se usa si hPanel no tiene archivo.
+- **Sin fallback en producción** (desde 2026-10-22): `envCandidates()` devuelve solo ese archivo. Un `.env` suelto en la raíz del dominio o en `public_html`/`dist` ya **no** se lee, así que rotar una clave en hPanel surte efecto en el siguiente request, sin tocar archivos.
 - **Nunca** dentro de `public_html` ni de `dist/`. El build borra `dist/.env` y falla si quedara (guard del workflow desactivado, replicado en el postbuild). El directorio `runtime/` junto al `.env` efectivo debe ser escribible por PHP/cron; si no puede crearse o leerse, la autenticación falla cerrada hasta corregir permisos.
 - Lista completa de variables: `.env.example` (canónico) + `docs/API.md` §Variables.
 
 ### ⚠️ DÓNDE se edita de verdad (verificado 2026-10-19 — hPanel es la fuente única)
 
-`loadEnv()` (app/Core/Config.php) evalúa candidatos **en orden y usa el primero que existe**:
+`loadEnv()` (app/Core/Config.php) en producción usa **un solo candidato**:
 
 1. `/home/u941268346/domains/usgarhoteles.com/hbuilds/config/.env` — **las "Variables de entorno" de hPanel** (ya en el código desplegado, commit `5361623`)
-2. `/home/u941268346/domains/usgarhoteles.com/.env` — el `.env` del File Manager (fallback)
-3. `dist/.env` (raíz del deploy) — se borra en postbuild
 
 > **Corrección 2026-10-19:** hasta ese día el candidato 1 era el `.env` de la raíz del dominio, que gana siempre, y la ruta del archivo de hPanel estaba mal documentada (`.builds/config/.env` — **esa carpeta no existe**). Verificado en el File Manager: la ruta real es `hbuilds/config/.env`. Por eso "cambio en hPanel, hago redeploy, y las credenciales no cambian" (queja del dueño del 2026-08-15).
+>
+> **Endurecido 2026-10-22:** se eliminó el fallback `raíz/.env` (y el candidato `dist/.env`). Antes bastaba con volver a subir un `.env` a la raíz para que tapara el panel; ahora es imposible por código. En dev/CLI se mantiene `ENV_FILE` → `.env` de la raíz del proyecto.
 
 Los procesos CLI de cron aplican la misma precedencia aunque no reciban `DOCUMENT_ROOT`: si el código corre dentro del árbol `public_html`, la raíz del despliegue se detecta subiendo desde el propio archivo y el resultado es idéntico.
 
@@ -48,7 +48,7 @@ Los procesos CLI de cron aplican la misma precedencia aunque no reciban `DOCUMEN
 
 **Backup del `.env`:** con hPanel como fuente única, el respaldo de los valores es la propia tabla de hPanel (con «Mostrar») y el archivo del File Manager. Aun así, antes de tocar la configuración conviene descargar el `.env` del File Manager → guardar una copia local en `.backups/prod-env-<fecha>.env` (carpeta **gitignored**; nunca versionar secretos).
 
-**Regla de oro:** hPanel → Variables de entorno es la fuente única. No volver a subir un `.env` a la raíz del dominio: volvería a ganar por precedencia y los cambios del panel dejarían de aplicarse.
+**Regla de oro:** hPanel → Variables de entorno es la fuente única. Desde 2026-10-22 el código **ignora** cualquier `.env` en la raíz del dominio o en el deploy: rotar una clave es editar la tabla de hPanel y pulsar «Guardar», nada más.
 
 ### Puente entre el código desplegado y el archivo de hPanel (2026-10-19 · RESUELTO 2026-10-20)
 
@@ -76,7 +76,7 @@ Auditoría del entorno de Hostinger (2026-10-19) — estado real de las tres fue
 | Fuente | Claves | Estado |
 |---|---|---|
 | hPanel → Variables de entorno (`hbuilds/config/.env`) | 39 | **Fuente única** |
-| `.env` del File Manager (raíz del dominio) | 38 | Renombrado a `.env.pre-hpanel-2026-10-19` (rollback); ya no compite por precedencia |
+| `.env` del File Manager (raíz del dominio) | 38 | Renombrado a `.env.pre-hpanel-2026-10-19`; el código ya no lo lee (rollback solo si se desplegara código anterior) |
 | `.env.example` (canónico del repo) | 60 + 1 comentada | Documenta el contrato; le faltan 4 claves que el código lee |
 
 **Comparación (2026-10-19, con el navegador: File Manager + tabla de variables de hPanel, valores comparados en memoria del navegador sin sacarlos de ahí):** las **38 claves del `.env` tienen valor idéntico** en hPanel — **0 diferencias**. hPanel añade una clave: `PANEL_PASSWORD`, que el `.env` no tenía.
@@ -86,7 +86,7 @@ Auditoría del entorno de Hostinger (2026-10-19) — estado real de las tres fue
 - `PANEL_PASSWORD` pasa a estar configurado → `/panel` (disponibilidad del dueño) deja de estar bloqueado por el fail-closed.
 - `MP_BINARY_MODE=true` **ya era** el valor efectivo (está en las dos fuentes) → el payload de MercadoPago no cambia.
 - Las revocaciones JWT se quedan en `<raíz del dominio>/runtime/revoked-tokens`: `TokenRevocationStore` usa la raíz del despliegue, no la carpeta del `.env`, así que la lista existente no se invalida al cambiar de fuente.
-- El código (`Config::envCandidates`) pone `hbuilds/config/.env` **antes** que el `.env` de la raíz: si alguien vuelve a subir un `.env` suelto, hPanel sigue mandando.
+- El código (`Config::envCandidates`) en producción lee **solo** `hbuilds/config/.env`: un `.env` suelto en la raíz o en `public_html` no tiene ningún efecto.
 
 **Lo que NO cambia con la migración (verificado 2026-10-19):**
 
@@ -94,7 +94,7 @@ Auditoría del entorno de Hostinger (2026-10-19) — estado real de las tres fue
 - `REVIEW_BOOKING_URL` solo alimenta el scraping de puntajes (cron `refresh-reviews`); su default en código apunta al mismo hotel.
 - Los emails transaccionales **ya están desactivados** en prod: no hay `SMTP_*` en ninguna de las dos fuentes (fail-soft documentado en `docs/STATE.md`).
 
-**Si hay que repetirla (hacia atrás):** renombrar `.env.pre-hpanel-2026-10-19` de vuelta a `.env` en la raíz del dominio (eso vuelve a ganar por precedencia) y borrar el symlink.
+**Si hay que repetirla (hacia atrás):** desde 2026-10-22 renombrar el `.env` de la raíz ya no basta (el código no lo lee). Para volver a la fuente antigua hay que copiar los valores al editor de Variables de entorno de hPanel («Guardar») o desplegar el código anterior a `5361623`.
 
 ## Credenciales de Mercado Pago
 

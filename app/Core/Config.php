@@ -131,30 +131,26 @@ class Config {
     /**
      * Rutas candidatas del .env, en orden de prioridad.
      *
-     * En Hostinger la fuente unica es hPanel -> Environment variables, que
-     * escribe `hbuilds/config/.env` en la raiz del dominio (verificado en el
-     * File Manager: existe hbuilds/config/.env y NO existe
-     * .builds/). El .env suelto en la raiz del dominio queda como fallback.
+     * En produccion (Hostinger) la UNICA fuente es hPanel -> Despliegues ->
+     * Ajustes -> Variables de entorno, que escribe `hbuilds/config/.env` en la
+     * raiz del dominio. Sin fallbacks a proposito: un `.env` suelto en la raiz
+     * o en `public_html` no puede tapar nunca lo que se guarda en el panel, asi
+     * rotar una clave desde hPanel surte efecto en el siguiente request.
      *
      * @return list<string>
      */
     public static function envCandidates(?string $deploymentBase): array {
+        if ($deploymentBase !== null) {
+            return [$deploymentBase . DIRECTORY_SEPARATOR . 'hbuilds'
+                . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . '.env'];
+        }
+
         $candidates = [];
 
         // Override explicito para tests: ENV_FILE=/ruta/.env.test.
-        // Solo en dev/CLI (sin base de despliegue): en produccion manda siempre
-        // el .env de hPanel, nunca otro archivo.
-        if ($deploymentBase === null) {
-            $override = getenv('ENV_FILE');
-            if (is_string($override) && $override !== '') {
-                $candidates[] = $override;
-            }
-        }
-
-        if ($deploymentBase !== null) {
-            $candidates[] = $deploymentBase . DIRECTORY_SEPARATOR . 'hbuilds'
-                . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . '.env';
-            $candidates[] = $deploymentBase . DIRECTORY_SEPARATOR . '.env';
+        $override = getenv('ENV_FILE');
+        if (is_string($override) && $override !== '') {
+            $candidates[] = $override;
         }
 
         // Dev/CLI fallback: raiz del proyecto (en local suele ser el unico .env).
