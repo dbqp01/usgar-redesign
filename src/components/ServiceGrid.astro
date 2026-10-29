@@ -3,10 +3,10 @@ import { Picture } from 'astro:assets';
 import SectionHeader from './ui/SectionHeader.astro';
 import { services, hotelServices, roomServices, type ServiceItem } from '../data/services';
 import { useTranslations, type Locale } from '../i18n/utils';
-import breakfastImage from '../assets/hotel/fallback-room-desayuno.jpg';
-import oxygenImage from '../assets/hotel/fallback-room-oxigeno.jpg';
-import toursImage from '../assets/explore/machu-picchu.jpg';
-import comfortImage from '../assets/hotel/hero-slide-patio.jpg';
+import breakfastImage from '../assets/home/services/breakfast.jpg';
+import oxygenImage from '../assets/home/services/oxygen.jpg';
+import toursImage from '../assets/home/services/tours.jpg';
+import comfortImage from '../assets/home/services/garden.jpg';
 
 const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);

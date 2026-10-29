@@ -5,7 +5,7 @@ import SectionHeader from './ui/SectionHeader.astro';
 import { attractions } from '../data/attractions';
 import { useTranslations, type Locale } from '../i18n/utils';
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import fallbackImg from '../assets/hotel/hero-slide-cusco.jpg';
+import fallbackImg from '../assets/home/explore/fallback.jpg';
 
 interface Props {
   lang: Locale;
@@ -14,10 +14,10 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-const exploreImages = import.meta.glob<{ default: ImageMetadata }>('../assets/explore/*.jpg', { eager: true });
+const exploreImages = import.meta.glob<{ default: ImageMetadata }>('../assets/home/explore/*.jpg', { eager: true });
 
 const items = await Promise.all(attractions.map(async (attraction) => {
-  const image = exploreImages[`../assets/explore/${attraction.id}.jpg`]?.default || fallbackImg;
+  const image = exploreImages[`../assets/home/explore/${attraction.id}.jpg`]?.default || fallbackImg;
   const preview = await getImage({
     src: image,
     format: 'avif',

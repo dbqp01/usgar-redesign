@@ -149,3 +149,7 @@ tiene los 35 servicios del hotel con `group: "hotel" | "room"`, y
 `src/data/services.ts` los expone ya tipados y de ahí se derivan las dos
 listas (`hotelServices`, `roomServices`). Editar el JSON cambia las tarjetas
 destacadas y las dos listas de la web a la vez.
+
+### Fotos de la portada
+
+Cada espacio de la portada usa un archivo propio en `src/assets/home/`, organizado por sección. Para cambiar una foto, reemplaza el JPG correspondiente conservando su nombre y formato. Las tarjetas de habitaciones usan el nombre de la carpeta de cada habitación; los destinos usan su identificador. Estas fotos son independientes de las de habitaciones, destinos y contacto, pero son las mismas en los cuatro idiomas. El primer slide del hero también sirve como póster de su video.

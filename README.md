@@ -57,7 +57,7 @@ El recorrido completo pasa por fechas y asignación, un hold que bloquea inventa
 
 ## Empezar
 
-Necesitas Node 22, PHP 8.2 o superior (con `pdo_mysql`, `xml` y `mbstring`), Composer y MySQL.
+Necesitas Node 24.22.1 o superior de la rama 24, PHP 8.2 o superior (con `pdo_mysql`, `xml` y `mbstring`), Composer y MySQL.
 
 ```bash
 npm ci

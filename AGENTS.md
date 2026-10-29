@@ -139,7 +139,7 @@ Playwright usa la configuración versionada y `npm run test:e2e -- <spec>` para 
 
 ## Deploy (Hostinger) — SOLO rama main, build automático
 
-- **Hostinger mira ÚNICAMENTE la rama `main`** (integración Node.js GitHub; docs oficiales: `docs.hostinger.com/node.js/github`). Cada `git push origin main` → Hostinger hace pull + `npm install` + `npm run build` y sirve `dist/` (config hPanel: branch `main` · build `build` · output `dist` · Node 22).
+- **Hostinger mira ÚNICAMENTE la rama `main`** (integración Node.js GitHub; docs oficiales: `docs.hostinger.com/node.js/github`). Cada `git push origin main` → Hostinger hace pull + `npm install` + `npm run build` y sirve `dist/` (config hPanel: branch `main` · build `build` · output `dist` · Node 24 para los próximos despliegues; último despliegue previo con Node 22).
 - Solo existe un workflow: `.github/workflows/build.yml` (CI). La rama remota `origin/build` tiene contenido viejo, pero **Hostinger no la usa**: el deploy es `main` → pull + build.
 - Nunca sugerir subir `dist/` por FTP/File Manager ni hablar de la rama `build`. Único flujo: commit → `git push origin main` → esperar el build de Hostinger → https://usgarhoteles.com refleja el cambio.
 - Env vars de prod: hPanel → **Despliegues → Ajustes → Variables de entorno → «Guardar»** (escribe `hbuilds/config/.env` en la raíz del dominio; el efecto es inmediato, sin redeploy). La página «Sitios web → Variables de entorno» **no** reescribe el archivo. En producción `Config::envCandidates` lee **solo** ese archivo (sin fallback a la raíz ni a `public_html`), así que rotar claves es editar la tabla y «Guardar». El `.env` **no** va en `dist/` (el postbuild lo elimina). Detalle: `docs/DEPLOYMENT.md`.

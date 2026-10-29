@@ -9,18 +9,11 @@ import { useTranslations, type Locale } from '../i18n/utils';
 const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
 
-const imgGlob = import.meta.glob<{ default: ImageMetadata }>('../assets/rooms/**/*.jpg', { eager: true });
-
-function firstImage(photoFolder: string): ImageMetadata | undefined {
-  const keys = Object.keys(imgGlob)
-    .filter((key) => key.includes(`/rooms/${photoFolder}/`))
-    .sort();
-  return keys.length ? imgGlob[keys[0]].default : undefined;
-}
+const imgGlob = import.meta.glob<{ default: ImageMetadata }>('../assets/home/rooms/*.jpg', { eager: true });
 
 const galleryRooms = rooms.slice(0, 4).map((room) => ({
   room,
-  image: firstImage(room.photoFolder),
+  image: imgGlob[`../assets/home/rooms/${room.photoFolder}.jpg`]?.default,
 }));
 ---
 

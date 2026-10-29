@@ -33,7 +33,8 @@ Modelo de seguridad verificado contra el código (2026-09-11). Los pendientes pr
 - Sesión PHP nativa (para OAuth) con parámetros de cookie seguros.
 
 ### Auditorías (herramientas del repo)
-- `npm run audit:security` (script propio), `composer audit` + `npm audit` (**0 vulnerabilidades verificadas el 2026-09-10**, incluyendo `--omit=dev`), Semgrep para el diff. Dependencias frontend actualizadas a Astro 7.3.2, sharp 0.35.4, svgo 4.1.0, deepmerge-ts 8.0.2, fast-uri 3.1.7 y Vitest 4.1.11.
+- Auditorías disponibles: `npm run audit:security` (script propio), `composer audit`, `npm audit` y Semgrep para el diff. `composer audit` reportó 0 vulnerabilidades el 2026-09-10.
+- Revisión local del 2026-10-29: `npm audit` y `npm audit --omit=dev` reportan 0 vulnerabilidades tras actualizar Astro, Vitest, `fast-uri`, `undici` y `zod`. El despliegue debe actualizarse y volver a escanearse en hPanel para verificar el estado en producción.
 - Patrones peligrosos auditados (2026-08-01): sin eval/exec/system reales; `unserialize` solo en el outbox y restringido con `allowed_classes` a `BookingPaidEvent` y `DateTimeImmutable` (payload escrito por el propio sistema).
 
 ## Modelo de amenazas (resumen para explicar)
