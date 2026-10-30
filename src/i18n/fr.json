@@ -134,9 +134,12 @@
     "newsletterDesc": "Tarifs, nouveautes et conseils pour le Machu Picchu - directement dans votre boite mail. Jamais de spam.",
     "newsletterPlaceholder": "Votre adresse e-mail",
     "newsletterButton": "S'abonner",
-    "newsletterSuccess": "Vous etes inscrit ! Bienvenue dans la newsletter USGAR.",
+    "newsletterConsent": "J'accepte de recevoir la newsletter mensuelle USGAR par e-mail.",
+    "newsletterNotice": "Votre e-mail sert uniquement à envoyer la newsletter. Un e-mail par mois ; désabonnement possible à tout moment via le lien de chaque message.",
+    "newsletterConfirmSent": "Presque terminé - vérifiez votre boîte mail et confirmez votre abonnement.",
     "newsletterError": "Une erreur est survenue - réessayez.",
     "newsletterEmailInvalid": "Veuillez saisir une adresse e-mail valide.",
+    "newsletterConsentRequired": "Veuillez cocher la case de consentement pour vous abonner.",
     "asFeaturedIn": "Comme Presente Dans",
     "privacy": "Politique de Confidentialité",
     "terms": "Conditions Generales"

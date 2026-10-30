@@ -1,6 +1,6 @@
 # API — USGAR Hotels
 
-Contrato completo del backend PHP. **Fuente de verdad: `public/index.php`** (registro de rutas) — verificada 2026-10-20 (33 endpoints, 0 rutas fantasma). Si un endpoint no está aquí o aquí dice algo que el código no hace, el código manda y este doc se corrige.
+Contrato completo del backend PHP. **Fuente de verdad: `public/index.php`** (registro de rutas) — verificada 2026-10-29 (36 endpoints, 0 rutas fantasma). Si un endpoint no está aquí o aquí dice algo que el código no hace, el código manda y este doc se corrige.
 
 **Base URL:** `/api` (en dev, el Vite proxy redirige `localhost:4321/api` → `localhost:8000/api`).
 
@@ -33,11 +33,11 @@ Las acciones y el Router usan el mismo envelope para errores controlados:
 | 500 | INTERNAL_ERROR / UNHANDLED_EXCEPTION | Fallo interno; el detalle solo se registra en servidor. |
 | 503 | SERVICE_UNAVAILABLE / MISSING_CREDENTIALS | Servicio o credenciales requeridas no disponibles. |
 
-Las acciones también pueden emitir códigos de dominio más específicos dentro del mismo envelope (`PAYMENT_REJECTED`, `PAYMENT_ID_MISMATCH`, `RATE_LIMITED`, `SERVER_ERROR`, `NEWSLETTER_ERROR`, `PANEL_BOOKING_FAILED`, `ROOM_NOT_FOUND`, `BLOCK_NOT_FOUND`, `OAUTH_ACCOUNT`, `SERIALIZATION_ERROR`). El status HTTP sigue siendo la fuente principal para clientes genéricos.
+Las acciones también pueden emitir códigos de dominio más específicos dentro del mismo envelope (`PAYMENT_REJECTED`, `PAYMENT_ID_MISMATCH`, `RATE_LIMITED`, `CONSENT_REQUIRED`, `INVALID_TOKEN`, `NEWSLETTER_EMAIL_FAILED`, `NEWSLETTER_ERROR`, `PANEL_BOOKING_FAILED`, `ROOM_NOT_FOUND`, `BLOCK_NOT_FOUND`, `OAUTH_ACCOUNT`, `SERIALIZATION_ERROR`). El status HTTP sigue siendo la fuente principal para clientes genéricos.
 
 ## Endpoints
 
-La tabla incluye las 33 rutas registradas en `public/index.php`, incluidas las nueve rutas del panel listadas abajo.
+La tabla incluye las 36 rutas registradas en `public/index.php`, incluidas las nueve rutas del panel listadas abajo.
 `GET /api/health` es un **liveness probe**: devuelve HTTP 200 y `success:true` cuando el proceso responde. El campo `database` conserva el estado observado (`online|offline|error`); este endpoint no es una comprobación de readiness de reservas.
 | # | Method | Endpoint | Action | Auth |
 |---|---|---|---|---|
@@ -75,6 +75,9 @@ La tabla incluye las 33 rutas registradas en `public/index.php`, incluidas las n
 | 31 | POST | `/api/panel/booking` | `PanelBookingAction` | Cookie panel + CSRF |
 | 32 | POST | `/api/panel/block` | `PanelBlockAction` | Cookie panel + CSRF |
 | 33 | DELETE | `/api/panel/block` | `PanelUnblockAction` | Cookie panel + CSRF |
+| 34 | GET | `/api/newsletter/confirm` | `ConfirmNewsletterAction` | Token HMAC (`email` + `token`) |
+| 35 | GET | `/api/newsletter/unsubscribe` | `UnsubscribeNewsletterAction` | Token HMAC (`email` + `token`) |
+| 36 | POST | `/api/newsletter/unsubscribe` | `UnsubscribeNewsletterAction` | Token HMAC en el body |
 
 Notas:
 - Los endpoints de cron (cleanup, manual-review y refresh-reviews) se invocan por CLI o por HTTP protegido con `x-cron-secret`; el front controller detecta `PHP_SAPI === 'cli'` y usa `$argv[1]` como ruta. Los crons oficiales viven en `cron/` y usan los mismos actions — ver `docs/DEPLOYMENT.md` §Cron.
@@ -181,8 +184,8 @@ disponibilidad para evitar doble descuento.
 ## POST /api/extend-hold · GET /api/booking-status · GET /api/payment-check
 
 - `POST /api/extend-hold` — body `{ "cart_id": "..." }` → `{ "success": true, "expires_at": "..." }`.
-- `GET /api/booking-status?cart_id=...&token=...` → estado del hold (`pending|paid|failed|expired|cancelled|manual_review|fraud_review|expired_paid`). El token HMAC es opcional para consultar el estado básico, pero obligatorio para incluir PII (`guest_name`, `guest_email`, `guest_phone`, `special_requests`).
-- `GET /api/payment-check?cart_id=...&token=...` → estado del pago (usa el `payment_id` persistido; el token HMAC es obligatorio y el polling vive en `book/success.astro`).
+- `GET /api/booking-status?cart_id=...` → estado del hold (`pending|paid|failed|expired|cancelled|manual_review|fraud_review|expired_paid`). El token HMAC viaja en la cabecera `X-Booking-Token` (el query `token` se acepta por compatibilidad con enlaces ya emitidos). Es opcional para el estado básico, pero obligatorio para incluir PII (`guest_name`, `guest_email`, `guest_phone`, `special_requests`). La respuesta es `Cache-Control: no-store`.
+- `GET /api/payment-check?cart_id=...` → estado del pago (usa el `payment_id` persistido; el token HMAC va en `X-Booking-Token`, con el query `token` como compatibilidad, y el polling vive en `book/success.astro`). La respuesta es `Cache-Control: no-store`.
 
 ## POST /api/webhook
 
@@ -238,7 +241,22 @@ La respuesta incluye `success: true` además de `scores` y `updatedAt`.
 
 ## Newsletter y Contacto
 
-- `POST /api/newsletter` — `{ "email", "locale" }` → tabla `newsletter_subscribers` (auto-creada). 422 email inválido (`INVALID_EMAIL`), 503 BD offline (`SERVICE_UNAVAILABLE`); los errores siguen el envelope general `{ success:false, error:{ code, message } }`.
+Newsletter con **doble opt-in y consentimiento explícito** (Ley 29733 / buenas prácticas GDPR):
+
+- `POST /api/newsletter` — body `{ "email", "locale", "consent": true }`.
+  - `consent` debe ser el booleano `true`; ausente, `false`, `"true"`, `1` u `"on"` → 422 `CONSENT_REQUIRED` (un checkbox sin marcar nunca suscribe).
+  - Email inválido → 422 `INVALID_EMAIL`. `locale` se limita a `en|es|fr|pt` (otro valor cae a `en`).
+  - Guarda en `newsletter_subscribers` la evidencia: `ip`, `user_agent`, `locale`, `consent_at`, `consent_version` (constante del aviso) y `status='pending'`. Envía un correo de confirmación con enlace firmado; **no** suscribe todavía. Si el correo no se puede enviar → 503 `NEWSLETTER_EMAIL_FAILED` (no se finge éxito).
+  - Respuesta siempre `{ "success": true, "status": "pending", "message": "confirmation_sent" }`, también si el email ya estaba confirmado: no permite enumerar la lista. Límite: 5 peticiones/hora por IP → 429 `RATE_LIMITED`.
+  - 503 `SERVICE_UNAVAILABLE` si no hay BD.
+- `GET /api/newsletter/confirm?email=...&token=...` — el enlace del correo. Token HMAC-SHA256 ligado al email y al propósito `confirm`; `status pending → confirmed` con `confirmed_at`. Idempotente mientras siga confirmado. Un enlace viejo **no** revive una baja (`unsubscribed`). Token inválido o email desconocido → 400 `INVALID_TOKEN`.
+- `GET /api/newsletter/unsubscribe?email=...&token=...` — muestra una página de confirmación; **no** cambia estado (un prefetch del correo no da de baja a nadie).
+- `POST /api/newsletter/unsubscribe` — body `{ "email", "token" }` (o formulario). Token HMAC del propósito `unsubscribe`; `status='unsubscribed'` + `unsubscribed_at`. Idempotente. Token inválido, de otro email o del propósito `confirm` → 400 `INVALID_TOKEN`.
+
+Cualquier envío de la newsletter debe leer solo `status='confirmed'`: `pending` (sin doble opt-in) y `unsubscribed` no reciben nada.
+
+Los tokens se derivan con `BOOKING_TOKEN_SECRET` (fallback `CRON_SECRET`) y dominio `newsletter:`; no hay variable nueva. Las páginas HTML de confirmación/baja se sirven en el idioma guardado (`en|es|fr|pt`), con `noindex` y `Cache-Control: no-store`; los clientes que piden JSON reciben el envelope general. La tabla se auto-migra: las columnas nuevas se agregan con `ALTER` y los suscriptores históricos quedan `confirmed` con `consent_version='legacy'` y `consent_at NULL` (no se inventa evidencia).
+
 - `POST /api/contact` — formulario de contacto → `SubmitContactAction`.
 
 ## Panel de disponibilidad del dueño (cookie `usgar_panel`, JWT HMAC, 12h)

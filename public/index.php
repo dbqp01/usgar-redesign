@@ -57,7 +57,9 @@ use App\Features\Auth\Actions\AuthLoginEmailAction;
 use App\Features\Auth\Actions\AuthMeAction;
 use App\Features\Auth\Actions\AuthLogoutAction;
 use App\Features\Auth\Actions\GetUserBookingsAction;
+use App\Features\Newsletter\Actions\ConfirmNewsletterAction;
 use App\Features\Newsletter\Actions\SubscribeNewsletterAction;
+use App\Features\Newsletter\Actions\UnsubscribeNewsletterAction;
 use App\Features\Contact\Actions\SubmitContactAction;
 use App\Features\Panel\Actions\PanelLoginAction;
 use App\Features\Panel\Actions\PanelLogoutAction;
@@ -137,6 +139,9 @@ $router->post('/api/auth/logout',      AuthLogoutAction::class);
 $router->get('/api/user/bookings',     GetUserBookingsAction::class);
 $router->post('/api/user/profile',     UpdateUserProfileAction::class);
 $router->post('/api/newsletter',       SubscribeNewsletterAction::class);
+$router->get('/api/newsletter/confirm',    ConfirmNewsletterAction::class);
+$router->get('/api/newsletter/unsubscribe', UnsubscribeNewsletterAction::class);
+$router->post('/api/newsletter/unsubscribe', UnsubscribeNewsletterAction::class);
 $router->post('/api/contact',          SubmitContactAction::class);
 
 // Panel de disponibilidad del dueno (protegido por cookie usgar_panel)
