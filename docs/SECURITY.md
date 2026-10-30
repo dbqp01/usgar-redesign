@@ -8,14 +8,14 @@ Modelo de seguridad verificado contra el código (2026-09-11). Los pendientes pr
 - Todo HTTPS (HSTS `max-age=31536000; includeSubDomains; preload` en Middleware).
 - Una sola allowlist de CSP para todo el sitio, aplicada en **dos puntos**: `public/.htaccess` (bloque `<FilesMatch "\.html$">`) para el HTML estático y `app/Core/Middleware.php::securityHeaders` para las respuestas PHP. La allowlist es idéntica en ambos y `npm run audit:content` falla (error `CSP-DRIFT`) si divergen; `npm run audit:csp` la carga en Chromium sobre el build y falla si el navegador rechaza algún recurso. Con `'unsafe-inline' 'unsafe-eval'` para el SDK de MercadoPago; dominios MP/ML/fonts/maps allowlisteados. La CSP estática va en `<FilesMatch>` a propósito: declarada a nivel global, `index.php` recibiría una segunda cabecera CSP y el navegador aplicaría la intersección de ambas.
 - `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy` (sin cámara/micrófono/geolocalización).
-- Los directorios de runtime copiados al webroot (`app/`, `vendor/`, `cron/`, `logs/`, `storage/`) están denegados por `.htaccess`; los scripts de cron siguen disponibles únicamente mediante CLI.
+- Los directorios internos (`app/`, `vendor/`, `cron/`, `logs/`, `storage/`, `runtime/`, `data/`) están denegados por `.htaccess`; los scripts de cron siguen disponibles únicamente mediante CLI.
 
 ### Entrada y datos
 - Todo SQL con prepared statements PDO (`EMULATE_PREPARES=false`, `ERRMODE_EXCEPTION`). `PDO::exec` solo para DDL propio (CREATE TABLE IF NOT EXISTS) sin input.
 - Validación de entrada: `App\Core\Validator` en cada action; **no** se escapa la entrada (modelo correcto: validar input, escapar output — fix 2026-08-01 que eliminó el doble-escape).
 - JSON parseado con `JSON_THROW_ON_ERROR`; body limitado por configuración del servidor.
 - IP real solo vía `TRUSTED_PROXIES` (vacío por defecto = `X-Forwarded-For` ignorado, sin spoofing).
-- Rate limiting global por IP: archivos con `flock(LOCK_EX)` + SHA-256, fuera del directorio público (`data/limits/`). Límite 300/600s configurable.
+- Rate limiting global por IP: archivos con `flock(LOCK_EX)` + SHA-256 en `data/limits/`; en el build esa ruta queda dentro del directorio publicado y `.htaccess` deniega su acceso HTTP. Límite 300/600s configurable.
 - CORS: `ALLOWED_ORIGINS` es una allowlist autoritativa; no se agregan excepciones automáticas para localhost. Nunca `*` con credentials y `Vary: Origin` cuando hay lista. Con una allowlist explícita, una petición sin `Origin` no recibe `Access-Control-Allow-Origin: *`; las respuestas HTML estáticas reciben headers defensivos desde `public/.htaccess` y el shell `/panel/` usa `private, no-store`.
 
 ### Pagos (MercadoPago)

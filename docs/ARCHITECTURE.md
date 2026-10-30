@@ -142,7 +142,8 @@ colecciones (`getCollection` / `getEntry`): los componentes leen de ahí, no del
 crudo. Editar el JSON y el componente ya ve el cambio.
 
 Excepción: `src/data/legal.ts` es texto legal propio (no viene de una
-colección).
+colección), en los 4 idiomas del sitio (`legalMeta` + `privacySections` /
+`termsSections`).
 
 El catálogo de servicios es **una sola fuente**: `src/content/services/services.json`
 tiene los 35 servicios del hotel con `group: "hotel" | "room"`, y

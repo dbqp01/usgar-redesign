@@ -64,7 +64,7 @@ class Middleware {
                 header("Access-Control-Allow-Origin: {$allowOrigin}");
             }
             header('Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE');
-            header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-CSRF-Token, x-signature, x-request-id');
+            header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-CSRF-Token, X-Booking-Token, x-signature, x-request-id');
 
             if ($allowOrigin !== null && $allowOrigin !== '*') {
                 header('Access-Control-Allow-Credentials: true');

@@ -20,7 +20,7 @@ RewriteEngine On
 # internals, not public assets: deny direct HTTP access before any rewrite or
 # PHP handler can expose source/configuration details. The CLI cron jobs are
 # unaffected because this rule is evaluated only by Apache/LiteSpeed.
-RewriteRule ^(?:app|vendor|cron|logs|storage|runtime)(?:/|$) - [F,L,NC]
+RewriteRule ^(?:app|vendor|cron|logs|storage|runtime|data)(?:/|$) - [F,L,NC]
 
 # Canonical domain: redirect www -> apex (301). Survives deploys (lives in repo).
 RewriteCond %{HTTP_HOST} ^www\.usgarhoteles\.com$ [NC]

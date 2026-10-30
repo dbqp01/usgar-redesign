@@ -2,7 +2,7 @@
 
 Backlog **abierto**, priorizado. Solo viven aquí los ítems que siguen sin
 hecer: lo cerrado está en [`docs/STATE.md`](STATE.md) (estado actual) o en
-[`docs/archive/`](archive/) (bitácora). Actualizado: 2026-10-20.
+[`docs/archive/`](archive/) (bitácora). Actualizado: 2026-10-29.
 
 ## P1 — Pendientes del dueño (bloquean la operación real)
 
@@ -13,6 +13,19 @@ hecer: lo cerrado está en [`docs/STATE.md`](STATE.md) (estado actual) o en
 | P1-D3 | **Pasar Mercado Pago a credenciales reales** | Producción usa hoy el par sandbox. Procedimiento en `docs/DEPLOYMENT.md` |
 | P1-D4 | **Configurar SMTP (`SMTP_*`)** | Sin SMTP no sale el email de confirmación (fail-soft por diseño) |
 | P1-D5 | **Activar QloApps Channel Manager (Webkul)** | Activación de pago; runbook en `docs/PMS.md` §D |
+
+## P1 — Legal (requieren dueño, no se cierran desde el código)
+
+La copia de `src/data/legal.ts` ya coincide con el código (cookies, encargados,
+cifrado, tipo de cambio) y con la norma vigente (ver `tests/Unit/legal.test.ts`).
+Quedan puntos que necesitan decisión o dato del dueño:
+
+| # | Qué | Por qué |
+|---|---|---|
+| P1-L1 | Razón social y RUC del titular, y estado de inscripción de la base de datos en el Registro Nacional de Protección de Datos Personales | La política identifica "USGAR Hotels" y la dirección, pero no la persona jurídica; el DS 016-2024-JUS (art. 43.1.2) inscribe las bases de datos privadas |
+| P1-L2 | Libro de Reclamaciones físico o virtual | La Ley 29571 (art. 150) lo exige al establecimiento; el sitio no lo enlaza ni consta uno físico |
+| P1-L3 | Plazo de conservación por tipo de dato y purga | No hay ningún `DELETE` en `app/`: contactos y cuentas se guardan indefinidamente; la newsletter solo pasa a `unsubscribed` como lista de supresión. La política describe el criterio, no un plazo cerrado |
+| P1-L4 | Representante en la UE (art. 27 GDPR) y mecanismo de transferencia documentado | La política dice que se usa "el mecanismo del proveedor", sin identificar SCC ni representante |
 
 ## P2 — Deuda estructural
 

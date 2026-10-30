@@ -41,3 +41,9 @@ Registro de decisiones de arquitectura vivas (las que siguen gobernando el códi
 ## Seguridad operativa (2026-09-07)
 - Las mutaciones del panel usan la cookie usgar_panel_csrf y el header X-CSRF-Token coincidente.
 - event_outbox usa claim_token para fencing: un lease obsoleto no puede completar ni fallar el claim de otro worker.
+
+## Newsletter (2026-10-29)
+- **Doble opt-in con consentimiento explícito**: `POST /api/newsletter` exige `consent === true`, guarda evidencia (IP, user-agent, locale, `consent_at`, `consent_version`) y no da de alta hasta que se abre el enlace firmado del correo. Un tercero que escriba el email de otra persona no puede suscribirla.
+- **Baja en dos pasos**: el enlace del correo abre una confirmación (GET sin mutación, seguro frente a prefetch y escáneres) y el POST aplica la baja. Tokens HMAC separados por propósito y ligados al email (mismo `BOOKING_TOKEN_SECRET`, dominio `newsletter:`).
+- **Respuesta anti-enumeración**: alta nueva y email ya confirmado responden igual; el email no se refleja en la respuesta ni en los logs.
+- **Suscriptores históricos**: la auto-migración los conserva `confirmed` con `consent_version='legacy'` y `consent_at NULL`; no se fabrica evidencia de consentimiento.
