@@ -284,6 +284,7 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
   import { resolvePaymentOutcome, planRetryAfterFailure, mapBookingStatus, isPendingStatus } from '@/utils/paymentStatus';
   import { fetchBookingStatus, pollForPayment } from '../../features/booking/bookingStatus';
   import { formatCountdown, shouldExtendHold } from '@/utils/holdCountdown';
+  import { receiptUrl } from '../../features/booking/receiptToken';
   import { statusDetailKey, paymentErrorFallbackKey } from '@/utils/paymentErrors';
   import { formatDate } from '@/utils/format';
 
@@ -524,12 +525,13 @@ const serializedPaymentLabels = JSON.stringify(paymentLabels);
         usdEquivEl.textContent = usd > 0 ? `≈ USD ${usd.toFixed(2)}` : '';
       }
 
-      // Link al recibo completo imprimible / URL compartible.
+      // Link al recibo completo imprimible / URL compartible. El token va en
+      // el fragmento: no viaja al servidor ni queda en access logs/Referer.
       if (fullReceiptLink) {
         const lang = (document.documentElement.lang || 'en') as Locale;
         const prefix = lang === 'en' ? '' : `/${lang}`;
         const token = (() => { try { return sessionStorage.getItem(`booking_token_${cartId}`) || ''; } catch { return ''; } })();
-        fullReceiptLink.href = `${prefix}/book/success?bookingId=${encodeURIComponent(cartId)}${token ? `&token=${encodeURIComponent(token)}` : ''}`;
+        fullReceiptLink.href = receiptUrl(`${prefix}/book/success`, cartId, token);
       }
 
       // Pickup del aeropuerto persistido — el recibo inline confirma al

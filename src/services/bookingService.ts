@@ -245,8 +245,12 @@ export const bookingService = {
 
   async getBookingStatus(cartId: string, accessToken: string, signal?: AbortSignal): Promise<ApiResult<any>> {
     const query = new URLSearchParams({ cart_id: cartId });
-    if (accessToken) query.append('token', accessToken);
-    const response = await request(`/api/booking-status?${query.toString()}`, { method: 'GET', signal });
+    // Cabecera, no query: el token no debe quedar en URLs ni access logs.
+    const response = await request(`/api/booking-status?${query.toString()}`, {
+      method: 'GET',
+      signal,
+      headers: accessToken ? { 'X-Booking-Token': accessToken } : {},
+    });
 
     if (!response.ok || !response.data?.success) {
       return {
@@ -263,8 +267,11 @@ export const bookingService = {
 
   async checkPayment(cartId: string, accessToken: string, signal?: AbortSignal): Promise<ApiResult<any>> {
     const query = new URLSearchParams({ cart_id: cartId });
-    if (accessToken) query.append('token', accessToken);
-    const response = await request(`/api/payment-check?${query.toString()}`, { method: 'GET', signal });
+    const response = await request(`/api/payment-check?${query.toString()}`, {
+      method: 'GET',
+      signal,
+      headers: accessToken ? { 'X-Booking-Token': accessToken } : {},
+    });
 
     if (!response.ok || !response.data?.success) {
       return {

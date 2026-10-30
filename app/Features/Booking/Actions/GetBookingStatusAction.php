@@ -27,7 +27,7 @@ class GetBookingStatusAction {
 
     public function __invoke(Request $request): void {
         $cartId = $request->getQuery('cart_id');
-        $providedToken = $request->getQuery('token', '');
+        $providedToken = BookingHoldToken::fromRequest($request);
 
         if (!$cartId) {
             throw HttpException::badRequest('Falta el parámetro cart_id.');
@@ -103,6 +103,8 @@ class GetBookingStatusAction {
             'is_expired'        => $isExpired,
             'time_left_seconds' => $timeLeftSeconds,
         ];
+
+        header('Cache-Control: no-store');
 
         // PII SOLO con token valido: los cart_id del webservice son INTs
         // secuenciales; devolver nombre/email/telefono con solo el status paid

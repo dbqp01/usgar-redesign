@@ -227,6 +227,7 @@ const successDescription = t('meta.success')
   import { mapBookingStatus, isPendingStatus, pendingMessageKey } from '../../utils/paymentStatus';
   import { formatDate } from '../../utils/format';
   import { fetchBookingStatus, pollForPayment } from '../../features/booking/bookingStatus';
+  import { readReceiptToken } from '../../features/booking/receiptToken';
 
   // Polling continuo cada 15s hasta 10 minutos (un polling mas corto dejaba
   // la tarjeta pending terminal) + boton manual "Verificar de nuevo" +
@@ -258,10 +259,24 @@ const successDescription = t('meta.success')
 
     const params = new URLSearchParams(window.location.search);
     const bookingId = params.get('bookingId') || params.get('booking') || params.get('external_reference') || '';
-    // Retrieve access token from URL, sessionStorage, or empty
-    const token = params.get('token')
-      || sessionStorage.getItem(`booking_token_${bookingId}`)
-      || '';
+    // Token: fragmento (nuevo; el navegador no lo manda al servidor ni en
+    // Referer, y el enlace sigue siendo compartible) o query (enlaces de
+    // recibo ya emitidos). Se conserva en sessionStorage para refresh, y el
+    // `token` legacy se retira de la barra de direcciones porque ese sí llega
+    // al servidor y a los access logs.
+    const urlToken = readReceiptToken(window.location.search, window.location.hash);
+    if (urlToken && bookingId) {
+      try { sessionStorage.setItem(`booking_token_${bookingId}`, urlToken); } catch { /* best-effort */ }
+      try {
+        const clean = new URL(window.location.href);
+        if (clean.searchParams.has('token')) {
+          clean.searchParams.delete('token');
+          window.history.replaceState(null, '', clean.pathname + clean.search + clean.hash);
+        }
+      } catch { /* best-effort */ }
+    }
+    const token = urlToken
+      || (() => { try { return sessionStorage.getItem(`booking_token_${bookingId}`) || ''; } catch { return ''; } })();
 
     if (!bookingId) {
       loadingContainer?.classList.add('hidden');

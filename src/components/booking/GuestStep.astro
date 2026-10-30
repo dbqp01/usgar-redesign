@@ -8,6 +8,29 @@ import { getRelativeLocaleUrl } from 'astro:i18n';
 const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
 const loginUrl = getRelativeLocaleUrl(lang, 'login');
+const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
+const termsUrl = getRelativeLocaleUrl(lang, 'terms');
+
+// Copia legal corta en los 4 idiomas (fr/pt ya tienen política propia). No es
+// consentimiento: la base legal de la reserva es ejecutar el contrato.
+const privacyNotice: Record<Locale, string> = {
+  en: 'We use your name, email and phone to manage your booking and comply with legal obligations. We never sell your data. See the Privacy Policy for how long we keep your data and your rights.',
+  es: 'Usamos tu nombre, correo y teléfono para gestionar tu reserva y cumplir obligaciones legales. Nunca vendemos tus datos. Consulta la Política de Privacidad para saber cuánto tiempo los conservamos y cuáles son tus derechos.',
+  fr: "Nous utilisons votre nom, votre e-mail et votre téléphone pour gérer votre réservation et respecter nos obligations légales. Nous ne vendons jamais vos données. Consultez la Politique de confidentialité pour connaître la durée de conservation et vos droits.",
+  pt: 'Usamos seu nome, e-mail e telefone para gerenciar sua reserva e cumprir obrigações legais. Nunca vendemos seus dados. Consulte a Política de Privacidade para saber por quanto tempo os guardamos e quais são seus direitos.',
+};
+const acceptanceLabel: Record<Locale, string> = {
+  en: 'I accept the Terms of Service for this booking.',
+  es: 'Acepto los Términos y Condiciones de esta reserva.',
+  fr: "J'accepte les Conditions générales de cette réservation.",
+  pt: 'Aceito os Termos e Condições desta reserva.',
+};
+const acceptanceError: Record<Locale, string> = {
+  en: 'Please accept the Terms of Service to continue.',
+  es: 'Acepta los Términos y Condiciones para continuar.',
+  fr: 'Veuillez accepter les Conditions générales pour continuer.',
+  pt: 'Aceite os Termos e Condições para continuar.',
+};
 ---
 
 <div data-guest-step class="space-y-6">
@@ -20,6 +43,18 @@ const loginUrl = getRelativeLocaleUrl(lang, 'login');
         {t('book.guestSubtitle')}
       </p>
     </div>
+
+    <!-- Aviso de privacidad: antes de recolectar nombre, correo y teléfono -->
+    <p
+      id="guest-privacy-notice"
+      class="text-xs leading-relaxed text-text-secondary-light dark:text-text-secondary-dark bg-black/2 dark:bg-white/2 border border-black/6 dark:border-white/6 rounded-xl p-3.5"
+    >
+      {privacyNotice[lang]}{' '}
+      <a
+        href={privacyUrl}
+        class="underline decoration-secondary/60 underline-offset-2 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/50 rounded"
+      >{t('footer.privacy')}</a>
+    </p>
 
     <!-- Login Prefill Banner -->
     <div id="auth-prefill-banner" class="flex items-center justify-between gap-3 p-3.5 rounded-xl border border-secondary/20 bg-secondary/5">
@@ -45,6 +80,7 @@ const loginUrl = getRelativeLocaleUrl(lang, 'login');
           id="guest-name"
           name="guestName"
           required
+          aria-describedby="guest-privacy-notice"
           placeholder={t('book.guestNamePlaceholder')}
           class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-white focus:ring-2 focus:ring-secondary/40 focus:border-secondary outline-none transition-all placeholder:text-black/30 dark:placeholder:text-white/30"
         />
@@ -60,6 +96,7 @@ const loginUrl = getRelativeLocaleUrl(lang, 'login');
             id="guest-email"
             name="guestEmail"
             required
+            aria-describedby="guest-privacy-notice"
             placeholder={t('book.emailPlaceholder')}
             class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-white focus:ring-2 focus:ring-secondary/40 focus:border-secondary outline-none transition-all placeholder:text-black/30 dark:placeholder:text-white/30"
           />
@@ -74,6 +111,7 @@ const loginUrl = getRelativeLocaleUrl(lang, 'login');
             id="guest-phone"
             name="guestPhone"
             required
+            aria-describedby="guest-privacy-notice"
             placeholder={t('book.phonePlaceholder')}
             class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-white focus:ring-2 focus:ring-secondary/40 focus:border-secondary outline-none transition-all placeholder:text-black/30 dark:placeholder:text-white/30"
           />
@@ -152,6 +190,29 @@ const loginUrl = getRelativeLocaleUrl(lang, 'login');
           </div>
         </div>
       </div>
+
+      <!-- Aceptación contractual explícita: se exige antes de pasar al pago -->
+      <div class="flex items-start gap-3 pt-4 border-t border-black/6 dark:border-white/6">
+        <input
+          type="checkbox"
+          id="booking-acceptance"
+          name="bookingAcceptance"
+          required
+          aria-describedby="booking-acceptance-hint"
+          data-acceptance-error={acceptanceError[lang]}
+          class="w-4 h-4 rounded text-secondary focus:ring-secondary border-black/15 dark:border-white/15 cursor-pointer accent-secondary mt-0.5"
+        />
+        <div class="text-xs leading-relaxed">
+          <label for="booking-acceptance" class="font-semibold text-text-primary-light dark:text-white cursor-pointer">
+            {acceptanceLabel[lang]}
+          </label>
+          <p id="booking-acceptance-hint" class="text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
+            <a href={termsUrl} class="underline decoration-secondary/60 underline-offset-2 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/50 rounded">{t('footer.terms')}</a>
+            <span aria-hidden="true"> · </span>
+            <a href={privacyUrl} class="underline decoration-secondary/60 underline-offset-2 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/50 rounded">{t('footer.privacy')}</a>
+          </p>
+        </div>
+      </div>
     </div>
   </form>
 
@@ -212,6 +273,7 @@ const loginUrl = getRelativeLocaleUrl(lang, 'login');
     }
 
     const transferCb = document.getElementById('airport-transfer') as HTMLInputElement | null;
+    const bookingAcceptanceEl = document.getElementById('booking-acceptance') as HTMLInputElement | null;
     const transferDetails = document.getElementById('transfer-details');
     const flightTimeInput = document.getElementById('flight-time') as HTMLInputElement | null;
     const flightDetailsInput = document.getElementById('flight-details') as HTMLInputElement | null;
@@ -265,6 +327,13 @@ const loginUrl = getRelativeLocaleUrl(lang, 'login');
           showError(L.guestTransferValidation || 'To arrange your private transfer, please enter your exact landing time and flight number.');
           return;
         }
+      }
+
+      // Sin aceptación de las condiciones no se crea el hold ni se cobra.
+      if (!bookingAcceptanceEl?.checked) {
+        showError(bookingAcceptanceEl?.dataset.acceptanceError || 'Please accept the Terms and Conditions to continue.');
+        bookingAcceptanceEl?.focus();
+        return;
       }
 
       nextBtn.disabled = true;

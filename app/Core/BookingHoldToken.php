@@ -22,4 +22,17 @@ class BookingHoldToken {
         }
         return hash_hmac('sha256', $cartId . ':' . $guestEmail, $secretKey);
     }
+
+    /**
+     * Token de acceso de la peticion: cabecera X-Booking-Token (canal nuevo,
+     * no queda en URL/historial/Referer/access logs) o query `token`
+     * (enlaces de recibo ya emitidos).
+     */
+    public static function fromRequest(Request $request): string {
+        $header = trim((string)($request->getHeader('x-booking-token') ?? ''));
+        if ($header !== '') {
+            return $header;
+        }
+        return trim((string)($request->getQuery('token') ?? ''));
+    }
 }

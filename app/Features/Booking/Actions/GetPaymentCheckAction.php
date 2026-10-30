@@ -11,7 +11,9 @@ use App\Features\Booking\Domain\ProvisionalBookingRepository;
 use App\Features\Shared\Ports\PaymentGatewayPortInterface;
 
 /**
- * Accion ADR: GET /api/payment-check?cart_id=...&token=...
+ * Accion ADR: GET /api/payment-check?cart_id=...
+ * El token de ownership viaja en la cabecera X-Booking-Token; el query
+ * `token` se sigue aceptando por compatibilidad con enlaces ya emitidos.
  * Consulta si existe un pago en MercadoPago para el cart.
  * Misma validacion de ownership de cart que GetBookingStatusAction (token
  * HMAC derivado de cart_id + email del guest): NUNCA expone la existencia de
@@ -43,7 +45,7 @@ class GetPaymentCheckAction {
 
     public function __invoke(Request $request): void {
         $cartId = (string)($request->getQuery('cart_id') ?? '');
-        $providedToken = (string)($request->getQuery('token') ?? '');
+        $providedToken = BookingHoldToken::fromRequest($request);
 
         if ($cartId === '') {
             throw HttpException::badRequest('Falta el parametro cart_id.');
@@ -61,6 +63,9 @@ class GetPaymentCheckAction {
         if (empty($providedToken) || !hash_equals($expectedToken, $providedToken)) {
             throw HttpException::unauthorized('Token de autorizacion invalido o ausente.');
         }
+
+        // Datos de pago del hold: nunca cachear en navegador/proxy.
+        header('Cache-Control: no-store');
 
         // 1) Fuente local: el hold ya tiene payment_id (intento previo
         //    pending/in_process o commit-falla con attach OK).

@@ -52,8 +52,12 @@ export async function fetchBookingStatus(
   signal?: AbortSignal
 ): Promise<BookingStatusPayload> {
   const API_BASE_URL = (import.meta.env?.PUBLIC_API_URL || window.location.origin + '/api').replace(/\/$/, '');
-  const tokenParam = token ? `&token=${encodeURIComponent(token)}` : '';
-  const response = await fetch(`${API_BASE_URL}/booking-status?cart_id=${encodeURIComponent(bookingId)}${tokenParam}`, { signal });
+  // El token va en cabecera: en un query queda en access logs, historial y
+  // Referer de peticiones same-origin.
+  const response = await fetch(`${API_BASE_URL}/booking-status?cart_id=${encodeURIComponent(bookingId)}`, {
+    signal,
+    headers: token ? { 'X-Booking-Token': token } : {},
+  });
   if (!response.ok) {
     throw new BookingStatusHttpError(response.status, parseRetryAfter(response.headers.get('Retry-After')));
   }

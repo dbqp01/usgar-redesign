@@ -76,6 +76,7 @@ test.describe('USGAR booking wizard (Fase 4)', () => {
     await page.locator('#guest-name').fill('Test User');
     await page.locator('#guest-email').fill('test@example.com');
     await page.locator('#guest-phone').fill('+51 999 888 777');
+    await page.locator('#booking-acceptance').check();
     await page.locator('[data-guest-next]').click();
 
     // Tras CONTINUE aparece el placeholder de preparacion del pago; el
