@@ -79,11 +79,16 @@ describe('privacy copy matches the data practices in code', () => {
     expect(source).not.toMatch(/encrypted session|tokens? de sesión cifrados|jetons? de session chiffrés|tokens? de sessão cifrados/i);
   });
 
-  it('uses the current regulation and calendar days, not business days', () => {
+  it('does not promise calendar-day deadlines for Peruvian rights', () => {
     for (const locale of LOCALES) {
       expect(privacy[locale]).toContain('016-2024-JUS');
     }
-    expect(source).not.toMatch(/días hábiles|business days|jours ouvrables|dias úteis/i);
+    expect(source).not.toMatch(/calendar days|días calendario|jours calendaires|dias corridos/i);
+  });
+
+  it('does not claim an unverified transfer mechanism or automatic deletion', () => {
+    expect(source).not.toMatch(/rely on the transfer mechanism|nos apoyamos en el mecanismo|nous nous appuyons sur le mécanisme|contamos com o mecanismo/i);
+    expect(source).not.toMatch(/we keep your address only|conservamos tu dirección solo|conservons votre adresse uniquement|guardamos o seu endereço apenas/i);
   });
 
   it('describes the newsletter double opt-in and the unsubscribe route', () => {

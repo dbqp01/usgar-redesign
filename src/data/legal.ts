@@ -85,13 +85,13 @@ export const privacySections: Record<LegalLocale, LegalSection[]> = {
       title: "5. Who receives your data",
       body: [
         "MercadoPago, for payments. QloApps, the property management system where we record your reservation, at cms.usgarhoteles.com. Hostinger, which hosts the website and sends our email. Google, Microsoft or Facebook, only if you choose to sign in with them. CARTO and OpenStreetMap, which serve the map tiles. Public authorities, when the law requires it.",
-        `We do not sell your data. Some of these providers may process data outside Peru; where that happens, we rely on the transfer mechanism the provider makes available. You can ask us for the current details at ${siteSettings.email}.`,
+        `We do not sell your data. Some providers may process data outside Peru. For information about international transfers, write to ${siteSettings.email}.`,
       ],
     },
     {
       title: "6. Your rights",
       body: [
-        "Peru: under Law No. 29733 and its regulation (Supreme Decree No. 016-2024-JUS) you can request information about your data (8 days), access (20 days), and rectification, cancellation or opposition (10 days). These are calendar days counted from the day after your request (article 69 of the regulation). You can also complain to the National Authority for Personal Data Protection (ANPD).",
+        "Peru: under Law No. 29733 and its regulation (Supreme Decree No. 016-2024-JUS) you can request information, access, rectification, cancellation or opposition concerning your data. We will respond within the applicable legal deadlines. You can also complain to the National Authority for Personal Data Protection (ANPD).",
         "European Union / EEA: the GDPR also gives you the right to erasure, restriction, portability and objection, to withdraw consent, and to complain to your local supervisory authority.",
         `Requests are free. Write to ${siteSettings.email} and identify yourself; we may ask for proof of identity. We may keep data that the law requires us to keep.`,
       ],
@@ -99,7 +99,7 @@ export const privacySections: Record<LegalLocale, LegalSection[]> = {
     {
       title: "7. Retention and security",
       body: [
-        "Booking and payment records are kept for the stay and afterwards for the period required by Peruvian tax and lodging rules. Contact messages are kept while we handle your request and any follow-up. Account data is kept until you ask us to close the account. Newsletter data is kept while you remain subscribed. If you unsubscribe, we keep your address only to make sure we do not send to you again.",
+        "We retain booking, payment, contact, account and newsletter records. Retention depends on the purpose, applicable obligations and any outstanding requests or disputes. After you unsubscribe, your newsletter record remains marked as unsubscribed. Contact us for information about your records or to exercise your rights.",
         "We use HTTPS with HSTS, signed session tokens (HMAC-SHA256) in HttpOnly, Secure and SameSite=Lax cookies, CSRF tokens in forms, hashed passwords, access controls and request rate limits.",
       ],
     },
@@ -145,13 +145,13 @@ export const privacySections: Record<LegalLocale, LegalSection[]> = {
       title: "5. Quién recibe tus datos",
       body: [
         "MercadoPago, para los pagos. QloApps, el sistema de gestión hotelera donde registramos tu reserva, en cms.usgarhoteles.com. Hostinger, que aloja el sitio web y envía nuestro correo. Google, Microsoft o Facebook, solo si eliges ingresar con ellos. CARTO y OpenStreetMap, que sirven las teselas del mapa. Autoridades públicas, cuando la ley lo exige.",
-        `No vendemos tus datos. Algunos de estos proveedores pueden tratar datos fuera del Perú; en esos casos nos apoyamos en el mecanismo de transferencia que el proveedor pone a disposición. Puedes pedirnos el detalle vigente en ${siteSettings.email}.`,
+        `No vendemos tus datos. Algunos proveedores pueden tratarlos fuera del Perú. Para consultar sobre transferencias internacionales, escríbenos a ${siteSettings.email}.`,
       ],
     },
     {
       title: "6. Tus derechos",
       body: [
-        "Perú: conforme a la Ley N. 29733 y su reglamento (Decreto Supremo N. 016-2024-JUS), puedes solicitar información sobre tus datos (8 días), acceso (20 días) y rectificación, cancelación u oposición (10 días). Son días calendario contados desde el día siguiente de tu solicitud (artículo 69 del reglamento). También puedes reclamar ante la Autoridad Nacional de Protección de Datos Personales (ANPD).",
+        "Perú: conforme a la Ley N. 29733 y su reglamento (Decreto Supremo N. 016-2024-JUS), puedes solicitar información, acceso, rectificación, cancelación u oposición respecto a tus datos. Responderemos dentro de los plazos legales aplicables. También puedes reclamar ante la Autoridad Nacional de Protección de Datos Personales (ANPD).",
         "Unión Europea / EEE: el GDPR también te da derecho a la supresión, limitación, portabilidad y oposición, a retirar el consentimiento y a reclamar ante tu autoridad de control.",
         `Las solicitudes son gratuitas. Escríbenos a ${siteSettings.email} identificándote; podemos pedirte prueba de identidad. Podemos conservar los datos que la ley nos obliga a mantener.`,
       ],
@@ -159,7 +159,7 @@ export const privacySections: Record<LegalLocale, LegalSection[]> = {
     {
       title: "7. Conservación y seguridad",
       body: [
-        "Los registros de reserva y pago se conservan durante la estadía y luego por el plazo exigido por la normativa tributaria y de hospedaje peruana. Los mensajes de contacto se conservan mientras atendemos tu solicitud y su seguimiento. Los datos de cuenta se conservan hasta que pides cerrarla. Los datos de la newsletter se conservan mientras sigas suscrito. Si te das de baja, conservamos tu dirección solo para asegurarnos de no volver a escribirte.",
+        "Conservamos registros de reservas, pagos, contacto, cuentas y newsletter. La conservación depende de la finalidad, las obligaciones aplicables y las solicitudes o controversias pendientes. Al darte de baja, tu registro de newsletter permanece marcado como dado de baja. Contáctanos para consultar sobre tus datos o ejercer tus derechos.",
         "Usamos HTTPS con HSTS, tokens de sesión firmados (HMAC-SHA256) en cookies HttpOnly, Secure y SameSite=Lax, tokens CSRF en los formularios, contraseñas con hash, control de accesos y límites de peticiones.",
       ],
     },
@@ -205,13 +205,13 @@ export const privacySections: Record<LegalLocale, LegalSection[]> = {
       title: "5. Qui reçoit vos données",
       body: [
         "MercadoPago, pour les paiements. QloApps, le système de gestion hôtelière où nous enregistrons votre réservation, sur cms.usgarhoteles.com. Hostinger, qui héberge le site et envoie nos e-mails. Google, Microsoft ou Facebook, uniquement si vous choisissez de vous connecter avec eux. CARTO et OpenStreetMap, qui fournissent les tuiles de la carte. Les autorités publiques, lorsque la loi l'exige.",
-        `Nous ne vendons pas vos données. Certains de ces prestataires peuvent traiter des données hors du Pérou ; dans ce cas, nous nous appuyons sur le mécanisme de transfert mis à disposition par le prestataire. Vous pouvez nous demander le détail en vigueur à ${siteSettings.email}.`,
+        `Nous ne vendons pas vos données. Certains prestataires peuvent les traiter hors du Pérou. Pour toute question sur les transferts internationaux, écrivez-nous à ${siteSettings.email}.`,
       ],
     },
     {
       title: "6. Vos droits",
       body: [
-        "Pérou : en vertu de la loi n° 29733 et de son règlement (décret suprême n° 016-2024-JUS), vous pouvez demander des informations sur vos données (8 jours), y accéder (20 jours) et en demander la rectification, l'annulation ou l'opposition (10 jours). Il s'agit de jours calendaires comptés à partir du lendemain de votre demande (article 69 du règlement). Vous pouvez aussi saisir l'Autorité nationale de protection des données personnelles (ANPD).",
+        "Pérou : en vertu de la loi n° 29733 et de son règlement (décret suprême n° 016-2024-JUS), vous pouvez demander l'information, l'accès, la rectification, l'annulation ou l'opposition concernant vos données. Nous répondrons dans les délais légaux applicables. Vous pouvez aussi saisir l'Autorité nationale de protection des données personnelles (ANPD).",
         "Union européenne / EEE : le RGPD vous donne aussi le droit à l'effacement, à la limitation, à la portabilité et à l'opposition, le droit de retirer votre consentement et celui de saisir votre autorité de contrôle.",
         `Les demandes sont gratuites. Écrivez-nous à ${siteSettings.email} en vous identifiant ; nous pouvons demander une preuve d'identité. Nous pouvons conserver les données que la loi nous oblige à garder.`,
       ],
@@ -219,7 +219,7 @@ export const privacySections: Record<LegalLocale, LegalSection[]> = {
     {
       title: "7. Conservation et sécurité",
       body: [
-        "Les données de réservation et de paiement sont conservées pendant le séjour, puis pendant la durée exigée par la réglementation fiscale et hôtelière péruvienne. Les messages de contact sont conservés le temps de traiter votre demande et son suivi. Les données de compte sont conservées jusqu'à ce que vous demandiez sa fermeture. Les données de newsletter sont conservées tant que vous restez abonné. En cas de désabonnement, nous conservons votre adresse uniquement pour éviter de vous écrire à nouveau.",
+        "Nous conservons les données de réservation, paiement, contact, compte et newsletter. Leur conservation dépend de la finalité, des obligations applicables et des demandes ou litiges en cours. Après désabonnement, votre inscription reste marquée comme résiliée. Contactez-nous pour vous informer sur vos données ou exercer vos droits.",
         "Nous utilisons HTTPS avec HSTS, des jetons de session signés (HMAC-SHA256) dans des cookies HttpOnly, Secure et SameSite=Lax, des jetons CSRF dans les formulaires, des mots de passe hachés, des contrôles d'accès et une limitation du débit des requêtes.",
       ],
     },
@@ -265,13 +265,13 @@ export const privacySections: Record<LegalLocale, LegalSection[]> = {
       title: "5. Quem recebe seus dados",
       body: [
         "MercadoPago, para os pagamentos. QloApps, o sistema de gestão hoteleira onde registramos a sua reserva, em cms.usgarhoteles.com. Hostinger, que hospeda o site e envia os nossos e-mails. Google, Microsoft ou Facebook, apenas se escolher entrar com eles. CARTO e OpenStreetMap, que fornecem os blocos do mapa. Autoridades públicas, quando a lei exige.",
-        `Não vendemos os seus dados. Alguns destes fornecedores podem tratar dados fora do Peru; nesses casos, contamos com o mecanismo de transferência disponibilizado pelo fornecedor. Você pode pedir o detalhe em vigor em ${siteSettings.email}.`,
+        `Não vendemos os seus dados. Alguns fornecedores podem tratá-los fora do Peru. Para informações sobre transferências internacionais, escreva para ${siteSettings.email}.`,
       ],
     },
     {
       title: "6. Seus direitos",
       body: [
-        "Peru: ao abrigo da Lei n.º 29733 e do seu regulamento (Decreto Supremo n.º 016-2024-JUS), você pode pedir informações sobre os seus dados (8 dias), acesso (20 dias) e retificação, cancelamento ou oposição (10 dias). São dias corridos contados a partir do dia seguinte ao seu pedido (artigo 69 do regulamento). Também pode reclamar à Autoridade Nacional de Proteção de Dados Pessoais (ANPD).",
+        "Peru: de acordo com a Lei n.º 29733 e seu regulamento (Decreto Supremo n.º 016-2024-JUS), você pode solicitar informação, acesso, retificação, cancelamento ou oposição em relação aos seus dados. Responderemos nos prazos legais aplicáveis. Você também pode reclamar à Autoridade Nacional de Proteção de Dados Pessoais (ANPD).",
         "União Europeia / EEE: o RGPD também garante o direito de exclusão, limitação, portabilidade e oposição, de retirar o consentimento e de reclamar junto da sua autoridade de controle.",
         `Os pedidos são gratuitos. Escreva para ${siteSettings.email} identificando-se; podemos pedir prova de identidade. Podemos conservar os dados que a lei nos obriga a manter.`,
       ],
@@ -279,7 +279,7 @@ export const privacySections: Record<LegalLocale, LegalSection[]> = {
     {
       title: "7. Conservação e segurança",
       body: [
-        "Os registros de reserva e pagamento são conservados durante a estadia e depois pelo prazo exigido pela regulamentação fiscal e de hospedagem peruana. As mensagens de contato são conservadas enquanto tratamos do seu pedido e do respectivo acompanhamento. Os dados de conta são conservados até você pedir o seu encerramento. Os dados da newsletter são conservados enquanto você permanecer inscrito. Se cancelar, guardamos o seu endereço apenas para garantir que não voltaremos a escrever.",
+        "Conservamos registros de reservas, pagamentos, contato, contas e newsletter. A conservação depende da finalidade, das obrigações aplicáveis e de solicitações ou disputas pendentes. Após o cancelamento, seu registro da newsletter permanece marcado como cancelado. Entre em contato para consultar seus dados ou exercer seus direitos.",
         "Usamos HTTPS com HSTS, tokens de sessão assinados (HMAC-SHA256) em cookies HttpOnly, Secure e SameSite=Lax, tokens CSRF nos formulários, senhas com hash, controle de acessos e limites de pedidos.",
       ],
     },
