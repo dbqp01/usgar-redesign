@@ -1,11 +1,11 @@
 ---
 // src/components/CookieConsent.astro
-// Banner informativo de cookies (Ley 29733 / GDPR ePrivacy): el sitio solo usa
-// cookies estrictamente necesarias, asi que no hay cookies que bloquear — solo
-// se informa y se guarda la eleccion en localStorage.
-// Sin scripts de tracking/analytics en src/; cookies propias usgar_session y
-// usgar_panel, ambas de sesión/funcionales. Nota: el iframe del Brick de MP
-// puede fijar sus propias cookies de terceros, fuera del control del sitio.
+// Aviso informativo (Ley 29733 / GDPR ePrivacy). El sitio solo usa
+// almacenamiento estrictamente necesario, así que no hay categorías opcionales
+// que aceptar o rechazar: se informa del almacenamiento real y se reconoce el
+// aviso. No se bloquea ni se borra ninguna cookie.
+// Tercero condicional: el Brick de MercadoPago solo se carga en /book y puede
+// fijar sus propias cookies; el aviso lo dice expresamente.
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { useTranslations, type Locale } from "../i18n/utils";
 
@@ -17,21 +17,48 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const privacyUrl = getRelativeLocaleUrl(lang, "privacy");
 const termsUrl = getRelativeLocaleUrl(lang, "terms");
+
+// Copy local: las claves de src/i18n no describen el almacenamiento real.
+const COPY = {
+  en: {
+    title: "Cookies and local storage",
+    text: "We only store what the site needs to work: login and security cookies (e.g. usgar_session, usgar_csrf), your theme and this notice in local storage, and your booking and login state in session storage. No analytics or marketing cookies. MercadoPago may set its own cookies when you book.",
+    action: "Understood",
+  },
+  es: {
+    title: "Cookies y almacenamiento local",
+    text: "Solo guardamos lo que el sitio necesita para funcionar: cookies de inicio de sesión y seguridad (p. ej. usgar_session, usgar_csrf), tu tema y este aviso en el almacenamiento local, y tu reserva y sesión en el almacenamiento de sesión. Sin cookies de analítica ni marketing. MercadoPago puede usar sus propias cookies al reservar.",
+    action: "Entendido",
+  },
+  fr: {
+    title: "Cookies et stockage local",
+    text: "Nous ne stockons que ce qui est nécessaire au fonctionnement du site : cookies de connexion et de sécurité (p. ex. usgar_session, usgar_csrf), votre thème et cet avis dans le stockage local, et votre réservation et connexion dans le stockage de session. Aucun cookie d'analyse ni de marketing. MercadoPago peut utiliser ses propres cookies lors d'une réservation.",
+    action: "Compris",
+  },
+  pt: {
+    title: "Cookies e armazenamento local",
+    text: "Guardamos apenas o que o site precisa para funcionar: cookies de login e segurança (p. ex. usgar_session, usgar_csrf), seu tema e este aviso no armazenamento local, e sua reserva e login no armazenamento de sessão. Sem cookies de análise nem de marketing. A MercadoPago pode usar cookies próprios ao reservar.",
+    action: "Entendi",
+  },
+} as const;
+
+const copy = COPY[lang] ?? COPY.en;
 ---
 
 <div
   id="cookie-consent"
   class="fixed inset-x-0 bottom-0 z-[1200] hidden px-2 pb-2 sm:px-4 sm:pb-4"
   role="region"
-  aria-label={t("cookie.title")}
+  aria-labelledby="cookie-consent-title"
+  aria-describedby="cookie-consent-text"
 >
-  <div class="mx-auto flex max-w-3xl flex-col gap-2 rounded-xl border border-black/10 bg-white/95 p-3 shadow-2xl dark:border-white/10 dark:bg-surface-card-dark/95 sm:gap-4 sm:rounded-2xl sm:p-5 sm:flex-row sm:items-center">
+  <div class="mx-auto flex max-w-3xl flex-col gap-2 rounded-xl border border-black/10 bg-white p-3 shadow-2xl dark:border-white/20 dark:bg-surface-card-dark sm:gap-4 sm:rounded-2xl sm:p-5 sm:flex-row sm:items-center">
     <div class="flex-1">
-      <p class="font-display text-xs uppercase tracking-wider text-text-primary-light dark:text-white sm:text-sm">
-        {t("cookie.title")}
-      </p>
-      <p class="text-[11px] leading-snug text-text-secondary-light dark:text-text-secondary-dark sm:mt-1 sm:text-xs sm:leading-relaxed">
-        {t("cookie.text")}{" "}
+      <h2 id="cookie-consent-title" class="font-display text-xs uppercase tracking-wider text-text-primary-light dark:text-white sm:text-sm">
+        {copy.title}
+      </h2>
+      <p id="cookie-consent-text" class="text-sm leading-relaxed text-text-secondary-light dark:text-text-secondary-dark sm:mt-1">
+        {copy.text}{" "}
         <a href={privacyUrl} class="underline decoration-secondary underline-offset-2 hover:text-secondary transition-colors">
           {t("footer.privacy")}
         </a>
@@ -44,17 +71,10 @@ const termsUrl = getRelativeLocaleUrl(lang, "terms");
     <div class="flex flex-shrink-0 justify-end gap-2">
       <button
         type="button"
-        data-cookie-choice="declined"
-        class="rounded-full border border-black/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-text-secondary-light transition-colors hover:border-secondary hover:text-secondary dark:border-white/15 dark:text-text-secondary-dark sm:px-5 sm:py-2 sm:text-xs"
+        data-cookie-choice="acknowledged"
+        class="btn-primary inline-flex min-h-11 items-center justify-center rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wider sm:min-h-0 sm:px-5"
       >
-        {t("cookie.decline")}
-      </button>
-      <button
-        type="button"
-        data-cookie-choice="accepted"
-        class="btn-primary rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider sm:px-5 sm:py-2 sm:text-xs"
-      >
-        {t("cookie.accept")}
+        {copy.action}
       </button>
     </div>
   </div>
@@ -65,6 +85,7 @@ const termsUrl = getRelativeLocaleUrl(lang, "terms");
   // así que la lógica debe re-correr en cada navegación (astro:page-load) y
   // limpiarse antes de preparar la transición (astro:before-preparation).
   const STORAGE_KEY = "usgar-cookie-consent";
+  const ACKNOWLEDGED = "acknowledged";
   let timer: number | null = null;
 
   function hasStoredChoice(): boolean {
@@ -75,9 +96,9 @@ const termsUrl = getRelativeLocaleUrl(lang, "terms");
     }
   }
 
-  function save(choice: string) {
+  function save() {
     try {
-      localStorage.setItem(STORAGE_KEY, choice);
+      localStorage.setItem(STORAGE_KEY, ACKNOWLEDGED);
     } catch {
       /* no-op */
     }
@@ -107,21 +128,21 @@ const termsUrl = getRelativeLocaleUrl(lang, "terms");
       banner.style.bottom = "9rem";
     }
 
-    // Estado ya decidido (esta página o una anterior): oculto, sin eventos.
+    // Estado ya reconocido (esta página o una anterior): oculto, sin eventos.
     if (hasStoredChoice()) {
       banner.classList.add("hidden");
       return;
     }
 
-    // Primera visita: mostrar tras un respiro; aceptar/rechazar guarda la elección.
+    // Primera visita: mostrar tras un respiro; el botón solo reconoce el aviso.
     if (timer === null) {
       timer = window.setTimeout(() => showBanner(banner), 1500);
     }
-    banner.querySelectorAll<HTMLButtonElement>("[data-cookie-choice]").forEach((btn) => {
-      if (btn.dataset.hooked) return;
-      btn.dataset.hooked = "1";
-      btn.addEventListener("click", () => save(btn.dataset.cookieChoice || "accepted"));
-    });
+    const action = banner.querySelector<HTMLButtonElement>("[data-cookie-choice]");
+    if (action && !action.dataset.hooked) {
+      action.dataset.hooked = "1";
+      action.addEventListener("click", save);
+    }
   }
 
   document.addEventListener("astro:page-load", initCookieConsent);

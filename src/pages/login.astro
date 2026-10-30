@@ -1,11 +1,22 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { useTranslations, type Locale } from "../i18n/utils";
+import { getRelativeLocaleUrl } from "astro:i18n";
 
 export const prerender = true;
 
 const lang = (Astro.currentLocale || "en") as Locale;
 const t = useTranslations(lang);
+const privacyUrl = getRelativeLocaleUrl(lang, "privacy");
+
+// Copia legal corta en los 4 idiomas. No es consentimiento: la cuenta se rige
+// por la ejecución del contrato.
+const privacyNotice: Record<Locale, string> = {
+  en: "We use your name and email — whether you enter them or your sign-in provider shares them — only to create and secure your account. See the Privacy Policy for your rights.",
+  es: "Usamos tu nombre y correo —los que ingresas o los que comparte tu proveedor de inicio de sesión— solo para crear y proteger tu cuenta. Consulta la Política de Privacidad para conocer tus derechos.",
+  fr: "Nous utilisons votre nom et votre e-mail — saisis par vous ou partagés par votre fournisseur de connexion — uniquement pour créer et sécuriser votre compte. Consultez la Politique de confidentialité pour connaître vos droits.",
+  pt: "Usamos seu nome e e-mail — informados por você ou compartilhados pelo seu provedor de login — apenas para criar e proteger sua conta. Consulte a Política de Privacidade para conhecer seus direitos.",
+};
 
 // La página es prerender (output: static): Astro.url.searchParams se evalúa en
 // BUILD, no por request — por eso ?error= y ?redirect= se leen en el CLIENTE
@@ -31,6 +42,18 @@ const DEFAULT_REDIRECT = '/my-bookings';
           {t('auth.welcomeSubtitle')}
         </p>
       </div>
+
+      <!-- Aviso de privacidad: antes de OAuth, inicio de sesión o registro -->
+      <p
+        id="auth-privacy-notice"
+        class="text-xs leading-relaxed text-text-secondary-light dark:text-text-secondary-dark border-l-2 border-secondary/40 pl-3"
+      >
+        {privacyNotice[lang]}{" "}
+        <a
+          href={privacyUrl}
+          class="underline decoration-secondary/60 underline-offset-2 hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/50 rounded"
+        >{t('footer.privacy')}</a>
+      </p>
 
       <!-- Error Alert (dinámico vía JS — ver initLogin: el banner SSR no funciona en prerender) -->
       <div id="auth-alert" class="hidden p-4 rounded-xl border text-sm font-medium flex items-center gap-3">
@@ -134,6 +157,7 @@ const DEFAULT_REDIRECT = '/my-bookings';
               name="email"
               required
               autocomplete="email"
+              aria-describedby="auth-privacy-notice"
               placeholder="e.g. john@example.com"
               class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-card-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-white focus:ring-2 focus:ring-secondary focus-visible:outline-none transition-[border-color,box-shadow] placeholder:text-stone-400 dark:placeholder:text-stone-500"
             />
@@ -176,6 +200,7 @@ const DEFAULT_REDIRECT = '/my-bookings';
               name="fullName"
               required
               autocomplete="name"
+              aria-describedby="auth-privacy-notice"
               placeholder="e.g. John Doe"
               class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-card-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-white focus:ring-2 focus:ring-secondary outline-none transition-[border-color,box-shadow] placeholder:text-stone-400 dark:placeholder:text-stone-500"
             />
@@ -191,6 +216,7 @@ const DEFAULT_REDIRECT = '/my-bookings';
               name="email"
               required
               autocomplete="email"
+              aria-describedby="auth-privacy-notice"
               placeholder="e.g. john@example.com"
               class="w-full px-4 py-3 rounded-xl bg-white dark:bg-surface-card-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-white focus:ring-2 focus:ring-secondary outline-none transition-[border-color,box-shadow] placeholder:text-stone-400 dark:placeholder:text-stone-500"
             />

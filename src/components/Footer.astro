@@ -35,8 +35,10 @@ const socialLinks = siteSettings.socialLinks
 
 const tripadvisorUrl = siteSettings.socialLinks.find(s => s.platform === 'tripadvisor')?.url || '#';
 const bookingUrl = siteSettings.socialLinks.find(s => s.platform === 'booking')?.url || '#';
+const privacyUrl = getRelativeLocaleUrl(lang, 'privacy');
 const newsletterStatusLabels = {
-  success: t('footer.newsletterSuccess'),
+  confirmSent: t('footer.newsletterConfirmSent'),
+  consentRequired: t('footer.newsletterConsentRequired'),
   error: t('footer.newsletterError'),
   invalid: t('footer.newsletterEmailInvalid'),
 };
@@ -60,23 +62,47 @@ const newsletterStatusLabels = {
       <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark font-light mb-6">
         {t('footer.newsletterDesc')}
       </p>
-      <form id="newsletter-form" class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" novalidate data-labels={JSON.stringify(newsletterStatusLabels)}>
-        <label for="newsletter-email" class="sr-only">Email</label>
-        <input
-          type="email"
-          id="newsletter-email"
-          name="email"
-          autocomplete="email"
-          required
-          placeholder={t('footer.newsletterPlaceholder')}
-          class="flex-1 px-5 py-3.5 rounded-full bg-white dark:bg-surface-card-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-[border-color,box-shadow] placeholder:text-stone-400"
-        />
-        <button
-          type="submit"
-          class="btn-primary font-semibold px-7 py-3.5 rounded-full text-sm uppercase tracking-wider whitespace-nowrap"
-        >
-          {t('footer.newsletterButton')}
-        </button>
+      <form
+        id="newsletter-form"
+        class="max-w-lg mx-auto text-left"
+        novalidate
+        aria-describedby="newsletter-consent-note"
+        data-labels={JSON.stringify(newsletterStatusLabels)}
+      >
+        <div class="flex flex-col sm:flex-row gap-3">
+          <label for="newsletter-email" class="sr-only">Email</label>
+          <input
+            type="email"
+            id="newsletter-email"
+            name="email"
+            autocomplete="email"
+            required
+            placeholder={t('footer.newsletterPlaceholder')}
+            class="flex-1 px-5 py-3.5 rounded-full bg-white dark:bg-surface-card-dark border border-black/10 dark:border-white/10 text-sm text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-[border-color,box-shadow] placeholder:text-stone-400"
+          />
+          <button
+            type="submit"
+            class="btn-primary font-semibold px-7 py-3.5 rounded-full text-sm uppercase tracking-wider whitespace-nowrap"
+          >
+            {t('footer.newsletterButton')}
+          </button>
+        </div>
+        <div class="mt-3.5 flex items-start gap-2.5">
+          <input
+            type="checkbox"
+            id="newsletter-consent"
+            name="consent"
+            required
+            class="w-4 h-4 mt-0.5 shrink-0 rounded text-secondary focus:ring-secondary border-black/15 dark:border-white/15 cursor-pointer accent-secondary"
+          />
+          <label for="newsletter-consent" class="text-xs leading-relaxed text-text-secondary-light dark:text-text-secondary-dark cursor-pointer select-none">
+            {t('footer.newsletterConsent')}
+          </label>
+        </div>
+        <p id="newsletter-consent-note" class="mt-2 pl-6 text-xs leading-relaxed text-text-secondary-light dark:text-text-secondary-dark font-light">
+          {t('footer.newsletterNotice')}{' '}
+          <a href={privacyUrl} class="underline hover:text-secondary transition-colors">{t('footer.privacy')}</a>
+        </p>
       </form>
       <p id="newsletter-status" class="hidden mt-3 text-xs font-semibold" role="status"></p>
     </div>
@@ -207,12 +233,14 @@ const newsletterStatusLabels = {
     const form = document.getElementById('newsletter-form') as HTMLFormElement | null;
     const status = document.getElementById('newsletter-status') as HTMLElement | null;
     const input = document.getElementById('newsletter-email') as HTMLInputElement | null;
-    if (!form || !status || !input) return;
+    const consent = document.getElementById('newsletter-consent') as HTMLInputElement | null;
+    if (!form || !status || !input || !consent) return;
 
     const labels = JSON.parse(form.dataset.labels || '{}') as Record<string, string>;
     const formEl = form;
     const statusEl = status;
     const inputEl = input;
+    const consentEl = consent;
     const signal = newsletterAbort.signal;
 
     function showStatus(message: string, ok: boolean) {
@@ -226,6 +254,11 @@ const newsletterStatusLabels = {
         showStatus(labels.invalid || 'Invalid email', false);
         return;
       }
+      if (!consentEl.checked) {
+        showStatus(labels.consentRequired || 'Consent required', false);
+        consentEl.focus();
+        return;
+      }
 
       const request = new AbortController();
       signal.addEventListener('abort', () => request.abort(), { once: true });
@@ -237,13 +270,17 @@ const newsletterStatusLabels = {
           body: JSON.stringify({
             email: inputEl.value.trim(),
             locale: document.documentElement.lang || 'en',
+            consent: true,
           }),
           signal: request.signal,
         });
         const data = await res.json();
         if (data.success) {
           inputEl.value = '';
-          showStatus(labels.success || 'Subscribed', true);
+          consentEl.checked = false;
+          showStatus(labels.confirmSent || 'Check your inbox to confirm', true);
+        } else if (data.error?.code === 'INVALID_EMAIL') {
+          showStatus(labels.invalid || 'Invalid email', false);
         } else {
           showStatus(labels.error || 'Something went wrong', false);
         }

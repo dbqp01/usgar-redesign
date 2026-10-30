@@ -65,6 +65,10 @@ const localeMap: Record<Locale, string> = {
 };
 
 const pathname = Astro.url.pathname;
+// La confirmacion de reserva es el final del embudo y puede mostrar datos de una
+// reserva: noindex en los cuatro locales, sin tocar la pagina de reserva.
+const isBookingSuccess = /^\/(?:(?:es|fr|pt)\/)?book\/success(?:\/|$)/.test(pathname);
+const robotsContent = robots ?? (isBookingSuccess ? 'noindex,nofollow' : undefined);
 // 404 incluida: es una pagina de error, no le hace falta el preloader, el
 // cursor custom ni el overlay de ruido. Ojo: en build Astro sirve la ruta
 // 404 con barra final ("/404/"), no "/404.html".
@@ -78,7 +82,7 @@ const isLightweightRoute = /^\/(?:book(?:\/|$)|profile(?:\/|$)|my-bookings(?:\/|
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
-    {robots && <meta name="robots" content={robots} />}
+    {robotsContent && <meta name="robots" content={robotsContent} />}
 
     <!-- SEO -->
     <title>{title}</title>
