@@ -75,6 +75,9 @@ jobs:
         run: |
           npm run build > build.log 2>&1 || (cat build.log && exit 1)
 
+      - name: Pruebas SEO del sitio compilado
+        run: npx vitest run tests/Unit/seo-sitemap.test.ts
+
       - name: Auditoría de SEO y Schema.org JSON-LD en Build
         run: node scripts/audit-seo-schema.js
 

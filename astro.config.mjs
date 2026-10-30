@@ -2,18 +2,19 @@ import { defineConfig, fontProviders, svgoOptimizer } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import compress from '@playform/compress';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const SITE = 'https://usgarhoteles.com';
 
 export default defineConfig({
-  site: 'https://usgarhoteles.com',
+  site: SITE,
   output: 'static',
   experimental: {
     // Optimizacion nativa de Astro (SVGO en build): el logo SVG importado
     // como componente (Navbar/Footer) se optimiza en cada build (2026-08-16).
     svgOptimizer: svgoOptimizer(),
-  },
-  redirects: {
-    // Ahrefs/GSC piden /sitemap.xml (404 actual); el sitemap real es /sitemap-index.xml
-    '/sitemap.xml': '/sitemap-index.xml',
   },
   fonts: [
     {
@@ -60,11 +61,9 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      // lastmod = fecha del build. Los precios y la disponibilidad vienen del
-      // PMS en tiempo de ejecucion, asi que la fecha del build es la unica
-      // senal fiable de "esto puede haber cambiado": sin ella Google no tiene
-      // motivo para volver a rastrear las paginas de habitaciones.
-      lastmod: new Date(),
+      // Sin lastmod: la unica fecha disponible seria la del build y repetirla en
+      // todas las URLs le dice a Google que el contenido cambia en cada deploy.
+      // Mejor omitirlo que publicar una senal falsa.
       i18n: {
         defaultLocale: 'en',
         locales: {
@@ -79,9 +78,40 @@ export default defineConfig({
       namespaces: { news: false, video: false, image: false },
       // Las paginas de utilidad no son contenido publico: son superficies
       // autenticadas (login, panel, perfil, mis reservas). Indexarlas no aporta
-      // nada y expone una superficie del sitio.
-      filter: (page) => !/^\/(?:[a-z]{2}\/)?(?:panel|login|profile|my-bookings)(?:\/|$)/.test(new URL(page).pathname),
+      // nada y expone una superficie del sitio. Tambien fuera la confirmacion de
+      // reserva: es noindex.
+      filter: (page) => {
+        const { pathname } = new URL(page);
+        return !/^\/(?:[a-z]{2}\/)?(?:panel|login|profile|my-bookings|book\/success)(?:\/|$)/.test(pathname);
+      },
     }),
+    // @astrojs/sitemap publica sitemap-index.xml + sitemap-N.xml, pero no
+    // /sitemap.xml. Un redirect de Astro ahi genera un meta refresh que no es
+    // XML (algunos clientes no lo siguen); este hook escribe un indice real que
+    // funciona en cualquier hosting estatico. Va despues del sitemap para leer
+    // los chunks ya generados.
+    {
+      name: 'sitemap-xml-alias',
+      hooks: {
+        'astro:build:done': ({ dir, logger }) => {
+          const outDir = fileURLToPath(dir);
+          const chunks = fs.readdirSync(outDir)
+            .filter((file) => /^sitemap-\d+\.xml$/.test(file))
+            .sort((a, b) => Number(a.match(/\d+/)?.[0] ?? 0) - Number(b.match(/\d+/)?.[0] ?? 0));
+          if (!chunks.length) {
+            logger.warn('No hay sitemap-N.xml: /sitemap.xml no se genero.');
+            return;
+          }
+          fs.rmSync(path.join(outDir, 'sitemap.xml'), { recursive: true, force: true });
+          const entries = chunks.map((file) => `<sitemap><loc>${new URL(file, `${SITE}/`).href}</loc></sitemap>`).join('');
+          fs.writeFileSync(
+            path.join(outDir, 'sitemap.xml'),
+            `<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${entries}</sitemapindex>`,
+          );
+          logger.info(`/sitemap.xml generado como XML estatico (${chunks.length} sitemap(s)).`);
+        },
+      },
+    },
     // Compress (HTML & JS minification)
     compress({
       CSS: false, // Tailwind 4 ya minifica vía Lightning CSS

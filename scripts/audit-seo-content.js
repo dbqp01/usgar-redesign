@@ -173,9 +173,6 @@ if (fs.existsSync(sitemapFile)) {
   if (leaked.length) {
     err('SITEMAP', `${leaked.length} paginas de utilidad en el sitemap: ${leaked.slice(0, 6).join(', ')}`);
   }
-  if (!/lastmod/.test(xml)) {
-    warn('SITEMAP-LASTMOD', 'el sitemap no declara <lastmod>: Google no puede saber cuando cambio el precio de una habitacion.');
-  }
 }
 
 // --------------------------- check-in / check-out: una sola fuente de verdad
