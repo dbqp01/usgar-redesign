@@ -24,7 +24,7 @@
     "prepare": "git config core.hooksPath .githooks || true"
   },
   "engines": {
-    "node": ">=22.12 <25"
+    "node": ">=24 <25"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",
