@@ -198,6 +198,7 @@ function httpGet(string $url, int $timeoutSeconds = 5): array {
 
     return [
         'status' => $httpCode,
+        'headers' => $headersRaw,
         'body' => $body,
     ];
 }
@@ -263,6 +264,12 @@ assertTest("Endpoint GET /api/rooms con rango de fechas invertido retorna HTTP 4
 // Test /api/booking-status sin cart_id (debe fallar)
 $bookingStatusInvalidRes = httpGet("http://$host:$port/api/booking-status");
 assertTest("Endpoint GET /api/booking-status sin cart_id retorna HTTP 400", $bookingStatusInvalidRes['status'] === 400, $bookingStatusInvalidRes);
+
+foreach (['/api/panel/availability', '/api/auth/me', '/api/user/bookings'] as $privatePath) {
+    $privateRes = httpGet("http://$host:$port$privatePath");
+    assertTest("$privatePath prohibe almacenar respuestas en cache",
+        preg_match('/^Cache-Control:.*\bno-store\b/im', $privateRes['headers']) === 1);
+}
 
 if (is_resource($process)) {
     if (isset($pipes[0]) && is_resource($pipes[0])) {

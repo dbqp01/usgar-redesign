@@ -80,7 +80,9 @@ class ExportAvailabilityAction {
             $checkin = substr((string)$b['checkin'], 0, 10);
             $checkout = substr((string)$b['checkout'], 0, 10);
             $nights = max(0, (int)round((strtotime($checkout) - strtotime($checkin)) / 86400));
-            $rows[] = [
+            // Los nombres de huesped llegan sin validar de caracteres (web,
+            // import o PMS): neutralizar antes de escribir CSV y XLSX.
+            $rows[] = array_map([$this, 'formulaSafe'], [
                 $roomNum !== '' ? $roomNum : 'Sin asignar',
                 $type,
                 $checkin,
@@ -90,9 +92,20 @@ class ExportAvailabilityAction {
                 $this->channelLabel((string)$b['channel']),
                 $b['status'] === 'hold' ? 'Hold' : ($b['status'] === 'maint' ? 'Fuera de servicio' : 'Confirmada'),
                 $b['price'] !== null ? (float)$b['price'] : '',
-            ];
+            ]);
         }
         return $rows;
+    }
+
+    /**
+     * Neutraliza inyeccion de formulas: Excel y Sheets ejecutan celdas que
+     * empiezan por = + - @, incluso tras espacios, TAB, CR o LF. Solo afecta
+     * texto; los numeros se conservan como numeros.
+     */
+    private function formulaSafe(string|int|float $value): string|int|float {
+        return is_string($value) && preg_match('/^(?:[\t\r\n]|[\x00-\x20]*[=+\-@])/', $value) === 1
+            ? "'" . $value
+            : $value;
     }
 
     private function channelLabel(string $channel): string {
@@ -121,9 +134,9 @@ class ExportAvailabilityAction {
             return;
         }
         fwrite($out, "\xEF\xBB\xBF"); // BOM: tildes correctas en Excel
-        fputcsv($out, self::HEADERS);
+        fputcsv($out, self::HEADERS, escape: '');
         foreach ($rows as $r) {
-            fputcsv($out, $r);
+            fputcsv($out, $r, escape: '');
         }
         fclose($out);
         if (!defined('PHP_TESTING')) {

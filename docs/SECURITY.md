@@ -22,7 +22,7 @@ Modelo de seguridad verificado contra el código (2026-09-11). Los pendientes pr
 - SDK oficial dx-php v3 detrás de `PaymentGatewayPortInterface`; token solo en el backend (`.env`), nunca en el frontend.
 - Webhooks: firma HMAC validada con `WebhookSignatureValidator` del SDK (`x-signature` + `x-request-id`) + ventana anti-replay de 300s calculada por el adaptador (`MercadoPagoAdapter::verifySignature`): MP documenta el `ts` en milisegundos pero lo envía en **segundos** (evidencia: `ts=1792467232`, log prod 2026-10-19 22:33:52) y el chequeo de skew del SDK asume ms — por eso el cálculo de drift vive en el adaptador (normaliza ambos formatos) y el SDK se invoca sin tolerancia; fail-closed si falta el secret.
 - Doble cobro imposible por diseño: gates de hold (expirado / payment_id existente) + transacción con `FOR UPDATE` alrededor del cobro + idempotency key fresca por intento + dedup `isOrderConfirmed` en el PMS + reconciliación por cron.
-- Guard de deploy: `scripts/check-prod-env.php` valida el token de producción por allowlist de hashes (el prefijo del token no define entorno).
+- Verificación manual antes del deploy: `scripts/check-prod-env.php` valida el token de MercadoPago por allowlist de hashes. No se ejecuta automáticamente en CI ni en Hostinger y no valida los demás secretos.
 - Secretos nunca en git: `.env` gitignored, historial escaneado limpio; el postbuild borra `dist/.env`.
 
 ### Autenticación
@@ -34,7 +34,7 @@ Modelo de seguridad verificado contra el código (2026-09-11). Los pendientes pr
 
 ### Auditorías (herramientas del repo)
 - Auditorías disponibles: `npm run audit:security` (script propio), `composer audit`, `npm audit` y Semgrep para el diff. `composer audit` reportó 0 vulnerabilidades el 2026-09-10.
-- Revisión local del 2026-10-29: `npm audit` y `npm audit --omit=dev` reportan 0 vulnerabilidades tras actualizar Astro, Vitest, `fast-uri`, `undici` y `zod`. El despliegue debe actualizarse y volver a escanearse en hPanel para verificar el estado en producción.
+- Revisión local del 2026-10-30: `npm audit` y `npm audit --omit=dev` reportan 0 vulnerabilidades tras actualizar Astro, Vitest, `fast-uri`, `undici` y `zod`. El despliegue debe actualizarse y volver a escanearse en hPanel para verificar el estado en producción.
 - Patrones peligrosos auditados (2026-08-01): sin eval/exec/system reales; `unserialize` solo en el outbox y restringido con `allowed_classes` a `BookingPaidEvent` y `DateTimeImmutable` (payload escrito por el propio sistema).
 
 ## Modelo de amenazas (resumen para explicar)
@@ -42,7 +42,7 @@ Modelo de seguridad verificado contra el código (2026-09-11). Los pendientes pr
 1. **Ataques a la web** (XSS, clickjacking, MIME sniffing) → CSP + headers defensivos + escape de salida en templates del frontend.
 2. **Ataques a la API** (inyección, fuerza bruta, spoofing) → prepared statements + rate limit + Validator + IP confiable.
 3. **Fraude de pagos** (doble cobro, webhooks falsos, precio manipulado) → firma HMAC + idempotencia + precios calculados solo en backend + transacciones atómicas.
-4. **Fuga de secretos** → .env fuera de git y del web root + guard de deploy + tokens solo en backend.
+4. **Fuga de secretos** → .env fuera de git y del web root + tokens solo en backend; la comprobación de MercadoPago es manual.
 **Abuso de sesiones** (robo de cookie, CSRF) → HttpOnly + SameSite=Lax + JWT firmado; las mutaciones autenticadas de usuario y panel exigen doble cookie/header CSRF.
 
 ## Pendientes de seguridad (priorizados en ROADMAP)

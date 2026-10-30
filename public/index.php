@@ -97,6 +97,11 @@ if (PHP_SAPI === 'cli') {
 
 // 3. Instanciar Request y Router
 $request = new Request();
+if (str_starts_with($request->getPath(), '/api/panel/')
+    || str_starts_with($request->getPath(), '/api/auth/')
+    || str_starts_with($request->getPath(), '/api/user/')) {
+    header('Cache-Control: private, no-store');
+}
 $router = new Router();
 
 // 4. Configurar Middleware Pipeline (CORS, Security Headers, Rate Limit global)

@@ -84,7 +84,7 @@ npm run dev:all           # Astro en :4321 + API PHP en :8000 con proxy /api
 
 ## Pagos
 
-Las credenciales salen del [panel de desarrolladores de MercadoPago](https://www.mercadopago.com/developers/panel/app). El prefijo del token no indica el entorno: `APP_USR` aparece tanto en pruebas como en producción, así que el deploy a producción pasa por `php scripts/check-prod-env.php` y un allowlist de hashes SHA-256 en `.env.production`, fuera de git.
+Las credenciales salen del [panel de desarrolladores de MercadoPago](https://www.mercadopago.com/developers/panel/app). El prefijo del token no indica el entorno: `APP_USR` aparece tanto en pruebas como en producción. Antes del deploy se puede ejecutar manualmente `php scripts/check-prod-env.php` con una allowlist de hashes SHA-256 en `.env.production`, fuera de git; CI y Hostinger no lo ejecutan automáticamente.
 
 ## Deploy
 

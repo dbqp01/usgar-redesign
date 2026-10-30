@@ -36,7 +36,7 @@ final class PanelAuthTest extends TestCase
     public function testPanelLoginUsesDedicatedRateLimitBucket(): void
     {
         Config::set('PANEL_PASSWORD', 'panel-password');
-        $_SERVER['REMOTE_ADDR'] = '198.51.100.' . random_int(1, 254);
+        $_SERVER['REMOTE_ADDR'] = '2001:db8::' . bin2hex(random_bytes(2)) . ':' . bin2hex(random_bytes(2));
         $action = new PanelLoginAction();
         $request = new Request('POST', '/api/panel/login', [], ['password' => 'wrong']);
 

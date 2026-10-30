@@ -25,7 +25,8 @@ use App\Core\Config;
  * produccion -> Access Token. NUNCA se escribe el token en claro en
  * archivos del repo.
  *
- * Uso: php scripts/check-prod-env.php   (exit 0 = OK, 1 = bloquea el deploy)
+ * Uso manual: php scripts/check-prod-env.php   (exit 0 = OK, 1 = fallo)
+ * No se ejecuta automaticamente en CI ni en Hostinger.
  */
 final class CheckProdEnv {
     private const ALLOWLIST_KEY = 'MERCADO_PAGO_PROD_TOKEN_SHA256';

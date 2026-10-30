@@ -44,8 +44,8 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
         // Token unico: MERCADO_PAGO_ACCESS_TOKEN es la fuente de verdad.
         // No hay distincion sandbox/produccion por PREFIJO — los tokens de
         // prueba y produccion pueden empezar ambos con APP_USR (doc MP); el
-        // entorno lo define la app/panel. El guard de deploy por allowlist
-        // (scripts/check-prod-env.php) valida el entorno real.
+        // entorno lo define la app/panel. La comprobacion manual por hash
+        // (scripts/check-prod-env.php) compara contra la allowlist configurada.
         $token = Config::get('MERCADO_PAGO_ACCESS_TOKEN', '');
         if (empty($token)) {
             throw new Exception(
@@ -53,7 +53,7 @@ class MercadoPagoAdapter implements PaymentGatewayPortInterface {
                 . 'Get your Access Token from Tus integraciones (Mercado Pago panel). '
                 . 'Note: the token prefix does NOT define the environment — test and '
                 . 'production credentials can both start with APP_USR (doc MP); the '
-                . 'deploy guard (scripts/check-prod-env.php) enforces an '
+                . 'manual check (scripts/check-prod-env.php) compares an '
                 . 'allowlist by hash instead of a prefix rule.'
             );
         }
