@@ -97,9 +97,12 @@ if (PHP_SAPI === 'cli') {
 
 // 3. Instanciar Request y Router
 $request = new Request();
-if (str_starts_with($request->getPath(), '/api/panel/')
-    || str_starts_with($request->getPath(), '/api/auth/')
-    || str_starts_with($request->getPath(), '/api/user/')) {
+// Misma normalizacion que Router::normalizePath: sin esto /api//auth/me
+// enruta a AuthMeAction pero se salta esta cabecera.
+$requestPath = preg_replace('#/{2,}#', '/', $request->getPath()) ?? $request->getPath();
+if (str_starts_with($requestPath, '/api/panel/')
+    || str_starts_with($requestPath, '/api/auth/')
+    || str_starts_with($requestPath, '/api/user/')) {
     header('Cache-Control: private, no-store');
 }
 $router = new Router();
@@ -145,6 +148,7 @@ $router->get('/api/user/bookings',     GetUserBookingsAction::class);
 $router->post('/api/user/profile',     UpdateUserProfileAction::class);
 $router->post('/api/newsletter',       SubscribeNewsletterAction::class);
 $router->get('/api/newsletter/confirm',    ConfirmNewsletterAction::class);
+$router->post('/api/newsletter/confirm',   ConfirmNewsletterAction::class);
 $router->get('/api/newsletter/unsubscribe', UnsubscribeNewsletterAction::class);
 $router->post('/api/newsletter/unsubscribe', UnsubscribeNewsletterAction::class);
 $router->post('/api/contact',          SubmitContactAction::class);

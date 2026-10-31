@@ -14,11 +14,20 @@ use RuntimeException;
  * agrega las columnas que falten y conserva a los suscriptores historicos:
  * quedan como 'confirmed' con consent_version='legacy' y consent_at NULL
  * (no se inventa una fecha que no existe).
+ *
+ * Riesgo abierto: esas filas legacy NO tienen evidencia de consentimiento, asi
+ * que ningun envio de campana puede leer solo status='confirmed'. Hoy no existe
+ * sender de campanas; cuando se escriba, debe exigir consent_at IS NOT NULL
+ * (equivale a excluir CONSENT_LEGACY). La migracion no las borra ni las
+ * reescribe: resolver su caso necesita un plan de re-opt-in, no un UPDATE.
  */
 class NewsletterSubscriberRepository {
     public const STATUS_PENDING = 'pending';
     public const STATUS_CONFIRMED = 'confirmed';
     public const STATUS_UNSUBSCRIBED = 'unsubscribed';
+
+    /** Filas anteriores al consentimiento explicito: suscritas, sin evidencia. */
+    public const CONSENT_LEGACY = 'legacy';
 
     /** Version del aviso mostrado en el footer; cambiarlo invalida la evidencia anterior. */
     public const CONSENT_VERSION = '2026-10-29';
@@ -79,8 +88,8 @@ class NewsletterSubscriberRepository {
         if ($legacyMaxId !== null) {
             $this->pdo->exec(
                 "UPDATE newsletter_subscribers
-                 SET status = 'confirmed', consent_version = 'legacy'
-                 WHERE id <= {$legacyMaxId} AND consent_at IS NULL"
+                 SET status = 'confirmed', consent_version = '" . self::CONSENT_LEGACY . "'
+                 WHERE id <= {$legacyMaxId} AND consent_at IS NULL AND status <> 'unsubscribed' AND unsubscribed_at IS NULL"
             );
         }
 

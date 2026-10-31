@@ -12,19 +12,23 @@ use App\Features\Newsletter\Domain\NewsletterToken;
 use Throwable;
 
 /**
- * Accion ADR: GET /api/newsletter/confirm?email=...&token=...
+ * Accion ADR: GET/POST /api/newsletter/confirm
  *
- * Doble opt-in: el enlace solo llega al buzon suscrito. El token esta ligado
- * al email y al proposito "confirm"; sin el no se puede confirmar a un tercero.
- * Un enlace viejo no revive una baja (solo transiciona desde 'pending').
+ * Doble opt-in en dos pasos: el enlace del correo solo llega al buzon suscrito
+ * y el token esta ligado al email y al proposito "confirm". GET muestra el
+ * formulario (un escaner o prefetch del correo no confirma a nadie); POST
+ * aplica la confirmacion. Un enlace viejo no revive una baja (solo
+ * transiciona desde 'pending').
  */
 class ConfirmNewsletterAction {
     public function __construct(private ?NewsletterSubscriberRepository $subscribers = null) {
     }
 
     public function __invoke(Request $request): void {
-        $email = NewsletterToken::normalize((string)$request->getQuery('email', ''));
-        $token = (string)$request->getQuery('token', '');
+        $isPost = $request->getMethod() === 'POST';
+        $source = $isPost ? ($request->getBody() ?? []) : [];
+        $email = NewsletterToken::normalize((string)($source['email'] ?? $request->getQuery('email', '')));
+        $token = (string)($source['token'] ?? $request->getQuery('token', ''));
         $html = $request->isHtml();
 
         if ($email === '' || !NewsletterToken::verify(NewsletterToken::CONFIRM, $email, $token)) {
@@ -45,10 +49,29 @@ class ConfirmNewsletterAction {
             }
 
             $status = (string)($subscriber['status'] ?? '');
-            $locale = (string)($subscriber['locale'] ?? 'en');
+            $locale = NewsletterContent::normalizeLocale((string)($subscriber['locale'] ?? 'en'));
 
             if ($status === NewsletterSubscriberRepository::STATUS_UNSUBSCRIBED) {
                 $this->reject($html, 'INVALID_TOKEN', $locale);
+                return;
+            }
+
+            if (!$isPost) {
+                if (!$html) {
+                    // Sin mutacion: el cliente JSON debe repetir por POST.
+                    if ($status === NewsletterSubscriberRepository::STATUS_CONFIRMED) {
+                        Response::success(['status' => 'confirmed']);
+                    } else {
+                        Response::success(['status' => 'pending', 'message' => 'confirmation_required']);
+                    }
+                    return;
+                }
+
+                if ($status === NewsletterSubscriberRepository::STATUS_CONFIRMED) {
+                    NewsletterContent::renderPage($locale, 'confirm_ok', 200);
+                } else {
+                    NewsletterContent::renderPage($locale, 'confirm_ask', 200, ['email' => $email, 'token' => $token]);
+                }
                 return;
             }
 

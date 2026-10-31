@@ -133,10 +133,21 @@ final class NewsletterFlowTest extends TestCase {
         self::assertSame($email, $query['email']);
         $confirmToken = (string)$query['token'];
 
-        $confirm = $this->call(new ConfirmNewsletterAction($this->repo), new Request(
+        // El enlace del correo abre el formulario: GET no confirma por si solo.
+        $ask = $this->call(new ConfirmNewsletterAction($this->repo), new Request(
             'GET',
             '/api/newsletter/confirm?' . http_build_query(['email' => $email, 'token' => $confirmToken]),
-            ['accept' => 'application/json']
+            ['accept' => 'text/html']
+        ));
+        self::assertSame(200, $ask['status']);
+        self::assertStringContainsString('method="post"', strtolower($ask['raw']));
+        self::assertSame('pending', $this->repo->rows[$email]['status'], 'GET no confirma.');
+
+        $confirm = $this->call(new ConfirmNewsletterAction($this->repo), new Request(
+            'POST',
+            '/api/newsletter/confirm',
+            ['accept' => 'application/json'],
+            ['email' => $email, 'token' => $confirmToken]
         ));
         self::assertSame(200, $confirm['status']);
         self::assertSame('confirmed', $this->repo->rows[$email]['status']);
@@ -166,9 +177,10 @@ final class NewsletterFlowTest extends TestCase {
 
         // Un enlace de confirmacion viejo no puede revivir la baja.
         $stale = $this->call(new ConfirmNewsletterAction($this->repo), new Request(
-            'GET',
-            '/api/newsletter/confirm?' . http_build_query(['email' => $email, 'token' => $confirmToken]),
-            ['accept' => 'application/json']
+            'POST',
+            '/api/newsletter/confirm',
+            ['accept' => 'application/json'],
+            ['email' => $email, 'token' => $confirmToken]
         ));
         self::assertSame(400, $stale['status']);
         self::assertSame('unsubscribed', $this->repo->rows[$email]['status']);

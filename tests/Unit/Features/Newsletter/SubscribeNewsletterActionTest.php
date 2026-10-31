@@ -164,10 +164,53 @@ final class SubscribeNewsletterActionTest extends TestCase {
         self::assertSame('en', $locale);
     }
 
+    /**
+     * Suscriptor historico: status 'confirmed' pero sin consent_at (migracion
+     * legacy). No hay evidencia de consentimiento, asi que debe poder
+     * reinscribirse y volver a confirmar por doble opt-in.
+     */
+    public function testLegacyConfirmedSubscriberWithoutConsentEvidenceCanReOptInThroughDoubleOptIn(): void {
+        $email = $this->uniqueEmail();
+        $repo = $this->createMock(NewsletterSubscriberRepository::class);
+        $repo->method('findByEmail')->willReturn([
+            'status' => 'confirmed',
+            'consent_at' => null,
+            'consent_version' => NewsletterSubscriberRepository::CONSENT_LEGACY,
+            'locale' => 'es',
+        ]);
+
+        $captured = [];
+        $repo->expects($this->once())->method('upsertPending')
+            ->willReturnCallback(function (string $storedEmail, string $ip, string $locale, string $userAgent, string $consentAt) use (&$captured): void {
+                $captured = compact('storedEmail', 'ip', 'locale', 'userAgent', 'consentAt');
+            });
+
+        $result = $this->invoke($repo, ['email' => $email, 'locale' => 'es', 'consent' => true]);
+
+        self::assertSame(200, $result['status']);
+        self::assertSame('pending', $result['json']['status'], 'Re-opt-in indistinguible de un alta nueva.');
+        self::assertSame('confirmation_sent', $result['json']['message']);
+        self::assertStringNotContainsString($email, $result['raw']);
+
+        self::assertSame($email, $captured['storedEmail']);
+        self::assertSame('es', $captured['locale']);
+        self::assertMatchesRegularExpression(
+            '/\A\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\z/',
+            $captured['consentAt'],
+            'El re-opt-in debe registrar consentimiento nuevo con fecha real.'
+        );
+
+        self::assertCount(1, $this->mailer->sent, 'Debe enviarse la confirmacion; no se le da por suscrito.');
+        self::assertStringContainsString(
+            '/api/newsletter/confirm?email=' . rawurlencode($email),
+            $this->mailer->sent[0]['html']
+        );
+    }
+
     public function testAlreadyConfirmedSubscriberDoesNotReceiveAnotherEmailNorLeaksStatus(): void {
         $email = $this->uniqueEmail();
         $repo = $this->createMock(NewsletterSubscriberRepository::class);
-        $repo->method('findByEmail')->willReturn(['status' => 'confirmed', 'locale' => 'en']);
+        $repo->method('findByEmail')->willReturn(['status' => 'confirmed', 'consent_at' => '2026-10-01 09:00:00', 'locale' => 'en']);
         $repo->expects($this->never())->method('upsertPending');
 
         $result = $this->invoke($repo, ['email' => $email, 'locale' => 'en', 'consent' => true]);

@@ -115,9 +115,46 @@ final class NewsletterSubscriberRepositoryTest extends TestCase {
         }
         self::assertNotNull($legacy, 'La migracion debe preservar a los suscriptores existentes. SQL: ' . json_encode($this->executed));
         self::assertStringContainsString("status = 'confirmed'", (string)$legacy);
-        self::assertStringContainsString("consent_version = 'legacy'", (string)$legacy);
+        self::assertStringContainsString("consent_version = '" . NewsletterSubscriberRepository::CONSENT_LEGACY . "'", (string)$legacy);
         self::assertStringContainsString('AND consent_at IS NULL', (string)$legacy);
         self::assertStringNotContainsString('consent_at =', (string)$legacy, 'No se inventa una fecha de consentimiento.');
+        self::assertStringNotContainsString('DELETE', (string)$legacy, 'La migracion no borra historicos.');
+        self::assertStringContainsString("AND status <> 'unsubscribed' AND unsubscribed_at IS NULL", (string)$legacy, 'La migracion respeta bajas previas.');
+    }
+
+    public function testLegacyMigrationPreservesExistingUnsubscribe(): void {
+        if (!in_array('sqlite', PDO::getAvailableDrivers(), true)) {
+            self::markTestSkipped('pdo_sqlite no disponible.');
+        }
+        $this->buildRepo(false)->ensureSchema();
+        $updates = array_values(array_filter($this->executed, fn (string $sql): bool => str_contains($sql, 'UPDATE newsletter_subscribers')));
+        self::assertCount(1, $updates);
+        $db = new PDO('sqlite::memory:');
+        $db->exec('CREATE TABLE newsletter_subscribers (id INT, status TEXT, consent_at TEXT, consent_version TEXT, unsubscribed_at TEXT)');
+        $db->exec("INSERT INTO newsletter_subscribers VALUES (1, 'unsubscribed', NULL, '', '2026-10-01')");
+        $db->exec($updates[0]);
+        self::assertSame('unsubscribed', $db->query('SELECT status FROM newsletter_subscribers')->fetchColumn());
+    }
+
+    public function testLegacyMigrationPreservesExistingUnsubscribeTimestamp(): void {
+        if (!in_array('sqlite', PDO::getAvailableDrivers(), true)) {
+            self::markTestSkipped('pdo_sqlite no disponible.');
+        }
+        $this->buildRepo(false)->ensureSchema();
+        $updates = array_values(array_filter($this->executed, fn (string $sql): bool => str_contains($sql, 'UPDATE newsletter_subscribers')));
+        $db = new PDO('sqlite::memory:');
+        $db->exec('CREATE TABLE newsletter_subscribers (id INT, status TEXT, consent_at TEXT, consent_version TEXT, unsubscribed_at TEXT)');
+        $db->exec("INSERT INTO newsletter_subscribers VALUES (1, 'pending', NULL, '', '2026-10-01')");
+        $db->exec($updates[0]);
+        self::assertSame('pending', $db->query('SELECT status FROM newsletter_subscribers')->fetchColumn());
+    }
+
+    /**
+     * El marcador legacy es el unico que distingue a un suscriptor historico sin
+     * evidencia. Cualquier envio de campana debe excluirlo (consent_at NULL).
+     */
+    public function testLegacyConsentMarkerIsStable(): void {
+        self::assertSame('legacy', NewsletterSubscriberRepository::CONSENT_LEGACY);
     }
 
     public function testExistingColumnsDoNotTriggerAlterStatements(): void {

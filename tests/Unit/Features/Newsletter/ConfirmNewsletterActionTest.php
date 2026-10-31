@@ -11,8 +11,9 @@ use App\Features\Newsletter\Domain\NewsletterToken;
 use PHPUnit\Framework\TestCase;
 
 /**
- * GET /api/newsletter/confirm: solo un token firmado para ESE email y ESE
- * proposito confirma la suscripcion. El doble opt-in es la prueba demostrable.
+ * Alta en dos pasos: GET solo muestra la confirmacion (un escaner o prefetch
+ * del correo no confirma a nadie) y POST aplica el doble opt-in. Ambos exigen
+ * el token HMAC del proposito "confirm" ligado a ESE email.
  */
 final class ConfirmNewsletterActionTest extends TestCase {
     private string $previousSecret = '';
@@ -28,14 +29,31 @@ final class ConfirmNewsletterActionTest extends TestCase {
     }
 
     /** @return array{status:int,json:array<string,mixed>|null,raw:string} */
-    private function invoke(?NewsletterSubscriberRepository $repo, string $email, string $token, bool $html): array {
+    private function invoke(
+        ?NewsletterSubscriberRepository $repo,
+        string $method,
+        string $email,
+        string $token,
+        bool $html,
+        bool $formPost = false
+    ): array {
         $action = new ConfirmNewsletterAction($repo);
-        $path = '/api/newsletter/confirm?' . http_build_query(['email' => $email, 'token' => $token]);
         $headers = $html ? ['accept' => 'text/html'] : ['accept' => 'application/json'];
+        $body = null;
+        $path = '/api/newsletter/confirm';
+
+        if ($method === 'GET') {
+            $path .= '?' . http_build_query(['email' => $email, 'token' => $token]);
+        } else {
+            $body = ['email' => $email, 'token' => $token];
+            if ($formPost) {
+                $headers['content-type'] = 'application/x-www-form-urlencoded';
+            }
+        }
 
         ob_start();
         try {
-            $action(new Request('GET', $path, $headers));
+            $action(new Request($method, $path, $headers, $body));
         } finally {
             $raw = (string)ob_get_clean();
         }
@@ -47,10 +65,27 @@ final class ConfirmNewsletterActionTest extends TestCase {
         ];
     }
 
-    public function testPendingSubscriberIsConfirmedWithTimestampAndLocalizedPage(): void {
+    public function testGetOnlyAsksForConfirmationAndNeverMutates(): void {
         $email = 'marie@example.com';
+        $token = NewsletterToken::derive(NewsletterToken::CONFIRM, $email);
         $repo = $this->createMock(NewsletterSubscriberRepository::class);
         $repo->method('findByEmail')->with($email)->willReturn(['status' => 'pending', 'locale' => 'fr']);
+        $repo->expects($this->never())->method('markConfirmed');
+
+        $result = $this->invoke($repo, 'GET', $email, $token, true);
+
+        self::assertSame(200, $result['status']);
+        self::assertStringContainsString('action="/api/newsletter/confirm"', $result['raw']);
+        self::assertStringContainsString('method="post"', strtolower($result['raw']));
+        self::assertStringContainsString('name="token" value="' . $token . '"', $result['raw']);
+        self::assertStringContainsString('name="email" value="' . $email . '"', $result['raw']);
+        self::assertStringContainsString('Confirmer l&#039;abonnement', $result['raw'], 'El formulario usa el idioma guardado.');
+    }
+
+    public function testPostWithSignedTokenConfirmsPendingSubscriber(): void {
+        $email = 'marie@example.com';
+        $repo = $this->createMock(NewsletterSubscriberRepository::class);
+        $repo->method('findByEmail')->willReturn(['status' => 'pending', 'locale' => 'fr']);
 
         $confirmedAt = null;
         $repo->expects($this->once())->method('markConfirmed')
@@ -60,25 +95,51 @@ final class ConfirmNewsletterActionTest extends TestCase {
                 return true;
             });
 
-        $result = $this->invoke($repo, $email, NewsletterToken::derive(NewsletterToken::CONFIRM, $email), true);
+        $result = $this->invoke($repo, 'POST', $email, NewsletterToken::derive(NewsletterToken::CONFIRM, $email), true, true);
 
         self::assertSame(200, $result['status']);
         self::assertMatchesRegularExpression('/\A\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\z/', (string)$confirmedAt);
-        self::assertStringContainsString('Abonnement confirmé', $result['raw'], 'La pagina usa el idioma guardado en la suscripcion.');
+        self::assertStringContainsString('Abonnement confirmé', $result['raw']);
         self::assertStringNotContainsString($email, $result['raw'], 'La pagina no repite el email en el HTML.');
     }
 
-    public function testAlreadyConfirmedLinkIsIdempotentAndDoesNotWriteAgain(): void {
+    public function testGetOnAlreadyConfirmedSubscriberShowsSuccessWithoutWriting(): void {
         $email = 'repeat@example.com';
         $repo = $this->createMock(NewsletterSubscriberRepository::class);
         $repo->method('findByEmail')->willReturn(['status' => 'confirmed', 'locale' => 'en']);
         $repo->expects($this->never())->method('markConfirmed');
 
-        $result = $this->invoke($repo, $email, NewsletterToken::derive(NewsletterToken::CONFIRM, $email), false);
+        $result = $this->invoke($repo, 'GET', $email, NewsletterToken::derive(NewsletterToken::CONFIRM, $email), true);
+
+        self::assertSame(200, $result['status']);
+        self::assertStringContainsString('Subscription confirmed', $result['raw']);
+        self::assertStringNotContainsString('method="post"', strtolower($result['raw']));
+    }
+
+    public function testPostOnAlreadyConfirmedIsIdempotentAndDoesNotWrite(): void {
+        $email = 'repeat@example.com';
+        $repo = $this->createMock(NewsletterSubscriberRepository::class);
+        $repo->method('findByEmail')->willReturn(['status' => 'confirmed', 'locale' => 'en']);
+        $repo->expects($this->never())->method('markConfirmed');
+
+        $result = $this->invoke($repo, 'POST', $email, NewsletterToken::derive(NewsletterToken::CONFIRM, $email), false);
 
         self::assertSame(200, $result['status']);
         self::assertTrue($result['json']['success']);
         self::assertSame('confirmed', $result['json']['status']);
+    }
+
+    public function testJsonGetAsksForPostWithoutMutating(): void {
+        $email = 'marie@example.com';
+        $repo = $this->createMock(NewsletterSubscriberRepository::class);
+        $repo->method('findByEmail')->willReturn(['status' => 'pending', 'locale' => 'en']);
+        $repo->expects($this->never())->method('markConfirmed');
+
+        $result = $this->invoke($repo, 'GET', $email, NewsletterToken::derive(NewsletterToken::CONFIRM, $email), false);
+
+        self::assertSame(200, $result['status']);
+        self::assertSame('confirmation_required', $result['json']['message']);
+        self::assertSame('pending', $result['json']['status']);
     }
 
     public function testTamperedTokenCannotConfirm(): void {
@@ -87,7 +148,7 @@ final class ConfirmNewsletterActionTest extends TestCase {
         $repo->expects($this->never())->method('findByEmail');
         $repo->expects($this->never())->method('markConfirmed');
 
-        $result = $this->invoke($repo, $email, str_repeat('f', 64), true);
+        $result = $this->invoke($repo, 'POST', $email, str_repeat('f', 64), true);
 
         self::assertSame(400, $result['status']);
         self::assertStringContainsString('Link not valid', $result['raw']);
@@ -98,7 +159,7 @@ final class ConfirmNewsletterActionTest extends TestCase {
         $repo = $this->createMock(NewsletterSubscriberRepository::class);
         $repo->expects($this->never())->method('markConfirmed');
 
-        $result = $this->invoke($repo, $email, NewsletterToken::derive(NewsletterToken::UNSUBSCRIBE, $email), false);
+        $result = $this->invoke($repo, 'POST', $email, NewsletterToken::derive(NewsletterToken::UNSUBSCRIBE, $email), false);
 
         self::assertSame(400, $result['status']);
         self::assertSame('INVALID_TOKEN', $result['json']['error']['code']);
@@ -110,7 +171,7 @@ final class ConfirmNewsletterActionTest extends TestCase {
         $repo->method('findByEmail')->willReturn(null);
         $repo->expects($this->never())->method('markConfirmed');
 
-        $result = $this->invoke($repo, $email, NewsletterToken::derive(NewsletterToken::CONFIRM, $email), false);
+        $result = $this->invoke($repo, 'POST', $email, NewsletterToken::derive(NewsletterToken::CONFIRM, $email), false);
 
         self::assertSame(400, $result['status']);
         self::assertSame('INVALID_TOKEN', $result['json']['error']['code']);
@@ -122,16 +183,28 @@ final class ConfirmNewsletterActionTest extends TestCase {
         $repo->method('findByEmail')->willReturn(['status' => 'unsubscribed', 'locale' => 'en']);
         $repo->expects($this->never())->method('markConfirmed');
 
-        $result = $this->invoke($repo, $email, NewsletterToken::derive(NewsletterToken::CONFIRM, $email), true);
+        $result = $this->invoke($repo, 'POST', $email, NewsletterToken::derive(NewsletterToken::CONFIRM, $email), true);
 
         self::assertSame(400, $result['status']);
         self::assertStringContainsString('Link not valid', $result['raw']);
     }
 
+    public function testGetOnUnsubscribedAddressShowsNoConfirmationForm(): void {
+        $email = 'left@example.com';
+        $repo = $this->createMock(NewsletterSubscriberRepository::class);
+        $repo->method('findByEmail')->willReturn(['status' => 'unsubscribed', 'locale' => 'en']);
+        $repo->expects($this->never())->method('markConfirmed');
+
+        $result = $this->invoke($repo, 'GET', $email, NewsletterToken::derive(NewsletterToken::CONFIRM, $email), true);
+
+        self::assertSame(400, $result['status']);
+        self::assertStringNotContainsString('method="post"', strtolower($result['raw']));
+    }
+
     public function testDatabaseOfflineReturnsServiceUnavailable(): void {
         $email = 'offline@example.com';
 
-        $result = $this->invoke(null, $email, NewsletterToken::derive(NewsletterToken::CONFIRM, $email), false);
+        $result = $this->invoke(null, 'POST', $email, NewsletterToken::derive(NewsletterToken::CONFIRM, $email), false);
 
         self::assertSame(503, $result['status']);
         self::assertSame('SERVICE_UNAVAILABLE', $result['json']['error']['code']);

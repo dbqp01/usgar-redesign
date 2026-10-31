@@ -79,7 +79,10 @@ class SubscribeNewsletterAction {
 
         try {
             $existing = $this->subscribers->findByEmail($email);
-            if (($existing['status'] ?? '') === NewsletterSubscriberRepository::STATUS_CONFIRMED) {
+            // Solo una fila confirmada con evidencia es idempotente; las legacy
+            // (consent_at NULL) deben poder re-opt-in y confirmar otra vez.
+            if (($existing['status'] ?? '') === NewsletterSubscriberRepository::STATUS_CONFIRMED
+                && !empty($existing['consent_at'])) {
                 // Misma respuesta que un alta nueva: no se puede enumerar la lista.
                 Response::success(['status' => 'pending', 'message' => 'confirmation_sent']);
                 return;

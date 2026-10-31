@@ -92,28 +92,29 @@ function readCache(): AuthUser | null {
   }
 }
 
-/** Notifica el cambio a las OTRAS pestañas (BroadcastChannel + storage). */
-function broadcastAuthChange(user: AuthUser | null): void {
+/** Contador por pestaña: dos señales en el mismo ms deben diferir para disparar storage. */
+let broadcastSeq = 0;
+
+/**
+ * Notifica el cambio a las OTRAS pestañas (BroadcastChannel + storage).
+ * El evento storage es solo una señal: el perfil nunca se persiste en localStorage.
+ */
+function broadcastAuthChange(): void {
   try {
-    localStorage.setItem(AUTH_BROADCAST_KEY, JSON.stringify({ user, at: Date.now() }));
+    localStorage.setItem(AUTH_BROADCAST_KEY, JSON.stringify({ src: TAB_ID, at: Date.now(), n: ++broadcastSeq }));
   } catch {
     // localStorage bloqueado/lleno: la invalidación queda local
   }
   if (typeof BroadcastChannel !== 'undefined') {
     try {
       const channel = new BroadcastChannel(BROADCAST_CHANNEL_NAME);
-      channel.postMessage({ user, source: TAB_ID });
+      channel.postMessage({ source: TAB_ID });
       channel.close();
     } catch {
       // canal no disponible: el fallback storage cubre el resto de pestañas
     }
   }
 }
-
-// Storage events are delivered only to other documents, while BroadcastChannel
-// also delivers to the sender. Keep a per-tab marker so the sender does not
-// invalidate its own cache immediately after populating it.
-let localBroadcastAt = 0;
 
 function setAuthState(user: AuthUser | null): void {
   const previous = readCache();
@@ -125,10 +126,7 @@ function setAuthState(user: AuthUser | null): void {
   const changed = user === null
     ? previous !== null
     : previous === null || previous.sub !== user.sub || previous.email !== user.email;
-  if (changed) {
-    localBroadcastAt = Date.now();
-    broadcastAuthChange(user);
-  }
+  if (changed) broadcastAuthChange();
 }
 
 async function parseMeResponse(res: Response): Promise<AuthUser | null> {
@@ -218,20 +216,19 @@ export async function logout(): Promise<void> {
 
 /**
  * Suscripción a cambios de sesión originados en OTRAS pestañas.
- * Devuelve una función de limpieza. También invalida el cache local en cada
- * evento (el próximo getUser() re-sincroniza contra /me).
+ * El evento no lleva datos de perfil (no se persisten en localStorage): el
+ * listener solo invalida y el próximo getUser() re-sincroniza contra /me.
+ * Devuelve una función de limpieza.
  */
-export function onAuthChange(listener: (user: AuthUser | null) => void): () => void {
+export function onAuthChange(listener: () => void): () => void {
   if (typeof window === 'undefined') return () => {};
   const cleanups: Array<() => void> = [];
 
   if (typeof BroadcastChannel !== 'undefined') {
     const channel = new BroadcastChannel(BROADCAST_CHANNEL_NAME);
     const onMessage = (event: MessageEvent) => {
-      if (Date.now() - localBroadcastAt < 1000) return;
-      const message = event.data as { user?: AuthUser | null; source?: string } | null;
-      if (message?.source === TAB_ID) return;
-      listener((message?.user ?? message ?? null) as AuthUser | null);
+      if ((event.data as { source?: string } | null)?.source === TAB_ID) return;
+      listener();
     };
     channel.addEventListener('message', onMessage);
     cleanups.push(() => {
@@ -241,15 +238,14 @@ export function onAuthChange(listener: (user: AuthUser | null) => void): () => v
   }
 
   const onStorage = (event: StorageEvent) => {
-    if (Date.now() - localBroadcastAt < 1000) return;
     if (event.key !== AUTH_BROADCAST_KEY || !event.newValue) return;
     try {
-      const payload = JSON.parse(event.newValue) as { user?: AuthUser | null; source?: string };
-      if (payload.source === TAB_ID) return;
-      listener(payload.user ?? null);
+      // Señal propia (no llega a esta pestaña, pero el chequeo evita dobles).
+      if ((JSON.parse(event.newValue) as { src?: string }).src === TAB_ID) return;
     } catch {
-      // valor corrupto: ignorar
+      // JSON legacy o corrupto: sigue siendo una señal de otra pestaña
     }
+    listener();
   };
   window.addEventListener('storage', onStorage);
   cleanups.push(() => window.removeEventListener('storage', onStorage));
@@ -262,5 +258,11 @@ export function onAuthChange(listener: (user: AuthUser | null) => void): () => v
 // Invalidación cross-tab del cache: sessionStorage es por pestaña, así que al
 // llegar un evento de otra pestaña (login/logout) se limpia el cache local.
 if (typeof window !== 'undefined') {
+  try {
+    // Purga el payload con perfil que dejaron versiones anteriores.
+    localStorage.removeItem(AUTH_BROADCAST_KEY);
+  } catch {
+    // localStorage bloqueado: no hay nada que limpiar
+  }
   onAuthChange(() => clearLocalCache());
 }

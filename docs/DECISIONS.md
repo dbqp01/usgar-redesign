@@ -44,6 +44,7 @@ Registro de decisiones de arquitectura vivas (las que siguen gobernando el códi
 
 ## Newsletter (2026-10-29)
 - **Doble opt-in con consentimiento explícito**: `POST /api/newsletter` exige `consent === true`, guarda evidencia (IP, user-agent, locale, `consent_at`, `consent_version`) y no da de alta hasta que se abre el enlace firmado del correo. Un tercero que escriba el email de otra persona no puede suscribirla.
+- **Alta en dos pasos**: el enlace del correo abre un formulario (GET sin mutación, seguro frente a prefetch y escáneres) y el POST aplica la confirmación. Mismo patrón que la baja.
 - **Baja en dos pasos**: el enlace del correo abre una confirmación (GET sin mutación, seguro frente a prefetch y escáneres) y el POST aplica la baja. Tokens HMAC separados por propósito y ligados al email (mismo `BOOKING_TOKEN_SECRET`, dominio `newsletter:`).
 - **Respuesta anti-enumeración**: alta nueva y email ya confirmado responden igual; el email no se refleja en la respuesta ni en los logs.
-- **Suscriptores históricos**: la auto-migración los conserva `confirmed` con `consent_version='legacy'` y `consent_at NULL`; no se fabrica evidencia de consentimiento.
+- **Suscriptores históricos**: la auto-migración los conserva `confirmed` con `consent_version='legacy'` y `consent_at NULL`; no se fabrica evidencia, no se borra ninguna fila y no se pisa `unsubscribed_at`. Riesgo abierto: no existe sender de campañas, y el día que se escriba debe leer `status='confirmed' AND consent_at IS NOT NULL` para no enviar a legacy. Resolver su caso exige un re-opt-in, no otro `UPDATE` de migración.

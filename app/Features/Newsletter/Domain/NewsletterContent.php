@@ -15,28 +15,28 @@ class NewsletterContent {
     private const EMAIL = [
         'en' => [
             'subject'  => 'Confirm your USGAR newsletter subscription',
-            'intro'    => 'One click and you are in: confirm your email to receive our monthly note from Cusco.',
+            'intro'    => 'Confirm your email to receive our monthly note from Cusco: open the link and confirm on the page.',
             'button'   => 'Confirm subscription',
             'ignore'   => "If you didn't request this, ignore this email: we won't subscribe you.",
             'fallback' => 'If the button does not work, copy this link into your browser:',
         ],
         'es' => [
             'subject'  => 'Confirma tu suscripción a la newsletter de USGAR',
-            'intro'    => 'Un clic y listo: confirma tu correo para recibir nuestra nota mensual desde Cusco.',
+            'intro'    => 'Confirma tu correo para recibir nuestra nota mensual desde Cusco: abre el enlace y confirma en la página.',
             'button'   => 'Confirmar suscripción',
             'ignore'   => 'Si no pediste esto, ignora este correo: no te suscribiremos.',
             'fallback' => 'Si el botón no funciona, copia este enlace en tu navegador:',
         ],
         'fr' => [
             'subject'  => 'Confirmez votre abonnement à la newsletter USGAR',
-            'intro'    => 'Un clic suffit : confirmez votre e-mail pour recevoir notre note mensuelle depuis Cusco.',
+            'intro'    => 'Confirmez votre e-mail pour recevoir notre note mensuelle depuis Cusco : ouvrez le lien et confirmez sur la page.',
             'button'   => 'Confirmer l\'abonnement',
             'ignore'   => "Si vous n'avez pas demandé cela, ignorez cet e-mail : nous ne vous abonnerons pas.",
             'fallback' => 'Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :',
         ],
         'pt' => [
             'subject'  => 'Confirme a sua inscrição na newsletter do USGAR',
-            'intro'    => 'Um clique e pronto: confirme o seu e-mail para receber a nossa nota mensal de Cusco.',
+            'intro'    => 'Confirme o seu e-mail para receber a nossa nota mensal de Cusco: abra o link e confirme na página.',
             'button'   => 'Confirmar inscrição',
             'ignore'   => 'Se não pediu isto, ignore este e-mail: não vamos inscrevê-lo.',
             'fallback' => 'Se o botão não funcionar, copie este link no seu navegador:',
@@ -45,6 +45,8 @@ class NewsletterContent {
 
     private const PAGE = [
         'en' => [
+            'confirm_ask_heading'  => 'Confirm your subscription',
+            'confirm_ask_body'     => 'Confirm that you want to receive the USGAR newsletter at :email. We only send it after this step.',
             'confirm_ok_heading'   => 'Subscription confirmed',
             'confirm_ok_body'      => "Thanks - you're on the list. You'll receive our monthly note from Cusco, and every email includes an unsubscribe link.",
             'invalid_heading'      => 'Link not valid',
@@ -56,6 +58,8 @@ class NewsletterContent {
             'unsubscribed_body'    => 'You will no longer receive the USGAR newsletter. You can subscribe again on our website at any time.',
         ],
         'es' => [
+            'confirm_ask_heading'  => 'Confirma tu suscripción',
+            'confirm_ask_body'     => 'Confirma que quieres recibir la newsletter de USGAR en :email. Solo la enviamos después de este paso.',
             'confirm_ok_heading'   => 'Suscripción confirmada',
             'confirm_ok_body'      => 'Gracias - ya estás en la lista. Recibirás nuestra nota mensual desde Cusco y cada correo incluye un enlace para darte de baja.',
             'invalid_heading'      => 'Enlace no válido',
@@ -67,6 +71,8 @@ class NewsletterContent {
             'unsubscribed_body'    => 'Ya no recibirás la newsletter de USGAR. Puedes volver a suscribirte en nuestra web cuando quieras.',
         ],
         'fr' => [
+            'confirm_ask_heading'  => 'Confirmez votre abonnement',
+            'confirm_ask_body'     => 'Confirmez que vous souhaitez recevoir la newsletter USGAR à :email. Nous ne l\'envoyons qu\'après cette étape.',
             'confirm_ok_heading'   => 'Abonnement confirmé',
             'confirm_ok_body'      => 'Merci - vous êtes inscrit. Vous recevrez notre note mensuelle depuis Cusco, et chaque e-mail contient un lien de désabonnement.',
             'invalid_heading'      => 'Lien non valide',
@@ -78,6 +84,8 @@ class NewsletterContent {
             'unsubscribed_body'    => 'Vous ne recevrez plus la newsletter USGAR. Vous pouvez vous réabonner sur notre site à tout moment.',
         ],
         'pt' => [
+            'confirm_ask_heading'  => 'Confirme a sua inscrição',
+            'confirm_ask_body'     => 'Confirme que quer receber a newsletter do USGAR em :email. Só a enviamos depois deste passo.',
             'confirm_ok_heading'   => 'Inscrição confirmada',
             'confirm_ok_body'      => 'Obrigado - você está na lista. Vai receber a nossa nota mensal de Cusco, e cada e-mail inclui um link para cancelar a inscrição.',
             'invalid_heading'      => 'Link inválido',
@@ -129,6 +137,7 @@ class NewsletterContent {
         $siteUrl = rtrim((string)Config::get('SITE_URL', 'https://usgarhoteles.com'), '/');
 
         [$heading, $body] = match ($variant) {
+            'confirm_ask'      => [$copy['confirm_ask_heading'], $copy['confirm_ask_body']],
             'confirm_ok'       => [$copy['confirm_ok_heading'], $copy['confirm_ok_body']],
             'unsubscribe_ask'  => [$copy['unsubscribe_heading'], $copy['unsubscribe_body']],
             'unsubscribe_ok'   => [$copy['unsubscribed_heading'], $copy['unsubscribed_body']],
@@ -142,11 +151,13 @@ class NewsletterContent {
         }
 
         $form = '';
-        if ($variant === 'unsubscribe_ask') {
-            $form = '<form method="post" action="/api/newsletter/unsubscribe" style="margin:24px 0 0;">'
+        if ($variant === 'confirm_ask' || $variant === 'unsubscribe_ask') {
+            $action = $variant === 'confirm_ask' ? '/api/newsletter/confirm' : '/api/newsletter/unsubscribe';
+            $label = $variant === 'confirm_ask' ? self::EMAIL[$locale]['button'] : $copy['unsubscribe_button'];
+            $form = '<form method="post" action="' . $action . '" style="margin:24px 0 0;">'
                 . '<input type="hidden" name="email" value="' . $email . '">'
                 . '<input type="hidden" name="token" value="' . htmlspecialchars((string)($vars['token'] ?? ''), ENT_QUOTES, 'UTF-8') . '">'
-                . '<button type="submit" style="padding:14px 24px;background:#3D2B4A;color:#ffffff;border:0;border-radius:999px;font-family:Arial,sans-serif;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">' . htmlspecialchars($copy['unsubscribe_button'], ENT_QUOTES, 'UTF-8') . '</button>'
+                . '<button type="submit" style="padding:14px 24px;background:#3D2B4A;color:#ffffff;border:0;border-radius:999px;font-family:Arial,sans-serif;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;">' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</button>'
                 . '</form>';
         }
 

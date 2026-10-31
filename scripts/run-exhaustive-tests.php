@@ -265,7 +265,7 @@ assertTest("Endpoint GET /api/rooms con rango de fechas invertido retorna HTTP 4
 $bookingStatusInvalidRes = httpGet("http://$host:$port/api/booking-status");
 assertTest("Endpoint GET /api/booking-status sin cart_id retorna HTTP 400", $bookingStatusInvalidRes['status'] === 400, $bookingStatusInvalidRes);
 
-foreach (['/api/panel/availability', '/api/auth/me', '/api/user/bookings'] as $privatePath) {
+foreach (['/api/panel/availability', '/api/auth/me', '/api/user/bookings', '/api//auth/me'] as $privatePath) {
     $privateRes = httpGet("http://$host:$port$privatePath");
     assertTest("$privatePath prohibe almacenar respuestas en cache",
         preg_match('/^Cache-Control:.*\bno-store\b/im', $privateRes['headers']) === 1);

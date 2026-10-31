@@ -97,18 +97,71 @@ describe('privacy copy matches the data practices in code', () => {
       expect(privacy[locale]).toMatch(/unsubscribe|baja|désabonnement|cancelamento/i);
     }
   });
-});
 
-describe('terms copy matches the checkout implementation', () => {
-  it('does not attribute the exchange rate to MercadoPago at payment time', () => {
-    expect(source).not.toMatch(/rate applied by MercadoPago|tipo de cambio que aplique MercadoPago|taux appliqué par MercadoPago|taxa aplicada pela MercadoPago/i);
+  it('names WhatsApp and Meta as the enquiry channel in every locale', () => {
+    for (const locale of LOCALES) {
+      expect(privacy[locale]).toContain('WhatsApp');
+      expect(privacy[locale]).toContain('Meta');
+    }
   });
 
-  it('states the charge currency and the fixed rate in every locale', () => {
+  it('describes the auth synchronization signal without claiming it stores a profile', () => {
     for (const locale of LOCALES) {
-      expect(terms[locale]).toContain('PEN');
+      expect(privacy[locale]).toContain('usgar_auth_event');
+    }
+    expect(privacy.en).toContain('a signal without profile data');
+    expect(privacy.es).toContain('una señal sin datos de perfil');
+    expect(privacy.fr).toContain('un signal sans données de profil');
+    expect(privacy.pt).toContain('um sinal sem dados de perfil');
+  });
+
+  it('does not describe CSRF tokens as protecting every form', () => {
+    expect(source).not.toMatch(/CSRF tokens in forms|tokens CSRF en los formularios|jetons CSRF dans les formulaires|tokens CSRF nos formulários/i);
+    for (const locale of LOCALES) {
+      expect(privacy[locale]).toContain('X-CSRF-Token');
+    }
+  });
+
+  it('describes payment data without claiming the entire site cannot process payments', () => {
+    expect(source).not.toMatch(/this website does not process payments|este sitio no procesa pagos|ce site ne traite pas de paiements|este site não processa pagamentos/i);
+    for (const locale of LOCALES) expect(privacy[locale]).toContain('MercadoPago');
+  });
+});
+
+describe('terms copy matches the manual WhatsApp enquiry flow', () => {
+  it('does not promise an online checkout or a payment processed on the site', () => {
+    expect(source).not.toMatch(
+      /Payment is processed by MercadoPago|El pago lo procesa MercadoPago|Le paiement est traité par MercadoPago|O pagamento é processado pela MercadoPago/i,
+    );
+    expect(source).not.toMatch(
+      /confirmed when the payment is approved|queda confirmada cuando el pago es aprobado|est confirmée lorsque le paiement est approuvé|fica confirmada quando o pagamento é aprovado/i,
+    );
+    expect(source).not.toMatch(
+      /room is held for a limited time while you pay|habitación se mantiene bloqueada por tiempo limitado mientras pagas|chambre est bloquée pendant une durée limitée le temps du paiement|quarto fica bloqueado por tempo limitado enquanto você paga/i,
+    );
+    expect(source).not.toMatch(
+      /rate applied by MercadoPago|tipo de cambio que aplique MercadoPago|taux appliqué par MercadoPago|taxa aplicada pela MercadoPago/i,
+    );
+  });
+
+  it('routes enquiries to WhatsApp and leaves price and payment to the hotel', () => {
+    for (const locale of LOCALES) {
+      expect(terms[locale]).toContain('WhatsApp');
       expect(terms[locale]).toContain('USD');
-      expect(terms[locale]).toMatch(/fix|fij|fixé|fixad/i);
+      expect(terms[locale]).toMatch(/confirm/i);
+      expect(terms[locale]).toMatch(/payment|pago|paiement|pagamento/i);
+    }
+    for (const locale of LOCALES) {
+      expect(terms[locale]).toContain('${USD_TO_PEN.toFixed(2)}');
+    }
+    expect(source).not.toMatch(/until then there is no contract|hasta entonces no hay contrato|jusque-là, il n'y a ni contrat|até lá não há contrato/i);
+    expect(source).not.toMatch(/extra guests beyond the room capacity|huéspedes adicionales a la capacidad|voyageurs supplémentaires au-delà de la capacité|hóspedes adicionais acima da capacidade/i);
+  });
+
+  it('keeps the consumer rights and INDECOPI route in every locale', () => {
+    for (const locale of LOCALES) {
+      expect(terms[locale]).toContain('29571');
+      expect(terms[locale]).toContain('INDECOPI');
     }
   });
 });
