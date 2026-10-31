@@ -7,6 +7,7 @@ import { test, expect, type Page } from '@playwright/test';
 async function reachGuestStep(page: Page) {
   await page.addInitScript(() => sessionStorage.setItem('usgar_loaded', 'true'));
   await page.goto('/book');
+  test.skip(await page.locator('[data-inquiry-page]').count() > 0, 'El checkout está deshabilitado durante la confirmación manual.');
   await expect(page.locator('[data-guest-step]')).toBeAttached();
   // El paso 2 solo se alcanza con inventario del PMS; para probar el aviso y
   // la compuerta de aceptación se muestra el panel ya renderizado.

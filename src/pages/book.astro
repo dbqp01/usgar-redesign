@@ -5,6 +5,7 @@ import BookingCalendarStep from '../components/booking/BookingCalendarStep.astro
 import AllocationStep from '../components/booking/AllocationStep.astro';
 import GuestStep from '../components/booking/GuestStep.astro';
 import PaymentStep from '../components/booking/PaymentStep.astro';
+import InquiryBooking from '../components/booking/InquiryBooking.astro';
 import { rooms } from '../data/rooms';
 import { getRoomInventory } from '../data/settings';
 import { useTranslations, type Locale } from '../i18n/utils';
@@ -15,9 +16,24 @@ export const prerender = true;
 
 const lang = (Astro.currentLocale || 'en') as Locale;
 const t = useTranslations(lang);
+// Temporary manual confirmation until the hotel's real availability is known.
+const manualInquiry = true;
+const inquiryTitles = {
+  es: 'Consulta tu estancia',
+  en: 'Enquire about your stay',
+  fr: 'Demandez votre séjour',
+  pt: 'Consulte sua estadia',
+};
+const inquiryDescriptions = {
+  es: 'Consulta tu estancia en USGAR Hotels; el hotel confirmará disponibilidad y precio.',
+  en: 'Enquire about your stay at USGAR Hotels; the hotel will confirm availability and price.',
+  fr: 'Demandez votre séjour à USGAR Hotels ; l’hôtel confirmera la disponibilité et le prix.',
+  pt: 'Consulte sua estadia no USGAR Hotels; o hotel confirmará disponibilidade e preço.',
+};
 ---
 
-<Layout title={`${t('book.title')} - USGAR Hotels`} lang={lang} description={t('meta.book')} ogImage={await socialImage(cuscoImg)}>
+<Layout title={`${manualInquiry ? inquiryTitles[lang] : t('book.title')} - USGAR Hotels`} lang={lang} description={manualInquiry ? inquiryDescriptions[lang] : t('meta.book')} ogImage={await socialImage(cuscoImg)}>
+  {manualInquiry ? <InquiryBooking lang={lang} /> : <>
   <div class="pt-[calc(4rem+env(safe-area-inset-top))] pb-12 px-4 max-w-[1380px] mx-auto flex-1 animate-fade-in lg:pt-24">
 
     <!-- Compact Header Section -->
@@ -213,9 +229,10 @@ const t = useTranslations(lang);
 
   <!-- MercadoPago SDK -->
   <script is:inline src="https://www.mercadopago.com/v2/security.js" {...{ view: 'checkout' }}></script>
+  </>}
 </Layout>
 
-<script is:inline define:vars={{
+{!manualInquiry && <script is:inline define:vars={{
   serializedRooms: JSON.stringify(rooms.map(r => ({
     slug: r.slug,
     name: r.name,
@@ -284,9 +301,9 @@ const t = useTranslations(lang);
   window.__ROOMS_DATA = JSON.parse(serializedRooms);
   window.__ROOM_INVENTORY = JSON.parse(serializedInventory);
   window.__LABELS = JSON.parse(serializedLabels);
-</script>
+</script>}
 
-<script>
+{!manualInquiry && <script>
   import { gsap } from 'gsap';
   import { translateBeds } from '../utils/helpers';
   import { nightsBetween } from '../features/booking/calendar';
@@ -464,4 +481,4 @@ const t = useTranslations(lang);
   document.addEventListener('astro:before-preparation', () => {
     abortController.abort();
   });
-</script>
+</script>}

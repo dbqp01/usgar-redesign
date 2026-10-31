@@ -109,6 +109,7 @@ test.describe('Cookie notice', () => {
     page.on('request', (req) => bookRequests.push(req.url()));
     await page.goto('/book');
     await page.waitForLoadState('networkidle');
-    expect(bookRequests.some((u) => /mercadopago\.com/.test(u))).toBe(true);
+    const manualInquiry = await page.locator('[data-inquiry-page]').count() > 0;
+    expect(bookRequests.some((u) => /mercadopago\.com/.test(u))).toBe(!manualInquiry);
   });
 });

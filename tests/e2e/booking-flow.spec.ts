@@ -15,8 +15,8 @@ test.describe('USGAR Hotels - Booking Flow E2E', () => {
     await bookLink.click();
     await expect(page).toHaveURL(/\/book/);
 
-    // Verify booking page renders the wizard
-    await expect(page.locator('[data-step-panel="1"]')).toBeVisible();
+    // Both the temporary inquiry page and the eventual booking wizard are valid screens.
+    await expect(page.locator('[data-inquiry-page], [data-step-panel="1"]')).toBeVisible();
   });
 
   test('should display rooms listing', async ({ page }) => {

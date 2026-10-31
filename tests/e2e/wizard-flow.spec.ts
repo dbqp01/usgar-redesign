@@ -22,6 +22,7 @@ test.describe('USGAR booking wizard (Fase 4)', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => sessionStorage.setItem('usgar_loaded', 'true'));
     await page.goto('/book');
+    test.skip(await page.locator('[data-inquiry-page]').count() > 0, 'El checkout está deshabilitado durante la confirmación manual.');
     await openCalendar(page);
   });
 
