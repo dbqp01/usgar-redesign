@@ -4,6 +4,7 @@
 import type { Room } from "../../data/rooms";
 import { useTranslations, type Locale } from "../../i18n/utils";
 import { translateBeds } from "../../utils/helpers";
+import { formatUsdPen, USD_TO_PEN } from "../../utils/pricing";
 import { siteSettings } from "../../data/settings";
 import { getRelativeLocaleUrl } from "astro:i18n";
 
@@ -15,6 +16,8 @@ interface Props {
 const { room, lang } = Astro.props;
 const t = useTranslations(lang);
 const translatedBeds = translateBeds(room.beds, lang);
+const price = formatUsdPen(room.pricePerNight, lang);
+const rateNote = t('rooms.exchangeRateNote').replace('{rate}', USD_TO_PEN.toFixed(2));
 ---
 
 <div
@@ -23,10 +26,12 @@ const translatedBeds = translateBeds(room.beds, lang);
 >
   <div>
     <span class="text-xs font-semibold uppercase tracking-wider text-text-secondary-dark">{t('room.baseRate')}</span>
-    <div class="flex items-baseline gap-1 mt-1">
-      <span class="text-5xl font-display text-primary">${room.pricePerNight}</span>
+    <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1 mt-1">
+      <span class="text-5xl font-display text-primary">{price.usd}</span>
       <span class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">{t("rooms.perNight")}</span>
     </div>
+    <p class="mt-1 text-lg font-semibold text-primary dark:text-primary-soft">{t('rooms.approx')} {price.pen}</p>
+    <p class="mt-2 text-balance text-xs leading-relaxed text-text-secondary-light dark:text-text-secondary-dark">{rateNote}</p>
   </div>
 
   <!-- Room Specs Quickbox -->

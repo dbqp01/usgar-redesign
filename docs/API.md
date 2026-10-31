@@ -78,6 +78,7 @@ La tabla incluye las 36 rutas registradas en `public/index.php`, incluidas las n
 | 34 | GET | `/api/newsletter/confirm` | `ConfirmNewsletterAction` | Token HMAC (`email` + `token`) |
 | 35 | GET | `/api/newsletter/unsubscribe` | `UnsubscribeNewsletterAction` | Token HMAC (`email` + `token`) |
 | 36 | POST | `/api/newsletter/unsubscribe` | `UnsubscribeNewsletterAction` | Token HMAC en el body |
+| 37 | POST | `/api/newsletter/confirm` | `ConfirmNewsletterAction` | Token HMAC en el body |
 
 Notas:
 - Los endpoints de cron (cleanup, manual-review y refresh-reviews) se invocan por CLI o por HTTP protegido con `x-cron-secret`; el front controller detecta `PHP_SAPI === 'cli'` y usa `$argv[1]` como ruta. Los crons oficiales viven en `cron/` y usan los mismos actions — ver `docs/DEPLOYMENT.md` §Cron.
@@ -179,7 +180,9 @@ Comportamiento verificado:
 El evento `booking.paid` conserva las líneas multi-habitación congeladas en el hold.
 El listener las entrega al PMS y QloApps crea un detalle por unidad; los holds cuya
 referencia ya aparece en una orden PMS confirmada se excluyen del cálculo de
-disponibilidad para evitar doble descuento.
+disponibilidad para evitar doble descuento. Si un bloqueo manual vigente no puede
+vincularse a una habitación y tipo del hotel, la consulta de disponibilidad falla
+con 503 en vez de vender inventario incierto; el bloqueo debe corregirse en el PMS.
 
 ## POST /api/extend-hold · GET /api/booking-status · GET /api/payment-check
 
@@ -249,13 +252,14 @@ Newsletter con **doble opt-in y consentimiento explícito** (Ley 29733 / buenas 
   - Guarda en `newsletter_subscribers` la evidencia: `ip`, `user_agent`, `locale`, `consent_at`, `consent_version` (constante del aviso) y `status='pending'`. Envía un correo de confirmación con enlace firmado; **no** suscribe todavía. Si el correo no se puede enviar → 503 `NEWSLETTER_EMAIL_FAILED` (no se finge éxito).
   - Respuesta siempre `{ "success": true, "status": "pending", "message": "confirmation_sent" }`, también si el email ya estaba confirmado: no permite enumerar la lista. Límite: 5 peticiones/hora por IP → 429 `RATE_LIMITED`.
   - 503 `SERVICE_UNAVAILABLE` si no hay BD.
-- `GET /api/newsletter/confirm?email=...&token=...` — el enlace del correo. Token HMAC-SHA256 ligado al email y al propósito `confirm`; `status pending → confirmed` con `confirmed_at`. Idempotente mientras siga confirmado. Un enlace viejo **no** revive una baja (`unsubscribed`). Token inválido o email desconocido → 400 `INVALID_TOKEN`.
+- `GET /api/newsletter/confirm?email=...&token=...` — el enlace del correo abre una página con un formulario POST; **no** confirma por sí solo (seguro frente a escáneres y prefetch). Token HMAC-SHA256 ligado al email y al propósito `confirm`. Si ya estaba confirmado muestra el éxito sin escribir. Un cliente que pide JSON recibe `{ "success": true, "status": "pending", "message": "confirmation_required" }` (o `status: "confirmed"` si ya lo estaba), también sin mutar.
+- `POST /api/newsletter/confirm` — body `{ "email", "token" }` (o el formulario de esa página). Aplica `status pending → confirmed` con `confirmed_at`. Idempotente mientras siga confirmado. Un enlace viejo **no** revive una baja (`unsubscribed`). Token inválido, de otro email, de otro propósito o email desconocido → 400 `INVALID_TOKEN`.
 - `GET /api/newsletter/unsubscribe?email=...&token=...` — muestra una página de confirmación; **no** cambia estado (un prefetch del correo no da de baja a nadie).
 - `POST /api/newsletter/unsubscribe` — body `{ "email", "token" }` (o formulario). Token HMAC del propósito `unsubscribe`; `status='unsubscribed'` + `unsubscribed_at`. Idempotente. Token inválido, de otro email o del propósito `confirm` → 400 `INVALID_TOKEN`.
 
-Cualquier envío de la newsletter debe leer solo `status='confirmed'`: `pending` (sin doble opt-in) y `unsubscribed` no reciben nada.
+Cualquier envío de la newsletter debe leer `status='confirmed' AND consent_at IS NOT NULL`: `pending` (sin doble opt-in) y `unsubscribed` no reciben nada, y las filas `consent_version='legacy'` (históricas, sin evidencia de consentimiento) quedan fuera hasta un re-opt-in explícito. **No existe todavía un sender de campañas**: esta regla es el contrato que debe cumplir el primero que se escriba.
 
-Los tokens se derivan con `BOOKING_TOKEN_SECRET` (fallback `CRON_SECRET`) y dominio `newsletter:`; no hay variable nueva. Las páginas HTML de confirmación/baja se sirven en el idioma guardado (`en|es|fr|pt`), con `noindex` y `Cache-Control: no-store`; los clientes que piden JSON reciben el envelope general. La tabla se auto-migra: las columnas nuevas se agregan con `ALTER` y los suscriptores históricos quedan `confirmed` con `consent_version='legacy'` y `consent_at NULL` (no se inventa evidencia).
+Los tokens se derivan con `BOOKING_TOKEN_SECRET` (fallback `CRON_SECRET`) y dominio `newsletter:`; no hay variable nueva. Las páginas HTML de confirmación/baja se sirven en el idioma guardado (`en|es|fr|pt`), con `noindex` y `Cache-Control: no-store`; los clientes que piden JSON reciben el envelope general. La tabla se auto-migra una sola vez (cuando falta alguna columna): las columnas nuevas se agregan con `ALTER` y los suscriptores históricos quedan `confirmed` con `consent_version='legacy'` y `consent_at NULL` (no se inventa evidencia, no se borra ninguna fila y no se toca `unsubscribed_at`). Esa migración no vuelve a ejecutarse en despliegues posteriores.
 
 - `POST /api/contact` — formulario de contacto → `SubmitContactAction`.
 

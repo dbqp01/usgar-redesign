@@ -159,6 +159,15 @@ class QloAppAdapter implements PmsPortInterface {
             $rows = $stmt->fetchAll();
             $availableRooms = [];
 
+            // Reservas/bloqueos importados por el dueno (manual_blocks) que
+            // aun no descuenta el PMS: sin esto una reserva importada sigue
+            // vendiendose en la web. Agrupado por tipo y una vez por cuarto
+            // fisico (el import puede repetir filas o solapar fechas).
+            $manualBlockedByType = [];
+            foreach ($this->fetchManualBlockedRooms($checkIn, $checkOut, $idHotel) as $mb) {
+                $manualBlockedByType[$mb['id_room_type']][$mb['room_id']] = true;
+            }
+
             // Planes de precio (Feature Price) para la tarifa No Reembolsable,
             // centralizados en el admin de QloApps. Si falla la consulta =>
             // sin descuento (fail-safe, nunca rompe la reserva).
@@ -166,7 +175,8 @@ class QloAppAdapter implements PmsPortInterface {
 
             foreach ($rows as $row) {
                 $totalRooms = max((int)$row['total_rooms'], 0);
-                $availableCount = max(0, $totalRooms - (int)$row['booked_count']);
+                $booked = (int)$row['booked_count'] + count($manualBlockedByType[(int)$row['id_room_type']] ?? []);
+                $availableCount = max(0, $totalRooms - $booked);
                 $basePrice = (float)$row['price'];
                 $idProduct = (int)$row['id_product'];
 
@@ -194,6 +204,103 @@ class QloAppAdapter implements PmsPortInterface {
         } catch (PDOException $e) {
             Logger::error('QloAppAdapter: Error en consulta SQL: ' . $e->getMessage());
             throw new PmsUnavailableException('PMS availability query failed.', 0, $e);
+        }
+    }
+
+    /**
+     * Cuartos con reserva/bloqueo importado (manual_blocks) en el rango, sin
+     * los que ya descuentan como disable_date: el mismo cuarto fisico no debe
+     * restar dos unidades. Una fila por cuarto aunque el import tenga
+     * duplicados o fechas solapadas.
+     *
+     * Sin tabla manual_blocks no hay importaciones; otros errores abortan la
+     * consulta para no vender una habitacion cuya disponibilidad es incierta.
+     * Cuenta cualquier estado (confirmed/hold): un hold importado tambien
+     * reserva inventario, igual que un hold web.
+     *
+     * @param bool $skipAlreadyDisabled true para disponibilidad de un rango
+     *        (un cuarto ya descontado por disable_dates cuenta una sola vez);
+     *        false para el calendario, que necesita todas las filas para
+     *        descontar dia a dia aunque el disable cubra solo otro tramo.
+     * @return list<array{id_room_type: int, room_id: int, checkin: string, checkout: string}>
+     */
+    private function fetchManualBlockedRooms(string $from, string $to, int $hotelId, bool $skipAlreadyDisabled = true): array {
+        if (!$this->pdo) {
+            return [];
+        }
+        $excludeDisabled = $skipAlreadyDisabled
+            ? "AND NOT EXISTS (
+                      SELECT 1 FROM qlo_htl_room_disable_dates rd_manual
+                      INNER JOIN qlo_htl_room_information ri_manual ON ri_manual.id = rd_manual.id_room
+                      WHERE rd_manual.id_room = mb.room_id
+                        AND rd_manual.id_room_type = rt.id
+                        AND ri_manual.id_hotel = :id_hotel_manual_disabled
+                        AND rd_manual.date_from < :date_to_manual_disabled
+                        AND rd_manual.date_to > :date_from_manual_disabled
+                  )
+              AND NOT EXISTS (
+                  SELECT 1 FROM qlo_htl_booking_detail bd_manual
+                  WHERE bd_manual.id_room = mb.room_id
+                    AND bd_manual.id_product = rt.id_product
+                    AND bd_manual.id_hotel = :id_hotel_manual_booked
+                    AND bd_manual.is_cancelled = 0 AND bd_manual.is_refunded = 0
+                    AND NOT EXISTS (
+                        SELECT 1 FROM provisional_bookings pb_manual
+                        WHERE pb_manual.cart_id = CAST(bd_manual.id_order AS CHAR)
+                          AND (pb_manual.status = 'paid' OR (pb_manual.status = 'pending' AND pb_manual.expires_at > NOW()))
+                    )
+                    AND bd_manual.date_from < :date_to_manual_booked
+                    AND bd_manual.date_to > :date_from_manual_booked
+              )"
+            : '';
+        $params = [
+            ':id_hotel_manual'  => $hotelId,
+            ':date_from_manual' => $from,
+            ':date_to_manual'   => $to,
+        ];
+        if ($skipAlreadyDisabled) {
+            $params += [
+                ':id_hotel_manual_disabled'  => $hotelId,
+                ':date_from_manual_disabled' => $from,
+                ':date_to_manual_disabled'   => $to,
+                ':id_hotel_manual_booked'    => $hotelId,
+                ':date_from_manual_booked'   => $from . ' ' . self::CHECKIN_TIME,
+                ':date_to_manual_booked'     => $to . ' ' . self::CHECKOUT_TIME,
+            ];
+        }
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT rt.id AS id_room_type, mb.room_id, mb.checkin, mb.checkout
+                FROM manual_blocks mb
+                LEFT JOIN qlo_htl_room_information ri_mb ON ri_mb.id = mb.room_id AND ri_mb.id_hotel = mb.id_hotel
+                LEFT JOIN qlo_htl_room_type rt
+                  ON rt.id_product = ri_mb.id_product AND rt.id_hotel = ri_mb.id_hotel
+                WHERE mb.id_hotel = :id_hotel_manual
+                  AND mb.checkin < :date_to_manual
+                  AND mb.checkout > :date_from_manual
+                  AND (rt.id IS NULL OR (1=1 {$excludeDisabled}))
+            ");
+            $stmt->execute($params);
+            $out = [];
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) ?: [] as $r) {
+                if ($r['id_room_type'] === null) {
+                    throw new PmsUnavailableException('Manual block references an unknown room.');
+                }
+                $out[] = [
+                    'id_room_type' => (int)$r['id_room_type'],
+                    'room_id'      => (int)$r['room_id'],
+                    'checkin'      => substr((string)$r['checkin'], 0, 10),
+                    'checkout'     => substr((string)$r['checkout'], 0, 10),
+                ];
+            }
+            return $out;
+        } catch (PDOException $e) {
+            $missingTable = str_contains($e->getMessage(), 'manual_blocks')
+                && ($e->getCode() === '42S02' || str_contains($e->getMessage(), 'no such table: manual_blocks'));
+            if (!$missingTable) {
+                throw $e;
+            }
+            return [];
         }
     }
 
@@ -264,6 +371,7 @@ class QloAppAdapter implements PmsPortInterface {
             $toTs = $fromTs + (120 * 86400);
         }
 
+        $rangeEndExclusive = date('Y-m-d', strtotime('+1 day', $toTs));
         try {
             // Habitaciones activas con su inventario total
             $roomsStmt = $this->pdo->prepare("
@@ -289,7 +397,7 @@ class QloAppAdapter implements PmsPortInterface {
 
             // Todas las reservas activas (no canceladas/refundadas) en QloApps que tocan el rango.
             $bookingsStmt = $this->pdo->prepare("
-                SELECT bd.id_product, rt.id AS room_type_id, bd.date_from, bd.date_to
+                SELECT bd.id_product, bd.id_room, rt.id AS room_type_id, bd.date_from, bd.date_to
                 FROM qlo_htl_booking_detail bd
                 INNER JOIN qlo_htl_room_type rt ON rt.id_product = bd.id_product
                 WHERE bd.is_cancelled = 0
@@ -326,7 +434,7 @@ class QloAppAdapter implements PmsPortInterface {
             ");
             $holdsStmt->execute([
                 ':range_from_date' => date('Y-m-d', $fromTs),
-                ':range_to_date'   => date('Y-m-d', $toTs),
+                ':range_to_date'   => $rangeEndExclusive,
                 ':id_hotel'        => $idHotel,
             ]);
             $holds = $holdsStmt->fetchAll();
@@ -344,10 +452,19 @@ class QloAppAdapter implements PmsPortInterface {
             ");
             $disabledStmt->execute([
                 ':range_from_disabled' => date('Y-m-d', $fromTs),
-                ':range_to_disabled'   => date('Y-m-d', $toTs),
+                ':range_to_disabled'   => $rangeEndExclusive,
                 ':id_hotel_disabled'   => $idHotel,
             ]);
             $disabled = $disabledStmt->fetchAll();
+
+            // Reservas/bloqueos importados por el dueno (manual_blocks): mismo
+            // descuento que un disable_date, sin doblar el cuarto si ya lo esta.
+            $manualBlocks = $this->fetchManualBlockedRooms(
+                date('Y-m-d', $fromTs),
+                $rangeEndExclusive,
+                $idHotel,
+                false
+            );
 
             // Índice de inventario por id_room_type
             $inventory = [];
@@ -360,6 +477,7 @@ class QloAppAdapter implements PmsPortInterface {
             for ($ts = $fromTs; $ts <= $toTs; $ts += 86400) {
                 $dateKey = date('Y-m-d', $ts);
                 $occupied = [];
+                $bookedRoomIds = [];
 
                 foreach ($bookings as $b) {
                     // QloApps stores booking timestamps at check-in (12:00)
@@ -377,6 +495,9 @@ class QloAppAdapter implements PmsPortInterface {
                         // legacy fallback for test/older adapters.
                         $idRoomType = (int)($b['room_type_id'] ?? $b['id_room_type'] ?? $b['id_product'] ?? 0);
                         $occupied[$idRoomType] = ($occupied[$idRoomType] ?? 0) + 1;
+                        if (!empty($b['id_room'])) {
+                            $bookedRoomIds[$idRoomType][(int)$b['id_room']] = true;
+                        }
                     }
                 }
 
@@ -390,17 +511,23 @@ class QloAppAdapter implements PmsPortInterface {
                 }
 
                 // Bloqueos: una habitación física bloqueada = 1 unidad del tipo
-                // ocupada (COUNT DISTINCT por id_room para no doblar solapes).
-                $disabledRoomIds = [];
+                // ocupada (set por id_room para no doblar solapes de fechas ni
+                // de fuentes: manual_blocks + disable_dates).
+                $blockedRoomIds = [];
                 foreach ($disabled as $d) {
                     $dFrom = substr((string)$d['date_from'], 0, 10);
                     $dTo   = substr((string)$d['date_to'], 0, 10);
                     if ($dateKey >= $dFrom && $dateKey < $dTo) {
-                        $disabledRoomIds[(int)$d['id_room_type']][(int)$d['id_room']] = true;
+                        $blockedRoomIds[(int)$d['id_room_type']][(int)$d['id_room']] = true;
                     }
                 }
-                foreach ($disabledRoomIds as $idRoomType => $roomSet) {
-                    $occupied[$idRoomType] = ($occupied[$idRoomType] ?? 0) + count($roomSet);
+                foreach ($manualBlocks as $m) {
+                    if ($dateKey >= $m['checkin'] && $dateKey < $m['checkout']) {
+                        $blockedRoomIds[$m['id_room_type']][$m['room_id']] = true;
+                    }
+                }
+                foreach ($blockedRoomIds as $idRoomType => $roomSet) {
+                    $occupied[$idRoomType] = ($occupied[$idRoomType] ?? 0) + count(array_diff_key($roomSet, $bookedRoomIds[$idRoomType] ?? []));
                 }
 
                 $dayAvailability = [];

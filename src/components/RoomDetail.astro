@@ -8,6 +8,7 @@ import RoomBookingSidebar from "./room/RoomBookingSidebar.astro";
 import type { Room } from "../data/rooms";
 import { useTranslations } from "../i18n/utils";
 import { translateBeds } from "../utils/helpers";
+import { formatUsdPen, USD_TO_PEN } from "../utils/pricing";
 import { siteSettings } from "../data/settings";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { socialImage } from "../utils/ogImage";
@@ -22,6 +23,8 @@ interface Props {
 
 const { room, lang } = Astro.props;
 const t = useTranslations(lang);
+const price = formatUsdPen(room.pricePerNight, lang);
+const rateNote = t('rooms.exchangeRateNote').replace('{rate}', USD_TO_PEN.toFixed(2));
 
 // Dynamically import all room images and hotel fallback images
 const allRoomImages = import.meta.glob<{ default: ImageMetadata }>(
@@ -151,7 +154,7 @@ const roomSchema = {
         {room.name[lang]}
       </h1>
       <div
-        class="flex items-center gap-4 text-sm text-text-secondary-light dark:text-text-secondary-dark mt-3"
+        class="flex flex-wrap items-center gap-4 text-sm text-text-secondary-light dark:text-text-secondary-dark mt-3"
       >
         <span class="flex items-center gap-1">
           <svg
@@ -177,10 +180,13 @@ const roomSchema = {
           </svg>
           {translatedBeds}
         </span>
-        <span class="ml-auto flex items-baseline gap-1.5">
-          <span class="font-display text-2xl md:text-3xl text-primary dark:text-primary-soft">{room.pricePerNight}</span>
-          <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark">{t('rooms.perNight')}</span>
+        <span class="ml-auto flex flex-wrap items-baseline gap-x-2 gap-y-1">
+          <span class="font-display text-2xl md:text-3xl text-primary dark:text-primary-soft">{price.usd}</span>
+          <span class="text-sm text-text-secondary-light dark:text-text-secondary-dark">{t('rooms.approx')} {price.pen} · {t('rooms.perNight')}</span>
         </span>
+        <p class="mt-3 w-full text-balance text-xs leading-relaxed text-text-secondary-light dark:text-text-secondary-dark lg:hidden">
+          {rateNote}
+        </p>
       </div>
     </div>
 

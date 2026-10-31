@@ -115,7 +115,11 @@ final class DisableDatesFakeStmt extends \PDOStatement {
 
         // Marcadores del SELECT principal (la query de ROOMS contiene subqueries
         // de booking_detail/disable/holds — no matchear por el nombre de tabla).
-        if (str_contains($q, 'rt.id AS id_room_type')) {
+        if (str_contains($q, 'FROM manual_blocks mb')) {
+            // Este fixture no tiene reservas importadas (ver
+            // QloAppAdapterManualBlocksTest para ese caso).
+            $this->rows = [];
+        } elseif (str_contains($q, 'rt.id AS id_room_type')) {
             // Inventario: 1 tipo, 3 habitaciones (booked_count ya incluye 1
             // booking + 1 disable — el adapter los suma en la subquery).
             $this->rows = [[

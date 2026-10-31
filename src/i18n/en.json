@@ -39,9 +39,11 @@
     "title": "Our Rooms",
     "description": "Each room is uniquely designed with hand-painted Andean murals, warm lighting, and artisan textiles that celebrate Cusco's cultural heritage.",
     "from": "From",
+    "approx": "approx.",
     "perNight": "per night",
     "upTo": "Up to",
-    "viewAll": "View all rooms"
+    "viewAll": "View all rooms",
+    "exchangeRateNote": "Rates are shown in US dollars (USD). The PEN amount is an estimate at US$1 = S/{rate}. The hotel confirms the final price."
   },
   "roomsSection": {
     "viewDetails": "VIEW DETAILS"

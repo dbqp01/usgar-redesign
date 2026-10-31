@@ -6,10 +6,12 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import SectionHeader from "../../components/ui/SectionHeader.astro";
 import { rooms } from "../../data/rooms";
 import { useTranslations, type Locale } from "../../i18n/utils";
+import { formatUsdPen, USD_TO_PEN } from "../../utils/pricing";
 import { socialImage } from "../../utils/ogImage";
 
 const lang = (Astro.currentLocale || "en") as Locale;
 const t = useTranslations(lang);
+const rateNote = t("rooms.exchangeRateNote").replace("{rate}", USD_TO_PEN.toFixed(2));
 
 const capacities = ["all", "2", "3", "4", "7"];
 
@@ -32,6 +34,7 @@ function firstImage(photoFolder: string): ImageMetadata | undefined {
 
 const galleryRooms = rooms.map((room) => ({
   room,
+  price: formatUsdPen(room.pricePerNight, lang),
   image: firstImage(room.photoFolder),
 }));
 
@@ -91,7 +94,7 @@ const ogImage = galleryRooms[0]?.image ? await socialImage(galleryRooms[0].image
 
     <div class="grid grid-cols-1 gap-5 sm:gap-7 md:grid-cols-2" id="rooms-grid" data-rooms-gallery>
       {
-        galleryRooms.map(({ room, image }, index) => (
+        galleryRooms.map(({ room, image, price }, index) => (
           <div data-guests={room.maxGuests} class="transition-[opacity,transform] duration-500">
             <div class="group relative isolate block min-h-[390px] overflow-hidden rounded-[1.75rem] border border-black/10 bg-surface-card-dark shadow-xl sm:min-h-[500px]">
               {image && (
@@ -122,7 +125,7 @@ const ogImage = galleryRooms[0]?.image ? await socialImage(galleryRooms[0].image
                   {room.name[lang]}
                 </h2>
                 <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10px] font-mono uppercase tracking-[0.18em] text-white/75">
-                  <span>{t("rooms.from")} ${room.pricePerNight} {t("rooms.perNight")}</span>
+                  <span>{t("rooms.from")} {price.usd} ({t("rooms.approx")} {price.pen}) {t("rooms.perNight")}</span>
                   <span>{room.amenityLabels[room.amenities[0]]?.[lang] || room.beds}</span>
                 </div>
                 <a
@@ -150,6 +153,10 @@ const ogImage = galleryRooms[0]?.image ? await socialImage(galleryRooms[0].image
         ))
       }
     </div>
+
+    <p class="mx-auto mt-6 max-w-3xl text-balance text-center text-xs leading-relaxed text-text-secondary-light dark:text-text-secondary-dark">
+      {rateNote}
+    </p>
 
     <!-- Empty State -->
     <div

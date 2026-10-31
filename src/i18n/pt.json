@@ -39,9 +39,11 @@
     "title": "Nossos Quartos",
     "description": "Cada quarto e exclusivamente projetado com murais andinos pintados a mao, iluminação acolhedora e tecidos artesanais que celebram o patrimonio cultural de Cusco.",
     "from": "A partir de",
+    "approx": "aprox.",
     "perNight": "por noite",
     "upTo": "Até",
-    "viewAll": "Ver todos os quartos"
+    "viewAll": "Ver todos os quartos",
+    "exchangeRateNote": "As tarifas são exibidas em dólares americanos (USD). O valor em PEN é uma aproximação à taxa US$1 = S/{rate}. O hotel confirma o preço final."
   },
   "roomsSection": {
     "viewDetails": "VER DETALHES"

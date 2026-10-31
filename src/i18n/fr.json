@@ -39,9 +39,11 @@
     "title": "Nos Chambres",
     "description": "Chaque chambre est conçue de maniere unique avec des fresques andines peintes a la main, un éclairage chaleureux et des textiles artisanaux celebrant le patrimoine culturel de Cusco.",
     "from": "A partir de",
+    "approx": "env.",
     "perNight": "par nuit",
     "upTo": "Jusqu'à",
-    "viewAll": "Voir toutes les chambres"
+    "viewAll": "Voir toutes les chambres",
+    "exchangeRateNote": "Les tarifs sont indiqués en dollars américains (USD). Le montant en PEN est une estimation au taux US$1 = S/{rate}. L'hôtel confirme le prix final."
   },
   "roomsSection": {
     "viewDetails": "VOIR Détails"

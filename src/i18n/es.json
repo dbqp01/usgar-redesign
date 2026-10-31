@@ -39,9 +39,11 @@
     "title": "Nuestras Habitaciones",
     "description": "Cada habitación esta diseñada con murales andinos pintados a mano, iluminación calida y textiles artesanales que celebran la herencia cultural de Cusco.",
     "from": "Desde",
+    "approx": "aprox.",
     "perNight": "por noche",
     "upTo": "Hasta",
-    "viewAll": "Ver todas las habitaciones"
+    "viewAll": "Ver todas las habitaciones",
+    "exchangeRateNote": "Las tarifas se muestran en dólares estadounidenses (USD). El monto en PEN es una estimación al tipo de cambio US$1 = S/{rate}. El hotel confirma el precio final."
   },
   "roomsSection": {
     "viewDetails": "VER DETALLES"
