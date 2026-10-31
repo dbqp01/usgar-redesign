@@ -1,0 +1,35 @@
+{
+  "homeTitle": "Usgar San Pedro Boutique | Hotel en Cusco",
+  "eyebrow": "San Pedro · Cusco",
+  "addressLabel": "Dónde estamos",
+  "roomsLink": "Conoce nuestras habitaciones",
+  "bookLink": "Consultar estancia",
+  "contactLink": "Contactar al hotel",
+  "marketGuide": "Guía del Mercado de San Pedro",
+  "relatedLabel": "Explora otra forma de llegar",
+  "bookingNote": "El hotel confirmará el precio y la disponibilidad para tus fechas antes de reservar.",
+  "market": {
+    "link": "Hotel cerca del Mercado de San Pedro",
+    "title": "Hotel cerca del Mercado de San Pedro, Cusco | USGAR",
+    "description": "Alójate cerca del Mercado de San Pedro en Cusco. Conoce USGAR, sus habitaciones y cómo consultar disponibilidad directamente con el hotel.",
+    "heading": "Un hotel cerca del Mercado de San Pedro",
+    "lead": "En el barrio de San Pedro, USGAR Hotels —también conocido como Usgar San Pedro Boutique— es una base para descubrir el centro de Cusco a pie.",
+    "sections": [
+      { "heading": "El mercado y sus alrededores", "body": "El Mercado Central de San Pedro reúne puestos de frutas, jugos, comida local y artesanía. Alojarte cerca permite incorporarlo a un paseo por el centro histórico, sin depender de un traslado para cada salida. Los horarios de los puestos pueden variar; consulta antes de tu visita." },
+      { "heading": "Una estancia en el centro de Cusco", "body": "El hotel está en Calle Hospital, cerca del mercado y de la estación de San Pedro. Puedes explorar las habitaciones y elegir la distribución que se ajuste a tu viaje. La ubicación también te permite organizar recorridos por el centro y preguntar al equipo del hotel cómo llegar." },
+      { "heading": "Antes de consultar tu estancia", "body": "Indica tus fechas, número de huéspedes y habitación preferida. El equipo confirmará la disponibilidad y el precio aplicable; la consulta no equivale a una reserva confirmada. Si tu viaje incluye trenes o excursiones, verifica horarios y puntos de salida con cada operador." }
+    ]
+  },
+  "station": {
+    "link": "Hotel cerca de la estación San Pedro",
+    "title": "Hotel cerca de la estación San Pedro, Cusco | USGAR",
+    "description": "Busca alojamiento cerca de la estación San Pedro de Cusco y organiza tu viaje: conoce USGAR y consulta habitación, precio y disponibilidad.",
+    "heading": "Alojamiento cerca de la estación San Pedro",
+    "lead": "USGAR Hotels, también conocido como Usgar San Pedro Boutique, está en Calle Hospital, en el barrio de San Pedro de Cusco, cerca de la estación de tren.",
+    "sections": [
+      { "heading": "Planifica tu salida desde Cusco", "body": "La estación San Pedro es una referencia para quienes organizan viajes en tren desde Cusco. El punto de salida y los servicios disponibles dependen de la ruta, la fecha y el operador: revisa tu billete y confirma la estación antes de desplazarte." },
+      { "heading": "Una base para tu itinerario", "body": "Desde el hotel puedes planificar una visita al Mercado de San Pedro y explorar el centro histórico. Para coordinar tu llegada o conocer la ruta al hotel, consulta al equipo con anticipación y comparte la estación que figura en tu viaje." },
+      { "heading": "Consulta tu habitación", "body": "Revisa las opciones de habitación y comparte tus fechas y número de huéspedes con el hotel. El equipo confirmará el precio y la disponibilidad antes de reservar; los horarios de tren y las excursiones deben verificarse por separado con sus operadores." }
+    ]
+  }
+}

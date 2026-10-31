@@ -5,6 +5,8 @@
 // overlays y Google Maps CTA. Tiles dark_all de cartocdn y pin blanco +
 // ping bg-secondary confirmados en locationMap.ts.
 import { useTranslations, type Locale } from '../i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { locationCopy } from '../i18n/location';
 import { siteSettings } from '../data/settings';
 
 const lang = (Astro.currentLocale || 'en') as Locale;
@@ -128,6 +130,10 @@ const pois = [
         <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark font-light leading-relaxed">
           {siteSettings.address[lang]}
         </p>
+        <div class="flex flex-col items-start gap-3 text-sm font-medium">
+          <a href={getRelativeLocaleUrl(lang, 'stay/near-san-pedro-market')} class="text-primary underline underline-offset-4 dark:text-secondary">{locationCopy[lang].market.link}</a>
+          <a href={getRelativeLocaleUrl(lang, 'stay/near-san-pedro-station')} class="text-primary underline underline-offset-4 dark:text-secondary">{locationCopy[lang].station.link}</a>
+        </div>
       </div>
     </div>
   </div>

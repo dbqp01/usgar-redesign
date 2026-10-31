@@ -88,3 +88,43 @@ describe.skipIf(!hasDist)('built artifact', () => {
     if (lastmods.length) expect(new Set(lastmods).size).toBeGreaterThan(1);
   });
 });
+
+const locationLocales = ['', 'es/', 'fr/', 'pt/'];
+const locationSlugs = ['near-san-pedro-market', 'near-san-pedro-station'];
+
+describe.skipIf(!hasDist)('local SEO pages in the built site', () => {
+  const sitemap = hasDist ? read('dist/sitemap-0.xml') : '';
+
+  it.each(locationLocales.flatMap((locale) => locationSlugs.map((slug) => [locale, slug])))('%s%s is indexable, localized and in the sitemap', (locale, slug) => {
+    const path = `${locale}stay/${slug}/`;
+    const file = `dist/${path}index.html`;
+    expect(existsSync(file), file).toBe(true);
+    const html = read(file);
+    const url = `https://usgarhoteles.com/${path}`;
+    const links = html.match(/<link\b[^>]*>/gi) ?? [];
+    expect(html).toMatch(new RegExp(`<html\\b[^>]*\\blang=["']?${locale ? locale.slice(0, 2) : 'en'}(?:["'\\s>])`, 'i'));
+    expect(html.match(/<h1\b/gi)).toHaveLength(1);
+    const robots = (html.match(/<meta\b[^>]*>/gi) ?? []).find((tag) => attr(tag, 'name')?.toLowerCase() === 'robots');
+    expect(robots ? attr(robots, 'content') : '').not.toMatch(/\bnoindex\b/i);
+    expect(links.some((tag) => attr(tag, 'rel') === 'canonical' && attr(tag, 'href') === url)).toBe(true);
+    expect(sitemap).toContain(`<loc>${url}</loc>`);
+    for (const alt of locationLocales) {
+      const href = `https://usgarhoteles.com/${alt}stay/${slug}/`;
+      expect(links.some((tag) => attr(tag, 'hreflang') === (alt ? alt.slice(0, 2) : 'en') && attr(tag, 'href')?.replace(/\/$/, '') === href.replace(/\/$/, ''))).toBe(true);
+    }
+    expect(html).toContain(`/${locale}book`);
+    expect(html).toContain(`/${locale}rooms`);
+    expect(html).toContain(`/${locale}contact`);
+  });
+
+  it.each(locationLocales)('uses the recognised hotel name in the %s homepage title', (locale) => {
+    const html = read(`dist/${locale}index.html`);
+    const title = html.match(/<title>(.*?)<\/title>/i)?.[1] ?? '';
+    expect(title).toMatch(/Usgar San Pedro Boutique/i);
+  });
+
+  it.each(locationLocales)('links to both location pages from the %s homepage', (locale) => {
+    const html = read(`dist/${locale}index.html`);
+    for (const slug of locationSlugs) expect(html.includes(`/${locale}stay/${slug}`), `${locale} missing ${slug}`).toBe(true);
+  });
+});

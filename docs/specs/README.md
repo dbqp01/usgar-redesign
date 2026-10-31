@@ -48,3 +48,4 @@ Las specs son la **fuente de verdad de comportamientos**: qué debe hacer cada f
 | `booking.spec.md` | Flujo de reserva (wizard, holds, precio, confirmación QloApps) | en desarrollo |
 | `auth.spec.md` | Autenticación (JWT propio + OAuth social) y Panel admin | en desarrollo |
 | `payments.spec.md` | MercadoPago, webhooks, outbox, conciliación y crons | en desarrollo |
+| `seo-location.spec.md` | Páginas de alojamiento y ubicación en San Pedro | en desarrollo |

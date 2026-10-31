@@ -13,6 +13,7 @@ import Hero from "../components/Hero.astro";
 import ExploreCarousel from "../components/ExploreCarousel.astro";
 import InstagramSection from "../components/InstagramSection.astro";
 import { useTranslations } from "../i18n/utils";
+import { locationCopy } from "../i18n/location";
 import { faqData } from "../data/faq";
 import { siteSettings, getRoomInventory } from "../data/settings";
 
@@ -105,7 +106,7 @@ const schemas = [hotelSchema, faqSchema];
 ---
 
 <Layout
-  title={`${siteSettings.hotelName} | ${t("hero.subtitle")}`}
+  title={locationCopy[lang].homeTitle}
   lang={lang}
   schema={schemas}
 >

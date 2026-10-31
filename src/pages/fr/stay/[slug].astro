@@ -1,0 +1,11 @@
+---
+import LocationLanding from '../../../components/LocationLanding.astro';
+import { locationRoutes, type LocationSlug } from '../../../i18n/location';
+
+export function getStaticPaths() {
+  return Object.keys(locationRoutes).map((slug) => ({ params: { slug } }));
+}
+
+const slug = Astro.params.slug as LocationSlug;
+---
+<LocationLanding slug={slug} />
