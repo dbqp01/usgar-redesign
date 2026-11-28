@@ -65,7 +65,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
     }
 
     // arrivals: one observer, waves capped at six
-    var targets = document.querySelectorAll('.links__head > *, .door, .rooms__head > *, .rrow, .house__head > *, .house figure, .svc__head > *, .svc__item, .night h2, .night__figs p, .strip__head > *, .arrive__head > *, .row, .hours__item');
+    // with GSAP on, the doors and room rows are revealed by GSAP alone: two systems writing one transform left tiles stuck mid-way
+    var targets = document.querySelectorAll((G ? '' : '.door, .rrow, ') + '.links__head > *, .rooms__head > *, .house__head > *, .house figure, .svc__head > *, .svc__item, .night h2, .night__figs p, .strip__head > *, .arrive__head > *, .row, .hours__item');
     var counts = new Map();
     targets.forEach(function (el) {
       el.setAttribute('data-reveal', '');
@@ -140,7 +141,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
         });
         // the doors tilt under the pointer and lift
         document.querySelectorAll('.door').forEach(function (el) {
-          gsap.set(el, { transformPerspective: 700 });
           var rx = gsap.quickTo(el, 'rotationX', { duration: 0.6, ease: 'power3.out' }), ry = gsap.quickTo(el, 'rotationY', { duration: 0.6, ease: 'power3.out' }), ty = gsap.quickTo(el, 'y', { duration: 0.6, ease: 'power3.out' });
           el.addEventListener('pointermove', function (e) { var r = el.getBoundingClientRect(); ry(((e.clientX - r.left) / r.width - 0.5) * 14); rx(-((e.clientY - r.top) / r.height - 0.5) * 14); ty(-6); });
           el.addEventListener('pointerleave', function () { rx(0); ry(0); ty(0); });
@@ -152,8 +152,16 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
       ScrollTrigger.addEventListener('scrollEnd', function () { lean(0); });
       // the room rows slide in from alternating sides
       gsap.utils.toArray('.rrow').forEach(function (row, i) {
-        gsap.from(row, { x: i % 2 ? 60 : -60, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: row, start: 'top 90%', once: true } });
-        row.removeAttribute('data-reveal');
+        gsap.fromTo(row, { x: i % 2 ? 60 : -60, opacity: 0 }, { x: 0, opacity: 1, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: row, start: 'top 90%', once: true } });
+      });
+      // the doors rise in waves; is-in also lets their icons pop (CSS)
+      gsap.set('.door', { opacity: 0, y: 28, transformPerspective: 700 });
+      ScrollTrigger.batch('.door', {
+        start: 'top 92%', once: true,
+        onEnter: function (batch) {
+          batch.forEach(function (el, i) { el.style.setProperty('--i', i); el.classList.add('is-in'); });
+          gsap.to(batch, { opacity: 1, y: 0, duration: 0.9, ease: 'expo.out', stagger: 0.06, overwrite: 'auto' });
+        },
       });
       window.addEventListener('load', function () { ScrollTrigger.refresh(); });
       media = null;
