@@ -1,0 +1,665 @@
+---
+// /linktree: link-in-bio page for Instagram and QR codes. A page of its own
+// (no Layout: no navbar, preloader or Lenis), but every fact, photo and film
+// comes from the site: settings.json, rooms.json and src/assets/home/*.
+// Change a photo there and this page follows.
+import { Image, getImage } from 'astro:assets';
+import { siteSettings as s, getRoomInventory } from '../data/settings';
+import { rooms } from '../data/rooms';
+import logoUrl from '../assets/logos/Logo usgar.svg?url';
+import posterSrc from '../assets/home/hero/slide-1.jpg';
+import facade from '../assets/home/instagram/facade.jpg';
+import corridor from '../assets/home/heritage/pasillo.jpg';
+import mural from '../assets/home/about/mural.jpg';
+
+const roomImages = import.meta.glob<{ default: ImageMetadata }>('../assets/home/rooms/*.jpg', { eager: true });
+const stripImages = Object.entries(import.meta.glob<{ default: ImageMetadata }>('../assets/home/instagram/*.jpg', { eager: true }))
+  .map(([path, mod]) => ({ name: (path.split('/').pop() ?? '').replace('.jpg', ''), src: mod.default }));
+
+const poster = await getImage({ src: posterSrc, width: 1280, quality: 80, format: 'avif' });
+const og = await getImage({ src: facade, width: 1200, format: 'jpg' });
+const site = Astro.site ?? new URL('https://usgarhoteles.com');
+const canonical = new URL('/linktree/', site).href;
+
+const totalRooms = Object.values(getRoomInventory()).reduce((a, b) => a + b, 0);
+const prices = rooms.map((r) => r.pricePerNight);
+const minPrice = Math.min(...prices);
+const maxPrice = Math.max(...prices);
+const social = (p: string) => s.socialLinks.find((l) => l.platform === p);
+const instagram = social('instagram');
+const facebook = social('facebook');
+const tripadvisor = social('tripadvisor');
+const booking = social('booking');
+const wa = `https://wa.me/${s.whatsappNumber}`;
+const tel = `tel:+${s.phoneRaw}`;
+const mail = `mailto:${s.email}`;
+const mapUrl = `https://www.google.com/maps/dir/?api=1&destination=${s.latitude},${s.longitude}`;
+const igHandle = instagram ? '@' + new URL(instagram.url).pathname.replace(/\//g, '') : '';
+const fbPath = facebook ? new URL(facebook.url).pathname : '';
+const title = `${s.hotelName}, San Pedro, Cusco`;
+const description = `${s.hotelName}, San Pedro, Cusco: book a room, call the desk, find the door.`;
+// The same three parts, in the same order, as the home hero (Hero.astro).
+const parts = JSON.stringify({
+  desktop: ['/videos/hero-2.mp4', '/videos/hero-1.mp4', '/videos/hero-3.mp4'],
+  mobile: ['/videos/hero-mobile-2.mp4', '/videos/hero-mobile-1.mp4', '/videos/hero-mobile-3.mp4'],
+});
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+<meta name="description" content={description}>
+<meta name="robots" content="noindex,follow">
+<link rel="canonical" href={canonical}>
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:image" content={new URL(og.src, site).href}>
+<meta property="og:url" content={canonical}>
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href={logoUrl}>
+<link rel="preload" href={poster.src} as="image" type="image/avif">
+<script is:inline>document.documentElement.classList.add('js');</script>
+<style is:global>
+/* Hallmark · shape: linktree stack, photo-led interludes · genre: editorial · theme: Atelier (light, by request; type moved to Fraunces and Instrument Sans) · job: book · draw: none (prototype, motion: arrivals + scrub)
+ * hero: Poster · nav: transparent bar that condenses on scroll · footer: colophon · imagery: the house's own photographs and the brand mark in its three colours · signature: the twelve icon doors, each with its own drawn mark
+ * axes: light/serif/warm · posture: restrained · contrast: pass · fold: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P5 H5 E4 S5 R5 V5 · weakest: E, a photo strip and three house photographs compete with the links; the strip stays at one band and the links keep the icons */
+
+@font-face { font-family: "Fraunces"; src: url("../assets/fonts/fraunces-var.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Instrument Sans"; src: url("../assets/fonts/instrument-var.woff2") format("woff2"); font-weight: 400 700; font-style: normal; font-display: swap; }
+
+:root {
+  color-scheme: light;
+  --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
+  --text-xs: 0.8125rem; --text-sm: 0.9rem; --text-md: 1.0625rem; --text-lg: 1.25rem; --text-xl: 1.5625rem; --text-2xl: 1.953rem; --text-3xl: 2.441rem;
+  --text-display-s: clamp(2.25rem, 3.6vw + 0.75rem, 4rem); --text-display: clamp(2.9rem, 6.4vw + 0.6rem, 7.5rem);
+  --text-section: clamp(2rem, 2.2vw + 1rem, 3.4rem); --text-title: clamp(1.2rem, 0.5vw + 1rem, 1.5rem); --text-lead: clamp(1.1rem, 0.3vw + 1rem, 1.32rem);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-in: cubic-bezier(0.7, 0, 0.84, 0); --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 140ms; --dur-short: 260ms; --dur-long: 520ms;
+  --container: 1440px; --gutter: 64px; --gap-columns: 32px; --section-gap-s: 112px; --section-gap: 144px; --section-gap-l: 176px;
+  --z-base: 1; --z-raised: 10; --z-sticky: 200; --z-sticky-nav: 300;
+  /* the brand mark's own three colours, plus a paper and an ink that sit beside them */
+  --color-paper: oklch(97.4% 0.007 84); --color-paper-2: oklch(94.3% 0.009 84); --color-paper-3: oklch(99.4% 0.003 84);
+  --color-ink: oklch(17% 0.012 200); --color-ink-2: oklch(28% 0.010 200); --color-muted: oklch(45% 0.010 200);
+  --color-rule: oklch(88% 0.008 180); --color-rule-strong: oklch(62% 0.012 190);
+  --color-teal: oklch(62% 0.105 183); --color-teal-deep: oklch(43% 0.075 186); --color-teal-wash: oklch(93.5% 0.022 183);
+  --color-gold: oklch(84% 0.155 93); --color-gold-deep: oklch(52% 0.105 82);
+  --color-plum: oklch(52% 0.115 318); --color-plum-wash: oklch(94% 0.02 318);
+  --color-focus: oklch(43% 0.085 186); --color-focus-dark: oklch(86% 0.14 93); --color-accent-ink: oklch(99% 0.003 84);
+  --color-on-dark: oklch(92% 0.006 84); --color-on-dark-soft: oklch(90% 0.01 84);
+  --color-on-dark-muted: oklch(76% 0.008 84); --color-on-dark-muted-2: oklch(80% 0.008 84);
+  --color-on-dark-bright: oklch(93% 0.01 84); --color-rule-dark: oklch(70% 0.01 84);
+  --color-ink-veil: color-mix(in oklab, var(--color-ink) 42%, transparent);
+  --color-ink-veil-soft: color-mix(in oklab, var(--color-ink) 4%, transparent);
+  --color-ink-veil-mid: color-mix(in oklab, var(--color-ink) 10%, transparent);
+  --color-ink-veil-strong: color-mix(in oklab, var(--color-ink) 72%, transparent);
+  --color-ink-veil-solid: color-mix(in oklab, var(--color-ink) 86%, transparent);
+  --color-ink-veil-cast: color-mix(in oklab, var(--color-ink) 50%, transparent);
+  --color-ink-veil-ctl: color-mix(in oklab, var(--color-ink) 32%, transparent);
+  --font-display: "Fraunces", ui-serif, Georgia, serif; --font-body: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --radius-card: 0; --radius-pill: 0; --rule-hair: 1px;
+  --tracking-display: -0.022em; --display-weight: 300;
+  --nav-h: 76px; --nav-h-solid: 62px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: clip; }
+html { scrollbar-color: var(--color-rule-strong) var(--color-paper); scroll-padding-top: var(--space-3xl); }
+body { margin: 0; background: var(--color-paper); color: var(--color-ink-2); font-family: var(--font-body); font-size: var(--text-md); line-height: 1.55; -webkit-font-smoothing: antialiased; caret-color: var(--color-teal-deep); }
+::selection { background: var(--color-gold); color: var(--color-ink); }
+:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.hero :focus-visible, .quick :focus-visible, .night :focus-visible, .bar:not(.is-solid) :focus-visible { outline-color: var(--color-focus-dark); }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.16em; }
+h1, h2, h3 { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); font-optical-sizing: auto; font-variation-settings: "SOFT" 40, "WONK" 1; line-height: 0.98; letter-spacing: var(--tracking-display); overflow-wrap: break-word; min-width: 0; color: var(--color-ink); text-wrap: balance; }
+h1 { font-size: var(--text-display); max-width: 12ch; }
+h2 { font-size: var(--text-section); max-width: 24ch; }
+h3 { font-weight: 400; font-size: var(--text-title); line-height: 1.1; letter-spacing: -0.01em; }
+p { margin: 0; text-wrap: pretty; }
+img, video, svg { max-width: 100%; display: block; }
+.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+.num { font-variant-numeric: tabular-nums; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.skip { position: absolute; left: var(--space-md); top: calc(-1 * var(--space-3xl)); z-index: calc(var(--z-sticky-nav) + 1); padding: var(--space-xs) var(--space-md); background: var(--color-ink); color: var(--color-paper); }
+.skip:focus-visible { top: var(--space-md); }
+.ic { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+/* ---------- progress ---------- */
+.progress { position: fixed; top: 0; left: 0; width: 100%; height: 2px; z-index: calc(var(--z-sticky-nav) + 2); background: var(--color-teal); transform: scaleX(0); transform-origin: 0 50%; pointer-events: none; }
+
+/* ---------- bar: over the film, then paper ---------- */
+.bar { position: fixed; inset: 0 0 auto 0; z-index: var(--z-sticky-nav); color: var(--color-paper); transition: transform var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out); }
+.bar::after { content: ""; position: absolute; inset: auto 0 0 0; height: var(--rule-hair); background: var(--color-rule); opacity: 0; transition: opacity var(--dur-short) var(--ease-out); }
+.bar.is-solid { background: color-mix(in oklab, var(--color-paper) 86%, transparent); backdrop-filter: blur(14px) saturate(1.1); color: var(--color-ink); box-shadow: 0 12px 32px -28px var(--color-ink-veil-cast); }
+.bar.is-solid::after { opacity: 1; }
+.bar::before { content: ""; position: absolute; inset: 0 0 -40px 0; z-index: -1; background: linear-gradient(180deg, var(--color-ink-veil-strong), transparent); pointer-events: none; transition: opacity var(--dur-short) var(--ease-out); }
+.bar.is-solid::before { opacity: 0; }
+.bar.is-hidden { transform: translateY(-100%); }
+.bar__in { height: var(--nav-h-solid); display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); }
+.bar__mark { display: inline-flex; align-items: center; gap: var(--space-sm); text-decoration: none; color: inherit; }
+.bar__logo { width: auto; height: 36px; aspect-ratio: 1086 / 1105; filter: drop-shadow(0 1px 6px var(--color-ink-veil)); transition: transform var(--dur-short) var(--ease-out), filter var(--dur-short) var(--ease-out); }
+.bar.is-solid .bar__logo { transform: scale(0.86); filter: none; }
+.bar__mark span { font-family: var(--font-display); font-weight: 400; font-size: 1.05rem; letter-spacing: 0.01em; }
+.bar__right { display: flex; align-items: center; gap: var(--space-lg); }
+.bar__nav { display: flex; align-items: center; gap: var(--space-lg); font-size: var(--text-sm); }
+.bar__nav a { text-decoration: none; opacity: 0.92; transition: opacity var(--dur-micro) var(--ease-out); }
+.bar__nav a:hover { opacity: 1; }
+.bar__clock { display: inline-flex; align-items: baseline; gap: 0.35em; font-size: var(--text-sm); opacity: 0.86; }
+.bar__clock b { font-weight: 500; font-variant-numeric: tabular-nums; }
+.bar__book { display: inline-flex; align-items: center; gap: var(--space-xs); min-height: 44px; padding: 0 var(--space-lg); background: var(--color-teal-deep); color: var(--color-accent-ink); font-family: var(--font-body); font-weight: 500; font-size: var(--text-sm); letter-spacing: 0.01em; text-decoration: none; transition: background-color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out); }
+.bar__book:hover { background: var(--color-teal-deep); }
+.bar__book:active { transform: translateY(1px); }
+.bar__book .ic { width: 18px; height: 18px; }
+.bar.is-solid .bar__book { background: var(--color-ink); }
+.bar.is-solid .bar__book:hover { background: var(--color-teal-deep); }
+
+/* ---------- hero ---------- */
+.hero { position: relative; min-height: 100svh; display: grid; grid-template-rows: minmax(0, 1fr) auto; background: var(--color-ink); color: var(--color-paper); }
+.hero__stage { position: relative; display: grid; align-items: end; overflow: clip; min-height: 0; }
+.hero__media, .hero__media video, .hero__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero__media { will-change: transform; }
+.hero__wipe { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: var(--color-ink); border-top: 3px solid var(--color-gold); clip-path: inset(0 0 100% 0); }
+html.gsap .btn, html.gsap .bar__book, html.gsap .door, html.gsap .rrow__go { transition-property: background-color, color, border-color; }
+html.gsap .door:hover { transform: none; }
+.door { transform-style: preserve-3d; will-change: transform; }
+.hero__scrim { position: absolute; inset: 0; background: linear-gradient(180deg, var(--color-ink-veil) 0%, var(--color-ink-veil-soft) 22%, var(--color-ink-veil-mid) 55%, var(--color-ink-veil-strong) 88%, var(--color-ink-veil-solid) 100%); }
+.hero__in { position: relative; width: 100%; padding-block: var(--space-3xl) calc(var(--space-2xl) + var(--space-xs)); }
+.hero__text { max-width: 48rem; display: grid; gap: var(--space-md); color: var(--color-paper); }
+.hero__text h1 { color: var(--color-paper); font-weight: 300; }
+.hero__text h1 .w { display: inline-block; }
+html.js:not(.gsap) .hero__text h1 .w { animation: e-rise 0.95s var(--ease-out) both; animation-delay: calc(var(--i, 0) * 70ms + 120ms); }
+.hero__text > p { max-width: 36ch; font-size: var(--text-lead); color: var(--color-on-dark); }
+html.js:not(.gsap) .hero__text > p { animation: e-rise 0.8s var(--ease-out) 0.55s both; }
+html.js:not(.gsap) .hero__actions { animation: e-rise 0.8s var(--ease-out) 0.7s both; }
+@keyframes e-rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+.hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-lg); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs); min-height: 52px; padding: 0 var(--space-lg); border: var(--rule-hair) solid currentColor; background: transparent; color: inherit; font: 500 var(--text-md)/1 var(--font-body); text-decoration: none; white-space: nowrap; cursor: pointer; transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out); }
+.btn:hover { background: var(--color-paper); color: var(--color-ink); border-color: var(--color-paper); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn--solid { background: var(--color-teal-deep); border-color: var(--color-teal-deep); color: var(--color-accent-ink); }
+.btn--solid:hover { background: var(--color-paper); border-color: var(--color-paper); color: var(--color-ink); }
+.btn .ic { width: 18px; height: 18px; }
+.hero__quiet { display: inline-flex; align-items: center; gap: var(--space-xs); min-height: 44px; color: inherit; font-size: var(--text-md); text-decoration-color: color-mix(in oklab, var(--color-on-dark-soft) 50%, transparent); }
+.hero__quiet:hover { color: var(--color-gold); }
+.hero__ctl { position: absolute; right: var(--gutter); bottom: var(--space-lg); z-index: 2; display: inline-flex; align-items: center; gap: var(--space-xs); min-height: 44px; padding: 0 var(--space-sm); border: var(--rule-hair) solid color-mix(in oklab, var(--color-on-dark-soft) 40%, transparent); background: var(--color-ink-veil-ctl); color: var(--color-on-dark); font: 400 var(--text-sm)/1 var(--font-body); cursor: pointer; transition: color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out); }
+.hero__ctl:hover { color: var(--color-paper); border-color: var(--color-paper); }
+.hero__ctl:active { transform: translateY(1px); }
+.hero__ctl:disabled, .hero__ctl[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; }
+html:not(.js) .hero__ctl { display: none; }
+
+/* ---------- booking bar ---------- */
+.quick { background: var(--color-ink); color: var(--color-paper); margin-top: 0; }
+.quick__in { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--gap-columns); padding-block: var(--space-xl); }
+.quick__facts { display: flex; flex-wrap: wrap; gap: var(--space-lg) var(--space-2xl); }
+.quick__fact { display: grid; gap: var(--space-3xs); }
+.quick__fact span { font-size: var(--text-xs); color: var(--color-on-dark-muted); }
+.quick__fact strong { font-family: var(--font-display); font-weight: 400; font-size: var(--text-xl); letter-spacing: -0.01em; }
+.quick__actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+
+/* ---------- links: the index ---------- */
+.links { padding-block: var(--section-gap) var(--section-gap); }
+.links__head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-md); margin-bottom: var(--space-xl); }
+.links__head p { color: var(--color-muted); font-size: var(--text-sm); max-width: 34ch; }
+.doors { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-sm); }
+.door { display: grid; gap: var(--space-3xs); align-content: start; min-height: 138px; padding: var(--space-lg); border: var(--rule-hair) solid var(--color-rule-strong); background: var(--color-paper-3); color: var(--color-ink); text-decoration: none; transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out), transform var(--dur-short) var(--ease-out); }
+.door:hover { background: var(--color-ink); border-color: var(--color-ink); color: var(--color-paper); transform: translateY(-3px); }
+.door:active { transform: translateY(0); }
+.door .ic { width: 30px; height: 30px; margin-bottom: var(--space-sm); color: var(--color-teal-deep); transition: color var(--dur-short) var(--ease-out), transform var(--dur-short) var(--ease-out); }
+.door:hover .ic { color: var(--color-gold); transform: translateY(-2px); }
+.door:nth-child(4n+2) .ic { color: var(--color-plum); }
+.door:nth-child(4n+3) .ic { color: var(--color-teal-deep); }
+.door:nth-child(4n+4) .ic { color: var(--color-gold-deep); }
+.door:hover .ic { color: var(--color-gold); }
+.door__name { font-family: var(--font-display); font-weight: 400; font-size: var(--text-lg); letter-spacing: -0.01em; }
+.door__note { font-size: var(--text-sm); color: var(--color-muted); transition: color var(--dur-short) var(--ease-out); }
+.door:hover .door__note { color: var(--color-on-dark-muted-2); }
+.door--book { background: var(--color-teal-deep); border-color: var(--color-teal-deep); color: var(--color-accent-ink); }
+.door--book .ic, .door--book:nth-child(4n+2) .ic { color: var(--color-accent-ink); }
+.door--book .door__note { color: var(--color-on-dark-bright); }
+.door--book:hover { background: var(--color-ink); border-color: var(--color-ink); }
+.door--book:hover .ic { color: var(--color-gold); }
+
+/* ---------- rooms: rows with a thumb, not a photo wall ---------- */
+.rooms { padding-block: var(--section-gap-s); background: var(--color-paper-2); }
+.rooms__head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-md); margin-bottom: var(--space-lg); }
+.rooms__head p { color: var(--color-muted); font-size: var(--text-sm); max-width: 36ch; }
+.rrow { display: grid; grid-template-columns: 88px minmax(0, 1fr) minmax(0, 10rem) minmax(0, 7rem) auto; align-items: center; gap: var(--space-md); padding-block: var(--space-md); border-top: var(--rule-hair) solid var(--color-rule-strong); text-decoration: none; color: var(--color-ink); transition: background-color var(--dur-micro) var(--ease-out); }
+.rrow:last-of-type { border-bottom: var(--rule-hair) solid var(--color-rule-strong); }
+.rrow:hover { background: color-mix(in oklab, var(--color-paper-3) 80%, transparent); }
+.rrow__pic { width: 88px; aspect-ratio: 4 / 3; overflow: hidden; background: var(--color-paper-3); }
+.rrow__pic img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.9); transition: filter var(--dur-long) var(--ease-out); }
+.rrow:hover .rrow__pic img { filter: saturate(1); }
+.rrow__name { display: grid; gap: var(--space-3xs); min-width: 0; }
+.rrow__name h3 { font-size: var(--text-lg); }
+.rrow__facts { font-size: var(--text-sm); color: var(--color-muted); }
+.rrow__price { font-family: var(--font-display); font-weight: 400; font-size: var(--text-xl); color: var(--color-ink); }
+.rrow__price small { display: block; font-family: var(--font-body); font-size: var(--text-xs); color: var(--color-muted); }
+.rrow__go { justify-self: end; display: inline-flex; align-items: center; gap: var(--space-2xs); min-height: 44px; padding: 0 var(--space-md); border: var(--rule-hair) solid var(--color-ink); font-size: var(--text-sm); font-weight: 500; white-space: nowrap; transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out); }
+.rrow:hover .rrow__go { background: var(--color-ink); color: var(--color-paper); }
+.rrow__go .ic { width: 16px; height: 16px; }
+
+/* ---------- the house: the photographs ---------- */
+.house { padding-block: var(--section-gap); }
+.house__head { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--gap-columns); align-items: end; margin-bottom: var(--space-xl); }
+.house__head p { color: var(--color-muted); justify-self: end; max-width: 34ch; font-size: var(--text-sm); }
+.house__grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-rows: 1fr 1fr; gap: var(--gap-columns); min-height: 640px; }
+.house__main { grid-row: 1 / -1; margin: 0; display: grid; grid-template-rows: 1fr auto; gap: var(--space-xs); }
+.house__side { display: grid; grid-row: 1 / -1; grid-template-rows: 1fr 1fr; gap: var(--gap-columns); }
+.house figure { display: grid; grid-template-rows: 1fr auto; gap: var(--space-xs); }
+figure { margin: 0; display: grid; gap: var(--space-xs); }
+.frame { overflow: hidden; background: var(--color-paper-2); }
+.frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+figure:hover .frame { outline: var(--rule-hair) solid var(--color-ink); outline-offset: 3px; }
+.house .frame { height: 100%; min-height: 0; }
+figcaption { font-size: var(--text-xs); color: var(--color-muted); }
+
+/* ---------- services ---------- */
+.svc { padding-block: var(--section-gap-s); }
+.svc__head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-md); margin-bottom: var(--space-lg); }
+.svc__head p { color: var(--color-muted); font-size: var(--text-sm); max-width: 34ch; }
+.svc__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: var(--rule-hair) solid var(--color-rule-strong); }
+.svc__item { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-sm); align-items: start; padding: var(--space-md) var(--space-lg) var(--space-md) 0; border-bottom: var(--rule-hair) solid var(--color-rule); }
+.svc__item .ic { width: 24px; height: 24px; color: var(--color-teal-deep); margin-top: var(--space-3xs); }
+.svc__item:nth-child(4n+2) .ic { color: var(--color-plum); }
+.svc__item:nth-child(4n+4) .ic { color: var(--color-gold-deep); }
+.svc__name { display: block; font-weight: 500; color: var(--color-ink); font-size: var(--text-sm); }
+.svc__note { display: block; font-size: var(--text-xs); color: var(--color-muted); }
+
+/* ---------- statement ---------- */
+.night { background: var(--color-ink); color: var(--color-paper); padding-block: var(--section-gap-s); }
+.night__in { display: grid; gap: var(--space-2xl); }
+.night h2 { color: var(--color-paper); font-size: var(--text-display-s); max-width: 26ch; }
+.night h2 .w { display: inline-block; }
+html.js .night h2 .w { opacity: 0.2; }
+.night__figs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: var(--rule-hair) solid color-mix(in oklab, var(--color-rule-dark) 28%, transparent); }
+.night__figs p { display: grid; gap: var(--space-xs); padding: var(--space-lg) var(--space-lg) 0 0; }
+.night__figs p + p { border-left: var(--rule-hair) solid color-mix(in oklab, var(--color-rule-dark) 18%, transparent); padding-left: var(--space-lg); }
+.night__figs strong { font-family: var(--font-display); font-weight: 300; font-size: var(--text-2xl); color: var(--color-gold); line-height: 1; font-variant-numeric: tabular-nums; }
+.night__figs span { font-size: var(--text-sm); color: var(--color-on-dark-muted-2); max-width: 24ch; }
+
+/* ---------- photo strip ---------- */
+.strip { padding-block: var(--section-gap-s); overflow: clip; }
+.strip__head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-md); margin-bottom: var(--space-lg); }
+.strip__head p { color: var(--color-muted); font-size: var(--text-sm); }
+.strip__head a { color: var(--color-teal-deep); font-size: var(--text-sm); font-weight: 500; }
+.track { display: flex; width: max-content; }
+.track a { margin-right: var(--space-sm); } /* every tile carries its gap, so -50% lands on the first clone */
+html.js .track { animation: strip 26s linear infinite; }
+.strip:focus-within .track { animation-play-state: paused; }
+.track a { display: block; flex: none; width: clamp(220px, 24vw, 340px); aspect-ratio: 4 / 3; overflow: hidden; background: var(--color-paper-2); }
+.track img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.88); transition: filter var(--dur-long) var(--ease-out); }
+.track a:hover img { filter: saturate(1); }
+@keyframes strip { to { transform: translateX(-50%); } }
+
+/* ---------- arrival ---------- */
+.arrive { padding-block: var(--section-gap-s) var(--section-gap); }
+.arrive__head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-md); margin-bottom: var(--space-lg); }
+.arrive__head p { color: var(--color-muted); font-size: var(--text-sm); max-width: 34ch; }
+.arrive__grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--gap-columns); align-items: start; }
+.rows { border-top: var(--rule-hair) solid var(--color-rule-strong); }
+.row { display: grid; grid-template-columns: auto minmax(0, 3fr) minmax(0, 6fr) auto; align-items: baseline; gap: var(--space-md); padding-block: var(--space-md); border-bottom: var(--rule-hair) solid var(--color-rule); text-decoration: none; color: var(--color-ink); transition: color var(--dur-micro) var(--ease-out); }
+.row .ic { width: 20px; height: 20px; color: var(--color-teal-deep); align-self: center; }
+.row:hover { color: var(--color-teal-deep); }
+.row__name { font-weight: 500; font-size: var(--text-sm); }
+.row__value { color: var(--color-muted); font-size: var(--text-sm); }
+.row__go { font-size: var(--text-sm); font-weight: 500; text-decoration: underline; text-decoration-color: var(--color-rule-strong); }
+.hours { border-top: var(--rule-hair) solid var(--color-rule-strong); }
+.hours__item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-md); align-items: baseline; padding-block: var(--space-sm); border-bottom: var(--rule-hair) solid var(--color-rule); font-size: var(--text-sm); }
+.hours__item span { color: var(--color-muted); }
+.hours__item b { font-weight: 500; color: var(--color-ink); font-variant-numeric: tabular-nums; }
+
+/* ---------- footer ---------- */
+.foot { border-top: var(--rule-hair) solid var(--color-rule); padding-block: var(--space-2xl); }
+.foot__in { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-md); font-size: var(--text-sm); color: var(--color-muted); }
+.foot__mark { display: inline-flex; align-items: center; gap: var(--space-sm); color: var(--color-ink); text-decoration: none; }
+.foot__mark img { width: auto; height: 28px; }
+.foot a { color: var(--color-ink-2); }
+.foot a:hover { color: var(--color-teal-deep); }
+
+/* ---------- motion: arrivals, then scrub ---------- */
+html.js [data-reveal] { opacity: 0; transform: translateY(24px); }
+html.js [data-reveal].is-in { opacity: 1; transform: none; transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out); transition-delay: calc(var(--i, 0) * 60ms); }
+html.js .door .ic, html.js .svc__item .ic { opacity: 0; transform: scale(0.55) rotate(-10deg); }
+html.js .door.is-in .ic, html.js .svc__item.is-in .ic { opacity: 1; transform: none; transition: opacity 0.5s var(--ease-out), transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1); transition-delay: calc(var(--i, 0) * 60ms + 90ms); }
+html.gsap .door.is-in { transition-property: opacity, background-color, color, border-color; }
+@media (prefers-reduced-motion: reduce) {
+  .hero__wipe { display: none; }
+  html.js .hero__text h1 .w, html.js .hero__text > p, html.js .hero__actions { animation: none; }
+  html.js [data-reveal], html.js .door .ic, html.js .svc__item .ic { opacity: 1; transform: none; transition: none; }
+  html.js .night h2 .w { opacity: 1; }
+  html.js .track { animation: none; }
+  .door:hover { transform: none; }
+}
+
+@media (max-width: 80rem) {
+  .doors { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .svc__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .rrow { grid-template-columns: 80px minmax(0, 1fr) minmax(0, 8rem) auto; }
+  .rrow__rate { display: none; }
+  .house__grid { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; min-height: 0; }
+  .house__main, .house__side { grid-row: auto; grid-template-rows: auto; }
+  .house__main .frame { aspect-ratio: 16 / 10; }
+  .house__side { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .house__side .frame { aspect-ratio: 4 / 3; }
+  .arrive__grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xl); }
+}
+@media (max-width: 60rem) {
+  :root { --gutter: 24px; --section-gap-s: 84px; --section-gap: 96px; --nav-h: 66px; --nav-h-solid: 58px; }
+  .bar__nav, .bar__clock { display: none; }
+  .doors { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .svc__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .night__figs { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-lg); }
+  .night__figs p + p { border-left: 0; padding-left: 0; }
+  .quick__in { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 40rem) {
+  :root { --gutter: 16px; --section-gap-s: 60px; --section-gap: 72px; }
+  h1 { max-width: 14ch; }
+  .bar__book { padding: 0 var(--space-md); }
+  .door { min-height: 116px; padding: var(--space-md); }
+  .door .ic { width: 26px; height: 26px; margin-bottom: var(--space-xs); }
+  .door__name { font-size: var(--text-md); }
+  .rrow { grid-template-columns: 64px minmax(0, 1fr) auto; row-gap: var(--space-2xs); padding-block: var(--space-sm); }
+  .rrow__pic { width: 64px; }
+  .rrow__price { grid-column: 2; }
+  .rrow__go { grid-column: 3; grid-row: 1 / span 2; align-self: center; padding: 0 var(--space-sm); }
+  .house__side { grid-template-columns: minmax(0, 1fr); }
+  .track a { width: 68vw; }
+  .row { grid-template-columns: auto minmax(0, 1fr); row-gap: var(--space-3xs); }
+  .row__value, .row__go { grid-column: 2; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="progress" data-progress aria-hidden="true"></div>
+
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+  <defs>
+    <symbol id="i-door" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M15 12h.01"/></symbol>
+    <symbol id="i-whatsapp" viewBox="0 0 24 24"><path d="M20.5 11.7a8.5 8.5 0 0 1-12.6 7.5L3.5 20.5l1.4-4.4A8.5 8.5 0 1 1 20.5 11.7Z"/><path d="M9 9.3c0 3.2 2.5 5.7 5.7 5.7"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M7 3h3l1.5 4-2 1.5a11 11 0 0 0 6 6L17 12.5l4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4 5.2 2 2 0 0 1 6 3Z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+    <symbol id="i-instagram" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M16.9 7.1h.01"/></symbol>
+    <symbol id="i-facebook" viewBox="0 0 24 24"><path d="M14.5 8.5H17V5h-2.5A4.5 4.5 0 0 0 10 9.5V12H7.5v3.5H10V21h3.5v-5.5H16l.5-3.5h-3V9.5c0-.6.4-1 1-1Z"/></symbol>
+    <symbol id="i-trip" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="8.8" cy="12.4" r="2.1"/><circle cx="15.2" cy="12.4" r="2.1"/><path d="M6.2 8.8c3.4-2.3 8.2-2.3 11.6 0"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4.5 7.5 7.5 5.7 7.5-5.7"/></symbol>
+    <symbol id="i-bed" viewBox="0 0 24 24"><path d="M3 18v-7h14a4 4 0 0 1 4 4v3"/><path d="M3 18h18"/><path d="M3 20v-2"/><circle cx="7.5" cy="10.6" r="1.7"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m4 11 8-6 8 6"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/></symbol>
+    <symbol id="i-tours" viewBox="0 0 24 24"><path d="m3 19 6-10 4 6 3-4 5 8Z"/><circle cx="17" cy="6" r="1.6"/></symbol>
+    <symbol id="i-gallery" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="1.5"/><circle cx="9" cy="10" r="1.6"/><path d="m5 19 5-5 3.5 3.5L17 14l2.5 2.5"/></symbol>
+    <symbol id="i-coffee" viewBox="0 0 24 24"><path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5Z"/><path d="M16 10h2a2.5 2.5 0 0 1 0 5h-2"/><path d="M7 6c0-.9.8-.9.8-1.8M11 6c0-.9.8-.9.8-1.8"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+    <symbol id="i-cup" viewBox="0 0 24 24"><path d="M5 10h11v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4Z"/><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 7c0-.8.8-.8.8-1.6M11.5 7c0-.8.8-.8.8-1.6"/></symbol>
+    <symbol id="i-oxygen" viewBox="0 0 24 24"><rect x="6.5" y="7" width="7" height="14" rx="3.5"/><path d="M10 7V4h4v3"/><path d="M13.5 13h3.5a3 3 0 0 1 3 3v1.5"/></symbol>
+    <symbol id="i-car" viewBox="0 0 24 24"><path d="M4 16v-3l2-4h12l2 4v3"/><path d="M3 16h18"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><rect x="5.5" y="8" width="13" height="11" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M10 12v4M14 12v4"/></symbol>
+    <symbol id="i-paw" viewBox="0 0 24 24"><circle cx="7" cy="9.4" r="1.6"/><circle cx="11" cy="6.8" r="1.6"/><circle cx="15.4" cy="7.6" r="1.6"/><circle cx="18.2" cy="11" r="1.6"/><path d="M8.2 16.4c0-2.4 1.7-3.9 3.8-3.9s3.8 1.5 3.8 3.9c0 1.9-1.5 2.9-2.7 2.5-.9-.3-1.3-.3-2.2 0-1.2.4-2.7-.6-2.7-2.5Z"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M3.5 9a13 13 0 0 1 17 0"/><path d="M6.5 12.5a8.5 8.5 0 0 1 11 0"/><path d="M9.5 16a4 4 0 0 1 5 0"/><path d="M12 19.5h.01"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  </defs>
+</svg>
+
+<header class="bar" data-bar>
+  <div class="container bar__in">
+    <a class="bar__mark" href="/" aria-label={`${s.hotelName}, home`}>
+      <img class="bar__logo" src={logoUrl} width="1086" height="1105" alt="">
+      <span>USGAR</span>
+    </a>
+    <div class="bar__right">
+      <nav class="bar__nav" aria-label="Sections">
+        <a href="#links">Links</a>
+        <a href="#rooms">Rooms</a>
+        <a href="#house">The house</a>
+        <a href="#arrive">Find us</a>
+      </nav>
+      <p class="bar__clock" data-clock aria-label="Time in Cusco">Cusco <b>--:--</b></p>
+      <a class="bar__book" href="/book/" data-book data-room="">Book <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="hero__stage">
+    <div class="hero__media" data-hero-media>
+      <video data-loop muted playsinline autoplay preload="auto" poster={poster.src} aria-hidden="true" tabindex="-1" data-parts={parts}></video>
+    </div>
+    <div class="hero__wipe" data-wipe aria-hidden="true"></div>
+    <div class="hero__scrim"></div>
+    <div class="container hero__in">
+      <div class="hero__text">
+        <h1 id="hero-h">A green door on Calle Hospital</h1>
+        <p>{totalRooms} rooms around a patio, three minutes from the San Pedro market.</p>
+        <div class="hero__actions">
+          <a class="btn btn--solid" href="/book/" data-book data-room="">Book tonight <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          <a class="hero__quiet" href={wa}><svg class="ic" aria-hidden="true"><use href="#i-whatsapp"/></svg>WhatsApp the desk</a>
+        </div>
+      </div>
+    </div>
+    <button class="hero__ctl" type="button" data-loop-toggle aria-pressed="false">Pause film</button>
+    </div>
+
+  <div class="quick" aria-label="Book tonight">
+    <div class="container quick__in">
+      <div class="quick__facts">
+        <p class="quick__fact"><span>Tonight</span><strong data-tonight>--</strong></p>
+        <p class="quick__fact"><span>Check-out</span><strong data-tomorrow>--</strong></p>
+        <p class="quick__fact"><span>Rates</span><strong>${minPrice} to ${maxPrice}</strong></p>
+        <p class="quick__fact"><span>Desk</span><strong>24 hours</strong></p>
+      </div>
+      <div class="quick__actions">
+        <a class="btn btn--solid" href="/book/" data-book data-room="">Book one night <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <a class="btn" href={tel}><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg>Call</a>
+      </div>
+    </div>
+  </div>
+  </section>
+
+  <section class="links" id="links" aria-labelledby="links-h">
+    <div class="container">
+      <div class="links__head">
+        <h2 id="links-h">Everything, one tap</h2>
+        <p>Reserve, call the desk, find the door, or follow the house.</p>
+      </div>
+      <div class="doors">
+        <a class="door door--book" href="/book/" data-book data-room="">
+          <svg class="ic" aria-hidden="true"><use href="#i-door"/></svg>
+          <span class="door__name">Book a room</span>
+          <span class="door__note">From ${minPrice} a night</span>
+        </a>
+        <a class="door" href={wa} target="_blank" rel="noopener">
+          <svg class="ic" aria-hidden="true"><use href="#i-whatsapp"/></svg>
+          <span class="door__name">WhatsApp</span>
+          <span class="door__note">{s.phone}</span>
+        </a>
+        <a class="door" href={tel}>
+          <svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg>
+          <span class="door__name">Call the desk</span>
+          <span class="door__note">Reception, 24 hours</span>
+        </a>
+        <a class="door" href={mapUrl} target="_blank" rel="noopener">
+          <svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg>
+          <span class="door__name">Map</span>
+          <span class="door__note">{s.streetAddress}</span>
+        </a>
+        {instagram && (
+          <a class="door" href={instagram.url} target="_blank" rel="noopener">
+            <svg class="ic" aria-hidden="true"><use href="#i-instagram"/></svg>
+            <span class="door__name">Instagram</span>
+            <span class="door__note">{igHandle}</span>
+          </a>
+        )}
+        {facebook && (
+          <a class="door" href={facebook.url} target="_blank" rel="noopener">
+            <svg class="ic" aria-hidden="true"><use href="#i-facebook"/></svg>
+            <span class="door__name">Facebook</span>
+            <span class="door__note">{fbPath}</span>
+          </a>
+        )}
+        {tripadvisor && (
+          <a class="door" href={tripadvisor.url} target="_blank" rel="noopener">
+            <svg class="ic" aria-hidden="true"><use href="#i-trip"/></svg>
+            <span class="door__name">TripAdvisor</span>
+            <span class="door__note">Guest reviews</span>
+          </a>
+        )}
+        {booking && (
+          <a class="door" href={booking.url} target="_blank" rel="noopener">
+            <svg class="ic" aria-hidden="true"><use href="#i-bed"/></svg>
+            <span class="door__name">Booking.com</span>
+            <span class="door__note">Check availability</span>
+          </a>
+        )}
+        <a class="door" href="/rooms/">
+          <svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>
+          <span class="door__name">Our rooms</span>
+          <span class="door__note">{rooms.length} types, {totalRooms} rooms</span>
+        </a>
+        <a class="door" href="/explore/">
+          <svg class="ic" aria-hidden="true"><use href="#i-tours"/></svg>
+          <span class="door__name">Tours</span>
+          <span class="door__note">Machu Picchu and the valley</span>
+        </a>
+        <a class="door" href="/gallery/">
+          <svg class="ic" aria-hidden="true"><use href="#i-gallery"/></svg>
+          <span class="door__name">Gallery</span>
+          <span class="door__note">The house, room by room</span>
+        </a>
+        <a class="door" href={mail}>
+          <svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg>
+          <span class="door__name">Email</span>
+          <span class="door__note">{s.email}</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="rooms" id="rooms" aria-labelledby="rooms-h">
+    <div class="container">
+      <div class="rooms__head">
+        <h2 id="rooms-h">{rooms.length} rooms, from ${minPrice}</h2>
+        <p>Breakfast included. Every room has a mural of its own.</p>
+      </div>
+      {rooms.map((room) => {
+        const img = roomImages[`../assets/home/rooms/${room.slug}.jpg`]?.default;
+        return (
+          <a class="rrow" href="/book/" data-book data-room={room.slug}>
+            <span class="rrow__pic">{img && <Image src={img} width={240} alt="" loading="lazy" />}</span>
+            <span class="rrow__name"><h3>{room.name.en}</h3><span class="rrow__facts">{room.beds}, sleeps {room.maxGuests}</span></span>
+            <span class="rrow__price">${room.pricePerNight} <small>a night</small></span>
+            <span class="rrow__go">Reserve <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <section class="house" id="house" aria-labelledby="house-h">
+    <div class="container">
+      <div class="house__head">
+        <h2 id="house-h">The house, in three rooms</h2>
+        <p>A colonial building kept by the same family: green doors, a wooden corridor, a patio where the market goes quiet.</p>
+      </div>
+      <div class="house__grid">
+        <figure class="house__main" data-reveal>
+          <div class="frame"><Image src={facade} widths={[760, 1400]} sizes="(max-width: 80rem) 100vw, 58vw" alt="The facade on Calle Hospital: green balconies, the stone doorway and the USGAR mark" loading="lazy" /></div>
+          <figcaption>The green door, {s.streetAddress}.</figcaption>
+        </figure>
+        <div class="house__side">
+          <figure data-reveal>
+            <div class="frame"><Image src={corridor} widths={[640, 1000]} sizes="(max-width: 40rem) 100vw, 42vw" alt="The covered corridor on the upper floor, green railings open to the trees" loading="lazy" /></div>
+            <figcaption>The corridor to the rooms.</figcaption>
+          </figure>
+          <figure data-reveal>
+            <div class="frame"><Image src={mural} widths={[640, 1000]} sizes="(max-width: 40rem) 100vw, 42vw" alt="A painted mural in one of the rooms" loading="lazy" /></div>
+            <figcaption>A mural, one per room.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="svc" aria-labelledby="svc-h">
+    <div class="container">
+      <div class="svc__head">
+        <h3 id="svc-h">Inside the house</h3>
+        <p>What the desk can do for you.</p>
+      </div>
+      <div class="svc__grid">
+        <p class="svc__item"><svg class="ic" aria-hidden="true"><use href="#i-wifi"/></svg><span><span class="svc__name">Wi-Fi</span><span class="svc__note">Free, all through</span></span></p>
+        <p class="svc__item"><svg class="ic" aria-hidden="true"><use href="#i-coffee"/></svg><span><span class="svc__name">Breakfast</span><span class="svc__note">Andean buffet, 06:00 to 09:00</span></span></p>
+        <p class="svc__item"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg><span><span class="svc__name">Reception</span><span class="svc__note">24 hours</span></span></p>
+        <p class="svc__item"><svg class="ic" aria-hidden="true"><use href="#i-cup"/></svg><span><span class="svc__name">Coca tea</span><span class="svc__note">Free at the desk</span></span></p>
+        <p class="svc__item"><svg class="ic" aria-hidden="true"><use href="#i-oxygen"/></svg><span><span class="svc__name">Oxygen</span><span class="svc__note">For altitude, free</span></span></p>
+        <p class="svc__item"><svg class="ic" aria-hidden="true"><use href="#i-car"/></svg><span><span class="svc__name">Transfer</span><span class="svc__note">Airport or station</span></span></p>
+        <p class="svc__item"><svg class="ic" aria-hidden="true"><use href="#i-bag"/></svg><span><span class="svc__name">Luggage</span><span class="svc__note">Free storage</span></span></p>
+        <p class="svc__item"><svg class="ic" aria-hidden="true"><use href="#i-paw"/></svg><span><span class="svc__name">Pets</span><span class="svc__note">Welcome</span></span></p>
+      </div>
+    </div>
+  </div>
+
+  <section class="night" aria-labelledby="night-h">
+    <div class="container night__in">
+      <h2 id="night-h" data-statement>Every wall tells a story of Andean mysticism and human warmth.</h2>
+      <div class="night__figs">
+        <p><strong>{totalRooms}</strong><span>rooms around the patio</span></p>
+        <p><strong>3,400 m</strong><span>Cusco, three minutes from the market</span></p>
+        <p><strong>06:00</strong><span>breakfast, before the early bus</span></p>
+        <p><strong>24 h</strong><span>reception, coca tea at the desk</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="strip" aria-labelledby="strip-h">
+    <div class="container strip__head">
+      <h2 id="strip-h">The house, this week</h2>
+      {instagram && <a href={instagram.url} target="_blank" rel="noopener">More on Instagram</a>}
+    </div>
+    <div class="track" data-track>
+      {stripImages.map((p) => (
+        <a href={instagram?.url} target="_blank" rel="noopener" aria-label={`Instagram: ${p.name}`}><Image src={p.src} width={760} alt="" loading="lazy" /></a>
+      ))}
+    </div>
+  </section>
+
+  <section class="arrive" id="arrive" aria-labelledby="arrive-h">
+    <div class="container">
+      <div class="arrive__head">
+        <h2 id="arrive-h">Find the door</h2>
+        <p>One block from the San Pedro market.</p>
+      </div>
+      <div class="arrive__grid">
+        <div class="rows">
+          <a class="row" href={mapUrl} target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg><span class="row__name">Address</span><span class="row__value">{s.address.en}</span><span class="row__go">Map</span></a>
+          <a class="row" href={wa} target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-whatsapp"/></svg><span class="row__name">WhatsApp</span><span class="row__value">{s.phone}</span><span class="row__go">Write</span></a>
+          <a class="row" href={tel}><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg><span class="row__name">Phone</span><span class="row__value">{s.phone}</span><span class="row__go">Call</span></a>
+          <a class="row" href={mail}><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg><span class="row__name">Email</span><span class="row__value">{s.email}</span><span class="row__go">Write</span></a>
+        </div>
+        <div class="hours">
+          <p class="hours__item"><span>Check-in</span><b>{s.checkinTime}</b></p>
+          <p class="hours__item"><span>Check-out</span><b>{s.checkoutTime}</b></p>
+          <p class="hours__item"><span>Breakfast</span><b>06:00 to 09:00</b></p>
+          <p class="hours__item"><span>Restaurant</span><b>until 22:00</b></p>
+          <p class="hours__item"><span>Reception</span><b>24 hours</b></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="container foot__in">
+    <a class="foot__mark" href="/" aria-label={`${s.hotelName}, home`}><img src={logoUrl} width="1086" height="1105" alt=""><span>{s.hotelName}</span></a>
+    <p>{s.streetAddress}, San Pedro, Cusco, Peru.</p>
+    <p><a href="/">usgarhoteles.com</a></p>
+  </div>
+</footer>
+
+<script>
+  import '../features/linktree/linktree.js';
+</script>
+</body>
+</html>

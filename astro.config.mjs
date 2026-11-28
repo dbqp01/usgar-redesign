@@ -82,7 +82,7 @@ export default defineConfig({
       // reserva: es noindex.
       filter: (page) => {
         const { pathname } = new URL(page);
-        return !/^\/(?:[a-z]{2}\/)?(?:panel|login|profile|my-bookings|book\/success)(?:\/|$)/.test(pathname);
+        return !/^\/(?:[a-z]{2}\/)?(?:panel|login|profile|my-bookings|book\/success|linktree)(?:\/|$)/.test(pathname);
       },
     }),
     // @astrojs/sitemap publica sitemap-index.xml + sitemap-N.xml, pero no
